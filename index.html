@@ -3927,17 +3927,23 @@ async function generatePEI() {
         const item = findItemByCode(code);
         if (bereich && item) {
             if (selection.status === 'ziel') {
-                ziele[bereich].push({ code, keyword: item.keyword, zieltext: selection.zieltext || item.zielformulierungen[0] });
+                ziele[bereich].push({ code, keyword: item.keyword, description: item.description, zieltext: selection.zieltext || item.zielformulierungen[0] });
             } else if (selection.status === 'erreicht') {
-                erreichte[bereich].push({ code, keyword: item.keyword });
+                erreichte[bereich].push({ code, keyword: item.keyword, description: item.description });
             }
         }
     }
 
+    // Sort all ziele in ascending order (ordre croissant)
+    for (const bereich of Object.keys(ziele)) {
+        ziele[bereich].sort((a, b) => parseInt(a.code.split('-').pop()) - parseInt(b.code.split('-').pop()));
+    }
+
     const lastErreicht = {};
     for (const [bereich, items] of Object.entries(erreichte)) {
-        const sorted = items.sort((a,b) => parseInt(b.code.split('-').pop()) - parseInt(a.code.split('-').pop()));
-        lastErreicht[bereich] = sorted.slice(0, 3); // Get last 3 items
+        // Sort in ascending order (ordre croissant)
+        const sorted = items.sort((a,b) => parseInt(a.code.split('-').pop()) - parseInt(b.code.split('-').pop()));
+        lastErreicht[bereich] = sorted.slice(-3); // Get last 3 items (highest numbers after ascending sort)
     }
 
     const nameParts = (stammdaten.schueler_name || '').split(' ');
@@ -4292,12 +4298,18 @@ async function generatePEI() {
             })
         ]}));
 
-        // Value row: erreicht items with spacing
+        // Value row: erreicht items with spacing (Code, Keyword, Description)
         const competencesContent = erreichtItems && erreichtItems.length > 0
-            ? erreichtItems.map(item => new Paragraph({
-                children: [new TextRun({text: `${item.code}: ${item.keyword}`, size: 22})],
-                spacing: {after: 120}
-            }))
+            ? erreichtItems.flatMap(item => [
+                new Paragraph({
+                    children: [new TextRun({text: `${item.code} - ${item.keyword}`, bold: true, size: 22})],
+                    spacing: {before: 60, after: 40}
+                }),
+                new Paragraph({
+                    children: [new TextRun({text: item.description || '', size: 20})],
+                    spacing: {after: 160}
+                })
+            ])
             : [new Paragraph('')];
         rows.push(new TableRow({ children: [
             new TableCell({ children: competencesContent, borders: cellBorders })
@@ -4315,12 +4327,22 @@ async function generatePEI() {
             })
         ]}));
 
-        // Value row: ziel items with spacing
+        // Value row: ziel items with spacing (Code, Keyword, Description, Zieltext)
         const objectifsContent = goals && goals.length > 0
-            ? goals.map(g => new Paragraph({
-                children: [new TextRun({text: `${g.code}: "${g.zieltext}"`, size: 22})],
-                spacing: {after: 120}
-            }))
+            ? goals.flatMap(g => [
+                new Paragraph({
+                    children: [new TextRun({text: `${g.code} - ${g.keyword}`, bold: true, size: 22})],
+                    spacing: {before: 60, after: 40}
+                }),
+                new Paragraph({
+                    children: [new TextRun({text: g.description || '', size: 20})],
+                    spacing: {after: 60}
+                }),
+                new Paragraph({
+                    children: [new TextRun({text: `→ "${g.zieltext}"`, italics: true, size: 22})],
+                    spacing: {after: 160}
+                })
+            ])
             : [new Paragraph('')];
         rows.push(new TableRow({ children: [
             new TableCell({ children: objectifsContent, borders: cellBorders })
@@ -4616,7 +4638,8 @@ async function generateComplement() {
     }
 
     for (const bereich of Object.keys(erreichte)) {
-        erreichte[bereich] = erreichte[bereich].sort((a, b) => b.nr - a.nr).slice(0, 4);
+        // Sort in ascending order (ordre croissant) and get last 4 items
+        erreichte[bereich] = erreichte[bereich].sort((a, b) => a.nr - b.nr).slice(-4);
     }
 
     const nameParts = (stammdaten.schueler_name || '').split(' ');
