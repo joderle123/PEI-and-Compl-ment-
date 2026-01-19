@@ -2437,15 +2437,16 @@ function canSetZiel(code) {
     }
 
     // Regel 2: Prüfe Altersgrenze
-    // Ziel nur möglich wenn biologisches Alter < Mindestalter der Stufe
+    // Ziel nur möglich wenn biologisches Alter > Maximum der Stufe (Stufe bereits "überholt")
+    // Beispiel: 10-Jähriger kann Ziele für Stufe I-III setzen (max 2, 5, 9), aber nicht IV-V (max 12, 16)
     const alter = getSchuelerAlter();
     if (alter !== null) {
         const stufeAlter = STUFEN_ALTER_MAPPING[stufe];
-        if (stufeAlter && alter >= stufeAlter.min) {
+        if (stufeAlter && alter <= stufeAlter.max) {
             return {
                 allowed: false,
                 reason: 'alter',
-                message: `Ziel nicht möglich: Der Schüler ist ${alter} Jahre alt. ${stufeAlter.name} (${stufeAlter.beschreibung}) kann nicht als Ziel gesetzt werden, da das biologische Alter bereits im oder über dem sozio-emotionalen Entwicklungsalter dieser Stufe liegt. Nur Stufen mit höherem Alter können als Ziel definiert werden.`
+                message: `Ziel nicht möglich: Der Schüler ist ${alter} Jahre alt. ${stufeAlter.name} (${stufeAlter.beschreibung}) liegt im oder über dem biologischen Alter. Ziele können nur für bereits durchschrittene Entwicklungsstufen gesetzt werden.`
             };
         }
     }
@@ -2516,10 +2517,11 @@ function updateAllBlockedButtonsByAge() {
             for (const item of stufeData.items) {
                 const zielBtn = document.querySelector(`#item-${item.code} .option-btn.ziel`);
                 if (zielBtn) {
-                    // Prüfe ob durch Alter blockiert (biologisches Alter >= Mindestalter der Stufe)
-                    if (stufeAlter && alter >= stufeAlter.min) {
+                    // Prüfe ob durch Alter blockiert (biologisches Alter <= Maximum der Stufe)
+                    // Ziel nur möglich wenn Alter > max (Stufe bereits "überholt")
+                    if (stufeAlter && alter <= stufeAlter.max) {
                         zielBtn.classList.add('blocked');
-                        zielBtn.title = `Ziel nicht möglich: Schüler ist ${alter} Jahre. ${stufeAlter.name} (${stufeAlter.beschreibung}) - biologisches Alter liegt bereits im/über dem sozio-emotionalen Alter.`;
+                        zielBtn.title = `Ziel nicht möglich: Schüler ist ${alter} Jahre. ${stufeAlter.name} (${stufeAlter.beschreibung}) - Ziele nur für bereits durchschrittene Stufen möglich.`;
                     } else {
                         // Prüfe ob durch "nicht erreicht" blockiert
                         const check = canSetZiel(item.code);
