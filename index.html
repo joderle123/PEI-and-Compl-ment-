@@ -11,18 +11,19 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
+            background: #f0f0f0;
             min-height: 100vh;
+            color: #333;
         }
 
         /* Top Header Bar */
         .top-header {
-            background: white;
-            padding: 10px 20px;
+            background: #fafafa;
+            padding: 12px 24px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid #e0e0e0;
+            gap: 20px;
+            border-bottom: 1px solid #ddd;
             flex-wrap: wrap;
         }
 
@@ -34,114 +35,121 @@
 
         .header-label {
             font-weight: 600;
-            color: #666;
-            font-size: 0.85em;
+            color: #555;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .header-select {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 8px 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
             font-size: 0.9em;
-            min-width: 180px;
+            min-width: 200px;
+            background: white;
         }
 
         .btn-small {
-            padding: 6px 12px;
+            padding: 7px 14px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 0.85em;
-            font-weight: 500;
+            font-weight: 600;
+            transition: all 0.2s;
         }
 
-        .btn-add { background: #28a745; color: white; }
-        .btn-add:hover { background: #218838; }
-        .btn-delete { background: #dc3545; color: white; }
-        .btn-delete:hover { background: #c82333; }
-        .btn-save { background: #28a745; color: white; padding: 8px 20px; }
-        .btn-save:hover { background: #218838; }
+        .btn-add { background: #22c55e; color: white; }
+        .btn-add:hover { background: #16a34a; }
+        .btn-delete { background: #ef4444; color: white; padding: 7px 10px; }
+        .btn-delete:hover { background: #dc2626; }
+        .btn-save { background: #22c55e; color: white; padding: 8px 24px; font-size: 0.9em; }
+        .btn-save:hover { background: #16a34a; }
 
         .header-spacer { flex: 1; }
 
         .eval-count {
-            background: #f8f9fa;
-            padding: 5px 12px;
-            border-radius: 4px;
+            background: white;
+            padding: 6px 14px;
+            border-radius: 6px;
             font-size: 0.85em;
             color: #666;
+            border: 1px solid #ddd;
         }
 
-        /* Purple Gradient Bar */
+        /* Purple/Pink Gradient Bar */
         .gradient-bar {
-            height: 8px;
-            background: linear-gradient(90deg, #9b59b6 0%, #8e44ad 50%, #667eea 100%);
+            height: 6px;
+            background: linear-gradient(90deg, #a855f7 0%, #ec4899 50%, #8b5cf6 100%);
         }
 
         /* Title Bar */
         .title-bar {
             background: white;
-            padding: 8px 20px;
-            text-align: center;
-            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 24px;
+            border-bottom: 1px solid #e5e5e5;
         }
 
         .title-bar h1 {
-            font-size: 1em;
-            color: #333;
+            font-size: 0.95em;
+            color: #444;
             font-weight: 500;
+            text-align: center;
         }
 
         /* Student Info Form */
         .student-info {
             background: white;
-            padding: 20px;
-            border-bottom: 1px solid #e0e0e0;
+            padding: 24px;
+            border-bottom: 1px solid #e5e5e5;
         }
 
         .info-row {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 15px;
+            gap: 24px;
+            margin-bottom: 16px;
         }
 
-        .info-row.single {
-            grid-template-columns: 1fr 3fr;
-        }
+        .info-row:last-child { margin-bottom: 0; }
 
         .info-group label {
             display: block;
-            font-size: 0.75em;
+            font-size: 0.7em;
             color: #666;
             text-transform: uppercase;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-weight: 600;
+            letter-spacing: 0.3px;
         }
 
         .info-group input {
             width: 100%;
-            padding: 10px 12px;
+            padding: 12px 14px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 0.95em;
+            background: #fafafa;
         }
 
         .info-group input:focus {
             outline: none;
-            border-color: #9b59b6;
-            box-shadow: 0 0 0 2px rgba(155, 89, 182, 0.1);
+            border-color: #a855f7;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
         }
 
         /* Domain Tabs */
         .domain-tabs {
             background: white;
             display: flex;
-            border-bottom: 2px solid #e0e0e0;
+            padding: 0 24px;
+            border-bottom: 1px solid #e5e5e5;
         }
 
         .domain-tab {
-            padding: 15px 30px;
+            padding: 16px 32px;
             cursor: pointer;
             border: none;
             background: none;
@@ -152,78 +160,75 @@
             transition: color 0.2s;
         }
 
-        .domain-tab:hover { color: #9b59b6; }
+        .domain-tab:hover { color: #a855f7; }
 
         .domain-tab.active {
-            color: #9b59b6;
+            color: #7c3aed;
+            font-weight: 600;
         }
 
         .domain-tab.active::after {
             content: '';
             position: absolute;
-            bottom: -2px;
-            left: 0;
-            right: 0;
+            bottom: 0;
+            left: 16px;
+            right: 16px;
             height: 3px;
-            background: #9b59b6;
+            background: #7c3aed;
+            border-radius: 3px 3px 0 0;
         }
 
         /* Legend Bar */
         .legend-bar {
             background: white;
-            padding: 12px 20px;
+            padding: 14px 24px;
             display: flex;
             align-items: center;
-            gap: 25px;
-            border-bottom: 1px solid #e0e0e0;
+            gap: 32px;
+            border-bottom: 1px solid #e5e5e5;
         }
 
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.85em;
-            color: #666;
+            gap: 10px;
+            font-size: 0.9em;
+            color: #555;
         }
 
         .legend-dot {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
         }
 
-        .legend-dot.erreicht { background: #28a745; }
-        .legend-dot.nicht-erreicht { background: #6c757d; }
-        .legend-dot.ziel { background: #fd7e14; }
+        .legend-dot.erreicht { background: #22c55e; }
+        .legend-dot.nicht-erreicht { background: #9ca3af; }
+        .legend-dot.ziel { background: #f97316; }
 
         .legend-spacer { flex: 1; }
 
         .toggle-container {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-size: 0.9em;
+            color: #555;
         }
 
         .toggle-switch {
             position: relative;
-            width: 50px;
+            width: 48px;
             height: 26px;
         }
 
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
 
         .toggle-slider {
             position: absolute;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #ccc;
+            inset: 0;
+            background: #d1d5db;
             border-radius: 26px;
             transition: 0.3s;
         }
@@ -238,199 +243,222 @@
             background: white;
             border-radius: 50%;
             transition: 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
-        .toggle-switch input:checked + .toggle-slider {
-            background: #9b59b6;
-        }
-
-        .toggle-switch input:checked + .toggle-slider:before {
-            transform: translateX(24px);
-        }
+        .toggle-switch input:checked + .toggle-slider { background: #7c3aed; }
+        .toggle-switch input:checked + .toggle-slider:before { transform: translateX(22px); }
 
         /* Main Content Area */
         .main-content {
-            background: #f9f9f9;
-            padding: 20px;
-            min-height: calc(100vh - 350px);
-            padding-bottom: 80px;
+            background: #f5f5f5;
+            padding: 24px;
+            min-height: calc(100vh - 320px);
+            padding-bottom: 100px;
         }
 
-        .domain-content {
-            display: none;
-        }
-
-        .domain-content.active {
-            display: block;
-        }
+        .domain-content { display: none; }
+        .domain-content.active { display: block; }
 
         /* Stufe Section */
         .stufe-section {
             background: white;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
             overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
         }
 
         .stufe-header {
-            padding: 15px 20px;
+            padding: 18px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(135deg, rgba(155, 89, 182, 0.05) 0%, rgba(102, 126, 234, 0.05) 100%);
-            border-bottom: 1px solid #e0e0e0;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.03) 0%, rgba(139, 92, 246, 0.03) 100%);
+            border-bottom: 1px solid #f0f0f0;
         }
 
         .stufe-title h3 {
-            font-size: 1.1em;
-            color: #333;
+            font-size: 1.05em;
+            color: #1f2937;
             margin-bottom: 4px;
+            font-weight: 600;
         }
 
         .stufe-title p {
             font-size: 0.85em;
-            color: #666;
+            color: #6b7280;
         }
 
         .btn-stufe-erreicht {
-            padding: 8px 16px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
+            padding: 10px 18px;
+            background: #f0fdf4;
+            color: #15803d;
+            border: 1px solid #86efac;
+            border-radius: 6px;
             font-size: 0.85em;
             cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-stufe-erreicht:hover {
+            background: #22c55e;
+            color: white;
+            border-color: #22c55e;
+        }
+
+        /* Items Header Row */
+        .items-header {
+            display: grid;
+            grid-template-columns: 80px 1fr 200px;
+            gap: 16px;
+            padding: 12px 24px;
+            background: #fafafa;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .items-header .options-header {
             display: flex;
-            align-items: center;
-            gap: 5px;
+            justify-content: flex-end;
+            gap: 24px;
+            padding-right: 8px;
         }
 
-        .btn-stufe-erreicht:hover { background: #218838; }
-
-        .stufe-items {
-            padding: 10px 0;
+        .items-header .options-header span {
+            width: 50px;
+            text-align: center;
         }
+
+        .stufe-items { padding: 0; }
 
         /* Item Row */
         .item-row {
             display: grid;
-            grid-template-columns: 70px 1fr 180px;
-            gap: 15px;
-            padding: 12px 20px;
+            grid-template-columns: 80px 1fr 200px;
+            gap: 16px;
+            padding: 14px 24px;
             align-items: center;
-            border-bottom: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f5f5f5;
+            transition: background 0.15s;
         }
 
         .item-row:last-child { border-bottom: none; }
         .item-row:hover { background: #fafafa; }
 
         .item-code {
-            background: #9b59b6;
+            background: #7c3aed;
             color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 6px 10px;
+            border-radius: 6px;
             font-size: 0.8em;
-            font-weight: 600;
+            font-weight: 700;
             text-align: center;
+            letter-spacing: 0.3px;
         }
 
         .item-info h4 {
             font-size: 0.95em;
-            color: #333;
-            margin-bottom: 2px;
+            color: #1f2937;
+            margin-bottom: 3px;
+            font-weight: 600;
         }
 
         .item-info p {
             font-size: 0.85em;
-            color: #666;
+            color: #6b7280;
+            line-height: 1.4;
         }
 
         .item-options {
             display: flex;
-            gap: 20px;
             justify-content: flex-end;
-        }
-
-        .option-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-        }
-
-        .option-group span {
-            font-size: 0.7em;
-            color: #999;
-            text-transform: uppercase;
+            gap: 24px;
+            padding-right: 8px;
         }
 
         .option-radio {
-            width: 22px;
-            height: 22px;
-            border: 2px solid #ddd;
+            width: 50px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .option-radio-btn {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #d1d5db;
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: white;
         }
 
-        .option-radio:hover { border-color: #9b59b6; }
+        .option-radio-btn:hover { border-color: #a855f7; }
 
-        .option-radio.selected.erreicht {
-            background: #28a745;
-            border-color: #28a745;
+        .option-radio-btn.selected.erreicht {
+            background: #22c55e;
+            border-color: #22c55e;
         }
 
-        .option-radio.selected.erreicht::after {
+        .option-radio-btn.selected.erreicht::after {
             content: '✓';
             color: white;
-            font-size: 12px;
+            font-size: 14px;
+            font-weight: bold;
         }
 
-        .option-radio.selected.nicht-erreicht {
-            background: #6c757d;
-            border-color: #6c757d;
+        .option-radio-btn.selected.nicht-erreicht {
+            background: #9ca3af;
+            border-color: #9ca3af;
         }
 
-        .option-radio.selected.ziel {
-            background: #fd7e14;
-            border-color: #fd7e14;
+        .option-radio-btn.selected.ziel {
+            background: #f97316;
+            border-color: #f97316;
         }
 
         /* Ziel Box */
         .ziel-box {
             display: none;
             grid-column: 1 / -1;
-            background: #fff8e6;
-            padding: 15px;
-            margin: 10px 20px;
+            background: #fffbeb;
+            padding: 16px 20px;
+            margin: 12px 24px;
             border-radius: 8px;
-            border: 1px solid #ffc107;
+            border: 1px solid #fcd34d;
         }
 
         .ziel-box.visible { display: block; }
 
         .ziel-box h4 {
-            font-size: 0.9em;
+            font-size: 0.85em;
             margin-bottom: 10px;
-            color: #856404;
+            color: #92400e;
+            font-weight: 600;
         }
 
         .ziel-select, .ziel-custom {
             width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 10px 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
             font-size: 0.9em;
             margin-bottom: 8px;
+            background: white;
         }
 
         .ziel-custom {
-            min-height: 60px;
+            min-height: 70px;
             resize: vertical;
+            font-family: inherit;
         }
 
         /* Fixed Footer */
@@ -440,62 +468,64 @@
             left: 0;
             right: 0;
             background: white;
-            padding: 12px 20px;
+            padding: 14px 24px;
             display: flex;
             align-items: center;
-            gap: 20px;
-            border-top: 1px solid #e0e0e0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            gap: 24px;
+            border-top: 1px solid #e5e5e5;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
             z-index: 100;
         }
 
-        .stat-box {
-            text-align: center;
-        }
+        .stat-box { text-align: center; }
 
         .stat-box .number {
-            font-size: 1.8em;
+            font-size: 2em;
             font-weight: 700;
-            color: #28a745;
+            color: #22c55e;
+            line-height: 1;
         }
 
-        .stat-box .number.ziele { color: #fd7e14; }
+        .stat-box .number.ziele { color: #f97316; }
 
         .stat-box .label {
-            font-size: 0.75em;
-            color: #666;
+            font-size: 0.7em;
+            color: #6b7280;
             text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
         }
 
         .footer-spacer { flex: 1; }
 
         .btn-export {
-            padding: 10px 20px;
-            background: #0066cc;
+            padding: 12px 24px;
+            background: #2563eb;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 0.9em;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
+            transition: background 0.2s;
         }
 
-        .btn-export:hover { background: #0052a3; }
-
-        /* Hidden elements */
-        .hidden { display: none !important; }
+        .btn-export:hover { background: #1d4ed8; }
 
         /* Toast */
         .toast {
             position: fixed;
-            bottom: 80px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            background: #333;
+            background: #1f2937;
             color: white;
-            padding: 12px 24px;
+            padding: 14px 28px;
             border-radius: 8px;
             z-index: 1000;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             animation: slideUp 0.3s ease;
         }
 
@@ -505,20 +535,30 @@
         }
 
         /* Responsive */
-        @media (max-width: 900px) {
+        @media (max-width: 1024px) {
             .info-row { grid-template-columns: repeat(2, 1fr); }
-            .item-row { grid-template-columns: 60px 1fr; }
-            .item-options {
-                grid-column: 1 / -1;
-                justify-content: flex-start;
-                margin-top: 10px;
-            }
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .info-row { grid-template-columns: 1fr; }
-            .domain-tab { padding: 12px 15px; font-size: 0.9em; }
-            .top-header { padding: 10px; }
+            .item-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .items-header { display: none; }
+            .item-options {
+                justify-content: flex-start;
+                gap: 16px;
+            }
+            .option-radio { width: auto; }
+            .domain-tab { padding: 14px 20px; font-size: 0.9em; }
+            .top-header { padding: 12px 16px; gap: 12px; }
+            .header-select { min-width: 150px; }
+        }
+
+        @media (max-width: 480px) {
+            .top-header .header-group:nth-child(2) { display: none; }
+            .legend-bar { flex-wrap: wrap; gap: 16px; }
         }
     </style>
 </head>
@@ -526,27 +566,27 @@
     <!-- Top Header -->
     <div class="top-header">
         <div class="header-group">
-            <span class="header-label">PROFIL:</span>
+            <span class="header-label">Profil:</span>
             <select class="header-select" id="profil-select">
                 <option>Neues Profil...</option>
             </select>
             <button class="btn-small btn-add" onclick="newProfile()">+ Neu</button>
-            <button class="btn-small btn-delete" onclick="deleteProfile()">x</button>
+            <button class="btn-small btn-delete" onclick="deleteProfile()">✕</button>
         </div>
         <div class="header-group">
-            <span class="header-label">EVALUATION:</span>
+            <span class="header-label">Evaluation:</span>
             <select class="header-select" id="eval-select">
                 <option>1. Evaluation</option>
             </select>
             <button class="btn-small btn-add" onclick="newEvaluation()">+ Neu</button>
-            <button class="btn-small btn-delete" onclick="deleteEvaluation()">x</button>
+            <button class="btn-small btn-delete" onclick="deleteEvaluation()">✕</button>
         </div>
         <div class="header-spacer"></div>
         <button class="btn-small btn-save" onclick="saveToLocalStorage(); showToast('Gespeichert!');">Speichern</button>
         <span class="eval-count">1 Evaluation</span>
     </div>
 
-    <!-- Purple Gradient Bar -->
+    <!-- Purple/Pink Gradient Bar -->
     <div class="gradient-bar"></div>
 
     <!-- Title Bar -->
@@ -574,11 +614,14 @@
                 <input type="date" id="einschaetzungsdatum" onchange="saveToLocalStorage()">
             </div>
         </div>
-        <div class="info-row single">
+        <div class="info-row">
             <div class="info-group">
                 <label>Einschätzende Person</label>
                 <input type="text" id="einschaetzende" placeholder="Name der einschätzenden Person" onchange="saveToLocalStorage()">
             </div>
+            <div class="info-group"></div>
+            <div class="info-group"></div>
+            <div class="info-group"></div>
         </div>
         <!-- Hidden fields for compatibility -->
         <input type="hidden" id="matricule">
@@ -592,10 +635,10 @@
 
     <!-- Domain Tabs -->
     <div class="domain-tabs">
-        <button class="domain-tab active" onclick="showDomain('verhalten')">Verhalten</button>
-        <button class="domain-tab" onclick="showDomain('kommunikation')">Kommunikation</button>
-        <button class="domain-tab" onclick="showDomain('sozialisation')">Sozialisation</button>
-        <button class="domain-tab" onclick="showDomain('kognition')">Kognition</button>
+        <button class="domain-tab active" data-domain="verhalten" onclick="showDomain('verhalten', this)">Verhalten</button>
+        <button class="domain-tab" data-domain="kommunikation" onclick="showDomain('kommunikation', this)">Kommunikation</button>
+        <button class="domain-tab" data-domain="sozialisation" onclick="showDomain('sozialisation', this)">Sozialisation</button>
+        <button class="domain-tab" data-domain="kognition" onclick="showDomain('kognition', this)">Kognition</button>
     </div>
 
     <!-- Legend Bar -->
@@ -624,221 +667,11 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Verhalten -->
-        <div class="domain-content active" id="domain-verhalten">
-            <div class="stufe-section" id="verhalten-stufe1">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 1: Mit Freude auf die Umwelt reagieren</h3>
-                        <p>Auf die Umgebung reagieren mit gezielten Körperbewegungen und elementaren mentalen Prozessen</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('verhalten', 1)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="verhalten-stufe1-items"></div>
-            </div>
-            <div class="stufe-section" id="verhalten-stufe2">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 2: Auf die Umwelt mit Erfolg einwirken</h3>
-                        <p>Durch aktive Teilnahme kommunizieren und interagieren</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('verhalten', 2)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="verhalten-stufe2-items"></div>
-            </div>
-            <div class="stufe-section" id="verhalten-stufe3">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 3: Lernen, Fertigkeiten für erfolgreiche Gruppenteilnahme anzuwenden</h3>
-                        <p>Individuelle Fertigkeiten in Gruppenaktivitäten einbringen</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('verhalten', 3)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="verhalten-stufe3-items"></div>
-            </div>
-            <div class="stufe-section" id="verhalten-stufe4">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 4: In Gruppenaktivitäten investieren</h3>
-                        <p>Soziale Fertigkeiten in verschiedenen Gruppenkonstellationen anwenden</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('verhalten', 4)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="verhalten-stufe4-items"></div>
-            </div>
-            <div class="stufe-section" id="verhalten-stufe5">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 5: Sich persönlich auf Gruppenaktivitäten einlassen</h3>
-                        <p>Internalisierte Werte und Verhaltensweisen zeigen</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('verhalten', 5)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="verhalten-stufe5-items"></div>
-            </div>
-        </div>
-
-        <!-- Kommunikation -->
-        <div class="domain-content" id="domain-kommunikation">
-            <div class="stufe-section" id="kommunikation-stufe1">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 1: Mit Freude auf die Umwelt reagieren</h3>
-                        <p>Auf die Umgebung reagieren mit gezielten Körperbewegungen und elementaren mentalen Prozessen</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('kommunikation', 1)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="kommunikation-stufe1-items"></div>
-            </div>
-            <div class="stufe-section" id="kommunikation-stufe2">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 2: Auf die Umwelt mit Erfolg einwirken</h3>
-                        <p>Durch aktive Teilnahme kommunizieren und interagieren</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('kommunikation', 2)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="kommunikation-stufe2-items"></div>
-            </div>
-            <div class="stufe-section" id="kommunikation-stufe3">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 3: Lernen, Fertigkeiten für erfolgreiche Gruppenteilnahme anzuwenden</h3>
-                        <p>Individuelle Fertigkeiten in Gruppenaktivitäten einbringen</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('kommunikation', 3)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="kommunikation-stufe3-items"></div>
-            </div>
-            <div class="stufe-section" id="kommunikation-stufe4">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 4: In Gruppenaktivitäten investieren</h3>
-                        <p>Soziale Fertigkeiten in verschiedenen Gruppenkonstellationen anwenden</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('kommunikation', 4)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="kommunikation-stufe4-items"></div>
-            </div>
-            <div class="stufe-section" id="kommunikation-stufe5">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 5: Sich persönlich auf Gruppenaktivitäten einlassen</h3>
-                        <p>Internalisierte Werte und Verhaltensweisen zeigen</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('kommunikation', 5)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="kommunikation-stufe5-items"></div>
-            </div>
-        </div>
-
-        <!-- Sozialisation -->
-        <div class="domain-content" id="domain-sozialisation">
-            <div class="stufe-section" id="sozialisation-stufe1">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 1: Mit Freude auf die Umwelt reagieren</h3>
-                        <p>Auf die Umgebung reagieren mit gezielten Körperbewegungen und elementaren mentalen Prozessen</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('sozialisation', 1)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="sozialisation-stufe1-items"></div>
-            </div>
-            <div class="stufe-section" id="sozialisation-stufe2">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 2: Auf die Umwelt mit Erfolg einwirken</h3>
-                        <p>Durch aktive Teilnahme kommunizieren und interagieren</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('sozialisation', 2)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="sozialisation-stufe2-items"></div>
-            </div>
-            <div class="stufe-section" id="sozialisation-stufe3">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 3: Lernen, Fertigkeiten für erfolgreiche Gruppenteilnahme anzuwenden</h3>
-                        <p>Individuelle Fertigkeiten in Gruppenaktivitäten einbringen</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('sozialisation', 3)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="sozialisation-stufe3-items"></div>
-            </div>
-            <div class="stufe-section" id="sozialisation-stufe4">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 4: In Gruppenaktivitäten investieren</h3>
-                        <p>Soziale Fertigkeiten in verschiedenen Gruppenkonstellationen anwenden</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('sozialisation', 4)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="sozialisation-stufe4-items"></div>
-            </div>
-            <div class="stufe-section" id="sozialisation-stufe5">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 5: Sich persönlich auf Gruppenaktivitäten einlassen</h3>
-                        <p>Internalisierte Werte und Verhaltensweisen zeigen</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('sozialisation', 5)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="sozialisation-stufe5-items"></div>
-            </div>
-        </div>
-
-        <!-- Kognition -->
-        <div class="domain-content" id="domain-kognition">
-            <div class="stufe-section" id="kognition-stufe1">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 1: Mit Freude auf die Umwelt reagieren</h3>
-                        <p>Auf die Umgebung reagieren mit gezielten Körperbewegungen und elementaren mentalen Prozessen</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('kognition', 1)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="kognition-stufe1-items"></div>
-            </div>
-            <div class="stufe-section" id="kognition-stufe2">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 2: Auf die Umwelt mit Erfolg einwirken</h3>
-                        <p>Durch aktive Teilnahme kommunizieren und interagieren</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('kognition', 2)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="kognition-stufe2-items"></div>
-            </div>
-            <div class="stufe-section" id="kognition-stufe3">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 3: Lernen, Fertigkeiten für erfolgreiche Gruppenteilnahme anzuwenden</h3>
-                        <p>Individuelle Fertigkeiten in Gruppenaktivitäten einbringen</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('kognition', 3)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="kognition-stufe3-items"></div>
-            </div>
-            <div class="stufe-section" id="kognition-stufe4">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 4: In Gruppenaktivitäten investieren</h3>
-                        <p>Soziale Fertigkeiten in verschiedenen Gruppenkonstellationen anwenden</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('kognition', 4)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="kognition-stufe4-items"></div>
-            </div>
-            <div class="stufe-section" id="kognition-stufe5">
-                <div class="stufe-header">
-                    <div class="stufe-title">
-                        <h3>Stufe 5: Sich persönlich auf Gruppenaktivitäten einlassen</h3>
-                        <p>Internalisierte Werte und Verhaltensweisen zeigen</p>
-                    </div>
-                    <button class="btn-stufe-erreicht" onclick="markStufeErreicht('kognition', 5)">✓ Stufe erreicht</button>
-                </div>
-                <div class="stufe-items" id="kognition-stufe5-items"></div>
-            </div>
-        </div>
+        <!-- Content will be generated dynamically -->
+        <div class="domain-content active" id="domain-verhalten"></div>
+        <div class="domain-content" id="domain-kommunikation"></div>
+        <div class="domain-content" id="domain-sozialisation"></div>
+        <div class="domain-content" id="domain-kognition"></div>
     </div>
 
     <!-- Fixed Footer -->
@@ -2971,16 +2804,15 @@ function downloadAsWord(html, filename) {
 }
     </script>
 
-// New functions for redesigned interface
+// ============================================
+// NEW INTERFACE FUNCTIONS
+// ============================================
 
-function showDomain(domain) {
-    // Hide all domains
+function showDomain(domain, tabElement) {
     document.querySelectorAll('.domain-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.domain-tab').forEach(el => el.classList.remove('active'));
-    
-    // Show selected domain
     document.getElementById('domain-' + domain).classList.add('active');
-    event.target.classList.add('active');
+    if (tabElement) tabElement.classList.add('active');
 }
 
 function updateProfileName() {
@@ -3001,18 +2833,12 @@ function newProfile() {
 function deleteProfile() {
     if (confirm('Profil wirklich löschen?')) {
         resetAllData();
+        showToast('Profil gelöscht');
     }
 }
 
-function newEvaluation() {
-    showToast('Neue Evaluation erstellt');
-}
-
-function deleteEvaluation() {
-    if (confirm('Evaluation wirklich löschen?')) {
-        showToast('Evaluation gelöscht');
-    }
-}
+function newEvaluation() { showToast('Neue Evaluation erstellt'); }
+function deleteEvaluation() { if (confirm('Evaluation wirklich löschen?')) showToast('Evaluation gelöscht'); }
 
 function markStufeErreicht(bereich, stufeNr) {
     const stufe = ELDIB_DATA[bereich].stufen[stufeNr];
@@ -3020,11 +2846,11 @@ function markStufeErreicht(bereich, stufeNr) {
         stufe.items.forEach(item => {
             if (!state.selections[item.code] || state.selections[item.code].status !== 'erreicht') {
                 state.selections[item.code] = { status: 'erreicht' };
-                const row = document.getElementById('item-' + item.code);
-                if (row) {
-                    row.querySelectorAll('.option-radio').forEach(r => r.classList.remove('selected'));
-                    const erreichtRadio = row.querySelector('.option-radio.erreicht');
-                    if (erreichtRadio) erreichtRadio.classList.add('selected');
+                const btn = document.querySelector('[data-code="' + item.code + '"][data-status="erreicht"]');
+                if (btn) {
+                    const row = btn.closest('.item-row');
+                    row.querySelectorAll('.option-radio-btn').forEach(r => r.classList.remove('selected'));
+                    btn.classList.add('selected');
                 }
             }
         });
@@ -3034,103 +2860,69 @@ function markStufeErreicht(bereich, stufeNr) {
     }
 }
 
-function selectOptionNew(code, status, element) {
+function selectOption(code, status, element) {
     const row = element.closest('.item-row');
-    row.querySelectorAll('.option-radio').forEach(r => r.classList.remove('selected'));
+    row.querySelectorAll('.option-radio-btn').forEach(r => r.classList.remove('selected'));
     element.classList.add('selected');
-    
     if (!state.selections[code]) state.selections[code] = {};
     state.selections[code].status = status;
-    
     const zielBox = document.getElementById('ziel-box-' + code);
-    if (status === 'ziel') {
-        zielBox.classList.add('visible');
-        updateZieltext(code);
-    } else {
-        zielBox.classList.remove('visible');
+    if (zielBox) {
+        if (status === 'ziel') { zielBox.classList.add('visible'); updateZieltext(code); }
+        else { zielBox.classList.remove('visible'); }
     }
-    
     saveToLocalStorage();
     updateFooterStats();
 }
 
 function updateFooterStats() {
-    let totalErreicht = 0;
-    let totalZiele = 0;
-    
+    let totalErreicht = 0, totalZiele = 0;
     for (const [code, selection] of Object.entries(state.selections)) {
         if (selection.status === 'erreicht') totalErreicht++;
         else if (selection.status === 'ziel') totalZiele++;
     }
-    
     document.getElementById('total-erreicht').textContent = totalErreicht;
     document.getElementById('total-ziele').textContent = totalZiele;
 }
 
-// Override createItemElement for new layout
-function createItemElementNew(item, bereichKey) {
-    const itemDiv = document.createElement('div');
-    itemDiv.className = 'item-row';
-    itemDiv.id = 'item-' + item.code;
-    
-    const zielOptions = item.zielformulierungen.map((z, i) => `<option value="${i}">${z}</option>`).join('');
-    
-    itemDiv.innerHTML = `
-        <div class="item-code">${item.code}</div>
-        <div class="item-info">
-            <h4>${item.keyword}</h4>
-            <p>${item.description}</p>
-        </div>
-        <div class="item-options">
-            <div class="option-group">
-                <span>Erreicht</span>
-                <div class="option-radio erreicht" onclick="selectOptionNew('${item.code}', 'erreicht', this)"></div>
-            </div>
-            <div class="option-group">
-                <span>Nicht err.</span>
-                <div class="option-radio nicht-erreicht" onclick="selectOptionNew('${item.code}', 'nicht-erreicht', this)"></div>
-            </div>
-            <div class="option-group">
-                <span>Ziel</span>
-                <div class="option-radio ziel" onclick="selectOptionNew('${item.code}', 'ziel', this)"></div>
-            </div>
-        </div>
-        <div class="ziel-box" id="ziel-box-${item.code}">
-            <h4>Zielformulierung:</h4>
-            <select class="ziel-select" id="ziel-select-${item.code}" onchange="updateZieltext('${item.code}')">${zielOptions}</select>
-            <textarea class="ziel-custom" id="ziel-custom-${item.code}" placeholder="Oder eigene Formulierung..." onchange="updateCustomZiel('${item.code}')"></textarea>
-        </div>
-    `;
-    return itemDiv;
+function createStufeSection(bereichKey, stufeNr, stufe) {
+    const section = document.createElement('div');
+    section.className = 'stufe-section';
+    section.id = bereichKey + '-stufe' + stufeNr;
+    const stufeName = stufe.name.replace(/Stufe [IVX]+:?\s*/i, '');
+    section.innerHTML = '<div class="stufe-header"><div class="stufe-title"><h3>Stufe ' + stufeNr + ': ' + stufeName + '</h3><p>' + stufe.ziel + '</p></div><button class="btn-stufe-erreicht" onclick="markStufeErreicht(\'' + bereichKey + '\', ' + stufeNr + ')">✓ Stufe erreicht</button></div><div class="items-header"><span></span><span></span><div class="options-header"><span>Erreicht</span><span>Nicht err.</span><span>Ziel</span></div></div><div class="stufe-items" id="' + bereichKey + '-stufe' + stufeNr + '-items"></div>';
+    return section;
 }
 
-// Override initializeItems for new layout
-function initializeItemsNew() {
+function createItemRow(item, bereichKey) {
+    const div = document.createElement('div');
+    div.className = 'item-row';
+    div.id = 'item-' + item.code;
+    let zielOpts = '';
+    item.zielformulierungen.forEach((z, i) => { zielOpts += '<option value="' + i + '">' + z + '</option>'; });
+    div.innerHTML = '<div class="item-code">' + item.code + '</div><div class="item-info"><h4>' + item.keyword + '</h4><p>' + item.description + '</p></div><div class="item-options"><div class="option-radio"><div class="option-radio-btn erreicht" data-code="' + item.code + '" data-status="erreicht" onclick="selectOption(\'' + item.code + '\', \'erreicht\', this)"></div></div><div class="option-radio"><div class="option-radio-btn nicht-erreicht" data-code="' + item.code + '" data-status="nicht-erreicht" onclick="selectOption(\'' + item.code + '\', \'nicht-erreicht\', this)"></div></div><div class="option-radio"><div class="option-radio-btn ziel" data-code="' + item.code + '" data-status="ziel" onclick="selectOption(\'' + item.code + '\', \'ziel\', this)"></div></div></div><div class="ziel-box" id="ziel-box-' + item.code + '"><h4>Zielformulierung auswählen:</h4><select class="ziel-select" id="ziel-select-' + item.code + '" onchange="updateZieltext(\'' + item.code + '\')">' + zielOpts + '</select><textarea class="ziel-custom" id="ziel-custom-' + item.code + '" placeholder="Oder eigene Formulierung eingeben..." onchange="updateCustomZiel(\'' + item.code + '\')"></textarea></div>';
+    return div;
+}
+
+function initializeInterface() {
     for (const [bereichKey, bereich] of Object.entries(ELDIB_DATA)) {
+        const container = document.getElementById('domain-' + bereichKey);
+        if (!container) continue;
+        container.innerHTML = '';
         for (const [stufeNr, stufe] of Object.entries(bereich.stufen)) {
-            const container = document.getElementById(`${bereichKey}-stufe${stufeNr}-items`);
-            if (container) {
-                stufe.items.forEach(item => container.appendChild(createItemElementNew(item, bereichKey)));
-            }
+            const section = createStufeSection(bereichKey, stufeNr, stufe);
+            container.appendChild(section);
+            const itemsContainer = section.querySelector('.stufe-items');
+            stufe.items.forEach(item => { itemsContainer.appendChild(createItemRow(item, bereichKey)); });
         }
     }
 }
 
-// Initialize on load
-document.addEventListener('DOMContentLoaded', function() {
-    initializeItemsNew();
-    loadFromLocalStorage();
-    restoreSelectionsNew();
-    updateFooterStats();
-    updateProfileName();
-});
-
-function restoreSelectionsNew() {
+function restoreSelections() {
     for (const [code, selection] of Object.entries(state.selections)) {
-        const row = document.getElementById('item-' + code);
-        if (row) {
-            const radio = row.querySelector('.option-radio.' + selection.status);
-            if (radio) radio.classList.add('selected');
+        const btn = document.querySelector('[data-code="' + code + '"][data-status="' + selection.status + '"]');
+        if (btn) {
+            btn.classList.add('selected');
             if (selection.status === 'ziel') {
                 const zielBox = document.getElementById('ziel-box-' + code);
                 if (zielBox) zielBox.classList.add('visible');
@@ -3140,6 +2932,14 @@ function restoreSelectionsNew() {
         }
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeInterface();
+    loadFromLocalStorage();
+    restoreSelections();
+    updateFooterStats();
+    updateProfileName();
+});
     </script>
 </body>
 </html>
