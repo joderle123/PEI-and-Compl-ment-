@@ -1312,7 +1312,8 @@
             mask-composite: exclude;
             opacity: 0;
             transition: opacity 0.4s ease;
-            z-index: 1;
+            z-index: -1;
+            pointer-events: none;
         }
 
         .category-section:hover {
@@ -1539,6 +1540,29 @@
             color: white;
             border-color: var(--warning-neon);
             box-shadow: 0 4px 20px -4px rgba(255, 170, 0, 0.4);
+        }
+
+        /* Selected item states */
+        .zusatz-item.item-erreicht {
+            background: linear-gradient(160deg, rgba(0, 255, 136, 0.15), rgba(0, 255, 136, 0.05)) !important;
+            border-color: var(--success-neon) !important;
+            box-shadow: 0 0 20px -8px var(--success-glow) !important;
+        }
+
+        .zusatz-item.item-erreicht::before {
+            opacity: 1;
+            background: linear-gradient(180deg, var(--success-neon), var(--success));
+        }
+
+        .zusatz-item.item-ziel {
+            background: linear-gradient(160deg, rgba(255, 170, 0, 0.15), rgba(255, 170, 0, 0.05)) !important;
+            border-color: var(--warning-neon) !important;
+            box-shadow: 0 0 20px -8px rgba(255, 170, 0, 0.4) !important;
+        }
+
+        .zusatz-item.item-ziel::before {
+            opacity: 1;
+            background: linear-gradient(180deg, var(--warning-neon), var(--warning));
         }
 
         @media (max-width: 768px) {
@@ -2665,33 +2689,29 @@ function selectZusatzStatus(category, goalId, status) {
     const btnErreicht = document.getElementById(`btn-erreicht-${goalId}`);
     const btnZiel = document.getElementById(`btn-ziel-${goalId}`);
 
+    if (!item || !btnErreicht || !btnZiel) return;
+
     // Check if same status is clicked again (toggle off)
     if (state.zusaetzlicheZiele[category][goalId] === status) {
         delete state.zusaetzlicheZiele[category][goalId];
-        item.style.background = '#f9f9f9';
-        item.style.borderColor = '#ddd';
-        btnErreicht.style.background = 'white';
-        btnErreicht.style.color = '#28a745';
-        btnZiel.style.background = 'white';
-        btnZiel.style.color = '#856404';
+        item.classList.remove('item-erreicht', 'item-ziel');
+        btnErreicht.classList.remove('selected');
+        btnZiel.classList.remove('selected');
     } else {
         // Set new status
         state.zusaetzlicheZiele[category][goalId] = status;
 
+        // Reset classes first
+        item.classList.remove('item-erreicht', 'item-ziel');
+        btnErreicht.classList.remove('selected');
+        btnZiel.classList.remove('selected');
+
         if (status === 'erreicht') {
-            item.style.background = '#d4edda';
-            item.style.borderColor = '#28a745';
-            btnErreicht.style.background = '#28a745';
-            btnErreicht.style.color = 'white';
-            btnZiel.style.background = 'white';
-            btnZiel.style.color = '#856404';
+            item.classList.add('item-erreicht');
+            btnErreicht.classList.add('selected');
         } else {
-            item.style.background = '#fff3cd';
-            item.style.borderColor = '#ffc107';
-            btnZiel.style.background = '#ffc107';
-            btnZiel.style.color = '#856404';
-            btnErreicht.style.background = 'white';
-            btnErreicht.style.color = '#28a745';
+            item.classList.add('item-ziel');
+            btnZiel.classList.add('selected');
         }
     }
 
@@ -2989,19 +3009,14 @@ function loadFromLocalStorage() {
                     const btnErreicht = document.getElementById(`btn-erreicht-${goalId}`);
                     const btnZiel = document.getElementById(`btn-ziel-${goalId}`);
 
-                    if (item && status === 'erreicht') {
-                        item.style.background = '#d4edda';
-                        item.style.borderColor = '#28a745';
-                        if (btnErreicht) {
-                            btnErreicht.style.background = '#28a745';
-                            btnErreicht.style.color = 'white';
-                        }
-                    } else if (item && status === 'ziel') {
-                        item.style.background = '#fff3cd';
-                        item.style.borderColor = '#ffc107';
-                        if (btnZiel) {
-                            btnZiel.style.background = '#ffc107';
-                            btnZiel.style.color = '#856404';
+                    if (item) {
+                        item.classList.remove('item-erreicht', 'item-ziel');
+                        if (status === 'erreicht') {
+                            item.classList.add('item-erreicht');
+                            if (btnErreicht) btnErreicht.classList.add('selected');
+                        } else if (status === 'ziel') {
+                            item.classList.add('item-ziel');
+                            if (btnZiel) btnZiel.classList.add('selected');
                         }
                     }
                 }
