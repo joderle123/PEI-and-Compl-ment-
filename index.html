@@ -9,23 +9,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
         :root {
-            --primary: #8b5cf6;
-            --primary-light: #a78bfa;
-            --primary-dark: #7c3aed;
-            --primary-glow: rgba(139, 92, 246, 0.35);
-            --success: #10b981;
-            --success-light: #34d399;
-            --success-dark: #059669;
-            --success-glow: rgba(16, 185, 129, 0.3);
+            --primary: #a855f7;
+            --primary-light: #c084fc;
+            --primary-dark: #9333ea;
+            --primary-neon: #d946ef;
+            --primary-glow: rgba(168, 85, 247, 0.5);
+            --success: #22c55e;
+            --success-light: #4ade80;
+            --success-dark: #16a34a;
+            --success-neon: #00ff88;
+            --success-glow: rgba(34, 197, 94, 0.5);
             --warning: #f59e0b;
             --warning-light: #fbbf24;
             --warning-dark: #d97706;
+            --warning-neon: #ffaa00;
             --danger: #f43f5e;
             --danger-light: #fb7185;
             --danger-dark: #e11d48;
+            --danger-neon: #ff3366;
             --info: #06b6d4;
             --info-light: #22d3ee;
             --info-dark: #0891b2;
+            --info-neon: #00d4ff;
             --gray-50: #fafafa;
             --gray-100: #f4f4f5;
             --gray-200: #e4e4e7;
@@ -36,15 +41,17 @@
             --gray-700: #3f3f46;
             --gray-800: #27272a;
             --gray-900: #18181b;
-            --radius-sm: 16px;
-            --radius: 24px;
-            --radius-lg: 32px;
-            --radius-xl: 40px;
+            --radius-sm: 18px;
+            --radius: 28px;
+            --radius-lg: 36px;
+            --radius-xl: 48px;
             --radius-full: 9999px;
-            --shadow-soft: 0 4px 20px -4px rgba(0, 0, 0, 0.08), 0 8px 32px -8px rgba(0, 0, 0, 0.06);
-            --shadow-medium: 0 8px 30px -6px rgba(0, 0, 0, 0.12), 0 16px 48px -12px rgba(0, 0, 0, 0.08);
-            --shadow-glow: 0 0 50px -12px var(--primary-glow);
-            --shadow-elevated: 0 32px 64px -16px rgba(0, 0, 0, 0.2);
+            --shadow-soft: 0 4px 25px -4px rgba(0, 0, 0, 0.1), 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 10px 40px -8px rgba(0, 0, 0, 0.15), 0 20px 60px -15px rgba(0, 0, 0, 0.1);
+            --shadow-neon: 0 0 30px var(--primary-glow), 0 0 60px var(--primary-glow);
+            --shadow-elevated: 0 40px 80px -20px rgba(0, 0, 0, 0.25);
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.2);
         }
 
         * {
@@ -55,26 +62,74 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(150deg, #1e1b4b 0%, #312e81 40%, #4c1d95 100%);
+            background: #0a0a0f;
             min-height: 100vh;
-            padding: 28px;
+            padding: 32px;
             line-height: 1.7;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(168, 85, 247, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(6, 182, 212, 0.25) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(217, 70, 239, 0.2) 0%, transparent 60%),
+                linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 50%, #0f0f1a 100%);
+            animation: bgPulse 15s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Floating orbs */
+        body::after {
+            content: '';
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%);
+            top: -200px;
+            right: -200px;
+            animation: floatOrb 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-50px, 100px) scale(1.1); }
+            66% { transform: translate(30px, -50px) scale(0.9); }
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.98);
+            background: var(--glass-bg);
             border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-elevated), 0 0 100px -30px rgba(139, 92, 246, 0.25);
+            box-shadow:
+                var(--shadow-elevated),
+                0 0 0 1px var(--glass-border),
+                0 0 120px -40px rgba(168, 85, 247, 0.4);
             overflow: hidden;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .header {
-            background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 50%, #4f46e5 100%);
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a3e 40%, #2d1b4e 70%, #3b1d5e 100%);
             color: white;
-            padding: 44px 48px;
+            padding: 56px 56px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -83,29 +138,57 @@
         .header::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.2) 0%, transparent 60%);
-            animation: shimmer 20s ease-in-out infinite;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background:
+                radial-gradient(circle at 30% 30%, rgba(168, 85, 247, 0.3) 0%, transparent 40%),
+                radial-gradient(circle at 70% 70%, rgba(6, 182, 212, 0.2) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(217, 70, 239, 0.15) 0%, transparent 50%);
+            animation: headerGlow 12s ease-in-out infinite;
         }
 
-        @keyframes shimmer {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(-5%, -5%) rotate(2deg); }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-neon), var(--info-neon), var(--primary-neon), transparent);
+            animation: neonLine 3s ease-in-out infinite;
+        }
+
+        @keyframes headerGlow {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+            33% { transform: translate(-3%, -3%) rotate(1deg); opacity: 0.8; }
+            66% { transform: translate(2%, 2%) rotate(-1deg); opacity: 0.9; }
+        }
+
+        @keyframes neonLine {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
         }
 
         .header h1 {
-            font-size: 2.75rem;
-            margin-bottom: 12px;
-            font-weight: 800;
-            letter-spacing: -0.03em;
+            font-size: 3.2rem;
+            margin-bottom: 16px;
+            font-weight: 900;
+            letter-spacing: -0.04em;
             position: relative;
-            background: linear-gradient(135deg, #fff 0%, #c4b5fd 100%);
+            background: linear-gradient(135deg, #fff 0%, #e0c3fc 30%, #8ec5fc 70%, #fff 100%);
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: gradientText 5s ease infinite;
+            text-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
+        }
+
+        @keyframes gradientText {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .header p {
@@ -117,44 +200,83 @@
             position: relative;
         }
 
-        /* Progress indicator */
+        /* Progress indicator mit Neon-Effekt */
         .progress-indicator {
             display: flex;
             justify-content: center;
-            gap: 14px;
-            margin-top: 28px;
+            gap: 16px;
+            margin-top: 32px;
             position: relative;
+            padding: 12px 24px;
+            background: rgba(0,0,0,0.2);
+            border-radius: var(--radius-full);
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-indicator::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-full);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .progress-dot {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             border-radius: var(--radius-full);
-            background: rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.2);
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .progress-dot:hover {
+            background: rgba(255,255,255,0.4);
+            transform: scale(1.2);
         }
 
         .progress-dot.active {
-            background: var(--success);
-            transform: scale(1.5);
-            border-color: rgba(255,255,255,0.6);
-            box-shadow: 0 0 24px var(--success-glow);
+            background: var(--success-neon);
+            transform: scale(1.6);
+            border-color: rgba(255,255,255,0.8);
+            box-shadow:
+                0 0 20px var(--success-glow),
+                0 0 40px var(--success-glow),
+                inset 0 0 10px rgba(255,255,255,0.5);
+            animation: dotPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { box-shadow: 0 0 20px var(--success-glow), 0 0 40px var(--success-glow); }
+            50% { box-shadow: 0 0 30px var(--success-glow), 0 0 60px var(--success-glow); }
         }
 
         .progress-dot.completed {
-            background: rgba(16, 185, 129, 0.6);
+            background: var(--success);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
         }
 
         .tabs {
             display: flex;
-            background: linear-gradient(180deg, var(--gray-50) 0%, white 100%);
+            background: linear-gradient(180deg, rgba(250,250,255,0.9) 0%, rgba(255,255,255,0.95) 100%);
             border-bottom: none;
             overflow-x: auto;
             scrollbar-width: thin;
             -webkit-overflow-scrolling: touch;
-            padding: 12px 20px 0;
-            gap: 6px;
+            padding: 16px 24px 0;
+            gap: 8px;
+            position: relative;
+        }
+
+        .tabs::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary-glow), transparent);
         }
 
         .tabs::-webkit-scrollbar {
@@ -162,7 +284,7 @@
         }
 
         .tabs::-webkit-scrollbar-thumb {
-            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            background: linear-gradient(90deg, var(--primary-neon), var(--info-neon));
             border-radius: var(--radius-full);
         }
 
@@ -172,35 +294,41 @@
             border: none;
             background: transparent;
             font-size: 0.95rem;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--gray-500);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
             white-space: nowrap;
             position: relative;
             border-radius: var(--radius) var(--radius) 0 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .tab:hover {
-            color: var(--primary);
-            background: rgba(139, 92, 246, 0.06);
+            color: var(--primary-neon);
+            background: rgba(217, 70, 239, 0.08);
+            transform: translateY(-2px);
         }
 
         .tab.active {
-            color: var(--primary);
-            font-weight: 600;
+            color: var(--primary-neon);
+            font-weight: 700;
             background: white;
-            box-shadow: 0 -4px 20px -4px rgba(139, 92, 246, 0.15);
+            box-shadow:
+                0 -4px 25px -4px rgba(217, 70, 239, 0.25),
+                inset 0 -2px 10px rgba(217, 70, 239, 0.05);
         }
 
         .tab.active::after {
             content: '';
             position: absolute;
             bottom: 0;
-            left: 20%;
-            right: 20%;
+            left: 10%;
+            right: 10%;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            background: linear-gradient(90deg, var(--primary-neon), var(--info-neon));
             border-radius: var(--radius-full);
+            box-shadow: 0 0 15px var(--primary-glow);
         }
 
         .tab-content {
@@ -306,6 +434,34 @@
             border-radius: var(--radius-lg);
             overflow: hidden;
             box-shadow: var(--shadow-medium);
+            position: relative;
+        }
+
+        .bereich::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: var(--radius-lg);
+            padding: 2px;
+            background: linear-gradient(135deg, var(--primary-neon), var(--info-neon), var(--primary-neon));
+            background-size: 200% 200%;
+            animation: borderGlow 4s ease infinite;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+        }
+
+        .bereich:hover::before {
+            opacity: 1;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .bereich-header {
@@ -316,18 +472,37 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bereich-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .bereich-header:hover::before {
+            left: 100%;
         }
 
         .bereich-header:hover {
-            filter: brightness(1.08);
-            transform: scale(1.005);
+            filter: brightness(1.12);
+            transform: scale(1.008);
+            box-shadow: 0 8px 32px -8px currentColor;
         }
 
         .bereich-header h2 {
             font-size: 1.45rem;
             font-weight: 700;
             margin-bottom: 6px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .bereich-header p {
@@ -335,10 +510,22 @@
             font-size: 0.95rem;
         }
 
-        .bereich-header.verhalten { background: linear-gradient(135deg, var(--danger) 0%, var(--danger-dark) 100%); }
-        .bereich-header.kommunikation { background: linear-gradient(135deg, var(--info) 0%, var(--info-dark) 100%); }
-        .bereich-header.sozialisation { background: linear-gradient(135deg, var(--success) 0%, var(--success-dark) 100%); }
-        .bereich-header.kognition { background: linear-gradient(135deg, var(--warning) 0%, var(--warning-dark) 100%); }
+        .bereich-header.verhalten {
+            background: linear-gradient(135deg, var(--danger) 0%, var(--danger-dark) 100%);
+            box-shadow: 0 4px 20px -4px rgba(244, 63, 94, 0.4);
+        }
+        .bereich-header.kommunikation {
+            background: linear-gradient(135deg, var(--info) 0%, var(--info-dark) 100%);
+            box-shadow: 0 4px 20px -4px rgba(6, 182, 212, 0.4);
+        }
+        .bereich-header.sozialisation {
+            background: linear-gradient(135deg, var(--success) 0%, var(--success-dark) 100%);
+            box-shadow: 0 4px 20px -4px rgba(34, 197, 94, 0.4);
+        }
+        .bereich-header.kognition {
+            background: linear-gradient(135deg, var(--warning) 0%, var(--warning-dark) 100%);
+            box-shadow: 0 4px 20px -4px rgba(245, 158, 11, 0.4);
+        }
 
         .bereich-content {
             background: linear-gradient(180deg, white 0%, var(--gray-50) 100%);
@@ -348,17 +535,43 @@
 
         .stufe {
             margin-bottom: 32px;
-            background: white;
+            background: linear-gradient(160deg, rgba(255,255,255,0.95), rgba(250,250,255,0.9));
             border-radius: var(--radius-lg);
             padding: 28px;
-            border: none;
+            border: 1px solid rgba(168, 85, 247, 0.1);
             box-shadow: var(--shadow-soft);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stufe::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-neon), var(--info-neon), var(--success-neon));
+            background-size: 200% 100%;
+            animation: shimmerBar 3s ease infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stufe:hover::after {
+            opacity: 1;
+        }
+
+        @keyframes shimmerBar {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .stufe:hover {
-            box-shadow: var(--shadow-medium);
-            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium), 0 0 40px -15px var(--primary-glow);
+            transform: translateY(-4px);
+            border-color: rgba(168, 85, 247, 0.2);
         }
 
         .stufe-header {
@@ -389,7 +602,7 @@
             font-style: normal;
         }
 
-        /* Elegante antickbare Box */
+        /* Elegante antickbare Box mit Neon-Effekt */
         .stufe-erreicht-checkbox {
             display: flex;
             align-items: center;
@@ -401,24 +614,51 @@
             border-radius: var(--radius-full);
             transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
             user-select: none;
+            position: relative;
+        }
+
+        .stufe-erreicht-checkbox::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--success-neon), var(--info-neon));
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s ease;
+            filter: blur(8px);
+        }
+
+        .stufe-erreicht-checkbox:hover::before {
+            opacity: 0.5;
+        }
+
+        .stufe-erreicht-checkbox.checked::before {
+            opacity: 0.7;
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.7; filter: blur(8px); }
+            50% { opacity: 1; filter: blur(12px); }
         }
 
         .stufe-erreicht-checkbox:hover {
-            border-color: var(--success-light);
-            background: linear-gradient(160deg, rgba(16, 185, 129, 0.08), white);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px -8px var(--success-glow);
+            border-color: var(--success-neon);
+            background: linear-gradient(160deg, rgba(0, 255, 136, 0.1), white);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 15px 40px -10px var(--success-glow);
         }
 
         .stufe-erreicht-checkbox.checked {
-            border-color: var(--success);
-            background: linear-gradient(160deg, rgba(16, 185, 129, 0.12), rgba(16, 185, 129, 0.04));
-            box-shadow: 0 8px 24px -6px var(--success-glow);
+            border-color: var(--success-neon);
+            background: linear-gradient(160deg, rgba(0, 255, 136, 0.15), rgba(0, 255, 136, 0.05));
+            box-shadow: 0 0 30px -5px var(--success-glow), 0 10px 30px -8px var(--success-glow);
         }
 
         .checkbox-circle {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: var(--radius-full);
             border: 2px solid var(--gray-300);
             display: flex;
@@ -427,23 +667,49 @@
             transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
             background: white;
             flex-shrink: 0;
+            position: relative;
+        }
+
+        .checkbox-circle::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
         }
 
         .stufe-erreicht-checkbox:hover .checkbox-circle {
-            border-color: var(--success);
-            transform: scale(1.1);
+            border-color: var(--success-neon);
+            transform: scale(1.15);
+            box-shadow: 0 0 20px -5px var(--success-glow);
+        }
+
+        .stufe-erreicht-checkbox:hover .checkbox-circle::after {
+            border-color: var(--success-neon);
+            animation: spinRing 2s linear infinite;
+        }
+
+        @keyframes spinRing {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .stufe-erreicht-checkbox.checked .checkbox-circle {
-            background: linear-gradient(135deg, var(--success), var(--success-dark));
-            border-color: var(--success);
-            box-shadow: 0 6px 20px -4px var(--success-glow);
-            transform: scale(1.05);
+            background: linear-gradient(135deg, var(--success-neon), var(--success));
+            border-color: var(--success-neon);
+            box-shadow: 0 0 25px -3px var(--success-glow), inset 0 0 15px rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .stufe-erreicht-checkbox.checked .checkbox-circle::after {
+            border-color: var(--success-neon);
+            animation: none;
         }
 
         .checkbox-circle svg {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             stroke: white;
             stroke-width: 3;
             stroke-linecap: round;
@@ -452,6 +718,7 @@
             opacity: 0;
             transform: scale(0.5) rotate(-10deg);
             transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 0 3px rgba(255,255,255,0.8));
         }
 
         .stufe-erreicht-checkbox.checked .checkbox-circle svg {
@@ -461,15 +728,22 @@
 
         .checkbox-label {
             font-size: 0.9rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--gray-500);
             transition: all 0.3s;
             white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .stufe-erreicht-checkbox:hover .checkbox-label,
+        .stufe-erreicht-checkbox:hover .checkbox-label {
+            color: var(--success);
+            text-shadow: 0 0 10px var(--success-glow);
+        }
+
         .stufe-erreicht-checkbox.checked .checkbox-label {
-            color: var(--success-dark);
+            color: var(--success-neon);
+            text-shadow: 0 0 15px var(--success-glow);
         }
 
         .item {
@@ -639,20 +913,39 @@
             box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
         }
 
-        /* Buttons */
+        /* Buttons mit Neon-Effekt */
         .btn {
             padding: 16px 32px;
             border: none;
             border-radius: var(--radius-full);
             cursor: pointer;
             font-size: 0.95rem;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
             margin: 6px;
             display: inline-flex;
             align-items: center;
             gap: 10px;
             text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn:active {
@@ -660,47 +953,52 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: linear-gradient(135deg, var(--primary-neon) 0%, var(--primary-dark) 100%);
             color: white;
-            box-shadow: 0 8px 24px -6px var(--primary-glow);
+            box-shadow: 0 8px 30px -6px var(--primary-glow), 0 0 20px -5px var(--primary-glow);
         }
 
         .btn-primary:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 40px -8px var(--primary-glow);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 50px -10px var(--primary-glow), 0 0 40px -5px var(--primary-glow);
+            filter: brightness(1.1);
         }
 
         .btn-success {
-            background: linear-gradient(135deg, var(--success) 0%, var(--success-dark) 100%);
+            background: linear-gradient(135deg, var(--success-neon) 0%, var(--success-dark) 100%);
             color: white;
-            box-shadow: 0 8px 24px -6px var(--success-glow);
+            box-shadow: 0 8px 30px -6px var(--success-glow), 0 0 20px -5px var(--success-glow);
         }
 
         .btn-success:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 40px -8px var(--success-glow);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 50px -10px var(--success-glow), 0 0 40px -5px var(--success-glow);
+            filter: brightness(1.1);
         }
 
         .btn-warning {
-            background: linear-gradient(135deg, var(--warning) 0%, var(--warning-dark) 100%);
+            background: linear-gradient(135deg, var(--warning-neon) 0%, var(--warning-dark) 100%);
             color: white;
-            box-shadow: 0 8px 24px -6px rgba(245, 158, 11, 0.35);
+            box-shadow: 0 8px 30px -6px rgba(245, 158, 11, 0.5), 0 0 20px -5px rgba(245, 158, 11, 0.4);
         }
 
         .btn-warning:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 40px -8px rgba(245, 158, 11, 0.4);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 50px -10px rgba(245, 158, 11, 0.6), 0 0 40px -5px rgba(245, 158, 11, 0.5);
+            filter: brightness(1.1);
         }
 
         .btn-secondary {
-            background: linear-gradient(135deg, var(--gray-500) 0%, var(--gray-700) 100%);
+            background: linear-gradient(135deg, var(--gray-600) 0%, var(--gray-800) 100%);
             color: white;
-            box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 30px -6px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--gray-500);
         }
 
         .btn-secondary:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.25);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.4), 0 0 30px -10px rgba(168, 85, 247, 0.3);
+            border-color: var(--primary);
         }
 
         .button-group {
@@ -999,20 +1297,38 @@
             transform: translateY(-2px);
         }
 
-        /* Toast notification */
+        /* Toast notification mit Neon-Effekt */
         .toast {
             position: fixed;
             bottom: 28px;
             right: 28px;
-            background: linear-gradient(135deg, var(--gray-900), var(--gray-800));
+            background: linear-gradient(135deg, rgba(15, 15, 26, 0.95), rgba(26, 26, 46, 0.95));
             color: white;
-            padding: 18px 28px;
+            padding: 20px 32px;
             border-radius: var(--radius-full);
-            box-shadow: var(--shadow-elevated);
+            box-shadow:
+                var(--shadow-elevated),
+                0 0 40px -10px var(--primary-glow),
+                inset 0 1px 0 rgba(255,255,255,0.1);
             z-index: 1000;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.95rem;
             animation: toastSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), toastFade 0.3s ease 2.7s;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            backdrop-filter: blur(10px);
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .toast::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--primary-neon), var(--info-neon), var(--success-neon));
+            background-size: 200% 200%;
+            animation: borderGlow 2s ease infinite;
+            z-index: -1;
+            opacity: 0.6;
         }
 
         @keyframes toastSlide {
@@ -1058,7 +1374,6 @@
                 <div class="progress-dot" data-tab="sozialisation"></div>
                 <div class="progress-dot" data-tab="kognition"></div>
                 <div class="progress-dot" data-tab="zusaetzlich"></div>
-                <div class="progress-dot" data-tab="uebersicht"></div>
                 <div class="progress-dot" data-tab="export"></div>
             </div>
         </div>
@@ -1070,7 +1385,6 @@
             <button class="tab" onclick="showTab('sozialisation')" title="Sozialisation S-1 bis S-41">Sozialisation</button>
             <button class="tab" onclick="showTab('kognition')" title="Kognition KOG-1 bis KOG-62">Kognition</button>
             <button class="tab" onclick="showTab('zusaetzlich')" title="Weitere Förderziele">Zusätzliche Ziele</button>
-            <button class="tab" onclick="showTab('uebersicht')" title="Statistik und Zusammenfassung">Übersicht</button>
             <button class="tab" onclick="showTab('export')" title="Dokumente herunterladen">Export</button>
         </div>
 
@@ -1621,65 +1935,6 @@
             </div>
 
             <div class="button-group">
-                <button class="btn btn-primary" onclick="showTab('uebersicht')">Zur Übersicht &rarr;</button>
-            </div>
-        </div>
-
-        <!-- Ubersicht Tab -->
-        <div id="uebersicht" class="tab-content">
-            <h2 style="margin-bottom: 20px; color: #333;">Ubersicht der Einschatzung</h2>
-
-            <div class="stats">
-                <div class="stat-card verhalten">
-                    <h4>Verhalten</h4>
-                    <div class="number" id="stats-verhalten-ziele">0</div>
-                    <p>Ziele ausgewahlt</p>
-                    <div class="progress-container">
-                        <div class="progress-bar" id="progress-verhalten" style="width: 0%; background: #e74c3c;"></div>
-                    </div>
-                    <small id="stats-verhalten-erreicht">0/33 erreicht</small>
-                </div>
-                <div class="stat-card kommunikation">
-                    <h4>Kommunikation</h4>
-                    <div class="number" id="stats-kommunikation-ziele">0</div>
-                    <p>Ziele ausgewahlt</p>
-                    <div class="progress-container">
-                        <div class="progress-bar" id="progress-kommunikation" style="width: 0%; background: #3498db;"></div>
-                    </div>
-                    <small id="stats-kommunikation-erreicht">0/35 erreicht</small>
-                </div>
-                <div class="stat-card sozialisation">
-                    <h4>Sozialisation</h4>
-                    <div class="number" id="stats-sozialisation-ziele">0</div>
-                    <p>Ziele ausgewahlt</p>
-                    <div class="progress-container">
-                        <div class="progress-bar" id="progress-sozialisation" style="width: 0%; background: #2ecc71;"></div>
-                    </div>
-                    <small id="stats-sozialisation-erreicht">0/41 erreicht</small>
-                </div>
-                <div class="stat-card kognition">
-                    <h4>Kognition</h4>
-                    <div class="number" id="stats-kognition-ziele">0</div>
-                    <p>Ziele ausgewahlt</p>
-                    <div class="progress-container">
-                        <div class="progress-bar" id="progress-kognition" style="width: 0%; background: #f39c12;"></div>
-                    </div>
-                    <small id="stats-kognition-erreicht">0/62 erreicht</small>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <h3>Ausgewahlte Ziele</h3>
-                <div id="ziele-liste"></div>
-            </div>
-
-            <div class="form-section">
-                <h3>Letzte 4 erreichte Items pro Bereich (fur Complement)</h3>
-                <div id="erreichte-liste"></div>
-            </div>
-
-            <div class="button-group">
-                <button class="btn btn-success" onclick="updateStats()">Statistik aktualisieren</button>
                 <button class="btn btn-primary" onclick="showTab('export')">Zum Export &rarr;</button>
             </div>
         </div>
@@ -2020,8 +2275,6 @@ function showTab(tabId) {
         const onclickAttr = tab.getAttribute('onclick');
         if (onclickAttr && onclickAttr.includes("'" + tabId + "'")) tab.classList.add('active');
     });
-    if (tabId === 'uebersicht') updateStats();
-
     // Update progress indicator
     updateProgressIndicator(tabId);
 
@@ -2030,7 +2283,7 @@ function showTab(tabId) {
 }
 
 function updateProgressIndicator(activeTab) {
-    const tabs = ['stammdaten', 'verhalten', 'kommunikation', 'sozialisation', 'kognition', 'zusaetzlich', 'uebersicht', 'export'];
+    const tabs = ['stammdaten', 'verhalten', 'kommunikation', 'sozialisation', 'kognition', 'zusaetzlich', 'export'];
     const activeIndex = tabs.indexOf(activeTab);
 
     document.querySelectorAll('.progress-dot').forEach((dot, index) => {
