@@ -1305,108 +1305,238 @@
             display: none;
         }
 
-        /* Category sections for zusätzliche Ziele - Elegantes Neon Design */
+        /* Category sections for zusätzliche Ziele - Professionelles Design */
         .zusaetzlich-intro {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 32px;
-            background: linear-gradient(160deg, rgba(168, 85, 247, 0.08), rgba(6, 182, 212, 0.05));
-            border-radius: var(--radius-lg);
-            border: 1px solid rgba(168, 85, 247, 0.15);
+            margin-bottom: 32px;
+            padding: 24px 28px;
+            background: var(--gray-50);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--primary);
         }
 
         .zusaetzlich-intro h2 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, var(--primary-neon), var(--info-neon));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--gray-900);
         }
 
         .zusaetzlich-intro p {
             color: var(--gray-600);
-            font-size: 1rem;
-            max-width: 600px;
-            margin: 0 auto;
+            font-size: 0.95rem;
+            margin: 0;
+            line-height: 1.6;
         }
 
         .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 32px;
         }
 
         .category-section {
             margin-bottom: 0;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: var(--shadow-soft);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
             background: white;
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .category-section::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: var(--radius-lg);
-            padding: 2px;
-            background: linear-gradient(135deg, var(--category-color, var(--primary-neon)), transparent 60%);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            z-index: -1;
-            pointer-events: none;
+            border: 1px solid var(--gray-200);
+            transition: all 0.25s ease;
         }
 
         .category-section:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-medium), 0 0 40px -15px var(--category-color, var(--primary-glow));
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: var(--gray-300);
         }
 
-        .category-section:hover::before {
-            opacity: 1;
-        }
-
-        .category-section.demarches { --category-color: #4a90d9; }
-        .category-section.manieres { --category-color: #00ff88; }
-        .category-section.relationnelles { --category-color: #ffaa00; }
-        .category-section.affectives { --category-color: #ff3366; }
-        .category-section.competences { --category-color: #d946ef; }
-        .category-section.culture { --category-color: #00d4ff; }
+        .category-section.demarches { --category-color: #3b82f6; --category-bg: #eff6ff; }
+        .category-section.manieres { --category-color: #10b981; --category-bg: #ecfdf5; }
+        .category-section.relationnelles { --category-color: #f59e0b; --category-bg: #fffbeb; }
+        .category-section.affectives { --category-color: #ef4444; --category-bg: #fef2f2; }
+        .category-section.competences { --category-color: #8b5cf6; --category-bg: #f5f3ff; }
+        .category-section.culture { --category-color: #06b6d4; --category-bg: #ecfeff; }
 
         .category-header {
             margin: 0;
-            padding: 24px 28px;
+            padding: 16px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            font-size: 1rem;
-            font-weight: 700;
-            color: white;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, var(--category-color, var(--primary)) 0%, color-mix(in srgb, var(--category-color, var(--primary)) 80%, black) 100%);
+            transition: all 0.25s ease;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            background: var(--category-bg, var(--gray-50));
+            border-bottom: 1px solid transparent;
         }
 
-        .category-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.6s ease;
+        .category-header:hover {
+            background: color-mix(in srgb, var(--category-bg, var(--gray-50)) 70%, var(--category-color));
+        }
+
+        .category-section.expanded .category-header {
+            border-bottom-color: var(--gray-200);
+        }
+
+        .category-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--category-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            color: white;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            box-shadow: 0 2px 6px color-mix(in srgb, var(--category-color) 40%, transparent);
+        }
+
+        .category-title {
+            font-weight: 600;
+        }
+
+        .category-count {
+            background: white;
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gray-500);
+            border: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s ease;
+        }
+
+        .category-count.has-items {
+            background: var(--category-color);
+            color: white;
+            border-color: var(--category-color);
+        }
+
+        .category-expand-icon {
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+            color: var(--gray-400);
+        }
+
+        .category-section.expanded .category-expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .category-items {
+            background: white;
+            display: none;
+            padding: 16px;
+        }
+
+        .category-section.expanded .category-items {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Zusatz items - Clean Card Design */
+        .zusatz-item {
+            background: var(--gray-50) !important;
+            border: 1px solid var(--gray-200) !important;
+            border-radius: var(--radius-sm) !important;
+            transition: all 0.25s ease !important;
+            margin: 8px 0 !important;
+            padding: 16px !important;
+        }
+
+        .zusatz-item:hover {
+            background: white !important;
+            border-color: var(--category-color, var(--gray-300)) !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+        }
+
+        .zusatz-item.item-erreicht {
+            background: rgba(16, 185, 129, 0.08) !important;
+            border-color: var(--success) !important;
+        }
+
+        .zusatz-item.item-ziel {
+            background: rgba(245, 158, 11, 0.08) !important;
+            border-color: var(--warning) !important;
+        }
+
+        .zusatz-item-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .zusatz-item-text {
+            flex: 1;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--gray-700);
+        }
+
+        .zusatz-item-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .zusatz-btn {
+            padding: 8px 14px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            background: white;
+            color: var(--gray-600);
+        }
+
+        .zusatz-btn:hover {
+            border-color: var(--gray-400);
+            background: var(--gray-50);
+        }
+
+        .zusatz-btn.erreicht:hover,
+        .zusatz-btn.erreicht.selected {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .zusatz-btn.ziel:hover,
+        .zusatz-btn.ziel.selected {
+            background: var(--warning);
+            color: white;
+            border-color: var(--warning);
+        }
+
+        @media (max-width: 768px) {
+            .zusatz-item-content {
+                flex-direction: column;
+            }
+
+            .zusatz-item-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+        }
             pointer-events: none;
         }
 
@@ -2227,7 +2357,7 @@
                 <div class="category-section demarches" id="section-demarches_mentales">
                     <div class="category-header" onclick="toggleCategory('demarches_mentales')">
                         <div class="category-header-left">
-                            <div class="category-icon">🧠</div>
+                            <div class="category-icon">DM</div>
                             <span class="category-title">Démarches mentales</span>
                         </div>
                         <div class="category-count" id="count-demarches_mentales">
@@ -2242,7 +2372,7 @@
                 <div class="category-section manieres" id="section-manieres_apprendre">
                     <div class="category-header" onclick="toggleCategory('manieres_apprendre')">
                         <div class="category-header-left">
-                            <div class="category-icon">📚</div>
+                            <div class="category-icon">MA</div>
                             <span class="category-title">Manières d'apprendre</span>
                         </div>
                         <div class="category-count" id="count-manieres_apprendre">
@@ -2257,7 +2387,7 @@
                 <div class="category-section relationnelles" id="section-attitudes_relationnelles">
                     <div class="category-header" onclick="toggleCategory('attitudes_relationnelles')">
                         <div class="category-header-left">
-                            <div class="category-icon">🤝</div>
+                            <div class="category-icon">AR</div>
                             <span class="category-title">Attitudes relationnelles</span>
                         </div>
                         <div class="category-count" id="count-attitudes_relationnelles">
@@ -2272,7 +2402,7 @@
                 <div class="category-section affectives" id="section-attitudes_affectives">
                     <div class="category-header" onclick="toggleCategory('attitudes_affectives')">
                         <div class="category-header-left">
-                            <div class="category-icon">💖</div>
+                            <div class="category-icon">AA</div>
                             <span class="category-title">Attitudes affectives</span>
                         </div>
                         <div class="category-count" id="count-attitudes_affectives">
@@ -2287,7 +2417,7 @@
                 <div class="category-section competences" id="section-competences_essentielles">
                     <div class="category-header" onclick="toggleCategory('competences_essentielles')">
                         <div class="category-header-left">
-                            <div class="category-icon">🎯</div>
+                            <div class="category-icon">CE</div>
                             <span class="category-title">Compétences essentielles</span>
                         </div>
                         <div class="category-count" id="count-competences_essentielles">
@@ -2302,7 +2432,7 @@
                 <div class="category-section culture" id="section-culture_loisirs">
                     <div class="category-header" onclick="toggleCategory('culture_loisirs')">
                         <div class="category-header-left">
-                            <div class="category-icon">🎨</div>
+                            <div class="category-icon">CL</div>
                             <span class="category-title">Culture et loisirs</span>
                         </div>
                         <div class="category-count" id="count-culture_loisirs">
