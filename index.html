@@ -2469,6 +2469,14 @@
                 <button class="btn btn-warning" onclick="generateComplement()">Complement herunterladen (Word)</button>
             </div>
 
+            <div class="form-section" style="border-color: #9b59b6;">
+                <h3 style="color: #9b59b6;">Diagnostic Spécialisé generieren</h3>
+                <p style="margin-bottom: 15px; color: #666;">
+                    Das DS-Dokument enthält die vollständige spezialisierte Diagnostik mit ELDiB-Auswertung, Entwicklungsalter-Vergleich und Förderzielen.
+                </p>
+                <button class="btn" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white;" onclick="exportDS()">Diagnostic Spécialisé herunterladen (Word)</button>
+            </div>
+
             <div class="form-section">
                 <h3>Daten speichern/laden</h3>
                 <p style="margin-bottom: 15px; color: #666;">
@@ -4940,6 +4948,606 @@ function downloadAsWord(html, filename) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+}
+
+// ==================== DIAGNOSTIC SPÉCIALISÉ FUNKTIONEN ====================
+
+const DS_STAGE_DATA = {
+    1: { ageMin: 0, ageMax: 2, ageMid: 1, label: "0-2 Jahre", angst: "Verlassenheit", beschreibung: "Grundlegendes Vertrauen aufbauen" },
+    2: { ageMin: 2, ageMax: 5, ageMid: 3.5, label: "2-5 Jahre", angst: "Unzulänglichkeit", beschreibung: "Autonomie und Selbstwirksamkeit entwickeln" },
+    3: { ageMin: 6, ageMax: 9, ageMid: 7.5, label: "6-9 Jahre", angst: "Schuld", beschreibung: "Initiative und Kompetenz erwerben" },
+    4: { ageMin: 10, ageMax: 12, ageMid: 11, label: "10-12 Jahre", angst: "Konflikt", beschreibung: "Soziale Rollen und Beziehungen gestalten" },
+    5: { ageMin: 13, ageMax: 16, ageMid: 14.5, label: "13-16 Jahre", angst: "Identität", beschreibung: "Identität und Werte entwickeln" }
+};
+
+// DS Hilfsfunktionen
+function dsGetStageForAge(age) {
+    if (age <= 2) return 1;
+    if (age <= 5) return 2;
+    if (age <= 9) return 3;
+    if (age <= 12) return 4;
+    return 5;
+}
+
+function dsGetStageRoman(stage) {
+    const romans = {1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V'};
+    return romans[stage] || stage;
+}
+
+function dsGetStageDescription(stage) {
+    return DS_STAGE_DATA[stage]?.label || '';
+}
+
+function dsGetStageRichtziel(stage) {
+    const richtziele = {
+        1: "Mit Freude auf die Umwelt reagieren",
+        2: "Erfolgreich auf die Umwelt reagieren",
+        3: "Erwerben von Fähigkeiten zur erfolgreichen Teilnahme in Gruppen",
+        4: "Sich einbringen in Gruppenprozesse",
+        5: "Anwenden von Fähigkeiten in neuen Situationen"
+    };
+    return richtziele[stage] || '';
+}
+
+function dsGetDomainName(domain) {
+    const names = {
+        verhalten: 'Verhalten',
+        kommunikation: 'Kommunikation',
+        sozialisation: 'Sozialisation',
+        kognition: 'Kognition'
+    };
+    return names[domain] || domain;
+}
+
+function dsGetDomainCode(domain) {
+    const codes = {
+        verhalten: 'V',
+        kommunikation: 'K',
+        sozialisation: 'SOZ',
+        kognition: 'KOG'
+    };
+    return codes[domain] || domain.toUpperCase();
+}
+
+function dsCalculateBiologicalAge(birthDate) {
+    if (!birthDate) return null;
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let years = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        years--;
+    }
+    let months = today.getMonth() - birth.getMonth();
+    if (today.getDate() < birth.getDate()) months--;
+    if (months < 0) months += 12;
+    return { years: years, months: months, decimal: years + (months / 12) };
+}
+
+function dsGetGoalsForDomain(domain) {
+    const goals = [];
+    const bereichData = ELDIB_DATA[domain];
+    if (!bereichData) return goals;
+
+    for (const [stufeNr, stufe] of Object.entries(bereichData.stufen)) {
+        for (const item of stufe.items) {
+            const selection = state.selections[item.code];
+            if (selection && selection.status === 'ziel') {
+                goals.push({
+                    code: item.code,
+                    nr: item.nr,
+                    keyword: item.keyword,
+                    description: item.description,
+                    zieltext: selection.zieltext || item.zielformulierungen[0],
+                    stufe: parseInt(stufeNr)
+                });
+            }
+        }
+    }
+    return goals.sort((a, b) => a.nr - b.nr);
+}
+
+function dsGetReachedForDomain(domain) {
+    const reached = [];
+    const bereichData = ELDIB_DATA[domain];
+    if (!bereichData) return reached;
+
+    for (const [stufeNr, stufe] of Object.entries(bereichData.stufen)) {
+        for (const item of stufe.items) {
+            const selection = state.selections[item.code];
+            if (selection && selection.status === 'erreicht') {
+                reached.push({
+                    code: item.code,
+                    nr: item.nr,
+                    keyword: item.keyword,
+                    description: item.description,
+                    stufe: parseInt(stufeNr)
+                });
+            }
+        }
+    }
+    return reached.sort((a, b) => a.nr - b.nr);
+}
+
+function dsCalculateDevelopmentalAge(domain) {
+    const reached = dsGetReachedForDomain(domain);
+    if (reached.length === 0) return 0;
+
+    const highestReached = reached[reached.length - 1];
+    const stage = highestReached.stufe;
+    const stageData = DS_STAGE_DATA[stage];
+
+    // Calculate position within stage
+    const bereichData = ELDIB_DATA[domain];
+    const stufeItems = bereichData.stufen[stage]?.items || [];
+    const totalInStage = stufeItems.length;
+    const reachedInStage = reached.filter(r => r.stufe === stage).length;
+
+    const completionPercent = reachedInStage / totalInStage;
+    const ageRange = stageData.ageMax - stageData.ageMin;
+    return stageData.ageMin + (ageRange * completionPercent);
+}
+
+function dsCalculateAllDevelopmentalAges() {
+    return {
+        verhalten: dsCalculateDevelopmentalAge('verhalten'),
+        kommunikation: dsCalculateDevelopmentalAge('kommunikation'),
+        sozialisation: dsCalculateDevelopmentalAge('sozialisation'),
+        kognition: dsCalculateDevelopmentalAge('kognition')
+    };
+}
+
+function dsGetSortedDomainsByAge(devAges) {
+    const domains = ['verhalten', 'kommunikation', 'sozialisation', 'kognition'];
+    return domains.sort((a, b) => (devAges[b] || 0) - (devAges[a] || 0));
+}
+
+function dsGenerate42Section(studentName, devAges) {
+    const sortedDomains = dsGetSortedDomainsByAge(devAges);
+
+    let html = '<p style="font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%; margin: 0 0 8pt 0;"><strong>ELDiB (Entwicklungstherapeutischer/Entwicklungspädagogischer Lernziel-Diagnose-Bogen):</strong> ';
+    html += 'Der ELDiB ist ein standardisiertes Einschätzungsinstrument, das dazu dient, die soziale und emotionale ';
+    html += 'Entwicklung von Kindern und Jugendlichen im Alter zwischen Geburt und sechzehn Jahren zu erfassen.</p>';
+
+    html += '<p style="font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%; margin: 0 0 8pt 0;">Die Einschätzung mit dem ELDiB ergab folgendes Entwicklungsprofil für ' + studentName + ':</p>';
+
+    // Zusammenfassende Tabelle
+    html += '<table style="width: 100%; border-collapse: collapse; margin: 8pt 0; font-family: Calibri, sans-serif; font-size: 10pt;">';
+    html += '<tr>';
+    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: left; background-color: #BFBFBF; font-weight: bold;">Entwicklungsbereich</th>';
+    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: center; background-color: #BFBFBF; font-weight: bold;">Stufe</th>';
+    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: center; background-color: #BFBFBF; font-weight: bold;">Entwicklungsalter</th>';
+    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: center; background-color: #BFBFBF; font-weight: bold;">Erreichte Items</th>';
+    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: center; background-color: #BFBFBF; font-weight: bold;">Förderziele</th>';
+    html += '</tr>';
+
+    sortedDomains.forEach(domain => {
+        const age = devAges[domain] || 0;
+        const stage = dsGetStageForAge(age);
+        const goals = dsGetGoalsForDomain(domain);
+        const reached = dsGetReachedForDomain(domain);
+        html += '<tr>';
+        html += '<td style="border: 1pt solid #000000; padding: 4pt;"><strong>' + dsGetDomainName(domain) + '</strong></td>';
+        html += '<td style="border: 1pt solid #000000; padding: 4pt; text-align: center;">Stufe ' + dsGetStageRoman(stage) + '</td>';
+        html += '<td style="border: 1pt solid #000000; padding: 4pt; text-align: center;">' + age.toFixed(1) + ' Jahre</td>';
+        html += '<td style="border: 1pt solid #000000; padding: 4pt; text-align: center;">' + reached.length + '</td>';
+        html += '<td style="border: 1pt solid #000000; padding: 4pt; text-align: center;">' + goals.length + '</td>';
+        html += '</tr>';
+    });
+    html += '</table>';
+
+    // Detaillierte Beschreibung pro Bereich
+    sortedDomains.forEach((domain, index) => {
+        const age = devAges[domain] || 0;
+        const stage = dsGetStageForAge(age);
+        const goals = dsGetGoalsForDomain(domain);
+        const reached = dsGetReachedForDomain(domain);
+        const domainLabel = dsGetDomainName(domain);
+
+        let positionText = '';
+        if (index === 0) {
+            positionText = 'Am weitesten entwickelt zeigt sich ' + studentName + ' im Bereich ';
+        } else if (index === sortedDomains.length - 1) {
+            positionText = 'Den größten Förderbedarf zeigt ' + studentName + ' im Bereich ';
+        } else {
+            positionText = 'Im Bereich ';
+        }
+
+        html += '<p style="font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%; margin: 8pt 0;">' + positionText + '<strong>' + domainLabel + '</strong>, wo sich ' + studentName + ' auf ';
+        html += 'Entwicklungsstufe ' + dsGetStageRoman(stage) + ' (' + dsGetStageDescription(stage) + ') befindet mit einem ';
+        html += 'Entwicklungsalter von ' + age.toFixed(1) + ' Jahren. Das Richtziel dieser Stufe lautet: ';
+        html += '<em>„' + dsGetStageRichtziel(stage) + '"</em>.';
+
+        if (reached.length > 0) {
+            html += ' Von ' + reached.length + ' erreichten Kompetenzen gehören zu den zuletzt erreichten: ';
+            const lastFour = reached.slice(-4);
+            const itemNames = lastFour.map(item => item.code + ' (' + item.keyword + ')');
+            html += itemNames.join(', ') + '.';
+        }
+
+        if (goals.length > 0) {
+            html += ' Als Förderziele wurden ' + goals.length + ' Item(s) definiert: ';
+            const goalNames = goals.map(g => g.code);
+            html += goalNames.join(', ') + '.';
+        }
+        html += '</p>';
+    });
+
+    return html;
+}
+
+function dsGenerateSMARTGoalsSection() {
+    const domains = ['verhalten', 'kommunikation', 'sozialisation', 'kognition'];
+    const allGoals = [];
+
+    domains.forEach(domain => {
+        const goals = dsGetGoalsForDomain(domain);
+        goals.forEach(goal => {
+            allGoals.push({
+                domain: domain,
+                code: goal.code,
+                keyword: goal.keyword,
+                description: goal.description,
+                zieltext: goal.zieltext,
+                stufe: goal.stufe
+            });
+        });
+    });
+
+    if (allGoals.length === 0) {
+        return '<p style="font-family: Calibri, sans-serif; font-size: 11pt; color: #666666; font-style: italic;">Keine Förderziele im ELDiB definiert.</p>';
+    }
+
+    let html = '<table style="width: 100%; border-collapse: collapse; margin: 6pt 0; font-family: Calibri, sans-serif; font-size: 9pt;">';
+    html += '<tr>';
+    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: left; width: 12%; background-color: #BFBFBF; font-weight: bold;">Item</th>';
+    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: left; width: 20%; background-color: #BFBFBF; font-weight: bold;">Kompetenz</th>';
+    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: left; background-color: #BFBFBF; font-weight: bold;">Zielformulierung</th>';
+    html += '</tr>';
+
+    allGoals.forEach(goal => {
+        html += '<tr>';
+        html += '<td style="border: 1pt solid #000000; padding: 4pt; font-weight: bold; vertical-align: top;">' + goal.code + '</td>';
+        html += '<td style="border: 1pt solid #000000; padding: 4pt; vertical-align: top;">' + goal.keyword + '</td>';
+        html += '<td style="border: 1pt solid #000000; padding: 4pt;">' + goal.zieltext + '</td>';
+        html += '</tr>';
+    });
+
+    html += '</table>';
+    return html;
+}
+
+function dsGenerateGridHTML() {
+    // Status Lookup erstellen
+    const statusLookup = { verhalten: {}, kommunikation: {}, sozialisation: {}, kognition: {} };
+
+    for (const [code, selection] of Object.entries(state.selections)) {
+        const bereich = findBereichByCode(code);
+        const item = findItemByCode(code);
+        if (bereich && item) {
+            const nr = item.nr;
+            if (selection.status === 'erreicht') {
+                statusLookup[bereich][nr] = 'erreicht';
+            } else if (selection.status === 'ziel') {
+                statusLookup[bereich][nr] = 'ziel';
+            }
+        }
+    }
+
+    // Kompakte Tabelle
+    let html = '<div style="text-align: center; margin: 8pt 0;">';
+    html += '<table style="margin: 0 auto; border-collapse: collapse; font-family: Calibri, sans-serif; font-size: 6pt;">';
+
+    // Header
+    html += '<tr>';
+    html += '<td style="border: 1pt solid #000000; background-color: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 2pt; width: 40pt;">V</td>';
+    html += '<td style="border: 1pt solid #000000; background-color: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 2pt; width: 40pt;">K</td>';
+    html += '<td style="border: 1pt solid #000000; background-color: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 2pt; width: 40pt;">SOZ</td>';
+    html += '<td style="border: 1pt solid #000000; background-color: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 2pt; width: 40pt;">KOG</td>';
+    html += '<td style="border: 1pt solid #000000; background-color: #BFBFBF; font-weight: bold; text-align: center; padding: 1pt; width: 70pt; font-size: 6pt;">Stufe</td>';
+    html += '</tr>';
+
+    const stufen = [
+        { nr: 5, label: 'Stufe V (13-16 J.)', v: [29,33], k: [30,35], s: [35,41], kog: [57,62] },
+        { nr: 4, label: 'Stufe IV (10-12 J.)', v: [22,28], k: [23,29], s: [28,34], kog: [50,56] },
+        { nr: 3, label: 'Stufe III (6-9 J.)', v: [15,21], k: [14,22], s: [18,27], kog: [37,49] },
+        { nr: 2, label: 'Stufe II (3-5 J.)', v: [9,14], k: [9,13], s: [9,17], kog: [20,36] },
+        { nr: 1, label: 'Stufe I (0-2 J.)', v: [1,8], k: [1,8], s: [1,8], kog: [1,19] }
+    ];
+
+    stufen.forEach(stufe => {
+        const maxRows = Math.max(
+            stufe.v[1] - stufe.v[0] + 1,
+            stufe.k[1] - stufe.k[0] + 1,
+            stufe.s[1] - stufe.s[0] + 1,
+            stufe.kog[1] - stufe.kog[0] + 1
+        );
+
+        for (let i = 0; i < maxRows; i++) {
+            html += '<tr>';
+
+            // V
+            const vNum = stufe.v[1] - i;
+            if (vNum >= stufe.v[0]) {
+                const vStatus = statusLookup.verhalten[vNum] || '';
+                const vBg = vStatus === 'erreicht' ? '#70AD47' : (vStatus === 'ziel' ? '#FFC000' : '#FFFFFF');
+                const vCol = vStatus === 'erreicht' ? '#FFFFFF' : '#000000';
+                html += '<td style="border: 1pt solid #000000; text-align: center; background-color: ' + vBg + '; color: ' + vCol + '; height: 8pt; padding: 1pt;">' + vNum + '</td>';
+            } else {
+                html += '<td style="border: 1pt solid #000000; background-color: #E7E6E6; height: 8pt;"></td>';
+            }
+
+            // K
+            const kNum = stufe.k[1] - i;
+            if (kNum >= stufe.k[0]) {
+                const kStatus = statusLookup.kommunikation[kNum] || '';
+                const kBg = kStatus === 'erreicht' ? '#70AD47' : (kStatus === 'ziel' ? '#FFC000' : '#FFFFFF');
+                const kCol = kStatus === 'erreicht' ? '#FFFFFF' : '#000000';
+                html += '<td style="border: 1pt solid #000000; text-align: center; background-color: ' + kBg + '; color: ' + kCol + '; height: 8pt; padding: 1pt;">' + kNum + '</td>';
+            } else {
+                html += '<td style="border: 1pt solid #000000; background-color: #E7E6E6; height: 8pt;"></td>';
+            }
+
+            // SOZ
+            const sNum = stufe.s[1] - i;
+            if (sNum >= stufe.s[0]) {
+                const sStatus = statusLookup.sozialisation[sNum] || '';
+                const sBg = sStatus === 'erreicht' ? '#70AD47' : (sStatus === 'ziel' ? '#FFC000' : '#FFFFFF');
+                const sCol = sStatus === 'erreicht' ? '#FFFFFF' : '#000000';
+                html += '<td style="border: 1pt solid #000000; text-align: center; background-color: ' + sBg + '; color: ' + sCol + '; height: 8pt; padding: 1pt;">' + sNum + '</td>';
+            } else {
+                html += '<td style="border: 1pt solid #000000; background-color: #E7E6E6; height: 8pt;"></td>';
+            }
+
+            // KOG
+            const kogNum = stufe.kog[1] - i;
+            if (kogNum >= stufe.kog[0]) {
+                const kogStatus = statusLookup.kognition[kogNum] || '';
+                const kogBg = kogStatus === 'erreicht' ? '#70AD47' : (kogStatus === 'ziel' ? '#FFC000' : '#FFFFFF');
+                const kogCol = kogStatus === 'erreicht' ? '#FFFFFF' : '#000000';
+                html += '<td style="border: 1pt solid #000000; text-align: center; background-color: ' + kogBg + '; color: ' + kogCol + '; height: 8pt; padding: 1pt;">' + kogNum + '</td>';
+            } else {
+                html += '<td style="border: 1pt solid #000000; background-color: #E7E6E6; height: 8pt;"></td>';
+            }
+
+            // Stufe Label nur in erster Zeile
+            if (i === 0) {
+                html += '<td style="border: 1pt solid #000000; background-color: #BFBFBF; font-weight: bold; text-align: center; padding: 1pt; font-size: 6pt;" rowspan="' + maxRows + '">' + stufe.label + '</td>';
+            }
+
+            html += '</tr>';
+        }
+    });
+
+    html += '</table></div>';
+    return html;
+}
+
+function dsGenerateVisualAgeComparisonHTML(domainName, domainColor, bioAge, devAge, maxAge) {
+    if (!maxAge) maxAge = 18;
+    const bioWidth = bioAge > 0 ? Math.min((bioAge / maxAge) * 100, 100) : 0;
+    const devWidth = devAge > 0 ? Math.min((devAge / maxAge) * 100, 100) : 0;
+    const diff = bioAge - devAge;
+    const diffText = diff > 0 ? diff.toFixed(1) + ' Jahre Differenz' : 'Altersgemäß';
+    const diffColor = diff > 2 ? '#c0392b' : (diff > 0 ? '#e67e22' : '#27ae60');
+
+    return '<div style="margin-bottom:15pt;">' +
+        '<div style="display:table; width:100%; margin-bottom:5pt;">' +
+            '<span style="display:table-cell; font-weight:bold; font-size:11pt; color:' + domainColor + ';">' + domainName + '</span>' +
+            '<span style="display:table-cell; text-align:right; font-size:10pt; color:' + diffColor + '; font-weight:bold;">' + diffText + '</span>' +
+        '</div>' +
+        '<table style="width:100%; border-collapse:collapse; margin:5pt 0;">' +
+            '<tr>' +
+                '<td style="width:100pt; padding:3pt 8pt 3pt 0; font-size:9pt; color:#3498db; font-weight:bold;">Bio. Alter: ' + bioAge.toFixed(1) + ' J.</td>' +
+                '<td style="padding:3pt;">' +
+                    '<table style="width:100%; height:18pt; border-collapse:collapse; border:1px solid #bdc3c7;">' +
+                        '<tr>' +
+                            '<td style="width:' + bioWidth + '%; background:#3498db; height:18pt;"></td>' +
+                            '<td style="background:#ecf0f1; height:18pt;"></td>' +
+                        '</tr>' +
+                    '</table>' +
+                '</td>' +
+            '</tr>' +
+            '<tr>' +
+                '<td style="width:100pt; padding:3pt 8pt 3pt 0; font-size:9pt; color:#9b59b6; font-weight:bold;">Entw. Alter: ' + devAge.toFixed(1) + ' J.</td>' +
+                '<td style="padding:3pt;">' +
+                    '<table style="width:100%; height:18pt; border-collapse:collapse; border:1px solid #bdc3c7;">' +
+                        '<tr>' +
+                            '<td style="width:' + devWidth + '%; background:#9b59b6; height:18pt;"></td>' +
+                            '<td style="background:#ecf0f1; height:18pt;"></td>' +
+                        '</tr>' +
+                    '</table>' +
+                '</td>' +
+            '</tr>' +
+        '</table>' +
+    '</div>';
+}
+
+// Hauptfunktion: Diagnostic Spécialisé exportieren
+function exportDS() {
+    const stammdaten = getStammdaten();
+    const today = new Date().toLocaleDateString('de-DE');
+    const birthDate = document.getElementById('geburtsdatum')?.value;
+    const biologicalAge = dsCalculateBiologicalAge(birthDate);
+    const devAges = dsCalculateAllDevelopmentalAges();
+    const studentName = stammdaten.schueler_name || 'der/die Schüler:in';
+
+    let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--[if gte mso 9]>
+<xml>
+<w:WordDocument>
+<w:View>Print</w:View>
+<w:Zoom>100</w:Zoom>
+<w:DoNotOptimizeForBrowser/>
+</w:WordDocument>
+</xml>
+<![endif]-->
+<title>Spezialisierte Diagnostik - ${studentName}</title>
+<style>
+@page { size: A4; margin: 2.5cm 2.5cm 2.5cm 2.5cm; }
+body { font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%; color: #000000; }
+p { font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%; margin: 0 0 8pt 0; }
+table { font-family: Calibri, sans-serif; }
+br.page { page-break-before: always; mso-special-character: line-break; }
+</style>
+</head>
+<body style="font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%; color: #000000;">
+
+<!-- SEITE 1: Deckblatt -->
+<div style="text-align: right; font-family: Calibri, sans-serif; font-size: 11pt; line-height: 120%; margin-bottom: 12pt;">
+<strong>Commission nationale d'inclusion</strong><br>
+33, Rives de Clausen<br>
+L-2165 Luxembourg
+</div>
+
+<p style="text-align: center; font-family: Calibri, sans-serif; font-size: 16pt; font-weight: bold; margin: 0;">Spezialisierte Diagnostik</p>
+<p style="text-align: center; font-family: Calibri, sans-serif; font-size: 13pt; margin: 0 0 12pt 0;">des Zentrums für sozio-emotionale Entwicklung (CDSE)</p>
+
+<table style="width: 100%; border-collapse: collapse; margin: 8pt 0; border-left: 2pt solid #AEAAAA; font-family: Calibri, sans-serif; font-size: 11pt;">
+<tr><td style="padding: 2pt 10pt; font-weight: bold; width: 180pt; line-height: 130%;">Name des/der Schüler.in</td><td style="padding: 2pt 10pt; line-height: 130%;">${studentName}</td></tr>
+<tr><td style="padding: 2pt 10pt; font-weight: bold; width: 180pt; line-height: 130%;">Geburtsdatum</td><td style="padding: 2pt 10pt; line-height: 130%;">${birthDate ? new Date(birthDate).toLocaleDateString('de-DE') : ''}</td></tr>
+<tr><td style="padding: 2pt 10pt; font-weight: bold; width: 180pt; line-height: 130%;">Alter</td><td style="padding: 2pt 10pt; line-height: 130%;">${biologicalAge ? biologicalAge.years + ' Jahre, ' + biologicalAge.months + ' Monate' : ''}</td></tr>
+<tr><td style="padding: 2pt 10pt; font-weight: bold; width: 180pt; line-height: 130%;">Schule</td><td style="padding: 2pt 10pt; line-height: 130%;">${stammdaten.foerderort || ''}</td></tr>
+<tr><td style="padding: 2pt 10pt; font-weight: bold; width: 180pt; line-height: 130%;">Klasse</td><td style="padding: 2pt 10pt; line-height: 130%;">${stammdaten.klasse || ''}</td></tr>
+</table>
+
+<div style="margin: 8pt 0; font-family: Calibri, sans-serif; font-size: 11pt;">
+<div style="font-weight: bold; padding: 3pt 0; border-bottom: 1pt solid #000000; margin-bottom: 3pt;">Empfehlungen des CDSE</div>
+<div style="padding: 1pt 0; line-height: 130%;">☐ Spezialisierte Diagnostik in Zusammenarbeit mit einem Kompetenzzentrum</div>
+<div style="padding: 1pt 0; line-height: 130%;">☐ Beratung und Begleitung der Eltern und des/der betroffenen Schülers/-in</div>
+<div style="padding: 1pt 0; line-height: 130%;">☐ Beratung und Begleitung der Fachleute</div>
+<div style="padding: 1pt 0; line-height: 130%;">☐ Spezialisierte Lernwerkstatt</div>
+<div style="padding: 1pt 0; line-height: 130%;">☐ Spezialisierte ambulante Intervention (ISA)</div>
+<div style="padding: 1pt 0; line-height: 130%;">☐ Spezialisierte Beschulung im CDSE</div>
+<div style="padding: 1pt 0 1pt 50pt; line-height: 130%;">☐ Classe de Participation (ClaPa)</div>
+<div style="padding: 1pt 0 1pt 50pt; line-height: 130%;">☐ Centre socio-thérapeutique (CST)</div>
+<div style="padding: 1pt 0; line-height: 130%;">☐ Spezialisierte Beschulung im Ausland</div>
+<div style="padding: 1pt 0; line-height: 130%;">☐ Abschluss der Aktivitäten des CDSE</div>
+</div>
+
+<!-- SEITE 2: Inhaltsverzeichnis -->
+<br clear="all" style="mso-special-character:line-break;page-break-before:always">
+
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 14pt; color: #5B9BD5; margin: 0 0 6pt 0;">Inhaltsverzeichnis</p>
+<div style="margin: 12pt 0; font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%;">
+<p style="margin: 4pt 0;">1. Auftragsklärung</p>
+<p style="margin: 4pt 0;">2. Anamnese</p>
+<p style="margin: 4pt 0 4pt 24pt;">2.1 Vorgeschichte</p>
+<p style="margin: 4pt 0 4pt 24pt;">2.2 Sozialbericht</p>
+<p style="margin: 4pt 0;">3. Aktuelle Situation</p>
+<p style="margin: 4pt 0;">4. Diagnostische Verfahren</p>
+<p style="margin: 4pt 0 4pt 24pt;">4.1 Verhaltensbeobachtungen</p>
+<p style="margin: 4pt 0 4pt 24pt;">4.2 Ergebnisse der Testverfahren</p>
+<p style="margin: 4pt 0;">5. Schlussfolgerung</p>
+<p style="margin: 4pt 0 4pt 24pt;">5.1 Spezifische Bedürfnisse</p>
+<p style="margin: 4pt 0 4pt 24pt;">5.2 Ziele</p>
+<p style="margin: 4pt 0 4pt 24pt;">5.3 Empfehlungen</p>
+<p style="margin: 4pt 0;">6. Anhänge</p>
+</div>
+
+<!-- SEITE 3: Auftragsklärung & Anamnese -->
+<br clear="all" style="mso-special-character:line-break;page-break-before:always">
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 14pt; color: #5B9BD5; margin: 0 0 6pt 0;">1. Auftragsklärung</p>
+<p style="font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%; font-style: italic; color: #666666;">(Auftraggeber, Datum, Anlass der Anfrage beschreiben)</p>
+
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 14pt; color: #5B9BD5; margin: 12pt 0 6pt 0;">2. Anamnese</p>
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 12pt; color: #5B9BD5; margin: 10pt 0 4pt 0;">2.1 Vorgeschichte</p>
+<p style="font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%; font-style: italic; color: #666666;">(Frühkindliche Entwicklung, Diagnosen, bisherige Maßnahmen)</p>
+
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 12pt; color: #5B9BD5; margin: 10pt 0 4pt 0;">2.2 Sozialbericht</p>
+<p style="font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%; font-style: italic; color: #666666;">(Familiensituation, Sprachen zu Hause)</p>
+
+<!-- SEITE 4: Aktuelle Situation -->
+<br clear="all" style="mso-special-character:line-break;page-break-before:always">
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 14pt; color: #5B9BD5; margin: 0 0 6pt 0;">3. Aktuelle Situation</p>
+<p style="font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%; font-style: italic; color: #666666;">(Aktuelle schulische Situation, Sichtweise der Schule, des Schülers, der Eltern)</p>
+
+<!-- SEITE 5: Diagnostische Verfahren -->
+<br clear="all" style="mso-special-character:line-break;page-break-before:always">
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 14pt; color: #5B9BD5; margin: 0 0 6pt 0;">4. Diagnostische Verfahren</p>
+
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 12pt; color: #5B9BD5; margin: 10pt 0 4pt 0;">4.1 Verhaltensbeobachtungen</p>
+<p style="font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%; font-style: italic; color: #666666;">(Objektive, konkrete Verhaltensbeobachtungen)</p>
+
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 12pt; color: #5B9BD5; margin: 10pt 0 4pt 0;">4.2 Ergebnisse der Testverfahren</p>
+${dsGenerate42Section(studentName, devAges)}
+
+<!-- SEITE 6: Schlussfolgerung -->
+<br clear="all" style="mso-special-character:line-break;page-break-before:always">
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 14pt; color: #5B9BD5; margin: 0 0 6pt 0;">5. Schlussfolgerung</p>
+
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 12pt; color: #5B9BD5; margin: 10pt 0 4pt 0;">5.1 Spezifische Bedürfnisse des Schülers/der Schülerin</p>
+<p style="font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%; font-style: italic; color: #666666;">(Zusammenfassung der Bedürfnisse und Ressourcen)</p>
+
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 12pt; color: #5B9BD5; margin: 10pt 0 4pt 0;">5.2 Ziele</p>
+<p style="font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%; margin: 0 0 8pt 0;">Ausgehend von den formulierten ELDiB-Zielen wurden folgende Förderziele definiert:</p>
+${dsGenerateSMARTGoalsSection()}
+
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 12pt; color: #5B9BD5; margin: 10pt 0 4pt 0;">5.3 Empfehlungen</p>
+<p style="font-family: Calibri, sans-serif; font-size: 11pt; line-height: 150%; font-style: italic; color: #666666;">(Maßnahmen für Familie, Schule, außerschulischen Kontext)</p>
+
+<!-- SEITE 7: Anhänge - ELDiB Grid -->
+<br clear="all" style="mso-special-character:line-break;page-break-before:always">
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 14pt; color: #5B9BD5; margin: 0 0 6pt 0;">6. Anhänge</p>
+
+<p style="text-align: center; font-family: Calibri, sans-serif; font-weight: bold; font-size: 10pt; margin: 12pt 0 2pt 0;">Zusammenfassung der Entwicklungsziele des ELDiB ©</p>
+<p style="text-align: center; font-family: Calibri, sans-serif; font-size: 9pt; margin: 0 0 4pt 0;">(Entwicklungstherapeutischer / entwicklungspädagogischer Lernziel-Diagnose-Bogen)</p>
+
+<table style="width: 100%; border-collapse: collapse; margin: 4pt 0; font-family: Calibri, sans-serif; font-size: 9pt;">
+<tr>
+<td style="padding: 1pt 0;"><strong>Name:</strong> ${studentName}</td>
+<td style="padding: 1pt 0;"><strong>Geburtsdatum:</strong> ${birthDate ? new Date(birthDate).toLocaleDateString('de-DE') : ''}</td>
+<td style="padding: 1pt 0;"><strong>Alter:</strong> ${biologicalAge ? biologicalAge.years + ' J. ' + biologicalAge.months + ' M.' : ''}</td>
+</tr>
+</table>
+
+${dsGenerateGridHTML()}
+
+<div style="font-family: Calibri, sans-serif; font-size: 8pt; text-align: center; margin: 6pt 0;">
+<strong>Legende:</strong> V=Verhalten | K=Kommunikation | SOZ=Sozialisation | KOG=Kognition |
+<span style="background-color: #70AD47; color: white; padding: 0pt 3pt;">grün</span> = erreicht |
+<span style="background-color: #FFC000; padding: 0pt 3pt;">gelb</span> = Förderziel
+</div>
+
+<!-- SEITE 8: Visueller Altersvergleich -->
+<br clear="all" style="mso-special-character:line-break;page-break-before:always">
+<p style="font-family: Calibri Light, Calibri, sans-serif; font-size: 12pt; color: #5B9BD5; margin: 0 0 4pt 0;">Visueller Altersvergleich</p>
+
+<p style="font-family: Calibri, sans-serif; font-weight: bold; font-size: 11pt; margin-bottom: 12pt; border-bottom: 2pt solid #5B9BD5; padding-bottom: 6pt;">Entwicklungsalter pro Bereich im Vergleich zum biologischen Alter</p>
+
+${dsGenerateVisualAgeComparisonHTML('Verhalten', '#e74c3c', biologicalAge ? biologicalAge.decimal : 0, devAges.verhalten || 0, 18)}
+${dsGenerateVisualAgeComparisonHTML('Kommunikation', '#3498db', biologicalAge ? biologicalAge.decimal : 0, devAges.kommunikation || 0, 18)}
+${dsGenerateVisualAgeComparisonHTML('Sozialisation', '#27ae60', biologicalAge ? biologicalAge.decimal : 0, devAges.sozialisation || 0, 18)}
+${dsGenerateVisualAgeComparisonHTML('Kognition', '#9b59b6', biologicalAge ? biologicalAge.decimal : 0, devAges.kognition || 0, 18)}
+
+<div style="margin-top: 15pt; font-family: Calibri, sans-serif; font-size: 9pt; color: #666666;">
+<span style="display: inline-block; width: 12px; height: 12px; background-color: #3498db; vertical-align: middle; margin-right: 5px;"></span> Biologisches Alter |
+<span style="margin-left: 15px;"><span style="display: inline-block; width: 12px; height: 12px; background-color: #9b59b6; vertical-align: middle; margin-right: 5px;"></span> Entwicklungsalter</span>
+</div>
+
+<div style="margin-top: 36pt; font-family: Calibri, sans-serif; font-size: 11pt;">
+<div style="border-bottom: 1pt solid #000000; width: 200pt; margin-bottom: 6pt;"></div>
+<p style="margin: 0;">Name des Verfassers des Berichts<br>
+Berufsbezeichnung<br>
+Unité de diagnostic, de conseil et de suivi</p>
+</div>
+
+</body>
+</html>`;
+
+    // Download als .doc
+    const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'DS_' + (studentName || 'Spezialisierte_Diagnostik').replace(/\s+/g, '_') + '_' + today.replace(/\./g, '-') + '.doc';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 }
     </script>
 </body>
