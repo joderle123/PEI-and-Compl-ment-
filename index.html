@@ -1255,46 +1255,305 @@
             display: none;
         }
 
-        /* Category sections for zusätzliche Ziele */
+        /* Category sections for zusätzliche Ziele - Elegantes Neon Design */
+        .zusaetzlich-intro {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 32px;
+            background: linear-gradient(160deg, rgba(168, 85, 247, 0.08), rgba(6, 182, 212, 0.05));
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(168, 85, 247, 0.15);
+        }
+
+        .zusaetzlich-intro h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--primary-neon), var(--info-neon));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .zusaetzlich-intro p {
+            color: var(--gray-600);
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
         .category-section {
-            margin-bottom: 28px;
+            margin-bottom: 0;
             border-radius: var(--radius-lg);
             overflow: hidden;
             box-shadow: var(--shadow-soft);
+            background: white;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .category-section h3 {
+        .category-section::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: var(--radius-lg);
+            padding: 2px;
+            background: linear-gradient(135deg, var(--category-color, var(--primary-neon)), transparent 60%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+        }
+
+        .category-section:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-medium), 0 0 40px -15px var(--category-color, var(--primary-glow));
+        }
+
+        .category-section:hover::before {
+            opacity: 1;
+        }
+
+        .category-section.demarches { --category-color: #4a90d9; }
+        .category-section.manieres { --category-color: #00ff88; }
+        .category-section.relationnelles { --category-color: #ffaa00; }
+        .category-section.affectives { --category-color: #ff3366; }
+        .category-section.competences { --category-color: #d946ef; }
+        .category-section.culture { --category-color: #00d4ff; }
+
+        .category-header {
             margin: 0;
-            padding: 18px 24px;
+            padding: 24px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-size: 1rem;
             font-weight: 700;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--category-color, var(--primary)) 0%, color-mix(in srgb, var(--category-color, var(--primary)) 80%, black) 100%);
         }
 
-        .category-section h3:hover {
-            filter: brightness(1.08);
+        .category-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .category-header:hover::before {
+            left: 100%;
+        }
+
+        .category-header:hover {
+            filter: brightness(1.1);
+        }
+
+        .category-header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .category-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .category-header:hover .category-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+
+        .category-title {
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .category-count {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            font-weight: 700;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-count.has-items {
+            background: rgba(255,255,255,0.95);
+            color: var(--category-color, var(--primary));
+            box-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        .category-expand-icon {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-size: 1.2rem;
+        }
+
+        .category-section.expanded .category-expand-icon {
+            transform: rotate(180deg);
         }
 
         .category-items {
-            background: linear-gradient(180deg, var(--gray-50), white);
+            background: linear-gradient(180deg, rgba(250, 250, 255, 0.95), white);
+            display: none;
+            padding: 20px;
+            border-top: 1px solid rgba(0,0,0,0.05);
         }
 
-        /* Zusatz items improved styling */
+        .category-section.expanded .category-items {
+            display: block;
+            animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Zusatz items - Elegantes Card Design */
         .zusatz-item {
-            background: linear-gradient(160deg, white, var(--gray-50)) !important;
-            border: none !important;
+            background: linear-gradient(160deg, white, rgba(250, 250, 255, 0.9)) !important;
+            border: 1px solid rgba(168, 85, 247, 0.1) !important;
             border-radius: var(--radius) !important;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-            margin: 12px !important;
-            box-shadow: 0 2px 8px -2px rgba(0,0,0,0.06) !important;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+            margin: 12px 0 !important;
+            padding: 20px !important;
+            box-shadow: 0 2px 12px -4px rgba(0,0,0,0.08) !important;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .zusatz-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--category-color, var(--primary-neon)), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .zusatz-item:hover::before {
+            opacity: 1;
         }
 
         .zusatz-item:hover {
-            box-shadow: var(--shadow-soft) !important;
+            box-shadow: var(--shadow-soft), 0 0 30px -15px var(--primary-glow) !important;
+            transform: translateY(-3px) translateX(4px);
+            border-color: rgba(168, 85, 247, 0.2) !important;
+        }
+
+        .zusatz-item-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .zusatz-item-text {
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--gray-700);
+        }
+
+        .zusatz-item-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .zusatz-btn {
+            padding: 10px 18px;
+            border: 2px solid transparent;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: var(--gray-100);
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .zusatz-btn:hover {
             transform: translateY(-2px);
+        }
+
+        .zusatz-btn.erreicht {
+            border-color: var(--success-light);
+            color: var(--success);
+            background: rgba(0, 255, 136, 0.08);
+        }
+
+        .zusatz-btn.erreicht:hover,
+        .zusatz-btn.erreicht.selected {
+            background: linear-gradient(135deg, var(--success-neon), var(--success));
+            color: white;
+            border-color: var(--success-neon);
+            box-shadow: 0 4px 20px -4px var(--success-glow);
+        }
+
+        .zusatz-btn.ziel {
+            border-color: var(--warning-light);
+            color: var(--warning-dark);
+            background: rgba(255, 170, 0, 0.08);
+        }
+
+        .zusatz-btn.ziel:hover,
+        .zusatz-btn.ziel.selected {
+            background: linear-gradient(135deg, var(--warning-neon), var(--warning));
+            color: white;
+            border-color: var(--warning-neon);
+            box-shadow: 0 4px 20px -4px rgba(255, 170, 0, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .category-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .zusatz-item-content {
+                flex-direction: column;
+            }
+
+            .zusatz-item-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
         }
 
         /* Toast notification mit Neon-Effekt */
@@ -1883,59 +2142,105 @@
 
         <!-- Zusätzliche Ziele Tab -->
         <div id="zusaetzlich" class="tab-content">
-            <h2 style="margin-bottom: 20px; color: #333;">Zusätzliche Förderziele</h2>
-            <p style="margin-bottom: 20px; color: #666;">Wählen Sie zusätzliche Ziele aus den verschiedenen Kategorien. Diese werden automatisch in PEI und Complément eingefügt.</p>
-
-            <!-- Démarches mentales -->
-            <div class="category-section" style="margin-bottom: 30px;">
-                <h3 style="background: #4a90d9; color: white; padding: 10px; border-radius: 5px; cursor: pointer;" onclick="toggleCategory('demarches_mentales')">
-                    ☐ Démarches mentales <span id="count-demarches_mentales" style="float: right;">(0 ausgewählt)</span>
-                </h3>
-                <div id="category-demarches_mentales" class="category-items" style="display: none; padding: 10px; border: 1px solid #ddd; border-radius: 0 0 5px 5px;"></div>
+            <div class="zusaetzlich-intro">
+                <h2>Zusätzliche Förderziele</h2>
+                <p>Wählen Sie zusätzliche Ziele aus den verschiedenen Kategorien. Diese werden automatisch in PEI und Complément eingefügt.</p>
             </div>
 
-            <!-- Manières d'apprendre -->
-            <div class="category-section" style="margin-bottom: 30px;">
-                <h3 style="background: #5cb85c; color: white; padding: 10px; border-radius: 5px; cursor: pointer;" onclick="toggleCategory('manieres_apprendre')">
-                    ☐ Manières d'apprendre <span id="count-manieres_apprendre" style="float: right;">(0 ausgewählt)</span>
-                </h3>
-                <div id="category-manieres_apprendre" class="category-items" style="display: none; padding: 10px; border: 1px solid #ddd; border-radius: 0 0 5px 5px;"></div>
-            </div>
+            <div class="category-grid">
+                <!-- Démarches mentales -->
+                <div class="category-section demarches" id="section-demarches_mentales">
+                    <div class="category-header" onclick="toggleCategory('demarches_mentales')">
+                        <div class="category-header-left">
+                            <div class="category-icon">🧠</div>
+                            <span class="category-title">Démarches mentales</span>
+                        </div>
+                        <div class="category-count" id="count-demarches_mentales">
+                            <span class="count-number">0</span>
+                            <span class="category-expand-icon">▼</span>
+                        </div>
+                    </div>
+                    <div id="category-demarches_mentales" class="category-items"></div>
+                </div>
 
-            <!-- Attitudes relationnelles -->
-            <div class="category-section" style="margin-bottom: 30px;">
-                <h3 style="background: #f0ad4e; color: white; padding: 10px; border-radius: 5px; cursor: pointer;" onclick="toggleCategory('attitudes_relationnelles')">
-                    ☐ Attitudes relationnelles <span id="count-attitudes_relationnelles" style="float: right;">(0 ausgewählt)</span>
-                </h3>
-                <div id="category-attitudes_relationnelles" class="category-items" style="display: none; padding: 10px; border: 1px solid #ddd; border-radius: 0 0 5px 5px;"></div>
-            </div>
+                <!-- Manières d'apprendre -->
+                <div class="category-section manieres" id="section-manieres_apprendre">
+                    <div class="category-header" onclick="toggleCategory('manieres_apprendre')">
+                        <div class="category-header-left">
+                            <div class="category-icon">📚</div>
+                            <span class="category-title">Manières d'apprendre</span>
+                        </div>
+                        <div class="category-count" id="count-manieres_apprendre">
+                            <span class="count-number">0</span>
+                            <span class="category-expand-icon">▼</span>
+                        </div>
+                    </div>
+                    <div id="category-manieres_apprendre" class="category-items"></div>
+                </div>
 
-            <!-- Attitudes affectives -->
-            <div class="category-section" style="margin-bottom: 30px;">
-                <h3 style="background: #d9534f; color: white; padding: 10px; border-radius: 5px; cursor: pointer;" onclick="toggleCategory('attitudes_affectives')">
-                    ☐ Attitudes affectives <span id="count-attitudes_affectives" style="float: right;">(0 ausgewählt)</span>
-                </h3>
-                <div id="category-attitudes_affectives" class="category-items" style="display: none; padding: 10px; border: 1px solid #ddd; border-radius: 0 0 5px 5px;"></div>
-            </div>
+                <!-- Attitudes relationnelles -->
+                <div class="category-section relationnelles" id="section-attitudes_relationnelles">
+                    <div class="category-header" onclick="toggleCategory('attitudes_relationnelles')">
+                        <div class="category-header-left">
+                            <div class="category-icon">🤝</div>
+                            <span class="category-title">Attitudes relationnelles</span>
+                        </div>
+                        <div class="category-count" id="count-attitudes_relationnelles">
+                            <span class="count-number">0</span>
+                            <span class="category-expand-icon">▼</span>
+                        </div>
+                    </div>
+                    <div id="category-attitudes_relationnelles" class="category-items"></div>
+                </div>
 
-            <!-- Compétences essentielles -->
-            <div class="category-section" style="margin-bottom: 30px;">
-                <h3 style="background: #9b59b6; color: white; padding: 10px; border-radius: 5px; cursor: pointer;" onclick="toggleCategory('competences_essentielles')">
-                    ☐ Compétences essentielles à la vie autonome <span id="count-competences_essentielles" style="float: right;">(0 ausgewählt)</span>
-                </h3>
-                <div id="category-competences_essentielles" class="category-items" style="display: none; padding: 10px; border: 1px solid #ddd; border-radius: 0 0 5px 5px;"></div>
-            </div>
+                <!-- Attitudes affectives -->
+                <div class="category-section affectives" id="section-attitudes_affectives">
+                    <div class="category-header" onclick="toggleCategory('attitudes_affectives')">
+                        <div class="category-header-left">
+                            <div class="category-icon">💖</div>
+                            <span class="category-title">Attitudes affectives</span>
+                        </div>
+                        <div class="category-count" id="count-attitudes_affectives">
+                            <span class="count-number">0</span>
+                            <span class="category-expand-icon">▼</span>
+                        </div>
+                    </div>
+                    <div id="category-attitudes_affectives" class="category-items"></div>
+                </div>
 
-            <!-- Culture et loisirs -->
-            <div class="category-section" style="margin-bottom: 30px;">
-                <h3 style="background: #17a2b8; color: white; padding: 10px; border-radius: 5px; cursor: pointer;" onclick="toggleCategory('culture_loisirs')">
-                    ☐ Culture et loisirs <span id="count-culture_loisirs" style="float: right;">(0 ausgewählt)</span>
-                </h3>
-                <div id="category-culture_loisirs" class="category-items" style="display: none; padding: 10px; border: 1px solid #ddd; border-radius: 0 0 5px 5px;"></div>
+                <!-- Compétences essentielles -->
+                <div class="category-section competences" id="section-competences_essentielles">
+                    <div class="category-header" onclick="toggleCategory('competences_essentielles')">
+                        <div class="category-header-left">
+                            <div class="category-icon">🎯</div>
+                            <span class="category-title">Compétences essentielles</span>
+                        </div>
+                        <div class="category-count" id="count-competences_essentielles">
+                            <span class="count-number">0</span>
+                            <span class="category-expand-icon">▼</span>
+                        </div>
+                    </div>
+                    <div id="category-competences_essentielles" class="category-items"></div>
+                </div>
+
+                <!-- Culture et loisirs -->
+                <div class="category-section culture" id="section-culture_loisirs">
+                    <div class="category-header" onclick="toggleCategory('culture_loisirs')">
+                        <div class="category-header-left">
+                            <div class="category-icon">🎨</div>
+                            <span class="category-title">Culture et loisirs</span>
+                        </div>
+                        <div class="category-count" id="count-culture_loisirs">
+                            <span class="count-number">0</span>
+                            <span class="category-expand-icon">▼</span>
+                        </div>
+                    </div>
+                    <div id="category-culture_loisirs" class="category-items"></div>
+                </div>
             </div>
 
             <div class="button-group">
-                <button class="btn btn-primary" onclick="showTab('export')">Zum Export &rarr;</button>
+                <button class="btn btn-primary" onclick="showTab('export')">Zum Export →</button>
             </div>
         </div>
 
@@ -2328,16 +2633,16 @@ function initializeZusaetzlicheZiele() {
         const container = document.getElementById(`category-${category}`);
         if (container && ZUSAETZLICHE_ZIELE[category]) {
             container.innerHTML = ZUSAETZLICHE_ZIELE[category].map(goal => `
-                <div class="zusatz-item" id="zusatz-${goal.id}" style="padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9;">
-                    <div style="display: flex; align-items: flex-start; gap: 10px;">
-                        <div style="display: flex; flex-direction: column; gap: 5px; min-width: 100px;">
-                            <button class="zusatz-btn erreicht" id="btn-erreicht-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'erreicht')" style="padding: 5px 10px; border: 1px solid #28a745; background: white; color: #28a745; border-radius: 3px; cursor: pointer; font-size: 12px;">Erreicht</button>
-                            <button class="zusatz-btn ziel" id="btn-ziel-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'ziel')" style="padding: 5px 10px; border: 1px solid #ffc107; background: white; color: #856404; border-radius: 3px; cursor: pointer; font-size: 12px;">Ziel</button>
+                <div class="zusatz-item" id="zusatz-${goal.id}">
+                    <div class="zusatz-item-content">
+                        <div class="zusatz-item-text">
+                            <strong style="color: var(--gray-900); font-size: 1rem;">${goal.id}: ${goal.title}</strong>
+                            <p style="margin: 8px 0; color: var(--primary); font-style: italic; font-weight: 500;">"${goal.ziel}"</p>
+                            <p style="margin: 0; color: var(--gray-500); font-size: 0.85rem;"><strong>Interventionen:</strong> ${goal.intervention.join(', ')}</p>
                         </div>
-                        <div style="flex: 1;">
-                            <strong>${goal.id}: ${goal.title}</strong>
-                            <p style="margin: 5px 0; color: #333; font-style: italic;">"${goal.ziel}"</p>
-                            <p style="margin: 5px 0; color: #666; font-size: 0.9em;"><strong>Interventionen:</strong> ${goal.intervention.join(', ')}</p>
+                        <div class="zusatz-item-actions">
+                            <button class="zusatz-btn erreicht" id="btn-erreicht-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'erreicht')">✓ Erreicht</button>
+                            <button class="zusatz-btn ziel" id="btn-ziel-${goal.id}" onclick="selectZusatzStatus('${category}', '${goal.id}', 'ziel')">★ Ziel</button>
                         </div>
                     </div>
                 </div>
@@ -2348,9 +2653,9 @@ function initializeZusaetzlicheZiele() {
 
 // Toggle category visibility
 function toggleCategory(category) {
-    const container = document.getElementById(`category-${category}`);
-    if (container) {
-        container.style.display = container.style.display === 'none' ? 'block' : 'none';
+    const section = document.getElementById(`section-${category}`);
+    if (section) {
+        section.classList.toggle('expanded');
     }
 }
 
@@ -2401,7 +2706,19 @@ function updateZusatzCount(category) {
         const goals = state.zusaetzlicheZiele[category];
         const erreichtCount = Object.values(goals).filter(s => s === 'erreicht').length;
         const zielCount = Object.values(goals).filter(s => s === 'ziel').length;
-        countElement.textContent = `(${erreichtCount} erreicht, ${zielCount} Ziele)`;
+        const totalCount = erreichtCount + zielCount;
+
+        const countNumber = countElement.querySelector('.count-number');
+        if (countNumber) {
+            countNumber.textContent = totalCount > 0 ? `${erreichtCount}✓ ${zielCount}★` : '0';
+        }
+
+        // Add/remove "has-items" class for styling
+        if (totalCount > 0) {
+            countElement.classList.add('has-items');
+        } else {
+            countElement.classList.remove('has-items');
+        }
     }
 }
 
