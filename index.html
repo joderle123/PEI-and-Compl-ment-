@@ -856,6 +856,49 @@
             box-shadow: 0 6px 24px -6px rgba(245, 158, 11, 0.35);
         }
 
+        /* Blockierte Ziel-Buttons */
+        .option-btn.ziel.blocked {
+            opacity: 0.4;
+            cursor: not-allowed;
+            position: relative;
+            background: var(--gray-100) !important;
+            border-color: var(--gray-300) !important;
+            color: var(--gray-400) !important;
+        }
+
+        .option-btn.ziel.blocked:hover {
+            transform: none;
+            box-shadow: none;
+            background: var(--gray-100) !important;
+        }
+
+        .option-btn.ziel.blocked::after {
+            content: '🚫';
+            position: absolute;
+            right: -8px;
+            top: -8px;
+            font-size: 14px;
+        }
+
+        /* Altersanzeige im Stammdaten-Bereich */
+        .alter-anzeige {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--primary-neon), var(--info-neon));
+            color: white;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-left: 12px;
+            box-shadow: 0 4px 15px -4px var(--primary-glow);
+        }
+
+        .alter-anzeige.hidden {
+            display: none;
+        }
+
         /* Zielformulierung Anzeige */
         .ziel-box {
             display: none;
@@ -1681,8 +1724,8 @@
                         <input type="text" id="schueler_name" placeholder="Nachname, Vorname">
                     </div>
                     <div class="form-group">
-                        <label for="geburtsdatum">Geburtsdatum</label>
-                        <input type="date" id="geburtsdatum">
+                        <label for="geburtsdatum">Geburtsdatum <span id="alter-anzeige" class="alter-anzeige hidden"></span></label>
+                        <input type="date" id="geburtsdatum" onchange="updateAlterAnzeige()">
                     </div>
                     <div class="form-group">
                         <label for="matricule">Matricule</label>
@@ -2311,6 +2354,172 @@
     <script>
 // ELDiB Daten - Alle Items mit Zielformulierungen
 
+// Stufen-Alter-Mapping (sozio-emotionales Entwicklungsalter in Jahren)
+const STUFEN_ALTER_MAPPING = {
+    1: { min: 0, max: 2, name: "Stufe I", beschreibung: "0-2 Jahre" },
+    2: { min: 2, max: 4, name: "Stufe II", beschreibung: "2-4 Jahre" },
+    3: { min: 4, max: 6, name: "Stufe III", beschreibung: "4-6 Jahre" },
+    4: { min: 6, max: 9, name: "Stufe IV", beschreibung: "6-9 Jahre" },
+    5: { min: 9, max: 12, name: "Stufe V", beschreibung: "9-12 Jahre" }
+};
+
+// Berechnet das Alter des Schülers in Jahren
+function getSchuelerAlter() {
+    const geburtsdatumInput = document.getElementById('geburtsdatum');
+    if (!geburtsdatumInput || !geburtsdatumInput.value) return null;
+
+    const geburtsdatum = new Date(geburtsdatumInput.value);
+    const heute = new Date();
+    let alter = heute.getFullYear() - geburtsdatum.getFullYear();
+    const monatsDiff = heute.getMonth() - geburtsdatum.getMonth();
+
+    if (monatsDiff < 0 || (monatsDiff === 0 && heute.getDate() < geburtsdatum.getDate())) {
+        alter--;
+    }
+
+    return alter;
+}
+
+// Holt Item-Info aus dem Code (z.B. "V-5" -> { bereich: "verhalten", stufe: 1, nr: 5 })
+function getItemInfoFromCode(code) {
+    const bereichMap = { 'V': 'verhalten', 'K': 'kommunikation', 'S': 'sozialisation', 'KOG': 'kognition' };
+
+    let bereichCode, itemNr;
+    if (code.startsWith('KOG-')) {
+        bereichCode = 'KOG';
+        itemNr = parseInt(code.split('-')[1]);
+    } else {
+        const parts = code.split('-');
+        bereichCode = parts[0];
+        itemNr = parseInt(parts[1]);
+    }
+
+    const bereich = bereichMap[bereichCode];
+    if (!bereich || !ELDIB_DATA[bereich]) return null;
+
+    // Finde die Stufe für dieses Item
+    for (const [stufeNr, stufeData] of Object.entries(ELDIB_DATA[bereich].stufen)) {
+        const item = stufeData.items.find(i => i.code === code);
+        if (item) {
+            return { bereich, stufe: parseInt(stufeNr), nr: item.nr, item };
+        }
+    }
+    return null;
+}
+
+// Prüft ob ein Item als "Ziel" markiert werden kann
+function canSetZiel(code) {
+    const itemInfo = getItemInfoFromCode(code);
+    if (!itemInfo) return { allowed: true };
+
+    const { bereich, stufe, nr } = itemInfo;
+
+    // Regel 1: Prüfe ob ein vorheriges Item "nicht erreicht" ist
+    // Gehe durch alle Stufen und Items vor diesem Item
+    for (let s = 1; s <= stufe; s++) {
+        const stufeData = ELDIB_DATA[bereich].stufen[s];
+        if (!stufeData) continue;
+
+        for (const item of stufeData.items) {
+            // Wenn wir beim aktuellen Item angekommen sind, aufhören
+            if (s === stufe && item.nr >= nr) break;
+
+            const selection = state.selections[item.code];
+            if (selection && selection.status === 'nicht-erreicht') {
+                return {
+                    allowed: false,
+                    reason: 'nicht-erreicht',
+                    blockingItem: item.code,
+                    message: `Ziel nicht möglich: ${item.code} ist als "nicht erreicht" markiert. Erreichen Sie zuerst die vorherigen Entwicklungsstufen.`
+                };
+            }
+        }
+    }
+
+    // Regel 2: Prüfe Altersgrenze
+    const alter = getSchuelerAlter();
+    if (alter !== null) {
+        const stufeAlter = STUFEN_ALTER_MAPPING[stufe];
+        if (stufeAlter && alter >= stufeAlter.max) {
+            return {
+                allowed: false,
+                reason: 'alter',
+                message: `Ziel nicht möglich: Der Schüler ist ${alter} Jahre alt. ${stufeAlter.name} (${stufeAlter.beschreibung}) kann nicht mehr als Ziel gesetzt werden, da das biologische Alter das sozio-emotionale Alter dieser Stufe bereits erreicht hat.`
+            };
+        }
+    }
+
+    return { allowed: true };
+}
+
+// Zeigt Blockade-Nachricht als Toast
+function showBlockadeMessage(message) {
+    // Entferne bestehende Toasts
+    document.querySelectorAll('.toast').forEach(t => t.remove());
+
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-warning';
+    toast.innerHTML = `⚠️ ${message}`;
+    toast.style.cssText = `
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95)) !important;
+        max-width: 400px;
+        line-height: 1.5;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+}
+
+// Aktualisiert die Altersanzeige und blockierte Buttons
+function updateAlterAnzeige() {
+    const alter = getSchuelerAlter();
+    const anzeige = document.getElementById('alter-anzeige');
+
+    if (alter !== null && anzeige) {
+        anzeige.textContent = `${alter} Jahre`;
+        anzeige.classList.remove('hidden');
+
+        // Aktualisiere alle blockierten Ziel-Buttons basierend auf Alter
+        updateAllBlockedButtonsByAge();
+    } else if (anzeige) {
+        anzeige.classList.add('hidden');
+    }
+
+    saveToLocalStorage();
+}
+
+// Aktualisiert alle Ziel-Buttons basierend auf Altersblockade
+function updateAllBlockedButtonsByAge() {
+    const alter = getSchuelerAlter();
+    if (alter === null) return;
+
+    // Gehe durch alle Bereiche
+    for (const [bereich, bereichData] of Object.entries(ELDIB_DATA)) {
+        for (const [stufeNr, stufeData] of Object.entries(bereichData.stufen)) {
+            const stufeAlter = STUFEN_ALTER_MAPPING[parseInt(stufeNr)];
+
+            for (const item of stufeData.items) {
+                const zielBtn = document.querySelector(`#item-${item.code} .option-btn.ziel`);
+                if (zielBtn) {
+                    // Prüfe ob durch Alter blockiert
+                    if (stufeAlter && alter >= stufeAlter.max) {
+                        zielBtn.classList.add('blocked');
+                        zielBtn.title = `Ziel nicht möglich: Biologisches Alter (${alter}) hat sozio-emotionales Alter dieser Stufe erreicht.`;
+                    } else {
+                        // Nur entfernen wenn nicht durch "nicht erreicht" blockiert
+                        const check = canSetZiel(item.code);
+                        if (check.allowed || check.reason !== 'nicht-erreicht') {
+                            if (!(check.reason === 'alter')) {
+                                zielBtn.classList.remove('blocked');
+                                zielBtn.title = '';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 const ELDIB_DATA = {
     verhalten: {
         name: "Verhalten",
@@ -2593,6 +2802,17 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeItems();
     initializeZusaetzlicheZiele();
     loadFromLocalStorage();
+
+    // Aktualisiere Altersanzeige und blockierte Buttons nach dem Laden
+    setTimeout(() => {
+        updateAlterAnzeige();
+        // Aktualisiere auch alle "nicht erreicht" Blockaden
+        for (const [code, selection] of Object.entries(state.selections)) {
+            if (selection.status === 'nicht-erreicht') {
+                updateBlockedZielButtons(code);
+            }
+        }
+    }, 100);
 });
 
 // Tab Navigation
@@ -2787,6 +3007,15 @@ function createItemElement(item, bereichKey) {
 }
 
 function selectOption(code, status, button) {
+    // Blockade-Prüfung für "Ziel"
+    if (status === 'ziel') {
+        const check = canSetZiel(code);
+        if (!check.allowed) {
+            showBlockadeMessage(check.message);
+            return; // Blockiere die Auswahl
+        }
+    }
+
     const parent = button.parentElement;
     parent.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
     button.classList.add('selected');
@@ -2796,6 +3025,36 @@ function selectOption(code, status, button) {
     if (status === 'ziel') { zielBox.classList.add('visible'); updateZieltext(code); }
     else zielBox.classList.remove('visible');
     saveToLocalStorage();
+
+    // Wenn "nicht erreicht" gewählt wurde, aktualisiere die UI für nachfolgende Items
+    if (status === 'nicht-erreicht') {
+        updateBlockedZielButtons(code);
+    }
+}
+
+// Aktualisiert die Ziel-Buttons nach einer "nicht erreicht" Auswahl
+function updateBlockedZielButtons(blockedCode) {
+    const itemInfo = getItemInfoFromCode(blockedCode);
+    if (!itemInfo) return;
+
+    const { bereich } = itemInfo;
+
+    // Gehe durch alle Items in diesem Bereich und aktualisiere deren Ziel-Buttons
+    for (const [stufeNr, stufeData] of Object.entries(ELDIB_DATA[bereich].stufen)) {
+        for (const item of stufeData.items) {
+            const check = canSetZiel(item.code);
+            const zielBtn = document.querySelector(`#item-${item.code} .option-btn.ziel`);
+            if (zielBtn) {
+                if (!check.allowed && check.reason === 'nicht-erreicht') {
+                    zielBtn.classList.add('blocked');
+                    zielBtn.title = check.message;
+                } else {
+                    zielBtn.classList.remove('blocked');
+                    zielBtn.title = '';
+                }
+            }
+        }
+    }
 }
 
 // Toggle all items in a Stufe as "erreicht" with checkbox animation
