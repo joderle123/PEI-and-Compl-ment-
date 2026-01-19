@@ -2357,10 +2357,10 @@
 // Stufen-Alter-Mapping (sozio-emotionales Entwicklungsalter in Jahren)
 const STUFEN_ALTER_MAPPING = {
     1: { min: 0, max: 2, name: "Stufe I", beschreibung: "0-2 Jahre" },
-    2: { min: 2, max: 4, name: "Stufe II", beschreibung: "2-4 Jahre" },
-    3: { min: 4, max: 6, name: "Stufe III", beschreibung: "4-6 Jahre" },
-    4: { min: 6, max: 9, name: "Stufe IV", beschreibung: "6-9 Jahre" },
-    5: { min: 9, max: 12, name: "Stufe V", beschreibung: "9-12 Jahre" }
+    2: { min: 3, max: 5, name: "Stufe II", beschreibung: "3-5 Jahre" },
+    3: { min: 6, max: 9, name: "Stufe III", beschreibung: "6-9 Jahre" },
+    4: { min: 10, max: 12, name: "Stufe IV", beschreibung: "10-12 Jahre" },
+    5: { min: 13, max: 16, name: "Stufe V", beschreibung: "13-16 Jahre" }
 };
 
 // Berechnet das Alter des Schülers in Jahren
@@ -2437,14 +2437,15 @@ function canSetZiel(code) {
     }
 
     // Regel 2: Prüfe Altersgrenze
+    // Ziel nur möglich wenn biologisches Alter < Mindestalter der Stufe
     const alter = getSchuelerAlter();
     if (alter !== null) {
         const stufeAlter = STUFEN_ALTER_MAPPING[stufe];
-        if (stufeAlter && alter >= stufeAlter.max) {
+        if (stufeAlter && alter >= stufeAlter.min) {
             return {
                 allowed: false,
                 reason: 'alter',
-                message: `Ziel nicht möglich: Der Schüler ist ${alter} Jahre alt. ${stufeAlter.name} (${stufeAlter.beschreibung}) kann nicht mehr als Ziel gesetzt werden, da das biologische Alter das sozio-emotionale Alter dieser Stufe bereits erreicht hat.`
+                message: `Ziel nicht möglich: Der Schüler ist ${alter} Jahre alt. ${stufeAlter.name} (${stufeAlter.beschreibung}) kann nicht als Ziel gesetzt werden, da das biologische Alter bereits im oder über dem sozio-emotionalen Entwicklungsalter dieser Stufe liegt. Nur Stufen mit höherem Alter können als Ziel definiert werden.`
             };
         }
     }
@@ -2490,7 +2491,22 @@ function updateAlterAnzeige() {
 // Aktualisiert alle Ziel-Buttons basierend auf Altersblockade
 function updateAllBlockedButtonsByAge() {
     const alter = getSchuelerAlter();
-    if (alter === null) return;
+    if (alter === null) {
+        // Kein Alter eingegeben - entferne alle Altersblockaden
+        document.querySelectorAll('.option-btn.ziel.blocked').forEach(btn => {
+            // Prüfe ob nur durch Alter blockiert war
+            const itemDiv = btn.closest('.item');
+            if (itemDiv) {
+                const code = itemDiv.id.replace('item-', '');
+                const check = canSetZiel(code);
+                if (check.allowed) {
+                    btn.classList.remove('blocked');
+                    btn.title = '';
+                }
+            }
+        });
+        return;
+    }
 
     // Gehe durch alle Bereiche
     for (const [bereich, bereichData] of Object.entries(ELDIB_DATA)) {
@@ -2500,18 +2516,20 @@ function updateAllBlockedButtonsByAge() {
             for (const item of stufeData.items) {
                 const zielBtn = document.querySelector(`#item-${item.code} .option-btn.ziel`);
                 if (zielBtn) {
-                    // Prüfe ob durch Alter blockiert
-                    if (stufeAlter && alter >= stufeAlter.max) {
+                    // Prüfe ob durch Alter blockiert (biologisches Alter >= Mindestalter der Stufe)
+                    if (stufeAlter && alter >= stufeAlter.min) {
                         zielBtn.classList.add('blocked');
-                        zielBtn.title = `Ziel nicht möglich: Biologisches Alter (${alter}) hat sozio-emotionales Alter dieser Stufe erreicht.`;
+                        zielBtn.title = `Ziel nicht möglich: Schüler ist ${alter} Jahre. ${stufeAlter.name} (${stufeAlter.beschreibung}) - biologisches Alter liegt bereits im/über dem sozio-emotionalen Alter.`;
                     } else {
-                        // Nur entfernen wenn nicht durch "nicht erreicht" blockiert
+                        // Prüfe ob durch "nicht erreicht" blockiert
                         const check = canSetZiel(item.code);
-                        if (check.allowed || check.reason !== 'nicht-erreicht') {
-                            if (!(check.reason === 'alter')) {
-                                zielBtn.classList.remove('blocked');
-                                zielBtn.title = '';
-                            }
+                        if (check.allowed) {
+                            zielBtn.classList.remove('blocked');
+                            zielBtn.title = '';
+                        } else if (check.reason === 'nicht-erreicht') {
+                            // Bleibt blockiert wegen "nicht erreicht"
+                            zielBtn.classList.add('blocked');
+                            zielBtn.title = check.message;
                         }
                     }
                 }
