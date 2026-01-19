@@ -3035,6 +3035,27 @@ function createItemElement(item, bereichKey) {
 }
 
 function selectOption(code, status, button) {
+    const parent = button.parentElement;
+    const isAlreadySelected = button.classList.contains('selected');
+
+    // Wenn derselbe Button nochmal geklickt wird -> Auswahl aufheben
+    if (isAlreadySelected) {
+        button.classList.remove('selected');
+        const previousStatus = state.selections[code]?.status;
+        if (state.selections[code]) {
+            delete state.selections[code].status;
+        }
+        const zielBox = document.getElementById(`ziel-box-${code}`);
+        if (zielBox) zielBox.classList.remove('visible');
+        saveToLocalStorage();
+
+        // Wenn "nicht erreicht" aufgehoben wurde, aktualisiere alle Blockaden im Bereich
+        if (previousStatus === 'nicht-erreicht') {
+            refreshBlockedButtonsInBereich(code);
+        }
+        return;
+    }
+
     // Blockade-Prüfung für "Ziel"
     if (status === 'ziel') {
         const check = canSetZiel(code);
@@ -3044,7 +3065,9 @@ function selectOption(code, status, button) {
         }
     }
 
-    const parent = button.parentElement;
+    // Vorherige Auswahl merken bevor wir ändern
+    const previousStatus = state.selections[code]?.status;
+
     parent.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('selected'));
     button.classList.add('selected');
     if (!state.selections[code]) state.selections[code] = {};
@@ -3057,6 +3080,36 @@ function selectOption(code, status, button) {
     // Wenn "nicht erreicht" gewählt wurde, aktualisiere die UI für nachfolgende Items
     if (status === 'nicht-erreicht') {
         updateBlockedZielButtons(code);
+    }
+
+    // Wenn vorher "nicht erreicht" war und jetzt etwas anderes, Blockaden aktualisieren
+    if (previousStatus === 'nicht-erreicht' && status !== 'nicht-erreicht') {
+        refreshBlockedButtonsInBereich(code);
+    }
+}
+
+// Aktualisiert alle Ziel-Buttons im Bereich (nach Aufheben/Ändern von "nicht erreicht")
+function refreshBlockedButtonsInBereich(changedCode) {
+    const itemInfo = getItemInfoFromCode(changedCode);
+    if (!itemInfo) return;
+
+    const { bereich } = itemInfo;
+
+    // Gehe durch alle Items in diesem Bereich und aktualisiere deren Ziel-Buttons
+    for (const [stufeNr, stufeData] of Object.entries(ELDIB_DATA[bereich].stufen)) {
+        for (const item of stufeData.items) {
+            const check = canSetZiel(item.code);
+            const zielBtn = document.querySelector(`#item-${item.code} .option-btn.ziel`);
+            if (zielBtn) {
+                if (!check.allowed) {
+                    zielBtn.classList.add('blocked');
+                    zielBtn.title = check.message;
+                } else {
+                    zielBtn.classList.remove('blocked');
+                    zielBtn.title = '';
+                }
+            }
+        }
     }
 }
 
