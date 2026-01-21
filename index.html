@@ -5218,102 +5218,77 @@ function dsGenerateSMARTGoalsSection() {
 }
 
 function dsGenerateGridHTML() {
-    // Status Lookup erstellen
-    const statusLookup = { verhalten: {}, kommunikation: {}, sozialisation: {}, kognition: {} };
-
-    for (const [code, selection] of Object.entries(state.selections)) {
-        const bereich = findBereichByCode(code);
-        const item = findItemByCode(code);
-        if (bereich && item) {
-            const nr = item.nr;
-            if (selection.status === 'erreicht') {
-                statusLookup[bereich][nr] = 'erreicht';
-            } else if (selection.status === 'ziel') {
-                statusLookup[bereich][nr] = 'ziel';
-            }
-        }
+    // Hilfsfunktion für Farben
+    function dsGetItemColor(prefix, nr) {
+        const codeMap = { 'V': 'V', 'K': 'K', 'S': 'SOZ', 'C': 'KOG' };
+        const actualPrefix = codeMap[prefix] || prefix;
+        const code = `${actualPrefix}-${nr}`;
+        const sel = state.selections[code];
+        if (sel?.status === 'erreicht') return '#70AD47';
+        if (sel?.status === 'ziel') return '#FFC000';
+        return '#FFFFFF';
     }
 
-    // Kompakte Tabelle
+    // Verwende die gleiche Struktur wie PEI
     let html = '<div style="text-align: center; margin: 8pt 0;">';
-    html += '<table style="margin: 0 auto; border-collapse: collapse; font-family: Calibri, sans-serif; font-size: 6pt;">';
+    html += '<table style="margin: 0 auto; border-collapse: collapse; font-family: Calibri, sans-serif; font-size: 7pt;">';
 
-    // Header
+    // Header row 1: NIV, COMP, COMM, SOC, COG
     html += '<tr>';
-    html += '<td style="border: 1pt solid #000000; background-color: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 2pt; width: 40pt;">V</td>';
-    html += '<td style="border: 1pt solid #000000; background-color: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 2pt; width: 40pt;">K</td>';
-    html += '<td style="border: 1pt solid #000000; background-color: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 2pt; width: 40pt;">SOZ</td>';
-    html += '<td style="border: 1pt solid #000000; background-color: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 2pt; width: 40pt;">KOG</td>';
-    html += '<td style="border: 1pt solid #000000; background-color: #BFBFBF; font-weight: bold; text-align: center; padding: 1pt; width: 70pt; font-size: 6pt;">Stufe</td>';
+    html += '<td style="border: 1pt solid #000000; background-color: #D9D9D9; padding: 2pt; width: 45pt;"></td>';
+    html += '<td style="border: 1pt solid #000000; background-color: #D9D9D9; font-weight: bold; text-align: center; padding: 2pt; width: 30pt;">COMP</td>';
+    html += '<td style="border: 1pt solid #000000; background-color: #D9D9D9; font-weight: bold; text-align: center; padding: 2pt; width: 30pt;">COMM</td>';
+    html += '<td style="border: 1pt solid #000000; background-color: #D9D9D9; font-weight: bold; text-align: center; padding: 2pt; width: 30pt;">SOC</td>';
+    html += '<td style="border: 1pt solid #000000; background-color: #D9D9D9; font-weight: bold; text-align: center; padding: 2pt; width: 30pt;">COG</td>';
     html += '</tr>';
 
-    const stufen = [
-        { nr: 5, label: 'Stufe V (13-16 J.)', v: [29,33], k: [30,35], s: [35,41], kog: [57,62] },
-        { nr: 4, label: 'Stufe IV (10-12 J.)', v: [22,28], k: [23,29], s: [28,34], kog: [50,56] },
-        { nr: 3, label: 'Stufe III (6-9 J.)', v: [15,21], k: [14,22], s: [18,27], kog: [37,49] },
-        { nr: 2, label: 'Stufe II (3-5 J.)', v: [9,14], k: [9,13], s: [9,17], kog: [20,36] },
-        { nr: 1, label: 'Stufe I (0-2 J.)', v: [1,8], k: [1,8], s: [1,8], kog: [1,19] }
-    ];
+    // Header row 2: Totals
+    html += '<tr>';
+    html += '<td style="border: 1pt solid #000000; background-color: #D9D9D9; padding: 2pt;"></td>';
+    html += '<td style="border: 1pt solid #000000; background-color: #D9D9D9; text-align: center; padding: 2pt;">33</td>';
+    html += '<td style="border: 1pt solid #000000; background-color: #D9D9D9; text-align: center; padding: 2pt;">35</td>';
+    html += '<td style="border: 1pt solid #000000; background-color: #D9D9D9; text-align: center; padding: 2pt;">41</td>';
+    html += '<td style="border: 1pt solid #000000; background-color: #D9D9D9; text-align: center; padding: 2pt;">62</td>';
+    html += '</tr>';
 
-    stufen.forEach(stufe => {
-        const maxRows = Math.max(
-            stufe.v[1] - stufe.v[0] + 1,
-            stufe.k[1] - stufe.k[0] + 1,
-            stufe.s[1] - stufe.s[0] + 1,
-            stufe.kog[1] - stufe.kog[0] + 1
-        );
+    // Niveaus von oben nach unten (V bis I)
+    const niveaus = ['V', 'IV', 'III', 'II', 'I'];
 
-        for (let i = 0; i < maxRows; i++) {
+    niveaus.forEach(niveau => {
+        const lvl = ELDIB_STRUCTURE[niveau];
+        const maxRows = Math.max(lvl.V.length, lvl.K.length, lvl.S.length, lvl.C.length);
+
+        for (let row = 0; row < maxRows; row++) {
             html += '<tr>';
 
-            // V
-            const vNum = stufe.v[1] - i;
-            if (vNum >= stufe.v[0]) {
-                const vStatus = statusLookup.verhalten[vNum] || '';
-                const vBg = vStatus === 'erreicht' ? '#70AD47' : (vStatus === 'ziel' ? '#FFC000' : '#FFFFFF');
-                const vCol = vStatus === 'erreicht' ? '#FFFFFF' : '#000000';
-                html += '<td style="border: 1pt solid #000000; text-align: center; background-color: ' + vBg + '; color: ' + vCol + '; height: 8pt; padding: 1pt;">' + vNum + '</td>';
-            } else {
-                html += '<td style="border: 1pt solid #000000; background-color: #E7E6E6; height: 8pt;"></td>';
+            // NIVEAU label (nur erste Zeile, mit rowspan)
+            if (row === 0) {
+                html += '<td style="border: 1pt solid #000000; font-weight: bold; text-align: center; padding: 2pt; vertical-align: middle;" rowspan="' + maxRows + '">NIV ' + niveau + '</td>';
             }
 
-            // K
-            const kNum = stufe.k[1] - i;
-            if (kNum >= stufe.k[0]) {
-                const kStatus = statusLookup.kommunikation[kNum] || '';
-                const kBg = kStatus === 'erreicht' ? '#70AD47' : (kStatus === 'ziel' ? '#FFC000' : '#FFFFFF');
-                const kCol = kStatus === 'erreicht' ? '#FFFFFF' : '#000000';
-                html += '<td style="border: 1pt solid #000000; text-align: center; background-color: ' + kBg + '; color: ' + kCol + '; height: 8pt; padding: 1pt;">' + kNum + '</td>';
-            } else {
-                html += '<td style="border: 1pt solid #000000; background-color: #E7E6E6; height: 8pt;"></td>';
-            }
+            // COMP cell
+            const vItem = lvl.V[row];
+            const vColor = vItem ? dsGetItemColor('V', vItem) : '#E7E6E6';
+            const vTextColor = vColor === '#70AD47' ? '#FFFFFF' : '#000000';
+            html += '<td style="border: 1pt solid #000000; text-align: center; background-color: ' + vColor + '; color: ' + vTextColor + '; padding: 1pt; height: 10pt;">' + (vItem || '') + '</td>';
 
-            // SOZ
-            const sNum = stufe.s[1] - i;
-            if (sNum >= stufe.s[0]) {
-                const sStatus = statusLookup.sozialisation[sNum] || '';
-                const sBg = sStatus === 'erreicht' ? '#70AD47' : (sStatus === 'ziel' ? '#FFC000' : '#FFFFFF');
-                const sCol = sStatus === 'erreicht' ? '#FFFFFF' : '#000000';
-                html += '<td style="border: 1pt solid #000000; text-align: center; background-color: ' + sBg + '; color: ' + sCol + '; height: 8pt; padding: 1pt;">' + sNum + '</td>';
-            } else {
-                html += '<td style="border: 1pt solid #000000; background-color: #E7E6E6; height: 8pt;"></td>';
-            }
+            // COMM cell
+            const kItem = lvl.K[row];
+            const kColor = kItem ? dsGetItemColor('K', kItem) : '#E7E6E6';
+            const kTextColor = kColor === '#70AD47' ? '#FFFFFF' : '#000000';
+            html += '<td style="border: 1pt solid #000000; text-align: center; background-color: ' + kColor + '; color: ' + kTextColor + '; padding: 1pt; height: 10pt;">' + (kItem || '') + '</td>';
 
-            // KOG
-            const kogNum = stufe.kog[1] - i;
-            if (kogNum >= stufe.kog[0]) {
-                const kogStatus = statusLookup.kognition[kogNum] || '';
-                const kogBg = kogStatus === 'erreicht' ? '#70AD47' : (kogStatus === 'ziel' ? '#FFC000' : '#FFFFFF');
-                const kogCol = kogStatus === 'erreicht' ? '#FFFFFF' : '#000000';
-                html += '<td style="border: 1pt solid #000000; text-align: center; background-color: ' + kogBg + '; color: ' + kogCol + '; height: 8pt; padding: 1pt;">' + kogNum + '</td>';
-            } else {
-                html += '<td style="border: 1pt solid #000000; background-color: #E7E6E6; height: 8pt;"></td>';
-            }
+            // SOC cell
+            const sItem = lvl.S[row];
+            const sColor = sItem ? dsGetItemColor('S', sItem) : '#E7E6E6';
+            const sTextColor = sColor === '#70AD47' ? '#FFFFFF' : '#000000';
+            html += '<td style="border: 1pt solid #000000; text-align: center; background-color: ' + sColor + '; color: ' + sTextColor + '; padding: 1pt; height: 10pt;">' + (sItem || '') + '</td>';
 
-            // Stufe Label nur in erster Zeile
-            if (i === 0) {
-                html += '<td style="border: 1pt solid #000000; background-color: #BFBFBF; font-weight: bold; text-align: center; padding: 1pt; font-size: 6pt;" rowspan="' + maxRows + '">' + stufe.label + '</td>';
-            }
+            // COG cell
+            const cItem = lvl.C[row];
+            const cColor = cItem ? dsGetItemColor('C', cItem) : '#E7E6E6';
+            const cTextColor = cColor === '#70AD47' ? '#FFFFFF' : '#000000';
+            html += '<td style="border: 1pt solid #000000; text-align: center; background-color: ' + cColor + '; color: ' + cTextColor + '; padding: 1pt; height: 10pt;">' + (cItem || '') + '</td>';
 
             html += '</tr>';
         }
