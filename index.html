@@ -4358,9 +4358,9 @@ async function generatePEI() {
         const item = findItemByCode(code);
         if (bereich && item) {
             if (selection.status === 'ziel') {
-                ziele[bereich].push({ code, keyword: item.keyword, zieltext: selection.zieltext || item.zielformulierungen[0] });
+                ziele[bereich].push({ code, keyword: item.keyword, description: item.description, zieltext: selection.zieltext || item.zielformulierungen[0] });
             } else if (selection.status === 'erreicht') {
-                erreichte[bereich].push({ code, keyword: item.keyword });
+                erreichte[bereich].push({ code, keyword: item.keyword, description: item.description });
             }
         }
     }
@@ -4732,7 +4732,7 @@ async function generatePEI() {
         // Value row: erreicht items with spacing
         const competencesContent = erreichtItems && erreichtItems.length > 0
             ? erreichtItems.map(item => new Paragraph({
-                children: [new TextRun({text: `${item.code}: ${item.keyword}`, size: 22})],
+                children: [new TextRun({text: `${item.code}: ${item.keyword} - ${item.description}`, size: 22})],
                 spacing: {after: 120}
             }))
             : [new Paragraph('')];
@@ -4754,10 +4754,16 @@ async function generatePEI() {
 
         // Value row: ziel items with spacing
         const objectifsContent = goals && goals.length > 0
-            ? goals.map(g => new Paragraph({
-                children: [new TextRun({text: `${g.code}: "${g.zieltext}"`, size: 22})],
-                spacing: {after: 120}
-            }))
+            ? goals.flatMap(g => [
+                new Paragraph({
+                    children: [new TextRun({text: `${g.code}: ${g.keyword} - ${g.description}`, bold: true, size: 22})],
+                    spacing: {before: 60}
+                }),
+                new Paragraph({
+                    children: [new TextRun({text: `→ "${g.zieltext}"`, size: 22})],
+                    spacing: {after: 120}
+                })
+            ])
             : [new Paragraph('')];
         rows.push(new TableRow({ children: [
             new TableCell({ children: objectifsContent, borders: cellBorders })
@@ -5630,16 +5636,20 @@ function dsGenerateSMARTGoalsSection() {
 
     let html = '<table style="width: 100%; border-collapse: collapse; margin: 6pt 0; font-family: Calibri, sans-serif; font-size: 9pt;">';
     html += '<tr>';
-    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: left; width: 12%; background-color: #BFBFBF; font-weight: bold;">Item</th>';
-    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: left; width: 20%; background-color: #BFBFBF; font-weight: bold;">Kompetenz</th>';
-    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: left; background-color: #BFBFBF; font-weight: bold;">Zielformulierung</th>';
+    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: left; width: 10%; background-color: #BFBFBF; font-weight: bold;">Item</th>';
+    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: left; width: 18%; background-color: #BFBFBF; font-weight: bold;">Kompetenz</th>';
+    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: left; width: 32%; background-color: #BFBFBF; font-weight: bold;">Zielformulierung</th>';
+    html += '<th style="border: 1pt solid #000000; padding: 4pt; text-align: left; width: 40%; background-color: #BFBFBF; font-weight: bold;">Intervention</th>';
     html += '</tr>';
 
     allGoals.forEach(goal => {
+        const interventions = getInterventionen(goal.code);
+        const interventionText = interventions.length > 0 ? interventions.map(i => '• ' + i).join('<br>') : '-';
         html += '<tr>';
         html += '<td style="border: 1pt solid #000000; padding: 4pt; font-weight: bold; vertical-align: top;">' + goal.code + '</td>';
-        html += '<td style="border: 1pt solid #000000; padding: 4pt; vertical-align: top;">' + goal.keyword + '</td>';
-        html += '<td style="border: 1pt solid #000000; padding: 4pt;">' + goal.zieltext + '</td>';
+        html += '<td style="border: 1pt solid #000000; padding: 4pt; vertical-align: top;"><strong>' + goal.keyword + '</strong><br><span style="font-size: 8pt;">' + goal.description + '</span></td>';
+        html += '<td style="border: 1pt solid #000000; padding: 4pt; vertical-align: top;">' + goal.zieltext + '</td>';
+        html += '<td style="border: 1pt solid #000000; padding: 4pt; vertical-align: top;">' + interventionText + '</td>';
         html += '</tr>';
     });
 
