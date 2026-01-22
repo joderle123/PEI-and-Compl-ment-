@@ -5229,15 +5229,15 @@ function dsGenerateGridHTML() {
 
     // Kompakte Tabelle wie im Original-DS
     let html = '<div style="text-align: center; margin: 4pt 0;">';
-    html += '<table style="margin: 0 auto; border-collapse: collapse; font-family: Calibri, sans-serif; font-size: 5pt;">';
+    html += '<table style="margin: 0 auto; border-collapse: collapse; font-family: Calibri, sans-serif; font-size: 5pt; line-height: 1;">';
 
     // Header
     html += '<tr>';
-    html += '<td style="border: 1pt solid #000; background: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 1pt; width: 28pt;">V</td>';
-    html += '<td style="border: 1pt solid #000; background: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 1pt; width: 28pt;">K</td>';
-    html += '<td style="border: 1pt solid #000; background: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 1pt; width: 28pt;">SOZ</td>';
-    html += '<td style="border: 1pt solid #000; background: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 1pt; width: 28pt;">KOG</td>';
-    html += '<td style="border: 1pt solid #000; background: #BFBFBF; font-weight: bold; text-align: center; padding: 1pt; width: 55pt; font-size: 5pt;">Stufe</td>';
+    html += '<td style="border: 1pt solid #000; background: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 0; width: 24pt; height: 8pt;">V</td>';
+    html += '<td style="border: 1pt solid #000; background: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 0; width: 24pt; height: 8pt;">K</td>';
+    html += '<td style="border: 1pt solid #000; background: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 0; width: 24pt; height: 8pt;">SOZ</td>';
+    html += '<td style="border: 1pt solid #000; background: #5B9BD5; color: white; font-weight: bold; text-align: center; padding: 0; width: 24pt; height: 8pt;">KOG</td>';
+    html += '<td style="border: 1pt solid #000; background: #BFBFBF; font-weight: bold; text-align: center; padding: 1pt; width: 50pt; font-size: 6pt;">Stufe</td>';
     html += '</tr>';
 
     // Stufendefinitionen (wie im Original DS)
@@ -5265,9 +5265,9 @@ function dsGenerateGridHTML() {
             if (vNum >= stufe.v[0]) {
                 const vColor = dsGetItemColor('V', vNum);
                 const vTextCol = vColor === '#70AD47' ? '#FFF' : '#000';
-                html += '<td style="border: 1pt solid #000; text-align: center; background: ' + vColor + '; color: ' + vTextCol + '; height: 5pt; padding: 0;">' + vNum + '</td>';
+                html += '<td style="border: 1pt solid #000; text-align: center; background: ' + vColor + '; color: ' + vTextCol + '; height: 3pt; padding: 0;">' + vNum + '</td>';
             } else {
-                html += '<td style="border: 1pt solid #000; background: #E7E6E6; height: 5pt;"></td>';
+                html += '<td style="border: 1pt solid #000; background: #E7E6E6; height: 3pt;"></td>';
             }
 
             // K
@@ -5275,9 +5275,9 @@ function dsGenerateGridHTML() {
             if (kNum >= stufe.k[0]) {
                 const kColor = dsGetItemColor('K', kNum);
                 const kTextCol = kColor === '#70AD47' ? '#FFF' : '#000';
-                html += '<td style="border: 1pt solid #000; text-align: center; background: ' + kColor + '; color: ' + kTextCol + '; height: 5pt; padding: 0;">' + kNum + '</td>';
+                html += '<td style="border: 1pt solid #000; text-align: center; background: ' + kColor + '; color: ' + kTextCol + '; height: 3pt; padding: 0;">' + kNum + '</td>';
             } else {
-                html += '<td style="border: 1pt solid #000; background: #E7E6E6; height: 5pt;"></td>';
+                html += '<td style="border: 1pt solid #000; background: #E7E6E6; height: 3pt;"></td>';
             }
 
             // SOZ
@@ -5285,9 +5285,9 @@ function dsGenerateGridHTML() {
             if (sNum >= stufe.s[0]) {
                 const sColor = dsGetItemColor('SOZ', sNum);
                 const sTextCol = sColor === '#70AD47' ? '#FFF' : '#000';
-                html += '<td style="border: 1pt solid #000; text-align: center; background: ' + sColor + '; color: ' + sTextCol + '; height: 5pt; padding: 0;">' + sNum + '</td>';
+                html += '<td style="border: 1pt solid #000; text-align: center; background: ' + sColor + '; color: ' + sTextCol + '; height: 3pt; padding: 0;">' + sNum + '</td>';
             } else {
-                html += '<td style="border: 1pt solid #000; background: #E7E6E6; height: 5pt;"></td>';
+                html += '<td style="border: 1pt solid #000; background: #E7E6E6; height: 3pt;"></td>';
             }
 
             // KOG
@@ -5295,14 +5295,14 @@ function dsGenerateGridHTML() {
             if (kogNum >= stufe.kog[0]) {
                 const kogColor = dsGetItemColor('KOG', kogNum);
                 const kogTextCol = kogColor === '#70AD47' ? '#FFF' : '#000';
-                html += '<td style="border: 1pt solid #000; text-align: center; background: ' + kogColor + '; color: ' + kogTextCol + '; height: 5pt; padding: 0;">' + kogNum + '</td>';
+                html += '<td style="border: 1pt solid #000; text-align: center; background: ' + kogColor + '; color: ' + kogTextCol + '; height: 3pt; padding: 0;">' + kogNum + '</td>';
             } else {
-                html += '<td style="border: 1pt solid #000; background: #E7E6E6; height: 5pt;"></td>';
+                html += '<td style="border: 1pt solid #000; background: #E7E6E6; height: 3pt;"></td>';
             }
 
             // Stufe Label nur in erster Zeile
             if (i === 0) {
-                html += '<td style="border: 1pt solid #000; background: #BFBFBF; font-weight: bold; text-align: center; padding: 1pt; font-size: 5pt;" rowspan="' + maxRows + '">' + stufe.label + '</td>';
+                html += '<td style="border: 1pt solid #000; background: #BFBFBF; font-weight: bold; text-align: center; padding: 1pt; font-size: 6pt;" rowspan="' + maxRows + '">' + stufe.label + '</td>';
             }
 
             html += '</tr>';
