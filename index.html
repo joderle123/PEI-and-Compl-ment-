@@ -1824,6 +1824,158 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* Item Modal Styles */
+        .item-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .item-modal-overlay.active {
+            display: flex;
+        }
+
+        .item-modal {
+            background: var(--gray-900);
+            border-radius: var(--radius);
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px var(--primary-glow);
+            border: 1px solid var(--glass-border);
+        }
+
+        .item-modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--gray-700);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--gray-100);
+        }
+
+        .item-modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--gray-400);
+            padding: 0;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .item-modal-close:hover {
+            color: var(--primary-light);
+        }
+
+        .item-modal-body {
+            padding: 24px;
+        }
+
+        .item-modal-code {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            font-weight: bold;
+            margin-bottom: 16px;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .item-modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--gray-100);
+            margin-bottom: 16px;
+        }
+
+        .item-modal-description {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--gray-200);
+            background: var(--gray-800);
+            padding: 20px;
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--primary);
+        }
+
+        .item-modal-examples {
+            margin-top: 20px;
+            background: rgba(34, 197, 94, 0.1);
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--success);
+        }
+
+        .examples-header {
+            font-weight: 600;
+            color: var(--success);
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .examples-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .examples-list li {
+            padding: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--gray-200);
+            border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .examples-list li:last-child {
+            border-bottom: none;
+        }
+
+        .examples-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .item-modal-hint {
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--gray-400);
+            font-style: italic;
+        }
+
+        /* Double-click hint for items */
+        .item-description {
+            cursor: pointer;
+        }
+
+        .item-description:hover::after {
+            content: " (Doppelklick für Details)";
+            font-size: 11px;
+            color: var(--gray-500);
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -2497,6 +2649,26 @@
         </div>
     </div>
 
+    <!-- Modal für Item-Details -->
+    <div class="item-modal-overlay" id="itemModal" onclick="closeItemModal(event)">
+        <div class="item-modal" onclick="event.stopPropagation()">
+            <div class="item-modal-header">
+                <h3>Item-Details</h3>
+                <button class="item-modal-close" onclick="closeItemModal()">&times;</button>
+            </div>
+            <div class="item-modal-body">
+                <span class="item-modal-code" id="modalItemCode"></span>
+                <div class="item-modal-title" id="modalItemTitle"></div>
+                <div class="item-modal-description" id="modalItemDescription"></div>
+                <div class="item-modal-examples" id="modalItemExamples">
+                    <div class="examples-header">Beobachtungsbeispiele:</div>
+                    <ul class="examples-list" id="modalExamplesList"></ul>
+                </div>
+                <div class="item-modal-hint">Tipp: Diese Beispiele helfen bei der Einschätzung ob das Verhalten erreicht, nicht erreicht oder als Ziel definiert werden sollte.</div>
+            </div>
+        </div>
+    </div>
+
     <script>
 // ELDiB Daten - Alle Items mit Zielformulierungen
 
@@ -3158,7 +3330,7 @@ function createItemElement(item, bereichKey) {
     const zielOptions = item.zielformulierungen.map((z, i) => `<option value="${i}">${z}</option>`).join('');
     itemDiv.innerHTML = `
         <div class="item-code">${item.code}</div>
-        <div class="item-description"><span class="item-keyword">${item.keyword}:</span> ${item.description}</div>
+        <div class="item-description" ondblclick="showItemModal('${item.code}')"><span class="item-keyword">${item.keyword}:</span> ${item.description}</div>
         <div class="item-options">
             <button class="option-btn erreicht" onclick="selectOption('${item.code}', 'erreicht', this)">Erreicht</button>
             <button class="option-btn nicht-erreicht" onclick="selectOption('${item.code}', 'nicht-erreicht', this)">Nicht erreicht</button>
@@ -3746,6 +3918,257 @@ const INTERVENTIONEN_FALLBACK = {
     sozialisation: ['Soziale Situationen besprechen', 'Rollenspiele durchführen', 'Kooperative Aktivitäten anbieten', 'Empathie fördern'],
     kognition: ['Lernstrategien vermitteln', 'Scaffolding anbieten', 'Handlungsorientiert arbeiten', 'Differenzierte Materialien bereitstellen']
 };
+
+// ==========================================
+// BEOBACHTUNGSBEISPIELE - Beispielverhalten pro Item
+// Für Doppelklick-Anzeige
+// ==========================================
+
+const BEISPIELE = {
+    // VERHALTEN
+    "V-1": ["Reagiert auf Berührung der Wange", "Dreht sich bei Geräuschen", "Folgt bewegenden Objekten mit den Augen"],
+    "V-2": ["Wendet Blick/Körper zu Seifenblasen", "Dreht Kopf zur Musik", "Lächelt wenn Hand ins Wasser getaucht wird"],
+    "V-3": ["Beobachtet Seifenblasen weiter und greift danach", "Schaut Erwachsenen beim Gitarrespielen zu", "Spritzt weiter im Wasser"],
+    "V-4": ["Sieht Bauklotz, hebt ihn hoch und wirft ihn", "Kommt zur Musikquelle gelaufen", "Streckt Hand aus um Gesicht zu berühren"],
+    "V-5": ["Spritzt im Wasser nach Aufforderung", "Schiebt Boot durchs Wasser nach Vormachen", "Fährt Spielzeugauto auf verbalen Hinweis"],
+    "V-6": ["Zeigt Toilettenbedarf an", "Versucht Wasserhahn aufzudrehen", "Zieht Hose hoch, versucht Reißverschluss"],
+    "V-7": ["Hebt Puppe hoch, streichelt Haare", "Zieht Auto über Boden, untersucht Räder", "Legt Spielzeug in Kiste auf Aufforderung"],
+    "V-8": ["Geht zur Spielecke wenn 'Jetzt spielen wir' gesagt wird", "Holt Mantel wenn Spaziergang angekündigt wird"],
+    "V-9": ["Fährt Spielzeugauto zur Tankstelle, tut als ob tanken", "Füttert und zieht Puppe an"],
+    "V-10": ["Wartet bis an der Reihe beim Turnen", "Wartet auf Plätzchen bis anderes Kind seins bekommen hat"],
+    "V-11": ["Kehrt in Erzählkreis zurück nach interessantem Hinweis", "Führt Arbeit fort nach Ermutigung sitzen zu bleiben"],
+    "V-12": ["Hört auf zu streiten, holt alternatives Spielzeug", "Folgt Klatsch-Rhythmus in der Gruppe"],
+    "V-13": ["Nimmt Arbeitsblatt ohne Aufforderung", "Beschäftigt sich mit Spielzeug, antwortet auf Fragen dazu"],
+    "V-14": ["Akzeptiert Schulterklopfen ohne Zurückzucken", "Lächelt zurück wenn für Geschichte gelobt"],
+    "V-15": ["Räumt Platz nach Frühstück ohne Aufforderung", "Arbeitet im vertrauten Übungsheft ohne Hilfe"],
+    "V-16": ["Sagt: 'Im Schwimmbad lassen sie uns nicht rein wenn wir prügeln'", "Kennt Schulbus-Regeln und Pausenregeln"],
+    "V-17": ["Erklärt: 'Nach Dunkelwerden kann einem was passieren'", "Begründet: 'Sonst können wir am Tisch nicht arbeiten'"],
+    "V-18": ["Sagt: 'Ich könnte aufzeigen anstatt zu rufen'", "Erkennt alternative Verhaltensweisen"],
+    "V-19": ["Erfüllt Kapitänsrolle verantwortungsbewusst", "Macht auch als Teilnehmer mit"],
+    "V-20": ["Stimmt nicht ein wenn andere Schimpfwörter rufen", "Bleibt auf Platz während andere herumlaufen"],
+    "V-21": ["Behält Selbstkontrolle während Gruppenaktivitäten", "Kontrolliert sich bei Übergängen"],
+    "V-22": ["Sagt: 'Als du dran warst, hab ich keinen Ton gesagt'", "Erinnert sich an eigene Verbesserungen"],
+    "V-23": ["Akzeptiert geänderten Ablauf ohne Ärger", "Wartet ruhig wenn Reihenfolge geändert wird"],
+    "V-24": ["Nimmt an Ausflug teil trotz Angst", "Probiert neue Aktivität aus"],
+    "V-25": ["Sagt Provokateur er solle aufhören, entzieht sich", "Schlägt Alternative vor wenn Plan ausfällt"],
+    "V-26": ["Behält Selbstkontrolle trotz Schimpfwörtern", "Reagiert besonnen auf Provokationen"],
+    "V-27": ["Setzt sich freiwillig um Versuchung zu vermeiden", "Ersetzt beschädigtes Buch eines Mitschülers"],
+    "V-28": ["Schlägt Abwechseln beim Abwaschen vor", "Bietet konstruktive Alternative an"],
+    "V-29": ["Überlegt ob er früh aufstehen könnte für Job", "Übernimmt Verantwortung für Materialien"],
+    "V-30": ["Sieht sich als Helfer bei Problemlösungen", "Sichert sich Leiterrolle auf positive Art"],
+    "V-31": ["Kommentiert: 'Radkappen klauen bringt nur Probleme'", "Hilft Regelkatalog zu formulieren"],
+    "V-32": ["Stellt sich zur Wahl der Schülervertretung", "Akzeptiert Mehrheitsbeschluss"],
+    "V-33": ["Analysiert Situation bei Gruppenausschluss", "Diskutiert Problem, plant neue Wege"],
+    // KOMMUNIKATION
+    "K-1": ["Sagt 'eee', 'nnn' oder 'mmm'", "Sagt 'baba', 'da da' Silbenreihen"],
+    "K-2": ["Dreht Körper/Blick zu grüßendem Erwachsenen", "Schaut Mutter an wenn sie spricht"],
+    "K-3": ["Zeigt Verständnis von 'Ball' durch Anschauen", "Winkt bei 'Wiedersehen'"],
+    "K-4": ["Antwortet annähernd mit Namen eines Kindes", "Antwortet mit Wortannäherung auf Objekt"],
+    "K-5": ["Sagt 'Mi..Mi' bei Milch", "Sagt 'Auch' wenn es mitmachen will"],
+    "K-6": ["Sagt 'Milch' wenn Milch hingestellt wird", "Sagt 'Bauen' mit Bauklötzen"],
+    "K-7": ["Sagt 'Auto' zu Kind das Lieblingsauto hat", "Sagt 'Geh weg' zum anderen Kind"],
+    "K-8": ["Sagt 'Gib mir das Auto'", "Singt Zeilen aus einfachem Lied"],
+    "K-9": ["Antwortet 'Das ist mein Laster' auf Anfrage", "Beantwortet Fragen mit sinnvollen Wörtern"],
+    "K-10": ["Rezeptives Vokabular max. 2 Jahre unter Altersnorm", "Wird durch Sprachentwicklungstests eingeschätzt"],
+    "K-11": ["Sagt 'Ich will deine rote Farbe'", "Fragt 'Was ist da drin?'"],
+    "K-12": ["Erzählt 'Ich hab meiner Mama beim Backen geholfen'", "Tauscht Informationen mit Erwachsenen"],
+    "K-13": ["Sagt 'Ich kann gut klettern, bis ganz oben'", "Beschreibt Vater: 'Mein Papi ist groß'"],
+    "K-14": ["Erzählt Schwester 'Ich habe das Buch gelesen'", "Sagt zu Mitschüler 'Das ist nicht richtig'"],
+    "K-15": ["Erzählt vom Umzug ins neue Haus", "Erklärt Bild: 'Das ist unser altes Haus'"],
+    "K-16": ["Erzählt 'Das Gewitter war so laut'", "Sagt 'Ich hab Angst vor Hunden'"],
+    "K-17": ["Schlägt Design für Wandgemälde vor", "Beteiligt sich an Gruppengespräch"],
+    "K-18": ["Sagt 'Hey, ich hab es fertig gekriegt'", "Zeigt Stolz auf eigene Arbeit"],
+    "K-19": ["Sagt 'Man soll wegbleiben wenn ich Wut habe'", "Beschreibt eigene Stärken und Schwächen"],
+    "K-20": ["Beschreibt Freundin: 'Schnellste Läuferin'", "Beschreibt Eigenschaften anderer Kinder"],
+    "K-21": ["'Stefan ist froh weil er Urkunde bekommen hat'", "'Er ist sauer weil er nicht dran ist'"],
+    "K-22": ["Sagt 'Die sind nicht so weit wie wir'", "Sagt 'Wir sind die größten Künstler'"],
+    "K-23": ["Malt Angelerlebnis mit Vater", "Formt wütendes Monster aus Ton"],
+    "K-24": ["Sagt 'Ich bin in fast allen Fächern besser als letztes Jahr'", "Erkennt eigenen Fortschritt"],
+    "K-25": ["'Susie hat mir eine gescheuert weil ich Blöde Kuh gesagt hab'", "Erklärt Ursache-Wirkung"],
+    "K-26": ["'Ich war stinkig als du Farbe über unser Gemälde gekippt hast'", "Drückt eigene Gefühle aus"],
+    "K-27": ["Fragt Mechaniker 'Wie lange hat es gedauert das zu lernen?'", "Knüpft Beziehungen durch Fragen"],
+    "K-28": ["Erklärt Mitschüler eine Matheaufgabe", "Steht für anderen Mitschüler ein"],
+    "K-29": ["'Wir haben auf Lilli gehackt weil sie Ball fallen ließ'", "Beschreibt Zusammenhang von Gefühlen/Verhalten"],
+    "K-30": ["'Softball hier erinnert an Hunde die um Knochen balgen'", "Verwendet bildhafte Sprache"],
+    "K-31": ["'Setzen wir uns hin, jeder erzählt was er denkt'", "'Hört auf mit dem Blödsinn'"],
+    "K-32": ["'Peters Idee ist gut'", "'Deine Idee hat was für sich'"],
+    "K-33": ["Vergleicht Eltern: Vater rast, Mutter hält sich an Regeln", "Unterscheidet verschiedene Motive"],
+    "K-34": ["'Väter sollten bei Familien bleiben auch bei Problemen'", "Beschreibt eigene Wertvorstellungen"],
+    "K-35": ["'Unser Spiel ist gut weil wir zusammenspielen'", "Pflegt positive Beziehungen durch Sprache"],
+    // SOZIALISATION
+    "SOZ-1": ["Dreht Kopf zu wenn Rücken berührt wird", "Zeigt Interesse an Kuckuck-Spiel"],
+    "SOZ-2": ["Beobachtet was Erwachsener und Kind tun", "Beobachtet Vater beim Reden"],
+    "SOZ-3": ["Schaut hoch wenn Name gerufen wird", "Reagiert auf den eigenen Namen"],
+    "SOZ-4": ["Stapelt Bauklötze allein", "Klettert Rutsche hoch und rutscht runter"],
+    "SOZ-5": ["Führt Hand des Erwachsenen zum Keks", "Zeigt auf gewünschten Gegenstand"],
+    "SOZ-6": ["Geht zur Mutter und erlaubt Arm um sich", "Rutscht zur Erzieherin hinüber"],
+    "SOZ-7": ["Setzt sich auf Aufforderung", "Hängt Mantel auf wenn gesagt"],
+    "SOZ-8": ["Sagt 'Milch' wenn Vater Milch hinstellt", "Sagt 'Bauen' mit Bauklötzen"],
+    "SOZ-9": ["Erkennt sich im Spiegel", "Verwendet 'ich, mein, mir'"],
+    "SOZ-10": ["Spielt mit Lastwagen neben Kind mit Auto", "Baut Turm während anderes Kind auch baut"],
+    "SOZ-11": ["Sagt 'Auto' zu Kind mit Lieblingsauto", "Sagt 'Geh weg'"],
+    "SOZ-12": ["Betritt Raum und umarmt Erzieherin", "Bringt Buch um Bild zu zeigen"],
+    "SOZ-13": ["Spielt 'Einkaufen gehen' mit Spielgeld", "Tut als ob Bus fahren"],
+    "SOZ-14": ["Wartet auf Position nach Ermutigung", "Bleibt stehen wenn gesagt 'Warte bitte'"],
+    "SOZ-15": ["Geht zu freiem Stuhl neben bestimmtem Kind", "Schließt sich Murmelspiel an"],
+    "SOZ-16": ["Reicht Material/Spielzeug weiter", "Teilt Buntstifte mit anderem Kind"],
+    "SOZ-17": ["Spielt 'Nachlaufen' mit anderem Kind", "Bereitet gemeinsam Puppenkaffeeklatsch vor"],
+    "SOZ-18": ["Spielt Dialog in Theaterstück mit Partner", "Malt gemeinsam Teil eines Wandgemäldes"],
+    "SOZ-19": ["Teilt Erdnussflips beim Fernsehen mit Bruder", "Wechselt sich ab beim Völkerball"],
+    "SOZ-20": ["Hängt Mantel auf wie älterer Bruder", "Bleibt bei Gruppe statt loszurennen"],
+    "SOZ-21": ["Sagt 'Das ist nicht fair'", "Sagt 'Wände beschmieren ist schlecht'"],
+    "SOZ-22": ["Demonstriert anderen wie Lagerfeuer entzünden", "Organisiert Frage-Antwort-Spiel"],
+    "SOZ-23": ["Nimmt an Aktivität teil obwohl anderes gewünscht", "Akzeptiert Vorschlag der Schwester"],
+    "SOZ-24": ["Zeichnet Bilderreihe über Erlebnis", "Beschreibt Konfliktverlauf im Gespräch"],
+    "SOZ-25": ["Sagt 'Ich will mit Peter in der Mannschaft sein'", "Wählt regelmäßig bestimmtes Kind"],
+    "SOZ-26": ["Zeigt Bild und fragt 'Wie findest du das?'", "Bittet Mitschüler um Hilfe"],
+    "SOZ-27": ["Sagt im Kino 'Seid leise sonst setzen sie uns raus'", "Erklärt Neuem die Klassenregeln"],
+    "SOZ-28": ["Sammelt Infos über Olympiasieger", "Imitiert Stil der beliebten Lehrerin"],
+    "SOZ-29": ["Erzählt Details über Gruppenerlebnis", "Beschreibt Konfliktverlauf der Gruppe"],
+    "SOZ-30": ["Schlägt vor 'Sollen wir fragen ob Fußball?'", "Initiiert geeignete Gruppenaktivität"],
+    "SOZ-31": ["Sagt 'Peter soll gehen, er hat keine Angst'", "Erkennt Unterschiede zu anderen"],
+    "SOZ-32": ["Hört aufmerksam zu bei Erklärung", "Akzeptiert Trainers Rat"],
+    "SOZ-33": ["Sagt 'Ich glaube Luise mag mich nicht mehr'", "Fragt nach Meinung über sich"],
+    "SOZ-34": ["Schlägt Abstimmung vor für Ausflugsziel", "Bietet konstruktive Lösung an"],
+    "SOZ-35": ["'Nachbarin hält Prügel für normal'", "Erkennt gegensätzliche Werte"],
+    "SOZ-36": ["Sagt 'Eltern hatten wohl Sorgen'", "Zieht Schlussfolgerungen aus Situationen"],
+    "SOZ-37": ["'Daniels Eltern erlauben ihm nichts, ist nicht fair'", "Zeigt Verständnis für andere"],
+    "SOZ-38": ["Geben-Nehmen Austausch mit Freund", "Nimmt verschiedene Rollen ein"],
+    "SOZ-39": ["'Ich mag nicht mit Billy sein, der ist Unruhestifter'", "Trifft Entscheidungen nach Werten"],
+    "SOZ-40": ["Erkennt 'Ich bin zu klein für erstklassigen Basketball'", "Zeigt realistisches Selbstbild"],
+    "SOZ-41": ["Entwickelt offene Freundschaft", "Engagiert sich in Gruppe"],
+    // KOGNITION
+    "KOG-1": ["Wendet sich Seifenblasen zu", "Dreht Kopf zur Gitarrenmusik"],
+    "KOG-2": ["Beobachtet Seifenblasen weiter", "Beobachtet Erwachsenen weiter"],
+    "KOG-3": ["Lächelt bei vertrautem Erwachsenen", "Macht Gesten wenn es essen will"],
+    "KOG-4": ["Spritzt nach Aufforderung und Vormachen", "Fährt Auto nach verbalem Hinweis"],
+    "KOG-5": ["Winkt zum Abschied nach Vorbild", "Imitiert Klötzestapeln"],
+    "KOG-6": ["Baut Turm aus 3-5 Klötzen", "Rennt, klettert, geht allein"],
+    "KOG-7": ["Zeigt auf genanntes Spielzeug", "Wählt richtig zwischen Papier und Stiften"],
+    "KOG-8": ["Antwortet annähernd mit Namen", "Gibt Wortannäherung auf Objekt"],
+    "KOG-9": ["Sagt 'Mi..Mi' bei Milch", "Sagt 'Gehn' wenn es gehen will"],
+    "KOG-10": ["Steckt Formen in passendes Brett", "Legt Puzzleteile richtig"],
+    "KOG-11": ["Antwortet richtig auf 'Was ist das?' bei Haaren", "Zeigt Ohr/Fuß auf Frage"],
+    "KOG-12": ["Zeigt richtige Person im Bild", "Sagt 'Hund' und zeigt ihn unter Objekten"],
+    "KOG-13": ["Sortiert Lastwagen und Autos in zwei Kisten", "Ordnet Objekte in Kategorien"],
+    "KOG-14": ["Zeigt Hund im Buch, sagt 'Hund'", "Benennt Abbildungen mit Wörtern"],
+    "KOG-15": ["Erklärt/zeigt wozu Schaufel dient", "Demonstriert Verwendung von Gegenständen"],
+    "KOG-16": ["Fährt Gokart", "Balanciert kurz auf einem Fuß"],
+    "KOG-17": ["Zieht Linie zwischen zwei gleichen Bällen", "Findet Memory-Paare"],
+    "KOG-18": ["Baut Brücke aus Bauklötzen", "Fädelt Perlen auf"],
+    "KOG-19": ["Findet anderen Lastwagen unter drei Wagen", "Erkennt was anders ist"],
+    "KOG-20": ["Versteht: hoch/runter, unter/über", "Zeigt Ersten und Letzten in Reihe"],
+    "KOG-21": ["Sortiert Bilder: Menschen hierhin, Tiere dahin", "Ordnet nach Kategorien zu"],
+    "KOG-22": ["Nennt 1-4 in richtiger Reihenfolge", "Zeigt beim Zählen auf jeweiliges Objekt"],
+    "KOG-23": ["Zeigt richtig auf Kreis, Viereck, Dreieck", "Benennt vier Farben"],
+    "KOG-24": ["Wechselt zwischen 'Was ist anders?' und 'Was ist gleich?'", "Reagiert auf wechselnde Aufgaben"],
+    "KOG-25": ["Wählt 10 Bauklötze für Straße", "Zählt 10 Becher ab"],
+    "KOG-26": ["Zeichnet Menschen mit Körper", "Schreibt Namen ab", "Schneidet an Linien"],
+    "KOG-27": ["Findet Buchstaben unter Zeichen", "Unterscheidet Ziffern von Buchstaben"],
+    "KOG-28": ["Hüpft abwechselnd mit beiden Füßen", "Fährt Fahrrad mit Stützrädern"],
+    "KOG-29": ["Erkennt Anzahl Dominopunkte ohne Zählen", "Erfasst Mengen bis 5 spontan"],
+    "KOG-30": ["Singt Lied von ca. 30 Wörtern", "Zählt bis 20"],
+    "KOG-31": ["Ordnet drei Bilder zu Geschichte richtig", "Beantwortet 'Was passiert zuerst?'"],
+    "KOG-32": ["Zeichnet Menschen mit Armen, Beinen, Kleidung", "Bindet Schnürsenkel"],
+    "KOG-33": ["Wirft und fängt Ball gesteuert", "Unterscheidet rechts und links"],
+    "KOG-34": ["Liest 50 Wörter des Grundwortschatzes", "Liest einfache Wörter flüssig"],
+    "KOG-35": ["Schreibt 1-10 auswendig", "Schreibt Zahl zu gezeigter Menge"],
+    "KOG-36": ["Schreibt 50 Wörter lesbar nach Diktat", "Schreibt Grundwortschatz"],
+    "KOG-37": ["Erinnert sich an Details einer Geschichte", "Beantwortet Fragen zur Geschichte"],
+    "KOG-38": ["Erklärt: 'Junge weint weil andere ihn ärgern'", "Erklärt Verhalten anderer"],
+    "KOG-39": ["Liest einfache Sätze und beantwortet Fragen", "Versteht Inhalt beim Lesen"],
+    "KOG-40": ["Beherrscht Addition und Subtraktion bis 9", "Rechnet einfache Aufgaben"],
+    "KOG-41": ["Erkennt was im Bild fehlt", "Findet Unstimmigkeiten"],
+    "KOG-42": ["Schreibt Eigenschaften einer Figur auf", "Beantwortet Fragen schriftlich"],
+    "KOG-43": ["Schwimmt, trifft Ball beim Schlagball", "Nimmt an Staffellauf teil"],
+    "KOG-44": ["Schreibt drei Sätze als Geschichtsende", "Formuliert eigene Sätze"],
+    "KOG-45": ["Addiert/subtrahiert bis 100", "Benennt Uhrzeiten", "Zählt in 5er/10er"],
+    "KOG-46": ["Versteht Viertel/Halbe Stunden", "Versteht Zentimeter/Meter"],
+    "KOG-47": ["Erzählt von Zeitungsbericht", "Fasst Gelesenes zusammen"],
+    "KOG-48": ["Ordnet Zahlen in Stellenwerttabelle", "Rechnet mit Übertrag"],
+    "KOG-49": ["Schreibt Artikel für Schülerzeitung", "Schreibt Briefe"],
+    "KOG-50": ["Beherrscht Einmaleins", "Versteht 2+2+2+2 = 4x2"],
+    "KOG-51": ["Liest Zeitschriften zum Hobby", "Liest aus eigenem Interesse"],
+    "KOG-52": ["Wechselt Cent-Münzen in größere", "Rechnet mit Geld"],
+    "KOG-53": ["Beschreibt Fernsehfigur nach Aussehen und Verhalten", "Erklärt Motive von Figuren"],
+    "KOG-54": ["Verwendet korrekte Grammatik und Rechtschreibung", "Schreibt Aufsätze"],
+    "KOG-55": ["Unterscheidet legal/illegal", "Erkennt verschiedene Wertvorstellungen"],
+    "KOG-56": ["Wendet Mathematik in Sachaufgaben an", "Plant mit Preisvergleich"],
+    "KOG-57": ["Führt Meinungsumfrage durch", "Nimmt an Debatten teil"],
+    "KOG-58": ["Unterscheidet Fakten von Meinungen", "Hinterfragt Berichte kritisch"],
+    "KOG-59": ["Erkennt widersprüchliche Aussagen", "Bemerkt inkonsistentes Verhalten"],
+    "KOG-60": ["Berechnet Mehrwertsteuer", "Passt Rezeptmengen an"],
+    "KOG-61": ["Analysiert Probleme und wählt Lösung", "Verarbeitet schwierige Situationen"],
+    "KOG-62": ["Berechnet Monatsbudget", "Diskutiert gesellschaftliche Themen"]
+};
+
+// ==========================================
+// ITEM MODAL FUNKTIONEN
+// Für Doppelklick auf Items
+// ==========================================
+
+function showItemModal(itemCode) {
+    // Item-Daten aus ELDIB_DATA finden
+    const bereichKey = itemCode.split('-')[0];
+    let bereichName = '';
+    let bereichData = null;
+
+    if (bereichKey === 'V') {
+        bereichName = 'verhalten';
+        bereichData = ELDIB_DATA.verhalten;
+    } else if (bereichKey === 'K') {
+        bereichName = 'kommunikation';
+        bereichData = ELDIB_DATA.kommunikation;
+    } else if (bereichKey === 'SOZ') {
+        bereichName = 'sozialisation';
+        bereichData = ELDIB_DATA.sozialisation;
+    } else if (bereichKey === 'KOG') {
+        bereichName = 'kognition';
+        bereichData = ELDIB_DATA.kognition;
+    }
+
+    if (!bereichData) return;
+
+    // Item in den Stufen finden
+    let item = null;
+    for (const stufe of bereichData.stufen) {
+        item = stufe.items.find(i => i.code === itemCode);
+        if (item) break;
+    }
+
+    if (!item) return;
+
+    // Modal befüllen
+    document.getElementById('modalItemCode').textContent = item.code;
+    document.getElementById('modalItemCode').style.background = bereichData.color;
+    document.getElementById('modalItemTitle').textContent = item.keyword;
+    document.getElementById('modalItemDescription').textContent = item.description;
+
+    // Beispiele anzeigen
+    const beispiele = BEISPIELE[itemCode] || [];
+    const examplesList = document.getElementById('modalExamplesList');
+    if (beispiele.length > 0) {
+        examplesList.innerHTML = beispiele.map(b => `<li>${b}</li>`).join('');
+        document.getElementById('modalItemExamples').style.display = 'block';
+    } else {
+        document.getElementById('modalItemExamples').style.display = 'none';
+    }
+
+    document.getElementById('itemModal').classList.add('active');
+
+    // ESC-Taste zum Schließen
+    document.addEventListener('keydown', handleModalEsc);
+}
+
+function handleModalEsc(e) {
+    if (e.key === 'Escape') closeItemModal();
+}
+
+function closeItemModal(event) {
+    if (event && event.target !== event.currentTarget) return;
+    document.getElementById('itemModal').classList.remove('active');
+    document.removeEventListener('keydown', handleModalEsc);
+}
 
 // ==========================================
 // ZUSÄTZLICHE ZIELE-DATENBANK
