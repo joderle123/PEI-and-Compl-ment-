@@ -542,12 +542,228 @@
             .radio-btn { min-width: 100%; }
         }
 
+        /* Gutachten / Report Styles */
+        .gutachten {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .gutachten-header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .gutachten-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .gutachten-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .gutachten-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            background: var(--bg-input);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            font-size: 0.85rem;
+        }
+
+        .gutachten-meta-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .gutachten-meta-label {
+            color: var(--text-muted);
+        }
+
+        .gutachten-meta-value {
+            font-weight: 600;
+        }
+
+        .gutachten-section {
+            margin-bottom: 2rem;
+        }
+
+        .gutachten-section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-light);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .gutachten-section-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--gradient-1);
+            border-radius: 2px;
+        }
+
+        .gutachten-text {
+            color: var(--text);
+            text-align: justify;
+        }
+
+        .gutachten-text p {
+            margin-bottom: 1rem;
+        }
+
+        .gutachten-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .gutachten-table th,
+        .gutachten-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .gutachten-table th {
+            background: var(--bg-input);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .gutachten-table tr:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .gutachten-table .normal { color: var(--success); }
+        .gutachten-table .borderline { color: var(--warning); }
+        .gutachten-table .clinical { color: var(--danger); }
+
+        .gutachten-highlight {
+            background: rgba(99, 102, 241, 0.1);
+            border-left: 3px solid var(--primary);
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .gutachten-warning {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid var(--danger);
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .gutachten-list {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .gutachten-list li {
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .gutachten-footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .gutachten-signature {
+            margin-top: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .gutachten-signature-box {
+            border-top: 1px solid var(--border);
+            padding-top: 0.5rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .icd-code {
+            display: inline-block;
+            background: var(--bg-input);
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--primary-light);
+            margin: 0.25rem;
+        }
+
+        /* Patient Info Form */
+        .patient-info {
+            background: linear-gradient(135deg, rgba(99,102,241,0.1) 0%, rgba(139,92,246,0.1) 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .patient-info-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .patient-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
         /* Print */
         @media print {
-            body { background: white; color: black; }
-            .header, .nav, .btn-group { display: none; }
-            .card { border: 1px solid #ddd; box-shadow: none; }
+            body { background: white; color: black; font-size: 11pt; }
+            .header, .nav, .btn-group, .patient-info { display: none; }
+            .card { border: none; box-shadow: none; padding: 0; }
             .summary-card { box-shadow: none; border: 1px solid #ddd; }
+            .gutachten {
+                background: white;
+                border: none;
+                padding: 0;
+                page-break-inside: avoid;
+            }
+            .gutachten-header { border-color: #333; }
+            .gutachten-section-title { color: #333; border-color: #ddd; }
+            .gutachten-section-title::before { background: #333; }
+            .gutachten-table th { background: #f5f5f5; }
+            .gutachten-highlight { background: #f0f0f0; border-color: #333; }
+            .gutachten-warning { background: #fff0f0; border-color: #c00; }
+            .icd-code { background: #f0f0f0; color: #333; }
+            .results { display: block !important; }
         }
     </style>
 </head>
@@ -577,6 +793,19 @@
     </nav>
 
     <main class="main">
+        <!-- Patientendaten -->
+        <div class="patient-info">
+            <div class="patient-info-title">📋 Patientendaten (für Gutachten)</div>
+            <div class="patient-info-grid">
+                <div class="form-group"><label>Name / Chiffre</label><input type="text" id="pat-name" placeholder="z.B. Max M. oder Code"></div>
+                <div class="form-group"><label>Geburtsdatum</label><input type="date" id="pat-dob"></div>
+                <div class="form-group"><label>Alter (Jahre)</label><input type="number" id="pat-age" min="4" max="18" placeholder="4-18"></div>
+                <div class="form-group"><label>Geschlecht</label><select id="pat-sex"><option value="">-</option><option value="m">männlich</option><option value="w">weiblich</option><option value="d">divers</option></select></div>
+                <div class="form-group"><label>Untersuchungsdatum</label><input type="date" id="pat-date"></div>
+                <div class="form-group"><label>Untersucher/in</label><input type="text" id="pat-examiner" placeholder="Name"></div>
+            </div>
+        </div>
+
         <!-- SDQ -->
         <section id="sdq" class="section active">
             <div class="card">
@@ -807,11 +1036,64 @@
         }));
 
         const v = id => { const e = document.getElementById(id); return e?.value ? parseFloat(e.value) : null; };
+        const vt = id => document.getElementById(id)?.value || '';
+
+        // Patientendaten abrufen
+        function getPatient() {
+            return {
+                name: vt('pat-name') || '[Name nicht angegeben]',
+                dob: vt('pat-dob'),
+                age: v('pat-age'),
+                sex: vt('pat-sex'),
+                date: vt('pat-date') || new Date().toISOString().split('T')[0],
+                examiner: vt('pat-examiner') || '[Untersucher/in]'
+            };
+        }
+
+        function formatDate(d) {
+            if (!d) return '-';
+            const [y,m,day] = d.split('-');
+            return `${day}.${m}.${y}`;
+        }
+
+        function sexText(s) {
+            return {m:'männlich',w:'weiblich',d:'divers'}[s] || '-';
+        }
 
         function clearForm(t) {
             document.getElementById(`${t}-form`).reset();
             document.getElementById(`${t}-results`).classList.remove('show');
             document.getElementById(`${t}-results`).innerHTML = '';
+        }
+
+        // Gutachten-Header generieren
+        function gutachtenHeader(testName, testFull, pat) {
+            return `
+                <div class="gutachten-header">
+                    <div class="gutachten-title">PSYCHOLOGISCHER BEFUNDBERICHT</div>
+                    <div class="gutachten-subtitle">${testName} – ${testFull}</div>
+                </div>
+                <div class="gutachten-meta">
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Patient/in:</span><span class="gutachten-meta-value">${pat.name}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Geburtsdatum:</span><span class="gutachten-meta-value">${formatDate(pat.dob)}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Alter:</span><span class="gutachten-meta-value">${pat.age ? pat.age + ' Jahre' : '-'}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Geschlecht:</span><span class="gutachten-meta-value">${sexText(pat.sex)}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Untersuchungsdatum:</span><span class="gutachten-meta-value">${formatDate(pat.date)}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Untersucher/in:</span><span class="gutachten-meta-value">${pat.examiner}</span></div>
+                </div>
+            `;
+        }
+
+        function gutachtenFooter() {
+            return `
+                <div class="gutachten-footer">
+                    <p><strong>Hinweis:</strong> Dieser Befundbericht dient der Dokumentation psychodiagnostischer Ergebnisse und sollte im Kontext einer umfassenden klinischen Beurteilung interpretiert werden. Die Ergebnisse standardisierter Testverfahren stellen einen wichtigen, aber nicht alleinigen Baustein der diagnostischen Urteilsbildung dar.</p>
+                    <div class="gutachten-signature">
+                        <div class="gutachten-signature-box">Ort, Datum</div>
+                        <div class="gutachten-signature-box">Unterschrift Untersucher/in</div>
+                    </div>
+                </div>
+            `;
         }
 
         function chart(labels, values, classes, max) {
@@ -840,6 +1122,9 @@
             self:   {em:[5,6],co:[3,4],hy:[5,6],pe:[3,5],pr:[6,5],tot:[15,19]}
         };
 
+        const SDQ_LABELS = {em:'Emotionale Probleme',co:'Verhaltensprobleme',hy:'Hyperaktivität/Unaufmerksamkeit',pe:'Probleme mit Gleichaltrigen',pr:'Prosoziales Verhalten'};
+        const RESP_TEXT = {parent:'Elternurteil',teacher:'Lehrerurteil',self:'Selbsturteil'};
+
         function sdqClass(k,val,r) {
             const n = SDQ_N[r][k];
             if(k==='pr') return val>=n[0]?'normal':val>=n[1]?'borderline':'clinical';
@@ -848,61 +1133,310 @@
 
         function evaluateSDQ(e) {
             e.preventDefault();
+            const pat = getPatient();
             const r = document.querySelector('input[name="sdq-resp"]:checked').value;
             const d = {em:v('sdq-em'),co:v('sdq-co'),hy:v('sdq-hy'),pe:v('sdq-pe'),pr:v('sdq-pr')};
             if(Object.values(d).some(x=>x===null)) return alert('Bitte alle Felder ausfüllen');
 
             const tot = d.em+d.co+d.hy+d.pe;
             const c = {}; Object.keys(d).forEach(k=>c[k]=sdqClass(k,d[k],r)); c.tot=sdqClass('tot',tot,r);
+            const intern = d.em + d.pe;
+            const extern = d.co + d.hy;
 
             const labels = ['Emotional','Verhalten','Hyperaktiv.','Peer','Prosozial'];
             const keys = ['em','co','hy','pe','pr'];
 
+            // Interpretation generieren
+            let interp = '';
+            const auffaellig = Object.entries(c).filter(([k,v])=>k!=='pr'&&k!=='tot'&&v==='clinical').map(([k])=>SDQ_LABELS[k]);
+            const grenz = Object.entries(c).filter(([k,v])=>k!=='pr'&&k!=='tot'&&v==='borderline').map(([k])=>SDQ_LABELS[k]);
+
+            if(c.tot === 'normal') {
+                interp = `Der Gesamtproblemwert von ${tot} Punkten liegt im unauffälligen Bereich. Dies deutet darauf hin, dass ${pat.name} aus Sicht des ${RESP_TEXT[r]}s derzeit keine bedeutsamen psychischen Auffälligkeiten zeigt.`;
+            } else if(c.tot === 'borderline') {
+                interp = `Der Gesamtproblemwert von ${tot} Punkten liegt im grenzwertigen Bereich und bedarf weiterer Beobachtung. Eine subklinische Belastung ist möglich.`;
+            } else {
+                interp = `Der Gesamtproblemwert von ${tot} Punkten liegt im klinisch auffälligen Bereich und weist auf eine erhöhte psychische Belastung hin, die einer weiteren diagnostischen Abklärung bedarf.`;
+            }
+
+            if(auffaellig.length) interp += ` Klinisch auffällige Werte zeigen sich in: ${auffaellig.join(', ')}.`;
+            if(grenz.length) interp += ` Grenzwertige Befunde liegen vor bei: ${grenz.join(', ')}.`;
+
+            if(c.pr === 'clinical') interp += ` Das prosoziale Verhalten ist auffällig reduziert, was auf mögliche Defizite in der sozial-emotionalen Entwicklung hindeuten kann.`;
+
+            // Differenzialdiagnostik
+            let diffDiag = '<ul class="gutachten-list">';
+            if(c.em === 'clinical') diffDiag += '<li>Emotionale Störungen des Kindesalters (F93), Angststörungen (F40-F41), Depressive Episode (F32)</li>';
+            if(c.co === 'clinical') diffDiag += '<li>Störung des Sozialverhaltens (F91), Oppositionelle Störung (F91.3)</li>';
+            if(c.hy === 'clinical') diffDiag += '<li>Hyperkinetische Störungen/ADHS (F90)</li>';
+            if(c.pe === 'clinical') diffDiag += '<li>Soziale Ängste (F40.1), Bindungsstörungen (F94), Autismus-Spektrum-Störungen (F84)</li>';
+            diffDiag += '</ul>';
+
+            // Empfehlungen
+            let empf = '<ul class="gutachten-list">';
+            if(c.tot !== 'normal') {
+                empf += '<li>Vertiefte psychodiagnostische Untersuchung empfohlen</li>';
+                if(c.em === 'clinical' || c.em === 'borderline') empf += '<li>Exploration emotionaler Belastungsfaktoren und Ängste</li>';
+                if(c.co === 'clinical' || c.hy === 'clinical') empf += '<li>Verhaltensbeobachtung in strukturierten und unstrukturierten Situationen</li>';
+                if(c.pe === 'clinical') empf += '<li>Abklärung sozialer Kompetenzen und Peer-Beziehungen</li>';
+                empf += '<li>Einbezug weiterer Informationsquellen (Eltern, Lehrkräfte, Selbsturteil)</li>';
+            } else {
+                empf += '<li>Keine unmittelbare Intervention erforderlich</li>';
+                empf += '<li>Ggf. Verlaufskontrolle bei Veränderungen</li>';
+            }
+            empf += '</ul>';
+
+            const gutachten = `
+                <div class="gutachten">
+                    ${gutachtenHeader('SDQ', 'Strengths and Difficulties Questionnaire', pat)}
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <div class="gutachten-text">
+                            <p>Der SDQ (Strengths and Difficulties Questionnaire; Goodman, 1997) ist ein international etabliertes Screening-Instrument zur Erfassung von Verhaltensauffälligkeiten und -stärken bei Kindern und Jugendlichen im Alter von 4-17 Jahren. Der Fragebogen umfasst 25 Items, die fünf Skalen zugeordnet sind: Emotionale Probleme, Verhaltensprobleme, Hyperaktivität/Unaufmerksamkeit, Probleme mit Gleichaltrigen sowie Prosoziales Verhalten. Die ersten vier Skalen bilden einen Gesamtproblemwert.</p>
+                            <p><strong>Informant:</strong> ${RESP_TEXT[r]}</p>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Skala</th><th>Rohwert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                <tr><td>Emotionale Probleme</td><td>${d.em}</td><td>0-${SDQ_N[r].em[0]}</td><td class="${c.em}">${S[c.em]}</td></tr>
+                                <tr><td>Verhaltensprobleme</td><td>${d.co}</td><td>0-${SDQ_N[r].co[0]}</td><td class="${c.co}">${S[c.co]}</td></tr>
+                                <tr><td>Hyperaktivität</td><td>${d.hy}</td><td>0-${SDQ_N[r].hy[0]}</td><td class="${c.hy}">${S[c.hy]}</td></tr>
+                                <tr><td>Probleme mit Gleichaltrigen</td><td>${d.pe}</td><td>0-${SDQ_N[r].pe[0]}</td><td class="${c.pe}">${S[c.pe]}</td></tr>
+                                <tr><td>Prosoziales Verhalten</td><td>${d.pr}</td><td>${SDQ_N[r].pr[0]}-10</td><td class="${c.pr}">${S[c.pr]}</td></tr>
+                                <tr style="font-weight:700;background:var(--bg-input);"><td>Gesamtproblemwert</td><td>${tot}</td><td>0-${SDQ_N[r].tot[0]}</td><td class="${c.tot}">${S[c.tot]}</td></tr>
+                            </tbody>
+                        </table>
+                        <p style="margin-top:1rem;font-size:0.85rem;color:var(--text-muted);">Internalisierend (EM+PE): ${intern} | Externalisierend (VP+HY): ${extern}</p>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">3. Grafische Darstellung</h4>
+                        <div class="chart-container">${chart(labels,keys.map(k=>d[k]),keys.map(k=>c[k]),10)}</div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">4. Interpretation</h4>
+                        <div class="gutachten-text"><p>${interp}</p></div>
+                        ${c.tot !== 'normal' ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Die Befunde deuten auf eine erhöhte psychische Belastung hin und sollten im Rahmen einer umfassenden Diagnostik weiter abgeklärt werden.</div>' : ''}
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">5. Differenzialdiagnostische Überlegungen</h4>
+                        <div class="gutachten-text">
+                            <p>Basierend auf dem Ergebnisprofil sollten folgende Störungsbilder differenzialdiagnostisch in Betracht gezogen werden:</p>
+                            ${c.tot !== 'normal' ? diffDiag : '<p>Bei unauffälligem Gesamtprofil keine spezifischen differenzialdiagnostischen Hinweise.</p>'}
+                            <p style="margin-top:1rem;"><strong>Relevante ICD-10 Codes:</strong></p>
+                            ${c.em === 'clinical' ? '<span class="icd-code">F93.x</span><span class="icd-code">F32.x</span>' : ''}
+                            ${c.co === 'clinical' ? '<span class="icd-code">F91.x</span>' : ''}
+                            ${c.hy === 'clinical' ? '<span class="icd-code">F90.x</span>' : ''}
+                            ${c.pe === 'clinical' ? '<span class="icd-code">F40.1</span><span class="icd-code">F94.x</span>' : ''}
+                            ${c.tot === 'normal' ? '<span class="icd-code">Z03.2</span> (Beobachtung bei V.a. psychische Störung – nicht bestätigt)' : ''}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">6. Empfehlungen</h4>
+                        <div class="gutachten-text">${empf}</div>
+                    </div>
+
+                    ${gutachtenFooter()}
+                </div>
+            `;
+
             document.getElementById('sdq-results').innerHTML = `
                 <div class="results-header"><h3 class="results-title">Ergebnis SDQ</h3></div>
                 ${summary([{l:'Gesamt',v:tot,c:c.tot,s:S[c.tot]},...keys.map(k=>({l:labels[keys.indexOf(k)],v:d[k],c:c[k],s:S[c[k]]}))])}
-                <div class="chart-container"><div class="chart-title">Skalenprofil</div>${chart(labels,keys.map(k=>d[k]),keys.map(k=>c[k]),10)}</div>
+                ${gutachten}
             `;
             document.getElementById('sdq-results').classList.add('show');
-            R.sdq = {d,c,tot,r}; updateReport();
+            R.sdq = {d,c,tot,r,gutachten}; updateReport();
         }
 
         // WISC
+        const WISC_NAMES = {
+            vci: {n:'Sprachverständnisindex (SVI)', desc:'Erfasst verbale Begriffsbildung, verbales Schlussfolgern und erworbenes Wissen'},
+            vsi: {n:'Visuell-räumlicher Index (VRI)', desc:'Erfasst visuell-räumliche Verarbeitung und Konstruktionsfähigkeiten'},
+            fri: {n:'Index Fluides Schlussfolgern (FSI)', desc:'Erfasst induktives und quantitatives Schlussfolgern'},
+            wmi: {n:'Arbeitsgedächtnisindex (AGI)', desc:'Erfasst Arbeitsgedächtnis und Aufmerksamkeitssteuerung'},
+            psi: {n:'Verarbeitungsgeschwindigkeitsindex (VGI)', desc:'Erfasst Verarbeitungsgeschwindigkeit und graphomotorische Geschwindigkeit'},
+            fsiq: {n:'Gesamt-IQ (FSIQ)', desc:'Gesamtmaß der allgemeinen kognitiven Leistungsfähigkeit'}
+        };
+
         function iqClass(v) {
-            if(v>=130) return {l:'Sehr hoch',c:'normal'};
-            if(v>=120) return {l:'Hoch',c:'normal'};
-            if(v>=110) return {l:'Überdurchschn.',c:'normal'};
-            if(v>=90) return {l:'Durchschnitt',c:'normal'};
-            if(v>=80) return {l:'Unterdurchschn.',c:'borderline'};
-            if(v>=70) return {l:'Niedrig',c:'clinical'};
-            return {l:'Sehr niedrig',c:'clinical'};
+            if(v>=130) return {l:'Weit überdurchschnittlich',c:'normal',pr:'>98'};
+            if(v>=120) return {l:'Überdurchschnittlich',c:'normal',pr:'91-98'};
+            if(v>=110) return {l:'Hoch durchschnittlich',c:'normal',pr:'75-91'};
+            if(v>=90) return {l:'Durchschnittlich',c:'normal',pr:'25-75'};
+            if(v>=80) return {l:'Niedrig durchschnittlich',c:'borderline',pr:'9-25'};
+            if(v>=70) return {l:'Unterdurchschnittlich',c:'borderline',pr:'2-9'};
+            return {l:'Weit unterdurchschnittlich',c:'clinical',pr:'<2'};
         }
 
         function evaluateWISC(e) {
             e.preventDefault();
-            const idx = {vci:{v:v('wisc-vci'),n:'Sprache'},vsi:{v:v('wisc-vsi'),n:'Visuell'},fri:{v:v('wisc-fri'),n:'Fluide'},wmi:{v:v('wisc-wmi'),n:'Gedächtnis'},psi:{v:v('wisc-psi'),n:'Tempo'},fsiq:{v:v('wisc-fsiq'),n:'Gesamt-IQ'}};
+            const pat = getPatient();
+            const idx = {
+                vci:{v:v('wisc-vci')},vsi:{v:v('wisc-vsi')},fri:{v:v('wisc-fri')},
+                wmi:{v:v('wisc-wmi')},psi:{v:v('wisc-psi')},fsiq:{v:v('wisc-fsiq')}
+            };
             const valid = Object.entries(idx).filter(([k,x])=>x.v!==null);
             if(!valid.length) return alert('Mindestens ein Wert eingeben');
 
             const c = {}; valid.forEach(([k,x])=>c[k]=iqClass(x.v));
 
+            // Profil-Analyse
+            const indices = valid.filter(([k])=>k!=='fsiq');
+            let profilAnalyse = '';
+            if(indices.length >= 2) {
+                const vals = indices.map(([k,x])=>x.v);
+                const diff = Math.max(...vals) - Math.min(...vals);
+                if(diff >= 23) {
+                    profilAnalyse = `Das kognitive Profil zeigt eine signifikante Streuung von ${diff} IQ-Punkten zwischen den Indizes. Diese Heterogenität deutet auf ein unausgeglichenes Leistungsprofil hin, das bei der Interpretation des Gesamt-IQ berücksichtigt werden sollte. Der Gesamt-IQ sollte in diesem Fall mit Vorsicht interpretiert werden.`;
+                } else if(diff >= 15) {
+                    profilAnalyse = `Das kognitive Profil zeigt eine moderate Streuung von ${diff} IQ-Punkten zwischen den Indizes. Die Leistungsfähigkeit in den verschiedenen kognitiven Bereichen ist relativ ausgeglichen.`;
+                } else {
+                    profilAnalyse = `Das kognitive Profil ist mit einer Streuung von nur ${diff} IQ-Punkten homogen. Dies spricht für eine ausgeglichene kognitive Entwicklung in allen erfassten Bereichen.`;
+                }
+            }
+
+            // Stärken und Schwächen
+            let staerken = indices.filter(([k,x])=>x.v>=110).map(([k])=>WISC_NAMES[k].n);
+            let schwaechen = indices.filter(([k,x])=>x.v<85).map(([k])=>WISC_NAMES[k].n);
+
+            // Interpretation
+            let interp = '';
+            const fsiq = idx.fsiq.v;
+            if(fsiq) {
+                const cl = c.fsiq;
+                interp = `Die Gesamtbewertung der intellektuellen Leistungsfähigkeit mittels WISC-V ergibt einen Gesamt-IQ von ${fsiq} (Prozentrang: ${cl.pr}). Dies entspricht einem ${cl.l.toLowerCase()}en Niveau der allgemeinen kognitiven Fähigkeiten im Vergleich zur Altersgruppe.`;
+            }
+
+            // Empfehlungen basierend auf Ergebnissen
+            let empf = '<ul class="gutachten-list">';
+            if(fsiq && fsiq >= 130) {
+                empf += '<li>Prüfung von Enrichment-Maßnahmen und kognitiver Förderung</li>';
+                empf += '<li>Ggf. Begabungsdiagnostik zur Identifikation spezifischer Talente</li>';
+            } else if(fsiq && fsiq < 70) {
+                empf += '<li>Umfassende Entwicklungsdiagnostik empfohlen</li>';
+                empf += '<li>Prüfung eines sonderpädagogischen Förderbedarfs</li>';
+                empf += '<li>Adaptives Verhalten sollte zusätzlich erfasst werden</li>';
+            } else if(fsiq && fsiq < 85) {
+                empf += '<li>Lernstandsdiagnostik zur Identifikation spezifischer Förderbedarfe</li>';
+                empf += '<li>Prüfung von Nachteilsausgleich</li>';
+            }
+            if(schwaechen.length) {
+                empf += `<li>Gezielte Förderung in den Bereichen: ${schwaechen.join(', ')}</li>`;
+            }
+            if(c.wmi?.c === 'clinical' || c.psi?.c === 'clinical') {
+                empf += '<li>Abklärung von Aufmerksamkeitsproblemen empfohlen (ADHS-Diagnostik)</li>';
+            }
+            empf += '<li>Integration der Ergebnisse mit schulischen Leistungsdaten</li>';
+            empf += '</ul>';
+
+            const gutachten = `
+                <div class="gutachten">
+                    ${gutachtenHeader('WISC-V', 'Wechsler Intelligence Scale for Children – Fifth Edition', pat)}
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <div class="gutachten-text">
+                            <p>Die WISC-V (Wechsler, 2017; deutsche Version: Petermann, 2017) ist das international am häufigsten eingesetzte Intelligenzdiagnostikum für Kinder und Jugendliche im Alter von 6;0 bis 16;11 Jahren. Das Verfahren erfasst die allgemeine kognitive Leistungsfähigkeit sowie spezifische kognitive Fähigkeiten anhand von fünf Primärindizes.</p>
+                            <p>Die Indexwerte sind IQ-skaliert (M=100, SD=15). Werte zwischen 90-109 entsprechen dem Durchschnittsbereich, Werte ≥110 dem überdurchschnittlichen und Werte ≤89 dem unterdurchschnittlichen Bereich.</p>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Index</th><th>IQ-Wert</th><th>Prozentrang</th><th>Konfidenzintervall (95%)</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                ${valid.map(([k,x])=>`<tr${k==='fsiq'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${WISC_NAMES[k].n}</td><td>${x.v}</td><td>${c[k].pr}</td><td>${x.v-5} – ${x.v+5}</td><td class="${c[k].c}">${c[k].l}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                        <p style="margin-top:1rem;font-size:0.85rem;color:var(--text-muted);">Hinweis: Konfidenzintervalle sind approximativ (±5 Punkte).</p>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">3. Grafische Darstellung</h4>
+                        <div class="chart-container">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.75rem;color:var(--text-muted);">
+                                <span>Weit unterdurchschnittlich</span><span>Durchschnitt (90-110)</span><span>Weit überdurchschnittlich</span>
+                            </div>
+                            ${chart(valid.map(([k])=>k==='fsiq'?'Gesamt':WISC_NAMES[k].n.split(' ')[0]),valid.map(([k,x])=>x.v),valid.map(([k])=>c[k].c),160)}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">4. Interpretation</h4>
+                        <div class="gutachten-text">
+                            <p>${interp}</p>
+                            ${profilAnalyse ? `<p>${profilAnalyse}</p>` : ''}
+                            ${staerken.length ? `<div class="gutachten-highlight"><strong>Relative Stärken:</strong> ${staerken.join(', ')}</div>` : ''}
+                            ${schwaechen.length ? `<div class="gutachten-warning"><strong>Relative Schwächen:</strong> ${schwaechen.join(', ')}</div>` : ''}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">5. Diagnostische Einordnung</h4>
+                        <div class="gutachten-text">
+                            ${fsiq && fsiq < 70 ? '<p>Die Ergebnisse sind vereinbar mit einer <strong>Intelligenzminderung</strong>. Zur Diagnosestellung nach ICD-10/ICD-11 ist zusätzlich eine Beeinträchtigung der Anpassungsfähigkeit erforderlich.</p><span class="icd-code">F70-F79</span> Intelligenzminderung' : ''}
+                            ${fsiq && fsiq >= 70 && fsiq < 85 ? '<p>Die Ergebnisse liegen im <strong>Lernbehinderungsbereich</strong> (IQ 70-84). Dies kann mit Lernschwierigkeiten einhergehen.</p><span class="icd-code">Z55</span> Probleme im Zusammenhang mit der Erziehung' : ''}
+                            ${fsiq && fsiq >= 85 && fsiq < 115 ? '<p>Die intellektuelle Leistungsfähigkeit liegt im <strong>Normalbereich</strong>. Es ergeben sich keine Hinweise auf eine intellektuelle Beeinträchtigung.</p>' : ''}
+                            ${fsiq && fsiq >= 115 && fsiq < 130 ? '<p>Die intellektuelle Leistungsfähigkeit liegt im <strong>überdurchschnittlichen Bereich</strong>.</p>' : ''}
+                            ${fsiq && fsiq >= 130 ? '<p>Die Ergebnisse sind vereinbar mit einer <strong>intellektuellen Hochbegabung</strong> (IQ ≥130).</p>' : ''}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">6. Empfehlungen</h4>
+                        <div class="gutachten-text">${empf}</div>
+                    </div>
+
+                    ${gutachtenFooter()}
+                </div>
+            `;
+
             document.getElementById('wisc-results').innerHTML = `
                 <div class="results-header"><h3 class="results-title">Ergebnis WISC-V</h3></div>
-                ${summary(valid.map(([k,x])=>({l:x.n,v:x.v,c:c[k].c,s:c[k].l})))}
-                <div class="chart-container"><div class="chart-title">Indexprofil</div>${chart(valid.map(([k,x])=>x.n),valid.map(([k,x])=>x.v),valid.map(([k])=>c[k].c),160)}</div>
+                ${summary(valid.map(([k,x])=>({l:k==='fsiq'?'Gesamt-IQ':WISC_NAMES[k].n.split(' ')[0],v:x.v,c:c[k].c,s:c[k].l})))}
+                ${gutachten}
             `;
             document.getElementById('wisc-results').classList.add('show');
-            R.wisc = {idx,c}; updateReport();
+            R.wisc = {idx,c,gutachten}; updateReport();
         }
 
         // CBCL
+        const CBCL_SYN = {
+            anx: {n:'Ängstlich/Depressiv', icd:'F32, F40, F41, F93'},
+            wit: {n:'Rückzüglich/Depressiv', icd:'F32, F33'},
+            som: {n:'Körperliche Beschwerden', icd:'F45'},
+            soc: {n:'Soziale Probleme', icd:'F84, F94'},
+            tho: {n:'Denkprobleme', icd:'F20-F29'},
+            att: {n:'Aufmerksamkeitsprobleme', icd:'F90'},
+            rul: {n:'Regelverletzendes Verhalten', icd:'F91'},
+            agg: {n:'Aggressives Verhalten', icd:'F91, F63'}
+        };
+
         function cbclClass(v,t) {
             if(t==='bb') return v<60?'normal':v<64?'borderline':'clinical';
             return v<65?'normal':v<70?'borderline':'clinical';
         }
 
+        function cbclClassText(c) {
+            return {normal:'Unauffällig',borderline:'Grenzwertig',clinical:'Klinisch auffällig'}[c];
+        }
+
         function evaluateCBCL(e) {
             e.preventDefault();
+            const pat = getPatient();
+            const resp = document.querySelector('input[name="cbcl-resp"]:checked').value;
+            const respText = {parent:'Elternurteil (CBCL)',teacher:'Lehrerurteil (TRF)',self:'Selbsturteil (YSR)'}[resp];
+
             const bb = {int:v('cbcl-int'),ext:v('cbcl-ext'),tot:v('cbcl-tot')};
             const syn = {anx:v('cbcl-anx'),wit:v('cbcl-wit'),som:v('cbcl-som'),soc:v('cbcl-soc'),tho:v('cbcl-tho'),att:v('cbcl-att'),rul:v('cbcl-rul'),agg:v('cbcl-agg')};
 
@@ -913,24 +1447,161 @@
             Object.entries(syn).filter(([k,x])=>x!==null).forEach(([k,x])=>cSyn[k]=cbclClass(x,'syn'));
 
             const synLabels = {anx:'Ängstlich',wit:'Rückzug',som:'Somatisch',soc:'Sozial',tho:'Denken',att:'Aufmerks.',rul:'Regeln',agg:'Aggressiv'};
-            const bbLabels = {int:'Internal.',ext:'External.',tot:'Gesamt'};
+            const bbLabels = {int:'Internalisierend',ext:'Externalisierend',tot:'Gesamtproblemwert'};
 
             const validSyn = Object.entries(syn).filter(([k,x])=>x!==null);
+            const validBB = Object.entries(bb).filter(([k,x])=>x!==null);
+
+            // Interpretation
+            let interp = '';
+            const clinSyn = validSyn.filter(([k])=>cSyn[k]==='clinical').map(([k])=>CBCL_SYN[k].n);
+            const bordSyn = validSyn.filter(([k])=>cSyn[k]==='borderline').map(([k])=>CBCL_SYN[k].n);
+
+            if(bb.tot !== null) {
+                if(cBB.tot === 'normal') {
+                    interp = `Der Gesamtproblemwert (T=${bb.tot}) liegt im unauffälligen Bereich. ${pat.name} zeigt aus Sicht des Beurteilers keine bedeutsamen Verhaltensauffälligkeiten.`;
+                } else if(cBB.tot === 'borderline') {
+                    interp = `Der Gesamtproblemwert (T=${bb.tot}) liegt im grenzwertigen Bereich und sollte im Verlauf beobachtet werden.`;
+                } else {
+                    interp = `Der Gesamtproblemwert (T=${bb.tot}) liegt im klinisch auffälligen Bereich und weist auf eine erhöhte psychische Belastung hin.`;
+                }
+            }
+
+            if(bb.int !== null && bb.ext !== null) {
+                if(cBB.int === 'clinical' && cBB.ext !== 'clinical') {
+                    interp += ` Das Profil zeigt vorwiegend internalisierende Probleme (T=${bb.int}), d.h. nach innen gerichtete Symptome wie Ängste, depressive Symptome oder Rückzugsverhalten.`;
+                } else if(cBB.ext === 'clinical' && cBB.int !== 'clinical') {
+                    interp += ` Das Profil zeigt vorwiegend externalisierende Probleme (T=${bb.ext}), d.h. nach außen gerichtete Symptome wie aggressives oder regelverletzendes Verhalten.`;
+                } else if(cBB.int === 'clinical' && cBB.ext === 'clinical') {
+                    interp += ` Das Profil zeigt sowohl internalisierende (T=${bb.int}) als auch externalisierende Probleme (T=${bb.ext}), was auf eine komplexe Symptomatik hindeutet.`;
+                }
+            }
+
+            if(clinSyn.length) interp += ` Klinisch auffällige Syndromskalen: ${clinSyn.join(', ')}.`;
+            if(bordSyn.length) interp += ` Grenzwertige Syndromskalen: ${bordSyn.join(', ')}.`;
+
+            // ICD-Codes sammeln
+            let icdCodes = new Set();
+            validSyn.filter(([k])=>cSyn[k]==='clinical').forEach(([k])=>{
+                CBCL_SYN[k].icd.split(', ').forEach(c=>icdCodes.add(c));
+            });
+
+            // Empfehlungen
+            let empf = '<ul class="gutachten-list">';
+            if(cBB.tot === 'clinical' || clinSyn.length > 0) {
+                empf += '<li>Klinisch-psychologische/kinder- und jugendpsychiatrische Diagnostik empfohlen</li>';
+                if(cSyn.anx === 'clinical' || cSyn.wit === 'clinical') empf += '<li>Exploration depressiver/ängstlicher Symptomatik</li>';
+                if(cSyn.att === 'clinical') empf += '<li>ADHS-spezifische Diagnostik (z.B. DISYPS-III, Conners)</li>';
+                if(cSyn.agg === 'clinical' || cSyn.rul === 'clinical') empf += '<li>Abklärung von Störungen des Sozialverhaltens</li>';
+                if(cSyn.som === 'clinical') empf += '<li>Pädiatrische Abklärung zum Ausschluss organischer Ursachen</li>';
+                empf += '<li>Multiinformanten-Ansatz: Einbezug von Eltern, Lehrkräften und Selbsturteil</li>';
+            } else if(cBB.tot === 'borderline' || bordSyn.length > 0) {
+                empf += '<li>Verlaufsbeobachtung empfohlen</li>';
+                empf += '<li>Bei Persistenz der Symptomatik vertiefte Diagnostik</li>';
+            } else {
+                empf += '<li>Keine unmittelbare Intervention erforderlich</li>';
+                empf += '<li>Ggf. Verlaufskontrolle bei Veränderungen</li>';
+            }
+            empf += '</ul>';
+
+            const gutachten = `
+                <div class="gutachten">
+                    ${gutachtenHeader('CBCL/TRF/YSR', 'Child Behavior Checklist – Achenbach System', pat)}
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <div class="gutachten-text">
+                            <p>Die Child Behavior Checklist (CBCL; Achenbach & Rescorla, 2001) ist ein international weit verbreitetes Fragebogenverfahren zur Erfassung von Verhaltensauffälligkeiten und emotionalen Problemen bei Kindern und Jugendlichen. Das Verfahren liegt in verschiedenen Versionen vor: CBCL/6-18 (Elternurteil), TRF (Teacher Report Form) und YSR (Youth Self-Report).</p>
+                            <p>Die Ergebnisse werden als T-Werte (M=50, SD=10) dargestellt. Für die übergeordneten Skalen gilt: T&lt;60 = unauffällig, T 60-63 = grenzwertig, T≥64 = klinisch auffällig. Für Syndromskalen: T&lt;65 = unauffällig, T 65-69 = grenzwertig, T≥70 = klinisch auffällig.</p>
+                            <p><strong>Verwendete Version:</strong> ${respText}</p>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <p style="font-weight:600;margin-bottom:1rem;">Übergeordnete Skalen</p>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                ${validBB.map(([k,x])=>`<tr${k==='tot'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${bbLabels[k]}</td><td>${x}</td><td>T &lt; 60</td><td class="${cBB[k]}">${cbclClassText(cBB[k])}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                        ${validSyn.length ? `
+                        <p style="font-weight:600;margin:1.5rem 0 1rem;">Syndromskalen</p>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                ${validSyn.map(([k,x])=>`<tr><td>${CBCL_SYN[k].n}</td><td>${x}</td><td>T &lt; 65</td><td class="${cSyn[k]}">${cbclClassText(cSyn[k])}</td></tr>`).join('')}
+                            </tbody>
+                        </table>` : ''}
+                    </div>
+
+                    ${validSyn.length ? `
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">3. Grafische Darstellung</h4>
+                        <div class="chart-container">
+                            <div class="chart-title">Syndromskalen-Profil</div>
+                            ${chart(validSyn.map(([k])=>synLabels[k]),validSyn.map(([k,x])=>x),validSyn.map(([k])=>cSyn[k]),90)}
+                            <div style="display:flex;justify-content:center;gap:2rem;margin-top:1rem;font-size:0.75rem;">
+                                <span>T&lt;65: unauffällig</span><span>T 65-69: grenzwertig</span><span>T≥70: klinisch</span>
+                            </div>
+                        </div>
+                    </div>` : ''}
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">4. Interpretation</h4>
+                        <div class="gutachten-text">
+                            <p>${interp}</p>
+                            ${clinSyn.length ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Die erhöhten Syndromskalen weisen auf spezifische Problembereiche hin, die einer weiteren Abklärung bedürfen.</div>' : ''}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">5. Differenzialdiagnostische Überlegungen</h4>
+                        <div class="gutachten-text">
+                            <p>Basierend auf den auffälligen Syndromskalen sollten folgende Störungsbilder differenzialdiagnostisch abgeklärt werden:</p>
+                            <ul class="gutachten-list">
+                                ${validSyn.filter(([k])=>cSyn[k]==='clinical').map(([k])=>`<li><strong>${CBCL_SYN[k].n}:</strong> ${CBCL_SYN[k].icd}</li>`).join('') || '<li>Bei unauffälligem Profil keine spezifischen Hinweise</li>'}
+                            </ul>
+                            ${icdCodes.size ? `<p style="margin-top:1rem;"><strong>Relevante ICD-10 Codes:</strong></p>${Array.from(icdCodes).map(c=>`<span class="icd-code">${c}</span>`).join('')}` : ''}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">6. Empfehlungen</h4>
+                        <div class="gutachten-text">${empf}</div>
+                    </div>
+
+                    ${gutachtenFooter()}
+                </div>
+            `;
 
             let html = `<div class="results-header"><h3 class="results-title">Ergebnis CBCL</h3></div>`;
-            html += summary(Object.entries(bb).filter(([k,x])=>x!==null).map(([k,x])=>({l:bbLabels[k],v:x,c:cBB[k],s:S[cBB[k]]})));
-            if(validSyn.length) html += `<div class="chart-container"><div class="chart-title">Syndromskalen</div>${chart(validSyn.map(([k])=>synLabels[k]),validSyn.map(([k,x])=>x),validSyn.map(([k])=>cSyn[k]),90)}</div>`;
+            html += summary(validBB.map(([k,x])=>({l:bbLabels[k],v:'T '+x,c:cBB[k],s:cbclClassText(cBB[k])})));
+            html += gutachten;
 
             document.getElementById('cbcl-results').innerHTML = html;
             document.getElementById('cbcl-results').classList.add('show');
-            R.cbcl = {bb,syn,cBB,cSyn}; updateReport();
+            R.cbcl = {bb,syn,cBB,cSyn,gutachten}; updateReport();
         }
 
         // DISYPS
+        const DISYPS_SCALES = {
+            ina: {n:'Unaufmerksamkeit', desc:'Schwierigkeiten bei der Aufrechterhaltung der Aufmerksamkeit'},
+            hyp: {n:'Hyperaktivität', desc:'Übermäßige motorische Aktivität'},
+            imp: {n:'Impulsivität', desc:'Vorschnelles Handeln ohne Berücksichtigung von Konsequenzen'},
+            adhs: {n:'ADHS-Gesamtwert', desc:'Gesamtmaß für ADHS-Symptomatik'},
+            opp: {n:'Oppositionelles Verhalten', desc:'Widerstand gegen Anforderungen, Reizbarkeit'},
+            agg: {n:'Aggressiv-dissoziales Verhalten', desc:'Regelverletzungen, Aggression'},
+            ssv: {n:'SSV-Gesamtwert', desc:'Gesamtmaß für Störung des Sozialverhaltens'}
+        };
+
         function staClass(v) { return v<=4?'normal':v<=6?'borderline':'clinical'; }
+        function staText(c) { return {normal:'Unauffällig (Stanine 1-4)',borderline:'Erhöht (Stanine 5-6)',clinical:'Auffällig (Stanine 7-9)'}[c]; }
 
         function evaluateDISYPS(e) {
             e.preventDefault();
+            const pat = getPatient();
             const d = {ina:v('dis-ina'),hyp:v('dis-hyp'),imp:v('dis-imp'),adhs:v('dis-adhs'),opp:v('dis-opp'),agg:v('dis-agg'),ssv:v('dis-ssv')};
             const valid = Object.entries(d).filter(([k,x])=>x!==null);
             if(!valid.length) return alert('Mindestens ein Wert eingeben');
@@ -938,18 +1609,133 @@
             const c = {}; valid.forEach(([k,x])=>c[k]=staClass(x));
             const labels = {ina:'Unaufmerks.',hyp:'Hyperaktiv.',imp:'Impulsiv.',adhs:'ADHS',opp:'Opposition.',agg:'Aggressiv',ssv:'SSV'};
 
+            // ADHS-Subtyp bestimmen
+            let subtyp = '';
+            if(d.adhs !== null && c.adhs === 'clinical') {
+                if(c.ina === 'clinical' && (c.hyp !== 'clinical' && c.imp !== 'clinical')) {
+                    subtyp = 'vorwiegend unaufmerksamer Präsentationstyp (F90.0)';
+                } else if((c.hyp === 'clinical' || c.imp === 'clinical') && c.ina !== 'clinical') {
+                    subtyp = 'vorwiegend hyperaktiv-impulsiver Präsentationstyp';
+                } else if(c.ina === 'clinical' && (c.hyp === 'clinical' || c.imp === 'clinical')) {
+                    subtyp = 'kombinierter Präsentationstyp (F90.0)';
+                }
+            }
+
+            // Interpretation
+            let interp = '';
+            const adhs_clin = c.adhs === 'clinical' || (c.ina === 'clinical' && (c.hyp === 'clinical' || c.imp === 'clinical'));
+            const ssv_clin = c.ssv === 'clinical' || c.opp === 'clinical' || c.agg === 'clinical';
+
+            if(adhs_clin && ssv_clin) {
+                interp = `Das Ergebnisprofil zeigt sowohl deutlich erhöhte ADHS-Symptome als auch auffällige Werte im Bereich des Sozialverhaltens. Diese Kombination ist häufig und kann auf eine Hyperkinetische Störung des Sozialverhaltens (F90.1) hinweisen.`;
+            } else if(adhs_clin) {
+                interp = `Das Ergebnisprofil zeigt klinisch relevante ADHS-Symptome${subtyp ? ` vom ${subtyp}` : ''}. Die Diagnosestellung erfordert eine multimodale Diagnostik unter Einbezug verschiedener Informationsquellen und Settings.`;
+            } else if(ssv_clin) {
+                interp = `Das Ergebnisprofil zeigt auffällige Werte im Bereich des Sozialverhaltens. Je nach Ausprägung sollte zwischen einer Störung des Sozialverhaltens mit oppositionellem, aufsässigem Verhalten (F91.3) und einer Störung des Sozialverhaltens (F91.x) differenziert werden.`;
+            } else if(valid.some(([k])=>c[k]==='borderline')) {
+                interp = `Es zeigen sich grenzwertige Befunde in einzelnen Skalen. Eine Verlaufsbeobachtung ist empfohlen. Bei Persistenz oder Zunahme der Symptomatik sollte eine vertiefte Diagnostik erfolgen.`;
+            } else {
+                interp = `Das Ergebnisprofil zeigt keine klinisch relevanten Auffälligkeiten im Bereich ADHS oder Störung des Sozialverhaltens.`;
+            }
+
+            // Empfehlungen
+            let empf = '<ul class="gutachten-list">';
+            if(adhs_clin) {
+                empf += '<li>Multimodale ADHS-Diagnostik (Anamnese, Verhaltensbeobachtung, weitere Fragebögen)</li>';
+                empf += '<li>Neuropsychologische Diagnostik (Aufmerksamkeit, Exekutivfunktionen)</li>';
+                empf += '<li>Einbezug von Eltern- und Lehrerurteil</li>';
+                empf += '<li>Ggf. organische Abklärung (Schilddrüse, EEG)</li>';
+            }
+            if(ssv_clin) {
+                empf += '<li>Exploration familiärer und sozialer Risikofaktoren</li>';
+                empf += '<li>Abklärung komorbider Störungen (ADHS, Emotion)</li>';
+            }
+            if(!adhs_clin && !ssv_clin) {
+                empf += '<li>Keine unmittelbare Intervention erforderlich</li>';
+            }
+            empf += '</ul>';
+
+            const gutachten = `
+                <div class="gutachten">
+                    ${gutachtenHeader('DISYPS-III', 'Diagnostik-System für psychische Störungen nach ICD-10/11 und DSM-5', pat)}
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <div class="gutachten-text">
+                            <p>Der DISYPS-III (Döpfner & Görtz-Dorten, 2017) ist ein klinisches Diagnostiksystem zur Erfassung psychischer Störungen im Kindes- und Jugendalter. Die vorliegenden Ergebnisse beziehen sich auf die Skalen zur Erfassung von ADHS-Symptomatik und Störungen des Sozialverhaltens (SSV).</p>
+                            <p>Die Ergebnisse werden als Stanine-Werte (1-9) dargestellt. Stanine 1-4: unauffällig, Stanine 5-6: erhöht (subklinisch), Stanine 7-9: klinisch auffällig.</p>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Skala</th><th>Stanine</th><th>Beschreibung</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                ${valid.map(([k,x])=>`<tr${k==='adhs'||k==='ssv'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${DISYPS_SCALES[k].n}</td><td>${x}</td><td>${DISYPS_SCALES[k].desc}</td><td class="${c[k]}">${staText(c[k])}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">3. Grafische Darstellung</h4>
+                        <div class="chart-container">
+                            ${chart(valid.map(([k])=>labels[k]),valid.map(([k,x])=>x),valid.map(([k])=>c[k]),9)}
+                            <div style="display:flex;justify-content:center;gap:2rem;margin-top:1rem;font-size:0.75rem;">
+                                <span>1-4: unauffällig</span><span>5-6: erhöht</span><span>7-9: auffällig</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">4. Interpretation</h4>
+                        <div class="gutachten-text">
+                            <p>${interp}</p>
+                            ${adhs_clin ? '<div class="gutachten-warning"><strong>Hinweis:</strong> Die Diagnosekriterien für ADHS erfordern neben der Symptomausprägung auch eine deutliche Beeinträchtigung in mehreren Lebensbereichen sowie einen Beginn vor dem 12. Lebensjahr.</div>' : ''}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">5. Diagnostische Einordnung</h4>
+                        <div class="gutachten-text">
+                            <p><strong>Relevante ICD-10 Diagnosen:</strong></p>
+                            ${adhs_clin ? '<span class="icd-code">F90.0</span> Einfache Aktivitäts- und Aufmerksamkeitsstörung<br>' : ''}
+                            ${adhs_clin && ssv_clin ? '<span class="icd-code">F90.1</span> Hyperkinetische Störung des Sozialverhaltens<br>' : ''}
+                            ${c.opp === 'clinical' ? '<span class="icd-code">F91.3</span> Störung des Sozialverhaltens mit oppositionellem, aufsässigem Verhalten<br>' : ''}
+                            ${c.agg === 'clinical' ? '<span class="icd-code">F91.x</span> Störung des Sozialverhaltens<br>' : ''}
+                            ${!adhs_clin && !ssv_clin ? '<span class="icd-code">Z03.2</span> Beobachtung – nicht bestätigt' : ''}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">6. Empfehlungen</h4>
+                        <div class="gutachten-text">${empf}</div>
+                    </div>
+
+                    ${gutachtenFooter()}
+                </div>
+            `;
+
             document.getElementById('disyps-results').innerHTML = `
                 <div class="results-header"><h3 class="results-title">Ergebnis DISYPS-III</h3></div>
-                ${summary(valid.map(([k,x])=>({l:labels[k],v:x,c:c[k],s:S[c[k]]})))}
-                <div class="chart-container"><div class="chart-title">DISYPS-Profil</div>${chart(valid.map(([k])=>labels[k]),valid.map(([k,x])=>x),valid.map(([k])=>c[k]),9)}</div>
+                ${summary(valid.map(([k,x])=>({l:labels[k],v:'ST '+x,c:c[k],s:S[c[k]]})))}
+                ${gutachten}
             `;
             document.getElementById('disyps-results').classList.add('show');
-            R.disyps = {d,c}; updateReport();
+            R.disyps = {d,c,gutachten}; updateReport();
         }
 
         // AFS
+        const AFS_SCALES = {
+            pa: {n:'Prüfungsangst (PA)', desc:'Angst und Unbehagen in Prüfungs- und Leistungssituationen', icd:'F40.2, F93.0'},
+            ma: {n:'Manifeste Angst (MA)', desc:'Allgemeine Ängstlichkeit, vegetative Symptome', icd:'F41.1, F93.8'},
+            su: {n:'Schulunlust (SU)', desc:'Abneigung gegen Schule, mangelnde Motivation', icd:'F93.0'},
+            se: {n:'Soziale Erwünschtheit (SE)', desc:'Tendenz zu sozial erwünschtem Antwortverhalten', icd:'-'}
+        };
+
         function evaluateAFS(e) {
             e.preventDefault();
+            const pat = getPatient();
             const d = {pa:v('afs-pa'),ma:v('afs-ma'),su:v('afs-su'),se:v('afs-se')};
             const valid = Object.entries(d).filter(([k,x])=>x!==null);
             if(!valid.length) return alert('Mindestens ein Wert eingeben');
@@ -957,46 +1743,364 @@
             const c = {}; valid.forEach(([k,x])=>c[k]=staClass(x));
             const labels = {pa:'Prüfungsangst',ma:'Man. Angst',su:'Schulunlust',se:'Soz. Erw.'};
 
+            // Interpretation
+            let interp = '';
+            const pa_clin = c.pa === 'clinical';
+            const ma_clin = c.ma === 'clinical';
+            const su_clin = c.su === 'clinical';
+            const se_clin = c.se === 'clinical';
+
+            if(pa_clin && ma_clin) {
+                interp = `${pat.name} zeigt sowohl eine ausgeprägte Prüfungsangst (Stanine ${d.pa}) als auch eine erhöhte allgemeine Ängstlichkeit (Stanine ${d.ma}). Diese Kombination deutet auf eine generalisierte schulbezogene Angstproblematik hin, die über spezifische Leistungssituationen hinausgeht.`;
+            } else if(pa_clin) {
+                interp = `${pat.name} zeigt eine ausgeprägte Prüfungsangst (Stanine ${d.pa}). Diese spezifische Angst in Leistungssituationen kann die schulische Leistungsfähigkeit erheblich beeinträchtigen, auch wenn die tatsächlichen kognitiven Fähigkeiten ausreichend sind.`;
+            } else if(ma_clin) {
+                interp = `${pat.name} zeigt eine erhöhte allgemeine Ängstlichkeit (Stanine ${d.ma}), die sich in körperlichen Symptomen und Anspannung manifestieren kann. Diese generalisierte Angstneigung sollte weiter abgeklärt werden.`;
+            } else if(valid.every(([k])=>c[k]==='normal')) {
+                interp = `${pat.name} zeigt keine auffälligen schulbezogenen Ängste oder Motivationsprobleme. Das Angstprofil liegt im Normbereich.`;
+            }
+
+            if(su_clin) {
+                interp += ` Zusätzlich besteht eine deutlich erhöhte Schulunlust (Stanine ${d.su}), die auf motivationale Probleme und eine negative Einstellung zur Schule hindeutet.`;
+            }
+
+            if(se_clin) {
+                interp += ` Die erhöhte soziale Erwünschtheit (Stanine ${d.se}) sollte bei der Interpretation berücksichtigt werden – möglicherweise wurden Probleme in anderen Skalen unterschätzt.`;
+            } else if(d.se !== null && d.se <= 2) {
+                interp += ` Die niedrige soziale Erwünschtheit spricht für ein offenes Antwortverhalten und erhöht die Validität der übrigen Skalen.`;
+            }
+
+            // Empfehlungen
+            let empf = '<ul class="gutachten-list">';
+            if(pa_clin) {
+                empf += '<li>Prüfungsangsttraining/-intervention</li>';
+                empf += '<li>Entspannungsverfahren (PMR, Atemtechniken)</li>';
+                empf += '<li>Kognitive Umstrukturierung dysfunktionaler Leistungsgedanken</li>';
+            }
+            if(ma_clin) {
+                empf += '<li>Vertiefte Angstdiagnostik (z.B. SCARED, PHOKI)</li>';
+                empf += '<li>Ggf. kinder- und jugendpsychiatrische Vorstellung</li>';
+            }
+            if(su_clin) {
+                empf += '<li>Exploration schulischer Belastungsfaktoren</li>';
+                empf += '<li>Leistungsdiagnostik zum Ausschluss von Überforderung</li>';
+                empf += '<li>Motivationsförderung</li>';
+            }
+            if(!pa_clin && !ma_clin && !su_clin) {
+                empf += '<li>Keine spezifische Intervention erforderlich</li>';
+            }
+            empf += '</ul>';
+
+            const gutachten = `
+                <div class="gutachten">
+                    ${gutachtenHeader('AFS', 'Angstfragebogen für Schüler', pat)}
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <div class="gutachten-text">
+                            <p>Der AFS (Wieczerkowski et al., 1981) ist ein etabliertes Selbstbeurteilungsverfahren zur Erfassung schulbezogener Ängste bei Schülerinnen und Schülern der Klassen 3-10. Der Fragebogen umfasst vier Skalen: Prüfungsangst (PA), Manifeste Angst (MA), Schulunlust (SU) und Soziale Erwünschtheit (SE).</p>
+                            <p>Die Ergebnisse werden als Stanine-Werte (1-9) dargestellt. Stanine 1-4: unauffällig, Stanine 5-6: leicht erhöht, Stanine 7-9: deutlich erhöht/auffällig.</p>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Skala</th><th>Stanine</th><th>Bedeutung</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                ${valid.map(([k,x])=>`<tr><td>${AFS_SCALES[k].n}</td><td>${x}</td><td>${AFS_SCALES[k].desc}</td><td class="${c[k]}">${staText(c[k])}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">3. Grafische Darstellung</h4>
+                        <div class="chart-container">
+                            ${chart(valid.map(([k])=>labels[k]),valid.map(([k,x])=>x),valid.map(([k])=>c[k]),9)}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">4. Interpretation</h4>
+                        <div class="gutachten-text">
+                            <p>${interp}</p>
+                            ${(pa_clin || ma_clin) ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Erhöhte Angstwerte können die schulische Leistungsfähigkeit und das Wohlbefinden erheblich beeinträchtigen.</div>' : ''}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">5. Diagnostische Einordnung</h4>
+                        <div class="gutachten-text">
+                            <p><strong>Relevante ICD-10 Diagnosen:</strong></p>
+                            ${pa_clin ? '<span class="icd-code">F40.2</span> Spezifische Phobien (Prüfungsangst)<br><span class="icd-code">F93.0</span> Emotionale Störung mit Trennungsangst<br>' : ''}
+                            ${ma_clin ? '<span class="icd-code">F41.1</span> Generalisierte Angststörung<br><span class="icd-code">F93.8</span> Sonstige emotionale Störungen des Kindesalters<br>' : ''}
+                            ${!pa_clin && !ma_clin ? '<span class="icd-code">Z03.2</span> Beobachtung – nicht bestätigt' : ''}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">6. Empfehlungen</h4>
+                        <div class="gutachten-text">${empf}</div>
+                    </div>
+
+                    ${gutachtenFooter()}
+                </div>
+            `;
+
             document.getElementById('afs-results').innerHTML = `
                 <div class="results-header"><h3 class="results-title">Ergebnis AFS</h3></div>
-                ${summary(valid.map(([k,x])=>({l:labels[k],v:x,c:c[k],s:S[c[k]]})))}
-                <div class="chart-container"><div class="chart-title">AFS-Profil</div>${chart(valid.map(([k])=>labels[k]),valid.map(([k,x])=>x),valid.map(([k])=>c[k]),9)}</div>
+                ${summary(valid.map(([k,x])=>({l:labels[k],v:'ST '+x,c:c[k],s:S[c[k]]})))}
+                ${gutachten}
             `;
             document.getElementById('afs-results').classList.add('show');
-            R.afs = {d,c}; updateReport();
+            R.afs = {d,c,gutachten}; updateReport();
         }
 
         // d2-R
+        const D2R_SCALES = {
+            kl: {n:'Konzentrationsleistung (KL)', desc:'Qualität der Konzentrationsleistung – Hauptkennwert', inv:false},
+            bz: {n:'Bearbeitete Zielzeichen (BZO)', desc:'Arbeitstempo und Antrieb', inv:false},
+            f: {n:'Fehler (F)', desc:'Gesamtanzahl der Fehler', inv:true},
+            fp: {n:'Fehlerprozent (F%)', desc:'Fehleranteil an bearbeiteten Zeichen – Sorgfalt', inv:true},
+            sb: {n:'Schwankungsbreite (SB)', desc:'Gleichmäßigkeit der Leistung über die Zeit', inv:true}
+        };
+
         function prClass(v) { return v>=16?'normal':v>=7?'borderline':'clinical'; }
+        function prClassInv(v) { return v<=84?'normal':v<=93?'borderline':'clinical'; } // Für inverse Skalen (F, F%, SB)
+        function prText(c) { return {normal:'Durchschnittlich (PR ≥16)',borderline:'Unterdurchschnittlich (PR 7-15)',clinical:'Weit unterdurchschnittlich (PR <7)'}[c]; }
+        function prTextInv(c) { return {normal:'Durchschnittlich (PR ≤84)',borderline:'Erhöht (PR 85-93)',clinical:'Deutlich erhöht (PR >93)'}[c]; }
 
         function evaluateD2R(e) {
             e.preventDefault();
+            const pat = getPatient();
             const d = {kl:v('d2r-kl'),bz:v('d2r-bz'),f:v('d2r-f'),fp:v('d2r-fp'),sb:v('d2r-sb')};
             const valid = Object.entries(d).filter(([k,x])=>x!==null);
             if(!valid.length) return alert('Mindestens ein Wert eingeben');
 
-            const c = {}; valid.forEach(([k,x])=>c[k]=prClass(x));
-            const labels = {kl:'Konzentration',bz:'Tempo',f:'Fehler',fp:'Fehler%',sb:'Schwankung'};
-            const S2 = {normal:'Durchschn.',borderline:'Unterdurchschn.',clinical:'Weit unter'};
+            const c = {};
+            valid.forEach(([k,x])=>{
+                c[k] = D2R_SCALES[k].inv ? prClassInv(x) : prClass(x);
+            });
+
+            const labels = {kl:'KL',bz:'Tempo',f:'Fehler',fp:'F%',sb:'Schwank.'};
+
+            // Interpretation
+            let interp = '';
+            const kl_low = c.kl === 'clinical' || c.kl === 'borderline';
+            const tempo_low = c.bz === 'clinical' || c.bz === 'borderline';
+            const fehler_high = c.f === 'clinical' || c.fp === 'clinical';
+            const schwank_high = c.sb === 'clinical';
+
+            if(d.kl !== null) {
+                if(c.kl === 'normal') {
+                    interp = `Die Konzentrationsleistung (KL = PR ${d.kl}) liegt im durchschnittlichen Bereich. ${pat.name} zeigt eine altersgerechte Fähigkeit zur fokussierten Aufmerksamkeit unter Zeitdruck.`;
+                } else if(c.kl === 'borderline') {
+                    interp = `Die Konzentrationsleistung (KL = PR ${d.kl}) liegt im unterdurchschnittlichen Bereich. Dies kann auf Schwierigkeiten bei der Aufrechterhaltung der Konzentration hindeuten.`;
+                } else {
+                    interp = `Die Konzentrationsleistung (KL = PR ${d.kl}) liegt deutlich unter dem Altersdurchschnitt. Dies weist auf relevante Aufmerksamkeits- und Konzentrationsdefizite hin.`;
+                }
+            }
+
+            // Profil-Analyse
+            if(tempo_low && !fehler_high) {
+                interp += ` Das Tempo ist reduziert bei akzeptabler Genauigkeit – dies spricht für einen langsamen, aber sorgfältigen Arbeitsstil.`;
+            } else if(!tempo_low && fehler_high) {
+                interp += ` Das Tempo ist angemessen, aber die Fehlerrate ist erhöht – dies deutet auf einen impulsiven, wenig sorgfältigen Arbeitsstil hin.`;
+            } else if(tempo_low && fehler_high) {
+                interp += ` Sowohl Tempo als auch Genauigkeit sind beeinträchtigt, was auf generelle Aufmerksamkeitsdefizite hindeutet.`;
+            }
+
+            if(schwank_high) {
+                interp += ` Die erhöhte Schwankungsbreite (PR ${d.sb}) zeigt eine inkonsistente Leistung über die Testzeit, was auf Ermüdungseffekte oder Aufmerksamkeitsfluktuationen hinweisen kann.`;
+            }
+
+            // Empfehlungen
+            let empf = '<ul class="gutachten-list">';
+            if(kl_low || fehler_high) {
+                empf += '<li>Vertiefte ADHS-Diagnostik empfohlen (Fragebögen, Anamnese)</li>';
+                empf += '<li>Neuropsychologische Untersuchung der Exekutivfunktionen</li>';
+                if(fehler_high) empf += '<li>Training von Selbstkontrolle und Sorgfalt</li>';
+                if(tempo_low) empf += '<li>Prüfung von Nachteilsausgleich (Zeitverlängerung)</li>';
+            }
+            if(schwank_high) {
+                empf += '<li>Abklärung von Ermüdbarkeit und Ausdauer</li>';
+            }
+            if(!kl_low && !fehler_high) {
+                empf += '<li>Keine spezifische Intervention erforderlich</li>';
+                empf += '<li>Aufmerksamkeitsfunktionen im Normbereich</li>';
+            }
+            empf += '</ul>';
+
+            const gutachten = `
+                <div class="gutachten">
+                    ${gutachtenHeader('d2-R', 'Aufmerksamkeits- und Konzentrationstest – Revision', pat)}
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <div class="gutachten-text">
+                            <p>Der d2-R (Brickenkamp, Schmidt-Atzert & Liepmann, 2010) ist ein standardisierter Aufmerksamkeits- und Konzentrationstest für Personen ab 9 Jahren. Der Test erfasst die Fähigkeit zur fokussierten und selektiven Aufmerksamkeit unter Zeitdruck.</p>
+                            <p>Der Hauptkennwert ist die Konzentrationsleistung (KL), die Tempo und Sorgfalt integriert. Die Ergebnisse werden als Prozentränge (PR) angegeben. PR 16-84: Durchschnitt, PR 7-15 bzw. 85-93: leicht unter-/überdurchschnittlich, PR <7 bzw. >93: deutlich abweichend.</p>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Kennwert</th><th>Prozentrang</th><th>Bedeutung</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                ${valid.map(([k,x])=>`<tr${k==='kl'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${D2R_SCALES[k].n}</td><td>PR ${x}</td><td>${D2R_SCALES[k].desc}</td><td class="${c[k]}">${D2R_SCALES[k].inv ? prTextInv(c[k]) : prText(c[k])}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                        <p style="margin-top:1rem;font-size:0.85rem;color:var(--text-muted);">Hinweis: Bei Fehler (F), Fehlerprozent (F%) und Schwankungsbreite (SB) sind hohe Prozentränge ungünstig.</p>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">3. Grafische Darstellung</h4>
+                        <div class="chart-container">
+                            ${chart(valid.map(([k])=>labels[k]),valid.map(([k,x])=>x),valid.map(([k])=>c[k]),100)}
+                            <div style="display:flex;justify-content:center;gap:2rem;margin-top:1rem;font-size:0.75rem;">
+                                <span>PR &lt;16: unterdurchschn.</span><span>PR 16-84: Durchschnitt</span><span>PR &gt;84: überdurchschn.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">4. Interpretation</h4>
+                        <div class="gutachten-text">
+                            <p>${interp}</p>
+                            ${kl_low ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Unterdurchschnittliche Konzentrationsleistung kann schulische und alltägliche Anforderungen beeinträchtigen.</div>' : ''}
+                            ${fehler_high && !kl_low ? '<div class="gutachten-highlight"><strong>Hinweis:</strong> Erhöhte Fehlerrate bei durchschnittlichem Tempo kann auf Impulsivität hindeuten.</div>' : ''}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">5. Diagnostische Einordnung</h4>
+                        <div class="gutachten-text">
+                            <p>Der d2-R misst selektive Aufmerksamkeit, die bei verschiedenen Störungsbildern beeinträchtigt sein kann:</p>
+                            ${kl_low || fehler_high ? `
+                                <span class="icd-code">F90.0</span> ADHS (Aufmerksamkeitsdefizit)<br>
+                                <span class="icd-code">F90.1</span> Hyperkinetische Störung des Sozialverhaltens<br>
+                                <span class="icd-code">R41.8</span> Sonstige Symptome, die die kognitiven Funktionen betreffen
+                            ` : '<p>Bei unauffälligem Profil keine spezifischen diagnostischen Hinweise.</p>'}
+                            <p style="margin-top:1rem;"><strong>Wichtig:</strong> Der d2-R allein erlaubt keine ADHS-Diagnose. Er erfasst nur einen Aspekt der Aufmerksamkeit und sollte im Kontext weiterer Diagnostik interpretiert werden.</p>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">6. Empfehlungen</h4>
+                        <div class="gutachten-text">${empf}</div>
+                    </div>
+
+                    ${gutachtenFooter()}
+                </div>
+            `;
 
             document.getElementById('d2r-results').innerHTML = `
                 <div class="results-header"><h3 class="results-title">Ergebnis d2-R</h3></div>
-                ${summary(valid.map(([k,x])=>({l:labels[k],v:'PR '+x,c:c[k],s:S2[c[k]]})))}
-                <div class="chart-container"><div class="chart-title">d2-R Profil</div>${chart(valid.map(([k])=>labels[k]),valid.map(([k,x])=>x),valid.map(([k])=>c[k]),100)}</div>
+                ${summary(valid.map(([k,x])=>({l:labels[k],v:'PR '+x,c:c[k],s:c[k]==='normal'?'Durchschn.':c[k]==='borderline'?'Unter':'Weit unter'})))}
+                ${gutachten}
             `;
             document.getElementById('d2r-results').classList.add('show');
-            R.d2r = {d,c}; updateReport();
+            R.d2r = {d,c,gutachten}; updateReport();
         }
 
         function updateReport() {
             const tests = Object.keys(R);
-            if(!tests.length) return;
-            const names = {sdq:'SDQ',wisc:'WISC-V',cbcl:'CBCL',disyps:'DISYPS-III',afs:'AFS',d2r:'d2-R'};
-            document.getElementById('report-content').innerHTML = `
-                <div style="text-align:left;">
-                    <p style="margin-bottom:1rem;color:var(--text);">Verfügbare Ergebnisse:</p>
-                    ${tests.map(t=>`<div style="padding:0.75rem 1rem;background:var(--bg-input);border-radius:10px;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.75rem;"><span style="color:var(--success);">✓</span> ${names[t]}</div>`).join('')}
+            if(!tests.length) {
+                document.getElementById('report-content').innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:3rem;">Führen Sie Tests durch, um einen Bericht zu erstellen.</p>';
+                return;
+            }
+
+            const names = {sdq:'SDQ – Strengths and Difficulties Questionnaire',wisc:'WISC-V – Wechsler Intelligence Scale',cbcl:'CBCL – Child Behavior Checklist',disyps:'DISYPS-III – ADHS/SSV Diagnostik',afs:'AFS – Angstfragebogen für Schüler',d2r:'d2-R – Aufmerksamkeits-/Konzentrationstest'};
+            const pat = getPatient();
+
+            // Gesamtbericht generieren
+            let gesamtbericht = `
+                <div class="gutachten" style="margin-top:0;">
+                    <div class="gutachten-header">
+                        <div class="gutachten-title">ZUSAMMENFASSENDER BEFUNDBERICHT</div>
+                        <div class="gutachten-subtitle">Psychodiagnostische Untersuchung</div>
+                    </div>
+                    <div class="gutachten-meta">
+                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">Patient/in:</span><span class="gutachten-meta-value">${pat.name}</span></div>
+                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">Geburtsdatum:</span><span class="gutachten-meta-value">${formatDate(pat.dob)}</span></div>
+                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">Alter:</span><span class="gutachten-meta-value">${pat.age ? pat.age + ' Jahre' : '-'}</span></div>
+                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">Untersuchungsdatum:</span><span class="gutachten-meta-value">${formatDate(pat.date)}</span></div>
+                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">Untersucher/in:</span><span class="gutachten-meta-value">${pat.examiner}</span></div>
+                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">Anzahl Tests:</span><span class="gutachten-meta-value">${tests.length}</span></div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">Durchgeführte Testverfahren</h4>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Verfahren</th><th>Bereich</th><th>Gesamtbefund</th></tr></thead>
+                            <tbody>
+                                ${tests.map(t => {
+                                    let befund = 'Unauffällig';
+                                    let befundClass = 'normal';
+                                    if(t === 'sdq' && R.sdq.c.tot !== 'normal') { befund = S[R.sdq.c.tot]; befundClass = R.sdq.c.tot; }
+                                    if(t === 'wisc' && R.wisc.idx.fsiq?.v) { const cl = R.wisc.c.fsiq; befund = cl.l; befundClass = cl.c; }
+                                    if(t === 'cbcl' && R.cbcl.cBB.tot) { befund = cbclClassText(R.cbcl.cBB.tot); befundClass = R.cbcl.cBB.tot; }
+                                    if(t === 'disyps') { const clin = Object.values(R.disyps.c).some(c=>c==='clinical'); befund = clin?'Auffällig':'Unauffällig'; befundClass = clin?'clinical':'normal'; }
+                                    if(t === 'afs') { const clin = Object.values(R.afs.c).some(c=>c==='clinical'); befund = clin?'Auffällig':'Unauffällig'; befundClass = clin?'clinical':'normal'; }
+                                    if(t === 'd2r' && R.d2r.c.kl) { befund = R.d2r.c.kl==='normal'?'Durchschnittlich':R.d2r.c.kl==='borderline'?'Unterdurchschnittlich':'Weit unterdurchschnittlich'; befundClass = R.d2r.c.kl; }
+                                    const bereich = {sdq:'Screening',wisc:'Intelligenz',cbcl:'Verhalten',disyps:'ADHS/SSV',afs:'Angst',d2r:'Aufmerksamkeit'}[t];
+                                    return `<tr><td>${names[t]}</td><td>${bereich}</td><td class="${befundClass}">${befund}</td></tr>`;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">Zusammenfassende Beurteilung</h4>
+                        <div class="gutachten-text">
+                            <p>Im Rahmen der psychodiagnostischen Untersuchung wurden ${tests.length} standardisierte Testverfahren durchgeführt. Die Ergebnisse werden nachfolgend zusammengefasst:</p>
+                            <ul class="gutachten-list">
+                                ${R.wisc ? `<li><strong>Kognitive Entwicklung (WISC-V):</strong> ${R.wisc.idx.fsiq?.v ? `Gesamt-IQ von ${R.wisc.idx.fsiq.v} (${R.wisc.c.fsiq.l.toLowerCase()})` : 'Teilleistungen erfasst'}</li>` : ''}
+                                ${R.sdq ? `<li><strong>Psychische Belastung (SDQ):</strong> Gesamtproblemwert ${R.sdq.tot} (${S[R.sdq.c.tot].toLowerCase()})</li>` : ''}
+                                ${R.cbcl ? `<li><strong>Verhaltensauffälligkeiten (CBCL):</strong> ${R.cbcl.bb.tot ? `Gesamtwert T=${R.cbcl.bb.tot} (${cbclClassText(R.cbcl.cBB.tot).toLowerCase()})` : 'Syndromskalen erfasst'}</li>` : ''}
+                                ${R.disyps ? `<li><strong>ADHS/Sozialverhalten (DISYPS):</strong> ${R.disyps.c.adhs ? (R.disyps.c.adhs==='clinical'?'ADHS-Symptome auffällig':'ADHS-Symptome unauffällig') : ''} ${R.disyps.c.ssv ? (R.disyps.c.ssv==='clinical'?'/ SSV auffällig':'/ SSV unauffällig') : ''}</li>` : ''}
+                                ${R.afs ? `<li><strong>Schulbezogene Ängste (AFS):</strong> ${R.afs.c.pa==='clinical'||R.afs.c.ma==='clinical'?'Erhöhte Angstwerte':'Angstwerte unauffällig'}</li>` : ''}
+                                ${R.d2r ? `<li><strong>Aufmerksamkeit (d2-R):</strong> ${R.d2r.c.kl ? `Konzentrationsleistung PR ${R.d2r.d.kl} (${R.d2r.c.kl==='normal'?'durchschnittlich':R.d2r.c.kl==='borderline'?'unterdurchschnittlich':'weit unterdurchschnittlich'})` : 'Kennwerte erfasst'}</li>` : ''}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">Diagnostische Hypothesen</h4>
+                        <div class="gutachten-text">
+                            <p>Basierend auf der Gesamtschau der Befunde ergeben sich folgende diagnostische Hypothesen zur weiteren Abklärung:</p>
+                            <ul class="gutachten-list">
+                                ${(R.disyps?.c.adhs==='clinical' || R.d2r?.c.kl==='clinical') ? '<li><span class="icd-code">F90.x</span> Hyperkinetische Störungen (ADHS)</li>' : ''}
+                                ${(R.cbcl?.cSyn?.agg==='clinical' || R.cbcl?.cSyn?.rul==='clinical' || R.disyps?.c.ssv==='clinical') ? '<li><span class="icd-code">F91.x</span> Störungen des Sozialverhaltens</li>' : ''}
+                                ${(R.sdq?.c.em==='clinical' || R.cbcl?.cSyn?.anx==='clinical' || R.afs?.c.ma==='clinical') ? '<li><span class="icd-code">F41.x</span><span class="icd-code">F93.x</span> Angststörungen / Emotionale Störungen</li>' : ''}
+                                ${(R.cbcl?.cSyn?.wit==='clinical' || R.sdq?.c.em==='clinical') ? '<li><span class="icd-code">F32.x</span> Depressive Episode</li>' : ''}
+                                ${R.wisc?.idx.fsiq?.v < 70 ? '<li><span class="icd-code">F7x.x</span> Intelligenzminderung</li>' : ''}
+                                ${!tests.some(t => {
+                                    if(t==='sdq') return R.sdq.c.tot!=='normal';
+                                    if(t==='cbcl') return R.cbcl.cBB.tot==='clinical';
+                                    if(t==='disyps') return Object.values(R.disyps.c).some(c=>c==='clinical');
+                                    if(t==='afs') return R.afs.c.pa==='clinical'||R.afs.c.ma==='clinical';
+                                    if(t==='d2r') return R.d2r.c.kl==='clinical';
+                                    if(t==='wisc') return R.wisc.idx.fsiq?.v<70;
+                                    return false;
+                                }) ? '<li>Keine spezifischen diagnostischen Auffälligkeiten</li>' : ''}
+                            </ul>
+                        </div>
+                    </div>
+
+                    ${gutachtenFooter()}
                 </div>
+            `;
+
+            document.getElementById('report-content').innerHTML = `
+                <div style="text-align:left;margin-bottom:2rem;">
+                    <p style="margin-bottom:1rem;color:var(--text);font-weight:600;">✓ ${tests.length} Test(s) durchgeführt</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                        ${tests.map(t=>`<span style="padding:0.5rem 1rem;background:var(--bg-input);border-radius:8px;font-size:0.85rem;">${t.toUpperCase()}</span>`).join('')}
+                    </div>
+                </div>
+                ${gesamtbericht}
             `;
         }
 
