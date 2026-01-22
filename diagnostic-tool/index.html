@@ -3,285 +3,1214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagnostisches Assessment-Tool | Jugendliche</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="description" content="PsychoDiagnostik Pro - Professionelles diagnostisches Assessment-Tool für klinische und schulpsychologische Fachkräfte">
+    <meta name="keywords" content="Psychodiagnostik, SDQ, WISC-V, CBCL, DISYPS, AFS, Schulpsychologie, Klinische Psychologie">
+    <meta name="author" content="PsychoDiagnostik Pro">
+    <title>PsychoDiagnostik Pro | Diagnostisches Assessment-System</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23003366' rx='15' width='100' height='100'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>Ψ</text></svg>">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>🧠 Diagnostisches Assessment-Tool</h1>
-        <p class="subtitle">Interpretation von Testergebnissen für Jugendliche</p>
+    <!-- Skip Link für Barrierefreiheit -->
+    <a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-bar-content">
+            <span class="certification-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                </svg>
+                DSGVO-konform
+            </span>
+            <span class="separator">|</span>
+            <span>Version 2.0</span>
+            <span class="separator">|</span>
+            <a href="#help" class="top-link">Hilfe & Dokumentation</a>
+            <span class="separator">|</span>
+            <a href="#privacy" class="top-link">Datenschutz</a>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">
+                    <div class="logo-icon">Ψ</div>
+                    <div class="logo-text">
+                        <span class="logo-title">PsychoDiagnostik</span>
+                        <span class="logo-subtitle">Pro</span>
+                    </div>
+                </div>
+                <p class="tagline">Diagnostisches Assessment-System für Kinder und Jugendliche</p>
+            </div>
+
+            <div class="header-actions">
+                <button class="btn-header" id="btn-new-case" title="Neuen Fall anlegen">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Neuer Fall
+                </button>
+                <button class="btn-header" id="btn-case-list" title="Fallübersicht">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18M3 12h18M3 18h18"/>
+                    </svg>
+                    Fälle
+                </button>
+            </div>
+        </div>
     </header>
 
-    <nav class="main-nav">
-        <button class="nav-btn active" data-test="sdq">SDQ</button>
-        <button class="nav-btn" data-test="wisc">WISC-V / IQ</button>
-        <button class="nav-btn" data-test="cbcl">CBCL</button>
-        <button class="nav-btn import-btn" data-test="import">📁 Import</button>
+    <!-- Case Info Bar (erscheint wenn Fall aktiv) -->
+    <div class="case-info-bar" id="case-info-bar" style="display: none;">
+        <div class="case-info-content">
+            <div class="case-details">
+                <span class="case-label">Aktiver Fall:</span>
+                <span class="case-id" id="active-case-id">-</span>
+                <span class="case-name" id="active-case-name">-</span>
+                <span class="case-dob" id="active-case-dob">-</span>
+            </div>
+            <div class="case-actions">
+                <button class="btn-small" id="btn-save-case">Speichern</button>
+                <button class="btn-small btn-outline" id="btn-close-case">Fall schließen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="main-nav" role="navigation" aria-label="Hauptnavigation">
+        <div class="nav-content">
+            <div class="nav-group">
+                <span class="nav-group-label">Screening</span>
+                <button class="nav-btn active" data-test="sdq" data-category="screening">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-label">SDQ</span>
+                </button>
+                <button class="nav-btn" data-test="cbcl" data-category="screening">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">CBCL</span>
+                </button>
+            </div>
+
+            <div class="nav-group">
+                <span class="nav-group-label">Intelligenz</span>
+                <button class="nav-btn" data-test="wisc" data-category="intelligence">
+                    <span class="nav-icon">🧠</span>
+                    <span class="nav-label">WISC-V</span>
+                </button>
+            </div>
+
+            <div class="nav-group">
+                <span class="nav-group-label">Störungsspezifisch</span>
+                <button class="nav-btn" data-test="disyps" data-category="specific">
+                    <span class="nav-icon">🎯</span>
+                    <span class="nav-label">DISYPS-III</span>
+                </button>
+                <button class="nav-btn" data-test="afs" data-category="specific">
+                    <span class="nav-icon">😰</span>
+                    <span class="nav-label">AFS</span>
+                </button>
+            </div>
+
+            <div class="nav-group">
+                <span class="nav-group-label">Aufmerksamkeit</span>
+                <button class="nav-btn" data-test="d2r" data-category="attention">
+                    <span class="nav-icon">🔍</span>
+                    <span class="nav-label">d2-R</span>
+                </button>
+            </div>
+
+            <div class="nav-group nav-group-tools">
+                <span class="nav-group-label">Werkzeuge</span>
+                <button class="nav-btn nav-btn-tool" data-test="import">
+                    <span class="nav-icon">📥</span>
+                    <span class="nav-label">Import</span>
+                </button>
+                <button class="nav-btn nav-btn-tool" data-test="report">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-label">Bericht</span>
+                </button>
+            </div>
+        </div>
     </nav>
 
-    <main>
-        <!-- SDQ Section -->
-        <section id="sdq-section" class="test-section active">
-            <div class="section-header">
-                <h2>SDQ - Strengths and Difficulties Questionnaire</h2>
-                <p>Fragebogen zu Stärken und Schwächen (4-17 Jahre)</p>
-            </div>
+    <!-- Main Content -->
+    <main id="main-content" class="main-content">
+        <div class="content-wrapper">
 
-            <div class="input-container">
-                <h3>Skalenwerte eingeben (0-10)</h3>
-                <div class="scale-inputs">
-                    <div class="input-group">
-                        <label for="sdq-emotional">Emotionale Probleme</label>
-                        <input type="number" id="sdq-emotional" min="0" max="10" placeholder="0-10">
-                        <span class="info-icon" title="Angst, Sorgen, körperliche Beschwerden, Unglücklichsein">ℹ️</span>
+            <!-- SDQ Section -->
+            <section id="sdq-section" class="test-section active" aria-labelledby="sdq-heading">
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <h1 id="sdq-heading">SDQ - Fragebogen zu Stärken und Schwächen</h1>
+                        <span class="section-badge">Screening-Instrument</span>
                     </div>
-                    <div class="input-group">
-                        <label for="sdq-conduct">Verhaltensprobleme</label>
-                        <input type="number" id="sdq-conduct" min="0" max="10" placeholder="0-10">
-                        <span class="info-icon" title="Wutausbrüche, Ungehorsam, Lügen, Stehlen">ℹ️</span>
-                    </div>
-                    <div class="input-group">
-                        <label for="sdq-hyperactivity">Hyperaktivität</label>
-                        <input type="number" id="sdq-hyperactivity" min="0" max="10" placeholder="0-10">
-                        <span class="info-icon" title="Unruhe, Ablenkbarkeit, Impulsivität">ℹ️</span>
-                    </div>
-                    <div class="input-group">
-                        <label for="sdq-peer">Probleme mit Gleichaltrigen</label>
-                        <input type="number" id="sdq-peer" min="0" max="10" placeholder="0-10">
-                        <span class="info-icon" title="Einzelgänger, keine Freunde, Mobbing">ℹ️</span>
-                    </div>
-                    <div class="input-group">
-                        <label for="sdq-prosocial">Prosoziales Verhalten</label>
-                        <input type="number" id="sdq-prosocial" min="0" max="10" placeholder="0-10">
-                        <span class="info-icon" title="Hilfsbereitschaft, Freundlichkeit, Teilen">ℹ️</span>
+                    <p class="section-description">
+                        Der Strengths and Difficulties Questionnaire (SDQ) ist ein kurzes Verhaltensscreening
+                        für Kinder und Jugendliche von 4-17 Jahren. Er erfasst psychische Auffälligkeiten
+                        und prosoziale Stärken.
+                    </p>
+                    <div class="section-meta">
+                        <span class="meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                            </svg>
+                            Dauer: ca. 5-10 Min.
+                        </span>
+                        <span class="meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                            </svg>
+                            Alter: 4-17 Jahre
+                        </span>
+                        <span class="meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
+                            </svg>
+                            Referenz: Goodman (1997)
+                        </span>
                     </div>
                 </div>
 
-                <div class="respondent-select">
-                    <label>Beurteiler:</label>
-                    <select id="sdq-respondent">
-                        <option value="parent">Eltern</option>
-                        <option value="teacher">Lehrer</option>
-                        <option value="self">Selbstbeurteilung (11-17 J.)</option>
-                    </select>
-                </div>
+                <div class="test-content">
+                    <form class="test-form" id="sdq-form">
+                        <fieldset class="form-fieldset">
+                            <legend>Beurteilerversion</legend>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="sdq-respondent" value="parent" checked>
+                                    <span class="radio-custom"></span>
+                                    <span class="radio-text">
+                                        <strong>Elternversion</strong>
+                                        <small>Fremdbeurteilung durch Eltern/Erziehungsberechtigte</small>
+                                    </span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="sdq-respondent" value="teacher">
+                                    <span class="radio-custom"></span>
+                                    <span class="radio-text">
+                                        <strong>Lehrerversion</strong>
+                                        <small>Fremdbeurteilung durch Lehrkräfte</small>
+                                    </span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="sdq-respondent" value="self">
+                                    <span class="radio-custom"></span>
+                                    <span class="radio-text">
+                                        <strong>Selbstbeurteilung</strong>
+                                        <small>Für Jugendliche ab 11 Jahren</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </fieldset>
 
-                <button class="btn-primary" onclick="evaluateSDQ()">Auswerten</button>
-            </div>
+                        <fieldset class="form-fieldset">
+                            <legend>Skalenwerte eingeben</legend>
+                            <p class="fieldset-hint">Geben Sie die Summenwerte der einzelnen Skalen ein (jeweils 0-10 Punkte).</p>
 
-            <div id="sdq-results" class="results-container hidden">
-                <h3>Ergebnisse</h3>
-                <div class="results-grid">
-                    <div class="chart-container">
-                        <canvas id="sdq-chart"></canvas>
-                    </div>
-                    <div class="interpretation-container">
-                        <h4>Interpretation</h4>
-                        <div id="sdq-interpretation"></div>
-                    </div>
-                </div>
-                <div class="total-score">
-                    <h4>Gesamtproblemwert: <span id="sdq-total">-</span></h4>
-                    <div id="sdq-total-classification"></div>
-                </div>
-            </div>
-        </section>
+                            <div class="input-grid">
+                                <div class="form-group">
+                                    <label for="sdq-emotional">
+                                        Emotionale Probleme
+                                        <button type="button" class="info-btn" data-tooltip="Beinhaltet: Kopfschmerzen/Bauchschmerzen, Sorgen, Unglücklichsein, Nervosität, Ängste">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="sdq-emotional" name="emotional" min="0" max="10" required>
+                                        <span class="range-indicator">0-10</span>
+                                    </div>
+                                </div>
 
-        <!-- WISC-V Section -->
-        <section id="wisc-section" class="test-section">
-            <div class="section-header">
-                <h2>WISC-V - Wechsler Intelligence Scale for Children</h2>
-                <p>Intelligenzdiagnostik (6-16 Jahre)</p>
-            </div>
+                                <div class="form-group">
+                                    <label for="sdq-conduct">
+                                        Verhaltensprobleme
+                                        <button type="button" class="info-btn" data-tooltip="Beinhaltet: Wutanfälle, Gehorsam, Streiten, Lügen, Stehlen">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="sdq-conduct" name="conduct" min="0" max="10" required>
+                                        <span class="range-indicator">0-10</span>
+                                    </div>
+                                </div>
 
-            <div class="input-container">
-                <h3>Index-Werte eingeben (Standardwerte, M=100, SD=15)</h3>
-                <div class="scale-inputs">
-                    <div class="input-group">
-                        <label for="wisc-vci">Sprachverständnis (VCI)</label>
-                        <input type="number" id="wisc-vci" min="40" max="160" placeholder="40-160">
-                        <span class="info-icon" title="Wortschatz, Allgemeinwissen, Gemeinsamkeiten finden">ℹ️</span>
-                    </div>
-                    <div class="input-group">
-                        <label for="wisc-vsi">Visuell-räumliche Verarbeitung (VSI)</label>
-                        <input type="number" id="wisc-vsi" min="40" max="160" placeholder="40-160">
-                        <span class="info-icon" title="Mosaik-Test, Visuelle Puzzles">ℹ️</span>
-                    </div>
-                    <div class="input-group">
-                        <label for="wisc-fri">Fluides Schlussfolgern (FRI)</label>
-                        <input type="number" id="wisc-fri" min="40" max="160" placeholder="40-160">
-                        <span class="info-icon" title="Matrizen-Test, Waagen, Bildkonzepte">ℹ️</span>
-                    </div>
-                    <div class="input-group">
-                        <label for="wisc-wmi">Arbeitsgedächtnis (WMI)</label>
-                        <input type="number" id="wisc-wmi" min="40" max="160" placeholder="40-160">
-                        <span class="info-icon" title="Zahlen nachsprechen, Bilderfolgen">ℹ️</span>
-                    </div>
-                    <div class="input-group">
-                        <label for="wisc-psi">Verarbeitungsgeschwindigkeit (PSI)</label>
-                        <input type="number" id="wisc-psi" min="40" max="160" placeholder="40-160">
-                        <span class="info-icon" title="Coding, Symbol-Suche">ℹ️</span>
-                    </div>
-                    <div class="input-group highlight">
-                        <label for="wisc-fsiq">Gesamt-IQ (FSIQ)</label>
-                        <input type="number" id="wisc-fsiq" min="40" max="160" placeholder="40-160">
-                        <span class="info-icon" title="Gesamtintelligenzquotient">ℹ️</span>
-                    </div>
-                </div>
+                                <div class="form-group">
+                                    <label for="sdq-hyperactivity">
+                                        Hyperaktivität/Aufmerksamkeitsprobleme
+                                        <button type="button" class="info-btn" data-tooltip="Beinhaltet: Unruhe, Zappeligkeit, Ablenkbarkeit, Impulsivität, mangelnde Ausdauer">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="sdq-hyperactivity" name="hyperactivity" min="0" max="10" required>
+                                        <span class="range-indicator">0-10</span>
+                                    </div>
+                                </div>
 
-                <button class="btn-primary" onclick="evaluateWISC()">Auswerten</button>
-            </div>
+                                <div class="form-group">
+                                    <label for="sdq-peer">
+                                        Probleme mit Gleichaltrigen
+                                        <button type="button" class="info-btn" data-tooltip="Beinhaltet: Einzelgänger, keine Freunde, unbeliebt, Hänseleien, besserer Umgang mit Erwachsenen">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="sdq-peer" name="peer" min="0" max="10" required>
+                                        <span class="range-indicator">0-10</span>
+                                    </div>
+                                </div>
 
-            <div id="wisc-results" class="results-container hidden">
-                <h3>Ergebnisse</h3>
-                <div class="results-grid">
-                    <div class="chart-container">
-                        <canvas id="wisc-chart"></canvas>
-                    </div>
-                    <div class="interpretation-container">
-                        <h4>Interpretation</h4>
-                        <div id="wisc-interpretation"></div>
-                    </div>
-                </div>
-                <div class="profile-analysis">
-                    <h4>Profilanalyse</h4>
-                    <div id="wisc-profile"></div>
-                </div>
-            </div>
-        </section>
+                                <div class="form-group form-group-highlight">
+                                    <label for="sdq-prosocial">
+                                        Prosoziales Verhalten
+                                        <button type="button" class="info-btn" data-tooltip="Beinhaltet: Rücksichtnahme, Teilen, Hilfsbereitschaft, Freundlichkeit, Trösten">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="sdq-prosocial" name="prosocial" min="0" max="10" required>
+                                        <span class="range-indicator">0-10</span>
+                                    </div>
+                                    <span class="form-note">Stärkenskala - höhere Werte = positiv</span>
+                                </div>
+                            </div>
+                        </fieldset>
 
-        <!-- CBCL Section -->
-        <section id="cbcl-section" class="test-section">
-            <div class="section-header">
-                <h2>CBCL - Child Behavior Checklist</h2>
-                <p>Elternfragebogen über das Verhalten von Kindern und Jugendlichen (6-18 Jahre)</p>
-            </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="clearSDQForm()">
+                                Zurücksetzen
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                                Auswerten
+                            </button>
+                        </div>
+                    </form>
 
-            <div class="input-container">
-                <h3>T-Werte eingeben (M=50, SD=10)</h3>
+                    <!-- Results Section -->
+                    <div id="sdq-results" class="results-section" style="display: none;">
+                        <div class="results-header">
+                            <h2>Auswertungsergebnis</h2>
+                            <div class="results-actions">
+                                <button class="btn btn-small btn-outline" onclick="printResults('sdq')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                                        <rect x="6" y="14" width="12" height="8"/>
+                                    </svg>
+                                    Drucken
+                                </button>
+                            </div>
+                        </div>
 
-                <h4 class="scale-category">Syndromskalen</h4>
-                <div class="scale-inputs">
-                    <div class="input-group">
-                        <label for="cbcl-anxious">Ängstlich/Depressiv</label>
-                        <input type="number" id="cbcl-anxious" min="30" max="100" placeholder="T-Wert">
-                    </div>
-                    <div class="input-group">
-                        <label for="cbcl-withdrawn">Rückzug/Depression</label>
-                        <input type="number" id="cbcl-withdrawn" min="30" max="100" placeholder="T-Wert">
-                    </div>
-                    <div class="input-group">
-                        <label for="cbcl-somatic">Körperliche Beschwerden</label>
-                        <input type="number" id="cbcl-somatic" min="30" max="100" placeholder="T-Wert">
-                    </div>
-                    <div class="input-group">
-                        <label for="cbcl-social">Soziale Probleme</label>
-                        <input type="number" id="cbcl-social" min="30" max="100" placeholder="T-Wert">
-                    </div>
-                    <div class="input-group">
-                        <label for="cbcl-thought">Schizoid/Zwanghaft</label>
-                        <input type="number" id="cbcl-thought" min="30" max="100" placeholder="T-Wert">
-                    </div>
-                    <div class="input-group">
-                        <label for="cbcl-attention">Aufmerksamkeitsprobleme</label>
-                        <input type="number" id="cbcl-attention" min="30" max="100" placeholder="T-Wert">
-                    </div>
-                    <div class="input-group">
-                        <label for="cbcl-rulebreak">Dissoziales Verhalten</label>
-                        <input type="number" id="cbcl-rulebreak" min="30" max="100" placeholder="T-Wert">
-                    </div>
-                    <div class="input-group">
-                        <label for="cbcl-aggressive">Aggressives Verhalten</label>
-                        <input type="number" id="cbcl-aggressive" min="30" max="100" placeholder="T-Wert">
-                    </div>
-                </div>
+                        <div class="results-summary" id="sdq-summary">
+                            <!-- Dynamisch gefüllt -->
+                        </div>
 
-                <h4 class="scale-category">Übergeordnete Skalen</h4>
-                <div class="scale-inputs">
-                    <div class="input-group highlight">
-                        <label for="cbcl-internal">Internalisierende Störungen</label>
-                        <input type="number" id="cbcl-internal" min="30" max="100" placeholder="T-Wert">
-                    </div>
-                    <div class="input-group highlight">
-                        <label for="cbcl-external">Externalisierende Störungen</label>
-                        <input type="number" id="cbcl-external" min="30" max="100" placeholder="T-Wert">
-                    </div>
-                    <div class="input-group highlight">
-                        <label for="cbcl-total">Gesamtwert</label>
-                        <input type="number" id="cbcl-total" min="30" max="100" placeholder="T-Wert">
-                    </div>
-                </div>
+                        <div class="results-grid">
+                            <div class="results-chart-container">
+                                <h3>Skalenprofil</h3>
+                                <div class="chart-wrapper">
+                                    <canvas id="sdq-chart"></canvas>
+                                </div>
+                                <div class="chart-legend">
+                                    <span class="legend-item legend-normal">Unauffällig</span>
+                                    <span class="legend-item legend-borderline">Grenzwertig</span>
+                                    <span class="legend-item legend-clinical">Auffällig</span>
+                                </div>
+                            </div>
 
-                <button class="btn-primary" onclick="evaluateCBCL()">Auswerten</button>
-            </div>
+                            <div class="results-interpretation">
+                                <h3>Klinische Interpretation</h3>
+                                <div id="sdq-interpretation">
+                                    <!-- Dynamisch gefüllt -->
+                                </div>
+                            </div>
+                        </div>
 
-            <div id="cbcl-results" class="results-container hidden">
-                <h3>Ergebnisse</h3>
-                <div class="results-grid">
-                    <div class="chart-container">
-                        <canvas id="cbcl-chart"></canvas>
-                    </div>
-                    <div class="interpretation-container">
-                        <h4>Interpretation</h4>
-                        <div id="cbcl-interpretation"></div>
+                        <div class="results-recommendations" id="sdq-recommendations">
+                            <!-- Dynamisch gefüllt -->
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Import Section -->
-        <section id="import-section" class="test-section">
-            <div class="section-header">
-                <h2>📁 Daten importieren</h2>
-                <p>CSV oder Excel-Dateien mit Testergebnissen importieren</p>
-            </div>
-
-            <div class="import-container">
-                <div class="import-dropzone" id="dropzone">
-                    <div class="dropzone-content">
-                        <span class="dropzone-icon">📄</span>
-                        <p>Datei hierher ziehen oder klicken zum Auswählen</p>
-                        <p class="dropzone-hint">Unterstützte Formate: CSV, XLSX</p>
+            <!-- WISC-V Section -->
+            <section id="wisc-section" class="test-section" aria-labelledby="wisc-heading">
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <h1 id="wisc-heading">WISC-V - Wechsler Intelligence Scale for Children</h1>
+                        <span class="section-badge badge-blue">Intelligenzdiagnostik</span>
                     </div>
-                    <input type="file" id="file-input" accept=".csv,.xlsx" hidden>
+                    <p class="section-description">
+                        Die WISC-V ist das weltweit am häufigsten eingesetzte Intelligenztestverfahren für
+                        Kinder und Jugendliche. Sie liefert ein differenziertes kognitives Leistungsprofil.
+                    </p>
+                    <div class="section-meta">
+                        <span class="meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                            </svg>
+                            Dauer: 60-90 Min.
+                        </span>
+                        <span class="meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                            </svg>
+                            Alter: 6;0-16;11 Jahre
+                        </span>
+                        <span class="meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
+                            </svg>
+                            Pearson (2017)
+                        </span>
+                    </div>
                 </div>
 
-                <div class="import-templates">
-                    <h4>Vorlagen herunterladen</h4>
-                    <button class="btn-secondary" onclick="downloadTemplate('sdq')">SDQ-Vorlage</button>
-                    <button class="btn-secondary" onclick="downloadTemplate('wisc')">WISC-V-Vorlage</button>
-                    <button class="btn-secondary" onclick="downloadTemplate('cbcl')">CBCL-Vorlage</button>
+                <div class="test-content">
+                    <form class="test-form" id="wisc-form">
+                        <fieldset class="form-fieldset">
+                            <legend>Indexwerte eingeben</legend>
+                            <p class="fieldset-hint">Tragen Sie die ermittelten Indexwerte ein (Standardwerte: M=100, SD=15).</p>
+
+                            <div class="input-grid input-grid-3">
+                                <div class="form-group">
+                                    <label for="wisc-vci">
+                                        Sprachverständnis (SV)
+                                        <button type="button" class="info-btn" data-tooltip="Verbal Comprehension Index: Gemeinsamkeiten finden, Wortschatz-Test, (Allgemeines Wissen), (Allgemeines Verständnis)">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="wisc-vci" name="vci" min="40" max="160">
+                                        <span class="range-indicator">40-160</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="wisc-vsi">
+                                        Visuell-räumliche Verarbeitung (VR)
+                                        <button type="button" class="info-btn" data-tooltip="Visual Spatial Index: Mosaik-Test, Visuelle Puzzles">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="wisc-vsi" name="vsi" min="40" max="160">
+                                        <span class="range-indicator">40-160</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="wisc-fri">
+                                        Fluides Schlussfolgern (FS)
+                                        <button type="button" class="info-btn" data-tooltip="Fluid Reasoning Index: Matrizen-Test, Formenwaage, (Bildkonzepte), (Zahlenfolgen)">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="wisc-fri" name="fri" min="40" max="160">
+                                        <span class="range-indicator">40-160</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="wisc-wmi">
+                                        Arbeitsgedächtnis (AG)
+                                        <button type="button" class="info-btn" data-tooltip="Working Memory Index: Zahlen nachsprechen, Bilderfolgen, (Buchstaben-Zahlen-Folgen)">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="wisc-wmi" name="wmi" min="40" max="160">
+                                        <span class="range-indicator">40-160</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="wisc-psi">
+                                        Verarbeitungsgeschwindigkeit (VG)
+                                        <button type="button" class="info-btn" data-tooltip="Processing Speed Index: Zahlen-Symbol-Test, Symbol-Suche, (Durchstreich-Test)">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="wisc-psi" name="psi" min="40" max="160">
+                                        <span class="range-indicator">40-160</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-group-primary">
+                                    <label for="wisc-fsiq">
+                                        Gesamt-IQ (FSIQ)
+                                        <button type="button" class="info-btn" data-tooltip="Full Scale IQ: Gesamtmaß der allgemeinen intellektuellen Leistungsfähigkeit">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="wisc-fsiq" name="fsiq" min="40" max="160">
+                                        <span class="range-indicator">40-160</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-fieldset collapsible">
+                            <legend>
+                                <button type="button" class="collapsible-toggle">
+                                    Zusätzliche Indizes (optional)
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="6 9 12 15 18 9"/>
+                                    </svg>
+                                </button>
+                            </legend>
+                            <div class="collapsible-content" style="display: none;">
+                                <div class="input-grid input-grid-3">
+                                    <div class="form-group">
+                                        <label for="wisc-qri">Quantitatives Schlussfolgern (QS)</label>
+                                        <input type="number" id="wisc-qri" name="qri" min="40" max="160">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="wisc-awmi">Auditives Arbeitsgedächtnis (AAG)</label>
+                                        <input type="number" id="wisc-awmi" name="awmi" min="40" max="160">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="wisc-nvi">Nonverbaler Index (NVI)</label>
+                                        <input type="number" id="wisc-nvi" name="nvi" min="40" max="160">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="wisc-gai">Allgemeiner Fähigkeitsindex (AFI)</label>
+                                        <input type="number" id="wisc-gai" name="gai" min="40" max="160">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="wisc-cpi">Kognitiver Leistungsindex (KLI)</label>
+                                        <input type="number" id="wisc-cpi" name="cpi" min="40" max="160">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="clearWISCForm()">
+                                Zurücksetzen
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                                Auswerten
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="wisc-results" class="results-section" style="display: none;">
+                        <div class="results-header">
+                            <h2>Auswertungsergebnis</h2>
+                            <div class="results-actions">
+                                <button class="btn btn-small btn-outline" onclick="printResults('wisc')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                                        <rect x="6" y="14" width="12" height="8"/>
+                                    </svg>
+                                    Drucken
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="results-summary" id="wisc-summary"></div>
+
+                        <div class="results-grid">
+                            <div class="results-chart-container">
+                                <h3>Indexprofil</h3>
+                                <div class="chart-wrapper chart-wrapper-large">
+                                    <canvas id="wisc-chart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="results-interpretation">
+                                <h3>Klinische Interpretation</h3>
+                                <div id="wisc-interpretation"></div>
+                            </div>
+                        </div>
+
+                        <div class="results-profile" id="wisc-profile"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CBCL Section -->
+            <section id="cbcl-section" class="test-section" aria-labelledby="cbcl-heading">
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <h1 id="cbcl-heading">CBCL/6-18R - Child Behavior Checklist</h1>
+                        <span class="section-badge">Verhaltensdiagnostik</span>
+                    </div>
+                    <p class="section-description">
+                        Die Child Behavior Checklist ist ein standardisierter Elternfragebogen zur
+                        Erfassung von Verhaltensauffälligkeiten und emotionalen Problemen bei Kindern und Jugendlichen.
+                    </p>
+                    <div class="section-meta">
+                        <span class="meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                            </svg>
+                            Dauer: 15-20 Min.
+                        </span>
+                        <span class="meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                            </svg>
+                            Alter: 6-18 Jahre
+                        </span>
+                        <span class="meta-item">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
+                            </svg>
+                            Achenbach (2014)
+                        </span>
+                    </div>
                 </div>
 
-                <div id="import-preview" class="hidden">
-                    <h4>Vorschau</h4>
-                    <div id="preview-content"></div>
-                    <button class="btn-primary" onclick="processImport()">Daten übernehmen</button>
+                <div class="test-content">
+                    <form class="test-form" id="cbcl-form">
+                        <fieldset class="form-fieldset">
+                            <legend>Übergeordnete Skalen (T-Werte)</legend>
+                            <p class="fieldset-hint">T-Werte: M=50, SD=10. Grenzbereich: T=60-63, Klinisch: T≥64</p>
+
+                            <div class="input-grid input-grid-3">
+                                <div class="form-group form-group-primary">
+                                    <label for="cbcl-internal">Internalisierende Auffälligkeiten</label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="cbcl-internal" name="internal" min="30" max="100">
+                                        <span class="range-indicator">T-Wert</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-group-primary">
+                                    <label for="cbcl-external">Externalisierende Auffälligkeiten</label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="cbcl-external" name="external" min="30" max="100">
+                                        <span class="range-indicator">T-Wert</span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-group-primary">
+                                    <label for="cbcl-total">Gesamtauffälligkeit</label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="cbcl-total" name="total" min="30" max="100">
+                                        <span class="range-indicator">T-Wert</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-fieldset">
+                            <legend>Syndromskalen (T-Werte)</legend>
+                            <p class="fieldset-hint">T-Werte der acht Syndromskalen. Grenzbereich: T=65-69, Klinisch: T≥70</p>
+
+                            <div class="input-grid">
+                                <div class="form-group">
+                                    <label for="cbcl-anxious">Ängstlich/Depressiv</label>
+                                    <input type="number" id="cbcl-anxious" name="anxious" min="30" max="100">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cbcl-withdrawn">Rückzüglich/Depressiv</label>
+                                    <input type="number" id="cbcl-withdrawn" name="withdrawn" min="30" max="100">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cbcl-somatic">Körperliche Beschwerden</label>
+                                    <input type="number" id="cbcl-somatic" name="somatic" min="30" max="100">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cbcl-social">Soziale Probleme</label>
+                                    <input type="number" id="cbcl-social" name="social" min="30" max="100">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cbcl-thought">Denkprobleme</label>
+                                    <input type="number" id="cbcl-thought" name="thought" min="30" max="100">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cbcl-attention">Aufmerksamkeitsprobleme</label>
+                                    <input type="number" id="cbcl-attention" name="attention" min="30" max="100">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cbcl-rulebreak">Regelverletzendes Verhalten</label>
+                                    <input type="number" id="cbcl-rulebreak" name="rulebreak" min="30" max="100">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cbcl-aggressive">Aggressives Verhalten</label>
+                                    <input type="number" id="cbcl-aggressive" name="aggressive" min="30" max="100">
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="clearCBCLForm()">
+                                Zurücksetzen
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                                Auswerten
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="cbcl-results" class="results-section" style="display: none;">
+                        <div class="results-header">
+                            <h2>Auswertungsergebnis</h2>
+                        </div>
+                        <div class="results-summary" id="cbcl-summary"></div>
+                        <div class="results-grid">
+                            <div class="results-chart-container">
+                                <h3>Syndrom-Profil</h3>
+                                <div class="chart-wrapper chart-wrapper-large">
+                                    <canvas id="cbcl-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="results-interpretation">
+                                <h3>Klinische Interpretation</h3>
+                                <div id="cbcl-interpretation"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+
+            <!-- DISYPS-III Section -->
+            <section id="disyps-section" class="test-section" aria-labelledby="disyps-heading">
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <h1 id="disyps-heading">DISYPS-III - Diagnostik-System für psychische Störungen</h1>
+                        <span class="section-badge badge-purple">Störungsspezifisch</span>
+                    </div>
+                    <p class="section-description">
+                        Das DISYPS-III ermöglicht eine kriterienorientierte Diagnostik psychischer Störungen
+                        nach ICD-10 und DSM-5 bei Kindern und Jugendlichen.
+                    </p>
+                </div>
+
+                <div class="test-content">
+                    <form class="test-form" id="disyps-form">
+                        <fieldset class="form-fieldset">
+                            <legend>ADHS-Skalen (Stanine-Werte)</legend>
+                            <p class="fieldset-hint">Stanine 1-3: unterdurchschnittlich, 4-6: durchschnittlich, 7-9: überdurchschnittlich auffällig</p>
+
+                            <div class="input-grid">
+                                <div class="form-group">
+                                    <label for="disyps-inattention">Unaufmerksamkeit</label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="disyps-inattention" name="inattention" min="1" max="9">
+                                        <span class="range-indicator">1-9</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="disyps-hyperactive">Überaktivität</label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="disyps-hyperactive" name="hyperactive" min="1" max="9">
+                                        <span class="range-indicator">1-9</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="disyps-impulsive">Impulsivität</label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="disyps-impulsive" name="impulsive" min="1" max="9">
+                                        <span class="range-indicator">1-9</span>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-primary">
+                                    <label for="disyps-adhd-total">ADHS-Gesamtwert</label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="disyps-adhd-total" name="adhd-total" min="1" max="9">
+                                        <span class="range-indicator">1-9</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-fieldset">
+                            <legend>SSV-Skalen (Störung des Sozialverhaltens)</legend>
+
+                            <div class="input-grid">
+                                <div class="form-group">
+                                    <label for="disyps-oppositional">Oppositionell-verweigerndes Verhalten</label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="disyps-oppositional" name="oppositional" min="1" max="9">
+                                        <span class="range-indicator">1-9</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="disyps-conduct">Aggressiv-dissoziales Verhalten</label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="disyps-conduct" name="conduct" min="1" max="9">
+                                        <span class="range-indicator">1-9</span>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-primary">
+                                    <label for="disyps-ssv-total">SSV-Gesamtwert</label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="disyps-ssv-total" name="ssv-total" min="1" max="9">
+                                        <span class="range-indicator">1-9</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="clearDISYPSForm()">Zurücksetzen</button>
+                            <button type="submit" class="btn btn-primary">Auswerten</button>
+                        </div>
+                    </form>
+
+                    <div id="disyps-results" class="results-section" style="display: none;">
+                        <div class="results-header"><h2>Auswertungsergebnis</h2></div>
+                        <div class="results-summary" id="disyps-summary"></div>
+                        <div class="results-grid">
+                            <div class="results-chart-container">
+                                <h3>DISYPS-Profil</h3>
+                                <div class="chart-wrapper"><canvas id="disyps-chart"></canvas></div>
+                            </div>
+                            <div class="results-interpretation">
+                                <h3>Diagnostische Einordnung</h3>
+                                <div id="disyps-interpretation"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AFS Section -->
+            <section id="afs-section" class="test-section" aria-labelledby="afs-heading">
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <h1 id="afs-heading">AFS - Angstfragebogen für Schüler</h1>
+                        <span class="section-badge badge-orange">Angstdiagnostik</span>
+                    </div>
+                    <p class="section-description">
+                        Der AFS erfasst ängstliche und unlustvoll erlebte Zustände von Schülern
+                        in schulischen Situationen sowie sozial erwünschtes Antwortverhalten.
+                    </p>
+                </div>
+
+                <div class="test-content">
+                    <form class="test-form" id="afs-form">
+                        <fieldset class="form-fieldset">
+                            <legend>Skalenwerte (Prozentränge)</legend>
+                            <p class="fieldset-hint">PR &lt;16: unterdurchschnittlich, 16-84: durchschnittlich, &gt;84: überdurchschnittlich</p>
+
+                            <div class="input-grid">
+                                <div class="form-group">
+                                    <label for="afs-pa">
+                                        Prüfungsangst (PA)
+                                        <button type="button" class="info-btn" data-tooltip="Angst vor Leistungsüberprüfungen, Prüfungssituationen und damit verbundene vegetative Reaktionen">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="afs-pa" name="pa" min="0" max="100">
+                                        <span class="range-indicator">PR 0-100</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="afs-ma">
+                                        Manifeste Angst (MA)
+                                        <button type="button" class="info-btn" data-tooltip="Allgemeine Ängstlichkeit, die sich in vegetativen Symptomen und Konzentrationsstörungen äußert">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="afs-ma" name="ma" min="0" max="100">
+                                        <span class="range-indicator">PR 0-100</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="afs-su">
+                                        Schulunlust (SU)
+                                        <button type="button" class="info-btn" data-tooltip="Innere Abneigung gegen die Schule, mangelnde Lernmotivation">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="afs-su" name="su" min="0" max="100">
+                                        <span class="range-indicator">PR 0-100</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="afs-se">
+                                        Soziale Erwünschtheit (SE)
+                                        <button type="button" class="info-btn" data-tooltip="Tendenz zu sozial erwünschtem Antwortverhalten - bei hohen Werten Ergebnisse mit Vorsicht interpretieren">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="afs-se" name="se" min="0" max="100">
+                                        <span class="range-indicator">PR 0-100</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="clearAFSForm()">Zurücksetzen</button>
+                            <button type="submit" class="btn btn-primary">Auswerten</button>
+                        </div>
+                    </form>
+
+                    <div id="afs-results" class="results-section" style="display: none;">
+                        <div class="results-header"><h2>Auswertungsergebnis</h2></div>
+                        <div class="results-summary" id="afs-summary"></div>
+                        <div class="results-grid">
+                            <div class="results-chart-container">
+                                <h3>AFS-Profil</h3>
+                                <div class="chart-wrapper"><canvas id="afs-chart"></canvas></div>
+                            </div>
+                            <div class="results-interpretation">
+                                <h3>Interpretation</h3>
+                                <div id="afs-interpretation"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- d2-R Section -->
+            <section id="d2r-section" class="test-section" aria-labelledby="d2r-heading">
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <h1 id="d2r-heading">d2-R - Aufmerksamkeits- und Konzentrationstest</h1>
+                        <span class="section-badge badge-teal">Aufmerksamkeit</span>
+                    </div>
+                    <p class="section-description">
+                        Der d2-R misst die Konzentrations- und Aufmerksamkeitsleistung durch
+                        selektive Aufmerksamkeit bei visueller Unterscheidung ähnlicher Reize.
+                    </p>
+                </div>
+
+                <div class="test-content">
+                    <form class="test-form" id="d2r-form">
+                        <fieldset class="form-fieldset">
+                            <legend>Kennwerte (Standardwerte oder Prozentränge)</legend>
+
+                            <div class="input-grid">
+                                <div class="form-group form-group-primary">
+                                    <label for="d2r-kl">
+                                        Konzentrationsleistung (KL)
+                                        <button type="button" class="info-btn" data-tooltip="Hauptkennwert: Anzahl korrekt bearbeiteter Zielzeichen minus Verwechslungsfehler">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="d2r-kl" name="kl" min="0" max="100">
+                                        <span class="range-indicator">PR 0-100</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="d2r-bz">
+                                        Bearbeitete Zeichen (BZO)
+                                        <button type="button" class="info-btn" data-tooltip="Tempo/Quantität: Gesamtzahl aller bearbeiteten Zeichen">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="d2r-bz" name="bz" min="0" max="100">
+                                        <span class="range-indicator">PR 0-100</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="d2r-f">
+                                        Fehler (F%)
+                                        <button type="button" class="info-btn" data-tooltip="Sorgfalt/Genauigkeit: Prozentualer Fehleranteil (niedrig = gut)">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="d2r-f" name="f" min="0" max="100" step="0.1">
+                                        <span class="range-indicator">PR 0-100</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="d2r-sb">
+                                        Schwankungsbreite (SB)
+                                        <button type="button" class="info-btn" data-tooltip="Gleichmäßigkeit der Leistung über die Zeit (niedrig = gleichmäßig)">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="d2r-sb" name="sb" min="0" max="100">
+                                        <span class="range-indicator">PR 0-100</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="clearD2RForm()">Zurücksetzen</button>
+                            <button type="submit" class="btn btn-primary">Auswerten</button>
+                        </div>
+                    </form>
+
+                    <div id="d2r-results" class="results-section" style="display: none;">
+                        <div class="results-header"><h2>Auswertungsergebnis</h2></div>
+                        <div class="results-summary" id="d2r-summary"></div>
+                        <div class="results-grid">
+                            <div class="results-chart-container">
+                                <h3>Leistungsprofil</h3>
+                                <div class="chart-wrapper"><canvas id="d2r-chart"></canvas></div>
+                            </div>
+                            <div class="results-interpretation">
+                                <h3>Interpretation</h3>
+                                <div id="d2r-interpretation"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Import Section -->
+            <section id="import-section" class="test-section" aria-labelledby="import-heading">
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <h1 id="import-heading">Datenimport</h1>
+                    </div>
+                    <p class="section-description">
+                        Importieren Sie Testergebnisse aus CSV-Dateien oder laden Sie vorhandene Fälle.
+                    </p>
+                </div>
+
+                <div class="import-content">
+                    <div class="import-dropzone" id="dropzone">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <p class="dropzone-title">Datei hierher ziehen</p>
+                        <p class="dropzone-subtitle">oder klicken zum Auswählen</p>
+                        <span class="dropzone-formats">CSV, XLSX</span>
+                        <input type="file" id="file-input" accept=".csv,.xlsx" hidden>
+                    </div>
+
+                    <div class="import-templates">
+                        <h3>Vorlagen herunterladen</h3>
+                        <div class="template-grid">
+                            <button class="template-btn" onclick="downloadTemplate('sdq')">
+                                <span class="template-icon">📋</span>
+                                <span class="template-name">SDQ</span>
+                            </button>
+                            <button class="template-btn" onclick="downloadTemplate('wisc')">
+                                <span class="template-icon">🧠</span>
+                                <span class="template-name">WISC-V</span>
+                            </button>
+                            <button class="template-btn" onclick="downloadTemplate('cbcl')">
+                                <span class="template-icon">📊</span>
+                                <span class="template-name">CBCL</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="import-preview" class="import-preview" style="display: none;">
+                        <h3>Vorschau</h3>
+                        <div id="preview-content"></div>
+                        <div class="preview-actions">
+                            <button class="btn btn-secondary" onclick="cancelImport()">Abbrechen</button>
+                            <button class="btn btn-primary" onclick="processImport()">Importieren</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Report Section -->
+            <section id="report-section" class="test-section" aria-labelledby="report-heading">
+                <div class="section-header">
+                    <div class="section-title-group">
+                        <h1 id="report-heading">Befundbericht erstellen</h1>
+                    </div>
+                    <p class="section-description">
+                        Erstellen Sie einen integrierten Befundbericht aus allen durchgeführten Tests.
+                    </p>
+                </div>
+
+                <div class="report-content">
+                    <div class="report-overview">
+                        <h3>Verfügbare Testergebnisse</h3>
+                        <div class="test-checklist" id="report-checklist">
+                            <!-- Dynamisch gefüllt -->
+                        </div>
+                    </div>
+
+                    <div class="report-options">
+                        <h3>Berichtoptionen</h3>
+
+                        <div class="option-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="report-include-charts" checked>
+                                <span class="checkbox-custom"></span>
+                                Diagramme einschließen
+                            </label>
+                        </div>
+
+                        <div class="option-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="report-include-recommendations" checked>
+                                <span class="checkbox-custom"></span>
+                                Empfehlungen einschließen
+                            </label>
+                        </div>
+
+                        <div class="option-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="report-include-norms">
+                                <span class="checkbox-custom"></span>
+                                Normtabellen anzeigen
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="report-actions">
+                        <button class="btn btn-primary btn-large" onclick="generatePDFReport()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                                <polyline points="10 9 9 9 8 9"/>
+                            </svg>
+                            PDF-Bericht erstellen
+                        </button>
+                        <button class="btn btn-secondary btn-large" onclick="previewReport()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            Vorschau
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
     </main>
 
-    <!-- PDF Export Button -->
-    <div class="export-container">
-        <button class="btn-export" onclick="exportToPDF()">📄 Als PDF exportieren</button>
+    <!-- Case Modal -->
+    <div class="modal" id="case-modal" style="display: none;">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="case-modal-title">Neuen Fall anlegen</h2>
+                <button class="modal-close" onclick="closeCaseModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="case-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="case-lastname">Nachname *</label>
+                            <input type="text" id="case-lastname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="case-firstname">Vorname *</label>
+                            <input type="text" id="case-firstname" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="case-dob">Geburtsdatum *</label>
+                            <input type="date" id="case-dob" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="case-gender">Geschlecht</label>
+                            <select id="case-gender">
+                                <option value="">-- Auswählen --</option>
+                                <option value="m">männlich</option>
+                                <option value="w">weiblich</option>
+                                <option value="d">divers</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="case-id">Fall-ID (optional)</label>
+                        <input type="text" id="case-id" placeholder="Wird automatisch generiert">
+                    </div>
+                    <div class="form-group">
+                        <label for="case-notes">Anmerkungen</label>
+                        <textarea id="case-notes" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeCaseModal()">Abbrechen</button>
+                <button class="btn btn-primary" onclick="saveCase()">Fall anlegen</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Case List Modal -->
+    <div class="modal" id="case-list-modal" style="display: none;">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Fallübersicht</h2>
+                <button class="modal-close" onclick="closeCaseListModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="case-search">
+                    <input type="text" id="case-search-input" placeholder="Fall suchen...">
+                </div>
+                <div class="case-list" id="case-list">
+                    <!-- Dynamisch gefüllt -->
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Footer -->
-    <footer>
-        <p>⚠️ <strong>Hinweis:</strong> Dieses Tool dient ausschließlich als Unterstützung.
-        Die endgültige Interpretation sollte immer durch qualifizierte Fachpersonen erfolgen.</p>
-        <p class="version">Version 1.0 | Diagnostisches Assessment-Tool</p>
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>PsychoDiagnostik Pro</h4>
+                <p>Open-Source Diagnostik-Tool für Kinder- und Jugendpsychologie</p>
+                <p class="footer-version">Version 2.0.0 | Build 2024.01</p>
+            </div>
+            <div class="footer-section">
+                <h4>Rechtliches</h4>
+                <ul class="footer-links">
+                    <li><a href="#" onclick="showLegalModal('impressum')">Impressum</a></li>
+                    <li><a href="#" onclick="showLegalModal('privacy')">Datenschutzerklärung</a></li>
+                    <li><a href="#" onclick="showLegalModal('disclaimer')">Haftungsausschluss</a></li>
+                    <li><a href="#" onclick="showLegalModal('license')">Lizenz (MIT)</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Ressourcen</h4>
+                <ul class="footer-links">
+                    <li><a href="#" onclick="showHelpModal()">Benutzerhandbuch</a></li>
+                    <li><a href="https://github.com" target="_blank" rel="noopener">GitHub Repository</a></li>
+                    <li><a href="#" onclick="showLegalModal('references')">Literaturverweise</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Hinweis</h4>
+                <p class="footer-disclaimer">
+                    Dieses Tool ersetzt keine professionelle klinische Diagnostik.
+                    Alle Interpretationen sollten von qualifizierten Fachpersonen
+                    überprüft werden.
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 PsychoDiagnostik Pro. Lizenziert unter MIT-Lizenz.</p>
+        </div>
     </footer>
 
-    <script src="js/sdq.js"></script>
-    <script src="js/wisc.js"></script>
-    <script src="js/cbcl.js"></script>
+    <!-- Legal Modal -->
+    <div class="modal" id="legal-modal" style="display: none;">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="legal-modal-title">-</h2>
+                <button class="modal-close" onclick="closeLegalModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="legal-modal-content">
+                <!-- Dynamisch gefüllt -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/core/storage.js"></script>
+    <script src="js/core/cases.js"></script>
+    <script src="js/core/charts.js"></script>
+    <script src="js/core/pdf-export.js"></script>
+    <script src="js/tests/sdq.js"></script>
+    <script src="js/tests/wisc.js"></script>
+    <script src="js/tests/cbcl.js"></script>
+    <script src="js/tests/disyps.js"></script>
+    <script src="js/tests/afs.js"></script>
+    <script src="js/tests/d2r.js"></script>
     <script src="js/import.js"></script>
-    <script src="js/export.js"></script>
+    <script src="js/legal.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
