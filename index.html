@@ -4129,9 +4129,9 @@ function showItemModal(itemCode) {
 
     if (!bereichData) return;
 
-    // Item in den Stufen finden
+    // Item in den Stufen finden (stufen ist ein Objekt, keine Array)
     let item = null;
-    for (const stufe of bereichData.stufen) {
+    for (const stufe of Object.values(bereichData.stufen)) {
         item = stufe.items.find(i => i.code === itemCode);
         if (item) break;
     }
