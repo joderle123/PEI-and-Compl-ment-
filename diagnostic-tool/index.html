@@ -6,10 +6,6 @@
     <title>PsychoDiagnostik Pro | Diagnostisches Assessment-System</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23003366' rx='15' width='100' height='100'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>Ψ</text></svg>">
 
-    <!-- External Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
     <style>
         /* ==================== CSS Reset & Variables ==================== */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -407,8 +403,53 @@
 
         .chart-wrapper {
             position: relative;
-            height: 300px;
         }
+
+        /* Simple CSS bar chart */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.5rem;
+            height: 200px;
+            padding: 1rem 0;
+        }
+
+        .bar-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bar {
+            width: 100%;
+            max-width: 60px;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.3s ease;
+            position: relative;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .bar-label {
+            font-size: 0.75rem;
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 80px;
+            word-wrap: break-word;
+        }
+
+        .bar.normal { background: var(--success); }
+        .bar.borderline { background: var(--warning); }
+        .bar.clinical { background: var(--danger); }
 
         .interpretation {
             background: var(--bg);
@@ -969,7 +1010,6 @@
     <script>
         // ==================== Global State ====================
         const testResults = {};
-        const charts = {};
 
         // ==================== Navigation ====================
         document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -991,46 +1031,26 @@
             document.getElementById(`${test}-form`).reset();
             document.getElementById(`${test}-results`).classList.remove('show');
             document.getElementById(`${test}-results`).innerHTML = '';
-            if (charts[test]) {
-                charts[test].destroy();
-                delete charts[test];
-            }
         }
 
-        function createChart(canvasId, labels, data, colors, title) {
-            if (typeof Chart === 'undefined') {
-                console.warn('Chart.js not loaded');
-                return null;
-            }
-
-            const ctx = document.getElementById(canvasId);
-            if (!ctx) return null;
-
-            return new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors,
-                        borderColor: colors.map(c => c.replace('0.7', '1')),
-                        borderWidth: 2,
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        title: { display: true, text: title, font: { size: 14, weight: 'bold' } }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
+        // Simple CSS bar chart (no external library needed)
+        function createBarChart(labels, values, classifications, maxValue) {
+            return `
+                <div class="bar-chart">
+                    ${labels.map((label, i) => {
+                        const height = Math.max(10, (values[i] / maxValue) * 180);
+                        const cls = classifications[i];
+                        return `
+                            <div class="bar-item">
+                                <div class="bar ${cls}" style="height: ${height}px;">
+                                    <span class="bar-value">${values[i]}</span>
+                                </div>
+                                <span class="bar-label">${label}</span>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
         }
 
         // ==================== SDQ Evaluation ====================
@@ -1072,6 +1092,9 @@
             const statusLabels = { normal: 'Unauffällig', borderline: 'Grenzwertig', clinical: 'Auffällig' };
             const colors = { normal: 'rgba(25,135,84,0.7)', borderline: 'rgba(204,136,0,0.7)', clinical: 'rgba(220,53,69,0.7)' };
 
+            const scaleLabels = ['Emotional', 'Verhalten', 'Hyperaktiv.', 'Gleichaltr.', 'Prosozial'];
+            const scaleKeys = ['emotional', 'conduct', 'hyperactivity', 'peer', 'prosocial'];
+
             let html = `
                 <div class="results-header">
                     <h3 class="results-title">Auswertungsergebnis SDQ</h3>
@@ -1082,29 +1105,24 @@
                         <div class="summary-value">${total}</div>
                         <div class="summary-status">${statusLabels[classifications.total]}</div>
                     </div>
-                    ${Object.entries(values).map(([k, v]) => `
+                    ${scaleKeys.map(k => `
                         <div class="summary-card ${classifications[k]}">
                             <div class="summary-label">${k.charAt(0).toUpperCase() + k.slice(1)}</div>
-                            <div class="summary-value">${v}</div>
+                            <div class="summary-value">${values[k]}</div>
                             <div class="summary-status">${statusLabels[classifications[k]]}</div>
                         </div>
                     `).join('')}
                 </div>
                 <div class="chart-container">
-                    <div class="chart-wrapper"><canvas id="sdq-chart"></canvas></div>
+                    <h4 style="margin-bottom: 1rem; color: var(--primary);">SDQ Skalenprofil</h4>
+                    <div class="chart-wrapper">
+                        ${createBarChart(scaleLabels, scaleKeys.map(k => values[k]), scaleKeys.map(k => classifications[k]), 10)}
+                    </div>
                 </div>
             `;
 
             document.getElementById('sdq-results').innerHTML = html;
             document.getElementById('sdq-results').classList.add('show');
-
-            if (charts.sdq) charts.sdq.destroy();
-            charts.sdq = createChart('sdq-chart',
-                ['Emotional', 'Verhalten', 'Hyperaktivität', 'Gleichaltrige', 'Prosozial'],
-                Object.values(values),
-                Object.keys(values).map(k => colors[classifications[k]]),
-                'SDQ Skalenprofil'
-            );
 
             testResults.sdq = { values, classifications, total, respondent };
             updateReportOverview();
@@ -1157,25 +1175,20 @@
                     `).join('')}
                 </div>
                 <div class="chart-container">
-                    <div class="chart-wrapper"><canvas id="wisc-chart"></canvas></div>
+                    <h4 style="margin-bottom: 1rem; color: var(--primary);">WISC-V Indexprofil</h4>
+                    <div class="chart-wrapper">
+                        ${createBarChart(
+                            validIndices.map(([k, v]) => v.name),
+                            validIndices.map(([k, v]) => v.val),
+                            validIndices.map(([k]) => classifications[k].class),
+                            160
+                        )}
+                    </div>
                 </div>
             `;
 
             document.getElementById('wisc-results').innerHTML = html;
             document.getElementById('wisc-results').classList.add('show');
-
-            if (charts.wisc) charts.wisc.destroy();
-            charts.wisc = createChart('wisc-chart',
-                validIndices.map(([k, v]) => v.name),
-                validIndices.map(([k, v]) => v.val),
-                validIndices.map(([k]) => colors[classifications[k].class]),
-                'WISC-V Indexprofil'
-            );
-            if (charts.wisc) {
-                charts.wisc.options.scales.y.min = 40;
-                charts.wisc.options.scales.y.max = 160;
-                charts.wisc.update();
-            }
 
             testResults.wisc = { indices, classifications };
             updateReportOverview();
@@ -1235,6 +1248,8 @@
                 rulebreak: 'Regelverletzend', aggressive: 'Aggressiv'
             };
 
+            const validSyndrome = Object.entries(syndrome).filter(([k,v]) => v !== null);
+
             let html = `
                 <div class="results-header">
                     <h3 class="results-title">Auswertungsergebnis CBCL</h3>
@@ -1250,32 +1265,24 @@
                 </div>
             `;
 
-            const validSyndrome = Object.entries(syndrome).filter(([k,v]) => v !== null);
             if (validSyndrome.length > 0) {
                 html += `
                     <div class="chart-container">
-                        <div class="chart-wrapper"><canvas id="cbcl-chart"></canvas></div>
+                        <h4 style="margin-bottom: 1rem; color: var(--primary);">CBCL Syndromskalen</h4>
+                        <div class="chart-wrapper">
+                            ${createBarChart(
+                                validSyndrome.map(([k]) => syndromeLabels[k]),
+                                validSyndrome.map(([k,v]) => v),
+                                validSyndrome.map(([k]) => syndromeClass[k]),
+                                90
+                            )}
+                        </div>
                     </div>
                 `;
             }
 
             document.getElementById('cbcl-results').innerHTML = html;
             document.getElementById('cbcl-results').classList.add('show');
-
-            if (validSyndrome.length > 0) {
-                if (charts.cbcl) charts.cbcl.destroy();
-                charts.cbcl = createChart('cbcl-chart',
-                    validSyndrome.map(([k]) => syndromeLabels[k]),
-                    validSyndrome.map(([k,v]) => v),
-                    validSyndrome.map(([k]) => colors[syndromeClass[k]]),
-                    'CBCL Syndromskalen'
-                );
-                if (charts.cbcl) {
-                    charts.cbcl.options.scales.y.min = 30;
-                    charts.cbcl.options.scales.y.max = 90;
-                    charts.cbcl.update();
-                }
-            }
 
             testResults.cbcl = { broadband, syndrome, broadbandClass, syndromeClass, respondent };
             updateReportOverview();
@@ -1332,25 +1339,20 @@
                     `).join('')}
                 </div>
                 <div class="chart-container">
-                    <div class="chart-wrapper"><canvas id="disyps-chart"></canvas></div>
+                    <h4 style="margin-bottom: 1rem; color: var(--primary);">DISYPS-III Profil</h4>
+                    <div class="chart-wrapper">
+                        ${createBarChart(
+                            validValues.map(([k]) => labels[k]),
+                            validValues.map(([k,v]) => v),
+                            validValues.map(([k]) => classifications[k]),
+                            9
+                        )}
+                    </div>
                 </div>
             `;
 
             document.getElementById('disyps-results').innerHTML = html;
             document.getElementById('disyps-results').classList.add('show');
-
-            if (charts.disyps) charts.disyps.destroy();
-            charts.disyps = createChart('disyps-chart',
-                validValues.map(([k]) => labels[k]),
-                validValues.map(([k,v]) => v),
-                validValues.map(([k]) => colors[classifications[k]]),
-                'DISYPS-III Profil'
-            );
-            if (charts.disyps) {
-                charts.disyps.options.scales.y.min = 1;
-                charts.disyps.options.scales.y.max = 9;
-                charts.disyps.update();
-            }
 
             testResults.disyps = { values, classifications };
             updateReportOverview();
@@ -1396,25 +1398,20 @@
                     `).join('')}
                 </div>
                 <div class="chart-container">
-                    <div class="chart-wrapper"><canvas id="afs-chart"></canvas></div>
+                    <h4 style="margin-bottom: 1rem; color: var(--primary);">AFS Profil</h4>
+                    <div class="chart-wrapper">
+                        ${createBarChart(
+                            validValues.map(([k]) => labels[k]),
+                            validValues.map(([k,v]) => v),
+                            validValues.map(([k]) => classifications[k]),
+                            9
+                        )}
+                    </div>
                 </div>
             `;
 
             document.getElementById('afs-results').innerHTML = html;
             document.getElementById('afs-results').classList.add('show');
-
-            if (charts.afs) charts.afs.destroy();
-            charts.afs = createChart('afs-chart',
-                validValues.map(([k]) => labels[k]),
-                validValues.map(([k,v]) => v),
-                validValues.map(([k]) => colors[classifications[k]]),
-                'AFS Profil'
-            );
-            if (charts.afs) {
-                charts.afs.options.scales.y.min = 1;
-                charts.afs.options.scales.y.max = 9;
-                charts.afs.update();
-            }
 
             testResults.afs = { values, classifications };
             updateReportOverview();
@@ -1465,20 +1462,20 @@
                     `).join('')}
                 </div>
                 <div class="chart-container">
-                    <div class="chart-wrapper"><canvas id="d2r-chart"></canvas></div>
+                    <h4 style="margin-bottom: 1rem; color: var(--primary);">d2-R Leistungsprofil</h4>
+                    <div class="chart-wrapper">
+                        ${createBarChart(
+                            validValues.map(([k]) => labels[k]),
+                            validValues.map(([k,v]) => v),
+                            validValues.map(([k]) => classifications[k]),
+                            100
+                        )}
+                    </div>
                 </div>
             `;
 
             document.getElementById('d2r-results').innerHTML = html;
             document.getElementById('d2r-results').classList.add('show');
-
-            if (charts.d2r) charts.d2r.destroy();
-            charts.d2r = createChart('d2r-chart',
-                validValues.map(([k]) => labels[k]),
-                validValues.map(([k,v]) => v),
-                validValues.map(([k]) => colors[classifications[k]]),
-                'd2-R Leistungsprofil'
-            );
 
             testResults.d2r = { values, classifications };
             updateReportOverview();
@@ -1506,70 +1503,12 @@
                 return;
             }
 
-            if (!window.jspdf) {
-                alert('PDF-Bibliothek nicht geladen. Bitte prüfen Sie Ihre Internetverbindung.');
-                return;
-            }
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            let y = 20;
-
-            doc.setFontSize(18);
-            doc.setTextColor(0, 51, 102);
-            doc.text('PsychoDiagnostik Pro - Befundbericht', 20, y);
-            y += 15;
-
-            doc.setFontSize(10);
-            doc.setTextColor(100);
-            doc.text('Erstellt am: ' + new Date().toLocaleDateString('de-DE'), 20, y);
-            y += 15;
-
-            doc.setFontSize(12);
-            doc.setTextColor(0);
-
-            const testNames = { sdq: 'SDQ', wisc: 'WISC-V', cbcl: 'CBCL', disyps: 'DISYPS-III', afs: 'AFS', d2r: 'd2-R' };
-            const statusLabels = { normal: 'Unauffällig', borderline: 'Grenzwertig', clinical: 'Auffällig' };
-
-            Object.entries(testResults).forEach(([test, data]) => {
-                if (y > 250) { doc.addPage(); y = 20; }
-
-                doc.setFontSize(14);
-                doc.setTextColor(0, 51, 102);
-                doc.text(testNames[test], 20, y);
-                y += 8;
-
-                doc.setFontSize(10);
-                doc.setTextColor(0);
-
-                if (test === 'sdq') {
-                    doc.text(`Gesamtproblemwert: ${data.total} (${statusLabels[data.classifications.total]})`, 25, y);
-                    y += 6;
-                } else if (test === 'wisc') {
-                    Object.entries(data.indices).filter(([k,v]) => v.val !== null).forEach(([k, v]) => {
-                        doc.text(`${v.name}: ${v.val} (${data.classifications[k].label})`, 25, y);
-                        y += 5;
-                    });
-                } else if (test === 'cbcl') {
-                    if (data.broadband.total) {
-                        doc.text(`Gesamtauffälligkeit: T=${data.broadband.total} (${statusLabels[data.broadbandClass.total]})`, 25, y);
-                        y += 6;
-                    }
-                }
-                y += 10;
-            });
-
-            doc.setFontSize(8);
-            doc.setTextColor(150);
-            doc.text('Dieses Tool ersetzt keine professionelle klinische Diagnostik.', 20, 285);
-
-            doc.save('PsychoDiagnostik_Bericht.pdf');
+            // Einfach den Browser-Druckdialog verwenden (funktioniert offline!)
+            window.print();
         }
 
         // ==================== Init ====================
-        console.log('✓ PsychoDiagnostik Pro geladen');
-        if (typeof Chart === 'undefined') console.warn('⚠ Chart.js nicht geladen');
-        if (!window.jspdf) console.warn('⚠ jsPDF nicht geladen');
+        console.log('✓ PsychoDiagnostik Pro geladen (Offline-Version)');
     </script>
 </body>
 </html>
