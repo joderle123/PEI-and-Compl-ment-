@@ -3,140 +3,303 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="PsychoDiagnostik Pro - Professionelles diagnostisches Assessment-Tool für klinische und schulpsychologische Fachkräfte">
-    <meta name="keywords" content="Psychodiagnostik, SDQ, WISC-V, CBCL, DISYPS, AFS, Schulpsychologie, Klinische Psychologie">
-    <meta name="author" content="PsychoDiagnostik Pro">
     <title>PsychoDiagnostik Pro | Diagnostisches Assessment-System</title>
-
-    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23003366' rx='15' width='100' height='100'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>Ψ</text></svg>">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-    <link rel="stylesheet" href="styles.css">
-
-    <!-- Critical inline styles as fallback -->
     <style>
-        /* Fallback if external CSS doesn't load */
+        /* ==================== CSS Reset & Variables ==================== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         :root {
-            --color-primary: #003366;
-            --color-primary-light: #004d99;
-            --color-success: #1a7f37;
-            --color-warning: #9a6700;
-            --color-danger: #cf222e;
-            --color-text: #24292f;
-            --color-gray-100: #eaeef2;
-            --bg-secondary: #f6f8fa;
+            --primary: #003366;
+            --primary-light: #004d99;
+            --primary-dark: #002244;
+            --accent: #0066cc;
+            --success: #198754;
+            --warning: #cc8800;
+            --danger: #dc3545;
+            --text: #1a1a1a;
+            --text-muted: #6c757d;
+            --bg: #f4f6f9;
+            --bg-card: #ffffff;
+            --border: #dee2e6;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --radius: 8px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
+        /* ==================== Base Styles ==================== */
         body {
-            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-secondary, #f6f8fa);
-            color: var(--color-text, #24292f);
-            line-height: 1.5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
         }
 
-        .top-bar {
-            background: var(--color-primary, #003366);
+        /* ==================== Header ==================== */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-        }
-
-        .main-header {
-            background: white;
             padding: 1rem 2rem;
-            border-bottom: 1px solid #d0d7de;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
         }
 
-        .logo { display: flex; align-items: center; gap: 0.75rem; }
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
         .logo-icon {
-            width: 48px; height: 48px;
-            background: var(--color-primary, #003366);
-            color: white;
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.15);
             border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.75rem; font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
         }
-        .logo-title { font-size: 1.5rem; font-weight: 700; color: var(--color-primary); }
-        .logo-subtitle { font-size: 1.5rem; font-weight: 300; color: var(--color-primary-light); }
 
-        .main-nav {
-            background: white;
-            border-bottom: 1px solid #d0d7de;
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .header-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* ==================== Navigation ==================== */
+        .nav {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
             padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 0.25rem;
+            overflow-x: auto;
+            padding: 0.5rem 0;
         }
 
         .nav-btn {
-            background: none; border: none;
-            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
             cursor: pointer;
-            border-bottom: 3px solid transparent;
+            border-radius: var(--radius);
             transition: all 0.2s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .nav-btn:hover, .nav-btn.active {
-            background: var(--bg-secondary);
-            border-bottom-color: var(--color-primary);
+
+        .nav-btn:hover {
+            background: var(--bg);
+            color: var(--text);
         }
 
-        .main-content { padding: 2rem; max-width: 1200px; margin: 0 auto; }
-
-        .test-section { display: none; }
-        .test-section.active { display: block; }
-
-        .section-header { margin-bottom: 2rem; }
-        .section-header h1 { font-size: 1.75rem; color: var(--color-primary); margin-bottom: 0.5rem; }
-        .section-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: var(--color-primary);
+        .nav-btn.active {
+            background: var(--primary);
             color: white;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
         }
 
-        .test-form { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .nav-icon { font-size: 1.1rem; }
 
-        .form-fieldset {
-            border: 1px solid #d0d7de;
-            border-radius: 8px;
-            padding: 1.5rem;
+        /* ==================== Main Content ==================== */
+        .main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==================== Cards ==================== */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
             margin-bottom: 1.5rem;
         }
-        .form-fieldset legend {
+
+        .card-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--bg);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
             font-weight: 600;
-            padding: 0 0.5rem;
-            color: var(--color-primary);
+            color: var(--primary);
+            margin-bottom: 0.5rem;
         }
 
-        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .card-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
 
-        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .form-group label { font-weight: 500; font-size: 0.9rem; }
-        .form-group input {
-            padding: 0.75rem;
-            border: 1px solid #d0d7de;
-            border-radius: 6px;
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        /* ==================== Forms ==================== */
+        .form-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-section-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .form-group input, .form-group select {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
             font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
-        .form-group input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(0,51,102,0.1); }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,51,102,0.1);
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            transition: all 0.2s;
+        }
+
+        .radio-label:hover {
+            border-color: var(--primary);
+        }
+
+        .radio-label input:checked + span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .radio-label:has(input:checked) {
+            border-color: var(--primary);
+            background: rgba(0,51,102,0.05);
+        }
+
+        /* ==================== Buttons ==================== */
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
 
         .btn {
             padding: 0.75rem 1.5rem;
             border: none;
-            border-radius: 6px;
+            border-radius: var(--radius);
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
@@ -144,1358 +307,1269 @@
             gap: 0.5rem;
             transition: all 0.2s;
         }
-        .btn-primary { background: var(--color-primary); color: white; }
-        .btn-primary:hover { background: var(--color-primary-light); }
-        .btn-secondary { background: #e0e0e0; color: var(--color-text); }
 
-        .form-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
 
-        .results-section {
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        /* ==================== Results ==================== */
+        .results {
+            display: none;
             margin-top: 2rem;
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            animation: fadeIn 0.4s ease;
         }
 
-        .results-summary { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+        .results.show {
+            display: block;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
         .summary-card {
-            padding: 1rem 1.5rem;
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            min-width: 150px;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: var(--radius);
+            text-align: center;
+            border-left: 4px solid var(--border);
         }
-        .summary-card.clinical { border-left: 4px solid var(--color-danger); }
-        .summary-card.borderline { border-left: 4px solid var(--color-warning); }
-        .summary-card.normal { border-left: 4px solid var(--color-success); }
 
-        .chart-wrapper { height: 300px; }
+        .summary-card.normal { border-left-color: var(--success); background: rgba(25,135,84,0.1); }
+        .summary-card.borderline { border-left-color: var(--warning); background: rgba(204,136,0,0.1); }
+        .summary-card.clinical { border-left-color: var(--danger); background: rgba(220,53,69,0.1); }
 
-        .modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
-        .modal-content { position: relative; background: white; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .summary-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
 
-        .main-footer { background: #24292f; color: white; padding: 3rem 2rem; margin-top: 3rem; }
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .summary-status {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+
+        .summary-card.normal .summary-status { color: var(--success); }
+        .summary-card.borderline .summary-status { color: var(--warning); }
+        .summary-card.clinical .summary-status { color: var(--danger); }
+
+        .chart-container {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
+        .interpretation {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+
+        .interpretation h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .interpretation-item {
+            padding: 1rem;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--border);
+        }
+
+        .interpretation-item.normal { border-left-color: var(--success); }
+        .interpretation-item.borderline { border-left-color: var(--warning); }
+        .interpretation-item.clinical { border-left-color: var(--danger); }
+
+        .interpretation-item strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        /* ==================== Footer ==================== */
+        .footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 2rem;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .footer p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        /* ==================== Utilities ==================== */
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .text-danger { color: var(--danger); }
+
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+
+        /* ==================== Responsive ==================== */
+        @media (max-width: 768px) {
+            .header { padding: 1rem; }
+            .header-content { justify-content: center; text-align: center; }
+            .nav { padding: 0 1rem; }
+            .main { padding: 1rem; }
+            .card { padding: 1.5rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .btn-group { flex-direction: column; }
+        }
+
+        /* ==================== Print ==================== */
+        @media print {
+            .nav, .btn-group, .header-badge { display: none; }
+            .card { box-shadow: none; border: 1px solid var(--border); }
+        }
     </style>
 </head>
 <body>
-    <!-- Skip Link für Barrierefreiheit -->
-    <a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
-
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="top-bar-content">
-            <span class="certification-badge">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
-                </svg>
-                DSGVO-konform
-            </span>
-            <span class="separator">|</span>
-            <span>Version 2.0</span>
-            <span class="separator">|</span>
-            <a href="#help" class="top-link">Hilfe & Dokumentation</a>
-            <span class="separator">|</span>
-            <a href="#privacy" class="top-link">Datenschutz</a>
-        </div>
-    </div>
-
     <!-- Header -->
-    <header class="main-header">
+    <header class="header">
         <div class="header-content">
-            <div class="logo-section">
-                <div class="logo">
-                    <div class="logo-icon">Ψ</div>
-                    <div class="logo-text">
-                        <span class="logo-title">PsychoDiagnostik</span>
-                        <span class="logo-subtitle">Pro</span>
-                    </div>
+            <div class="logo">
+                <div class="logo-icon">Ψ</div>
+                <div class="logo-text">
+                    <h1>PsychoDiagnostik Pro</h1>
+                    <p>Diagnostisches Assessment-System</p>
                 </div>
-                <p class="tagline">Diagnostisches Assessment-System für Kinder und Jugendliche</p>
             </div>
-
-            <div class="header-actions">
-                <button class="btn-header" id="btn-new-case" title="Neuen Fall anlegen">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 5v14M5 12h14"/>
-                    </svg>
-                    Neuer Fall
-                </button>
-                <button class="btn-header" id="btn-case-list" title="Fallübersicht">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 6h18M3 12h18M3 18h18"/>
-                    </svg>
-                    Fälle
-                </button>
+            <div class="header-badge">
+                <span>🔒</span> DSGVO-konform | Version 2.1
             </div>
         </div>
     </header>
 
-    <!-- Case Info Bar (erscheint wenn Fall aktiv) -->
-    <div class="case-info-bar" id="case-info-bar" style="display: none;">
-        <div class="case-info-content">
-            <div class="case-details">
-                <span class="case-label">Aktiver Fall:</span>
-                <span class="case-id" id="active-case-id">-</span>
-                <span class="case-name" id="active-case-name">-</span>
-                <span class="case-dob" id="active-case-dob">-</span>
-            </div>
-            <div class="case-actions">
-                <button class="btn-small" id="btn-save-case">Speichern</button>
-                <button class="btn-small btn-outline" id="btn-close-case">Fall schließen</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Navigation -->
-    <nav class="main-nav" role="navigation" aria-label="Hauptnavigation">
+    <!-- Navigation -->
+    <nav class="nav">
         <div class="nav-content">
-            <div class="nav-group">
-                <span class="nav-group-label">Screening</span>
-                <button class="nav-btn active" data-test="sdq" data-category="screening">
-                    <span class="nav-icon">📋</span>
-                    <span class="nav-label">SDQ</span>
-                </button>
-                <button class="nav-btn" data-test="cbcl" data-category="screening">
-                    <span class="nav-icon">📊</span>
-                    <span class="nav-label">CBCL</span>
-                </button>
-            </div>
-
-            <div class="nav-group">
-                <span class="nav-group-label">Intelligenz</span>
-                <button class="nav-btn" data-test="wisc" data-category="intelligence">
-                    <span class="nav-icon">🧠</span>
-                    <span class="nav-label">WISC-V</span>
-                </button>
-            </div>
-
-            <div class="nav-group">
-                <span class="nav-group-label">Störungsspezifisch</span>
-                <button class="nav-btn" data-test="disyps" data-category="specific">
-                    <span class="nav-icon">🎯</span>
-                    <span class="nav-label">DISYPS-III</span>
-                </button>
-                <button class="nav-btn" data-test="afs" data-category="specific">
-                    <span class="nav-icon">😰</span>
-                    <span class="nav-label">AFS</span>
-                </button>
-            </div>
-
-            <div class="nav-group">
-                <span class="nav-group-label">Aufmerksamkeit</span>
-                <button class="nav-btn" data-test="d2r" data-category="attention">
-                    <span class="nav-icon">🔍</span>
-                    <span class="nav-label">d2-R</span>
-                </button>
-            </div>
-
-            <div class="nav-group nav-group-tools">
-                <span class="nav-group-label">Werkzeuge</span>
-                <button class="nav-btn nav-btn-tool" data-test="import">
-                    <span class="nav-icon">📥</span>
-                    <span class="nav-label">Import</span>
-                </button>
-                <button class="nav-btn nav-btn-tool" data-test="report">
-                    <span class="nav-icon">📄</span>
-                    <span class="nav-label">Bericht</span>
-                </button>
-            </div>
+            <button class="nav-btn active" data-section="sdq">
+                <span class="nav-icon">📋</span> SDQ
+            </button>
+            <button class="nav-btn" data-section="wisc">
+                <span class="nav-icon">🧠</span> WISC-V
+            </button>
+            <button class="nav-btn" data-section="cbcl">
+                <span class="nav-icon">📊</span> CBCL
+            </button>
+            <button class="nav-btn" data-section="disyps">
+                <span class="nav-icon">🎯</span> DISYPS-III
+            </button>
+            <button class="nav-btn" data-section="afs">
+                <span class="nav-icon">😰</span> AFS
+            </button>
+            <button class="nav-btn" data-section="d2r">
+                <span class="nav-icon">🔍</span> d2-R
+            </button>
+            <button class="nav-btn" data-section="report" style="margin-left: auto;">
+                <span class="nav-icon">📄</span> PDF-Bericht
+            </button>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main id="main-content" class="main-content">
-        <div class="content-wrapper">
+    <main class="main">
 
-            <!-- SDQ Section -->
-            <section id="sdq-section" class="test-section active" aria-labelledby="sdq-heading">
-                <div class="section-header">
-                    <div class="section-title-group">
-                        <h1 id="sdq-heading">SDQ - Fragebogen zu Stärken und Schwächen</h1>
-                        <span class="section-badge">Screening-Instrument</span>
-                    </div>
-                    <p class="section-description">
-                        Der Strengths and Difficulties Questionnaire (SDQ) ist ein kurzes Verhaltensscreening
-                        für Kinder und Jugendliche von 4-17 Jahren. Er erfasst psychische Auffälligkeiten
-                        und prosoziale Stärken.
-                    </p>
-                    <div class="section-meta">
-                        <span class="meta-item">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-                            </svg>
-                            Dauer: ca. 5-10 Min.
-                        </span>
-                        <span class="meta-item">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-                            </svg>
-                            Alter: 4-17 Jahre
-                        </span>
-                        <span class="meta-item">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
-                            </svg>
-                            Referenz: Goodman (1997)
-                        </span>
-                    </div>
+        <!-- SDQ Section -->
+        <section id="sdq" class="section active">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">SDQ - Strengths and Difficulties Questionnaire <span class="badge">Screening</span></h2>
+                    <p class="card-subtitle">Fragebogen zu Stärken und Schwächen für Kinder und Jugendliche (4-17 Jahre)</p>
                 </div>
 
-                <div class="test-content">
-                    <form class="test-form" id="sdq-form">
-                        <fieldset class="form-fieldset">
-                            <legend>Beurteilerversion</legend>
-                            <div class="radio-group">
-                                <label class="radio-label">
-                                    <input type="radio" name="sdq-respondent" value="parent" checked>
-                                    <span class="radio-custom"></span>
-                                    <span class="radio-text">
-                                        <strong>Elternversion</strong>
-                                        <small>Fremdbeurteilung durch Eltern/Erziehungsberechtigte</small>
-                                    </span>
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="sdq-respondent" value="teacher">
-                                    <span class="radio-custom"></span>
-                                    <span class="radio-text">
-                                        <strong>Lehrerversion</strong>
-                                        <small>Fremdbeurteilung durch Lehrkräfte</small>
-                                    </span>
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="sdq-respondent" value="self">
-                                    <span class="radio-custom"></span>
-                                    <span class="radio-text">
-                                        <strong>Selbstbeurteilung</strong>
-                                        <small>Für Jugendliche ab 11 Jahren</small>
-                                    </span>
-                                </label>
-                            </div>
-                        </fieldset>
-
-                        <fieldset class="form-fieldset">
-                            <legend>Skalenwerte eingeben</legend>
-                            <p class="fieldset-hint">Geben Sie die Summenwerte der einzelnen Skalen ein (jeweils 0-10 Punkte).</p>
-
-                            <div class="input-grid">
-                                <div class="form-group">
-                                    <label for="sdq-emotional">
-                                        Emotionale Probleme
-                                        <button type="button" class="info-btn" data-tooltip="Beinhaltet: Kopfschmerzen/Bauchschmerzen, Sorgen, Unglücklichsein, Nervosität, Ängste">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="sdq-emotional" name="emotional" min="0" max="10" required>
-                                        <span class="range-indicator">0-10</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="sdq-conduct">
-                                        Verhaltensprobleme
-                                        <button type="button" class="info-btn" data-tooltip="Beinhaltet: Wutanfälle, Gehorsam, Streiten, Lügen, Stehlen">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="sdq-conduct" name="conduct" min="0" max="10" required>
-                                        <span class="range-indicator">0-10</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="sdq-hyperactivity">
-                                        Hyperaktivität/Aufmerksamkeitsprobleme
-                                        <button type="button" class="info-btn" data-tooltip="Beinhaltet: Unruhe, Zappeligkeit, Ablenkbarkeit, Impulsivität, mangelnde Ausdauer">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="sdq-hyperactivity" name="hyperactivity" min="0" max="10" required>
-                                        <span class="range-indicator">0-10</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="sdq-peer">
-                                        Probleme mit Gleichaltrigen
-                                        <button type="button" class="info-btn" data-tooltip="Beinhaltet: Einzelgänger, keine Freunde, unbeliebt, Hänseleien, besserer Umgang mit Erwachsenen">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="sdq-peer" name="peer" min="0" max="10" required>
-                                        <span class="range-indicator">0-10</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group form-group-highlight">
-                                    <label for="sdq-prosocial">
-                                        Prosoziales Verhalten
-                                        <button type="button" class="info-btn" data-tooltip="Beinhaltet: Rücksichtnahme, Teilen, Hilfsbereitschaft, Freundlichkeit, Trösten">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="sdq-prosocial" name="prosocial" min="0" max="10" required>
-                                        <span class="range-indicator">0-10</span>
-                                    </div>
-                                    <span class="form-note">Stärkenskala - höhere Werte = positiv</span>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" onclick="clearSDQForm()">
-                                Zurücksetzen
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                    <polyline points="22 4 12 14.01 9 11.01"/>
-                                </svg>
-                                Auswerten
-                            </button>
-                        </div>
-                    </form>
-
-                    <!-- Results Section -->
-                    <div id="sdq-results" class="results-section" style="display: none;">
-                        <div class="results-header">
-                            <h2>Auswertungsergebnis</h2>
-                            <div class="results-actions">
-                                <button class="btn btn-small btn-outline" onclick="printResults('sdq')">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
-                                        <rect x="6" y="14" width="12" height="8"/>
-                                    </svg>
-                                    Drucken
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="results-summary" id="sdq-summary">
-                            <!-- Dynamisch gefüllt -->
-                        </div>
-
-                        <div class="results-grid">
-                            <div class="results-chart-container">
-                                <h3>Skalenprofil</h3>
-                                <div class="chart-wrapper">
-                                    <canvas id="sdq-chart"></canvas>
-                                </div>
-                                <div class="chart-legend">
-                                    <span class="legend-item legend-normal">Unauffällig</span>
-                                    <span class="legend-item legend-borderline">Grenzwertig</span>
-                                    <span class="legend-item legend-clinical">Auffällig</span>
-                                </div>
-                            </div>
-
-                            <div class="results-interpretation">
-                                <h3>Klinische Interpretation</h3>
-                                <div id="sdq-interpretation">
-                                    <!-- Dynamisch gefüllt -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="results-recommendations" id="sdq-recommendations">
-                            <!-- Dynamisch gefüllt -->
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- WISC-V Section -->
-            <section id="wisc-section" class="test-section" aria-labelledby="wisc-heading">
-                <div class="section-header">
-                    <div class="section-title-group">
-                        <h1 id="wisc-heading">WISC-V - Wechsler Intelligence Scale for Children</h1>
-                        <span class="section-badge badge-blue">Intelligenzdiagnostik</span>
-                    </div>
-                    <p class="section-description">
-                        Die WISC-V ist das weltweit am häufigsten eingesetzte Intelligenztestverfahren für
-                        Kinder und Jugendliche. Sie liefert ein differenziertes kognitives Leistungsprofil.
-                    </p>
-                    <div class="section-meta">
-                        <span class="meta-item">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-                            </svg>
-                            Dauer: 60-90 Min.
-                        </span>
-                        <span class="meta-item">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-                            </svg>
-                            Alter: 6;0-16;11 Jahre
-                        </span>
-                        <span class="meta-item">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
-                            </svg>
-                            Pearson (2017)
-                        </span>
-                    </div>
-                </div>
-
-                <div class="test-content">
-                    <form class="test-form" id="wisc-form">
-                        <fieldset class="form-fieldset">
-                            <legend>Indexwerte eingeben</legend>
-                            <p class="fieldset-hint">Tragen Sie die ermittelten Indexwerte ein (Standardwerte: M=100, SD=15).</p>
-
-                            <div class="input-grid input-grid-3">
-                                <div class="form-group">
-                                    <label for="wisc-vci">
-                                        Sprachverständnis (SV)
-                                        <button type="button" class="info-btn" data-tooltip="Verbal Comprehension Index: Gemeinsamkeiten finden, Wortschatz-Test, (Allgemeines Wissen), (Allgemeines Verständnis)">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="wisc-vci" name="vci" min="40" max="160">
-                                        <span class="range-indicator">40-160</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="wisc-vsi">
-                                        Visuell-räumliche Verarbeitung (VR)
-                                        <button type="button" class="info-btn" data-tooltip="Visual Spatial Index: Mosaik-Test, Visuelle Puzzles">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="wisc-vsi" name="vsi" min="40" max="160">
-                                        <span class="range-indicator">40-160</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="wisc-fri">
-                                        Fluides Schlussfolgern (FS)
-                                        <button type="button" class="info-btn" data-tooltip="Fluid Reasoning Index: Matrizen-Test, Formenwaage, (Bildkonzepte), (Zahlenfolgen)">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="wisc-fri" name="fri" min="40" max="160">
-                                        <span class="range-indicator">40-160</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="wisc-wmi">
-                                        Arbeitsgedächtnis (AG)
-                                        <button type="button" class="info-btn" data-tooltip="Working Memory Index: Zahlen nachsprechen, Bilderfolgen, (Buchstaben-Zahlen-Folgen)">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="wisc-wmi" name="wmi" min="40" max="160">
-                                        <span class="range-indicator">40-160</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="wisc-psi">
-                                        Verarbeitungsgeschwindigkeit (VG)
-                                        <button type="button" class="info-btn" data-tooltip="Processing Speed Index: Zahlen-Symbol-Test, Symbol-Suche, (Durchstreich-Test)">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="wisc-psi" name="psi" min="40" max="160">
-                                        <span class="range-indicator">40-160</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group form-group-primary">
-                                    <label for="wisc-fsiq">
-                                        Gesamt-IQ (FSIQ)
-                                        <button type="button" class="info-btn" data-tooltip="Full Scale IQ: Gesamtmaß der allgemeinen intellektuellen Leistungsfähigkeit">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="wisc-fsiq" name="fsiq" min="40" max="160">
-                                        <span class="range-indicator">40-160</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <fieldset class="form-fieldset collapsible">
-                            <legend>
-                                <button type="button" class="collapsible-toggle">
-                                    Zusätzliche Indizes (optional)
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="6 9 12 15 18 9"/>
-                                    </svg>
-                                </button>
-                            </legend>
-                            <div class="collapsible-content" style="display: none;">
-                                <div class="input-grid input-grid-3">
-                                    <div class="form-group">
-                                        <label for="wisc-qri">Quantitatives Schlussfolgern (QS)</label>
-                                        <input type="number" id="wisc-qri" name="qri" min="40" max="160">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="wisc-awmi">Auditives Arbeitsgedächtnis (AAG)</label>
-                                        <input type="number" id="wisc-awmi" name="awmi" min="40" max="160">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="wisc-nvi">Nonverbaler Index (NVI)</label>
-                                        <input type="number" id="wisc-nvi" name="nvi" min="40" max="160">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="wisc-gai">Allgemeiner Fähigkeitsindex (AFI)</label>
-                                        <input type="number" id="wisc-gai" name="gai" min="40" max="160">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="wisc-cpi">Kognitiver Leistungsindex (KLI)</label>
-                                        <input type="number" id="wisc-cpi" name="cpi" min="40" max="160">
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" onclick="clearWISCForm()">
-                                Zurücksetzen
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                    <polyline points="22 4 12 14.01 9 11.01"/>
-                                </svg>
-                                Auswerten
-                            </button>
-                        </div>
-                    </form>
-
-                    <div id="wisc-results" class="results-section" style="display: none;">
-                        <div class="results-header">
-                            <h2>Auswertungsergebnis</h2>
-                            <div class="results-actions">
-                                <button class="btn btn-small btn-outline" onclick="printResults('wisc')">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
-                                        <rect x="6" y="14" width="12" height="8"/>
-                                    </svg>
-                                    Drucken
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="results-summary" id="wisc-summary"></div>
-
-                        <div class="results-grid">
-                            <div class="results-chart-container">
-                                <h3>Indexprofil</h3>
-                                <div class="chart-wrapper chart-wrapper-large">
-                                    <canvas id="wisc-chart"></canvas>
-                                </div>
-                            </div>
-
-                            <div class="results-interpretation">
-                                <h3>Klinische Interpretation</h3>
-                                <div id="wisc-interpretation"></div>
-                            </div>
-                        </div>
-
-                        <div class="results-profile" id="wisc-profile"></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- CBCL Section -->
-            <section id="cbcl-section" class="test-section" aria-labelledby="cbcl-heading">
-                <div class="section-header">
-                    <div class="section-title-group">
-                        <h1 id="cbcl-heading">CBCL/6-18R - Child Behavior Checklist</h1>
-                        <span class="section-badge">Verhaltensdiagnostik</span>
-                    </div>
-                    <p class="section-description">
-                        Die Child Behavior Checklist ist ein standardisierter Elternfragebogen zur
-                        Erfassung von Verhaltensauffälligkeiten und emotionalen Problemen bei Kindern und Jugendlichen.
-                    </p>
-                    <div class="section-meta">
-                        <span class="meta-item">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-                            </svg>
-                            Dauer: 15-20 Min.
-                        </span>
-                        <span class="meta-item">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-                            </svg>
-                            Alter: 6-18 Jahre
-                        </span>
-                        <span class="meta-item">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>
-                            </svg>
-                            Achenbach (2014)
-                        </span>
-                    </div>
-                </div>
-
-                <div class="test-content">
-                    <form class="test-form" id="cbcl-form">
-                        <fieldset class="form-fieldset">
-                            <legend>Beurteilerversion</legend>
-                            <div class="radio-group-inline">
-                                <label class="radio-label-inline">
-                                    <input type="radio" name="cbcl-respondent" value="parent" checked>
-                                    <span>Elternversion (CBCL)</span>
-                                </label>
-                                <label class="radio-label-inline">
-                                    <input type="radio" name="cbcl-respondent" value="teacher">
-                                    <span>Lehrerversion (TRF)</span>
-                                </label>
-                                <label class="radio-label-inline">
-                                    <input type="radio" name="cbcl-respondent" value="self">
-                                    <span>Selbstbeurteilung (YSR)</span>
-                                </label>
-                            </div>
-                        </fieldset>
-
-                        <fieldset class="form-fieldset">
-                            <legend>Übergeordnete Skalen (T-Werte)</legend>
-                            <p class="fieldset-hint">T-Werte: M=50, SD=10. Grenzbereich: T=60-63, Klinisch: T≥64</p>
-
-                            <div class="input-grid input-grid-3">
-                                <div class="form-group form-group-primary">
-                                    <label for="cbcl-internalizing">Internalisierende Auffälligkeiten</label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="cbcl-internalizing" name="internal" min="30" max="100">
-                                        <span class="range-indicator">T-Wert</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group form-group-primary">
-                                    <label for="cbcl-externalizing">Externalisierende Auffälligkeiten</label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="cbcl-externalizing" name="external" min="30" max="100">
-                                        <span class="range-indicator">T-Wert</span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group form-group-primary">
-                                    <label for="cbcl-total">Gesamtauffälligkeit</label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="cbcl-total" name="total" min="30" max="100">
-                                        <span class="range-indicator">T-Wert</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <fieldset class="form-fieldset">
-                            <legend>Syndromskalen (T-Werte)</legend>
-                            <p class="fieldset-hint">T-Werte der acht Syndromskalen. Grenzbereich: T=65-69, Klinisch: T≥70</p>
-
-                            <div class="input-grid">
-                                <div class="form-group">
-                                    <label for="cbcl-anxious-depressed">Ängstlich/Depressiv</label>
-                                    <input type="number" id="cbcl-anxious-depressed" name="anxious" min="30" max="100">
-                                </div>
-                                <div class="form-group">
-                                    <label for="cbcl-withdrawn-depressed">Rückzüglich/Depressiv</label>
-                                    <input type="number" id="cbcl-withdrawn-depressed" name="withdrawn" min="30" max="100">
-                                </div>
-                                <div class="form-group">
-                                    <label for="cbcl-somatic-complaints">Körperliche Beschwerden</label>
-                                    <input type="number" id="cbcl-somatic-complaints" name="somatic" min="30" max="100">
-                                </div>
-                                <div class="form-group">
-                                    <label for="cbcl-social-problems">Soziale Probleme</label>
-                                    <input type="number" id="cbcl-social-problems" name="social" min="30" max="100">
-                                </div>
-                                <div class="form-group">
-                                    <label for="cbcl-thought-problems">Denkprobleme</label>
-                                    <input type="number" id="cbcl-thought-problems" name="thought" min="30" max="100">
-                                </div>
-                                <div class="form-group">
-                                    <label for="cbcl-attention-problems">Aufmerksamkeitsprobleme</label>
-                                    <input type="number" id="cbcl-attention-problems" name="attention" min="30" max="100">
-                                </div>
-                                <div class="form-group">
-                                    <label for="cbcl-rule-breaking">Regelverletzendes Verhalten</label>
-                                    <input type="number" id="cbcl-rule-breaking" name="rulebreak" min="30" max="100">
-                                </div>
-                                <div class="form-group">
-                                    <label for="cbcl-aggressive">Aggressives Verhalten</label>
-                                    <input type="number" id="cbcl-aggressive" name="aggressive" min="30" max="100">
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" onclick="clearCBCLForm()">
-                                Zurücksetzen
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                    <polyline points="22 4 12 14.01 9 11.01"/>
-                                </svg>
-                                Auswerten
-                            </button>
-                        </div>
-                    </form>
-
-                    <div id="cbcl-results" class="results-section" style="display: none;">
-                        <div class="results-header">
-                            <h2>Auswertungsergebnis</h2>
-                        </div>
-                        <div class="results-summary" id="cbcl-summary"></div>
-                        <div class="results-grid">
-                            <div class="results-chart-container">
-                                <h3>Syndrom-Profil</h3>
-                                <div class="chart-wrapper chart-wrapper-large">
-                                    <canvas id="cbcl-syndrome-chart"></canvas>
-                                </div>
-                                <h3 style="margin-top: 1.5rem;">Breitbandskalen</h3>
-                                <div class="chart-wrapper">
-                                    <canvas id="cbcl-broadband-chart"></canvas>
-                                </div>
-                            </div>
-                            <div class="results-interpretation">
-                                <h3>Klinische Interpretation</h3>
-                                <div id="cbcl-interpretation"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- DISYPS-III Section -->
-            <section id="disyps-section" class="test-section" aria-labelledby="disyps-heading">
-                <div class="section-header">
-                    <div class="section-title-group">
-                        <h1 id="disyps-heading">DISYPS-III - Diagnostik-System für psychische Störungen</h1>
-                        <span class="section-badge badge-purple">Störungsspezifisch</span>
-                    </div>
-                    <p class="section-description">
-                        Das DISYPS-III ermöglicht eine kriterienorientierte Diagnostik psychischer Störungen
-                        nach ICD-10 und DSM-5 bei Kindern und Jugendlichen.
-                    </p>
-                </div>
-
-                <div class="test-content">
-                    <form class="test-form" id="disyps-form">
-                        <fieldset class="form-fieldset">
-                            <legend>Beurteiler &amp; Werteformat</legend>
-                            <div class="radio-group-inline">
-                                <label class="radio-label-inline">
-                                    <input type="radio" name="disyps-respondent" value="parent" checked>
-                                    <span>Fremdbeurteilung (FBB)</span>
-                                </label>
-                                <label class="radio-label-inline">
-                                    <input type="radio" name="disyps-respondent" value="self">
-                                    <span>Selbstbeurteilung (SBB)</span>
-                                </label>
-                            </div>
-                            <div class="radio-group-inline" style="margin-top: 0.5rem;">
-                                <label class="radio-label-inline">
-                                    <input type="radio" name="disyps-input-type" value="stanine" checked>
-                                    <span>Stanine (1-9)</span>
-                                </label>
-                                <label class="radio-label-inline">
-                                    <input type="radio" name="disyps-input-type" value="percentile">
-                                    <span>Prozentrang (0-100)</span>
-                                </label>
-                            </div>
-                        </fieldset>
-
-                        <fieldset class="form-fieldset">
-                            <legend>ADHS-Skalen</legend>
-                            <p class="fieldset-hint">Stanine 7-9 oder PR &gt;84: überdurchschnittlich auffällig</p>
-
-                            <div class="input-grid">
-                                <div class="form-group">
-                                    <label for="disyps-inattention">Unaufmerksamkeit</label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="disyps-inattention" name="inattention" min="1" max="9">
-                                        <span class="range-indicator">1-9</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="disyps-hyperactivity">Überaktivität</label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="disyps-hyperactivity" name="hyperactivity" min="1" max="9">
-                                        <span class="range-indicator">1-9</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="disyps-impulsivity">Impulsivität</label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="disyps-impulsivity" name="impulsivity" min="1" max="9">
-                                        <span class="range-indicator">1-9</span>
-                                    </div>
-                                </div>
-                                <div class="form-group form-group-primary">
-                                    <label for="disyps-adhs-total">ADHS-Gesamtwert</label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="disyps-adhs-total" name="adhs-total" min="1" max="9">
-                                        <span class="range-indicator">1-9</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <fieldset class="form-fieldset">
-                            <legend>SSV-Skalen (Störung des Sozialverhaltens)</legend>
-
-                            <div class="input-grid">
-                                <div class="form-group">
-                                    <label for="disyps-oppositional">Oppositionell-verweigerndes Verhalten</label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="disyps-oppositional" name="oppositional" min="1" max="9">
-                                        <span class="range-indicator">1-9</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="disyps-aggressive">Aggressiv-dissoziales Verhalten</label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="disyps-aggressive" name="aggressive" min="1" max="9">
-                                        <span class="range-indicator">1-9</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="disyps-limited-prosocial">Begrenzte prosoziale Emotionalität</label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="disyps-limited-prosocial" name="limited-prosocial" min="1" max="9">
-                                        <span class="range-indicator">1-9</span>
-                                    </div>
-                                </div>
-                                <div class="form-group form-group-primary">
-                                    <label for="disyps-ssv-total">SSV-Gesamtwert</label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="disyps-ssv-total" name="ssv-total" min="1" max="9">
-                                        <span class="range-indicator">1-9</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" onclick="clearDISYPSForm()">Zurücksetzen</button>
-                            <button type="submit" class="btn btn-primary">Auswerten</button>
-                        </div>
-                    </form>
-
-                    <div id="disyps-results" class="results-section" style="display: none;">
-                        <div class="results-header"><h2>Auswertungsergebnis</h2></div>
-                        <div class="results-summary" id="disyps-summary"></div>
-                        <div class="results-grid">
-                            <div class="results-chart-container">
-                                <h3>DISYPS-Profil</h3>
-                                <div class="chart-wrapper"><canvas id="disyps-chart"></canvas></div>
-                            </div>
-                            <div class="results-interpretation">
-                                <h3>Diagnostische Einordnung</h3>
-                                <div id="disyps-interpretation"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- AFS Section -->
-            <section id="afs-section" class="test-section" aria-labelledby="afs-heading">
-                <div class="section-header">
-                    <div class="section-title-group">
-                        <h1 id="afs-heading">AFS - Angstfragebogen für Schüler</h1>
-                        <span class="section-badge badge-orange">Angstdiagnostik</span>
-                    </div>
-                    <p class="section-description">
-                        Der AFS erfasst ängstliche und unlustvoll erlebte Zustände von Schülern
-                        in schulischen Situationen sowie sozial erwünschtes Antwortverhalten.
-                    </p>
-                </div>
-
-                <div class="test-content">
-                    <form class="test-form" id="afs-form">
-                        <fieldset class="form-fieldset">
-                            <legend>Werteformat</legend>
-                            <div class="radio-group-inline">
-                                <label class="radio-label-inline">
-                                    <input type="radio" name="afs-input-type" value="stanine" checked>
-                                    <span>Stanine (1-9)</span>
-                                </label>
-                                <label class="radio-label-inline">
-                                    <input type="radio" name="afs-input-type" value="percentile">
-                                    <span>Prozentrang (0-100)</span>
-                                </label>
-                            </div>
-                        </fieldset>
-
-                        <fieldset class="form-fieldset">
-                            <legend>Skalenwerte</legend>
-                            <p class="fieldset-hint">Stanine 7-9 oder PR &gt;84: überdurchschnittlich (bei Angstskalen = auffällig)</p>
-
-                            <div class="input-grid">
-                                <div class="form-group">
-                                    <label for="afs-pa">
-                                        Prüfungsangst (PA)
-                                        <button type="button" class="info-btn" data-tooltip="Angst vor Leistungsüberprüfungen, Prüfungssituationen und damit verbundene vegetative Reaktionen">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="afs-pa" name="pa" min="1" max="9">
-                                        <span class="range-indicator">1-9</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="afs-ma">
-                                        Manifeste Angst (MA)
-                                        <button type="button" class="info-btn" data-tooltip="Allgemeine Ängstlichkeit, die sich in vegetativen Symptomen und Konzentrationsstörungen äußert">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="afs-ma" name="ma" min="1" max="9">
-                                        <span class="range-indicator">1-9</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="afs-su">
-                                        Schulunlust (SU)
-                                        <button type="button" class="info-btn" data-tooltip="Innere Abneigung gegen die Schule, mangelnde Lernmotivation">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="afs-su" name="su" min="1" max="9">
-                                        <span class="range-indicator">1-9</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="afs-se">
-                                        Soziale Erwünschtheit (SE)
-                                        <button type="button" class="info-btn" data-tooltip="Tendenz zu sozial erwünschtem Antwortverhalten - bei hohen Werten Ergebnisse mit Vorsicht interpretieren">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="afs-se" name="se" min="1" max="9">
-                                        <span class="range-indicator">1-9</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" onclick="clearAFSForm()">Zurücksetzen</button>
-                            <button type="submit" class="btn btn-primary">Auswerten</button>
-                        </div>
-                    </form>
-
-                    <div id="afs-results" class="results-section" style="display: none;">
-                        <div class="results-header"><h2>Auswertungsergebnis</h2></div>
-                        <div class="results-summary" id="afs-summary"></div>
-                        <div class="results-grid">
-                            <div class="results-chart-container">
-                                <h3>AFS-Profil</h3>
-                                <div class="chart-wrapper"><canvas id="afs-chart"></canvas></div>
-                            </div>
-                            <div class="results-interpretation">
-                                <h3>Interpretation</h3>
-                                <div id="afs-interpretation"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- d2-R Section -->
-            <section id="d2r-section" class="test-section" aria-labelledby="d2r-heading">
-                <div class="section-header">
-                    <div class="section-title-group">
-                        <h1 id="d2r-heading">d2-R - Aufmerksamkeits- und Konzentrationstest</h1>
-                        <span class="section-badge badge-teal">Aufmerksamkeit</span>
-                    </div>
-                    <p class="section-description">
-                        Der d2-R misst die Konzentrations- und Aufmerksamkeitsleistung durch
-                        selektive Aufmerksamkeit bei visueller Unterscheidung ähnlicher Reize.
-                    </p>
-                </div>
-
-                <div class="test-content">
-                    <form class="test-form" id="d2r-form">
-                        <fieldset class="form-fieldset">
-                            <legend>Werteformat</legend>
-                            <div class="radio-group-inline">
-                                <label class="radio-label-inline">
-                                    <input type="radio" name="d2r-input-type" value="percentile" checked>
-                                    <span>Prozentrang (0-100)</span>
-                                </label>
-                                <label class="radio-label-inline">
-                                    <input type="radio" name="d2r-input-type" value="standard">
-                                    <span>Standardwert (M=100, SD=10)</span>
-                                </label>
-                            </div>
-                        </fieldset>
-
-                        <fieldset class="form-fieldset">
-                            <legend>Kennwerte</legend>
-                            <p class="fieldset-hint">PR &lt;16 oder SW &lt;85: unterdurchschnittlich</p>
-
-                            <div class="input-grid">
-                                <div class="form-group form-group-primary">
-                                    <label for="d2r-kl">
-                                        Konzentrationsleistung (KL)
-                                        <button type="button" class="info-btn" data-tooltip="Hauptkennwert: Anzahl korrekt bearbeiteter Zielzeichen minus Verwechslungsfehler">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="d2r-kl" name="kl" min="0" max="100">
-                                        <span class="range-indicator">PR 0-100</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="d2r-bz">
-                                        Bearbeitete Zielzeichen (BZ)
-                                        <button type="button" class="info-btn" data-tooltip="Tempo/Quantität: Anzahl korrekt bearbeiteter Zielzeichen">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="d2r-bz" name="bz" min="0" max="100">
-                                        <span class="range-indicator">PR 0-100</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="d2r-f">
-                                        Fehler gesamt (F)
-                                        <button type="button" class="info-btn" data-tooltip="Sorgfalt: Summe aus Auslassungs- und Verwechslungsfehlern">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="d2r-f" name="f" min="0" max="100">
-                                        <span class="range-indicator">PR 0-100</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="d2r-fp">
-                                        Fehlerprozent (F%)
-                                        <button type="button" class="info-btn" data-tooltip="Relativer Fehleranteil (niedriger PR = viele Fehler = schlecht)">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="d2r-fp" name="fp" min="0" max="100">
-                                        <span class="range-indicator">PR 0-100</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="d2r-sb">
-                                        Schwankungsbreite (SB)
-                                        <button type="button" class="info-btn" data-tooltip="Gleichmäßigkeit der Leistung (niedriger PR = große Schwankung = schlecht)">?</button>
-                                    </label>
-                                    <div class="input-with-range">
-                                        <input type="number" id="d2r-sb" name="sb" min="0" max="100">
-                                        <span class="range-indicator">PR 0-100</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" onclick="clearD2RForm()">Zurücksetzen</button>
-                            <button type="submit" class="btn btn-primary">Auswerten</button>
-                        </div>
-                    </form>
-
-                    <div id="d2r-results" class="results-section" style="display: none;">
-                        <div class="results-header"><h2>Auswertungsergebnis</h2></div>
-                        <div class="results-summary" id="d2r-summary"></div>
-                        <div class="results-grid">
-                            <div class="results-chart-container">
-                                <h3>Leistungsprofil</h3>
-                                <div class="chart-wrapper"><canvas id="d2r-chart"></canvas></div>
-                            </div>
-                            <div class="results-interpretation">
-                                <h3>Interpretation</h3>
-                                <div id="d2r-interpretation"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Import Section -->
-            <section id="import-section" class="test-section" aria-labelledby="import-heading">
-                <div class="section-header">
-                    <div class="section-title-group">
-                        <h1 id="import-heading">Datenimport</h1>
-                    </div>
-                    <p class="section-description">
-                        Importieren Sie Testergebnisse aus CSV-Dateien oder laden Sie vorhandene Fälle.
-                    </p>
-                </div>
-
-                <div class="import-content">
-                    <div class="import-dropzone" id="dropzone">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="17 8 12 3 7 8"/>
-                            <line x1="12" y1="3" x2="12" y2="15"/>
-                        </svg>
-                        <p class="dropzone-title">Datei hierher ziehen</p>
-                        <p class="dropzone-subtitle">oder klicken zum Auswählen</p>
-                        <span class="dropzone-formats">CSV, XLSX</span>
-                        <input type="file" id="file-input" accept=".csv,.xlsx" hidden>
-                    </div>
-
-                    <div class="import-templates">
-                        <h3>Vorlagen herunterladen</h3>
-                        <div class="template-grid">
-                            <button class="template-btn" onclick="downloadTemplate('sdq')">
-                                <span class="template-icon">📋</span>
-                                <span class="template-name">SDQ</span>
-                            </button>
-                            <button class="template-btn" onclick="downloadTemplate('wisc')">
-                                <span class="template-icon">🧠</span>
-                                <span class="template-name">WISC-V</span>
-                            </button>
-                            <button class="template-btn" onclick="downloadTemplate('cbcl')">
-                                <span class="template-icon">📊</span>
-                                <span class="template-name">CBCL</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="import-preview" class="import-preview" style="display: none;">
-                        <h3>Vorschau</h3>
-                        <div id="preview-content"></div>
-                        <div class="preview-actions">
-                            <button class="btn btn-secondary" onclick="cancelImport()">Abbrechen</button>
-                            <button class="btn btn-primary" onclick="processImport()">Importieren</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Report Section -->
-            <section id="report-section" class="test-section" aria-labelledby="report-heading">
-                <div class="section-header">
-                    <div class="section-title-group">
-                        <h1 id="report-heading">Befundbericht erstellen</h1>
-                    </div>
-                    <p class="section-description">
-                        Erstellen Sie einen integrierten Befundbericht aus allen durchgeführten Tests.
-                    </p>
-                </div>
-
-                <div class="report-content">
-                    <div class="report-overview">
-                        <h3>Verfügbare Testergebnisse</h3>
-                        <div class="test-checklist" id="report-checklist">
-                            <!-- Dynamisch gefüllt -->
-                        </div>
-                    </div>
-
-                    <div class="report-options">
-                        <h3>Berichtoptionen</h3>
-
-                        <div class="option-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="report-include-charts" checked>
-                                <span class="checkbox-custom"></span>
-                                Diagramme einschließen
+                <form id="sdq-form" onsubmit="evaluateSDQ(event)">
+                    <div class="form-section">
+                        <h3 class="form-section-title">Beurteilerversion</h3>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="sdq-respondent" value="parent" checked>
+                                <span>Eltern</span>
                             </label>
-                        </div>
-
-                        <div class="option-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="report-include-recommendations" checked>
-                                <span class="checkbox-custom"></span>
-                                Empfehlungen einschließen
+                            <label class="radio-label">
+                                <input type="radio" name="sdq-respondent" value="teacher">
+                                <span>Lehrer</span>
                             </label>
-                        </div>
-
-                        <div class="option-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" id="report-include-norms">
-                                <span class="checkbox-custom"></span>
-                                Normtabellen anzeigen
+                            <label class="radio-label">
+                                <input type="radio" name="sdq-respondent" value="self">
+                                <span>Selbst (ab 11 J.)</span>
                             </label>
                         </div>
                     </div>
 
-                    <div class="report-actions">
-                        <button class="btn btn-primary btn-large" onclick="generatePDFReport()">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                                <polyline points="14 2 14 8 20 8"/>
-                                <line x1="16" y1="13" x2="8" y2="13"/>
-                                <line x1="16" y1="17" x2="8" y2="17"/>
-                                <polyline points="10 9 9 9 8 9"/>
-                            </svg>
-                            PDF-Bericht erstellen
-                        </button>
-                        <button class="btn btn-secondary btn-large" onclick="previewReport()">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
-                            Vorschau
-                        </button>
+                    <div class="form-section">
+                        <h3 class="form-section-title">Skalenwerte (0-10 Punkte)</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="sdq-emotional">Emotionale Probleme</label>
+                                <input type="number" id="sdq-emotional" min="0" max="10" required placeholder="0-10">
+                            </div>
+                            <div class="form-group">
+                                <label for="sdq-conduct">Verhaltensprobleme</label>
+                                <input type="number" id="sdq-conduct" min="0" max="10" required placeholder="0-10">
+                            </div>
+                            <div class="form-group">
+                                <label for="sdq-hyperactivity">Hyperaktivität</label>
+                                <input type="number" id="sdq-hyperactivity" min="0" max="10" required placeholder="0-10">
+                            </div>
+                            <div class="form-group">
+                                <label for="sdq-peer">Probleme mit Gleichaltrigen</label>
+                                <input type="number" id="sdq-peer" min="0" max="10" required placeholder="0-10">
+                            </div>
+                            <div class="form-group">
+                                <label for="sdq-prosocial">Prosoziales Verhalten ⭐</label>
+                                <input type="number" id="sdq-prosocial" min="0" max="10" required placeholder="0-10">
+                                <span class="form-hint">Höhere Werte = positiv</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </section>
 
-        </div>
-    </main>
-
-    <!-- Case Modal -->
-    <div class="modal" id="case-modal" style="display: none;">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 id="case-modal-title">Neuen Fall anlegen</h2>
-                <button class="modal-close" onclick="closeCaseModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="case-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="case-lastname">Nachname *</label>
-                            <input type="text" id="case-lastname" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="case-firstname">Vorname *</label>
-                            <input type="text" id="case-firstname" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="case-dob">Geburtsdatum *</label>
-                            <input type="date" id="case-dob" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="case-gender">Geschlecht</label>
-                            <select id="case-gender">
-                                <option value="">-- Auswählen --</option>
-                                <option value="m">männlich</option>
-                                <option value="w">weiblich</option>
-                                <option value="d">divers</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="case-id">Fall-ID (optional)</label>
-                        <input type="text" id="case-id" placeholder="Wird automatisch generiert">
-                    </div>
-                    <div class="form-group">
-                        <label for="case-notes">Anmerkungen</label>
-                        <textarea id="case-notes" rows="3"></textarea>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="clearForm('sdq')">Zurücksetzen</button>
+                        <button type="submit" class="btn btn-primary">✓ Auswerten</button>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeCaseModal()">Abbrechen</button>
-                <button class="btn btn-primary" onclick="saveCase()">Fall anlegen</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- Case List Modal -->
-    <div class="modal" id="case-list-modal" style="display: none;">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content modal-large">
-            <div class="modal-header">
-                <h2>Fallübersicht</h2>
-                <button class="modal-close" onclick="closeCaseListModal()">&times;</button>
+                <div id="sdq-results" class="results"></div>
             </div>
-            <div class="modal-body">
-                <div class="case-search">
-                    <input type="text" id="case-search-input" placeholder="Fall suchen...">
+        </section>
+
+        <!-- WISC-V Section -->
+        <section id="wisc" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">WISC-V - Wechsler Intelligence Scale <span class="badge">Intelligenz</span></h2>
+                    <p class="card-subtitle">Intelligenzdiagnostik für Kinder und Jugendliche (6-16 Jahre)</p>
                 </div>
-                <div class="case-list" id="case-list">
-                    <!-- Dynamisch gefüllt -->
+
+                <form id="wisc-form" onsubmit="evaluateWISC(event)">
+                    <div class="form-section">
+                        <h3 class="form-section-title">Indexwerte (M=100, SD=15)</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="wisc-vci">Sprachverständnis (SV)</label>
+                                <input type="number" id="wisc-vci" min="40" max="160" placeholder="40-160">
+                            </div>
+                            <div class="form-group">
+                                <label for="wisc-vsi">Visuell-räumlich (VR)</label>
+                                <input type="number" id="wisc-vsi" min="40" max="160" placeholder="40-160">
+                            </div>
+                            <div class="form-group">
+                                <label for="wisc-fri">Fluides Schlussfolgern (FS)</label>
+                                <input type="number" id="wisc-fri" min="40" max="160" placeholder="40-160">
+                            </div>
+                            <div class="form-group">
+                                <label for="wisc-wmi">Arbeitsgedächtnis (AG)</label>
+                                <input type="number" id="wisc-wmi" min="40" max="160" placeholder="40-160">
+                            </div>
+                            <div class="form-group">
+                                <label for="wisc-psi">Verarbeitungsgeschw. (VG)</label>
+                                <input type="number" id="wisc-psi" min="40" max="160" placeholder="40-160">
+                            </div>
+                            <div class="form-group">
+                                <label for="wisc-fsiq"><strong>Gesamt-IQ (FSIQ)</strong></label>
+                                <input type="number" id="wisc-fsiq" min="40" max="160" placeholder="40-160">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="clearForm('wisc')">Zurücksetzen</button>
+                        <button type="submit" class="btn btn-primary">✓ Auswerten</button>
+                    </div>
+                </form>
+
+                <div id="wisc-results" class="results"></div>
+            </div>
+        </section>
+
+        <!-- CBCL Section -->
+        <section id="cbcl" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">CBCL - Child Behavior Checklist <span class="badge">Verhalten</span></h2>
+                    <p class="card-subtitle">Verhaltensdiagnostik für Kinder und Jugendliche (6-18 Jahre)</p>
+                </div>
+
+                <form id="cbcl-form" onsubmit="evaluateCBCL(event)">
+                    <div class="form-section">
+                        <h3 class="form-section-title">Beurteilerversion</h3>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="cbcl-respondent" value="parent" checked>
+                                <span>Eltern (CBCL)</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="cbcl-respondent" value="teacher">
+                                <span>Lehrer (TRF)</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="cbcl-respondent" value="self">
+                                <span>Selbst (YSR)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">Übergeordnete Skalen (T-Werte)</h3>
+                        <p class="form-hint mb-1">Grenzbereich: T=60-63 | Klinisch: T≥64</p>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="cbcl-internalizing">Internalisierend</label>
+                                <input type="number" id="cbcl-internalizing" min="30" max="100" placeholder="T-Wert">
+                            </div>
+                            <div class="form-group">
+                                <label for="cbcl-externalizing">Externalisierend</label>
+                                <input type="number" id="cbcl-externalizing" min="30" max="100" placeholder="T-Wert">
+                            </div>
+                            <div class="form-group">
+                                <label for="cbcl-total"><strong>Gesamtauffälligkeit</strong></label>
+                                <input type="number" id="cbcl-total" min="30" max="100" placeholder="T-Wert">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">Syndromskalen (T-Werte)</h3>
+                        <p class="form-hint mb-1">Grenzbereich: T=65-69 | Klinisch: T≥70</p>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="cbcl-anxious">Ängstlich/Depressiv</label>
+                                <input type="number" id="cbcl-anxious" min="30" max="100" placeholder="T-Wert">
+                            </div>
+                            <div class="form-group">
+                                <label for="cbcl-withdrawn">Rückzüglich/Depressiv</label>
+                                <input type="number" id="cbcl-withdrawn" min="30" max="100" placeholder="T-Wert">
+                            </div>
+                            <div class="form-group">
+                                <label for="cbcl-somatic">Körperliche Beschwerden</label>
+                                <input type="number" id="cbcl-somatic" min="30" max="100" placeholder="T-Wert">
+                            </div>
+                            <div class="form-group">
+                                <label for="cbcl-social">Soziale Probleme</label>
+                                <input type="number" id="cbcl-social" min="30" max="100" placeholder="T-Wert">
+                            </div>
+                            <div class="form-group">
+                                <label for="cbcl-thought">Denkprobleme</label>
+                                <input type="number" id="cbcl-thought" min="30" max="100" placeholder="T-Wert">
+                            </div>
+                            <div class="form-group">
+                                <label for="cbcl-attention">Aufmerksamkeitsprobleme</label>
+                                <input type="number" id="cbcl-attention" min="30" max="100" placeholder="T-Wert">
+                            </div>
+                            <div class="form-group">
+                                <label for="cbcl-rulebreak">Regelverletzendes Verh.</label>
+                                <input type="number" id="cbcl-rulebreak" min="30" max="100" placeholder="T-Wert">
+                            </div>
+                            <div class="form-group">
+                                <label for="cbcl-aggressive">Aggressives Verhalten</label>
+                                <input type="number" id="cbcl-aggressive" min="30" max="100" placeholder="T-Wert">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="clearForm('cbcl')">Zurücksetzen</button>
+                        <button type="submit" class="btn btn-primary">✓ Auswerten</button>
+                    </div>
+                </form>
+
+                <div id="cbcl-results" class="results"></div>
+            </div>
+        </section>
+
+        <!-- DISYPS Section -->
+        <section id="disyps" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">DISYPS-III <span class="badge">ADHS/SSV</span></h2>
+                    <p class="card-subtitle">Diagnostik-System für psychische Störungen im Kindes- und Jugendalter</p>
+                </div>
+
+                <form id="disyps-form" onsubmit="evaluateDISYPS(event)">
+                    <div class="form-section">
+                        <h3 class="form-section-title">Beurteiler & Werteformat</h3>
+                        <div class="radio-group mb-1">
+                            <label class="radio-label">
+                                <input type="radio" name="disyps-respondent" value="fbb" checked>
+                                <span>Fremdbeurteilung (FBB)</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="disyps-respondent" value="sbb">
+                                <span>Selbstbeurteilung (SBB)</span>
+                            </label>
+                        </div>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="disyps-format" value="stanine" checked>
+                                <span>Stanine (1-9)</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="disyps-format" value="percentile">
+                                <span>Prozentrang (0-100)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">ADHS-Skalen</h3>
+                        <p class="form-hint mb-1">Stanine 7-9 / PR >84 = auffällig</p>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="disyps-inattention">Unaufmerksamkeit</label>
+                                <input type="number" id="disyps-inattention" min="1" max="9" placeholder="1-9">
+                            </div>
+                            <div class="form-group">
+                                <label for="disyps-hyperactivity">Überaktivität</label>
+                                <input type="number" id="disyps-hyperactivity" min="1" max="9" placeholder="1-9">
+                            </div>
+                            <div class="form-group">
+                                <label for="disyps-impulsivity">Impulsivität</label>
+                                <input type="number" id="disyps-impulsivity" min="1" max="9" placeholder="1-9">
+                            </div>
+                            <div class="form-group">
+                                <label for="disyps-adhs-total"><strong>ADHS-Gesamt</strong></label>
+                                <input type="number" id="disyps-adhs-total" min="1" max="9" placeholder="1-9">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">SSV-Skalen</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="disyps-oppositional">Oppositionell</label>
+                                <input type="number" id="disyps-oppositional" min="1" max="9" placeholder="1-9">
+                            </div>
+                            <div class="form-group">
+                                <label for="disyps-aggressive">Aggressiv-dissozial</label>
+                                <input type="number" id="disyps-aggressive" min="1" max="9" placeholder="1-9">
+                            </div>
+                            <div class="form-group">
+                                <label for="disyps-ssv-total"><strong>SSV-Gesamt</strong></label>
+                                <input type="number" id="disyps-ssv-total" min="1" max="9" placeholder="1-9">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="clearForm('disyps')">Zurücksetzen</button>
+                        <button type="submit" class="btn btn-primary">✓ Auswerten</button>
+                    </div>
+                </form>
+
+                <div id="disyps-results" class="results"></div>
+            </div>
+        </section>
+
+        <!-- AFS Section -->
+        <section id="afs" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">AFS - Angstfragebogen für Schüler <span class="badge">Angst</span></h2>
+                    <p class="card-subtitle">Erfassung schulbezogener Ängste</p>
+                </div>
+
+                <form id="afs-form" onsubmit="evaluateAFS(event)">
+                    <div class="form-section">
+                        <h3 class="form-section-title">Werteformat</h3>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="afs-format" value="stanine" checked>
+                                <span>Stanine (1-9)</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="afs-format" value="percentile">
+                                <span>Prozentrang (0-100)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">Skalenwerte</h3>
+                        <p class="form-hint mb-1">Stanine 7-9 = überdurchschnittlich (bei Angstskalen = auffällig)</p>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="afs-pa">Prüfungsangst (PA)</label>
+                                <input type="number" id="afs-pa" min="1" max="9" placeholder="1-9">
+                            </div>
+                            <div class="form-group">
+                                <label for="afs-ma">Manifeste Angst (MA)</label>
+                                <input type="number" id="afs-ma" min="1" max="9" placeholder="1-9">
+                            </div>
+                            <div class="form-group">
+                                <label for="afs-su">Schulunlust (SU)</label>
+                                <input type="number" id="afs-su" min="1" max="9" placeholder="1-9">
+                            </div>
+                            <div class="form-group">
+                                <label for="afs-se">Soziale Erwünschtheit (SE)</label>
+                                <input type="number" id="afs-se" min="1" max="9" placeholder="1-9">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="clearForm('afs')">Zurücksetzen</button>
+                        <button type="submit" class="btn btn-primary">✓ Auswerten</button>
+                    </div>
+                </form>
+
+                <div id="afs-results" class="results"></div>
+            </div>
+        </section>
+
+        <!-- d2-R Section -->
+        <section id="d2r" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">d2-R - Aufmerksamkeits- und Konzentrationstest <span class="badge">Aufmerksamkeit</span></h2>
+                    <p class="card-subtitle">Messung der Konzentrations- und Aufmerksamkeitsleistung</p>
+                </div>
+
+                <form id="d2r-form" onsubmit="evaluateD2R(event)">
+                    <div class="form-section">
+                        <h3 class="form-section-title">Werteformat</h3>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="d2r-format" value="percentile" checked>
+                                <span>Prozentrang (0-100)</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="d2r-format" value="standard">
+                                <span>Standardwert (M=100)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3 class="form-section-title">Kennwerte</h3>
+                        <p class="form-hint mb-1">PR <16 oder SW <85 = unterdurchschnittlich</p>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="d2r-kl"><strong>Konzentrationsleistung (KL)</strong></label>
+                                <input type="number" id="d2r-kl" min="0" max="100" placeholder="PR 0-100">
+                            </div>
+                            <div class="form-group">
+                                <label for="d2r-bz">Bearbeitete Zielzeichen (BZ)</label>
+                                <input type="number" id="d2r-bz" min="0" max="100" placeholder="PR 0-100">
+                            </div>
+                            <div class="form-group">
+                                <label for="d2r-f">Fehler gesamt (F)</label>
+                                <input type="number" id="d2r-f" min="0" max="100" placeholder="PR 0-100">
+                            </div>
+                            <div class="form-group">
+                                <label for="d2r-fp">Fehlerprozent (F%)</label>
+                                <input type="number" id="d2r-fp" min="0" max="100" placeholder="PR 0-100">
+                            </div>
+                            <div class="form-group">
+                                <label for="d2r-sb">Schwankungsbreite (SB)</label>
+                                <input type="number" id="d2r-sb" min="0" max="100" placeholder="PR 0-100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="clearForm('d2r')">Zurücksetzen</button>
+                        <button type="submit" class="btn btn-primary">✓ Auswerten</button>
+                    </div>
+                </form>
+
+                <div id="d2r-results" class="results"></div>
+            </div>
+        </section>
+
+        <!-- Report Section -->
+        <section id="report" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">PDF-Bericht erstellen</h2>
+                    <p class="card-subtitle">Erstellen Sie einen integrierten Befundbericht aus allen Testergebnissen</p>
+                </div>
+
+                <div id="report-overview">
+                    <p style="color: var(--text-muted); text-align: center; padding: 2rem;">
+                        Führen Sie zuerst Tests durch, um einen Bericht erstellen zu können.
+                    </p>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" onclick="generatePDF()">
+                        📄 PDF-Bericht erstellen
+                    </button>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+
+    </main>
 
     <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>PsychoDiagnostik Pro</h4>
-                <p>Open-Source Diagnostik-Tool für Kinder- und Jugendpsychologie</p>
-                <p class="footer-version">Version 2.0.0 | Build 2024.01</p>
-            </div>
-            <div class="footer-section">
-                <h4>Rechtliches</h4>
-                <ul class="footer-links">
-                    <li><a href="#" onclick="showLegalModal('impressum')">Impressum</a></li>
-                    <li><a href="#" onclick="showLegalModal('privacy')">Datenschutzerklärung</a></li>
-                    <li><a href="#" onclick="showLegalModal('disclaimer')">Haftungsausschluss</a></li>
-                    <li><a href="#" onclick="showLegalModal('license')">Lizenz (MIT)</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Ressourcen</h4>
-                <ul class="footer-links">
-                    <li><a href="#" onclick="showHelpModal()">Benutzerhandbuch</a></li>
-                    <li><a href="https://github.com" target="_blank" rel="noopener">GitHub Repository</a></li>
-                    <li><a href="#" onclick="showLegalModal('references')">Literaturverweise</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Hinweis</h4>
-                <p class="footer-disclaimer">
-                    Dieses Tool ersetzt keine professionelle klinische Diagnostik.
-                    Alle Interpretationen sollten von qualifizierten Fachpersonen
-                    überprüft werden.
-                </p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 PsychoDiagnostik Pro. Lizenziert unter MIT-Lizenz.</p>
-        </div>
+    <footer class="footer">
+        <p><strong>PsychoDiagnostik Pro</strong> | Open-Source Diagnostik-Tool</p>
+        <p style="margin-top: 0.5rem;">⚠️ Dieses Tool ersetzt keine professionelle klinische Diagnostik.</p>
     </footer>
 
-    <!-- Legal Modal -->
-    <div class="modal" id="legal-modal" style="display: none;">
-        <div class="modal-backdrop"></div>
-        <div class="modal-content modal-large">
-            <div class="modal-header">
-                <h2 id="legal-modal-title">-</h2>
-                <button class="modal-close" onclick="closeLegalModal()">&times;</button>
-            </div>
-            <div class="modal-body" id="legal-modal-content">
-                <!-- Dynamisch gefüllt -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="js/core/storage.js"></script>
-    <script src="js/core/cases.js"></script>
-    <script src="js/core/charts.js"></script>
-    <script src="js/core/pdf-export.js"></script>
-    <script src="js/tests/sdq.js"></script>
-    <script src="js/tests/wisc.js"></script>
-    <script src="js/tests/cbcl.js"></script>
-    <script src="js/tests/disyps.js"></script>
-    <script src="js/tests/afs.js"></script>
-    <script src="js/tests/d2r.js"></script>
-    <script src="js/import.js"></script>
-    <script src="js/legal.js"></script>
-    <script src="js/app.js"></script>
-
-    <!-- Diagnostic check -->
+    <!-- JavaScript -->
     <script>
-        window.addEventListener('DOMContentLoaded', function() {
-            const issues = [];
+        // ==================== Global State ====================
+        const testResults = {};
+        const charts = {};
 
-            // Check if Chart.js is loaded
-            if (typeof Chart === 'undefined') {
-                issues.push('Chart.js nicht geladen - Diagramme funktionieren nicht');
-            }
-
-            // Check if jsPDF is loaded
-            if (!window.jspdf && !window.jsPDF) {
-                issues.push('jsPDF nicht geladen - PDF-Export funktioniert nicht');
-            }
-
-            // Check if our modules are loaded
-            if (typeof Storage === 'undefined') {
-                issues.push('Storage-Modul nicht geladen');
-            }
-            if (typeof ChartManager === 'undefined') {
-                issues.push('ChartManager nicht geladen');
-            }
-            if (typeof CaseManager === 'undefined') {
-                issues.push('CaseManager nicht geladen');
-            }
-
-            // Show warning if there are issues
-            if (issues.length > 0) {
-                const warning = document.createElement('div');
-                warning.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#cf222e;color:white;padding:1rem;text-align:center;z-index:9999;';
-                warning.innerHTML = '<strong>Fehler beim Laden:</strong> ' + issues.join(', ') + '<br><small>Bitte prüfen Sie Ihre Internetverbindung und laden Sie die Seite neu.</small>';
-                document.body.insertBefore(warning, document.body.firstChild);
-            } else {
-                console.log('✓ PsychoDiagnostik Pro: Alle Module erfolgreich geladen');
-            }
+        // ==================== Navigation ====================
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.section).classList.add('active');
+            });
         });
+
+        // ==================== Utility Functions ====================
+        function getVal(id) {
+            const el = document.getElementById(id);
+            return el && el.value ? parseFloat(el.value) : null;
+        }
+
+        function clearForm(test) {
+            document.getElementById(`${test}-form`).reset();
+            document.getElementById(`${test}-results`).classList.remove('show');
+            document.getElementById(`${test}-results`).innerHTML = '';
+            if (charts[test]) {
+                charts[test].destroy();
+                delete charts[test];
+            }
+        }
+
+        function createChart(canvasId, labels, data, colors, title) {
+            if (typeof Chart === 'undefined') {
+                console.warn('Chart.js not loaded');
+                return null;
+            }
+
+            const ctx = document.getElementById(canvasId);
+            if (!ctx) return null;
+
+            return new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderColor: colors.map(c => c.replace('0.7', '1')),
+                        borderWidth: 2,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: title, font: { size: 14, weight: 'bold' } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // ==================== SDQ Evaluation ====================
+        const SDQ_NORMS = {
+            parent: { emotional: [3,4], conduct: [2,3], hyperactivity: [5,6], peer: [2,3], prosocial: [6,5], total: [13,16] },
+            teacher: { emotional: [4,5], conduct: [2,3], hyperactivity: [5,6], peer: [3,4], prosocial: [6,5], total: [11,15] },
+            self: { emotional: [5,6], conduct: [3,4], hyperactivity: [5,6], peer: [3,5], prosocial: [6,5], total: [15,19] }
+        };
+
+        function classifySDQ(scale, value, respondent) {
+            const norms = SDQ_NORMS[respondent][scale];
+            if (scale === 'prosocial') {
+                return value >= norms[0] ? 'normal' : value >= norms[1] ? 'borderline' : 'clinical';
+            }
+            return value <= norms[0] ? 'normal' : value <= norms[1] ? 'borderline' : 'clinical';
+        }
+
+        function evaluateSDQ(e) {
+            e.preventDefault();
+            const respondent = document.querySelector('input[name="sdq-respondent"]:checked').value;
+            const values = {
+                emotional: getVal('sdq-emotional'),
+                conduct: getVal('sdq-conduct'),
+                hyperactivity: getVal('sdq-hyperactivity'),
+                peer: getVal('sdq-peer'),
+                prosocial: getVal('sdq-prosocial')
+            };
+
+            if (Object.values(values).some(v => v === null)) {
+                alert('Bitte füllen Sie alle Felder aus.');
+                return;
+            }
+
+            const total = values.emotional + values.conduct + values.hyperactivity + values.peer;
+            const classifications = {};
+            Object.keys(values).forEach(k => classifications[k] = classifySDQ(k, values[k], respondent));
+            classifications.total = classifySDQ('total', total, respondent);
+
+            const statusLabels = { normal: 'Unauffällig', borderline: 'Grenzwertig', clinical: 'Auffällig' };
+            const colors = { normal: 'rgba(25,135,84,0.7)', borderline: 'rgba(204,136,0,0.7)', clinical: 'rgba(220,53,69,0.7)' };
+
+            let html = `
+                <div class="results-header">
+                    <h3 class="results-title">Auswertungsergebnis SDQ</h3>
+                </div>
+                <div class="summary-grid">
+                    <div class="summary-card ${classifications.total}">
+                        <div class="summary-label">Gesamtproblemwert</div>
+                        <div class="summary-value">${total}</div>
+                        <div class="summary-status">${statusLabels[classifications.total]}</div>
+                    </div>
+                    ${Object.entries(values).map(([k, v]) => `
+                        <div class="summary-card ${classifications[k]}">
+                            <div class="summary-label">${k.charAt(0).toUpperCase() + k.slice(1)}</div>
+                            <div class="summary-value">${v}</div>
+                            <div class="summary-status">${statusLabels[classifications[k]]}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="chart-container">
+                    <div class="chart-wrapper"><canvas id="sdq-chart"></canvas></div>
+                </div>
+            `;
+
+            document.getElementById('sdq-results').innerHTML = html;
+            document.getElementById('sdq-results').classList.add('show');
+
+            if (charts.sdq) charts.sdq.destroy();
+            charts.sdq = createChart('sdq-chart',
+                ['Emotional', 'Verhalten', 'Hyperaktivität', 'Gleichaltrige', 'Prosozial'],
+                Object.values(values),
+                Object.keys(values).map(k => colors[classifications[k]]),
+                'SDQ Skalenprofil'
+            );
+
+            testResults.sdq = { values, classifications, total, respondent };
+            updateReportOverview();
+        }
+
+        // ==================== WISC-V Evaluation ====================
+        function classifyIQ(value) {
+            if (value >= 130) return { label: 'Sehr hoch', class: 'normal' };
+            if (value >= 120) return { label: 'Hoch', class: 'normal' };
+            if (value >= 110) return { label: 'Überdurchschnittlich', class: 'normal' };
+            if (value >= 90) return { label: 'Durchschnittlich', class: 'normal' };
+            if (value >= 80) return { label: 'Unterdurchschnittlich', class: 'borderline' };
+            if (value >= 70) return { label: 'Niedrig', class: 'clinical' };
+            return { label: 'Sehr niedrig', class: 'clinical' };
+        }
+
+        function evaluateWISC(e) {
+            e.preventDefault();
+            const indices = {
+                vci: { val: getVal('wisc-vci'), name: 'Sprachverständnis' },
+                vsi: { val: getVal('wisc-vsi'), name: 'Visuell-räumlich' },
+                fri: { val: getVal('wisc-fri'), name: 'Fluides Schlussfolgern' },
+                wmi: { val: getVal('wisc-wmi'), name: 'Arbeitsgedächtnis' },
+                psi: { val: getVal('wisc-psi'), name: 'Verarbeitungsgeschw.' },
+                fsiq: { val: getVal('wisc-fsiq'), name: 'Gesamt-IQ' }
+            };
+
+            const validIndices = Object.entries(indices).filter(([k, v]) => v.val !== null);
+            if (validIndices.length === 0) {
+                alert('Bitte geben Sie mindestens einen Indexwert ein.');
+                return;
+            }
+
+            const classifications = {};
+            validIndices.forEach(([k, v]) => classifications[k] = classifyIQ(v.val));
+
+            const colors = { normal: 'rgba(25,135,84,0.7)', borderline: 'rgba(204,136,0,0.7)', clinical: 'rgba(220,53,69,0.7)' };
+
+            let html = `
+                <div class="results-header">
+                    <h3 class="results-title">Auswertungsergebnis WISC-V</h3>
+                </div>
+                <div class="summary-grid">
+                    ${validIndices.map(([k, v]) => `
+                        <div class="summary-card ${classifications[k].class}">
+                            <div class="summary-label">${v.name}</div>
+                            <div class="summary-value">${v.val}</div>
+                            <div class="summary-status">${classifications[k].label}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="chart-container">
+                    <div class="chart-wrapper"><canvas id="wisc-chart"></canvas></div>
+                </div>
+            `;
+
+            document.getElementById('wisc-results').innerHTML = html;
+            document.getElementById('wisc-results').classList.add('show');
+
+            if (charts.wisc) charts.wisc.destroy();
+            charts.wisc = createChart('wisc-chart',
+                validIndices.map(([k, v]) => v.name),
+                validIndices.map(([k, v]) => v.val),
+                validIndices.map(([k]) => colors[classifications[k].class]),
+                'WISC-V Indexprofil'
+            );
+            if (charts.wisc) {
+                charts.wisc.options.scales.y.min = 40;
+                charts.wisc.options.scales.y.max = 160;
+                charts.wisc.update();
+            }
+
+            testResults.wisc = { indices, classifications };
+            updateReportOverview();
+        }
+
+        // ==================== CBCL Evaluation ====================
+        function classifyCBCL(value, type) {
+            if (type === 'broadband') {
+                return value < 60 ? 'normal' : value < 64 ? 'borderline' : 'clinical';
+            }
+            return value < 65 ? 'normal' : value < 70 ? 'borderline' : 'clinical';
+        }
+
+        function evaluateCBCL(e) {
+            e.preventDefault();
+            const respondent = document.querySelector('input[name="cbcl-respondent"]:checked').value;
+
+            const broadband = {
+                internalizing: getVal('cbcl-internalizing'),
+                externalizing: getVal('cbcl-externalizing'),
+                total: getVal('cbcl-total')
+            };
+
+            const syndrome = {
+                anxious: getVal('cbcl-anxious'),
+                withdrawn: getVal('cbcl-withdrawn'),
+                somatic: getVal('cbcl-somatic'),
+                social: getVal('cbcl-social'),
+                thought: getVal('cbcl-thought'),
+                attention: getVal('cbcl-attention'),
+                rulebreak: getVal('cbcl-rulebreak'),
+                aggressive: getVal('cbcl-aggressive')
+            };
+
+            const allValues = { ...broadband, ...syndrome };
+            if (Object.values(allValues).every(v => v === null)) {
+                alert('Bitte geben Sie mindestens einen Wert ein.');
+                return;
+            }
+
+            const statusLabels = { normal: 'Unauffällig', borderline: 'Grenzwertig', clinical: 'Klinisch' };
+            const colors = { normal: 'rgba(25,135,84,0.7)', borderline: 'rgba(204,136,0,0.7)', clinical: 'rgba(220,53,69,0.7)' };
+
+            const broadbandClass = {};
+            Object.entries(broadband).filter(([k,v]) => v !== null).forEach(([k,v]) => {
+                broadbandClass[k] = classifyCBCL(v, 'broadband');
+            });
+
+            const syndromeClass = {};
+            Object.entries(syndrome).filter(([k,v]) => v !== null).forEach(([k,v]) => {
+                syndromeClass[k] = classifyCBCL(v, 'syndrome');
+            });
+
+            const syndromeLabels = {
+                anxious: 'Ängstlich/Depr.', withdrawn: 'Rückzüglich', somatic: 'Somatisch',
+                social: 'Sozial', thought: 'Denken', attention: 'Aufmerksamkeit',
+                rulebreak: 'Regelverletzend', aggressive: 'Aggressiv'
+            };
+
+            let html = `
+                <div class="results-header">
+                    <h3 class="results-title">Auswertungsergebnis CBCL</h3>
+                </div>
+                <div class="summary-grid">
+                    ${Object.entries(broadband).filter(([k,v]) => v !== null).map(([k, v]) => `
+                        <div class="summary-card ${broadbandClass[k]}">
+                            <div class="summary-label">${k === 'total' ? 'Gesamt' : k === 'internalizing' ? 'Internalisierend' : 'Externalisierend'}</div>
+                            <div class="summary-value">${v}</div>
+                            <div class="summary-status">${statusLabels[broadbandClass[k]]}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            const validSyndrome = Object.entries(syndrome).filter(([k,v]) => v !== null);
+            if (validSyndrome.length > 0) {
+                html += `
+                    <div class="chart-container">
+                        <div class="chart-wrapper"><canvas id="cbcl-chart"></canvas></div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('cbcl-results').innerHTML = html;
+            document.getElementById('cbcl-results').classList.add('show');
+
+            if (validSyndrome.length > 0) {
+                if (charts.cbcl) charts.cbcl.destroy();
+                charts.cbcl = createChart('cbcl-chart',
+                    validSyndrome.map(([k]) => syndromeLabels[k]),
+                    validSyndrome.map(([k,v]) => v),
+                    validSyndrome.map(([k]) => colors[syndromeClass[k]]),
+                    'CBCL Syndromskalen'
+                );
+                if (charts.cbcl) {
+                    charts.cbcl.options.scales.y.min = 30;
+                    charts.cbcl.options.scales.y.max = 90;
+                    charts.cbcl.update();
+                }
+            }
+
+            testResults.cbcl = { broadband, syndrome, broadbandClass, syndromeClass, respondent };
+            updateReportOverview();
+        }
+
+        // ==================== DISYPS Evaluation ====================
+        function classifyStanine(value) {
+            return value <= 4 ? 'normal' : value <= 6 ? 'borderline' : 'clinical';
+        }
+
+        function evaluateDISYPS(e) {
+            e.preventDefault();
+            const values = {
+                inattention: getVal('disyps-inattention'),
+                hyperactivity: getVal('disyps-hyperactivity'),
+                impulsivity: getVal('disyps-impulsivity'),
+                adhsTotal: getVal('disyps-adhs-total'),
+                oppositional: getVal('disyps-oppositional'),
+                aggressive: getVal('disyps-aggressive'),
+                ssvTotal: getVal('disyps-ssv-total')
+            };
+
+            if (Object.values(values).every(v => v === null)) {
+                alert('Bitte geben Sie mindestens einen Wert ein.');
+                return;
+            }
+
+            const statusLabels = { normal: 'Unauffällig', borderline: 'Grenzwertig', clinical: 'Auffällig' };
+            const colors = { normal: 'rgba(25,135,84,0.7)', borderline: 'rgba(204,136,0,0.7)', clinical: 'rgba(220,53,69,0.7)' };
+
+            const classifications = {};
+            Object.entries(values).filter(([k,v]) => v !== null).forEach(([k,v]) => {
+                classifications[k] = classifyStanine(v);
+            });
+
+            const labels = {
+                inattention: 'Unaufmerksamkeit', hyperactivity: 'Überaktivität', impulsivity: 'Impulsivität',
+                adhsTotal: 'ADHS-Gesamt', oppositional: 'Oppositionell', aggressive: 'Aggressiv', ssvTotal: 'SSV-Gesamt'
+            };
+
+            const validValues = Object.entries(values).filter(([k,v]) => v !== null);
+
+            let html = `
+                <div class="results-header">
+                    <h3 class="results-title">Auswertungsergebnis DISYPS-III</h3>
+                </div>
+                <div class="summary-grid">
+                    ${validValues.map(([k, v]) => `
+                        <div class="summary-card ${classifications[k]}">
+                            <div class="summary-label">${labels[k]}</div>
+                            <div class="summary-value">${v}</div>
+                            <div class="summary-status">${statusLabels[classifications[k]]}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="chart-container">
+                    <div class="chart-wrapper"><canvas id="disyps-chart"></canvas></div>
+                </div>
+            `;
+
+            document.getElementById('disyps-results').innerHTML = html;
+            document.getElementById('disyps-results').classList.add('show');
+
+            if (charts.disyps) charts.disyps.destroy();
+            charts.disyps = createChart('disyps-chart',
+                validValues.map(([k]) => labels[k]),
+                validValues.map(([k,v]) => v),
+                validValues.map(([k]) => colors[classifications[k]]),
+                'DISYPS-III Profil'
+            );
+            if (charts.disyps) {
+                charts.disyps.options.scales.y.min = 1;
+                charts.disyps.options.scales.y.max = 9;
+                charts.disyps.update();
+            }
+
+            testResults.disyps = { values, classifications };
+            updateReportOverview();
+        }
+
+        // ==================== AFS Evaluation ====================
+        function evaluateAFS(e) {
+            e.preventDefault();
+            const values = {
+                pa: getVal('afs-pa'),
+                ma: getVal('afs-ma'),
+                su: getVal('afs-su'),
+                se: getVal('afs-se')
+            };
+
+            if (Object.values(values).every(v => v === null)) {
+                alert('Bitte geben Sie mindestens einen Wert ein.');
+                return;
+            }
+
+            const statusLabels = { normal: 'Unauffällig', borderline: 'Grenzwertig', clinical: 'Auffällig' };
+            const colors = { normal: 'rgba(25,135,84,0.7)', borderline: 'rgba(204,136,0,0.7)', clinical: 'rgba(220,53,69,0.7)' };
+
+            const classifications = {};
+            Object.entries(values).filter(([k,v]) => v !== null).forEach(([k,v]) => {
+                classifications[k] = classifyStanine(v);
+            });
+
+            const labels = { pa: 'Prüfungsangst', ma: 'Manifeste Angst', su: 'Schulunlust', se: 'Soziale Erwünschtheit' };
+            const validValues = Object.entries(values).filter(([k,v]) => v !== null);
+
+            let html = `
+                <div class="results-header">
+                    <h3 class="results-title">Auswertungsergebnis AFS</h3>
+                </div>
+                <div class="summary-grid">
+                    ${validValues.map(([k, v]) => `
+                        <div class="summary-card ${classifications[k]}">
+                            <div class="summary-label">${labels[k]}</div>
+                            <div class="summary-value">${v}</div>
+                            <div class="summary-status">${statusLabels[classifications[k]]}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="chart-container">
+                    <div class="chart-wrapper"><canvas id="afs-chart"></canvas></div>
+                </div>
+            `;
+
+            document.getElementById('afs-results').innerHTML = html;
+            document.getElementById('afs-results').classList.add('show');
+
+            if (charts.afs) charts.afs.destroy();
+            charts.afs = createChart('afs-chart',
+                validValues.map(([k]) => labels[k]),
+                validValues.map(([k,v]) => v),
+                validValues.map(([k]) => colors[classifications[k]]),
+                'AFS Profil'
+            );
+            if (charts.afs) {
+                charts.afs.options.scales.y.min = 1;
+                charts.afs.options.scales.y.max = 9;
+                charts.afs.update();
+            }
+
+            testResults.afs = { values, classifications };
+            updateReportOverview();
+        }
+
+        // ==================== d2-R Evaluation ====================
+        function classifyPR(value) {
+            return value >= 16 ? 'normal' : value >= 7 ? 'borderline' : 'clinical';
+        }
+
+        function evaluateD2R(e) {
+            e.preventDefault();
+            const values = {
+                kl: getVal('d2r-kl'),
+                bz: getVal('d2r-bz'),
+                f: getVal('d2r-f'),
+                fp: getVal('d2r-fp'),
+                sb: getVal('d2r-sb')
+            };
+
+            if (Object.values(values).every(v => v === null)) {
+                alert('Bitte geben Sie mindestens einen Wert ein.');
+                return;
+            }
+
+            const statusLabels = { normal: 'Durchschnittlich', borderline: 'Unterdurchschnittlich', clinical: 'Weit unterdurchschnittlich' };
+            const colors = { normal: 'rgba(25,135,84,0.7)', borderline: 'rgba(204,136,0,0.7)', clinical: 'rgba(220,53,69,0.7)' };
+
+            const classifications = {};
+            Object.entries(values).filter(([k,v]) => v !== null).forEach(([k,v]) => {
+                classifications[k] = classifyPR(v);
+            });
+
+            const labels = { kl: 'Konzentration', bz: 'Tempo', f: 'Fehler', fp: 'Fehlerprozent', sb: 'Schwankung' };
+            const validValues = Object.entries(values).filter(([k,v]) => v !== null);
+
+            let html = `
+                <div class="results-header">
+                    <h3 class="results-title">Auswertungsergebnis d2-R</h3>
+                </div>
+                <div class="summary-grid">
+                    ${validValues.map(([k, v]) => `
+                        <div class="summary-card ${classifications[k]}">
+                            <div class="summary-label">${labels[k]}</div>
+                            <div class="summary-value">PR ${v}</div>
+                            <div class="summary-status">${statusLabels[classifications[k]]}</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="chart-container">
+                    <div class="chart-wrapper"><canvas id="d2r-chart"></canvas></div>
+                </div>
+            `;
+
+            document.getElementById('d2r-results').innerHTML = html;
+            document.getElementById('d2r-results').classList.add('show');
+
+            if (charts.d2r) charts.d2r.destroy();
+            charts.d2r = createChart('d2r-chart',
+                validValues.map(([k]) => labels[k]),
+                validValues.map(([k,v]) => v),
+                validValues.map(([k]) => colors[classifications[k]]),
+                'd2-R Leistungsprofil'
+            );
+
+            testResults.d2r = { values, classifications };
+            updateReportOverview();
+        }
+
+        // ==================== Report ====================
+        function updateReportOverview() {
+            const tests = Object.keys(testResults);
+            if (tests.length === 0) return;
+
+            const testNames = { sdq: 'SDQ', wisc: 'WISC-V', cbcl: 'CBCL', disyps: 'DISYPS-III', afs: 'AFS', d2r: 'd2-R' };
+
+            let html = '<div class="interpretation"><h4>Verfügbare Testergebnisse</h4>';
+            tests.forEach(t => {
+                html += `<div class="interpretation-item normal"><strong>${testNames[t]}</strong> ✓ Ergebnisse vorhanden</div>`;
+            });
+            html += '</div>';
+
+            document.getElementById('report-overview').innerHTML = html;
+        }
+
+        function generatePDF() {
+            if (Object.keys(testResults).length === 0) {
+                alert('Bitte führen Sie zuerst mindestens einen Test durch.');
+                return;
+            }
+
+            if (!window.jspdf) {
+                alert('PDF-Bibliothek nicht geladen. Bitte prüfen Sie Ihre Internetverbindung.');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            let y = 20;
+
+            doc.setFontSize(18);
+            doc.setTextColor(0, 51, 102);
+            doc.text('PsychoDiagnostik Pro - Befundbericht', 20, y);
+            y += 15;
+
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text('Erstellt am: ' + new Date().toLocaleDateString('de-DE'), 20, y);
+            y += 15;
+
+            doc.setFontSize(12);
+            doc.setTextColor(0);
+
+            const testNames = { sdq: 'SDQ', wisc: 'WISC-V', cbcl: 'CBCL', disyps: 'DISYPS-III', afs: 'AFS', d2r: 'd2-R' };
+            const statusLabels = { normal: 'Unauffällig', borderline: 'Grenzwertig', clinical: 'Auffällig' };
+
+            Object.entries(testResults).forEach(([test, data]) => {
+                if (y > 250) { doc.addPage(); y = 20; }
+
+                doc.setFontSize(14);
+                doc.setTextColor(0, 51, 102);
+                doc.text(testNames[test], 20, y);
+                y += 8;
+
+                doc.setFontSize(10);
+                doc.setTextColor(0);
+
+                if (test === 'sdq') {
+                    doc.text(`Gesamtproblemwert: ${data.total} (${statusLabels[data.classifications.total]})`, 25, y);
+                    y += 6;
+                } else if (test === 'wisc') {
+                    Object.entries(data.indices).filter(([k,v]) => v.val !== null).forEach(([k, v]) => {
+                        doc.text(`${v.name}: ${v.val} (${data.classifications[k].label})`, 25, y);
+                        y += 5;
+                    });
+                } else if (test === 'cbcl') {
+                    if (data.broadband.total) {
+                        doc.text(`Gesamtauffälligkeit: T=${data.broadband.total} (${statusLabels[data.broadbandClass.total]})`, 25, y);
+                        y += 6;
+                    }
+                }
+                y += 10;
+            });
+
+            doc.setFontSize(8);
+            doc.setTextColor(150);
+            doc.text('Dieses Tool ersetzt keine professionelle klinische Diagnostik.', 20, 285);
+
+            doc.save('PsychoDiagnostik_Bericht.pdf');
+        }
+
+        // ==================== Init ====================
+        console.log('✓ PsychoDiagnostik Pro geladen');
+        if (typeof Chart === 'undefined') console.warn('⚠ Chart.js nicht geladen');
+        if (!window.jspdf) console.warn('⚠ jsPDF nicht geladen');
     </script>
 </body>
 </html>
