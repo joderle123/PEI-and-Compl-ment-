@@ -17,12 +17,16 @@ const PDFExport = {
      * Generiert einen vollständigen PDF-Bericht
      */
     async generateReport(options = {}) {
-        const { jsPDF } = window.jspdf;
+        // jsPDF kann als window.jspdf.jsPDF oder direkt als window.jsPDF verfügbar sein
+        const jsPDFClass = window.jspdf?.jsPDF || window.jsPDF;
 
-        if (!jsPDF) {
+        if (!jsPDFClass) {
             alert('PDF-Bibliothek nicht geladen. Bitte laden Sie die Seite neu.');
+            console.error('jsPDF not found. Check if the library is loaded correctly.');
             return;
         }
+
+        const jsPDF = jsPDFClass;
 
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pageWidth = pdf.internal.pageSize.getWidth();

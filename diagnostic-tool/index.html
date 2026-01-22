@@ -571,22 +571,40 @@
                 <div class="test-content">
                     <form class="test-form" id="cbcl-form">
                         <fieldset class="form-fieldset">
+                            <legend>Beurteilerversion</legend>
+                            <div class="radio-group-inline">
+                                <label class="radio-label-inline">
+                                    <input type="radio" name="cbcl-respondent" value="parent" checked>
+                                    <span>Elternversion (CBCL)</span>
+                                </label>
+                                <label class="radio-label-inline">
+                                    <input type="radio" name="cbcl-respondent" value="teacher">
+                                    <span>Lehrerversion (TRF)</span>
+                                </label>
+                                <label class="radio-label-inline">
+                                    <input type="radio" name="cbcl-respondent" value="self">
+                                    <span>Selbstbeurteilung (YSR)</span>
+                                </label>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-fieldset">
                             <legend>Übergeordnete Skalen (T-Werte)</legend>
                             <p class="fieldset-hint">T-Werte: M=50, SD=10. Grenzbereich: T=60-63, Klinisch: T≥64</p>
 
                             <div class="input-grid input-grid-3">
                                 <div class="form-group form-group-primary">
-                                    <label for="cbcl-internal">Internalisierende Auffälligkeiten</label>
+                                    <label for="cbcl-internalizing">Internalisierende Auffälligkeiten</label>
                                     <div class="input-with-range">
-                                        <input type="number" id="cbcl-internal" name="internal" min="30" max="100">
+                                        <input type="number" id="cbcl-internalizing" name="internal" min="30" max="100">
                                         <span class="range-indicator">T-Wert</span>
                                     </div>
                                 </div>
 
                                 <div class="form-group form-group-primary">
-                                    <label for="cbcl-external">Externalisierende Auffälligkeiten</label>
+                                    <label for="cbcl-externalizing">Externalisierende Auffälligkeiten</label>
                                     <div class="input-with-range">
-                                        <input type="number" id="cbcl-external" name="external" min="30" max="100">
+                                        <input type="number" id="cbcl-externalizing" name="external" min="30" max="100">
                                         <span class="range-indicator">T-Wert</span>
                                     </div>
                                 </div>
@@ -607,32 +625,32 @@
 
                             <div class="input-grid">
                                 <div class="form-group">
-                                    <label for="cbcl-anxious">Ängstlich/Depressiv</label>
-                                    <input type="number" id="cbcl-anxious" name="anxious" min="30" max="100">
+                                    <label for="cbcl-anxious-depressed">Ängstlich/Depressiv</label>
+                                    <input type="number" id="cbcl-anxious-depressed" name="anxious" min="30" max="100">
                                 </div>
                                 <div class="form-group">
-                                    <label for="cbcl-withdrawn">Rückzüglich/Depressiv</label>
-                                    <input type="number" id="cbcl-withdrawn" name="withdrawn" min="30" max="100">
+                                    <label for="cbcl-withdrawn-depressed">Rückzüglich/Depressiv</label>
+                                    <input type="number" id="cbcl-withdrawn-depressed" name="withdrawn" min="30" max="100">
                                 </div>
                                 <div class="form-group">
-                                    <label for="cbcl-somatic">Körperliche Beschwerden</label>
-                                    <input type="number" id="cbcl-somatic" name="somatic" min="30" max="100">
+                                    <label for="cbcl-somatic-complaints">Körperliche Beschwerden</label>
+                                    <input type="number" id="cbcl-somatic-complaints" name="somatic" min="30" max="100">
                                 </div>
                                 <div class="form-group">
-                                    <label for="cbcl-social">Soziale Probleme</label>
-                                    <input type="number" id="cbcl-social" name="social" min="30" max="100">
+                                    <label for="cbcl-social-problems">Soziale Probleme</label>
+                                    <input type="number" id="cbcl-social-problems" name="social" min="30" max="100">
                                 </div>
                                 <div class="form-group">
-                                    <label for="cbcl-thought">Denkprobleme</label>
-                                    <input type="number" id="cbcl-thought" name="thought" min="30" max="100">
+                                    <label for="cbcl-thought-problems">Denkprobleme</label>
+                                    <input type="number" id="cbcl-thought-problems" name="thought" min="30" max="100">
                                 </div>
                                 <div class="form-group">
-                                    <label for="cbcl-attention">Aufmerksamkeitsprobleme</label>
-                                    <input type="number" id="cbcl-attention" name="attention" min="30" max="100">
+                                    <label for="cbcl-attention-problems">Aufmerksamkeitsprobleme</label>
+                                    <input type="number" id="cbcl-attention-problems" name="attention" min="30" max="100">
                                 </div>
                                 <div class="form-group">
-                                    <label for="cbcl-rulebreak">Regelverletzendes Verhalten</label>
-                                    <input type="number" id="cbcl-rulebreak" name="rulebreak" min="30" max="100">
+                                    <label for="cbcl-rule-breaking">Regelverletzendes Verhalten</label>
+                                    <input type="number" id="cbcl-rule-breaking" name="rulebreak" min="30" max="100">
                                 </div>
                                 <div class="form-group">
                                     <label for="cbcl-aggressive">Aggressives Verhalten</label>
@@ -664,7 +682,11 @@
                             <div class="results-chart-container">
                                 <h3>Syndrom-Profil</h3>
                                 <div class="chart-wrapper chart-wrapper-large">
-                                    <canvas id="cbcl-chart"></canvas>
+                                    <canvas id="cbcl-syndrome-chart"></canvas>
+                                </div>
+                                <h3 style="margin-top: 1.5rem;">Breitbandskalen</h3>
+                                <div class="chart-wrapper">
+                                    <canvas id="cbcl-broadband-chart"></canvas>
                                 </div>
                             </div>
                             <div class="results-interpretation">
@@ -692,8 +714,32 @@
                 <div class="test-content">
                     <form class="test-form" id="disyps-form">
                         <fieldset class="form-fieldset">
-                            <legend>ADHS-Skalen (Stanine-Werte)</legend>
-                            <p class="fieldset-hint">Stanine 1-3: unterdurchschnittlich, 4-6: durchschnittlich, 7-9: überdurchschnittlich auffällig</p>
+                            <legend>Beurteiler &amp; Werteformat</legend>
+                            <div class="radio-group-inline">
+                                <label class="radio-label-inline">
+                                    <input type="radio" name="disyps-respondent" value="parent" checked>
+                                    <span>Fremdbeurteilung (FBB)</span>
+                                </label>
+                                <label class="radio-label-inline">
+                                    <input type="radio" name="disyps-respondent" value="self">
+                                    <span>Selbstbeurteilung (SBB)</span>
+                                </label>
+                            </div>
+                            <div class="radio-group-inline" style="margin-top: 0.5rem;">
+                                <label class="radio-label-inline">
+                                    <input type="radio" name="disyps-input-type" value="stanine" checked>
+                                    <span>Stanine (1-9)</span>
+                                </label>
+                                <label class="radio-label-inline">
+                                    <input type="radio" name="disyps-input-type" value="percentile">
+                                    <span>Prozentrang (0-100)</span>
+                                </label>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-fieldset">
+                            <legend>ADHS-Skalen</legend>
+                            <p class="fieldset-hint">Stanine 7-9 oder PR &gt;84: überdurchschnittlich auffällig</p>
 
                             <div class="input-grid">
                                 <div class="form-group">
@@ -704,23 +750,23 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="disyps-hyperactive">Überaktivität</label>
+                                    <label for="disyps-hyperactivity">Überaktivität</label>
                                     <div class="input-with-range">
-                                        <input type="number" id="disyps-hyperactive" name="hyperactive" min="1" max="9">
+                                        <input type="number" id="disyps-hyperactivity" name="hyperactivity" min="1" max="9">
                                         <span class="range-indicator">1-9</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="disyps-impulsive">Impulsivität</label>
+                                    <label for="disyps-impulsivity">Impulsivität</label>
                                     <div class="input-with-range">
-                                        <input type="number" id="disyps-impulsive" name="impulsive" min="1" max="9">
+                                        <input type="number" id="disyps-impulsivity" name="impulsivity" min="1" max="9">
                                         <span class="range-indicator">1-9</span>
                                     </div>
                                 </div>
                                 <div class="form-group form-group-primary">
-                                    <label for="disyps-adhd-total">ADHS-Gesamtwert</label>
+                                    <label for="disyps-adhs-total">ADHS-Gesamtwert</label>
                                     <div class="input-with-range">
-                                        <input type="number" id="disyps-adhd-total" name="adhd-total" min="1" max="9">
+                                        <input type="number" id="disyps-adhs-total" name="adhs-total" min="1" max="9">
                                         <span class="range-indicator">1-9</span>
                                     </div>
                                 </div>
@@ -739,9 +785,16 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="disyps-conduct">Aggressiv-dissoziales Verhalten</label>
+                                    <label for="disyps-aggressive">Aggressiv-dissoziales Verhalten</label>
                                     <div class="input-with-range">
-                                        <input type="number" id="disyps-conduct" name="conduct" min="1" max="9">
+                                        <input type="number" id="disyps-aggressive" name="aggressive" min="1" max="9">
+                                        <span class="range-indicator">1-9</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="disyps-limited-prosocial">Begrenzte prosoziale Emotionalität</label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="disyps-limited-prosocial" name="limited-prosocial" min="1" max="9">
                                         <span class="range-indicator">1-9</span>
                                     </div>
                                 </div>
@@ -794,8 +847,22 @@
                 <div class="test-content">
                     <form class="test-form" id="afs-form">
                         <fieldset class="form-fieldset">
-                            <legend>Skalenwerte (Prozentränge)</legend>
-                            <p class="fieldset-hint">PR &lt;16: unterdurchschnittlich, 16-84: durchschnittlich, &gt;84: überdurchschnittlich</p>
+                            <legend>Werteformat</legend>
+                            <div class="radio-group-inline">
+                                <label class="radio-label-inline">
+                                    <input type="radio" name="afs-input-type" value="stanine" checked>
+                                    <span>Stanine (1-9)</span>
+                                </label>
+                                <label class="radio-label-inline">
+                                    <input type="radio" name="afs-input-type" value="percentile">
+                                    <span>Prozentrang (0-100)</span>
+                                </label>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-fieldset">
+                            <legend>Skalenwerte</legend>
+                            <p class="fieldset-hint">Stanine 7-9 oder PR &gt;84: überdurchschnittlich (bei Angstskalen = auffällig)</p>
 
                             <div class="input-grid">
                                 <div class="form-group">
@@ -804,8 +871,8 @@
                                         <button type="button" class="info-btn" data-tooltip="Angst vor Leistungsüberprüfungen, Prüfungssituationen und damit verbundene vegetative Reaktionen">?</button>
                                     </label>
                                     <div class="input-with-range">
-                                        <input type="number" id="afs-pa" name="pa" min="0" max="100">
-                                        <span class="range-indicator">PR 0-100</span>
+                                        <input type="number" id="afs-pa" name="pa" min="1" max="9">
+                                        <span class="range-indicator">1-9</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -814,8 +881,8 @@
                                         <button type="button" class="info-btn" data-tooltip="Allgemeine Ängstlichkeit, die sich in vegetativen Symptomen und Konzentrationsstörungen äußert">?</button>
                                     </label>
                                     <div class="input-with-range">
-                                        <input type="number" id="afs-ma" name="ma" min="0" max="100">
-                                        <span class="range-indicator">PR 0-100</span>
+                                        <input type="number" id="afs-ma" name="ma" min="1" max="9">
+                                        <span class="range-indicator">1-9</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -824,8 +891,8 @@
                                         <button type="button" class="info-btn" data-tooltip="Innere Abneigung gegen die Schule, mangelnde Lernmotivation">?</button>
                                     </label>
                                     <div class="input-with-range">
-                                        <input type="number" id="afs-su" name="su" min="0" max="100">
-                                        <span class="range-indicator">PR 0-100</span>
+                                        <input type="number" id="afs-su" name="su" min="1" max="9">
+                                        <span class="range-indicator">1-9</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -834,8 +901,8 @@
                                         <button type="button" class="info-btn" data-tooltip="Tendenz zu sozial erwünschtem Antwortverhalten - bei hohen Werten Ergebnisse mit Vorsicht interpretieren">?</button>
                                     </label>
                                     <div class="input-with-range">
-                                        <input type="number" id="afs-se" name="se" min="0" max="100">
-                                        <span class="range-indicator">PR 0-100</span>
+                                        <input type="number" id="afs-se" name="se" min="1" max="9">
+                                        <span class="range-indicator">1-9</span>
                                     </div>
                                 </div>
                             </div>
@@ -880,7 +947,22 @@
                 <div class="test-content">
                     <form class="test-form" id="d2r-form">
                         <fieldset class="form-fieldset">
-                            <legend>Kennwerte (Standardwerte oder Prozentränge)</legend>
+                            <legend>Werteformat</legend>
+                            <div class="radio-group-inline">
+                                <label class="radio-label-inline">
+                                    <input type="radio" name="d2r-input-type" value="percentile" checked>
+                                    <span>Prozentrang (0-100)</span>
+                                </label>
+                                <label class="radio-label-inline">
+                                    <input type="radio" name="d2r-input-type" value="standard">
+                                    <span>Standardwert (M=100, SD=10)</span>
+                                </label>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="form-fieldset">
+                            <legend>Kennwerte</legend>
+                            <p class="fieldset-hint">PR &lt;16 oder SW &lt;85: unterdurchschnittlich</p>
 
                             <div class="input-grid">
                                 <div class="form-group form-group-primary">
@@ -895,8 +977,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="d2r-bz">
-                                        Bearbeitete Zeichen (BZO)
-                                        <button type="button" class="info-btn" data-tooltip="Tempo/Quantität: Gesamtzahl aller bearbeiteten Zeichen">?</button>
+                                        Bearbeitete Zielzeichen (BZ)
+                                        <button type="button" class="info-btn" data-tooltip="Tempo/Quantität: Anzahl korrekt bearbeiteter Zielzeichen">?</button>
                                     </label>
                                     <div class="input-with-range">
                                         <input type="number" id="d2r-bz" name="bz" min="0" max="100">
@@ -905,18 +987,28 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="d2r-f">
-                                        Fehler (F%)
-                                        <button type="button" class="info-btn" data-tooltip="Sorgfalt/Genauigkeit: Prozentualer Fehleranteil (niedrig = gut)">?</button>
+                                        Fehler gesamt (F)
+                                        <button type="button" class="info-btn" data-tooltip="Sorgfalt: Summe aus Auslassungs- und Verwechslungsfehlern">?</button>
                                     </label>
                                     <div class="input-with-range">
-                                        <input type="number" id="d2r-f" name="f" min="0" max="100" step="0.1">
+                                        <input type="number" id="d2r-f" name="f" min="0" max="100">
+                                        <span class="range-indicator">PR 0-100</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="d2r-fp">
+                                        Fehlerprozent (F%)
+                                        <button type="button" class="info-btn" data-tooltip="Relativer Fehleranteil (niedriger PR = viele Fehler = schlecht)">?</button>
+                                    </label>
+                                    <div class="input-with-range">
+                                        <input type="number" id="d2r-fp" name="fp" min="0" max="100">
                                         <span class="range-indicator">PR 0-100</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="d2r-sb">
                                         Schwankungsbreite (SB)
-                                        <button type="button" class="info-btn" data-tooltip="Gleichmäßigkeit der Leistung über die Zeit (niedrig = gleichmäßig)">?</button>
+                                        <button type="button" class="info-btn" data-tooltip="Gleichmäßigkeit der Leistung (niedriger PR = große Schwankung = schlecht)">?</button>
                                     </label>
                                     <div class="input-with-range">
                                         <input type="number" id="d2r-sb" name="sb" min="0" max="100">

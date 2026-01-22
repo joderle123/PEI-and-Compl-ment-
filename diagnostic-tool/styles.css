@@ -1533,6 +1533,162 @@ body {
 }
 
 /* ============================================
+   Inline Radio Groups
+   ============================================ */
+.radio-group-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    align-items: center;
+}
+
+.radio-label-inline {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    color: var(--color-text);
+}
+
+.radio-label-inline input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+}
+
+.radio-label-inline span {
+    font-weight: 400;
+}
+
+.radio-label-inline:hover span {
+    color: var(--color-primary);
+}
+
+/* Import Preview Styles */
+.import-preview {
+    margin-top: var(--space-6);
+    padding: var(--space-4);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+}
+
+.import-preview-header {
+    margin-bottom: var(--space-4);
+}
+
+.import-preview-header h4 {
+    margin: 0 0 var(--space-2);
+    color: var(--color-primary);
+}
+
+.import-preview-data {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.import-preview-test {
+    background: var(--bg-primary);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+}
+
+.import-preview-test h5 {
+    margin: 0 0 var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-primary);
+}
+
+.import-preview-table {
+    width: 100%;
+    font-size: var(--font-size-sm);
+}
+
+.import-preview-table td {
+    padding: var(--space-1) var(--space-2);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.import-preview-table td:first-child {
+    font-weight: 500;
+    color: var(--color-text-secondary);
+}
+
+.import-preview-raw {
+    margin-top: var(--space-4);
+}
+
+.import-preview-raw h5 {
+    margin: 0 0 var(--space-2);
+    font-size: var(--font-size-sm);
+}
+
+.import-raw-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-xs);
+}
+
+.import-raw-table th,
+.import-raw-table td {
+    padding: var(--space-2);
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.import-raw-table th {
+    background: var(--bg-tertiary);
+    font-weight: 600;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+/* Template Grid */
+.template-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+}
+
+.template-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.template-btn:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary-bg);
+}
+
+.template-icon {
+    font-size: 1.5rem;
+}
+
+.template-name {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+}
+
+/* Drag and Drop Styles */
+.import-dropzone.drag-over {
+    border-color: var(--color-primary);
+    background: var(--color-primary-bg);
+}
+
+/* ============================================
    Utility Classes
    ============================================ */
 .hidden {
