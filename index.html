@@ -3413,7 +3413,7 @@ function updateErreichteListe() {
         const erreichte = Object.entries(state.selections)
             .filter(([code, sel]) => sel.status === 'erreicht' && findBereichByCode(code) === bereich)
             .map(([code]) => { const item = findItemByCode(code); return { code, keyword: item?.keyword, nr: parseInt(code.split('-')[1]) }; })
-            .sort((a, b) => b.nr - a.nr).slice(0, 4);
+            .sort((a, b) => a.nr - b.nr).slice(-4); // ascending, last 4
         const bereichDiv = document.createElement('div');
         bereichDiv.style.marginBottom = '15px';
         bereichDiv.innerHTML = `<h4 style="color: ${ELDIB_DATA[bereich].color};">${ELDIB_DATA[bereich].name}</h4>`;
@@ -3942,10 +3942,16 @@ async function generatePEI() {
         }
     }
 
+    // Sort ziele ascending (ordre croissant)
+    for (const bereich of Object.keys(ziele)) {
+        ziele[bereich].sort((a, b) => parseInt(a.code.split('-').pop()) - parseInt(b.code.split('-').pop()));
+    }
+
     const lastErreicht = {};
     for (const [bereich, items] of Object.entries(erreichte)) {
-        const sorted = items.sort((a,b) => parseInt(b.code.split('-').pop()) - parseInt(a.code.split('-').pop()));
-        lastErreicht[bereich] = sorted.slice(0, 3); // Get last 3 items
+        // Sort ascending (ordre croissant) and get last 3
+        const sorted = items.sort((a,b) => parseInt(a.code.split('-').pop()) - parseInt(b.code.split('-').pop()));
+        lastErreicht[bereich] = sorted.slice(-3);
     }
 
     const nameParts = (stammdaten.schueler_name || '').split(' ');
@@ -4624,7 +4630,8 @@ async function generateComplement() {
     }
 
     for (const bereich of Object.keys(erreichte)) {
-        erreichte[bereich] = erreichte[bereich].sort((a, b) => b.nr - a.nr).slice(0, 4);
+        // Sort ascending (ordre croissant) and get last 4
+        erreichte[bereich] = erreichte[bereich].sort((a, b) => a.nr - b.nr).slice(-4);
     }
 
     const nameParts = (stammdaten.schueler_name || '').split(' ');
