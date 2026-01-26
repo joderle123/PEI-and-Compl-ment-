@@ -730,7 +730,9 @@
                 <div class="progress-dot" data-tab="sozialisation"></div>
                 <div class="progress-dot" data-tab="kognition"></div>
                 <div class="progress-dot" data-tab="zusaetzlich"></div>
+                <div class="progress-dot" data-tab="beobachtungen"></div>
                 <div class="progress-dot" data-tab="uebersicht"></div>
+                <div class="progress-dot" data-tab="bericht"></div>
                 <div class="progress-dot" data-tab="export"></div>
             </div>
         </div>
@@ -742,7 +744,9 @@
             <button class="tab" onclick="showTab('sozialisation')" title="Sozialisation S-1 bis S-41">Sozialisation</button>
             <button class="tab" onclick="showTab('kognition')" title="Kognition KOG-1 bis KOG-62">Kognition</button>
             <button class="tab" onclick="showTab('zusaetzlich')" title="Weitere Förderziele">Zusätzliche Ziele</button>
+            <button class="tab" onclick="showTab('beobachtungen')" title="Beobachtungen dokumentieren">Beobachtungen</button>
             <button class="tab" onclick="showTab('uebersicht')" title="Statistik und Zusammenfassung">Übersicht</button>
+            <button class="tab" onclick="showTab('bericht')" title="Diagnostischer Bericht">Diag. Bericht</button>
             <button class="tab" onclick="showTab('export')" title="Dokumente herunterladen">Export</button>
         </div>
 
@@ -1133,6 +1137,101 @@
             </div>
 
             <div class="button-group">
+                <button class="btn btn-primary" onclick="showTab('beobachtungen')">Zu Beobachtungen &rarr;</button>
+            </div>
+        </div>
+
+        <!-- Beobachtungen Tab -->
+        <div id="beobachtungen" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #333;">Beobachtungen dokumentieren</h2>
+            <p style="margin-bottom: 20px; color: #666;">
+                Dokumentieren Sie hier Ihre Beobachtungen des Schülers in den verschiedenen Entwicklungsbereichen.
+                Diese Beobachtungen werden für den diagnostischen Bericht verwendet.
+            </p>
+
+            <!-- Allgemeine Beobachtungen -->
+            <div class="form-section" style="border-left: 4px solid #667eea;">
+                <h3 style="color: #667eea;">Allgemeine Beobachtungen</h3>
+                <div class="form-group">
+                    <label for="beob_allgemein">Allgemeiner Eindruck und Kontext</label>
+                    <textarea id="beob_allgemein" rows="4" placeholder="Beschreiben Sie den allgemeinen Eindruck des Schülers, Beobachtungskontext, besondere Umstände..." onchange="saveBeobachtungen()"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="beob_staerken">Stärken und Ressourcen</label>
+                    <textarea id="beob_staerken" rows="3" placeholder="Welche Stärken und Ressourcen zeigt der Schüler?" onchange="saveBeobachtungen()"></textarea>
+                </div>
+            </div>
+
+            <!-- Verhalten Beobachtungen -->
+            <div class="form-section" style="border-left: 4px solid #e74c3c;">
+                <h3 style="color: #e74c3c;">Bereich Verhalten</h3>
+                <div class="form-group">
+                    <label for="beob_verhalten">Beobachtungen zum Verhalten</label>
+                    <textarea id="beob_verhalten" rows="4" placeholder="Selbstregulation, Impulskontrolle, Frustrationstoleranz, Reaktion auf Regeln und Strukturen, Umgang mit Veränderungen..." onchange="saveBeobachtungen()"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="beob_verhalten_beispiele">Konkrete Beispiele/Situationen</label>
+                    <textarea id="beob_verhalten_beispiele" rows="3" placeholder="Beschreiben Sie konkrete Situationen, die Ihr Beobachtungen illustrieren..." onchange="saveBeobachtungen()"></textarea>
+                </div>
+            </div>
+
+            <!-- Kommunikation Beobachtungen -->
+            <div class="form-section" style="border-left: 4px solid #3498db;">
+                <h3 style="color: #3498db;">Bereich Kommunikation</h3>
+                <div class="form-group">
+                    <label for="beob_kommunikation">Beobachtungen zur Kommunikation</label>
+                    <textarea id="beob_kommunikation" rows="4" placeholder="Sprachverständnis, Ausdrucksfähigkeit, verbale/nonverbale Kommunikation, Gesprächsverhalten..." onchange="saveBeobachtungen()"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="beob_kommunikation_beispiele">Konkrete Beispiele/Situationen</label>
+                    <textarea id="beob_kommunikation_beispiele" rows="3" placeholder="Beschreiben Sie konkrete Situationen, die Ihr Beobachtungen illustrieren..." onchange="saveBeobachtungen()"></textarea>
+                </div>
+            </div>
+
+            <!-- Sozialisation Beobachtungen -->
+            <div class="form-section" style="border-left: 4px solid #2ecc71;">
+                <h3 style="color: #2ecc71;">Bereich Sozialisation</h3>
+                <div class="form-group">
+                    <label for="beob_sozialisation">Beobachtungen zur Sozialisation</label>
+                    <textarea id="beob_sozialisation" rows="4" placeholder="Kontaktaufnahme, Kooperationsfähigkeit, Gruppenverhalten, Beziehungen zu Peers und Erwachsenen, Empathie..." onchange="saveBeobachtungen()"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="beob_sozialisation_beispiele">Konkrete Beispiele/Situationen</label>
+                    <textarea id="beob_sozialisation_beispiele" rows="3" placeholder="Beschreiben Sie konkrete Situationen, die Ihr Beobachtungen illustrieren..." onchange="saveBeobachtungen()"></textarea>
+                </div>
+            </div>
+
+            <!-- Kognition Beobachtungen -->
+            <div class="form-section" style="border-left: 4px solid #f39c12;">
+                <h3 style="color: #f39c12;">Bereich Kognition</h3>
+                <div class="form-group">
+                    <label for="beob_kognition">Beobachtungen zur Kognition</label>
+                    <textarea id="beob_kognition" rows="4" placeholder="Aufmerksamkeit, Konzentration, Arbeitsgedächtnis, Problemlösung, Lernverhalten, schulische Leistungen..." onchange="saveBeobachtungen()"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="beob_kognition_beispiele">Konkrete Beispiele/Situationen</label>
+                    <textarea id="beob_kognition_beispiele" rows="3" placeholder="Beschreiben Sie konkrete Situationen, die Ihr Beobachtungen illustrieren..." onchange="saveBeobachtungen()"></textarea>
+                </div>
+            </div>
+
+            <!-- Zusätzliche Beobachtungen -->
+            <div class="form-section" style="border-left: 4px solid #9b59b6;">
+                <h3 style="color: #9b59b6;">Weitere Beobachtungen</h3>
+                <div class="form-group">
+                    <label for="beob_motorik">Motorik (Grob- und Feinmotorik)</label>
+                    <textarea id="beob_motorik" rows="3" placeholder="Koordination, Geschicklichkeit, Schriftbild, Sport..." onchange="saveBeobachtungen()"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="beob_selbststaendigkeit">Selbstständigkeit und Autonomie</label>
+                    <textarea id="beob_selbststaendigkeit" rows="3" placeholder="Alltagskompetenzen, Organisation, Eigeninitiative..." onchange="saveBeobachtungen()"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="beob_sonstiges">Sonstige Beobachtungen</label>
+                    <textarea id="beob_sonstiges" rows="3" placeholder="Weitere relevante Beobachtungen..." onchange="saveBeobachtungen()"></textarea>
+                </div>
+            </div>
+
+            <div class="button-group">
                 <button class="btn btn-primary" onclick="showTab('uebersicht')">Zur Übersicht &rarr;</button>
             </div>
         </div>
@@ -1192,7 +1291,84 @@
 
             <div class="button-group">
                 <button class="btn btn-success" onclick="updateStats()">Statistik aktualisieren</button>
-                <button class="btn btn-primary" onclick="showTab('export')">Zum Export &rarr;</button>
+                <button class="btn btn-primary" onclick="showTab('bericht')">Zum Diagnostischen Bericht &rarr;</button>
+            </div>
+        </div>
+
+        <!-- Diagnostischer Bericht Tab -->
+        <div id="bericht" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #333;">Diagnostischer Bericht</h2>
+            <p style="margin-bottom: 20px; color: #666;">
+                Generieren Sie einen professionellen diagnostischen Bericht basierend auf Ihren ELDiB-Einschätzungen und Beobachtungen.
+            </p>
+
+            <div class="info-box" style="margin-bottom: 25px;">
+                <p><strong>Hinweis:</strong> Der Bericht wird automatisch aus Ihren Stammdaten, ELDiB-Bewertungen und dokumentierten Beobachtungen zusammengestellt. Stellen Sie sicher, dass alle relevanten Bereiche ausgefüllt sind.</p>
+            </div>
+
+            <!-- Berichts-Vorschau -->
+            <div class="form-section">
+                <h3>Berichtsvorschau</h3>
+                <div id="bericht-vorschau" style="background: #f9f9f9; padding: 20px; border-radius: 8px; max-height: 600px; overflow-y: auto; font-family: 'Times New Roman', serif; line-height: 1.6;">
+                    <p style="color: #888; text-align: center;">Klicken Sie auf "Bericht generieren", um eine Vorschau zu sehen.</p>
+                </div>
+            </div>
+
+            <!-- Berichts-Optionen -->
+            <div class="form-section">
+                <h3>Berichtsoptionen</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bericht_sprache">Berichtssprache</label>
+                        <select id="bericht_sprache">
+                            <option value="de">Deutsch</option>
+                            <option value="fr">Français</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bericht_format">Berichtsformat</label>
+                        <select id="bericht_format">
+                            <option value="standard">Standard (Diagnostic spécialisé)</option>
+                            <option value="kurz">Kurzfassung</option>
+                            <option value="detailliert">Detaillierter Bericht</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="bericht_include_ziele" checked> Förderziele einschließen
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="bericht_include_empfehlungen" checked> Förderempfehlungen einschließen
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zusätzliche Informationen für den Bericht -->
+            <div class="form-section">
+                <h3>Zusätzliche Informationen</h3>
+                <div class="form-group">
+                    <label for="bericht_fragestellung">Fragestellung / Anlass der Diagnostik</label>
+                    <textarea id="bericht_fragestellung" rows="3" placeholder="Was ist der Anlass der Untersuchung? Welche Fragen sollen beantwortet werden?" onchange="saveBeobachtungen()"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="bericht_empfehlungen">Förderempfehlungen</label>
+                    <textarea id="bericht_empfehlungen" rows="4" placeholder="Welche konkreten Fördermaßnahmen empfehlen Sie?" onchange="saveBeobachtungen()"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="bericht_fazit">Zusammenfassung / Fazit</label>
+                    <textarea id="bericht_fazit" rows="3" placeholder="Fassen Sie die wichtigsten Erkenntnisse zusammen..." onchange="saveBeobachtungen()"></textarea>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="generateBerichtVorschau()">Bericht generieren</button>
+                <button class="btn btn-success" onclick="generateDiagnostischerBericht()">Bericht herunterladen (Word)</button>
+                <button class="btn btn-secondary" onclick="showTab('export')">Zum Export &rarr;</button>
             </div>
         </div>
 

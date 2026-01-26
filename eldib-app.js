@@ -357,6 +357,7 @@ function saveData() {
     const data = {
         selections: state.selections,
         stammdaten: getStammdaten(),
+        beobachtungen: getBeobachtungen(),
         savedAt: new Date().toISOString()
     };
 
@@ -394,7 +395,13 @@ function loadData(event) {
                 }
             }
 
-            // Reload UI
+            // Restore beobachtungen
+            if (data.beobachtungen) {
+                localStorage.setItem('eldib-beobachtungen', JSON.stringify(data.beobachtungen));
+            }
+
+            // Save to localStorage and reload
+            saveToLocalStorage();
             location.reload();
         } catch (err) {
             alert('Fehler beim Laden der Datei: ' + err.message);
@@ -713,3 +720,427 @@ function downloadAsWord(html, filename) {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
+
+// ========================================
+// BEOBACHTUNGEN UND DIAGNOSTISCHER BERICHT
+// ========================================
+
+// Beobachtungen speichern
+function saveBeobachtungen() {
+    const beobachtungen = {
+        allgemein: document.getElementById('beob_allgemein')?.value || '',
+        staerken: document.getElementById('beob_staerken')?.value || '',
+        verhalten: document.getElementById('beob_verhalten')?.value || '',
+        verhalten_beispiele: document.getElementById('beob_verhalten_beispiele')?.value || '',
+        kommunikation: document.getElementById('beob_kommunikation')?.value || '',
+        kommunikation_beispiele: document.getElementById('beob_kommunikation_beispiele')?.value || '',
+        sozialisation: document.getElementById('beob_sozialisation')?.value || '',
+        sozialisation_beispiele: document.getElementById('beob_sozialisation_beispiele')?.value || '',
+        kognition: document.getElementById('beob_kognition')?.value || '',
+        kognition_beispiele: document.getElementById('beob_kognition_beispiele')?.value || '',
+        motorik: document.getElementById('beob_motorik')?.value || '',
+        selbststaendigkeit: document.getElementById('beob_selbststaendigkeit')?.value || '',
+        sonstiges: document.getElementById('beob_sonstiges')?.value || '',
+        fragestellung: document.getElementById('bericht_fragestellung')?.value || '',
+        empfehlungen: document.getElementById('bericht_empfehlungen')?.value || '',
+        fazit: document.getElementById('bericht_fazit')?.value || ''
+    };
+
+    localStorage.setItem('eldib-beobachtungen', JSON.stringify(beobachtungen));
+    saveToLocalStorage();
+}
+
+// Beobachtungen laden
+function loadBeobachtungen() {
+    const saved = localStorage.getItem('eldib-beobachtungen');
+    if (saved) {
+        const beobachtungen = JSON.parse(saved);
+        const fields = [
+            'beob_allgemein', 'beob_staerken', 'beob_verhalten', 'beob_verhalten_beispiele',
+            'beob_kommunikation', 'beob_kommunikation_beispiele', 'beob_sozialisation',
+            'beob_sozialisation_beispiele', 'beob_kognition', 'beob_kognition_beispiele',
+            'beob_motorik', 'beob_selbststaendigkeit', 'beob_sonstiges',
+            'bericht_fragestellung', 'bericht_empfehlungen', 'bericht_fazit'
+        ];
+
+        const mapping = {
+            'beob_allgemein': 'allgemein',
+            'beob_staerken': 'staerken',
+            'beob_verhalten': 'verhalten',
+            'beob_verhalten_beispiele': 'verhalten_beispiele',
+            'beob_kommunikation': 'kommunikation',
+            'beob_kommunikation_beispiele': 'kommunikation_beispiele',
+            'beob_sozialisation': 'sozialisation',
+            'beob_sozialisation_beispiele': 'sozialisation_beispiele',
+            'beob_kognition': 'kognition',
+            'beob_kognition_beispiele': 'kognition_beispiele',
+            'beob_motorik': 'motorik',
+            'beob_selbststaendigkeit': 'selbststaendigkeit',
+            'beob_sonstiges': 'sonstiges',
+            'bericht_fragestellung': 'fragestellung',
+            'bericht_empfehlungen': 'empfehlungen',
+            'bericht_fazit': 'fazit'
+        };
+
+        for (const fieldId of fields) {
+            const element = document.getElementById(fieldId);
+            const key = mapping[fieldId];
+            if (element && beobachtungen[key]) {
+                element.value = beobachtungen[key];
+            }
+        }
+    }
+}
+
+// Entwicklungsprofil berechnen
+function berechneEntwicklungsprofil() {
+    const profil = {
+        verhalten: { erreicht: [], ziele: [], nichtErreicht: [], hoechsteStufe: 0 },
+        kommunikation: { erreicht: [], ziele: [], nichtErreicht: [], hoechsteStufe: 0 },
+        sozialisation: { erreicht: [], ziele: [], nichtErreicht: [], hoechsteStufe: 0 },
+        kognition: { erreicht: [], ziele: [], nichtErreicht: [], hoechsteStufe: 0 }
+    };
+
+    for (const [code, selection] of Object.entries(state.selections)) {
+        const bereich = findBereichByCode(code);
+        const item = findItemByCode(code);
+
+        if (bereich && item && profil[bereich]) {
+            const itemData = {
+                code: code,
+                keyword: item.keyword,
+                description: item.description,
+                stufe: getStufeByCode(code),
+                zieltext: selection.zieltext
+            };
+
+            if (selection.status === 'erreicht') {
+                profil[bereich].erreicht.push(itemData);
+                if (itemData.stufe > profil[bereich].hoechsteStufe) {
+                    profil[bereich].hoechsteStufe = itemData.stufe;
+                }
+            } else if (selection.status === 'ziel') {
+                profil[bereich].ziele.push(itemData);
+            } else if (selection.status === 'nicht-erreicht') {
+                profil[bereich].nichtErreicht.push(itemData);
+            }
+        }
+    }
+
+    return profil;
+}
+
+// Stufe aus Code ermitteln
+function getStufeByCode(code) {
+    const prefix = code.split('-')[0];
+    const nr = parseInt(code.split('-')[1]);
+
+    // Stufen-Grenzen für jeden Bereich
+    const stufenGrenzen = {
+        'V': [[1,8], [9,14], [15,21], [22,28], [29,33]],
+        'K': [[1,8], [9,16], [17,24], [25,30], [31,35]],
+        'SOZ': [[1,7], [8,16], [17,27], [28,36], [37,41]],
+        'KOG': [[1,12], [13,26], [27,44], [45,56], [57,62]]
+    };
+
+    const grenzen = stufenGrenzen[prefix];
+    if (grenzen) {
+        for (let i = 0; i < grenzen.length; i++) {
+            if (nr >= grenzen[i][0] && nr <= grenzen[i][1]) {
+                return i + 1;
+            }
+        }
+    }
+    return 1;
+}
+
+// Beobachtungen abrufen
+function getBeobachtungen() {
+    return {
+        allgemein: document.getElementById('beob_allgemein')?.value || '',
+        staerken: document.getElementById('beob_staerken')?.value || '',
+        verhalten: document.getElementById('beob_verhalten')?.value || '',
+        verhalten_beispiele: document.getElementById('beob_verhalten_beispiele')?.value || '',
+        kommunikation: document.getElementById('beob_kommunikation')?.value || '',
+        kommunikation_beispiele: document.getElementById('beob_kommunikation_beispiele')?.value || '',
+        sozialisation: document.getElementById('beob_sozialisation')?.value || '',
+        sozialisation_beispiele: document.getElementById('beob_sozialisation_beispiele')?.value || '',
+        kognition: document.getElementById('beob_kognition')?.value || '',
+        kognition_beispiele: document.getElementById('beob_kognition_beispiele')?.value || '',
+        motorik: document.getElementById('beob_motorik')?.value || '',
+        selbststaendigkeit: document.getElementById('beob_selbststaendigkeit')?.value || '',
+        sonstiges: document.getElementById('beob_sonstiges')?.value || '',
+        fragestellung: document.getElementById('bericht_fragestellung')?.value || '',
+        empfehlungen: document.getElementById('bericht_empfehlungen')?.value || '',
+        fazit: document.getElementById('bericht_fazit')?.value || ''
+    };
+}
+
+// Bericht Vorschau generieren
+function generateBerichtVorschau() {
+    const stammdaten = getStammdaten();
+    const beobachtungen = getBeobachtungen();
+    const profil = berechneEntwicklungsprofil();
+    const sprache = document.getElementById('bericht_sprache')?.value || 'de';
+    const format = document.getElementById('bericht_format')?.value || 'standard';
+    const includeZiele = document.getElementById('bericht_include_ziele')?.checked ?? true;
+    const includeEmpfehlungen = document.getElementById('bericht_include_empfehlungen')?.checked ?? true;
+
+    const html = generateBerichtHTML(stammdaten, beobachtungen, profil, sprache, format, includeZiele, includeEmpfehlungen, true);
+
+    document.getElementById('bericht-vorschau').innerHTML = html;
+}
+
+// Bericht HTML generieren
+function generateBerichtHTML(stammdaten, beobachtungen, profil, sprache, format, includeZiele, includeEmpfehlungen, isPreview) {
+    const heute = new Date().toLocaleDateString('de-DE');
+
+    // Texte je nach Sprache
+    const texte = sprache === 'fr' ? {
+        titel: 'Rapport Diagnostique',
+        untertitel: 'Diagnostic spécialisé - Centre de Diagnostic Spécialisé de l\'Éducation',
+        infoEleve: 'Informations sur l\'élève',
+        nom: 'Nom',
+        dateNaissance: 'Date de naissance',
+        matricule: 'Matricule',
+        ecole: 'École/Lycée',
+        classe: 'Classe',
+        anneeScolaire: 'Année scolaire',
+        dateEvaluation: 'Date d\'évaluation',
+        evaluateur: 'Évaluateur(s)',
+        fragestellung: 'Question / Motif de l\'évaluation',
+        allgBeobachtungen: 'Observations générales',
+        staerken: 'Points forts et ressources',
+        profilDev: 'Profil de développement',
+        bereichVerhalten: 'Comportement',
+        bereichKomm: 'Communication',
+        bereichSoz: 'Socialisation',
+        bereichKog: 'Cognition',
+        niveauAtteint: 'Niveau atteint',
+        stufe: 'Stade',
+        compAtteintes: 'Compétences atteintes',
+        objectifs: 'Objectifs de développement',
+        observations: 'Observations',
+        exemples: 'Exemples concrets',
+        autresObs: 'Autres observations',
+        motricite: 'Motricité',
+        autonomie: 'Autonomie',
+        divers: 'Divers',
+        recommandations: 'Recommandations',
+        conclusion: 'Conclusion',
+        signature: 'Signature',
+        date: 'Date'
+    } : {
+        titel: 'Diagnostischer Bericht',
+        untertitel: 'Diagnostic spécialisé - Centre de Diagnostic Spécialisé de l\'Éducation',
+        infoEleve: 'Angaben zum Schüler',
+        nom: 'Name',
+        dateNaissance: 'Geburtsdatum',
+        matricule: 'Matricule',
+        ecole: 'Schule/Lycée',
+        classe: 'Klasse',
+        anneeScolaire: 'Schuljahr',
+        dateEvaluation: 'Untersuchungsdatum',
+        evaluateur: 'Untersucher/in',
+        fragestellung: 'Fragestellung / Anlass der Diagnostik',
+        allgBeobachtungen: 'Allgemeine Beobachtungen',
+        staerken: 'Stärken und Ressourcen',
+        profilDev: 'Entwicklungsprofil',
+        bereichVerhalten: 'Verhalten',
+        bereichKomm: 'Kommunikation',
+        bereichSoz: 'Sozialisation',
+        bereichKog: 'Kognition',
+        niveauAtteint: 'Erreichtes Niveau',
+        stufe: 'Stufe',
+        compAtteintes: 'Erreichte Kompetenzen',
+        objectifs: 'Entwicklungsziele',
+        observations: 'Beobachtungen',
+        exemples: 'Konkrete Beispiele',
+        autresObs: 'Weitere Beobachtungen',
+        motricite: 'Motorik',
+        autonomie: 'Selbstständigkeit',
+        divers: 'Sonstiges',
+        recommandations: 'Förderempfehlungen',
+        conclusion: 'Zusammenfassung und Fazit',
+        signature: 'Unterschrift',
+        date: 'Datum'
+    };
+
+    let html = `
+        <div style="font-family: 'Times New Roman', serif; line-height: 1.6; ${isPreview ? '' : 'margin: 40px;'}">
+            <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #1a1a2e; padding-bottom: 20px;">
+                <h1 style="color: #1a1a2e; font-size: 1.8em; margin-bottom: 5px;">${texte.titel}</h1>
+                <p style="color: #666; font-style: italic;">${texte.untertitel}</p>
+            </div>
+
+            <h2 style="color: #1a1a2e; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${texte.infoEleve}</h2>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                <tr><td style="padding: 5px 10px; width: 200px;"><strong>${texte.nom}:</strong></td><td style="padding: 5px 10px;">${stammdaten.schueler_name || '-'}</td></tr>
+                <tr><td style="padding: 5px 10px;"><strong>${texte.dateNaissance}:</strong></td><td style="padding: 5px 10px;">${stammdaten.geburtsdatum || '-'}</td></tr>
+                <tr><td style="padding: 5px 10px;"><strong>${texte.matricule}:</strong></td><td style="padding: 5px 10px;">${stammdaten.matricule || '-'}</td></tr>
+                <tr><td style="padding: 5px 10px;"><strong>${texte.ecole}:</strong></td><td style="padding: 5px 10px;">${stammdaten.foerderort || '-'}</td></tr>
+                <tr><td style="padding: 5px 10px;"><strong>${texte.classe}:</strong></td><td style="padding: 5px 10px;">${stammdaten.klasse || '-'}</td></tr>
+                <tr><td style="padding: 5px 10px;"><strong>${texte.anneeScolaire}:</strong></td><td style="padding: 5px 10px;">${stammdaten.schuljahr || '-'}</td></tr>
+                <tr><td style="padding: 5px 10px;"><strong>${texte.dateEvaluation}:</strong></td><td style="padding: 5px 10px;">${stammdaten.einschaetzungsdatum || '-'}</td></tr>
+                <tr><td style="padding: 5px 10px;"><strong>${texte.evaluateur}:</strong></td><td style="padding: 5px 10px;">${stammdaten.einschaetzende || '-'}</td></tr>
+            </table>
+    `;
+
+    // Fragestellung
+    if (beobachtungen.fragestellung) {
+        html += `
+            <h2 style="color: #1a1a2e; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${texte.fragestellung}</h2>
+            <p style="margin-bottom: 20px;">${beobachtungen.fragestellung.replace(/\n/g, '<br>')}</p>
+        `;
+    }
+
+    // Allgemeine Beobachtungen
+    if (beobachtungen.allgemein || beobachtungen.staerken) {
+        html += `<h2 style="color: #1a1a2e; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${texte.allgBeobachtungen}</h2>`;
+
+        if (beobachtungen.allgemein) {
+            html += `<p style="margin-bottom: 15px;">${beobachtungen.allgemein.replace(/\n/g, '<br>')}</p>`;
+        }
+
+        if (beobachtungen.staerken) {
+            html += `
+                <h3 style="color: #2ecc71; font-size: 1.1em;">${texte.staerken}</h3>
+                <p style="margin-bottom: 20px;">${beobachtungen.staerken.replace(/\n/g, '<br>')}</p>
+            `;
+        }
+    }
+
+    // Entwicklungsprofil
+    html += `<h2 style="color: #1a1a2e; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${texte.profilDev} (ELDiB)</h2>`;
+
+    const bereiche = [
+        { key: 'verhalten', name: texte.bereichVerhalten, color: '#e74c3c', beob: beobachtungen.verhalten, beispiele: beobachtungen.verhalten_beispiele },
+        { key: 'kommunikation', name: texte.bereichKomm, color: '#3498db', beob: beobachtungen.kommunikation, beispiele: beobachtungen.kommunikation_beispiele },
+        { key: 'sozialisation', name: texte.bereichSoz, color: '#2ecc71', beob: beobachtungen.sozialisation, beispiele: beobachtungen.sozialisation_beispiele },
+        { key: 'kognition', name: texte.bereichKog, color: '#f39c12', beob: beobachtungen.kognition, beispiele: beobachtungen.kognition_beispiele }
+    ];
+
+    for (const bereich of bereiche) {
+        const data = profil[bereich.key];
+
+        html += `
+            <div style="margin-bottom: 25px; padding: 15px; border-left: 4px solid ${bereich.color}; background: #f9f9f9;">
+                <h3 style="color: ${bereich.color}; margin-top: 0;">${bereich.name}</h3>
+                <p><strong>${texte.niveauAtteint}:</strong> ${texte.stufe} ${data.hoechsteStufe || '-'}</p>
+        `;
+
+        if (format !== 'kurz' && data.erreicht.length > 0) {
+            const letzteErreichte = data.erreicht.slice(-4);
+            html += `<p><strong>${texte.compAtteintes}:</strong> ${letzteErreichte.map(i => `${i.code} (${i.keyword})`).join(', ')}</p>`;
+        }
+
+        if (includeZiele && data.ziele.length > 0) {
+            html += `<p><strong>${texte.objectifs}:</strong></p><ul style="margin: 5px 0 10px 20px;">`;
+            for (const ziel of data.ziele) {
+                html += `<li>${ziel.code} (${ziel.keyword}): "${ziel.zieltext || ziel.description}"</li>`;
+            }
+            html += `</ul>`;
+        }
+
+        if (bereich.beob) {
+            html += `<p><strong>${texte.observations}:</strong><br>${bereich.beob.replace(/\n/g, '<br>')}</p>`;
+        }
+
+        if (format === 'detailliert' && bereich.beispiele) {
+            html += `<p><strong>${texte.exemples}:</strong><br><em>${bereich.beispiele.replace(/\n/g, '<br>')}</em></p>`;
+        }
+
+        html += `</div>`;
+    }
+
+    // Weitere Beobachtungen
+    if (beobachtungen.motorik || beobachtungen.selbststaendigkeit || beobachtungen.sonstiges) {
+        html += `<h2 style="color: #1a1a2e; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${texte.autresObs}</h2>`;
+
+        if (beobachtungen.motorik) {
+            html += `<p><strong>${texte.motricite}:</strong><br>${beobachtungen.motorik.replace(/\n/g, '<br>')}</p>`;
+        }
+        if (beobachtungen.selbststaendigkeit) {
+            html += `<p><strong>${texte.autonomie}:</strong><br>${beobachtungen.selbststaendigkeit.replace(/\n/g, '<br>')}</p>`;
+        }
+        if (beobachtungen.sonstiges) {
+            html += `<p><strong>${texte.divers}:</strong><br>${beobachtungen.sonstiges.replace(/\n/g, '<br>')}</p>`;
+        }
+    }
+
+    // Förderempfehlungen
+    if (includeEmpfehlungen && beobachtungen.empfehlungen) {
+        html += `
+            <h2 style="color: #1a1a2e; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${texte.recommandations}</h2>
+            <p>${beobachtungen.empfehlungen.replace(/\n/g, '<br>')}</p>
+        `;
+    }
+
+    // Fazit
+    if (beobachtungen.fazit) {
+        html += `
+            <h2 style="color: #1a1a2e; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${texte.conclusion}</h2>
+            <p>${beobachtungen.fazit.replace(/\n/g, '<br>')}</p>
+        `;
+    }
+
+    // Unterschrift
+    html += `
+        <div style="margin-top: 50px; display: flex; justify-content: space-between;">
+            <div>
+                <p>${texte.date}: ${heute}</p>
+            </div>
+            <div style="text-align: center;">
+                <p style="margin-bottom: 40px;">${texte.signature}:</p>
+                <p style="border-top: 1px solid #333; padding-top: 5px; width: 250px;">${stammdaten.einschaetzende || ''}</p>
+            </div>
+        </div>
+    </div>
+    `;
+
+    return html;
+}
+
+// Diagnostischen Bericht als Word herunterladen
+function generateDiagnostischerBericht() {
+    const stammdaten = getStammdaten();
+    const beobachtungen = getBeobachtungen();
+    const profil = berechneEntwicklungsprofil();
+    const sprache = document.getElementById('bericht_sprache')?.value || 'de';
+    const format = document.getElementById('bericht_format')?.value || 'standard';
+    const includeZiele = document.getElementById('bericht_include_ziele')?.checked ?? true;
+    const includeEmpfehlungen = document.getElementById('bericht_include_empfehlungen')?.checked ?? true;
+
+    const berichtHTML = generateBerichtHTML(stammdaten, beobachtungen, profil, sprache, format, includeZiele, includeEmpfehlungen, false);
+
+    const fullHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Diagnostischer Bericht - ${stammdaten.schueler_name}</title>
+    <style>
+        body { font-family: 'Times New Roman', serif; margin: 40px; line-height: 1.6; }
+        h1 { color: #1a1a2e; }
+        h2 { color: #1a1a2e; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 25px; }
+        h3 { color: #333; }
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 5px 10px; vertical-align: top; }
+        ul { margin: 5px 0 10px 20px; }
+        @page { margin: 2cm; }
+    </style>
+</head>
+<body>
+    ${berichtHTML}
+</body>
+</html>
+    `;
+
+    const filename = `Diagnostischer_Bericht_${stammdaten.schueler_name || 'export'}_${new Date().toISOString().split('T')[0]}.doc`;
+    downloadAsWord(fullHTML, filename);
+}
+
+// Load Beobachtungen beim Start
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(loadBeobachtungen, 100);
+});
