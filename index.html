@@ -51,6 +51,23 @@
             margin: 0 auto;
         }
 
+        .advisory-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .advisory-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
         /* Progress indicator */
         .progress-indicator {
             display: flex;
@@ -733,6 +750,7 @@
                 <div class="progress-dot" data-tab="uebersicht"></div>
                 <div class="progress-dot" data-tab="export"></div>
             </div>
+            <a href="advisory.html" class="advisory-link">Advisory Tool - Pädagogische Beratung</a>
         </div>
 
         <div class="tabs">
