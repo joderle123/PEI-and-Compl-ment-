@@ -2149,6 +2149,9 @@
             font-style: italic;
         }
     </style>
+    <!-- Klinisches Gehirn & Assessment -->
+    <script src="clinical-brain.js"></script>
+    <script src="clinical-assessment.js"></script>
 </head>
 <body>
     <!-- SIDEBAR NAVIGATION -->
@@ -3117,170 +3120,10 @@
             </div>
         </div>
 
-        <!-- SCREENING Tab -->
+        <!-- SCREENING Tab - Klinisches Assessment (Click-through) -->
         <div id="screening" class="tab-content">
-            <div class="form-section">
-                <h3>🔬 Klinisches Screening</h3>
-                <p style="color: var(--gray-500); margin-bottom: 20px;">Systematische Erfassung von Symptomclustern. Ampelsystem: 🟢 unauffällig | 🟡 grenzwertig | 🔴 auffällig</p>
-
-                <!-- ADHS Screening -->
-                <div style="background: var(--gray-50); padding: 20px; border-radius: var(--radius); margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h4 style="color: var(--primary);">Aufmerksamkeit & Aktivität</h4>
-                        <span id="ampel-adhs" style="font-size: 1.5rem;">⚪</span>
-                    </div>
-                    <div style="display: grid; gap: 12px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
-                            <span>Unaufmerksamkeit</span>
-                            <div style="display: flex; gap: 10px;">
-                                <label><input type="radio" name="adhs_unaufmerksamkeit" value="0" onchange="updateScreening()"> Nein</label>
-                                <label><input type="radio" name="adhs_unaufmerksamkeit" value="1" onchange="updateScreening()"> Etwas</label>
-                                <label><input type="radio" name="adhs_unaufmerksamkeit" value="2" onchange="updateScreening()"> Stark</label>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
-                            <span>Hyperaktivität</span>
-                            <div style="display: flex; gap: 10px;">
-                                <label><input type="radio" name="adhs_hyperaktiv" value="0" onchange="updateScreening()"> Nein</label>
-                                <label><input type="radio" name="adhs_hyperaktiv" value="1" onchange="updateScreening()"> Etwas</label>
-                                <label><input type="radio" name="adhs_hyperaktiv" value="2" onchange="updateScreening()"> Stark</label>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
-                            <span>Impulsivität</span>
-                            <div style="display: flex; gap: 10px;">
-                                <label><input type="radio" name="adhs_impulsiv" value="0" onchange="updateScreening()"> Nein</label>
-                                <label><input type="radio" name="adhs_impulsiv" value="1" onchange="updateScreening()"> Etwas</label>
-                                <label><input type="radio" name="adhs_impulsiv" value="2" onchange="updateScreening()"> Stark</label>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
-                            <span>Situationsübergreifend?</span>
-                            <div style="display: flex; gap: 10px;">
-                                <label><input type="radio" name="adhs_situation" value="0" onchange="updateScreening()"> Nein</label>
-                                <label><input type="radio" name="adhs_situation" value="1" onchange="updateScreening()"> Ja</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Angst Screening -->
-                <div style="background: var(--gray-50); padding: 20px; border-radius: var(--radius); margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h4 style="color: var(--primary);">Ängste & Sorgen</h4>
-                        <span id="ampel-angst" style="font-size: 1.5rem;">⚪</span>
-                    </div>
-                    <div style="display: grid; gap: 12px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
-                            <span>Trennungsangst</span>
-                            <div style="display: flex; gap: 10px;">
-                                <label><input type="radio" name="angst_trennung" value="0" onchange="updateScreening()"> Nein</label>
-                                <label><input type="radio" name="angst_trennung" value="1" onchange="updateScreening()"> Etwas</label>
-                                <label><input type="radio" name="angst_trennung" value="2" onchange="updateScreening()"> Stark</label>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
-                            <span>Soziale Ängste</span>
-                            <div style="display: flex; gap: 10px;">
-                                <label><input type="radio" name="angst_sozial" value="0" onchange="updateScreening()"> Nein</label>
-                                <label><input type="radio" name="angst_sozial" value="1" onchange="updateScreening()"> Etwas</label>
-                                <label><input type="radio" name="angst_sozial" value="2" onchange="updateScreening()"> Stark</label>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
-                            <span>Generalisierte Sorgen</span>
-                            <div style="display: flex; gap: 10px;">
-                                <label><input type="radio" name="angst_generell" value="0" onchange="updateScreening()"> Nein</label>
-                                <label><input type="radio" name="angst_generell" value="1" onchange="updateScreening()"> Etwas</label>
-                                <label><input type="radio" name="angst_generell" value="2" onchange="updateScreening()"> Stark</label>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
-                            <span>Schulangst/-verweigerung</span>
-                            <div style="display: flex; gap: 10px;">
-                                <label><input type="radio" name="angst_schule" value="0" onchange="updateScreening()"> Nein</label>
-                                <label><input type="radio" name="angst_schule" value="1" onchange="updateScreening()"> Etwas</label>
-                                <label><input type="radio" name="angst_schule" value="2" onchange="updateScreening()"> Stark</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sozialverhalten Screening -->
-                <div style="background: var(--gray-50); padding: 20px; border-radius: var(--radius); margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h4 style="color: var(--primary);">Sozialverhalten</h4>
-                        <span id="ampel-sozial" style="font-size: 1.5rem;">⚪</span>
-                    </div>
-                    <div style="display: grid; gap: 12px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
-                            <span>Oppositionelles Verhalten</span>
-                            <div style="display: flex; gap: 10px;">
-                                <label><input type="radio" name="sozial_opposition" value="0" onchange="updateScreening()"> Nein</label>
-                                <label><input type="radio" name="sozial_opposition" value="1" onchange="updateScreening()"> Etwas</label>
-                                <label><input type="radio" name="sozial_opposition" value="2" onchange="updateScreening()"> Stark</label>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
-                            <span>Aggressives Verhalten</span>
-                            <div style="display: flex; gap: 10px;">
-                                <label><input type="radio" name="sozial_aggression" value="0" onchange="updateScreening()"> Nein</label>
-                                <label><input type="radio" name="sozial_aggression" value="1" onchange="updateScreening()"> Etwas</label>
-                                <label><input type="radio" name="sozial_aggression" value="2" onchange="updateScreening()"> Stark</label>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
-                            <span>Regelverletzungen</span>
-                            <div style="display: flex; gap: 10px;">
-                                <label><input type="radio" name="sozial_regeln" value="0" onchange="updateScreening()"> Nein</label>
-                                <label><input type="radio" name="sozial_regeln" value="1" onchange="updateScreening()"> Etwas</label>
-                                <label><input type="radio" name="sozial_regeln" value="2" onchange="updateScreening()"> Stark</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Stimmung Screening -->
-                <div style="background: var(--gray-50); padding: 20px; border-radius: var(--radius); margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h4 style="color: var(--primary);">Stimmung & Antrieb</h4>
-                        <span id="ampel-stimmung" style="font-size: 1.5rem;">⚪</span>
-                    </div>
-                    <div style="display: grid; gap: 12px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
-                            <span>Traurigkeit</span>
-                            <div style="display: flex; gap: 10px;">
-                                <label><input type="radio" name="stimmung_traurig" value="0" onchange="updateScreening()"> Nein</label>
-                                <label><input type="radio" name="stimmung_traurig" value="1" onchange="updateScreening()"> Etwas</label>
-                                <label><input type="radio" name="stimmung_traurig" value="2" onchange="updateScreening()"> Stark</label>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
-                            <span>Interessenverlust</span>
-                            <div style="display: flex; gap: 10px;">
-                                <label><input type="radio" name="stimmung_interesse" value="0" onchange="updateScreening()"> Nein</label>
-                                <label><input type="radio" name="stimmung_interesse" value="1" onchange="updateScreening()"> Etwas</label>
-                                <label><input type="radio" name="stimmung_interesse" value="2" onchange="updateScreening()"> Stark</label>
-                            </div>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
-                            <span>Reizbarkeit</span>
-                            <div style="display: flex; gap: 10px;">
-                                <label><input type="radio" name="stimmung_reizbar" value="0" onchange="updateScreening()"> Nein</label>
-                                <label><input type="radio" name="stimmung_reizbar" value="1" onchange="updateScreening()"> Etwas</label>
-                                <label><input type="radio" name="stimmung_reizbar" value="2" onchange="updateScreening()"> Stark</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Screening Zusammenfassung -->
-                <div id="screening-summary" style="background: linear-gradient(135deg, #EBF8FF, #E6FFFA); padding: 20px; border-radius: var(--radius); border: 1px solid var(--info);">
-                    <h4 style="color: var(--info-dark); margin-bottom: 15px;">📊 Screening-Zusammenfassung</h4>
-                    <div id="screening-results" style="color: var(--gray-600);">
-                        Bitte füllen Sie die Screenings aus, um eine Zusammenfassung zu erhalten.
-                    </div>
-                </div>
+            <div id="clinical-assessment-content">
+                <!-- Wird dynamisch durch ClinicalAssessment.renderAssessmentHome() gefüllt -->
             </div>
         </div>
 
@@ -4099,6 +3942,11 @@ function showTab(tabId) {
     });
     // Update progress indicator
     updateProgressIndicator(tabId);
+
+    // Initialize Clinical Assessment when screening tab is shown
+    if (tabId === 'screening' && typeof ClinicalAssessment !== 'undefined') {
+        ClinicalAssessment.renderAssessmentHome('clinical-assessment-content');
+    }
 
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
