@@ -10,6 +10,17 @@ const advisoryState = {
 
 // Initialize on DOM load
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Advisory App initializing...');
+
+    // Check if ADVISORY_DATA is loaded
+    if (typeof ADVISORY_DATA === 'undefined') {
+        console.error('ADVISORY_DATA not loaded!');
+        document.getElementById('problemGrid').innerHTML =
+            '<p style="color: red; padding: 20px;">Fehler: Daten konnten nicht geladen werden. Bitte Seite neu laden.</p>';
+        return;
+    }
+
+    console.log('ADVISORY_DATA loaded:', Object.keys(ADVISORY_DATA.problematiken));
     initializeProblemGrid();
     loadFromLocalStorage();
 });
