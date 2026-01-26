@@ -3873,7 +3873,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'Befundbericht_${pat.name.replace(/[^a-zA-Z0-9äöüÄÖÜß]/g, '_')}_${pat.date || new Date().toISOString().split('T')[0]}.doc';
+            a.download = `Befundbericht_${pat.name.replace(/[^a-zA-Z0-9äöüÄÖÜß]/g, '_')}_${pat.date || new Date().toISOString().split('T')[0]}.doc`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
