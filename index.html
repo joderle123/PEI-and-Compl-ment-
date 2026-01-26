@@ -3119,8 +3119,110 @@
 
         <!-- SCREENING Tab - Klinisches Assessment (Click-through) -->
         <div id="screening" class="tab-content">
-            <div id="clinical-assessment-content">
-                <!-- Wird dynamisch durch ClinicalAssessment.renderAssessmentHome() gefüllt -->
+            <div id="clinical-assessment-container" style="max-width: 900px; margin: 0 auto; padding: 20px;">
+
+                <!-- Header -->
+                <div style="background: linear-gradient(135deg, #2c5282, #4a90a4); padding: 30px; border-radius: 12px; color: white; margin-bottom: 30px;">
+                    <h2 style="margin: 0 0 10px 0; font-size: 1.8rem;">🧠 Klinische Einschätzung</h2>
+                    <p style="margin: 0; opacity: 0.9;">Klicken Sie sich durch die Module. Das System erkennt Muster und gibt Hypothesen - wie ein Pedopsychiater.</p>
+                </div>
+
+                <!-- Modul-Auswahl Grid -->
+                <div id="module-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px;">
+
+                    <!-- Modul 1: Aktuelle Symptome -->
+                    <div class="assessment-module" onclick="startAssessmentModule('symptome')" style="background: white; padding: 25px; border-radius: 12px; cursor: pointer; border: 2px solid #e2e8f0; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)';">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">🔍</div>
+                        <h4 style="margin: 0 0 8px 0; color: #2d3748;">Aktuelle Symptome</h4>
+                        <p style="margin: 0; color: #718096; font-size: 0.9rem;">Was fällt aktuell am meisten auf?</p>
+                        <div id="check-symptome" style="display: none; position: absolute; top: 10px; right: 10px; background: #48bb78; color: white; border-radius: 50%; width: 24px; height: 24px; text-align: center; line-height: 24px;">✓</div>
+                    </div>
+
+                    <!-- Modul 2: Aufmerksamkeit -->
+                    <div class="assessment-module" onclick="startAssessmentModule('aufmerksamkeit')" style="background: white; padding: 25px; border-radius: 12px; cursor: pointer; border: 2px solid #e2e8f0; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)';">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">⚡</div>
+                        <h4 style="margin: 0 0 8px 0; color: #2d3748;">Aufmerksamkeit & Aktivität</h4>
+                        <p style="margin: 0; color: #718096; font-size: 0.9rem;">ADHS-Screening</p>
+                    </div>
+
+                    <!-- Modul 3: Emotionen -->
+                    <div class="assessment-module" onclick="startAssessmentModule('emotionen')" style="background: white; padding: 25px; border-radius: 12px; cursor: pointer; border: 2px solid #e2e8f0; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)';">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">😢</div>
+                        <h4 style="margin: 0 0 8px 0; color: #2d3748;">Emotionen</h4>
+                        <p style="margin: 0; color: #718096; font-size: 0.9rem;">Angst, Depression, Stimmung</p>
+                    </div>
+
+                    <!-- Modul 4: Soziales -->
+                    <div class="assessment-module" onclick="startAssessmentModule('soziales')" style="background: white; padding: 25px; border-radius: 12px; cursor: pointer; border: 2px solid #e2e8f0; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)';">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">👥</div>
+                        <h4 style="margin: 0 0 8px 0; color: #2d3748;">Soziale Interaktion</h4>
+                        <p style="margin: 0; color: #718096; font-size: 0.9rem;">Kontakt, Kommunikation, ASD</p>
+                    </div>
+
+                    <!-- Modul 5: Verhalten -->
+                    <div class="assessment-module" onclick="startAssessmentModule('verhalten')" style="background: white; padding: 25px; border-radius: 12px; cursor: pointer; border: 2px solid #e2e8f0; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)';">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">💢</div>
+                        <h4 style="margin: 0 0 8px 0; color: #2d3748;">Verhalten</h4>
+                        <p style="margin: 0; color: #718096; font-size: 0.9rem;">Opposition, Aggression, Regeln</p>
+                    </div>
+
+                    <!-- Modul 6: Entwicklung -->
+                    <div class="assessment-module" onclick="startAssessmentModule('entwicklung')" style="background: white; padding: 25px; border-radius: 12px; cursor: pointer; border: 2px solid #e2e8f0; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)';">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">📈</div>
+                        <h4 style="margin: 0 0 8px 0; color: #2d3748;">Entwicklungsgeschichte</h4>
+                        <p style="margin: 0; color: #718096; font-size: 0.9rem;">Frühe Kindheit, Meilensteine</p>
+                    </div>
+
+                    <!-- Modul 7: Familie -->
+                    <div class="assessment-module" onclick="startAssessmentModule('familie')" style="background: white; padding: 25px; border-radius: 12px; cursor: pointer; border: 2px solid #e2e8f0; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)';">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">👨‍👩‍👧</div>
+                        <h4 style="margin: 0 0 8px 0; color: #2d3748;">Familiäre Faktoren</h4>
+                        <p style="margin: 0; color: #718096; font-size: 0.9rem;">Familienanamnese, Belastungen</p>
+                    </div>
+
+                    <!-- Modul 8: Trauma -->
+                    <div class="assessment-module" onclick="startAssessmentModule('trauma')" style="background: white; padding: 25px; border-radius: 12px; cursor: pointer; border: 2px solid #e2e8f0; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)';">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">⚠️</div>
+                        <h4 style="margin: 0 0 8px 0; color: #2d3748;">Trauma & Belastung</h4>
+                        <p style="margin: 0; color: #718096; font-size: 0.9rem;">ACEs, Bindung, Belastungen</p>
+                    </div>
+
+                    <!-- Modul 9: Ressourcen -->
+                    <div class="assessment-module" onclick="startAssessmentModule('ressourcen')" style="background: white; padding: 25px; border-radius: 12px; cursor: pointer; border: 2px solid #e2e8f0; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='none'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)';">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">💪</div>
+                        <h4 style="margin: 0 0 8px 0; color: #2d3748;">Ressourcen & Schutzfaktoren</h4>
+                        <p style="margin: 0; color: #718096; font-size: 0.9rem;">Stärken, Unterstützung</p>
+                    </div>
+                </div>
+
+                <!-- Hypothesen Button -->
+                <div id="hypothesen-button-container" style="text-align: center; margin-top: 30px;">
+                    <p style="color: #718096; margin-bottom: 15px;">Füllen Sie mindestens 3 Module aus, um Hypothesen zu erhalten.</p>
+                    <button onclick="generateHypotheses()" class="btn btn-primary" style="padding: 15px 40px; font-size: 1.1rem; background: linear-gradient(135deg, #2c5282, #4a90a4); border: none; border-radius: 8px; color: white; cursor: pointer;" disabled id="hypothesen-btn">
+                        🔬 Hypothesen generieren
+                    </button>
+                </div>
+
+                <!-- Assessment Modal (für Fragen) -->
+                <div id="assessment-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center;">
+                    <div style="background: white; max-width: 700px; width: 90%; max-height: 90vh; overflow-y: auto; border-radius: 16px; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+                        <div id="modal-header" style="background: linear-gradient(135deg, #2c5282, #4a90a4); padding: 25px; border-radius: 16px 16px 0 0; color: white;">
+                            <h3 id="modal-title" style="margin: 0;">Modul</h3>
+                        </div>
+                        <div id="modal-content" style="padding: 30px;">
+                            <!-- Fragen werden hier dynamisch eingefügt -->
+                        </div>
+                        <div style="padding: 20px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between;">
+                            <button onclick="closeAssessmentModal()" style="padding: 12px 24px; background: #e2e8f0; border: none; border-radius: 8px; cursor: pointer;">Abbrechen</button>
+                            <button onclick="finishModule()" style="padding: 12px 24px; background: #48bb78; color: white; border: none; border-radius: 8px; cursor: pointer;">✓ Modul abschließen</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hypothesen Ergebnis Container -->
+                <div id="hypothesen-result" style="display: none; margin-top: 30px;">
+                    <!-- Wird dynamisch gefüllt -->
+                </div>
             </div>
         </div>
 
@@ -8166,16 +8268,825 @@ window.onload = function() {
     updateProgress();
     updateSidebarActive('stammdaten');
 };
-    </script>
 
-    <!-- Klinisches Gehirn & Assessment System -->
-    <script src="clinical-brain.js"></script>
-    <script src="clinical-assessment.js"></script>
-    <script>
-        // Initialisiere Clinical Assessment sobald geladen
-        if (typeof ClinicalAssessment !== 'undefined') {
-            ClinicalAssessment.loadState();
+// ============================================
+// KLINISCHES ASSESSMENT SYSTEM (INLINE)
+// ============================================
+
+// Assessment State
+const assessmentState = {
+    completedModules: [],
+    responses: {},
+    currentModule: null,
+    alerts: []
+};
+
+// Lade gespeicherten State
+function loadAssessmentState() {
+    const saved = localStorage.getItem('clinical_assessment_data');
+    if (saved) {
+        const data = JSON.parse(saved);
+        assessmentState.completedModules = data.completedModules || [];
+        assessmentState.responses = data.responses || {};
+        assessmentState.alerts = data.alerts || [];
+        updateModuleStatus();
+    }
+}
+
+// Speichere State
+function saveAssessmentState() {
+    localStorage.setItem('clinical_assessment_data', JSON.stringify({
+        completedModules: assessmentState.completedModules,
+        responses: assessmentState.responses,
+        alerts: assessmentState.alerts
+    }));
+}
+
+// Assessment Module Daten (Klinisches Gehirn)
+const ASSESSMENT_MODULES = {
+    symptome: {
+        title: "Aktuelle Symptomatik",
+        icon: "🔍",
+        questions: [
+            {
+                id: "hauptproblem",
+                text: "Was ist das Hauptproblem?",
+                type: "single",
+                options: [
+                    { value: "aufmerksamkeit", label: "Kann sich nicht konzentrieren / ist unruhig", pattern: "adhs" },
+                    { value: "angst", label: "Ist ängstlich / vermeidet Situationen", pattern: "angst" },
+                    { value: "traurig", label: "Ist traurig / zurückgezogen", pattern: "depression" },
+                    { value: "wutausbrueche", label: "Hat Wutausbrüche / ist aggressiv", pattern: "odd" },
+                    { value: "sozial", label: "Hat Schwierigkeiten mit anderen Kindern", pattern: "sozial" },
+                    { value: "lernen", label: "Lernt langsamer als andere", pattern: "lernen" }
+                ]
+            },
+            {
+                id: "seit_wann",
+                text: "Seit wann besteht das Problem?",
+                type: "single",
+                options: [
+                    { value: "wochen", label: "Seit einigen Wochen" },
+                    { value: "monate", label: "Seit mehreren Monaten" },
+                    { value: "jahr", label: "Seit über einem Jahr" },
+                    { value: "immer", label: "Schon immer / frühe Kindheit", weight: 1.5 }
+                ]
+            },
+            {
+                id: "wo_problem",
+                text: "Wo zeigt sich das Problem?",
+                type: "multi",
+                options: [
+                    { value: "schule", label: "In der Schule" },
+                    { value: "zuhause", label: "Zu Hause" },
+                    { value: "freizeit", label: "In der Freizeit / bei Freunden" },
+                    { value: "ueberall", label: "Überall", weight: 1.5 }
+                ]
+            }
+        ]
+    },
+    aufmerksamkeit: {
+        title: "Aufmerksamkeit & Aktivität (ADHS)",
+        icon: "⚡",
+        questions: [
+            {
+                id: "unaufmerksam",
+                text: "Unaufmerksamkeitssymptome (mehrere auswählen)",
+                type: "multi",
+                options: [
+                    { value: "fluechtig", label: "Macht Flüchtigkeitsfehler", pattern: "adhs" },
+                    { value: "aufmerksamkeit", label: "Kann Aufmerksamkeit nicht aufrechterhalten", pattern: "adhs" },
+                    { value: "zuhoeren", label: "Scheint nicht zuzuhören", pattern: "adhs" },
+                    { value: "anweisungen", label: "Führt Anweisungen nicht zu Ende", pattern: "adhs" },
+                    { value: "organisation", label: "Hat Schwierigkeiten zu organisieren", pattern: "adhs" },
+                    { value: "vermeidet", label: "Vermeidet Aufgaben mit Anstrengung", pattern: "adhs" },
+                    { value: "verliert", label: "Verliert häufig Dinge", pattern: "adhs" },
+                    { value: "ablenkbar", label: "Leicht ablenkbar", pattern: "adhs" },
+                    { value: "vergesslich", label: "Vergesslich bei Alltagstätigkeiten", pattern: "adhs" }
+                ]
+            },
+            {
+                id: "hyperaktiv",
+                text: "Hyperaktivität/Impulsivität (mehrere auswählen)",
+                type: "multi",
+                options: [
+                    { value: "zappelt", label: "Zappelt mit Händen/Füßen", pattern: "adhs" },
+                    { value: "aufstehen", label: "Steht in der Klasse auf", pattern: "adhs" },
+                    { value: "rennt", label: "Rennt/klettert übermäßig", pattern: "adhs" },
+                    { value: "laut", label: "Kann nicht leise spielen", pattern: "adhs" },
+                    { value: "getrieben", label: "Ist wie 'aufgezogen'", pattern: "adhs" },
+                    { value: "redet", label: "Redet übermäßig viel", pattern: "adhs" },
+                    { value: "platzt", label: "Platzt mit Antworten heraus", pattern: "adhs" },
+                    { value: "warten", label: "Kann nicht warten", pattern: "adhs" },
+                    { value: "unterbricht", label: "Unterbricht andere", pattern: "adhs" }
+                ]
+            },
+            {
+                id: "adhs_beginn",
+                text: "Wann begannen diese Symptome?",
+                type: "single",
+                options: [
+                    { value: "vor12", label: "Vor dem 12. Lebensjahr", pattern: "adhs", weight: 2 },
+                    { value: "nach12", label: "Nach dem 12. Lebensjahr" },
+                    { value: "unklar", label: "Unklar" }
+                ]
+            }
+        ]
+    },
+    emotionen: {
+        title: "Emotionen (Angst & Depression)",
+        icon: "😢",
+        questions: [
+            {
+                id: "angst_symptome",
+                text: "Angstsymptome (mehrere auswählen)",
+                type: "multi",
+                options: [
+                    { value: "trennung", label: "Trennungsangst (will nicht von Eltern weg)", pattern: "angst" },
+                    { value: "sozial", label: "Soziale Angst (Angst vor anderen)", pattern: "angst" },
+                    { value: "spezifisch", label: "Spezifische Angst (Tiere, Dunkelheit...)", pattern: "angst" },
+                    { value: "panik", label: "Panikattacken", pattern: "angst" },
+                    { value: "sorgen", label: "Übermäßige Sorgen um alles", pattern: "angst" },
+                    { value: "schule", label: "Schulangst/-verweigerung", pattern: "angst" },
+                    { value: "koerper", label: "Körperliche Symptome (Bauchschmerzen...)", pattern: "angst" }
+                ]
+            },
+            {
+                id: "depr_symptome",
+                text: "Depressionssymptome (mehrere auswählen)",
+                type: "multi",
+                options: [
+                    { value: "traurig", label: "Anhaltende Traurigkeit", pattern: "depression" },
+                    { value: "interesse", label: "Interessenverlust", pattern: "depression" },
+                    { value: "reizbar", label: "Reizbarkeit (bei Kindern häufiger!)", pattern: "depression" },
+                    { value: "schlaf", label: "Schlafprobleme", pattern: "depression" },
+                    { value: "appetit", label: "Appetitstörung", pattern: "depression" },
+                    { value: "energie", label: "Energielosigkeit", pattern: "depression" },
+                    { value: "wertlos", label: "Fühlt sich wertlos", pattern: "depression" },
+                    { value: "konzentration", label: "Konzentrationsprobleme", pattern: "depression" },
+                    { value: "suizid", label: "Suizidgedanken", pattern: "depression", alert: true }
+                ]
+            }
+        ]
+    },
+    soziales: {
+        title: "Soziale Interaktion",
+        icon: "👥",
+        questions: [
+            {
+                id: "sozial_symptome",
+                text: "Soziale Auffälligkeiten (mehrere auswählen)",
+                type: "multi",
+                options: [
+                    { value: "blickkontakt", label: "Vermeidet Blickkontakt", pattern: "asd" },
+                    { value: "mimik", label: "Wenig Mimik/Gestik", pattern: "asd" },
+                    { value: "freunde", label: "Schwierigkeiten Freundschaften zu schließen", pattern: "sozial" },
+                    { value: "interesse", label: "Wenig Interesse an anderen Kindern", pattern: "asd" },
+                    { value: "teilen", label: "Teilt Freude/Interessen nicht", pattern: "asd" },
+                    { value: "versteht_nicht", label: "Versteht soziale Regeln nicht", pattern: "asd" },
+                    { value: "woertlich", label: "Nimmt alles wörtlich", pattern: "asd" },
+                    { value: "empathie", label: "Schwierigkeiten mit Empathie", pattern: "asd" }
+                ]
+            },
+            {
+                id: "interessen",
+                text: "Besonderheiten bei Interessen/Verhalten",
+                type: "multi",
+                options: [
+                    { value: "spezialinteresse", label: "Sehr starkes Spezialinteresse", pattern: "asd" },
+                    { value: "routinen", label: "Besteht auf Routinen", pattern: "asd" },
+                    { value: "veraenderung", label: "Reagiert stark auf Veränderungen", pattern: "asd" },
+                    { value: "stereotyp", label: "Stereotype Bewegungen (Flattern, Wippen)", pattern: "asd" },
+                    { value: "sensorisch", label: "Über-/Unterempfindlich (Geräusche, Berührung)", pattern: "asd" }
+                ]
+            }
+        ]
+    },
+    verhalten: {
+        title: "Verhalten (Opposition & Aggression)",
+        icon: "💢",
+        questions: [
+            {
+                id: "opposition",
+                text: "Oppositionelles Verhalten (mehrere auswählen)",
+                type: "multi",
+                options: [
+                    { value: "wut", label: "Häufige Wutausbrüche", pattern: "odd" },
+                    { value: "reizbar", label: "Oft reizbar/empfindlich", pattern: "odd" },
+                    { value: "aergerlich", label: "Oft verärgert/beleidigt", pattern: "odd" },
+                    { value: "streitet", label: "Streitet mit Erwachsenen", pattern: "odd" },
+                    { value: "verweigert", label: "Verweigert Anweisungen", pattern: "odd" },
+                    { value: "provoziert", label: "Ärgert andere absichtlich", pattern: "odd" },
+                    { value: "schuld", label: "Gibt anderen die Schuld", pattern: "odd" },
+                    { value: "rachsüchtig", label: "Nachtragend/rachsüchtig", pattern: "odd" }
+                ]
+            },
+            {
+                id: "aggression",
+                text: "Aggressives/dissoziales Verhalten (mehrere auswählen)",
+                type: "multi",
+                options: [
+                    { value: "droht", label: "Droht anderen", pattern: "conduct" },
+                    { value: "schlaegt", label: "Schlägt/tritt andere", pattern: "conduct" },
+                    { value: "waffen", label: "Hat Waffe benutzt", pattern: "conduct", alert: true },
+                    { value: "grausam_mensch", label: "Grausam zu Menschen", pattern: "conduct", alert: true },
+                    { value: "grausam_tier", label: "Grausam zu Tieren", pattern: "conduct", alert: true },
+                    { value: "stiehlt", label: "Stiehlt", pattern: "conduct" },
+                    { value: "luegt", label: "Lügt häufig", pattern: "conduct" },
+                    { value: "feuer", label: "Zündelt", pattern: "conduct", alert: true },
+                    { value: "zerstoert", label: "Zerstört Eigentum", pattern: "conduct" },
+                    { value: "regeln", label: "Verstößt gegen Regeln/Gesetze", pattern: "conduct" }
+                ]
+            }
+        ]
+    },
+    entwicklung: {
+        title: "Entwicklungsgeschichte",
+        icon: "📈",
+        questions: [
+            {
+                id: "schwangerschaft",
+                text: "Schwangerschaft/Geburt",
+                type: "multi",
+                options: [
+                    { value: "normal", label: "Unauffällig" },
+                    { value: "frueh", label: "Frühgeburt", pattern: "entwicklung" },
+                    { value: "komplikation", label: "Geburtskomplikationen", pattern: "entwicklung" },
+                    { value: "substanz", label: "Substanzexposition (Alkohol, Nikotin)", pattern: "entwicklung" },
+                    { value: "stress", label: "Starker Stress in Schwangerschaft", pattern: "trauma" }
+                ]
+            },
+            {
+                id: "meilensteine",
+                text: "Entwicklung in früher Kindheit",
+                type: "multi",
+                options: [
+                    { value: "motorik", label: "Späte motorische Entwicklung", pattern: "entwicklung" },
+                    { value: "sprache", label: "Späte Sprachentwicklung", pattern: "entwicklung" },
+                    { value: "schreibaby", label: "War ein Schreibaby", pattern: "temperament" },
+                    { value: "schlaf_baby", label: "Frühe Schlafprobleme", pattern: "temperament" },
+                    { value: "trennungsangst_frueh", label: "Frühe starke Trennungsangst", pattern: "angst" }
+                ]
+            }
+        ]
+    },
+    familie: {
+        title: "Familiäre Faktoren",
+        icon: "👨‍👩‍👧",
+        questions: [
+            {
+                id: "fam_psychisch",
+                text: "Psychische Erkrankungen in der Familie",
+                type: "multi",
+                options: [
+                    { value: "keine", label: "Keine bekannt" },
+                    { value: "fam_adhs", label: "ADHS bei Eltern/Geschwistern", pattern: "adhs" },
+                    { value: "fam_depression", label: "Depression bei Eltern", pattern: "depression" },
+                    { value: "fam_angst", label: "Angststörung bei Eltern", pattern: "angst" },
+                    { value: "fam_sucht", label: "Suchterkrankung bei Eltern", pattern: "trauma" },
+                    { value: "fam_autismus", label: "Autismus in der Familie", pattern: "asd" }
+                ]
+            },
+            {
+                id: "fam_situation",
+                text: "Familiäre Situation",
+                type: "multi",
+                options: [
+                    { value: "stabil", label: "Stabile Familiensituation" },
+                    { value: "trennung", label: "Trennung/Scheidung der Eltern", pattern: "trauma" },
+                    { value: "konflikt", label: "Häufige Elternkonflikte", pattern: "trauma" },
+                    { value: "gewalt", label: "Häusliche Gewalt", pattern: "trauma", alert: true },
+                    { value: "verlust", label: "Verlust einer Bezugsperson", pattern: "trauma" },
+                    { value: "armut", label: "Finanzielle Schwierigkeiten", pattern: "risiko" },
+                    { value: "migration", label: "Migrationshintergrund/Flucht", pattern: "trauma" }
+                ]
+            }
+        ]
+    },
+    trauma: {
+        title: "Trauma & Belastung",
+        icon: "⚠️",
+        questions: [
+            {
+                id: "aces",
+                text: "Belastende Kindheitserfahrungen (ACEs)",
+                type: "multi",
+                options: [
+                    { value: "keine", label: "Keine bekannt" },
+                    { value: "emot_misshandlung", label: "Emotionale Misshandlung", pattern: "trauma", alert: true },
+                    { value: "phys_misshandlung", label: "Körperliche Misshandlung", pattern: "trauma", alert: true },
+                    { value: "sex_missbrauch", label: "Sexueller Missbrauch", pattern: "trauma", alert: true },
+                    { value: "vernachlaessigung", label: "Vernachlässigung", pattern: "trauma", alert: true },
+                    { value: "mobbing", label: "Mobbing", pattern: "trauma" },
+                    { value: "unfall", label: "Schwerer Unfall/Krankheit", pattern: "trauma" },
+                    { value: "trennung_bezug", label: "Frühe Trennung von Bezugsperson", pattern: "bindung" }
+                ]
+            },
+            {
+                id: "bindung",
+                text: "Bindungsmuster",
+                type: "single",
+                options: [
+                    { value: "sicher", label: "Sicher gebunden (sucht Nähe, lässt sich trösten)" },
+                    { value: "unsicher_vermeidend", label: "Vermeidend (zeigt wenig Gefühle, wirkt unabhängig)", pattern: "bindung" },
+                    { value: "unsicher_ambivalent", label: "Ambivalent (klammert, schwer zu trösten)", pattern: "bindung" },
+                    { value: "desorganisiert", label: "Desorganisiert (widersprüchliches Verhalten)", pattern: "bindung", alert: true }
+                ]
+            }
+        ]
+    },
+    ressourcen: {
+        title: "Ressourcen & Schutzfaktoren",
+        icon: "💪",
+        questions: [
+            {
+                id: "staerken",
+                text: "Stärken des Kindes",
+                type: "multi",
+                options: [
+                    { value: "intelligent", label: "Gute kognitive Fähigkeiten", protective: true },
+                    { value: "kreativ", label: "Kreativ/künstlerisch begabt", protective: true },
+                    { value: "sportlich", label: "Sportlich/motorisch stark", protective: true },
+                    { value: "sozial_kompetent", label: "Kann Freundschaften halten", protective: true },
+                    { value: "humor", label: "Guter Humor", protective: true },
+                    { value: "hilfsbereit", label: "Hilfsbereit/einfühlsam", protective: true }
+                ]
+            },
+            {
+                id: "unterstuetzung",
+                text: "Unterstützungssystem",
+                type: "multi",
+                options: [
+                    { value: "eltern", label: "Unterstützende Eltern", protective: true },
+                    { value: "bezugsperson", label: "Stabile Bezugsperson außerhalb Familie", protective: true },
+                    { value: "freunde", label: "Gute Freunde", protective: true },
+                    { value: "schule", label: "Unterstützende Schule/Lehrer", protective: true },
+                    { value: "verein", label: "Mitglied in Verein/Gruppe", protective: true },
+                    { value: "therapie", label: "Bereits in Therapie/Beratung", protective: true }
+                ]
+            }
+        ]
+    }
+};
+
+// Klinische Muster (Pedopsychiatrisches Wissen)
+const CLINICAL_PATTERNS = {
+    adhs: {
+        name: "ADHS (Aufmerksamkeitsdefizit-Hyperaktivitätsstörung)",
+        icd11: "6A05",
+        minScore: 6,
+        psychoeducation: {
+            what: "ADHS ist eine neurobiologische Entwicklungsstörung, bei der das Gehirn Schwierigkeiten hat, Aufmerksamkeit zu steuern und Impulse zu kontrollieren. Es ist KEINE Frage der Erziehung oder des Willens.",
+            why: "Bei ADHS arbeiten bestimmte Botenstoffe im Gehirn (v.a. Dopamin) anders. Das frontale Gehirn, das für Planung und Impulskontrolle zuständig ist, entwickelt sich langsamer.",
+            helps: "Struktur, klare Regeln, viel Bewegung, kurze Arbeitseinheiten, positive Verstärkung. Bei starker Ausprägung kann Medikation sehr hilfreich sein.",
+            prognosis: "Mit der richtigen Unterstützung können Kinder mit ADHS sehr erfolgreich sein. Die Symptome verändern sich oft im Jugendalter."
+        },
+        interventions: {
+            sofort: ["Reizarmer Sitzplatz vorne", "Eine Anweisung zur Zeit", "Bewegungspausen alle 15-20 Min", "Timer nutzen"],
+            mittelfristig: ["Elterntraining (z.B. THOP)", "Verhaltenstherapie", "Fachärztliche Abklärung Medikation"],
+            schule: ["Nachteilsausgleich", "Schulbegleitung prüfen"]
         }
+    },
+    angst: {
+        name: "Angststörung",
+        icd11: "6B00-6B0Z",
+        minScore: 3,
+        psychoeducation: {
+            what: "Angst ist ein normales Gefühl, das uns schützt. Bei einer Angststörung ist diese 'Alarmanlage' überempfindlich - sie geht auch an, wenn keine echte Gefahr besteht.",
+            why: "Manche Kinder sind von Natur aus ängstlicher (Temperament). Dazu kommen Lernerfahrungen: Wenn Angst durch Vermeidung 'belohnt' wird, verstärkt sie sich.",
+            helps: "Das Wichtigste: Vermeidung NICHT unterstützen! Schrittweise an angstauslösende Situationen heranführen (Exposition). Das Gehirn lernt: 'Es passiert ja gar nichts Schlimmes!'",
+            prognosis: "Angststörungen lassen sich sehr gut behandeln. Je früher, desto besser."
+        },
+        interventions: {
+            sofort: ["Angst validieren, aber NICHT Vermeidung unterstützen", "Kleine mutige Schritte loben", "Entspannungstechniken"],
+            mittelfristig: ["Kognitive Verhaltenstherapie", "Graduelle Exposition"],
+            schule: ["Bei Schulangst: gestufter Wiedereinstieg", "Kurze Rückzugsmöglichkeit (zeitbegrenzt)"]
+        }
+    },
+    depression: {
+        name: "Depression",
+        icd11: "6A70",
+        minScore: 3,
+        psychoeducation: {
+            what: "Depression bei Kindern zeigt sich oft anders als bei Erwachsenen: Häufig als Reizbarkeit statt Traurigkeit. Das Kind kann oft selbst nicht sagen, was los ist.",
+            why: "Depression entsteht aus Veranlagung (Gene), Stress und gelernter Hilflosigkeit. Das Gehirn steckt in einem Modus fest, in dem alles negativ erscheint.",
+            helps: "Aktivierung (trotz Lustlosigkeit Dinge tun), positive Erlebnisse, Unterstützung. Bei starker Depression: Psychotherapie, manchmal Medikation.",
+            prognosis: "Depression ist gut behandelbar! Wichtig ist, früh zu handeln."
+        },
+        interventions: {
+            sofort: ["Suizidalität abklären!", "Tagesstruktur aufbauen", "Angenehme Aktivitäten planen"],
+            mittelfristig: ["Psychotherapie (KVT)", "Bei schwerer Depression: Kinder-/Jugendpsychiater"],
+            schule: ["Leistungsdruck reduzieren", "Feste Ansprechperson"]
+        }
+    },
+    odd: {
+        name: "Störung mit oppositionellem Trotzverhalten",
+        icd11: "6C90",
+        minScore: 4,
+        psychoeducation: {
+            what: "Bei ODD zeigt das Kind ein Muster von negativem, trotzigem und feindseligem Verhalten gegenüber Autoritätspersonen. Es geht über normalen Trotz hinaus.",
+            why: "Oft Zusammenspiel aus Temperament, inkonsistenter Erziehung und negativen Interaktionsmustern. Das Kind hat gelernt, dass Opposition 'funktioniert'.",
+            helps: "Konsequente, aber warme Erziehung. Positive Verstärkung von erwünschtem Verhalten. Klare Regeln mit logischen Konsequenzen.",
+            prognosis: "Mit Elterntraining und konsistenter Erziehung gute Prognose. Ohne Intervention Risiko für Verschlechterung."
+        },
+        interventions: {
+            sofort: ["Positive Aufmerksamkeit für gutes Verhalten", "Klare, wenige Regeln", "Ruhe bewahren, nicht eskalieren"],
+            mittelfristig: ["Elterntraining (z.B. Triple P)", "THOP", "Familientherapie"],
+            schule: ["Token-System", "Verhaltensvertrag", "Enge Eltern-Schule-Kooperation"]
+        }
+    },
+    conduct: {
+        name: "Störung des Sozialverhaltens",
+        icd11: "6C91",
+        minScore: 3,
+        psychoeducation: {
+            what: "Bei der Störung des Sozialverhaltens werden wiederholt die Rechte anderer oder gesellschaftliche Regeln verletzt. Dies geht über normales oppositionelles Verhalten hinaus.",
+            why: "Komplexe Ursachen: genetische Faktoren, Umweltfaktoren (Vernachlässigung, Gewalt), oft auch Traumata. Manchmal fehlt auch die Fähigkeit zur Empathie.",
+            helps: "Intensive, multimodale Behandlung nötig. Elterntraining, ggf. MST (Multisystemische Therapie). Wichtig: Frühe Intervention!",
+            prognosis: "Je früher die Intervention, desto besser. Ohne Behandlung erhöhtes Risiko für spätere Probleme."
+        },
+        interventions: {
+            sofort: ["Sicherheit gewährleisten", "Klare Grenzen setzen", "Keine Eskalation"],
+            mittelfristig: ["Spezialisierte Jugendhilfe", "MST wenn verfügbar", "Kinder-/Jugendpsychiatrie"],
+            schule: ["Spezieller Förderbedarf ESE", "Schulbegleitung", "Ggf. Sonderschule"]
+        }
+    },
+    asd: {
+        name: "Autismus-Spektrum-Störung",
+        icd11: "6A02",
+        minScore: 4,
+        psychoeducation: {
+            what: "Autismus ist eine andere Art, die Welt wahrzunehmen und zu verarbeiten. Das Gehirn ist anders 'verdrahtet', was zu Besonderheiten in Kommunikation und Interaktion führt.",
+            why: "Autismus ist angeboren und hat eine starke genetische Komponente. Es ist KEINE Erziehungssache und wird NICHT durch Impfungen verursacht.",
+            helps: "Verständnis und Akzeptanz. Klare Strukturen und Vorhersagbarkeit. Soziale Kompetenztrainings. Reizüberflutung vermeiden.",
+            prognosis: "Mit der richtigen Unterstützung können autistische Menschen ein erfülltes Leben führen. Frühe Förderung ist wichtig."
+        },
+        interventions: {
+            sofort: ["Struktur und Vorhersagbarkeit schaffen", "Reizüberflutung vermeiden", "Spezialinteressen nutzen"],
+            mittelfristig: ["Spezialisierte Diagnostik", "Autismus-Therapie", "Soziales Kompetenztraining"],
+            schule: ["Klare Kommunikation", "Rückzugsraum", "Nachteilsausgleich", "Schulbegleitung"]
+        }
+    },
+    trauma: {
+        name: "Traumafolgestörung",
+        icd11: "6B40",
+        minScore: 2,
+        psychoeducation: {
+            what: "Nach belastenden Erlebnissen kann das Gehirn in einem 'Alarmmodus' stecken bleiben. Das Kind reagiert dann auf harmlose Situationen, als wäre es noch in Gefahr.",
+            why: "Das Trauma hat sich im Körper und Gehirn 'eingebrannt'. Der Hirnbereich für Gefahr (Amygdala) ist überaktiv, der für Beruhigung unteraktiv.",
+            helps: "Sicherheit und Stabilität zuerst! Dann traumafokussierte Therapie. Wichtig: Das Kind ist NICHT schuld.",
+            prognosis: "Mit spezialisierter Behandlung gute Prognose. Das Gehirn kann sich erholen."
+        },
+        interventions: {
+            sofort: ["Sicherheit gewährleisten!", "Stabilisierung", "Keine Konfrontation mit Trauma"],
+            mittelfristig: ["Traumatherapie (EMDR, tf-KVT)", "Bei Bedarf Jugendhilfe einschalten"],
+            schule: ["Trigger vermeiden", "Sichere Bezugsperson", "Flexibilität bei Leistungsanforderungen"]
+        }
+    },
+    bindung: {
+        name: "Bindungsproblematik",
+        icd11: "6B44-6B45",
+        minScore: 2,
+        psychoeducation: {
+            what: "Eine sichere Bindung ist die Basis für gesunde Entwicklung. Wenn frühe Beziehungserfahrungen nicht gut waren, kann das Kind Schwierigkeiten haben, Vertrauen aufzubauen.",
+            why: "In den ersten Lebensjahren lernt das Gehirn, ob die Welt sicher ist und ob man Menschen vertrauen kann. Wenn diese Erfahrungen fehlen, entstehen Bindungsprobleme.",
+            helps: "Eine verlässliche, feinfühlige Bezugsperson. Zeit und Geduld. Das Gehirn kann auch später noch 'sichere Bindung' lernen.",
+            prognosis: "Mit einer stabilen Beziehung zu mindestens einer Person kann sich die Bindungsfähigkeit verbessern."
+        },
+        interventions: {
+            sofort: ["Verlässlichkeit zeigen", "Feinfühlig auf Bedürfnisse reagieren", "Keine Strafen mit Beziehungsentzug"],
+            mittelfristig: ["Bindungsbasierte Therapie", "Video-Feedback (z.B. Marte Meo)", "Eltern-Kind-Interaktionstherapie"],
+            schule: ["Feste Bezugsperson", "Rituale", "Vorhersagbarkeit"]
+        }
+    }
+};
+
+// Modul starten
+function startAssessmentModule(moduleId) {
+    assessmentState.currentModule = moduleId;
+    const module = ASSESSMENT_MODULES[moduleId];
+    if (!module) return;
+
+    const modal = document.getElementById('assessment-modal');
+    const title = document.getElementById('modal-title');
+    const content = document.getElementById('modal-content');
+
+    title.innerHTML = module.icon + ' ' + module.title;
+
+    // Fragen rendern
+    let html = '';
+    module.questions.forEach((q, idx) => {
+        html += renderQuestion(q, moduleId, idx);
+    });
+    content.innerHTML = html;
+
+    // Gespeicherte Antworten laden
+    if (assessmentState.responses[moduleId]) {
+        Object.entries(assessmentState.responses[moduleId]).forEach(([qId, value]) => {
+            if (Array.isArray(value)) {
+                value.forEach(v => {
+                    const el = document.querySelector(`input[name="${moduleId}_${qId}"][value="${v}"]`);
+                    if (el) el.checked = true;
+                });
+            } else {
+                const el = document.querySelector(`input[name="${moduleId}_${qId}"][value="${value}"]`);
+                if (el) el.checked = true;
+            }
+        });
+    }
+
+    modal.style.display = 'flex';
+}
+
+function renderQuestion(q, moduleId, idx) {
+    let html = `
+        <div style="margin-bottom: 25px; ${idx > 0 ? 'border-top: 1px solid #e2e8f0; padding-top: 25px;' : ''}">
+            <h4 style="margin: 0 0 15px 0; color: #2d3748;">${q.text}</h4>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+    `;
+
+    q.options.forEach(opt => {
+        const inputType = q.type === 'single' ? 'radio' : 'checkbox';
+        const alertStyle = opt.alert ? 'border-left: 3px solid #e53e3e;' : '';
+        html += `
+            <label style="display: flex; align-items: center; padding: 12px 15px; background: #f7fafc; border-radius: 8px; cursor: pointer; transition: all 0.2s; ${alertStyle}" onmouseover="this.style.background='#edf2f7'" onmouseout="this.style.background='#f7fafc'">
+                <input type="${inputType}" name="${moduleId}_${q.id}" value="${opt.value}" style="margin-right: 12px; width: 18px; height: 18px;" onchange="handleAnswer('${moduleId}', '${q.id}', '${opt.value}', '${q.type}', ${opt.alert || false})">
+                <span style="color: #4a5568;">${opt.label}</span>
+                ${opt.alert ? '<span style="margin-left: auto; color: #e53e3e;">⚠️</span>' : ''}
+            </label>
+        `;
+    });
+
+    html += '</div></div>';
+    return html;
+}
+
+function handleAnswer(moduleId, questionId, value, type, isAlert) {
+    if (!assessmentState.responses[moduleId]) {
+        assessmentState.responses[moduleId] = {};
+    }
+
+    if (type === 'single') {
+        assessmentState.responses[moduleId][questionId] = value;
+    } else {
+        if (!assessmentState.responses[moduleId][questionId]) {
+            assessmentState.responses[moduleId][questionId] = [];
+        }
+        const arr = assessmentState.responses[moduleId][questionId];
+        const idx = arr.indexOf(value);
+        if (idx === -1) {
+            arr.push(value);
+        } else {
+            arr.splice(idx, 1);
+        }
+    }
+
+    // Alert prüfen
+    if (isAlert) {
+        const alertMsg = getAlertMessage(value);
+        if (!assessmentState.alerts.includes(alertMsg)) {
+            assessmentState.alerts.push(alertMsg);
+        }
+    }
+
+    saveAssessmentState();
+}
+
+function getAlertMessage(value) {
+    const messages = {
+        'suizid': '⚠️ DRINGEND: Suizidgedanken - sofortige fachärztliche Abklärung!',
+        'waffen': '⚠️ DRINGEND: Waffengebrauch - sofortige Intervention erforderlich!',
+        'grausam_mensch': '⚠️ DRINGEND: Grausamkeit gegen Menschen - fachärztliche Vorstellung!',
+        'grausam_tier': '⚠️ WICHTIG: Tierquälerei ist ein ernstes Warnsignal!',
+        'feuer': '⚠️ WICHTIG: Zündeln - fachärztliche Abklärung empfohlen!',
+        'emot_misshandlung': '⚠️ KINDERSCHUTZ: Emotionale Misshandlung - Meldung prüfen!',
+        'phys_misshandlung': '⚠️ KINDERSCHUTZ: Körperliche Misshandlung - Meldung prüfen!',
+        'sex_missbrauch': '⚠️ KINDERSCHUTZ: Sexueller Missbrauch - Meldung prüfen!',
+        'vernachlaessigung': '⚠️ KINDERSCHUTZ: Vernachlässigung - Meldung prüfen!',
+        'gewalt': '⚠️ Häusliche Gewalt - Sicherheit des Kindes prüfen!',
+        'desorganisiert': '⚠️ Desorganisierte Bindung - fachärztliche Abklärung empfohlen!'
+    };
+    return messages[value] || '⚠️ Auffälligkeit: ' + value;
+}
+
+function closeAssessmentModal() {
+    document.getElementById('assessment-modal').style.display = 'none';
+    assessmentState.currentModule = null;
+}
+
+function finishModule() {
+    const moduleId = assessmentState.currentModule;
+    if (moduleId && !assessmentState.completedModules.includes(moduleId)) {
+        assessmentState.completedModules.push(moduleId);
+    }
+    saveAssessmentState();
+    updateModuleStatus();
+    closeAssessmentModal();
+}
+
+function updateModuleStatus() {
+    // Module als abgeschlossen markieren
+    document.querySelectorAll('.assessment-module').forEach(el => {
+        el.style.borderColor = '#e2e8f0';
+    });
+
+    assessmentState.completedModules.forEach(moduleId => {
+        const modules = document.querySelectorAll('.assessment-module');
+        const moduleNames = ['symptome', 'aufmerksamkeit', 'emotionen', 'soziales', 'verhalten', 'entwicklung', 'familie', 'trauma', 'ressourcen'];
+        const idx = moduleNames.indexOf(moduleId);
+        if (idx !== -1 && modules[idx]) {
+            modules[idx].style.borderColor = '#48bb78';
+            modules[idx].style.background = 'linear-gradient(135deg, #f0fff4, #ffffff)';
+        }
+    });
+
+    // Hypothesen-Button aktivieren
+    const btn = document.getElementById('hypothesen-btn');
+    const container = document.getElementById('hypothesen-button-container');
+    if (assessmentState.completedModules.length >= 3) {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        container.querySelector('p').style.display = 'none';
+    }
+}
+
+function generateHypotheses() {
+    const hypotheses = [];
+    const patternScores = {};
+
+    // Scores berechnen
+    Object.entries(assessmentState.responses).forEach(([moduleId, questions]) => {
+        Object.entries(questions).forEach(([qId, value]) => {
+            const module = ASSESSMENT_MODULES[moduleId];
+            if (!module) return;
+
+            const question = module.questions.find(q => q.id === qId);
+            if (!question) return;
+
+            const values = Array.isArray(value) ? value : [value];
+            values.forEach(v => {
+                const option = question.options.find(o => o.value === v);
+                if (option && option.pattern) {
+                    if (!patternScores[option.pattern]) patternScores[option.pattern] = 0;
+                    patternScores[option.pattern] += (option.weight || 1);
+                }
+                if (option && option.protective) {
+                    if (!patternScores['schutz']) patternScores['schutz'] = 0;
+                    patternScores['schutz'] += 1;
+                }
+            });
+        });
+    });
+
+    // Hypothesen generieren
+    Object.entries(CLINICAL_PATTERNS).forEach(([key, pattern]) => {
+        const score = patternScores[key] || 0;
+        if (score >= pattern.minScore) {
+            const confidence = Math.min(Math.round((score / (pattern.minScore * 2)) * 100), 95);
+            hypotheses.push({
+                key: key,
+                pattern: pattern,
+                score: score,
+                confidence: confidence
+            });
+        }
+    });
+
+    // Nach Konfidenz sortieren
+    hypotheses.sort((a, b) => b.confidence - a.confidence);
+
+    // Anzeigen
+    displayHypotheses(hypotheses, patternScores['schutz'] || 0);
+}
+
+function displayHypotheses(hypotheses, protectiveScore) {
+    const container = document.getElementById('hypothesen-result');
+
+    let html = '<div style="margin-top: 30px;">';
+
+    // Alerts anzeigen
+    if (assessmentState.alerts.length > 0) {
+        html += `
+            <div style="background: linear-gradient(135deg, #fff5f5, #fed7d7); border: 2px solid #e53e3e; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                <h3 style="color: #c53030; margin: 0 0 15px 0;">🚨 Wichtige Hinweise - Sofortige Beachtung!</h3>
+                <ul style="margin: 0; padding-left: 20px; color: #742a2a;">
+                    ${assessmentState.alerts.map(a => `<li style="margin-bottom: 8px;">${a}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+
+    // Schutzfaktoren
+    if (protectiveScore > 0) {
+        html += `
+            <div style="background: linear-gradient(135deg, #f0fff4, #c6f6d5); border: 2px solid #48bb78; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+                <h4 style="color: #276749; margin: 0;">💪 ${protectiveScore} Schutzfaktoren identifiziert</h4>
+                <p style="margin: 10px 0 0 0; color: #2f855a;">Das Kind hat wichtige Ressourcen, die die Prognose verbessern.</p>
+            </div>
+        `;
+    }
+
+    // Hypothesen
+    if (hypotheses.length > 0) {
+        html += '<h3 style="margin-bottom: 20px; color: #2d3748;">🔬 Klinische Hypothesen</h3>';
+
+        hypotheses.forEach((h, idx) => {
+            const confColor = h.confidence > 60 ? '#e53e3e' : h.confidence > 40 ? '#dd6b20' : '#3182ce';
+            const confLabel = h.confidence > 60 ? 'Hoch' : h.confidence > 40 ? 'Mittel' : 'Niedrig';
+
+            html += `
+                <div style="background: white; border-radius: 12px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <div style="background: linear-gradient(135deg, ${confColor}15, ${confColor}05); padding: 20px; border-bottom: 1px solid #e2e8f0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span style="color: #718096; font-size: 0.85rem;">Hypothese ${idx + 1}</span>
+                                <h4 style="margin: 5px 0 0 0; color: #2d3748;">${h.pattern.name}</h4>
+                                <span style="color: #718096; font-size: 0.85rem;">ICD-11: ${h.pattern.icd11}</span>
+                            </div>
+                            <div style="background: ${confColor}; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600;">
+                                ${h.confidence}% ${confLabel}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Psychoedukation -->
+                    <div style="padding: 20px; border-bottom: 1px solid #e2e8f0;">
+                        <h5 style="color: #2c5282; margin: 0 0 15px 0;">📚 Was bedeutet das?</h5>
+                        <div style="background: #ebf8ff; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #3182ce;">
+                            <strong style="color: #2b6cb0;">Was ist das?</strong>
+                            <p style="margin: 5px 0 0 0; color: #4a5568;">${h.pattern.psychoeducation.what}</p>
+                        </div>
+                        <div style="background: #fefcbf; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #d69e2e;">
+                            <strong style="color: #975a16;">Warum passiert das?</strong>
+                            <p style="margin: 5px 0 0 0; color: #4a5568;">${h.pattern.psychoeducation.why}</p>
+                        </div>
+                        <div style="background: #c6f6d5; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #38a169;">
+                            <strong style="color: #276749;">Was hilft?</strong>
+                            <p style="margin: 5px 0 0 0; color: #4a5568;">${h.pattern.psychoeducation.helps}</p>
+                        </div>
+                        <div style="background: #e9d8fd; padding: 12px; border-radius: 8px; border-left: 4px solid #805ad5;">
+                            <strong style="color: #553c9a;">Prognose</strong>
+                            <p style="margin: 5px 0 0 0; color: #4a5568;">${h.pattern.psychoeducation.prognosis}</p>
+                        </div>
+                    </div>
+
+                    <!-- Interventionen -->
+                    <div style="padding: 20px; background: #f7fafc;">
+                        <h5 style="color: #2c5282; margin: 0 0 15px 0;">🛠️ Empfohlene Interventionen</h5>
+                        <div style="display: grid; gap: 15px;">
+                            <div>
+                                <strong style="color: #e53e3e;">🚨 Sofort:</strong>
+                                <ul style="margin: 5px 0 0 15px; color: #4a5568;">
+                                    ${h.pattern.interventions.sofort.map(i => `<li>${i}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div>
+                                <strong style="color: #dd6b20;">📅 Mittelfristig:</strong>
+                                <ul style="margin: 5px 0 0 15px; color: #4a5568;">
+                                    ${h.pattern.interventions.mittelfristig.map(i => `<li>${i}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div>
+                                <strong style="color: #3182ce;">🏫 Schule:</strong>
+                                <ul style="margin: 5px 0 0 15px; color: #4a5568;">
+                                    ${h.pattern.interventions.schule.map(i => `<li>${i}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    } else {
+        html += `
+            <div style="text-align: center; padding: 40px; background: #f7fafc; border-radius: 12px;">
+                <div style="font-size: 3rem; margin-bottom: 15px;">🤔</div>
+                <h3 style="color: #4a5568; margin: 0;">Keine klaren Hypothesen</h3>
+                <p style="color: #718096; margin-top: 10px;">Basierend auf den Angaben lassen sich keine eindeutigen Muster erkennen. Füllen Sie weitere Module aus.</p>
+            </div>
+        `;
+    }
+
+    // Disclaimer
+    html += `
+        <div style="margin-top: 30px; padding: 20px; background: #edf2f7; border-radius: 12px; text-align: center;">
+            <p style="margin: 0; color: #718096; font-size: 0.9rem;">
+                ⚕️ Diese Hypothesen ersetzen keine klinische Diagnostik. Sie dienen der Orientierung und sollten durch fachärztliche Untersuchung überprüft werden.
+            </p>
+        </div>
+    </div>`;
+
+    container.innerHTML = html;
+    container.style.display = 'block';
+    container.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Assessment State beim Laden initialisieren
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(loadAssessmentState, 500);
+});
+
     </script>
             </div><!-- end container -->
         </div><!-- end main-body -->
