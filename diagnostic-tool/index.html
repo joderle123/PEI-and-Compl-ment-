@@ -686,12 +686,45 @@
             color: var(--text);
         }
 
+        .gutachten-confidential {
+            background: linear-gradient(135deg, rgba(239,68,68,0.15) 0%, rgba(220,38,38,0.1) 100%);
+            border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.8rem;
+            color: #fca5a5;
+            text-align: center;
+        }
+
+        .gutachten-date {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
         .gutachten-footer {
             margin-top: 2rem;
             padding-top: 1.5rem;
             border-top: 1px solid var(--border);
             font-size: 0.85rem;
             color: var(--text-muted);
+        }
+
+        .gutachten-disclaimer {
+            background: var(--bg-input);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .gutachten-disclaimer p {
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .gutachten-disclaimer p:last-child {
+            margin-bottom: 0;
         }
 
         .gutachten-signature {
@@ -702,11 +735,53 @@
         }
 
         .gutachten-signature-box {
-            border-top: 1px solid var(--border);
-            padding-top: 0.5rem;
             text-align: center;
             color: var(--text-muted);
             font-size: 0.85rem;
+        }
+
+        .signature-label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .signature-line {
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .signature-name {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .eltern-zusammenfassung {
+            background: linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(16,185,129,0.1) 100%);
+            border: 1px solid rgba(34,197,94,0.3);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .eltern-zusammenfassung h4 {
+            color: #4ade80;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .eltern-zusammenfassung p {
+            line-height: 1.7;
+            margin-bottom: 0.75rem;
+        }
+
+        .eltern-zusammenfassung ul {
+            margin: 0.75rem 0;
+            padding-left: 1.25rem;
+        }
+
+        .eltern-zusammenfassung li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
         }
 
         .icd-code {
@@ -1241,18 +1316,23 @@
 
         // Gutachten-Header generieren
         function gutachtenHeader(testName, testFull, pat) {
+            const today = new Date().toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric'});
             return `
+                <div class="gutachten-confidential">
+                    <strong>VERTRAULICH</strong> – Dieser Bericht enthält sensible personenbezogene Daten und unterliegt der ärztlichen/psychologischen Schweigepflicht.
+                </div>
                 <div class="gutachten-header">
                     <div class="gutachten-title">PSYCHOLOGISCHER BEFUNDBERICHT</div>
                     <div class="gutachten-subtitle">${testName} – ${testFull}</div>
+                    <div class="gutachten-date">Berichtsdatum: ${today}</div>
                 </div>
                 <div class="gutachten-meta">
-                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Patient/in:</span><span class="gutachten-meta-value">${pat.name}</span></div>
-                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Geburtsdatum:</span><span class="gutachten-meta-value">${formatDate(pat.dob)}</span></div>
-                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Alter:</span><span class="gutachten-meta-value">${pat.age ? pat.age + ' Jahre' : '-'}</span></div>
-                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Geschlecht:</span><span class="gutachten-meta-value">${sexText(pat.sex)}</span></div>
-                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Untersuchungsdatum:</span><span class="gutachten-meta-value">${formatDate(pat.date)}</span></div>
-                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Untersucher/in:</span><span class="gutachten-meta-value">${pat.examiner}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Name/Chiffre:</span><span class="gutachten-meta-value">${pat.name || '(nicht angegeben)'}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Geburtsdatum:</span><span class="gutachten-meta-value">${formatDate(pat.dob) || '(nicht angegeben)'}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Alter bei Testung:</span><span class="gutachten-meta-value">${pat.age ? pat.age + ' Jahre' : '(nicht angegeben)'}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Geschlecht:</span><span class="gutachten-meta-value">${sexText(pat.sex) || '(nicht angegeben)'}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Untersuchungsdatum:</span><span class="gutachten-meta-value">${formatDate(pat.date) || '(nicht angegeben)'}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Untersucher/in:</span><span class="gutachten-meta-value">${pat.examiner || '(nicht angegeben)'}</span></div>
                 </div>
             `;
         }
@@ -1260,10 +1340,22 @@
         function gutachtenFooter() {
             return `
                 <div class="gutachten-footer">
-                    <p><strong>Hinweis:</strong> Dieser Befundbericht dient der Dokumentation psychodiagnostischer Ergebnisse und sollte im Kontext einer umfassenden klinischen Beurteilung interpretiert werden. Die Ergebnisse standardisierter Testverfahren stellen einen wichtigen, aber nicht alleinigen Baustein der diagnostischen Urteilsbildung dar.</p>
+                    <div class="gutachten-disclaimer">
+                        <h4 style="margin-bottom:0.75rem;color:var(--primary-light);">Wichtige Hinweise</h4>
+                        <p><strong>Gültigkeit:</strong> Dieser Befundbericht dokumentiert die Ergebnisse eines standardisierten psychologischen Testverfahrens zu einem bestimmten Zeitpunkt. Die Ergebnisse können durch situative Faktoren (Müdigkeit, Motivation, Tagesform) beeinflusst sein und sollten im Kontext einer umfassenden klinischen Beurteilung interpretiert werden.</p>
+                        <p><strong>Keine Diagnosestellung:</strong> Dieser Bericht ersetzt keine umfassende klinische Diagnostik durch eine/n approbierte/n Psychologische/n Psychotherapeut/in oder Facharzt/Fachärztin für Kinder- und Jugendpsychiatrie. Die genannten ICD-Codes dienen der differenzialdiagnostischen Orientierung und stellen keine Diagnosen dar.</p>
+                        <p><strong>Datenschutz:</strong> Dieser Bericht enthält sensible personenbezogene Gesundheitsdaten und ist vertraulich zu behandeln. Die Weitergabe an Dritte bedarf der ausdrücklichen Einwilligung der Sorgeberechtigten.</p>
+                    </div>
                     <div class="gutachten-signature">
-                        <div class="gutachten-signature-box">Ort, Datum</div>
-                        <div class="gutachten-signature-box">Unterschrift Untersucher/in</div>
+                        <div class="gutachten-signature-box">
+                            <div class="signature-label">Ort, Datum</div>
+                            <div class="signature-line">_______________________________</div>
+                        </div>
+                        <div class="gutachten-signature-box">
+                            <div class="signature-label">Unterschrift / Stempel</div>
+                            <div class="signature-line">_______________________________</div>
+                            <div class="signature-name">(Name, Qualifikation)</div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1284,6 +1376,31 @@
                     <div class="summary-status">${i.s}</div>
                 </div>
             `).join('')}</div>`;
+        }
+
+        // Erklärung der Testwerte für Laien
+        function testwerteErklaerung(typ) {
+            const erklaerungen = {
+                'T-Wert': `<p><strong>Was bedeutet "T-Wert"?</strong> T-Werte sind standardisierte Punkte, die zeigen, wie ein Ergebnis im Vergleich zu gleichaltrigen Kindern einzuordnen ist. Der Durchschnitt liegt bei 50. Werte zwischen 40 und 60 gelten als normal. Werte über 60 oder unter 40 weichen vom Durchschnitt ab.</p>`,
+                'Prozentrang': `<p><strong>Was bedeutet "Prozentrang"?</strong> Der Prozentrang zeigt, wie viele Kinder gleichen Alters ein niedrigeres Ergebnis haben. Ein Prozentrang von 75 bedeutet: Ihr Kind hat besser abgeschnitten als 75% der Gleichaltrigen.</p>`,
+                'IQ': `<p><strong>Was bedeutet "IQ"?</strong> Der IQ (Intelligenzquotient) ist ein Maß für die geistige Leistungsfähigkeit. Der Durchschnitt liegt bei 100. Werte zwischen 85 und 115 gelten als normal (ca. 68% aller Menschen). Der IQ beschreibt nur einen Teil der Fähigkeiten eines Kindes.</p>`,
+                'Stanine': `<p><strong>Was bedeutet "Stanine"?</strong> Stanine-Werte reichen von 1 bis 9. Der Durchschnitt liegt bei 5. Werte von 4-6 gelten als normal, 7-9 als überdurchschnittlich, 1-3 als unterdurchschnittlich.</p>`,
+                'Rohwert': `<p><strong>Was bedeutet "Rohwert"?</strong> Der Rohwert ist die Anzahl der erreichten Punkte im Test, bevor diese mit anderen Kindern verglichen werden. Erst durch den Vergleich (z.B. als T-Wert) wird das Ergebnis aussagekräftig.</p>`
+            };
+            return erklaerungen[typ] || '';
+        }
+
+        // Elternverständliche Zusammenfassung generieren
+        function elternZusammenfassung(testname, befund, empfehlungen) {
+            return `
+                <div class="eltern-zusammenfassung">
+                    <h4>Zusammenfassung für Eltern und Erziehungsberechtigte</h4>
+                    <p><strong>Was wurde untersucht?</strong> Mit dem ${testname} haben wir untersucht, wie es Ihrem Kind in bestimmten Bereichen geht. Dieser Test wird weltweit eingesetzt und gibt uns wichtige Hinweise.</p>
+                    <p><strong>Was zeigen die Ergebnisse?</strong> ${befund}</p>
+                    ${empfehlungen ? `<p><strong>Was empfehlen wir?</strong></p><ul>${empfehlungen.map(e => `<li>${e}</li>`).join('')}</ul>` : ''}
+                    <p style="margin-top:1rem;font-size:0.9rem;color:var(--text-muted);">Bei Fragen zu diesen Ergebnissen wenden Sie sich bitte an die untersuchende Fachperson, die Ihnen die Befunde gerne persönlich erläutert.</p>
+                </div>
+            `;
         }
 
         const S = { normal: 'Unauffällig', borderline: 'Grenzwertig', clinical: 'Auffällig' };
@@ -1508,6 +1625,20 @@
                         </div>
                     </div>
 
+                    ${elternZusammenfassung(
+                        'SDQ (Fragebogen zu Stärken und Schwächen)',
+                        c.tot === 'normal'
+                            ? `Die Ergebnisse zeigen, dass Ihr Kind derzeit keine auffälligen Schwierigkeiten in den untersuchten Bereichen hat. Das ist ein gutes Zeichen! ${pat.name} scheint emotional stabil zu sein, kommt gut mit Gleichaltrigen aus und zeigt ein angemessenes Verhalten.`
+                            : c.tot === 'borderline'
+                                ? `Die Ergebnisse zeigen einige Bereiche, in denen Ihr Kind leichte Schwierigkeiten haben könnte. Das bedeutet nicht, dass etwas "falsch" ist - viele Kinder zeigen solche Werte zeitweise. Es ist jedoch sinnvoll, diese Bereiche im Auge zu behalten und bei Bedarf Unterstützung anzubieten.`
+                                : `Die Ergebnisse zeigen, dass Ihr Kind in einigen Bereichen Unterstützung benötigen könnte. ${c.em === 'clinical' ? 'Es scheint vermehrt Sorgen oder Ängste zu haben. ' : ''}${c.hy === 'clinical' ? 'Es fällt ihm schwer, ruhig zu bleiben oder sich zu konzentrieren. ' : ''}${c.co === 'clinical' ? 'Es gibt Schwierigkeiten bei der Verhaltenssteuerung. ' : ''}${c.pe === 'clinical' ? 'Der Kontakt zu Gleichaltrigen fällt schwer. ' : ''}Dies ist kein Grund zur Panik, aber wir empfehlen, professionelle Hilfe in Anspruch zu nehmen.`,
+                        c.tot === 'normal'
+                            ? ['Achten Sie weiterhin auf das Wohlbefinden Ihres Kindes', 'Bei Veränderungen im Verhalten oder der Stimmung wenden Sie sich an uns']
+                            : c.tot === 'borderline'
+                                ? ['Beobachten Sie, wie sich die Situation entwickelt', 'Sprechen Sie mit Ihrem Kind über seine Gefühle', 'Bei Verschlechterung vereinbaren Sie einen Beratungstermin']
+                                : ['Vereinbaren Sie zeitnah einen Termin zur ausführlichen Besprechung', 'Ziehen Sie eine Vorstellung bei einem Kinder- und Jugendpsychologen in Betracht', 'Sprechen Sie mit der Schule über mögliche Unterstützung']
+                    )}
+
                     ${gutachtenFooter()}
                 </div>
             `;
@@ -1687,7 +1818,7 @@
                                 <span class="icd-code">F70-F79</span> Intelligenzminderung
                             ` : ''}
                             ${fsiq && fsiq >= 70 && fsiq < 85 ? `
-                                <p>Die intellektuelle Leistungsfähigkeit liegt im <strong>Grenzbereich</strong> (IQ 70-84), der auch als "Lernbehinderung" bezeichnet wird. Dieser Bereich ist nicht als Intelligenzminderung klassifiziert, kann jedoch mit Lernschwierigkeiten und erhöhtem Förderbedarf einhergehen.</p>
+                                <p>Die intellektuelle Leistungsfähigkeit liegt im <strong>Grenzbereich</strong> (IQ 70-84), der früher als "Lernbehinderung" bezeichnet wurde. Dieser Bereich entspricht keiner Intelligenzminderung im klinischen Sinne (ICD-10: F7x), kann jedoch mit Lernschwierigkeiten einhergehen und erfordert häufig individuelle Fördermaßnahmen.</p>
                                 <span class="icd-code">Z55</span> Probleme in Zusammenhang mit der Erziehung und Alphabetisierung
                             ` : ''}
                             ${fsiq && fsiq >= 85 ? `
@@ -1749,11 +1880,31 @@
                             <p>${pat.name} (${pat.age ? pat.age + ' Jahre' : 'Alter nicht angegeben'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) wurde am ${formatDate(pat.date)} mittels WISC-V untersucht. ${fsiq ? `Der Gesamt-IQ von <strong>${fsiq}</strong> liegt im <strong>${c.fsiq.l.toLowerCase()}en Bereich</strong> (PR ${c.fsiq.pr}).` : 'Es wurden einzelne Indexwerte erhoben.'}</p>
                             ${fsiq >= 130 ? `<p>Die Ergebnisse sind vereinbar mit einer intellektuellen Hochbegabung. Eine entsprechende Förderung wird empfohlen.</p>` : ''}
                             ${fsiq >= 85 && fsiq < 130 ? `<p>Die intellektuelle Leistungsfähigkeit liegt im ${fsiq >= 115 ? 'überdurchschnittlichen' : 'durchschnittlichen'} Bereich. Es ergeben sich keine Hinweise auf kognitive Beeinträchtigungen.</p>` : ''}
-                            ${fsiq >= 70 && fsiq < 85 ? `<p>Die intellektuelle Leistungsfähigkeit liegt im unterdurchschnittlichen Bereich (Lernbehinderung). Unterstützungsmaßnahmen werden empfohlen.</p>` : ''}
+                            ${fsiq >= 70 && fsiq < 85 ? `<p>Die intellektuelle Leistungsfähigkeit liegt im unterdurchschnittlichen Bereich (unterdurchschnittlicher Bereich mit möglichem Förderbedarf). Unterstützungsmaßnahmen werden empfohlen.</p>` : ''}
                             ${fsiq < 70 ? `<p>Die Ergebnisse sind vereinbar mit einer Intelligenzminderung. Eine umfassende Entwicklungsdiagnostik und die Prüfung sonderpädagogischer Fördermaßnahmen werden dringend empfohlen.</p>` : ''}
                             ${diff >= 23 ? `<p>Das kognitive Profil ist heterogen (Streuung: ${diff} IQ-Punkte), sodass die Einzelindizes mehr Aussagekraft besitzen als der Gesamt-IQ.</p>` : ''}
                         </div>
                     </div>
+
+                    ${elternZusammenfassung(
+                        'WISC-V (Intelligenztest für Kinder)',
+                        fsiq >= 130
+                            ? `Ihr Kind zeigt weit überdurchschnittliche geistige Fähigkeiten. Das bedeutet, dass ${pat.name} im Vergleich zu Gleichaltrigen besonders schnell lernt und komplexe Zusammenhänge sehr gut versteht. Dies ist eine besondere Stärke, die gefördert werden sollte.`
+                            : fsiq >= 115
+                                ? `Ihr Kind zeigt überdurchschnittliche geistige Fähigkeiten. ${pat.name} lernt schneller als die meisten Gleichaltrigen und kann komplexe Aufgaben gut bewältigen. Das ist ein sehr gutes Ergebnis!`
+                                : fsiq >= 85
+                                    ? `Ihr Kind zeigt durchschnittliche geistige Fähigkeiten - genau wie die Mehrheit aller Kinder. ${pat.name} kann dem Unterricht gut folgen und die schulischen Anforderungen bewältigen. ${staerken.length ? 'Besondere Stärken zeigen sich in: ' + staerken.map(([k])=>WISC_NAMES[k].n.split(' ')[0]).join(', ') + '. ' : ''}${schwaechen.length ? 'Etwas mehr Unterstützung könnte helfen bei: ' + schwaechen.map(([k])=>WISC_NAMES[k].n.split(' ')[0]).join(', ') + '.' : ''}`
+                                    : fsiq >= 70
+                                        ? `Ihr Kind zeigt unterdurchschnittliche Ergebnisse im Vergleich zu Gleichaltrigen. Das bedeutet nicht, dass ${pat.name} "dumm" ist - es bedeutet, dass ${pronomen.er} mehr Zeit und Unterstützung beim Lernen braucht als andere Kinder. Mit der richtigen Förderung können viele Kinder große Fortschritte machen.`
+                                        : `Die Ergebnisse zeigen, dass Ihr Kind besondere Unterstützung beim Lernen benötigt. Es ist wichtig, dass ${pat.name} die richtige Förderung erhält, um ${pronomen.sein}e persönlichen Stärken zu entwickeln und Erfolgserlebnisse zu haben.`,
+                        fsiq >= 130
+                            ? ['Sprechen Sie mit der Schule über Begabtenförderung', 'Bieten Sie zusätzliche Herausforderungen an (AGs, Wettbewerbe)', 'Achten Sie auf Anzeichen von Langeweile oder Unterforderung']
+                            : fsiq >= 85
+                                ? (schwaechen.length
+                                    ? ['Nutzen Sie die Stärken Ihres Kindes zum Lernen', 'Gezielte Förderung in Bereichen, die schwerer fallen', 'Regelmäßige Gespräche mit der Klassenlehrerin/dem Klassenlehrer']
+                                    : ['Fördern Sie weiterhin die natürliche Neugier Ihres Kindes', 'Loben Sie Anstrengung, nicht nur Ergebnisse'])
+                                : ['Lassen Sie sich ausführlich beraten', 'Prüfen Sie Möglichkeiten der individuellen Förderung', 'Informieren Sie die Schule über die Ergebnisse', 'Stärken Sie das Selbstwertgefühl Ihres Kindes']
+                    )}
 
                     ${gutachtenFooter()}
                 </div>
@@ -1930,6 +2081,20 @@
                         <div class="gutachten-text">${empf}</div>
                     </div>
 
+                    ${elternZusammenfassung(
+                        'CBCL (Fragebogen zum Verhalten von Kindern und Jugendlichen)',
+                        cBB.tot === 'normal'
+                            ? `Die Ergebnisse zeigen, dass Ihr Kind aus Sicht des Beurteilenden keine auffälligen Verhaltens- oder emotionalen Probleme hat. Das ist ein positives Ergebnis! ${pat.name} scheint sich insgesamt gut zu entwickeln.`
+                            : cBB.tot === 'borderline'
+                                ? `Die Ergebnisse zeigen einige Bereiche, die im grenzwertigen Bereich liegen. Das bedeutet, dass es leichte Auffälligkeiten gibt, die beobachtet werden sollten, aber noch keine dringende Sorge darstellen.`
+                                : `Die Ergebnisse zeigen erhöhte Werte in einigen Bereichen. ${cBB.int === 'clinical' ? 'Ihr Kind scheint vermehrt mit inneren Sorgen, Ängsten oder Traurigkeit zu kämpfen. ' : ''}${cBB.ext === 'clinical' ? 'Es gibt Hinweise auf Schwierigkeiten bei der Verhaltenssteuerung oder im Umgang mit anderen. ' : ''}Diese Ergebnisse bedeuten nicht, dass Ihr Kind "krank" ist, aber sie zeigen, dass professionelle Unterstützung hilfreich sein könnte.`,
+                        cBB.tot === 'normal'
+                            ? ['Bleiben Sie im Gespräch mit Ihrem Kind', 'Achten Sie weiterhin auf Veränderungen']
+                            : cBB.tot === 'borderline'
+                                ? ['Beobachten Sie die weitere Entwicklung', 'Sprechen Sie offen mit Ihrem Kind', 'Bei Verschlechterung: Beratung aufsuchen']
+                                : ['Vereinbaren Sie einen Beratungstermin', 'Eine ausführliche Diagnostik kann helfen, die Ursachen zu verstehen', 'Unterstützung durch Fachpersonen kann sehr hilfreich sein']
+                    )}
+
                     ${gutachtenFooter()}
                 </div>
             `;
@@ -2070,6 +2235,20 @@
                         <div class="gutachten-text">${empf}</div>
                     </div>
 
+                    ${elternZusammenfassung(
+                        'DISYPS-III (Fragebogen zu Aufmerksamkeit und Verhalten)',
+                        !adhs_clin && !ssv_clin
+                            ? `Die Ergebnisse zeigen keine auffälligen Werte für ADHS oder Verhaltensprobleme. ${pat.name} liegt in allen Bereichen im normalen Bereich im Vergleich zu Gleichaltrigen.`
+                            : adhs_clin && !ssv_clin
+                                ? `Die Ergebnisse zeigen erhöhte Werte für Aufmerksamkeit und/oder Aktivität. Das bedeutet, dass ${pat.name} möglicherweise mehr Mühe hat, sich zu konzentrieren oder ruhig zu bleiben als andere Kinder. Das ist häufiger als viele denken - etwa 5% aller Kinder haben ähnliche Schwierigkeiten. Mit der richtigen Unterstützung können diese Kinder sehr erfolgreich sein.`
+                                : !adhs_clin && ssv_clin
+                                    ? `Die Ergebnisse zeigen erhöhte Werte im Bereich des Sozialverhaltens. ${pat.name} hat möglicherweise mehr Schwierigkeiten, Regeln zu befolgen oder mit Frustration umzugehen. Dies kann verschiedene Ursachen haben und ist mit professioneller Hilfe gut behandelbar.`
+                                    : `Die Ergebnisse zeigen sowohl erhöhte Werte für Aufmerksamkeit als auch für das Sozialverhalten. Diese Kombination kommt häufig vor. Mit einer genauen Diagnostik und passender Unterstützung können deutliche Verbesserungen erreicht werden.`,
+                        !adhs_clin && !ssv_clin
+                            ? ['Keine spezielle Maßnahme erforderlich', 'Bleiben Sie aufmerksam für Veränderungen']
+                            : ['Vereinbaren Sie einen Termin zur ausführlichen Diagnostik', 'Eine genaue Abklärung hilft, die passende Unterstützung zu finden', 'ADHS und Verhaltensprobleme sind gut behandelbar']
+                    )}
+
                     ${gutachtenFooter()}
                 </div>
             `;
@@ -2200,6 +2379,26 @@
                         <h4 class="gutachten-section-title">6. Empfehlungen</h4>
                         <div class="gutachten-text">${empf}</div>
                     </div>
+
+                    ${elternZusammenfassung(
+                        'AFS (Angstfragebogen für Schüler)',
+                        !pa_clin && !ma_clin && !su_clin
+                            ? `Die Ergebnisse zeigen, dass ${pat.name} keine auffällige Schulangst oder übermäßige allgemeine Ängstlichkeit hat. Das Verhältnis zur Schule und zu Prüfungssituationen scheint im normalen Bereich zu liegen.`
+                            : pa_clin && !ma_clin
+                                ? `${pat.name} zeigt erhöhte Prüfungsangst. Das bedeutet, dass ${pat.name} sich in Testsituationen und bei Klassenarbeiten besonders unwohl fühlt - obwohl die Fähigkeiten vielleicht völlig ausreichend sind. Diese spezifische Angst ist weit verbreitet und kann gut behandelt werden.`
+                                : ma_clin && !pa_clin
+                                    ? `${pat.name} zeigt eine erhöhte allgemeine Ängstlichkeit. Das kann sich durch körperliche Symptome wie Bauchschmerzen, Herzrasen oder Nervosität zeigen. Es ist wichtig, die Ursachen zu verstehen und Ihr Kind dabei zu unterstützen, mit diesen Gefühlen umzugehen.`
+                                    : pa_clin && ma_clin
+                                        ? `${pat.name} zeigt sowohl erhöhte Prüfungsangst als auch eine erhöhte allgemeine Ängstlichkeit. Diese Kombination kann den Schulalltag deutlich belasten. Die gute Nachricht: Angststörungen bei Kindern können sehr effektiv behandelt werden.`
+                                        : `${pat.name} zeigt erhöhte Schulunlust. Die Motivation für schulische Aktivitäten ist derzeit gering. Die Ursachen können vielfältig sein - von Überforderung bis Unterforderung, von sozialen Problemen bis zu familiären Belastungen.`,
+                        !pa_clin && !ma_clin && !su_clin
+                            ? ['Weiterhin eine positive Einstellung zur Schule fördern', 'Erfolge anerkennen und loben']
+                            : pa_clin
+                                ? ['Vermeiden Sie Leistungsdruck vor Prüfungen', 'Entspannungstechniken können helfen', 'Bei anhaltenden Problemen: Schulpsychologische Beratung']
+                                : ma_clin
+                                    ? ['Schaffen Sie Routinen und Sicherheit', 'Nehmen Sie die Ängste ernst, ohne sie zu verstärken', 'Eine Beratung kann sehr hilfreich sein']
+                                    : ['Suchen Sie das Gespräch mit Ihrem Kind', 'Klären Sie mögliche Ursachen (Überforderung, Konflikte?)', 'Kontaktieren Sie bei Bedarf die Schule']
+                    )}
 
                     ${gutachtenFooter()}
                 </div>
@@ -2349,6 +2548,20 @@
                         <div class="gutachten-text">${empf}</div>
                     </div>
 
+                    ${elternZusammenfassung(
+                        'd2-R (Konzentrationstest)',
+                        !kl_low && !tempo_low && !fehler_high
+                            ? `${pat.name} zeigt eine gute Konzentrationsfähigkeit. Die Leistung bei dieser anspruchsvollen Aufgabe entspricht dem Durchschnitt oder liegt darüber. Das bedeutet, dass Ihr Kind in der Lage ist, auch bei monotonen Aufgaben aufmerksam zu bleiben und sorgfältig zu arbeiten.`
+                            : kl_low && !fehler_high
+                                ? `${pat.name} zeigt eine unterdurchschnittliche Konzentrationsleistung. Das bedeutet, dass es schwerer fällt, bei dieser Art von Aufgabe aufmerksam und schnell zu arbeiten. Dies kann verschiedene Ursachen haben - von Müdigkeit am Testtag bis zu grundlegenden Aufmerksamkeitsproblemen.`
+                                : fehler_high && !tempo_low
+                                    ? `${pat.name} arbeitet zwar schnell, macht dabei aber mehr Fehler als üblich. Dies kann ein Hinweis auf Impulsivität sein - also die Tendenz, zu schnell zu antworten, ohne genau hinzuschauen. Mit gezieltem Training kann die Sorgfalt verbessert werden.`
+                                    : `${pat.name} zeigt Schwierigkeiten sowohl beim Arbeitstempo als auch bei der Sorgfalt. Die Konzentrationsleistung liegt unter dem Durchschnitt. Dies sollte weiter abgeklärt werden, da verschiedene Ursachen möglich sind.`,
+                        !kl_low && !fehler_high
+                            ? ['Die Konzentrationsfähigkeit ist gut', 'Weiterhin auf ausreichend Schlaf und Pausen achten']
+                            : ['Ein einzelner Test gibt keine endgültige Antwort', 'Bei Verdacht auf ADHS: umfassende Diagnostik empfohlen', 'Konzentrationsübungen können hilfreich sein', 'Achten Sie auf ausreichend Schlaf und Bewegung']
+                    )}
+
                     ${gutachtenFooter()}
                 </div>
             `;
@@ -2440,6 +2653,21 @@
                             </ul>
                         </div>
                     </div>
+
+                    ${elternZusammenfassung(
+                        'DIKJ (Fragebogen zu Stimmung und Gefühlen)',
+                        c === 'normal'
+                            ? `${pat.name} zeigt keine Hinweise auf depressive Symptome. Die Stimmung und das emotionale Befinden scheinen im normalen Bereich zu liegen. Das ist ein gutes Zeichen für das psychische Wohlbefinden Ihres Kindes.`
+                            : c === 'borderline'
+                                ? `${pat.name} zeigt leicht erhöhte Werte, die auf eine vorübergehende Niedergestimmtheit hindeuten könnten. Dies muss nicht bedeuten, dass Ihr Kind depressiv ist - Stimmungsschwankungen sind in der Jugend normal. Dennoch sollten Sie aufmerksam bleiben.`
+                                : `${pat.name} zeigt erhöhte Werte für depressive Symptome wie Traurigkeit, negative Gedanken oder Antriebslosigkeit. Depression bei Kindern und Jugendlichen ist behandelbar - je früher Hilfe gesucht wird, desto besser. Bitte nehmen Sie diese Ergebnisse ernst.`,
+                        c === 'normal'
+                            ? ['Weiterhin auf das Wohlbefinden achten', 'Offene Gespräche über Gefühle fördern']
+                            : c === 'borderline'
+                                ? ['Beobachten Sie die weitere Entwicklung', 'Sprechen Sie offen mit Ihrem Kind', 'Bei anhaltender Niedergeschlagenheit: Beratung aufsuchen']
+                                : ['Vereinbaren Sie zeitnah einen Termin bei einem Kinder- und Jugendpsychotherapeuten', 'Depression ist gut behandelbar', 'Zeigen Sie Verständnis und vermeiden Sie Vorwürfe', 'Bei Äußerungen über Hoffnungslosigkeit oder Suizidgedanken: sofort professionelle Hilfe suchen']
+                    )}
+
                     ${gutachtenFooter()}
                 </div>
             `;
@@ -2552,6 +2780,23 @@
                             </ul>
                         </div>
                     </div>
+
+                    ${elternZusammenfassung(
+                        'Conners-3 (ADHS-Fragebogen)',
+                        valid.every(([k])=>c[k]==='normal')
+                            ? `Die Ergebnisse zeigen keine Hinweise auf ADHS oder damit verbundene Schwierigkeiten. ${pat.name} liegt in allen Bereichen im normalen Bereich. Aufmerksamkeit, Aktivitätsniveau und Impulskontrolle entsprechen dem Durchschnitt Gleichaltriger.`
+                            : (c.adhd === 'clinical' || (c.in === 'clinical' && c.hi === 'clinical'))
+                                ? `Die Ergebnisse zeigen deutlich erhöhte Werte für Aufmerksamkeit und/oder Aktivität. ADHS ist eine der häufigsten Entwicklungsstörungen bei Kindern - etwa 5% sind betroffen. Die gute Nachricht: ADHS ist gut behandelbar. Mit der richtigen Unterstützung können betroffene Kinder sehr erfolgreich sein.`
+                                : c.in === 'clinical'
+                                    ? `${pat.name} zeigt erhöhte Werte für Unaufmerksamkeit. Das bedeutet, dass es schwerer fällt, die Konzentration über längere Zeit aufrechtzuerhalten. Dies muss nicht unbedingt ADHS bedeuten - eine genaue Diagnostik ist wichtig.`
+                                    : c.hi === 'clinical'
+                                        ? `${pat.name} zeigt erhöhte Werte für Aktivität und Impulsivität. Das Kind ist möglicherweise motorisch unruhiger und handelt schneller, als es nachdenkt. Eine vertiefte Diagnostik kann helfen, die Ursachen zu verstehen.`
+                                        : `Es zeigen sich erhöhte Werte in einzelnen Bereichen, die auf leichte Schwierigkeiten hindeuten. Eine Beobachtung der weiteren Entwicklung wird empfohlen.`,
+                        valid.every(([k])=>c[k]==='normal')
+                            ? ['Keine spezielle Maßnahme erforderlich', 'Bei Veränderungen erneut testen']
+                            : ['Eine umfassende ADHS-Diagnostik wird empfohlen', 'ADHS ist kein Erziehungsfehler - es ist eine neurologische Besonderheit', 'Mit professioneller Hilfe können Kinder lernen, ihre Stärken zu nutzen', 'Informieren Sie sich über ADHS (z.B. bei ADHS Deutschland e.V.)']
+                    )}
+
                     ${gutachtenFooter()}
                 </div>
             `;
@@ -2649,6 +2894,21 @@
                             </ul>
                         </div>
                     </div>
+
+                    ${elternZusammenfassung(
+                        'FEEL-KJ (Fragebogen zur Emotionsregulation)',
+                        validAdapt.every(([k])=>cAdapt[k]==='normal') && validMaladapt.every(([k])=>cMaladapt[k]==='normal')
+                            ? `${pat.name} zeigt gute Fähigkeiten im Umgang mit negativen Gefühlen. Wenn Ihr Kind traurig, wütend oder ängstlich ist, kann es verschiedene hilfreiche Strategien einsetzen, um sich wieder besser zu fühlen. Das ist eine wichtige Fähigkeit für das ganze Leben.`
+                            : validAdapt.some(([k])=>cAdapt[k]==='clinical') && !validMaladapt.some(([k])=>cMaladapt[k]==='clinical')
+                                ? `${pat.name} zeigt Schwierigkeiten bei der Anwendung hilfreicher Strategien im Umgang mit negativen Gefühlen. Das bedeutet: Wenn Ihr Kind traurig oder wütend ist, fehlen möglicherweise gute Werkzeuge, um damit umzugehen. Diese Fähigkeiten können aber erlernt werden!`
+                                : !validAdapt.some(([k])=>cAdapt[k]==='clinical') && validMaladapt.some(([k])=>cMaladapt[k]==='clinical')
+                                    ? `${pat.name} neigt dazu, mit negativen Gefühlen auf eine Weise umzugehen, die die Situation verschlechtern kann - zum Beispiel durch Grübeln, Selbstvorwürfe oder Rückzug. Das Gute: Mit Unterstützung kann Ihr Kind lernen, bessere Strategien anzuwenden.`
+                                    : `${pat.name} zeigt sowohl Defizite bei hilfreichen Strategien als auch eine erhöhte Nutzung von Strategien, die die Situation verschlechtern können. Ein gezieltes Emotionstraining kann hier sehr hilfreich sein.`,
+                        validAdapt.every(([k])=>cAdapt[k]==='normal') && validMaladapt.every(([k])=>cMaladapt[k]==='normal')
+                            ? ['Emotionsregulation weiter stärken', 'Über Gefühle sprechen normalisieren']
+                            : ['Emotionsregulationstraining kann helfen, bessere Strategien zu lernen', 'Sprechen Sie offen über Gefühle - alle Gefühle sind erlaubt', 'Seien Sie selbst ein Vorbild im Umgang mit Emotionen', 'Bei Bedarf: Psychotherapie kann sehr hilfreich sein']
+                    )}
+
                     ${gutachtenFooter()}
                 </div>
             `;
@@ -2740,6 +3000,23 @@
                             </ul>
                         </div>
                     </div>
+
+                    ${elternZusammenfassung(
+                        'CFT 20-R (Sprachfreier Intelligenztest)',
+                        iqVal >= 130
+                            ? `${pat.name} zeigt im sprachfreien Intelligenztest eine weit überdurchschnittliche Leistung. Das bedeutet: Unabhängig von Sprache und Schulwissen kann Ihr Kind Muster erkennen und logisch denken wie nur etwa 2% aller Gleichaltrigen. Das ist eine besondere Begabung, die gefördert werden sollte.`
+                            : iqVal >= 115
+                                ? `${pat.name} zeigt überdurchschnittliche Fähigkeiten im logischen Denken - unabhängig von Sprache und Schulwissen. Das ist ein sehr gutes Ergebnis und zeigt, dass Ihr Kind komplexe Aufgaben gut bewältigen kann.`
+                                : iqVal >= 85
+                                    ? `${pat.name} zeigt durchschnittliche Fähigkeiten im logischen Denken - genau wie die meisten Kinder. Das bedeutet: Die geistigen Grundfähigkeiten sind völlig normal entwickelt. Dieser Test misst nur einen Teil der Intelligenz - Kreativität, soziale Fähigkeiten oder praktisches Geschick werden hier nicht erfasst.`
+                                    : `${pat.name} zeigt unterdurchschnittliche Werte in diesem sprachfreien Test. Das bedeutet, dass abstrakte Denkaufgaben schwerer fallen als anderen Gleichaltrigen. Wichtig zu wissen: Dieser Test misst nur einen Teil der Fähigkeiten. Viele Menschen mit niedrigeren Testwerten sind in anderen Bereichen sehr erfolgreich.`,
+                        iqVal >= 130
+                            ? ['Sprechen Sie mit der Schule über Begabtenförderung', 'Bieten Sie geistige Herausforderungen (Rätsel, Strategiespiele)', 'Achten Sie darauf, dass Ihr Kind sich nicht langweilt']
+                            : iqVal >= 85
+                                ? ['Die kognitiven Fähigkeiten sind gut entwickelt', 'Fördern Sie die individuellen Interessen Ihres Kindes']
+                                : ['Lassen Sie sich ausführlich beraten', 'Sprechen Sie mit der Schule über mögliche Unterstützung', 'Stärken Sie das Selbstbewusstsein Ihres Kindes', 'Jedes Kind hat Stärken - helfen Sie, diese zu entdecken']
+                    )}
+
                     ${gutachtenFooter()}
                 </div>
             `;
