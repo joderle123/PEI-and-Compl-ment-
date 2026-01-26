@@ -784,6 +784,116 @@
             line-height: 1.5;
         }
 
+        /* Durchführungshinweise für Psychologen */
+        .admin-hinweise {
+            background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(37,99,235,0.1) 100%);
+            border: 1px solid rgba(59,130,246,0.3);
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .admin-hinweise-header {
+            background: rgba(59,130,246,0.15);
+            padding: 0.75rem 1.25rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .admin-hinweise-header:hover {
+            background: rgba(59,130,246,0.25);
+        }
+
+        .admin-hinweise-header h4 {
+            color: #60a5fa;
+            margin: 0;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .admin-hinweise-toggle {
+            color: #60a5fa;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .admin-hinweise.open .admin-hinweise-toggle {
+            transform: rotate(180deg);
+        }
+
+        .admin-hinweise-content {
+            display: none;
+            padding: 1.25rem;
+        }
+
+        .admin-hinweise.open .admin-hinweise-content {
+            display: block;
+        }
+
+        .admin-hinweise h5 {
+            color: #93c5fd;
+            font-size: 0.9rem;
+            margin: 1rem 0 0.5rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid rgba(59,130,246,0.2);
+        }
+
+        .admin-hinweise h5:first-child {
+            margin-top: 0;
+        }
+
+        .admin-hinweise p, .admin-hinweise li {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .admin-hinweise ul, .admin-hinweise ol {
+            margin: 0.5rem 0;
+            padding-left: 1.25rem;
+        }
+
+        .admin-hinweise li {
+            margin-bottom: 0.4rem;
+        }
+
+        .admin-box {
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin: 0.75rem 0;
+            font-size: 0.85rem;
+        }
+
+        .admin-box-title {
+            font-weight: 600;
+            color: #93c5fd;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-time {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(59,130,246,0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #93c5fd;
+            margin: 0.25rem 0.25rem 0.25rem 0;
+        }
+
+        @media print {
+            .admin-hinweise {
+                display: none !important;
+            }
+        }
+
         .icd-code {
             display: inline-block;
             background: var(--bg-input);
@@ -1403,6 +1513,455 @@
             `;
         }
 
+        // Durchführungshinweise für Psychologen
+        const ADMIN_HINWEISE = {
+            sdq: `
+                <h5>Material</h5>
+                <ul>
+                    <li>SDQ-Fragebogen (Eltern-, Lehrer- oder Selbstversion je nach Informant)</li>
+                    <li>Kugelschreiber</li>
+                    <li>Auswertungsschablone oder Software</li>
+                </ul>
+                <h5>Vorbereitung</h5>
+                <ul>
+                    <li>Wählen Sie die richtige Version: SDQ-Eltern (4-17 J.), SDQ-Lehrer (4-17 J.), SDQ-Selbst (11-17 J.)</li>
+                    <li>Stellen Sie sicher, dass der Informant lesen kann und die Fragen versteht</li>
+                </ul>
+                <h5>Durchführung Schritt für Schritt</h5>
+                <ol>
+                    <li><strong>Instruktion:</strong> "Bitte kreuzen Sie für jede Aussage an, ob sie 'Nicht zutreffend', 'Teilweise zutreffend' oder 'Eindeutig zutreffend' ist. Beziehen Sie sich dabei auf das Verhalten in den letzten 6 Monaten."</li>
+                    <li><strong>Bearbeitung:</strong> Der Informant füllt den Bogen selbstständig aus (keine Hilfestellung bei der Beantwortung!)</li>
+                    <li><strong>Kontrolle:</strong> Prüfen Sie auf fehlende Antworten und bitten Sie ggf. um Ergänzung</li>
+                </ol>
+                <div class="admin-box">
+                    <div class="admin-box-title">Zeitangaben</div>
+                    <span class="admin-time">⏱ Bearbeitungszeit: 5-10 Minuten</span>
+                    <span class="admin-time">⏱ Auswertung: 2-3 Minuten</span>
+                </div>
+                <h5>Auswertung</h5>
+                <ol>
+                    <li>Addieren Sie die Punkte pro Skala (0-1-2 für "Nicht"-"Teilweise"-"Eindeutig")</li>
+                    <li><strong>Achtung:</strong> Bei Items 7, 11, 14, 21, 25 ist die Kodierung umgekehrt!</li>
+                    <li>Prosozial-Skala: Items 1, 4, 9, 17, 20 (NICHT in Gesamtproblemwert!)</li>
+                    <li>Gesamtproblemwert = EM + VP + HY + PE (ohne Prosozial!)</li>
+                </ol>
+                <h5>Häufige Fehler vermeiden</h5>
+                <ul>
+                    <li>❌ Falsche Normtabelle verwenden (Eltern ≠ Lehrer ≠ Selbst)</li>
+                    <li>❌ Umgepolte Items nicht beachten</li>
+                    <li>❌ Prosozial-Skala in Gesamtwert einrechnen</li>
+                </ul>
+            `,
+            wisc: `
+                <h5>Material (vollständiger WISC-V Testkoffer)</h5>
+                <ul>
+                    <li>Stimulus-Bücher 1 und 2</li>
+                    <li>Protokollbogen (altersgerecht)</li>
+                    <li>Würfelmosaik-Würfel (9 Stück)</li>
+                    <li>Stoppuhr</li>
+                    <li>Bleistifte ohne Radiergummi</li>
+                    <li>Antwortheft für das Kind</li>
+                </ul>
+                <h5>Vorbereitung</h5>
+                <ul>
+                    <li>Ruhiger, gut beleuchteter Raum ohne Ablenkung</li>
+                    <li>Kind sitzt gegenüber oder im 90°-Winkel</li>
+                    <li>Stimulus-Buch so positionieren, dass Kind es gut sehen kann</li>
+                    <li>Alle Materialien griffbereit, aber nicht sichtbar für das Kind</li>
+                </ul>
+                <h5>Durchführung Schritt für Schritt</h5>
+                <ol>
+                    <li><strong>Rapport herstellen:</strong> "Wir machen heute verschiedene Aufgaben zusammen. Manche sind leicht, manche schwerer. Versuch einfach dein Bestes!"</li>
+                    <li><strong>Reihenfolge einhalten:</strong> Untertests in festgelegter Reihenfolge durchführen</li>
+                    <li><strong>Standardisierte Instruktionen:</strong> Instruktionen WÖRTLICH aus dem Manual vorlesen</li>
+                    <li><strong>Abbruchregeln beachten:</strong> Nach X aufeinanderfolgenden 0-Punkt-Antworten abbrechen</li>
+                    <li><strong>Zeitgrenzen:</strong> Stoppuhr bei zeitgebundenen Aufgaben verwenden</li>
+                </ol>
+                <div class="admin-box">
+                    <div class="admin-box-title">Zeitangaben</div>
+                    <span class="admin-time">⏱ Gesamt: 60-90 Minuten</span>
+                    <span class="admin-time">⏱ Pause nach 45 Min empfohlen</span>
+                </div>
+                <h5>Die 10 primären Untertests</h5>
+                <ol>
+                    <li><strong>Mosaik-Test (MOS):</strong> Muster mit Würfeln nachlegen – Zeit stoppen!</li>
+                    <li><strong>Gemeinsamkeiten finden (GF):</strong> "Was haben X und Y gemeinsam?"</li>
+                    <li><strong>Matrizen-Test (MA):</strong> Fehlende Figur im Muster finden</li>
+                    <li><strong>Zahlen nachsprechen (ZN):</strong> Zahlenreihen vorwärts, rückwärts, sortiert</li>
+                    <li><strong>Zahlen-Symbol-Test (ZST):</strong> Symbole zu Zahlen zuordnen – 120 Sek!</li>
+                    <li><strong>Wortschatz-Test (WT):</strong> "Was bedeutet das Wort X?"</li>
+                    <li><strong>Formenwaage (FW):</strong> Welche Antwort bringt die Waage ins Gleichgewicht?</li>
+                    <li><strong>Visuelle Puzzles (VP):</strong> Welche 3 Teile ergeben das Bild?</li>
+                    <li><strong>Bilder-Spanne (BS):</strong> Bilder in richtiger Reihenfolge zeigen</li>
+                    <li><strong>Symbol-Suche (SS):</strong> Zielsymbol in Gruppe finden – 120 Sek!</li>
+                </ol>
+                <h5>Häufige Fehler vermeiden</h5>
+                <ul>
+                    <li>❌ Instruktionen nicht wörtlich vorlesen</li>
+                    <li>❌ Abbruchregeln nicht beachten</li>
+                    <li>❌ Hilfestellung geben (außer bei Übungsitems)</li>
+                    <li>❌ Zeit bei Untertests mit Zeitbonus nicht genau stoppen</li>
+                    <li>❌ Antworten nicht wörtlich protokollieren</li>
+                </ul>
+            `,
+            cbcl: `
+                <h5>Material</h5>
+                <ul>
+                    <li>CBCL/6-18 (Elternfragebogen) ODER</li>
+                    <li>TRF (Teacher Report Form) ODER</li>
+                    <li>YSR (Youth Self-Report, ab 11 Jahren)</li>
+                    <li>Kugelschreiber</li>
+                </ul>
+                <h5>Vorbereitung</h5>
+                <ul>
+                    <li>Richtige Version wählen: CBCL (Eltern), TRF (Lehrer), YSR (Selbst)</li>
+                    <li>Ruhige Umgebung für das Ausfüllen</li>
+                    <li>Sicherstellen, dass Informant ausreichend Kontakt zum Kind hat (mind. 2 Monate)</li>
+                </ul>
+                <h5>Durchführung Schritt für Schritt</h5>
+                <ol>
+                    <li><strong>Instruktion:</strong> "Bitte bewerten Sie das Verhalten Ihres Kindes in den letzten 6 Monaten. Kreuzen Sie an: 0 = nicht zutreffend, 1 = etwas/manchmal, 2 = genau/häufig."</li>
+                    <li><strong>Demografische Daten:</strong> Erst die Kopfzeile ausfüllen lassen (Name, Alter, etc.)</li>
+                    <li><strong>Selbstständig ausfüllen:</strong> Informant füllt ohne Hilfe aus</li>
+                    <li><strong>Vollständigkeit prüfen:</strong> Alle 113 Items beantwortet?</li>
+                </ol>
+                <div class="admin-box">
+                    <div class="admin-box-title">Zeitangaben</div>
+                    <span class="admin-time">⏱ Bearbeitungszeit: 15-20 Minuten</span>
+                    <span class="admin-time">⏱ Computerauswertung: 5 Minuten</span>
+                </div>
+                <h5>Auswertung</h5>
+                <ul>
+                    <li>Am besten mit ASEBA-Software (Achenbach System)</li>
+                    <li>Manuelle Auswertung möglich, aber zeitaufwändig</li>
+                    <li>T-Werte aus alters- und geschlechtsspezifischen Normtabellen</li>
+                </ul>
+                <h5>Interpretation der T-Werte</h5>
+                <div class="admin-box">
+                    <div class="admin-box-title">Cut-offs (Breitbandskalen)</div>
+                    <p>T &lt; 60: Unauffällig | T 60-63: Grenzwertig | T ≥ 64: Klinisch auffällig</p>
+                </div>
+                <div class="admin-box">
+                    <div class="admin-box-title">Cut-offs (Syndromskalen)</div>
+                    <p>T &lt; 65: Unauffällig | T 65-69: Grenzwertig | T ≥ 70: Klinisch auffällig</p>
+                </div>
+            `,
+            disyps: `
+                <h5>Material</h5>
+                <ul>
+                    <li>DISYPS-III Fragebogen (FBB = Fremdbeurteilung oder SBB = Selbstbeurteilung)</li>
+                    <li>FBB-ADHS (Eltern/Lehrer) und/oder SBB-ADHS (ab 11 J.)</li>
+                    <li>FBB-SSV / SBB-SSV für Sozialverhaltensstörungen</li>
+                    <li>Kugelschreiber</li>
+                </ul>
+                <h5>Vorbereitung</h5>
+                <ul>
+                    <li>Entscheiden: Welche Module benötigt? (ADHS, SSV, oder beide)</li>
+                    <li>Multi-Informanten-Ansatz: Idealerweise Eltern UND Lehrer UND Selbst</li>
+                </ul>
+                <h5>Durchführung Schritt für Schritt</h5>
+                <ol>
+                    <li><strong>Instruktion:</strong> "Bitte bewerten Sie, wie oft das beschriebene Verhalten in den letzten 6 Monaten aufgetreten ist: 0 = gar nicht, 1 = ein wenig, 2 = weitgehend, 3 = besonders."</li>
+                    <li><strong>Wichtig:</strong> Auch Fragen zur Beeinträchtigung beantworten lassen!</li>
+                    <li><strong>Vollständigkeit prüfen</strong></li>
+                </ol>
+                <div class="admin-box">
+                    <div class="admin-box-title">Zeitangaben</div>
+                    <span class="admin-time">⏱ Bearbeitung FBB-ADHS: 10-15 Minuten</span>
+                    <span class="admin-time">⏱ Bearbeitung FBB-SSV: 10-15 Minuten</span>
+                </div>
+                <h5>Auswertung</h5>
+                <ul>
+                    <li>Rohwerte in Stanine-Werte umrechnen (Manual)</li>
+                    <li>Getrennte Normen für Eltern, Lehrer, Selbst!</li>
+                    <li>Getrennte Normen für Jungen und Mädchen!</li>
+                </ul>
+                <h5>Interpretation Stanine-Werte</h5>
+                <div class="admin-box">
+                    <p>Stanine 1-4: Unauffällig | Stanine 5-6: Leicht erhöht | Stanine 7-9: Auffällig</p>
+                </div>
+                <h5>Für ADHS-Diagnose zusätzlich prüfen</h5>
+                <ul>
+                    <li>✓ Symptome vor dem 12. Lebensjahr begonnen?</li>
+                    <li>✓ Symptome in mindestens 2 Settings (Schule UND Zuhause)?</li>
+                    <li>✓ Deutliche Beeinträchtigung im Alltag?</li>
+                </ul>
+            `,
+            afs: `
+                <h5>Material</h5>
+                <ul>
+                    <li>AFS-Fragebogen</li>
+                    <li>Bleistift/Kugelschreiber</li>
+                    <li>Auswertungsschablone</li>
+                </ul>
+                <h5>Vorbereitung</h5>
+                <ul>
+                    <li>Geeignet für Schüler der Klassen 3-10</li>
+                    <li>Kann als Einzel- oder Gruppentest durchgeführt werden</li>
+                    <li>Ruhige Umgebung ohne Zeitdruck</li>
+                </ul>
+                <h5>Durchführung Schritt für Schritt</h5>
+                <ol>
+                    <li><strong>Instruktion vorlesen:</strong> "Auf diesem Fragebogen stehen Sätze. Lies jeden Satz genau durch. Wenn der Satz für dich stimmt, machst du ein Kreuz bei 'stimmt'. Wenn der Satz für dich nicht stimmt, machst du ein Kreuz bei 'stimmt nicht'."</li>
+                    <li><strong>Beispielitems:</strong> Die ersten 2-3 Beispiele gemeinsam besprechen</li>
+                    <li><strong>Bearbeitung:</strong> Kind arbeitet selbstständig, keine Zeitbegrenzung</li>
+                    <li><strong>Nachfrage:</strong> "Hast du alle Fragen beantwortet?"</li>
+                </ol>
+                <div class="admin-box">
+                    <div class="admin-box-title">Zeitangaben</div>
+                    <span class="admin-time">⏱ Bearbeitung: 10-20 Minuten</span>
+                    <span class="admin-time">⏱ Auswertung: 5 Minuten</span>
+                </div>
+                <h5>Auswertung mit Schablone</h5>
+                <ol>
+                    <li>Schablone auflegen</li>
+                    <li>Markierte Antworten pro Skala zählen = Rohwert</li>
+                    <li>Rohwert in Stanine umrechnen (Normtabelle nach Klassenstufe)</li>
+                </ol>
+                <h5>Die 4 Skalen</h5>
+                <ul>
+                    <li><strong>PA (Prüfungsangst):</strong> 15 Items – Angst vor Prüfungen, Klassenarbeiten</li>
+                    <li><strong>MA (Manifeste Angst):</strong> 15 Items – Allgemeine Ängstlichkeit, körperliche Symptome</li>
+                    <li><strong>SU (Schulunlust):</strong> 10 Items – Abneigung gegen Schule</li>
+                    <li><strong>SE (Soziale Erwünschtheit):</strong> 10 Items – Kontrollskala für Antwortverzerrung</li>
+                </ul>
+                <h5>SE-Skala beachten!</h5>
+                <div class="admin-box">
+                    <p>SE ≥ 7 (Stanine): Ergebnisse mit Vorsicht interpretieren – Kind antwortet möglicherweise sozial erwünscht!</p>
+                </div>
+            `,
+            d2r: `
+                <h5>Material</h5>
+                <ul>
+                    <li>d2-R Testbogen</li>
+                    <li>Bleistift (kein Kugelschreiber!)</li>
+                    <li>Stoppuhr</li>
+                    <li>Auswertungsschablone</li>
+                </ul>
+                <h5>Vorbereitung</h5>
+                <ul>
+                    <li>Geeignet ab 9 Jahren bis Erwachsene</li>
+                    <li>Ruhiger Raum, keine Störungen während des Tests!</li>
+                    <li>Gute Beleuchtung</li>
+                    <li>Übungszeile VOR dem Test erklären</li>
+                </ul>
+                <h5>Durchführung Schritt für Schritt</h5>
+                <ol>
+                    <li><strong>Erklärung:</strong> "Du siehst Buchstaben 'd' und 'p' mit Strichen. Streiche alle 'd' mit genau 2 Strichen durch. Egal ob die Striche oben oder unten sind – Hauptsache 'd' mit 2 Strichen insgesamt."</li>
+                    <li><strong>Übungszeile:</strong> Gemeinsam die Übungszeile durchgehen. Korrigieren wenn nötig!</li>
+                    <li><strong>Testbeginn:</strong> "Wenn ich 'Los' sage, beginnst du in der ersten Zeile. Arbeite so schnell und so sorgfältig wie möglich. Wenn ich 'Stopp' sage, gehst du in die nächste Zeile, auch wenn du nicht fertig bist."</li>
+                    <li><strong>Timing:</strong> Pro Zeile genau 20 Sekunden Zeit, dann "Nächste Zeile!"</li>
+                    <li><strong>14 Zeilen:</strong> Insgesamt 14 Durchgänge à 20 Sekunden</li>
+                </ol>
+                <div class="admin-box">
+                    <div class="admin-box-title">Zeitangaben</div>
+                    <span class="admin-time">⏱ Instruktion: 3-5 Minuten</span>
+                    <span class="admin-time">⏱ Test: 4 Min 40 Sek (14 × 20 Sek)</span>
+                    <span class="admin-time">⏱ Auswertung: 10 Minuten</span>
+                </div>
+                <h5>Auswertung</h5>
+                <ul>
+                    <li><strong>BZO:</strong> Alle durchgestrichenen Zeichen (richtige + falsche)</li>
+                    <li><strong>F1:</strong> Auslassungsfehler (nicht markierte Zielzeichen)</li>
+                    <li><strong>F2:</strong> Verwechslungsfehler (falsch markierte Zeichen)</li>
+                    <li><strong>F:</strong> F1 + F2 = Gesamtfehler</li>
+                    <li><strong>KL:</strong> BZO – F = Konzentrationsleistung (Hauptwert!)</li>
+                    <li><strong>F%:</strong> (F / BZO) × 100 = Fehlerprozent</li>
+                </ul>
+                <h5>Häufige Fehler vermeiden</h5>
+                <ul>
+                    <li>❌ Zeitintervalle nicht exakt einhalten</li>
+                    <li>❌ Kind weiterarbeiten lassen nach "Stopp"</li>
+                    <li>❌ Übungsphase überspringen</li>
+                    <li>❌ Kugelschreiber statt Bleistift (Korrektur unmöglich)</li>
+                </ul>
+            `,
+            dikj: `
+                <h5>Material</h5>
+                <ul>
+                    <li>DIKJ-Fragebogen</li>
+                    <li>Kugelschreiber/Bleistift</li>
+                </ul>
+                <h5>Vorbereitung</h5>
+                <ul>
+                    <li>Geeignet für Kinder und Jugendliche von 8-17 Jahren</li>
+                    <li>Einzeldurchführung bevorzugt (bei sensiblem Thema)</li>
+                    <li>Ruhige, vertrauensvolle Atmosphäre schaffen</li>
+                </ul>
+                <h5>Durchführung Schritt für Schritt</h5>
+                <ol>
+                    <li><strong>Rapport:</strong> Vertrauensvolle Atmosphäre herstellen</li>
+                    <li><strong>Instruktion:</strong> "Bei jeder Nummer stehen drei Sätze. Lies alle drei durch und kreuze den an, der am besten beschreibt, wie du dich in den letzten zwei Wochen gefühlt hast."</li>
+                    <li><strong>Beispielitem:</strong> Erstes Item gemeinsam besprechen</li>
+                    <li><strong>Selbstständig:</strong> Kind füllt alleine aus</li>
+                    <li><strong>Suizidalität:</strong> Item 9 (Suizidgedanken) IMMER nachbesprechen!</li>
+                </ol>
+                <div class="admin-box">
+                    <div class="admin-box-title">Zeitangaben</div>
+                    <span class="admin-time">⏱ Bearbeitung: 10-15 Minuten</span>
+                    <span class="admin-time">⏱ Auswertung: 3 Minuten</span>
+                </div>
+                <h5>Auswertung</h5>
+                <ul>
+                    <li>26 Items mit je 0-2 Punkten</li>
+                    <li>Rohwert: Summe aller Items (0-52)</li>
+                    <li>Rohwert in T-Wert umrechnen (Normtabelle nach Alter und Geschlecht)</li>
+                </ul>
+                <h5>WICHTIG: Suizidalitäts-Screening</h5>
+                <div class="admin-box" style="border-left: 3px solid #ef4444;">
+                    <div class="admin-box-title" style="color:#f87171;">⚠️ Item 9 – Suizidgedanken</div>
+                    <p>Bei Antwort 1 oder 2: IMMER nachfragen!</p>
+                    <p>"Du hast hier angekreuzt, dass du manchmal daran denkst... Kannst du mir mehr darüber erzählen?"</p>
+                    <p>Bei akuter Suizidalität: Sofortige Krisenintervention!</p>
+                </div>
+            `,
+            conners: `
+                <h5>Material</h5>
+                <ul>
+                    <li>Conners-3 Fragebogen (Eltern / Lehrer / Selbst)</li>
+                    <li>Kugelschreiber</li>
+                </ul>
+                <h5>Vorbereitung</h5>
+                <ul>
+                    <li>Geeignet für 6-18 Jahre</li>
+                    <li>Verschiedene Versionen: Vollversion (ca. 110 Items) oder Kurzversion</li>
+                    <li>Multi-Informanten-Ansatz empfohlen (Eltern + Lehrer + Selbst)</li>
+                </ul>
+                <h5>Durchführung Schritt für Schritt</h5>
+                <ol>
+                    <li><strong>Version wählen:</strong> Eltern, Lehrer oder Selbstbeurteilung</li>
+                    <li><strong>Instruktion:</strong> "Bitte bewerten Sie, wie oft das Verhalten im letzten Monat aufgetreten ist: 0 = überhaupt nicht, 1 = nur ein wenig, 2 = ziemlich oft, 3 = sehr oft."</li>
+                    <li><strong>Bezugszeitraum:</strong> Letzter Monat (nicht 6 Monate wie bei anderen Tests!)</li>
+                    <li><strong>Vollständigkeit prüfen</strong></li>
+                </ol>
+                <div class="admin-box">
+                    <div class="admin-box-title">Zeitangaben</div>
+                    <span class="admin-time">⏱ Vollversion: 20-25 Minuten</span>
+                    <span class="admin-time">⏱ Kurzversion: 10 Minuten</span>
+                    <span class="admin-time">⏱ Computerauswertung empfohlen</span>
+                </div>
+                <h5>Wichtige Skalen</h5>
+                <ul>
+                    <li><strong>Inhalts-Skalen:</strong> Unaufmerksamkeit, Hyperaktivität/Impulsivität, Lernprobleme, Exekutive Funktionen, Aggression, Peer-Beziehungen</li>
+                    <li><strong>DSM-Symptomskalen:</strong> ADHS-Unaufmerksam, ADHS-Hyperaktiv, Sozialverhalten, Oppositionell</li>
+                    <li><strong>Conners ADHS-Index:</strong> Screening-Skala für ADHS-Wahrscheinlichkeit</li>
+                </ul>
+                <h5>Interpretation T-Werte</h5>
+                <div class="admin-box">
+                    <p>T &lt; 60: Durchschnitt | T 60-64: Leicht erhöht | T 65-69: Erhöht | T ≥ 70: Stark erhöht</p>
+                </div>
+            `,
+            feelkj: `
+                <h5>Material</h5>
+                <ul>
+                    <li>FEEL-KJ Fragebogen</li>
+                    <li>Kugelschreiber/Bleistift</li>
+                </ul>
+                <h5>Vorbereitung</h5>
+                <ul>
+                    <li>Geeignet für 10-20 Jahre</li>
+                    <li>Selbstbeurteilungsverfahren</li>
+                    <li>Einzeln oder in Gruppen durchführbar</li>
+                </ul>
+                <h5>Durchführung Schritt für Schritt</h5>
+                <ol>
+                    <li><strong>Instruktion:</strong> "In diesem Fragebogen geht es darum, wie du mit Gefühlen wie Angst, Trauer und Wut umgehst. Lies jede Aussage und kreuze an, wie oft du das machst: 1 = fast nie, 2 = selten, 3 = manchmal, 4 = oft, 5 = fast immer."</li>
+                    <li><strong>Wichtig:</strong> Es gibt drei Abschnitte – Angst, Trauer, Wut. Für jedes Gefühl werden dieselben Strategien abgefragt.</li>
+                    <li><strong>Selbstständig ausfüllen</strong></li>
+                </ol>
+                <div class="admin-box">
+                    <div class="admin-box-title">Zeitangaben</div>
+                    <span class="admin-time">⏱ Bearbeitung: 20-30 Minuten</span>
+                    <span class="admin-time">⏱ Auswertung: 10 Minuten</span>
+                </div>
+                <h5>Die Strategien</h5>
+                <div class="admin-box">
+                    <div class="admin-box-title">Adaptive (hilfreiche) Strategien</div>
+                    <p>Problemorientiertes Handeln, Zerstreuung, Stimmung anheben, Akzeptieren, Vergessen, Umbewerten, Kognitives Problemlösen</p>
+                </div>
+                <div class="admin-box">
+                    <div class="admin-box-title">Maladaptive (ungünstige) Strategien</div>
+                    <p>Aufgeben, Aggressives Verhalten, Rückzug, Selbstabwertung, Perseveration (Grübeln)</p>
+                </div>
+                <h5>Interpretation</h5>
+                <ul>
+                    <li><strong>Adaptive Strategien:</strong> Niedrige Werte (T &lt; 40) = problematisch</li>
+                    <li><strong>Maladaptive Strategien:</strong> Hohe Werte (T &gt; 60) = problematisch</li>
+                </ul>
+            `,
+            cft: `
+                <h5>Material</h5>
+                <ul>
+                    <li>CFT 20-R Testheft Teil 1 und Teil 2</li>
+                    <li>Antwortbogen</li>
+                    <li>Bleistift</li>
+                    <li>Stoppuhr</li>
+                    <li>Auswertungsschablone</li>
+                </ul>
+                <h5>Vorbereitung</h5>
+                <ul>
+                    <li>Geeignet für 8,5-60 Jahre</li>
+                    <li>Einzel- oder Gruppendurchführung möglich</li>
+                    <li>Sprachfreier Test – geeignet bei Sprachproblemen oder Migrationshintergrund</li>
+                </ul>
+                <h5>Durchführung Schritt für Schritt</h5>
+                <ol>
+                    <li><strong>Allgemeine Instruktion:</strong> "Du bekommst jetzt Aufgaben, bei denen du herausfinden musst, welches Bild zu den anderen passt. Ich erkläre dir jede Aufgabe."</li>
+                    <li><strong>Teil 1 – Vier Untertests:</strong>
+                        <ul>
+                            <li>Reihen fortsetzen (3 Min)</li>
+                            <li>Klassifikationen (3 Min)</li>
+                            <li>Matrizen (3 Min)</li>
+                            <li>Topologien (3 Min)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Pause:</strong> ca. 10 Minuten (optional, aber empfohlen)</li>
+                    <li><strong>Teil 2:</strong> Wiederholung der vier Untertests (Parallelform)</li>
+                </ol>
+                <div class="admin-box">
+                    <div class="admin-box-title">Zeitangaben</div>
+                    <span class="admin-time">⏱ Teil 1: ca. 25 Minuten</span>
+                    <span class="admin-time">⏱ Pause: 10 Minuten</span>
+                    <span class="admin-time">⏱ Teil 2: ca. 25 Minuten</span>
+                    <span class="admin-time">⏱ Gesamt: ca. 60 Minuten</span>
+                </div>
+                <h5>Instruktionen für die Untertests</h5>
+                <ol>
+                    <li><strong>Reihen fortsetzen:</strong> "Welche Figur passt als nächstes in die Reihe?"</li>
+                    <li><strong>Klassifikationen:</strong> "Welche Figur passt nicht zu den anderen?"</li>
+                    <li><strong>Matrizen:</strong> "Welche Figur gehört in das leere Feld?"</li>
+                    <li><strong>Topologien:</strong> "Welche Figur unten zeigt dieselbe Anordnung wie das Bild oben?"</li>
+                </ol>
+                <h5>Auswertung</h5>
+                <ul>
+                    <li>Richtige Antworten pro Untertest zählen</li>
+                    <li>Summe Teil 1 + Teil 2 = Rohwert Gesamt</li>
+                    <li>Rohwert in IQ-Wert umrechnen (Normtabelle nach Alter)</li>
+                </ul>
+                <h5>Häufige Fehler vermeiden</h5>
+                <ul>
+                    <li>❌ Zeitgrenzen nicht exakt einhalten</li>
+                    <li>❌ Mehr Hilfe geben als bei Übungsitems vorgesehen</li>
+                    <li>❌ Nur Teil 1 durchführen (mindert Reliabilität)</li>
+                </ul>
+            `
+        };
+
+        function durchfuehrungsHinweise(testKey) {
+            if (!ADMIN_HINWEISE[testKey]) return '';
+            return `
+                <div class="admin-hinweise" onclick="this.classList.toggle('open')">
+                    <div class="admin-hinweise-header">
+                        <h4>📋 Durchführungshinweise für Testleiter/innen</h4>
+                        <span class="admin-hinweise-toggle">▼</span>
+                    </div>
+                    <div class="admin-hinweise-content">
+                        ${ADMIN_HINWEISE[testKey]}
+                    </div>
+                </div>
+            `;
+        }
+
         const S = { normal: 'Unauffällig', borderline: 'Grenzwertig', clinical: 'Auffällig' };
 
         // SDQ
@@ -1502,6 +2061,8 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('SDQ', 'Strengths and Difficulties Questionnaire', pat)}
+
+                    ${durchfuehrungsHinweise('sdq')}
 
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Untersuchungsanlass und Fragestellung</h4>
@@ -1709,6 +2270,8 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('WISC-V', 'Wechsler Intelligence Scale for Children – Fifth Edition', pat)}
+
+                    ${durchfuehrungsHinweise('wisc')}
 
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Untersuchungsanlass und Fragestellung</h4>
@@ -2017,6 +2580,8 @@
                 <div class="gutachten">
                     ${gutachtenHeader('CBCL/TRF/YSR', 'Child Behavior Checklist – Achenbach System', pat)}
 
+                    ${durchfuehrungsHinweise('cbcl')}
+
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
@@ -2182,6 +2747,8 @@
                 <div class="gutachten">
                     ${gutachtenHeader('DISYPS-III', 'Diagnostik-System für psychische Störungen nach ICD-10/11 und DSM-5', pat)}
 
+                    ${durchfuehrungsHinweise('disyps')}
+
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
@@ -2331,6 +2898,8 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('AFS', 'Angstfragebogen für Schüler', pat)}
+
+                    ${durchfuehrungsHinweise('afs')}
 
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
@@ -2492,6 +3061,8 @@
                 <div class="gutachten">
                     ${gutachtenHeader('d2-R', 'Aufmerksamkeits- und Konzentrationstest – Revision', pat)}
 
+                    ${durchfuehrungsHinweise('d2r')}
+
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
@@ -2593,6 +3164,7 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('DIKJ', 'Depressions-Inventar für Kinder und Jugendliche', pat)}
+                    ${durchfuehrungsHinweise('dikj')}
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
@@ -2724,6 +3296,7 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('Conners-3', 'Conners Skalen zu Aufmerksamkeit und Verhalten – 3. Auflage', pat)}
+                    ${durchfuehrungsHinweise('conners')}
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
@@ -2841,6 +3414,7 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('FEEL-KJ', 'Fragebogen zur Erhebung der Emotionsregulation bei Kindern und Jugendlichen', pat)}
+                    ${durchfuehrungsHinweise('feelkj')}
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
@@ -2945,6 +3519,7 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('CFT 20-R', 'Culture Fair Intelligence Test – Revision', pat)}
+                    ${durchfuehrungsHinweise('cft')}
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
