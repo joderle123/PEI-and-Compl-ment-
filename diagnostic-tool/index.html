@@ -894,6 +894,133 @@
             }
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(37,99,235,0.05) 100%);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.75rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #ef4444;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-body h5 {
+            color: #93c5fd;
+            font-size: 0.95rem;
+            margin: 1.25rem 0 0.5rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid rgba(59,130,246,0.2);
+        }
+
+        .modal-body h5:first-child {
+            margin-top: 0;
+        }
+
+        .modal-body p, .modal-body li {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .modal-body ul, .modal-body ol {
+            margin: 0.5rem 0;
+            padding-left: 1.25rem;
+        }
+
+        .modal-body li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* Hilfe-Button */
+        .help-btn {
+            background: linear-gradient(135deg, rgba(59,130,246,0.2) 0%, rgba(37,99,235,0.1) 100%);
+            border: 1px solid rgba(59,130,246,0.3);
+            color: #60a5fa;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+
+        .help-btn:hover {
+            background: linear-gradient(135deg, rgba(59,130,246,0.3) 0%, rgba(37,99,235,0.2) 100%);
+            border-color: rgba(59,130,246,0.5);
+            transform: translateY(-1px);
+        }
+
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
         .icd-code {
             display: inline-block;
             background: var(--bg-input);
@@ -1000,6 +1127,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title"><span class="icon">📋</span> SDQ <span class="badge">Screening</span></h2>
+                    <button class="help-btn" onclick="showHelpModal('sdq')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
                     <p class="card-subtitle">Strengths and Difficulties Questionnaire – Screening für Kinder 4-17 Jahre</p>
                 </div>
                 <form id="sdq-form" onsubmit="evaluateSDQ(event)">
@@ -1035,6 +1163,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title"><span class="icon">🧠</span> WISC-V <span class="badge">Intelligenz</span></h2>
+                    <button class="help-btn" onclick="showHelpModal('wisc')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
                     <p class="card-subtitle">Wechsler Intelligence Scale for Children – Kognitive Fähigkeiten 6-16 Jahre</p>
                 </div>
                 <form id="wisc-form" onsubmit="evaluateWISC(event)">
@@ -1063,6 +1192,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title"><span class="icon">📊</span> CBCL <span class="badge">Verhalten</span></h2>
+                    <button class="help-btn" onclick="showHelpModal('cbcl')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
                     <p class="card-subtitle">Child Behavior Checklist – Verhaltensauffälligkeiten 6-18 Jahre</p>
                 </div>
                 <form id="cbcl-form" onsubmit="evaluateCBCL(event)">
@@ -1109,6 +1239,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title"><span class="icon">🎯</span> DISYPS-III <span class="badge">ADHS/SSV</span></h2>
+                    <button class="help-btn" onclick="showHelpModal('disyps')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
                     <p class="card-subtitle">Diagnostik-System für psychische Störungen – ADHS und Sozialverhalten</p>
                 </div>
                 <form id="disyps-form" onsubmit="evaluateDISYPS(event)">
@@ -1143,6 +1274,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title"><span class="icon">💭</span> AFS <span class="badge">Angst</span></h2>
+                    <button class="help-btn" onclick="showHelpModal('afs')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
                     <p class="card-subtitle">Angstfragebogen für Schüler – Schulbezogene Ängste</p>
                 </div>
                 <form id="afs-form" onsubmit="evaluateAFS(event)">
@@ -1169,6 +1301,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title"><span class="icon">🔍</span> d2-R <span class="badge">Aufmerksamkeit</span></h2>
+                    <button class="help-btn" onclick="showHelpModal('d2r')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
                     <p class="card-subtitle">Aufmerksamkeits- und Konzentrationstest</p>
                 </div>
                 <form id="d2r-form" onsubmit="evaluateD2R(event)">
@@ -1196,6 +1329,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title"><span class="icon">😢</span> DIKJ <span class="badge">Depression</span></h2>
+                    <button class="help-btn" onclick="showHelpModal('dikj')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
                     <p class="card-subtitle">Depressions-Inventar für Kinder und Jugendliche – Depressive Symptomatik 8-17 Jahre</p>
                 </div>
                 <form id="dikj-form" onsubmit="evaluateDIKJ(event)">
@@ -1227,6 +1361,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title"><span class="icon">⚡</span> Conners-3 <span class="badge">ADHS</span></h2>
+                    <button class="help-btn" onclick="showHelpModal('conners')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
                     <p class="card-subtitle">Conners Skalen zur Aufmerksamkeit und Verhalten – ADHS-Diagnostik 6-18 Jahre</p>
                 </div>
                 <form id="conners-form" onsubmit="evaluateConners(event)">
@@ -1278,6 +1413,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title"><span class="icon">💗</span> FEEL-KJ <span class="badge">Emotionsregulation</span></h2>
+                    <button class="help-btn" onclick="showHelpModal('feelkj')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
                     <p class="card-subtitle">Fragebogen zur Erhebung der Emotionsregulation bei Kindern und Jugendlichen</p>
                 </div>
                 <form id="feelkj-form" onsubmit="evaluateFEELKJ(event)">
@@ -1324,6 +1460,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title"><span class="icon">🧩</span> CFT 20-R <span class="badge">Intelligenz</span></h2>
+                    <button class="help-btn" onclick="showHelpModal('cft')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
                     <p class="card-subtitle">Culture Fair Intelligence Test – Sprachfreie Grundintelligenz 8-60 Jahre</p>
                 </div>
                 <form id="cft-form" onsubmit="evaluateCFT(event)">
@@ -1376,6 +1513,19 @@
             </div>
         </section>
     </main>
+
+    <!-- Modal für Durchführungshinweise -->
+    <div id="help-modal" class="modal" onclick="if(event.target === this) closeHelpModal()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Durchführungshinweise</h3>
+                <button class="modal-close" onclick="closeHelpModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Content wird dynamisch eingefügt -->
+            </div>
+        </div>
+    </div>
 
     <footer class="footer">
         <p><strong>PsychoDiagnostik Pro</strong> – Open-Source Diagnostik-Tool</p>
@@ -1947,20 +2097,39 @@
             `
         };
 
-        function durchfuehrungsHinweise(testKey) {
-            if (!ADMIN_HINWEISE[testKey]) return '';
-            return `
-                <div class="admin-hinweise" onclick="this.classList.toggle('open')">
-                    <div class="admin-hinweise-header">
-                        <h4>📋 Durchführungshinweise für Testleiter/innen</h4>
-                        <span class="admin-hinweise-toggle">▼</span>
-                    </div>
-                    <div class="admin-hinweise-content">
-                        ${ADMIN_HINWEISE[testKey]}
-                    </div>
-                </div>
-            `;
+        // Test-Namen für Modal-Titel
+        const TEST_NAMES = {
+            sdq: 'SDQ – Strengths and Difficulties Questionnaire',
+            wisc: 'WISC-V – Wechsler Intelligence Scale',
+            cbcl: 'CBCL – Child Behavior Checklist',
+            disyps: 'DISYPS-III – Diagnostik-System',
+            afs: 'AFS – Angstfragebogen für Schüler',
+            d2r: 'd2-R – Aufmerksamkeits-/Konzentrationstest',
+            dikj: 'DIKJ – Depressions-Inventar',
+            conners: 'Conners-3 – ADHS-Diagnostik',
+            feelkj: 'FEEL-KJ – Emotionsregulation',
+            cft: 'CFT 20-R – Culture Fair Intelligence Test'
+        };
+
+        // Modal öffnen mit Durchführungshinweisen
+        function showHelpModal(testKey) {
+            if (!ADMIN_HINWEISE[testKey]) return;
+            document.getElementById('modal-title').innerHTML = '📋 ' + (TEST_NAMES[testKey] || testKey);
+            document.getElementById('modal-body').innerHTML = ADMIN_HINWEISE[testKey];
+            document.getElementById('help-modal').classList.add('show');
+            document.body.style.overflow = 'hidden';
         }
+
+        // Modal schließen
+        function closeHelpModal() {
+            document.getElementById('help-modal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // ESC-Taste zum Schließen
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeHelpModal();
+        });
 
         const S = { normal: 'Unauffällig', borderline: 'Grenzwertig', clinical: 'Auffällig' };
 
@@ -2061,8 +2230,6 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('SDQ', 'Strengths and Difficulties Questionnaire', pat)}
-
-                    ${durchfuehrungsHinweise('sdq')}
 
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Untersuchungsanlass und Fragestellung</h4>
@@ -2270,8 +2437,6 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('WISC-V', 'Wechsler Intelligence Scale for Children – Fifth Edition', pat)}
-
-                    ${durchfuehrungsHinweise('wisc')}
 
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Untersuchungsanlass und Fragestellung</h4>
@@ -2580,8 +2745,6 @@
                 <div class="gutachten">
                     ${gutachtenHeader('CBCL/TRF/YSR', 'Child Behavior Checklist – Achenbach System', pat)}
 
-                    ${durchfuehrungsHinweise('cbcl')}
-
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
@@ -2747,8 +2910,6 @@
                 <div class="gutachten">
                     ${gutachtenHeader('DISYPS-III', 'Diagnostik-System für psychische Störungen nach ICD-10/11 und DSM-5', pat)}
 
-                    ${durchfuehrungsHinweise('disyps')}
-
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
@@ -2898,8 +3059,6 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('AFS', 'Angstfragebogen für Schüler', pat)}
-
-                    ${durchfuehrungsHinweise('afs')}
 
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
@@ -3061,8 +3220,6 @@
                 <div class="gutachten">
                     ${gutachtenHeader('d2-R', 'Aufmerksamkeits- und Konzentrationstest – Revision', pat)}
 
-                    ${durchfuehrungsHinweise('d2r')}
-
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
@@ -3164,7 +3321,6 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('DIKJ', 'Depressions-Inventar für Kinder und Jugendliche', pat)}
-                    ${durchfuehrungsHinweise('dikj')}
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
@@ -3296,7 +3452,6 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('Conners-3', 'Conners Skalen zu Aufmerksamkeit und Verhalten – 3. Auflage', pat)}
-                    ${durchfuehrungsHinweise('conners')}
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
@@ -3414,7 +3569,6 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('FEEL-KJ', 'Fragebogen zur Erhebung der Emotionsregulation bei Kindern und Jugendlichen', pat)}
-                    ${durchfuehrungsHinweise('feelkj')}
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
@@ -3519,7 +3673,6 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('CFT 20-R', 'Culture Fair Intelligence Test – Revision', pat)}
-                    ${durchfuehrungsHinweise('cft')}
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
