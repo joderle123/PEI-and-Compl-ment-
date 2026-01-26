@@ -1145,103 +1145,194 @@
 
             const labels = ['Emotional','Verhalten','Hyperaktiv.','Peer','Prosozial'];
             const keys = ['em','co','hy','pe','pr'];
+            const respFull = {parent:'der Eltern',teacher:'der Lehrkraft',self:'des Kindes/Jugendlichen selbst'}[r];
+            const pronomen = pat.sex === 'w' ? {er:'sie',sein:'ihr',ihm:'ihr',den:'die'} : {er:'er',sein:'sein',ihm:'ihm',den:'den'};
 
-            // Interpretation generieren
-            let interp = '';
-            const auffaellig = Object.entries(c).filter(([k,v])=>k!=='pr'&&k!=='tot'&&v==='clinical').map(([k])=>SDQ_LABELS[k]);
-            const grenz = Object.entries(c).filter(([k,v])=>k!=='pr'&&k!=='tot'&&v==='borderline').map(([k])=>SDQ_LABELS[k]);
+            // Ausführliche Skalenbeschreibungen
+            const skalaTexte = {
+                em: {
+                    normal: `Die Skala "Emotionale Probleme" erfasst Symptome wie Sorgen, Ängste, Niedergeschlagenheit und körperliche Beschwerden in Stresssituationen. Mit einem Wert von ${d.em} Punkten liegt ${pat.name} im unauffälligen Bereich. Dies deutet darauf hin, dass ${pronomen.er} über eine angemessene emotionale Regulation verfügt und keine übermäßigen Ängste oder depressiven Symptome zeigt.`,
+                    borderline: `Die Skala "Emotionale Probleme" erfasst Symptome wie Sorgen, Ängste, Niedergeschlagenheit und körperliche Beschwerden in Stresssituationen. Mit einem Wert von ${d.em} Punkten liegt ${pat.name} im grenzwertigen Bereich. Dies kann auf eine erhöhte emotionale Vulnerabilität hindeuten, die jedoch noch nicht das Ausmaß einer klinisch relevanten Störung erreicht. Eine weitere Beobachtung wird empfohlen.`,
+                    clinical: `Die Skala "Emotionale Probleme" erfasst Symptome wie Sorgen, Ängste, Niedergeschlagenheit und körperliche Beschwerden in Stresssituationen. Mit einem Wert von ${d.em} Punkten liegt ${pat.name} im klinisch auffälligen Bereich. Dies weist auf eine erhöhte emotionale Belastung hin, die sich in Form von übermäßigen Sorgen, Ängsten, Traurigkeit oder psychosomatischen Beschwerden manifestieren kann. Eine vertiefte diagnostische Abklärung emotionaler Störungen wird dringend empfohlen.`
+                },
+                co: {
+                    normal: `Die Skala "Verhaltensprobleme" erfasst oppositionelles, aggressives und regelverletzendes Verhalten. Mit einem Wert von ${d.co} Punkten zeigt ${pat.name} ein unauffälliges Verhalten im Bereich der Verhaltensregulation. ${pronomen.er.charAt(0).toUpperCase() + pronomen.er.slice(1)} scheint in der Lage zu sein, ${pronomen.sein} Verhalten angemessen zu steuern und soziale Regeln einzuhalten.`,
+                    borderline: `Die Skala "Verhaltensprobleme" erfasst oppositionelles, aggressives und regelverletzendes Verhalten. Mit einem Wert von ${d.co} Punkten liegt ${pat.name} im grenzwertigen Bereich. Es können gelegentlich Schwierigkeiten in der Verhaltenssteuerung auftreten, die jedoch situationsabhängig sein können und noch nicht das Ausmaß einer Verhaltensstörung erreichen.`,
+                    clinical: `Die Skala "Verhaltensprobleme" erfasst oppositionelles, aggressives und regelverletzendes Verhalten. Mit einem Wert von ${d.co} Punkten liegt ${pat.name} im klinisch auffälligen Bereich. Dies deutet auf deutliche Schwierigkeiten in der Verhaltenssteuerung hin, die sich in Form von häufigen Wutausbrüchen, Lügen, Stehlen oder körperlicher Aggression zeigen können. Eine weiterführende Diagnostik hinsichtlich einer Störung des Sozialverhaltens sollte erfolgen.`
+                },
+                hy: {
+                    normal: `Die Skala "Hyperaktivität/Unaufmerksamkeit" erfasst motorische Unruhe, Impulsivität und Konzentrationsschwierigkeiten. Mit einem Wert von ${d.hy} Punkten liegt ${pat.name} im unauffälligen Bereich. ${pronomen.er.charAt(0).toUpperCase() + pronomen.er.slice(1)} zeigt eine altersangemessene Aufmerksamkeitsspanne und Aktivitätsniveau.`,
+                    borderline: `Die Skala "Hyperaktivität/Unaufmerksamkeit" erfasst motorische Unruhe, Impulsivität und Konzentrationsschwierigkeiten. Mit einem Wert von ${d.hy} Punkten liegt ${pat.name} im grenzwertigen Bereich. Es können situativ erhöhte Unruhe oder Konzentrationsschwierigkeiten auftreten, die jedoch nicht zwangsläufig auf eine ADHS hindeuten.`,
+                    clinical: `Die Skala "Hyperaktivität/Unaufmerksamkeit" erfasst motorische Unruhe, Impulsivität und Konzentrationsschwierigkeiten. Mit einem Wert von ${d.hy} Punkten liegt ${pat.name} im klinisch auffälligen Bereich. Dies weist auf deutliche Schwierigkeiten mit Aufmerksamkeit, Impulskontrolle und/oder motorischer Unruhe hin. Eine umfassende ADHS-Diagnostik wird dringend empfohlen, um das Vorliegen einer Aufmerksamkeitsdefizit-/Hyperaktivitätsstörung abzuklären.`
+                },
+                pe: {
+                    normal: `Die Skala "Probleme mit Gleichaltrigen" erfasst die Qualität der Peer-Beziehungen, soziale Isolation und Viktimisierungserfahrungen. Mit einem Wert von ${d.pe} Punkten zeigt ${pat.name} unauffällige Peer-Beziehungen. ${pronomen.er.charAt(0).toUpperCase() + pronomen.er.slice(1)} scheint gut in die Gruppe Gleichaltriger integriert zu sein und über angemessene soziale Kompetenzen zu verfügen.`,
+                    borderline: `Die Skala "Probleme mit Gleichaltrigen" erfasst die Qualität der Peer-Beziehungen, soziale Isolation und Viktimisierungserfahrungen. Mit einem Wert von ${d.pe} Punkten liegt ${pat.name} im grenzwertigen Bereich. Es können leichte Schwierigkeiten im Kontakt mit Gleichaltrigen bestehen, etwa eine Tendenz zum Einzelgänger-Dasein oder gelegentliche Konflikte.`,
+                    clinical: `Die Skala "Probleme mit Gleichaltrigen" erfasst die Qualität der Peer-Beziehungen, soziale Isolation und Viktimisierungserfahrungen. Mit einem Wert von ${d.pe} Punkten liegt ${pat.name} im klinisch auffälligen Bereich. Dies deutet auf erhebliche Schwierigkeiten im Umgang mit Gleichaltrigen hin. ${pronomen.er.charAt(0).toUpperCase() + pronomen.er.slice(1)} könnte sozial isoliert sein, Opfer von Mobbing werden oder grundlegende Defizite in sozialen Kompetenzen aufweisen. Differenzialdiagnostisch sollten soziale Ängste, Autismus-Spektrum-Störungen oder Bindungsstörungen in Betracht gezogen werden.`
+                },
+                pr: {
+                    normal: `Die Skala "Prosoziales Verhalten" erfasst positive Verhaltensweisen wie Hilfsbereitschaft, Rücksichtnahme und Empathie. Mit einem Wert von ${d.pr} Punkten zeigt ${pat.name} ein ausgeprägtes prosoziales Verhalten. ${pronomen.er.charAt(0).toUpperCase() + pronomen.er.slice(1)} ist hilfsbereit, rücksichtsvoll gegenüber anderen und zeigt Mitgefühl, wenn jemand verletzt oder traurig ist.`,
+                    borderline: `Die Skala "Prosoziales Verhalten" erfasst positive Verhaltensweisen wie Hilfsbereitschaft, Rücksichtnahme und Empathie. Mit einem Wert von ${d.pr} Punkten liegt ${pat.name} im grenzwertigen Bereich. Das prosoziale Verhalten könnte etwas weniger ausgeprägt sein als bei Gleichaltrigen, was auf Entwicklungsverzögerungen oder situative Faktoren zurückzuführen sein kann.`,
+                    clinical: `Die Skala "Prosoziales Verhalten" erfasst positive Verhaltensweisen wie Hilfsbereitschaft, Rücksichtnahme und Empathie. Mit einem Wert von ${d.pr} Punkten liegt ${pat.name} im auffällig niedrigen Bereich. Dies deutet auf deutliche Defizite in der sozial-emotionalen Entwicklung hin. ${pronomen.er.charAt(0).toUpperCase() + pronomen.er.slice(1)} zeigt möglicherweise wenig Mitgefühl oder Hilfsbereitschaft, was die sozialen Beziehungen belasten kann. Dies sollte im Rahmen der Gesamtdiagnostik berücksichtigt werden.`
+                }
+            };
 
+            // Gesamtinterpretation
+            let gesamtInterp = '';
             if(c.tot === 'normal') {
-                interp = `Der Gesamtproblemwert von ${tot} Punkten liegt im unauffälligen Bereich. Dies deutet darauf hin, dass ${pat.name} aus Sicht des ${RESP_TEXT[r]}s derzeit keine bedeutsamen psychischen Auffälligkeiten zeigt.`;
+                gesamtInterp = `
+                    <p>Die Auswertung des SDQ auf Basis ${respFull} ergibt einen Gesamtproblemwert von ${tot} Punkten. Dieser Wert liegt im <strong>unauffälligen Bereich</strong> der altersentsprechenden Normstichprobe.</p>
+                    <p>${pat.name} zeigt zum aktuellen Zeitpunkt aus der Perspektive ${respFull} keine klinisch bedeutsamen psychischen Auffälligkeiten. Das Ergebnisprofil spricht für eine weitgehend unbelastete psychische Entwicklung. Die erfassten Bereiche emotionale Regulation, Verhaltenssteuerung, Aufmerksamkeit und soziale Integration liegen im Normbereich.</p>
+                    <p>Es ist zu beachten, dass der SDQ als Screening-Instrument konzipiert ist und eine Momentaufnahme darstellt. Subklinische Belastungen oder situative Schwierigkeiten werden möglicherweise nicht vollständig erfasst. Bei zukünftigen Veränderungen im Verhalten oder emotionalen Befinden sollte eine erneute Einschätzung erfolgen.</p>
+                `;
             } else if(c.tot === 'borderline') {
-                interp = `Der Gesamtproblemwert von ${tot} Punkten liegt im grenzwertigen Bereich und bedarf weiterer Beobachtung. Eine subklinische Belastung ist möglich.`;
+                gesamtInterp = `
+                    <p>Die Auswertung des SDQ auf Basis ${respFull} ergibt einen Gesamtproblemwert von ${tot} Punkten. Dieser Wert liegt im <strong>grenzwertigen Bereich</strong> und befindet sich damit zwischen dem unauffälligen und dem klinisch auffälligen Bereich.</p>
+                    <p>Dieses Ergebnis deutet auf eine subklinische psychische Belastung hin, die zwar noch nicht das Ausmaß einer manifesten Störung erreicht, jedoch aufmerksam beobachtet werden sollte. ${pat.name} zeigt in einzelnen Bereichen Auffälligkeiten, die ${pronomen.sein}e psychosoziale Anpassung beeinträchtigen könnten.</p>
+                    <p>Es wird empfohlen, die weitere Entwicklung engmaschig zu beobachten und bei Persistenz oder Zunahme der Symptomatik eine vertiefte diagnostische Abklärung durchzuführen. Der Einbezug weiterer Informationsquellen (z.B. anderer Beurteiler, Verhaltensbeobachtung) kann zur Validierung der Befunde beitragen.</p>
+                `;
             } else {
-                interp = `Der Gesamtproblemwert von ${tot} Punkten liegt im klinisch auffälligen Bereich und weist auf eine erhöhte psychische Belastung hin, die einer weiteren diagnostischen Abklärung bedarf.`;
+                gesamtInterp = `
+                    <p>Die Auswertung des SDQ auf Basis ${respFull} ergibt einen Gesamtproblemwert von ${tot} Punkten. Dieser Wert liegt im <strong>klinisch auffälligen Bereich</strong> und überschreitet damit den Cut-off-Wert für eine erhöhte psychische Belastung deutlich.</p>
+                    <p>Dieses Ergebnis weist auf eine signifikante psychische Belastung hin, die mit hoher Wahrscheinlichkeit die psychosoziale Anpassung und das Wohlbefinden von ${pat.name} beeinträchtigt. Die erhöhten Werte erfordern eine umgehende vertiefte diagnostische Abklärung, um das Vorliegen einer oder mehrerer psychischer Störungen zu prüfen.</p>
+                    <p>Der SDQ als Screening-Instrument kann keine Diagnose stellen, liefert jedoch wichtige Hinweise auf Problembereiche, die im Rahmen einer umfassenden klinischen Diagnostik weiter exploriert werden müssen. Der Einbezug verschiedener Informationsquellen und standardisierter diagnostischer Verfahren ist dringend indiziert.</p>
+                `;
             }
 
-            if(auffaellig.length) interp += ` Klinisch auffällige Werte zeigen sich in: ${auffaellig.join(', ')}.`;
-            if(grenz.length) interp += ` Grenzwertige Befunde liegen vor bei: ${grenz.join(', ')}.`;
-
-            if(c.pr === 'clinical') interp += ` Das prosoziale Verhalten ist auffällig reduziert, was auf mögliche Defizite in der sozial-emotionalen Entwicklung hindeuten kann.`;
-
-            // Differenzialdiagnostik
-            let diffDiag = '<ul class="gutachten-list">';
-            if(c.em === 'clinical') diffDiag += '<li>Emotionale Störungen des Kindesalters (F93), Angststörungen (F40-F41), Depressive Episode (F32)</li>';
-            if(c.co === 'clinical') diffDiag += '<li>Störung des Sozialverhaltens (F91), Oppositionelle Störung (F91.3)</li>';
-            if(c.hy === 'clinical') diffDiag += '<li>Hyperkinetische Störungen/ADHS (F90)</li>';
-            if(c.pe === 'clinical') diffDiag += '<li>Soziale Ängste (F40.1), Bindungsstörungen (F94), Autismus-Spektrum-Störungen (F84)</li>';
-            diffDiag += '</ul>';
-
-            // Empfehlungen
-            let empf = '<ul class="gutachten-list">';
-            if(c.tot !== 'normal') {
-                empf += '<li>Vertiefte psychodiagnostische Untersuchung empfohlen</li>';
-                if(c.em === 'clinical' || c.em === 'borderline') empf += '<li>Exploration emotionaler Belastungsfaktoren und Ängste</li>';
-                if(c.co === 'clinical' || c.hy === 'clinical') empf += '<li>Verhaltensbeobachtung in strukturierten und unstrukturierten Situationen</li>';
-                if(c.pe === 'clinical') empf += '<li>Abklärung sozialer Kompetenzen und Peer-Beziehungen</li>';
-                empf += '<li>Einbezug weiterer Informationsquellen (Eltern, Lehrkräfte, Selbsturteil)</li>';
+            // Internalisierend vs. Externalisierend
+            let profilText = '';
+            if(intern > extern + 3) {
+                profilText = `<p><strong>Profilanalyse:</strong> Das Ergebnisprofil zeigt eine Betonung internalisierender Symptome (Summe: ${intern}) gegenüber externalisierenden Symptomen (Summe: ${extern}). Dies deutet darauf hin, dass eventuelle Schwierigkeiten sich eher nach innen richten (z.B. Ängste, Sorgen, sozialer Rückzug) als nach außen (z.B. aggressives oder regelverletzendes Verhalten). Internalisierende Störungen werden häufig übersehen, da sie weniger störend für die Umgebung sind.</p>`;
+            } else if(extern > intern + 3) {
+                profilText = `<p><strong>Profilanalyse:</strong> Das Ergebnisprofil zeigt eine Betonung externalisierender Symptome (Summe: ${extern}) gegenüber internalisierenden Symptomen (Summe: ${intern}). Dies deutet darauf hin, dass eventuelle Schwierigkeiten sich eher nach außen richten (z.B. Unruhe, impulsives oder aggressives Verhalten). Externalisierende Verhaltensweisen fallen in der Regel schneller auf und führen häufiger zu Konflikten mit der Umwelt.</p>`;
             } else {
-                empf += '<li>Keine unmittelbare Intervention erforderlich</li>';
-                empf += '<li>Ggf. Verlaufskontrolle bei Veränderungen</li>';
+                profilText = `<p><strong>Profilanalyse:</strong> Das Verhältnis von internalisierenden (Summe: ${intern}) zu externalisierenden Symptomen (Summe: ${extern}) ist relativ ausgeglichen. Es zeigt sich keine eindeutige Betonung einer der beiden Symptomgruppen.</p>`;
             }
-            empf += '</ul>';
 
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('SDQ', 'Strengths and Difficulties Questionnaire', pat)}
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <h4 class="gutachten-section-title">1. Untersuchungsanlass und Fragestellung</h4>
                         <div class="gutachten-text">
-                            <p>Der SDQ (Strengths and Difficulties Questionnaire; Goodman, 1997) ist ein international etabliertes Screening-Instrument zur Erfassung von Verhaltensauffälligkeiten und -stärken bei Kindern und Jugendlichen im Alter von 4-17 Jahren. Der Fragebogen umfasst 25 Items, die fünf Skalen zugeordnet sind: Emotionale Probleme, Verhaltensprobleme, Hyperaktivität/Unaufmerksamkeit, Probleme mit Gleichaltrigen sowie Prosoziales Verhalten. Die ersten vier Skalen bilden einen Gesamtproblemwert.</p>
-                            <p><strong>Informant:</strong> ${RESP_TEXT[r]}</p>
+                            <p>Im Rahmen der psychodiagnostischen Untersuchung wurde der Strengths and Difficulties Questionnaire (SDQ) als Screening-Instrument zur Erfassung von Verhaltensauffälligkeiten und psychischen Belastungen eingesetzt. Der SDQ dient der orientierenden Einschätzung des psychischen Befindens und soll Hinweise auf mögliche Problembereiche liefern, die einer vertieften diagnostischen Abklärung bedürfen.</p>
+                            <p>Die Befragung erfolgte mittels des standardisierten Fragebogens durch: <strong>${RESP_TEXT[r]}</strong>.</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <h4 class="gutachten-section-title">2. Beschreibung des Testverfahrens</h4>
+                        <div class="gutachten-text">
+                            <p>Der SDQ (Strengths and Difficulties Questionnaire; Goodman, 1997; deutsche Fassung: Klasen et al., 2000) ist ein international weit verbreitetes und psychometrisch gut validiertes Screening-Instrument zur Erfassung von Verhaltensauffälligkeiten und -stärken bei Kindern und Jugendlichen im Alter von 4 bis 17 Jahren. Das Verfahren ist von der Weltgesundheitsorganisation (WHO) empfohlen und in über 80 Sprachen verfügbar.</p>
+                            <p>Der Fragebogen umfasst 25 Items, die auf einer dreistufigen Skala (0 = nicht zutreffend, 1 = teilweise zutreffend, 2 = eindeutig zutreffend) beantwortet werden. Die Items verteilen sich auf fünf Subskalen mit je fünf Items:</p>
+                            <ul class="gutachten-list">
+                                <li><strong>Emotionale Probleme (EM):</strong> Erfasst Symptome von Ängstlichkeit, Niedergeschlagenheit, körperliche Beschwerden in Stresssituationen und übermäßige Sorgen.</li>
+                                <li><strong>Verhaltensprobleme (VP):</strong> Erfasst oppositionelles, aggressives und dissoziales Verhalten wie Wutausbrüche, Ungehorsam und Lügen.</li>
+                                <li><strong>Hyperaktivität/Unaufmerksamkeit (HY):</strong> Erfasst motorische Unruhe, Impulsivität, Ablenkbarkeit und mangelnde Ausdauer.</li>
+                                <li><strong>Probleme mit Gleichaltrigen (PE):</strong> Erfasst soziale Isolation, mangelnde Peer-Beziehungen, Viktimisierung und Bevorzugung von Erwachsenen.</li>
+                                <li><strong>Prosoziales Verhalten (PR):</strong> Erfasst positive Verhaltensweisen wie Hilfsbereitschaft, Rücksichtnahme, Teilen und Trösten.</li>
+                            </ul>
+                            <p>Aus den ersten vier Skalen wird ein <strong>Gesamtproblemwert</strong> (Summe: 0-40) gebildet. Die Skala Prosoziales Verhalten wird separat ausgewertet, da sie Stärken und nicht Probleme erfasst. Die Normierung erfolgte anhand repräsentativer deutscher Stichproben mit separaten Normwerten für Eltern-, Lehrer- und Selbsturteil.</p>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">3. Quantitative Testergebnisse</h4>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>Rohwert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>Skala</th><th>Rohwert</th><th>Unauffällig</th><th>Grenzwertig</th><th>Auffällig</th><th>Klassifikation</th></tr></thead>
                             <tbody>
-                                <tr><td>Emotionale Probleme</td><td>${d.em}</td><td>0-${SDQ_N[r].em[0]}</td><td class="${c.em}">${S[c.em]}</td></tr>
-                                <tr><td>Verhaltensprobleme</td><td>${d.co}</td><td>0-${SDQ_N[r].co[0]}</td><td class="${c.co}">${S[c.co]}</td></tr>
-                                <tr><td>Hyperaktivität</td><td>${d.hy}</td><td>0-${SDQ_N[r].hy[0]}</td><td class="${c.hy}">${S[c.hy]}</td></tr>
-                                <tr><td>Probleme mit Gleichaltrigen</td><td>${d.pe}</td><td>0-${SDQ_N[r].pe[0]}</td><td class="${c.pe}">${S[c.pe]}</td></tr>
-                                <tr><td>Prosoziales Verhalten</td><td>${d.pr}</td><td>${SDQ_N[r].pr[0]}-10</td><td class="${c.pr}">${S[c.pr]}</td></tr>
-                                <tr style="font-weight:700;background:var(--bg-input);"><td>Gesamtproblemwert</td><td>${tot}</td><td>0-${SDQ_N[r].tot[0]}</td><td class="${c.tot}">${S[c.tot]}</td></tr>
+                                <tr><td>Emotionale Probleme</td><td><strong>${d.em}</strong></td><td>0-${SDQ_N[r].em[0]}</td><td>${SDQ_N[r].em[0]+1}-${SDQ_N[r].em[1]}</td><td>${SDQ_N[r].em[1]+1}-10</td><td class="${c.em}"><strong>${S[c.em]}</strong></td></tr>
+                                <tr><td>Verhaltensprobleme</td><td><strong>${d.co}</strong></td><td>0-${SDQ_N[r].co[0]}</td><td>${SDQ_N[r].co[0]+1}-${SDQ_N[r].co[1]}</td><td>${SDQ_N[r].co[1]+1}-10</td><td class="${c.co}"><strong>${S[c.co]}</strong></td></tr>
+                                <tr><td>Hyperaktivität/Unaufmerksamkeit</td><td><strong>${d.hy}</strong></td><td>0-${SDQ_N[r].hy[0]}</td><td>${SDQ_N[r].hy[0]+1}-${SDQ_N[r].hy[1]}</td><td>${SDQ_N[r].hy[1]+1}-10</td><td class="${c.hy}"><strong>${S[c.hy]}</strong></td></tr>
+                                <tr><td>Probleme mit Gleichaltrigen</td><td><strong>${d.pe}</strong></td><td>0-${SDQ_N[r].pe[0]}</td><td>${SDQ_N[r].pe[0]+1}-${SDQ_N[r].pe[1]}</td><td>${SDQ_N[r].pe[1]+1}-10</td><td class="${c.pe}"><strong>${S[c.pe]}</strong></td></tr>
+                                <tr><td>Prosoziales Verhalten</td><td><strong>${d.pr}</strong></td><td>${SDQ_N[r].pr[0]}-10</td><td>${SDQ_N[r].pr[1]}-${SDQ_N[r].pr[0]-1}</td><td>0-${SDQ_N[r].pr[1]-1}</td><td class="${c.pr}"><strong>${S[c.pr]}</strong></td></tr>
+                                <tr style="background:var(--bg-input);"><td><strong>Gesamtproblemwert</strong></td><td><strong>${tot}</strong></td><td>0-${SDQ_N[r].tot[0]}</td><td>${SDQ_N[r].tot[0]+1}-${SDQ_N[r].tot[1]}</td><td>${SDQ_N[r].tot[1]+1}-40</td><td class="${c.tot}"><strong>${S[c.tot]}</strong></td></tr>
                             </tbody>
                         </table>
-                        <p style="margin-top:1rem;font-size:0.85rem;color:var(--text-muted);">Internalisierend (EM+PE): ${intern} | Externalisierend (VP+HY): ${extern}</p>
+                        <p style="margin-top:1rem;"><strong>Summenwerte:</strong> Internalisierende Symptome (EM+PE): ${intern} | Externalisierende Symptome (VP+HY): ${extern}</p>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Grafische Darstellung</h4>
+                        <h4 class="gutachten-section-title">4. Grafische Darstellung des Ergebnisprofils</h4>
                         <div class="chart-container">${chart(labels,keys.map(k=>d[k]),keys.map(k=>c[k]),10)}</div>
+                        <p style="text-align:center;margin-top:1rem;font-size:0.85rem;color:var(--text-muted);">Grün = Unauffällig | Orange = Grenzwertig | Rot = Klinisch auffällig</p>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Interpretation</h4>
-                        <div class="gutachten-text"><p>${interp}</p></div>
-                        ${c.tot !== 'normal' ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Die Befunde deuten auf eine erhöhte psychische Belastung hin und sollten im Rahmen einer umfassenden Diagnostik weiter abgeklärt werden.</div>' : ''}
-                    </div>
-
-                    <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">5. Differenzialdiagnostische Überlegungen</h4>
+                        <h4 class="gutachten-section-title">5. Interpretation der Ergebnisse</h4>
                         <div class="gutachten-text">
-                            <p>Basierend auf dem Ergebnisprofil sollten folgende Störungsbilder differenzialdiagnostisch in Betracht gezogen werden:</p>
-                            ${c.tot !== 'normal' ? diffDiag : '<p>Bei unauffälligem Gesamtprofil keine spezifischen differenzialdiagnostischen Hinweise.</p>'}
-                            <p style="margin-top:1rem;"><strong>Relevante ICD-10 Codes:</strong></p>
-                            ${c.em === 'clinical' ? '<span class="icd-code">F93.x</span><span class="icd-code">F32.x</span>' : ''}
-                            ${c.co === 'clinical' ? '<span class="icd-code">F91.x</span>' : ''}
-                            ${c.hy === 'clinical' ? '<span class="icd-code">F90.x</span>' : ''}
-                            ${c.pe === 'clinical' ? '<span class="icd-code">F40.1</span><span class="icd-code">F94.x</span>' : ''}
-                            ${c.tot === 'normal' ? '<span class="icd-code">Z03.2</span> (Beobachtung bei V.a. psychische Störung – nicht bestätigt)' : ''}
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">5.1 Gesamtbeurteilung</h5>
+                            ${gesamtInterp}
+                            ${profilText}
+
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">5.2 Ergebnisse der einzelnen Skalen</h5>
+                            <p>${skalaTexte.em[c.em]}</p>
+                            <p>${skalaTexte.co[c.co]}</p>
+                            <p>${skalaTexte.hy[c.hy]}</p>
+                            <p>${skalaTexte.pe[c.pe]}</p>
+                            <p>${skalaTexte.pr[c.pr]}</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">6. Empfehlungen</h4>
-                        <div class="gutachten-text">${empf}</div>
+                        <h4 class="gutachten-section-title">6. Diagnostische Einordnung nach ICD-10/ICD-11</h4>
+                        <div class="gutachten-text">
+                            <p>Basierend auf dem vorliegenden Ergebnisprofil ergeben sich folgende diagnostische Überlegungen. Es ist zu betonen, dass der SDQ als Screening-Instrument keine Diagnosen stellen kann, sondern lediglich Hinweise auf mögliche Störungsbilder liefert, die im Rahmen einer umfassenden klinischen Diagnostik weiter abgeklärt werden müssen.</p>
+                            ${c.em === 'clinical' ? `<div class="gutachten-highlight"><strong>Emotionale Störungen:</strong> Der erhöhte Wert auf der Skala Emotionale Probleme ist vereinbar mit dem Vorliegen einer emotionalen Störung des Kindesalters (ICD-10: F93.x), einer Angststörung (F40.x, F41.x) oder einer depressiven Episode (F32.x). Eine vertiefte Angst- und Depressionsdiagnostik wird empfohlen.<br><span class="icd-code">F93.x</span><span class="icd-code">F40.x</span><span class="icd-code">F41.x</span><span class="icd-code">F32.x</span></div>` : ''}
+                            ${c.co === 'clinical' ? `<div class="gutachten-highlight"><strong>Störungen des Sozialverhaltens:</strong> Der erhöhte Wert auf der Skala Verhaltensprobleme ist vereinbar mit dem Vorliegen einer Störung des Sozialverhaltens (ICD-10: F91.x) oder einer Störung mit oppositionellem Trotzverhalten (F91.3). Die Symptomatik sollte hinsichtlich Beginn, Dauer und situativer Generalisiertheit weiter exploriert werden.<br><span class="icd-code">F91.x</span><span class="icd-code">F91.3</span></div>` : ''}
+                            ${c.hy === 'clinical' ? `<div class="gutachten-highlight"><strong>Hyperkinetische Störungen:</strong> Der erhöhte Wert auf der Skala Hyperaktivität/Unaufmerksamkeit ist vereinbar mit dem Vorliegen einer Aufmerksamkeitsdefizit-/Hyperaktivitätsstörung (ICD-10: F90.x). Eine multimodale ADHS-Diagnostik unter Einbezug verschiedener Informationsquellen und Settings wird dringend empfohlen.<br><span class="icd-code">F90.0</span><span class="icd-code">F90.1</span></div>` : ''}
+                            ${c.pe === 'clinical' ? `<div class="gutachten-highlight"><strong>Soziale Funktionsstörungen:</strong> Der erhöhte Wert auf der Skala Probleme mit Gleichaltrigen kann auf verschiedene Störungsbilder hinweisen: Soziale Phobie (F40.1), Bindungsstörungen (F94.x), oder Autismus-Spektrum-Störungen (F84.x). Eine differenzierte Abklärung sozialer Kompetenzen und möglicher Entwicklungsstörungen wird empfohlen.<br><span class="icd-code">F40.1</span><span class="icd-code">F94.x</span><span class="icd-code">F84.x</span></div>` : ''}
+                            ${c.tot === 'normal' ? `<p>Bei unauffälligem Gesamtprofil ergeben sich derzeit keine spezifischen diagnostischen Hinweise auf das Vorliegen einer psychischen Störung. Der Befund ist am ehesten vereinbar mit einer normalen psychischen Entwicklung.</p><span class="icd-code">Z03.2</span> Beobachtung bei Verdacht auf psychische Störung – ausgeschlossen` : ''}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">7. Empfehlungen</h4>
+                        <div class="gutachten-text">
+                            ${c.tot === 'normal' ? `
+                                <p>Auf Basis der vorliegenden Screening-Ergebnisse ergibt sich derzeit kein unmittelbarer Interventionsbedarf. Folgende Empfehlungen werden dennoch ausgesprochen:</p>
+                                <ul class="gutachten-list">
+                                    <li>Aufrechterhaltung der protektiven Faktoren und Ressourcen</li>
+                                    <li>Erneute Screening-Untersuchung bei Veränderungen des psychischen Befindens oder bei Auftreten neuer Belastungsfaktoren</li>
+                                    <li>Bei schulischen oder familiären Schwierigkeiten: niederschwellige Beratungsangebote in Anspruch nehmen</li>
+                                </ul>
+                            ` : c.tot === 'borderline' ? `
+                                <p>Die grenzwertigen Befunde erfordern eine aufmerksame Beobachtung und ggf. präventive Maßnahmen. Folgende Empfehlungen werden ausgesprochen:</p>
+                                <ul class="gutachten-list">
+                                    <li>Engmaschige Verlaufsbeobachtung durch Eltern und Lehrkräfte</li>
+                                    <li>Erneute Screening-Untersuchung in 3-6 Monaten zur Verlaufskontrolle</li>
+                                    <li>Bei Zunahme der Symptomatik: vertiefte psychodiagnostische Abklärung</li>
+                                    <li>Ggf. präventive Beratung für Eltern zu Erziehungsstrategien und emotionaler Unterstützung</li>
+                                    <li>Prüfung schulischer Unterstützungsmaßnahmen bei Bedarf</li>
+                                </ul>
+                            ` : `
+                                <p>Die klinisch auffälligen Befunde erfordern eine umgehende vertiefte Diagnostik und ggf. therapeutische Intervention. Folgende Empfehlungen werden dringend ausgesprochen:</p>
+                                <ul class="gutachten-list">
+                                    <li><strong>Umgehende Vorstellung</strong> in einer kinder- und jugendpsychiatrischen/-psychotherapeutischen Einrichtung oder bei einem approbierten Kinder- und Jugendlichenpsychotherapeuten</li>
+                                    <li>Durchführung einer umfassenden psychodiagnostischen Untersuchung mit störungsspezifischen Verfahren</li>
+                                    ${c.em === 'clinical' ? '<li>Spezifische Angst- und Depressionsdiagnostik (z.B. SCARED, DIKJ, AFS)</li>' : ''}
+                                    ${c.hy === 'clinical' ? '<li>Multimodale ADHS-Diagnostik inkl. Aufmerksamkeitstests, Fremdbeurteilung und Verhaltensbeobachtung</li>' : ''}
+                                    ${c.co === 'clinical' ? '<li>Vertiefte Diagnostik von Störungen des Sozialverhaltens und Exploration familiärer Risikofaktoren</li>' : ''}
+                                    ${c.pe === 'clinical' ? '<li>Soziale Kompetenzdiagnostik und ggf. Abklärung von Autismus-Spektrum-Störungen</li>' : ''}
+                                    <li>Einbezug aller relevanten Informationsquellen (Eltern, Lehrkräfte, Kind selbst)</li>
+                                    <li>Prüfung therapeutischer Interventionen nach Abschluss der Diagnostik</li>
+                                    <li>Beratung der Eltern zu unterstützenden Maßnahmen im häuslichen Umfeld</li>
+                                    <li>Abstimmung mit Schule zu möglichen Unterstützungsmaßnahmen</li>
+                                </ul>
+                            `}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">8. Zusammenfassung</h4>
+                        <div class="gutachten-text">
+                            <p>${pat.name} (${pat.age ? pat.age + ' Jahre' : 'Alter nicht angegeben'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) wurde am ${formatDate(pat.date)} mittels des SDQ (${RESP_TEXT[r]}) untersucht. Der Gesamtproblemwert von ${tot} Punkten liegt im <strong>${c.tot === 'normal' ? 'unauffälligen' : c.tot === 'borderline' ? 'grenzwertigen' : 'klinisch auffälligen'}</strong> Bereich.</p>
+                            ${c.tot === 'normal' ?
+                                `<p>Es ergeben sich derzeit keine Hinweise auf das Vorliegen einer klinisch relevanten psychischen Störung. Die psychische Entwicklung erscheint weitgehend unauffällig.</p>` :
+                                `<p>Die Ergebnisse weisen auf eine erhöhte psychische Belastung hin. ${c.tot === 'clinical' ? 'Eine umgehende vertiefte diagnostische Abklärung wird dringend empfohlen.' : 'Eine weitere Beobachtung und ggf. vertiefte Diagnostik wird empfohlen.'}</p>`
+                            }
+                        </div>
                     </div>
 
                     ${gutachtenFooter()}
@@ -1288,113 +1379,207 @@
             if(!valid.length) return alert('Mindestens ein Wert eingeben');
 
             const c = {}; valid.forEach(([k,x])=>c[k]=iqClass(x.v));
+            const pronomen = pat.sex === 'w' ? {er:'sie',sein:'ihr',ihm:'ihr',seine:'ihre'} : {er:'er',sein:'sein',ihm:'ihm',seine:'seine'};
 
             // Profil-Analyse
             const indices = valid.filter(([k])=>k!=='fsiq');
-            let profilAnalyse = '';
-            if(indices.length >= 2) {
-                const vals = indices.map(([k,x])=>x.v);
-                const diff = Math.max(...vals) - Math.min(...vals);
-                if(diff >= 23) {
-                    profilAnalyse = `Das kognitive Profil zeigt eine signifikante Streuung von ${diff} IQ-Punkten zwischen den Indizes. Diese Heterogenität deutet auf ein unausgeglichenes Leistungsprofil hin, das bei der Interpretation des Gesamt-IQ berücksichtigt werden sollte. Der Gesamt-IQ sollte in diesem Fall mit Vorsicht interpretiert werden.`;
-                } else if(diff >= 15) {
-                    profilAnalyse = `Das kognitive Profil zeigt eine moderate Streuung von ${diff} IQ-Punkten zwischen den Indizes. Die Leistungsfähigkeit in den verschiedenen kognitiven Bereichen ist relativ ausgeglichen.`;
-                } else {
-                    profilAnalyse = `Das kognitive Profil ist mit einer Streuung von nur ${diff} IQ-Punkten homogen. Dies spricht für eine ausgeglichene kognitive Entwicklung in allen erfassten Bereichen.`;
-                }
-            }
+            const vals = indices.map(([k,x])=>x.v);
+            const diff = indices.length >= 2 ? Math.max(...vals) - Math.min(...vals) : 0;
+            const maxIdx = indices.length ? indices.reduce((a,b)=>a[1].v>b[1].v?a:b) : null;
+            const minIdx = indices.length ? indices.reduce((a,b)=>a[1].v<b[1].v?a:b) : null;
 
             // Stärken und Schwächen
-            let staerken = indices.filter(([k,x])=>x.v>=110).map(([k])=>WISC_NAMES[k].n);
-            let schwaechen = indices.filter(([k,x])=>x.v<85).map(([k])=>WISC_NAMES[k].n);
-
-            // Interpretation
-            let interp = '';
+            const staerken = indices.filter(([k,x])=>x.v>=110);
+            const schwaechen = indices.filter(([k,x])=>x.v<85);
             const fsiq = idx.fsiq.v;
-            if(fsiq) {
-                const cl = c.fsiq;
-                interp = `Die Gesamtbewertung der intellektuellen Leistungsfähigkeit mittels WISC-V ergibt einen Gesamt-IQ von ${fsiq} (Prozentrang: ${cl.pr}). Dies entspricht einem ${cl.l.toLowerCase()}en Niveau der allgemeinen kognitiven Fähigkeiten im Vergleich zur Altersgruppe.`;
-            }
 
-            // Empfehlungen basierend auf Ergebnissen
-            let empf = '<ul class="gutachten-list">';
-            if(fsiq && fsiq >= 130) {
-                empf += '<li>Prüfung von Enrichment-Maßnahmen und kognitiver Förderung</li>';
-                empf += '<li>Ggf. Begabungsdiagnostik zur Identifikation spezifischer Talente</li>';
-            } else if(fsiq && fsiq < 70) {
-                empf += '<li>Umfassende Entwicklungsdiagnostik empfohlen</li>';
-                empf += '<li>Prüfung eines sonderpädagogischen Förderbedarfs</li>';
-                empf += '<li>Adaptives Verhalten sollte zusätzlich erfasst werden</li>';
-            } else if(fsiq && fsiq < 85) {
-                empf += '<li>Lernstandsdiagnostik zur Identifikation spezifischer Förderbedarfe</li>';
-                empf += '<li>Prüfung von Nachteilsausgleich</li>';
-            }
-            if(schwaechen.length) {
-                empf += `<li>Gezielte Förderung in den Bereichen: ${schwaechen.join(', ')}</li>`;
-            }
-            if(c.wmi?.c === 'clinical' || c.psi?.c === 'clinical') {
-                empf += '<li>Abklärung von Aufmerksamkeitsproblemen empfohlen (ADHS-Diagnostik)</li>';
-            }
-            empf += '<li>Integration der Ergebnisse mit schulischen Leistungsdaten</li>';
-            empf += '</ul>';
+            // Ausführliche Index-Beschreibungen
+            const indexBeschreibungen = {
+                vci: `<p><strong>Sprachverständnisindex (SVI = ${idx.vci.v || '-'}):</strong> Dieser Index erfasst die sprachliche Begriffsbildung, das verbale Schlussfolgern sowie erworbenes Wissen. Ein ${idx.vci.v >= 110 ? 'überdurchschnittlicher' : idx.vci.v >= 90 ? 'durchschnittlicher' : 'unterdurchschnittlicher'} Wert in diesem Bereich deutet auf ${idx.vci.v >= 110 ? 'gut entwickelte verbale Fähigkeiten hin, die eine Stärke im sprachlichen Denken und der verbalen Ausdrucksfähigkeit repräsentieren' : idx.vci.v >= 90 ? 'altersgemäß entwickelte sprachliche Fähigkeiten' : 'Schwierigkeiten im Bereich der sprachlichen Begriffsbildung, die sich auf das schulische Lernen auswirken können'}. ${idx.vci.v < 90 ? 'Eine logopädische Abklärung sowie sprachliche Förderung könnten indiziert sein.' : ''}</p>`,
+                vsi: `<p><strong>Visuell-räumlicher Index (VRI = ${idx.vsi.v || '-'}):</strong> Dieser Index misst die visuell-räumliche Verarbeitung und die Fähigkeit, räumliche Beziehungen zu analysieren und visuelle Stimuli zu konstruieren. ${pat.name} zeigt ${idx.vsi.v >= 110 ? 'überdurchschnittliche Fähigkeiten in der räumlichen Vorstellung und visuellen Analyse, was eine relative Stärke darstellt' : idx.vsi.v >= 90 ? 'altersgemäße visuell-räumliche Fähigkeiten' : 'Schwierigkeiten in der visuell-räumlichen Verarbeitung, die sich auf Fächer wie Geometrie, Kunst oder technisches Zeichnen auswirken können'}.</p>`,
+                fri: `<p><strong>Index Fluides Schlussfolgern (FSI = ${idx.fri.v || '-'}):</strong> Dieser Index erfasst die Fähigkeit zum induktiven und deduktiven Schlussfolgern sowie zum quantitativen Denken – Fähigkeiten, die relativ unabhängig von erworbenem Wissen sind. ${pat.name} zeigt ${idx.fri.v >= 110 ? 'überdurchschnittliche Fähigkeiten im logischen Denken und Problemlösen, was auf ein hohes Potenzial für abstraktes Denken hindeutet' : idx.fri.v >= 90 ? 'altersgemäße Fähigkeiten im logischen Schlussfolgern' : 'Schwierigkeiten im abstrakten und logischen Denken, die sich auf mathematische und naturwissenschaftliche Fächer auswirken können'}.</p>`,
+                wmi: `<p><strong>Arbeitsgedächtnisindex (AGI = ${idx.wmi.v || '-'}):</strong> Dieser Index misst die Fähigkeit, Informationen kurzfristig im Gedächtnis zu halten und mental zu manipulieren. Das Arbeitsgedächtnis ist zentral für schulisches Lernen, Kopfrechnen und das Befolgen komplexer Anweisungen. ${pat.name} zeigt ${idx.wmi.v >= 110 ? 'eine überdurchschnittliche Arbeitsgedächtniskapazität, was das Lernen und die Informationsverarbeitung erleichtert' : idx.wmi.v >= 90 ? 'eine altersgemäße Arbeitsgedächtniskapazität' : 'Einschränkungen der Arbeitsgedächtniskapazität, die sich auf das Behalten von Anweisungen, Kopfrechnen und das Lernen neuer Inhalte auswirken können'}. ${idx.wmi.v < 85 ? 'Bei Arbeitsgedächtnisdefiziten sollte eine ADHS-Diagnostik erwogen werden, da Aufmerksamkeitsprobleme häufig mit reduzierten AGI-Werten einhergehen.' : ''}</p>`,
+                psi: `<p><strong>Verarbeitungsgeschwindigkeitsindex (VGI = ${idx.psi.v || '-'}):</strong> Dieser Index erfasst die Geschwindigkeit der Informationsverarbeitung und die graphomotorische Geschwindigkeit. Er ist relevant für zeitgebundene Aufgaben und effizientes Arbeiten. ${pat.name} zeigt ${idx.psi.v >= 110 ? 'eine überdurchschnittliche Verarbeitungsgeschwindigkeit, was effizientes Arbeiten unter Zeitdruck ermöglicht' : idx.psi.v >= 90 ? 'eine altersgemäße Verarbeitungsgeschwindigkeit' : 'eine reduzierte Verarbeitungsgeschwindigkeit, die sich auf zeitgebundene Aufgaben und die Bewältigung des Schulalltags auswirken kann'}. ${idx.psi.v < 85 ? 'Bei reduzierter Verarbeitungsgeschwindigkeit sollten Nachteilsausgleiche (z.B. Zeitverlängerung bei Prüfungen) geprüft werden.' : ''}</p>`
+            };
 
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('WISC-V', 'Wechsler Intelligence Scale for Children – Fifth Edition', pat)}
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <h4 class="gutachten-section-title">1. Untersuchungsanlass und Fragestellung</h4>
                         <div class="gutachten-text">
-                            <p>Die WISC-V (Wechsler, 2017; deutsche Version: Petermann, 2017) ist das international am häufigsten eingesetzte Intelligenzdiagnostikum für Kinder und Jugendliche im Alter von 6;0 bis 16;11 Jahren. Das Verfahren erfasst die allgemeine kognitive Leistungsfähigkeit sowie spezifische kognitive Fähigkeiten anhand von fünf Primärindizes.</p>
-                            <p>Die Indexwerte sind IQ-skaliert (M=100, SD=15). Werte zwischen 90-109 entsprechen dem Durchschnittsbereich, Werte ≥110 dem überdurchschnittlichen und Werte ≤89 dem unterdurchschnittlichen Bereich.</p>
+                            <p>Im Rahmen der psychodiagnostischen Untersuchung wurde die WISC-V (Wechsler Intelligence Scale for Children – Fifth Edition) zur Erfassung der kognitiven Leistungsfähigkeit eingesetzt. Die Untersuchung dient der Einschätzung der allgemeinen intellektuellen Fähigkeiten sowie der Identifikation kognitiver Stärken und Schwächen, die für schulische Förderung und Interventionsplanung relevant sind.</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <h4 class="gutachten-section-title">2. Beschreibung des Testverfahrens</h4>
+                        <div class="gutachten-text">
+                            <p>Die WISC-V (Wechsler, 2014; deutsche Adaptation: Petermann, 2017) ist das international am weitesten verbreitete und am besten validierte Individualverfahren zur Erfassung der kognitiven Fähigkeiten von Kindern und Jugendlichen im Alter von 6;0 bis 16;11 Jahren. Das Verfahren basiert auf dem Cattell-Horn-Carroll (CHC) Modell der Intelligenz und erfasst sowohl die allgemeine kognitive Leistungsfähigkeit (g-Faktor) als auch spezifische kognitive Fähigkeiten.</p>
+                            <p>Die WISC-V umfasst 15 Untertests, aus denen fünf Primärindizes und ein Gesamt-IQ gebildet werden:</p>
+                            <ul class="gutachten-list">
+                                <li><strong>Sprachverständnisindex (SVI):</strong> Erfasst kristalline Intelligenz, sprachliche Begriffsbildung, verbales Schlussfolgern und erworbenes Wissen. Untertests: Gemeinsamkeiten finden, Wortschatz-Test.</li>
+                                <li><strong>Visuell-räumlicher Index (VRI):</strong> Erfasst visuell-räumliche Verarbeitung und die Analyse räumlicher Beziehungen. Untertests: Mosaik-Test, Visuelle Puzzles.</li>
+                                <li><strong>Index Fluides Schlussfolgern (FSI):</strong> Erfasst fluide Intelligenz, induktives und quantitatives Schlussfolgern. Untertests: Matrizen-Test, Waagen.</li>
+                                <li><strong>Arbeitsgedächtnisindex (AGI):</strong> Erfasst die Kapazität des Arbeitsgedächtnisses und die Aufmerksamkeitssteuerung. Untertests: Zahlen nachsprechen, Bilder-Folgen.</li>
+                                <li><strong>Verarbeitungsgeschwindigkeitsindex (VGI):</strong> Erfasst die Geschwindigkeit der kognitiven Verarbeitung und graphomotorische Koordination. Untertests: Zahlen-Symbol-Test, Symbol-Suche.</li>
+                            </ul>
+                            <p>Die Ergebnisse werden als IQ-Werte mit einem Mittelwert von 100 und einer Standardabweichung von 15 angegeben. Die Klassifikation erfolgt nach internationalen Standards:</p>
+                            <table class="gutachten-table" style="margin-top:1rem;">
+                                <thead><tr><th>IQ-Bereich</th><th>Klassifikation</th><th>Prozentrang</th><th>Anteil der Population</th></tr></thead>
+                                <tbody>
+                                    <tr><td>≥130</td><td>Weit überdurchschnittlich</td><td>>98</td><td>~2%</td></tr>
+                                    <tr><td>120-129</td><td>Überdurchschnittlich</td><td>91-98</td><td>~7%</td></tr>
+                                    <tr><td>110-119</td><td>Hoch durchschnittlich</td><td>75-90</td><td>~16%</td></tr>
+                                    <tr><td>90-109</td><td>Durchschnittlich</td><td>25-74</td><td>~50%</td></tr>
+                                    <tr><td>80-89</td><td>Niedrig durchschnittlich</td><td>9-24</td><td>~16%</td></tr>
+                                    <tr><td>70-79</td><td>Unterdurchschnittlich</td><td>2-8</td><td>~7%</td></tr>
+                                    <tr><td>≤69</td><td>Weit unterdurchschnittlich</td><td><2</td><td>~2%</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">3. Verhaltensbeobachtung während der Testdurchführung</h4>
+                        <div class="gutachten-text">
+                            <p>${pat.name} zeigte sich während der Testdurchführung kooperativ und bemühte sich erkennbar um gute Leistungen. Die Arbeitshaltung war ${fsiq >= 100 ? 'konzentriert und ausdauernd' : 'angemessen, wobei bei längeren Aufgaben gelegentlich Ermüdungszeichen zu beobachten waren'}. Die Ergebnisse können als valide Schätzung der aktuellen kognitiven Leistungsfähigkeit angesehen werden.</p>
+                            <p><em>Hinweis: Diese Verhaltensbeobachtung ist standardisiert formuliert. Für eine individuelle Beschreibung sollten die tatsächlichen Beobachtungen während der Testdurchführung dokumentiert werden.</em></p>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">4. Quantitative Testergebnisse</h4>
                         <table class="gutachten-table">
-                            <thead><tr><th>Index</th><th>IQ-Wert</th><th>Prozentrang</th><th>Konfidenzintervall (95%)</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>Index</th><th>IQ-Wert</th><th>95%-Konfidenzintervall</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
                             <tbody>
-                                ${valid.map(([k,x])=>`<tr${k==='fsiq'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${WISC_NAMES[k].n}</td><td>${x.v}</td><td>${c[k].pr}</td><td>${x.v-5} – ${x.v+5}</td><td class="${c[k].c}">${c[k].l}</td></tr>`).join('')}
+                                ${valid.map(([k,x])=>`<tr${k==='fsiq'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${WISC_NAMES[k].n}</td><td><strong>${x.v}</strong></td><td>${Math.round(x.v*0.95)} – ${Math.round(x.v*1.05)}</td><td>${c[k].pr}</td><td class="${c[k].c}"><strong>${c[k].l}</strong></td></tr>`).join('')}
                             </tbody>
                         </table>
-                        <p style="margin-top:1rem;font-size:0.85rem;color:var(--text-muted);">Hinweis: Konfidenzintervalle sind approximativ (±5 Punkte).</p>
+                        ${indices.length >= 2 ? `<p style="margin-top:1rem;"><strong>Profilstreuung:</strong> Die Differenz zwischen dem höchsten (${maxIdx ? WISC_NAMES[maxIdx[0]].n.split('(')[0].trim() : '-'}: ${maxIdx ? maxIdx[1].v : '-'}) und niedrigsten Index (${minIdx ? WISC_NAMES[minIdx[0]].n.split('(')[0].trim() : '-'}: ${minIdx ? minIdx[1].v : '-'}) beträgt ${diff} IQ-Punkte. ${diff >= 23 ? 'Diese Streuung ist statistisch signifikant und klinisch bedeutsam.' : diff >= 15 ? 'Diese Streuung ist moderat.' : 'Das Profil ist homogen.'}</p>` : ''}
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Grafische Darstellung</h4>
+                        <h4 class="gutachten-section-title">5. Grafische Darstellung des kognitiven Profils</h4>
                         <div class="chart-container">
-                            <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.75rem;color:var(--text-muted);">
-                                <span>Weit unterdurchschnittlich</span><span>Durchschnitt (90-110)</span><span>Weit überdurchschnittlich</span>
+                            ${chart(valid.map(([k])=>k==='fsiq'?'FSIQ':k.toUpperCase()),valid.map(([k,x])=>x.v),valid.map(([k])=>c[k].c),160)}
+                            <div style="display:flex;justify-content:space-between;margin-top:1rem;font-size:0.75rem;color:var(--text-muted);">
+                                <span>≤69: Weit unterdurchschn.</span><span>90-109: Durchschnitt</span><span>≥130: Weit überdurchschn.</span>
                             </div>
-                            ${chart(valid.map(([k])=>k==='fsiq'?'Gesamt':WISC_NAMES[k].n.split(' ')[0]),valid.map(([k,x])=>x.v),valid.map(([k])=>c[k].c),160)}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Interpretation</h4>
+                        <h4 class="gutachten-section-title">6. Interpretation der Ergebnisse</h4>
                         <div class="gutachten-text">
-                            <p>${interp}</p>
-                            ${profilAnalyse ? `<p>${profilAnalyse}</p>` : ''}
-                            ${staerken.length ? `<div class="gutachten-highlight"><strong>Relative Stärken:</strong> ${staerken.join(', ')}</div>` : ''}
-                            ${schwaechen.length ? `<div class="gutachten-warning"><strong>Relative Schwächen:</strong> ${schwaechen.join(', ')}</div>` : ''}
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">6.1 Allgemeine kognitive Leistungsfähigkeit</h5>
+                            ${fsiq ? `
+                                <p>Die Untersuchung der kognitiven Leistungsfähigkeit mittels WISC-V ergibt einen <strong>Gesamt-IQ von ${fsiq}</strong> (95%-Konfidenzintervall: ${Math.round(fsiq*0.95)}-${Math.round(fsiq*1.05)}). Dieser Wert liegt im <strong>${c.fsiq.l.toLowerCase()}en Bereich</strong> und entspricht einem Prozentrang von ${c.fsiq.pr}. Dies bedeutet, dass ${pat.name} ${fsiq >= 100 ? `besser abschneidet als etwa ${c.fsiq.pr.includes('>') ? 'mehr als 98' : c.fsiq.pr.split('-')[0]}% der Gleichaltrigen` : `von etwa ${100-parseInt(c.fsiq.pr.split('-')[1] || c.fsiq.pr.replace('<',''))}% der Gleichaltrigen übertroffen wird`}.</p>
+                                ${fsiq >= 130 ? `<p>${pat.name} verfügt über eine <strong>weit überdurchschnittliche intellektuelle Begabung</strong>, die im Bereich der intellektuellen Hochbegabung liegt (IQ ≥ 130). Diese außergewöhnlichen kognitiven Fähigkeiten stellen ein besonderes Potenzial dar, das durch geeignete Förderung und Forderung optimal entfaltet werden sollte. Hochbegabte Kinder haben oft besondere Bedürfnisse hinsichtlich der Lernumgebung und können bei mangelnder Passung Unterforderungssymptome zeigen.</p>` : ''}
+                                ${fsiq >= 115 && fsiq < 130 ? `<p>${pat.name} verfügt über <strong>überdurchschnittliche kognitive Fähigkeiten</strong>. ${pronomen.er.charAt(0).toUpperCase() + pronomen.er.slice(1)} ist in der Lage, komplexe Zusammenhänge gut zu erfassen und verfügt über gute Voraussetzungen für anspruchsvolle schulische Anforderungen. Die kognitiven Ressourcen erlauben es ${pronomen.ihm}, neue Lerninhalte schneller zu verstehen als viele Gleichaltrige.</p>` : ''}
+                                ${fsiq >= 85 && fsiq < 115 ? `<p>${pat.name} verfügt über <strong>durchschnittliche kognitive Fähigkeiten</strong>, die eine solide Grundlage für schulisches Lernen darstellen. Die intellektuellen Voraussetzungen entsprechen dem Erwartungswert für ${pronomen.sein} Altersgruppe. Schulische Anforderungen im Regelschulbereich sollten grundsätzlich bewältigt werden können.</p>` : ''}
+                                ${fsiq >= 70 && fsiq < 85 ? `<p>${pat.name} zeigt <strong>unterdurchschnittliche kognitive Fähigkeiten</strong>, die im Bereich der Lernbehinderung liegen (IQ 70-84). Dies bedeutet, dass ${pronomen.er} mehr Zeit und Unterstützung benötigt, um Lerninhalte zu erfassen. Schulische Anforderungen können eine erhöhte Anstrengung erfordern, und es sollte geprüft werden, ob Unterstützungsmaßnahmen (z.B. Nachteilsausgleich, Förderunterricht) indiziert sind.</p>` : ''}
+                                ${fsiq < 70 ? `<p>${pat.name} zeigt <strong>deutlich unterdurchschnittliche kognitive Fähigkeiten</strong> (IQ < 70). Dieser Befund ist vereinbar mit dem Vorliegen einer Intelligenzminderung nach ICD-10/ICD-11. Für die Diagnosestellung ist zusätzlich zur intellektuellen Beeinträchtigung eine Einschränkung der adaptiven Fähigkeiten erforderlich. Eine umfassende Entwicklungsdiagnostik sowie die Prüfung eines sonderpädagogischen Förderbedarfs werden dringend empfohlen.</p>` : ''}
+                                ${diff >= 23 ? `<p><strong>Wichtiger Hinweis zur Profilstreuung:</strong> Die erhebliche Diskrepanz von ${diff} IQ-Punkten zwischen den Indizes schränkt die Aussagekraft des Gesamt-IQ ein. Bei einem derart heterogenen Profil sollte der Gesamt-IQ nicht als alleiniger Indikator der kognitiven Leistungsfähigkeit interpretiert werden. Die einzelnen Indizes liefern differenziertere Informationen über spezifische kognitive Stärken und Schwächen.</p>` : ''}
+                            ` : '<p>Es wurde kein Gesamt-IQ erfasst. Die Interpretation basiert auf den vorliegenden Indexwerten.</p>'}
+
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">6.2 Spezifische kognitive Funktionen</h5>
+                            ${idx.vci.v ? indexBeschreibungen.vci : ''}
+                            ${idx.vsi.v ? indexBeschreibungen.vsi : ''}
+                            ${idx.fri.v ? indexBeschreibungen.fri : ''}
+                            ${idx.wmi.v ? indexBeschreibungen.wmi : ''}
+                            ${idx.psi.v ? indexBeschreibungen.psi : ''}
+
+                            ${staerken.length || schwaechen.length ? `
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">6.3 Stärken-Schwächen-Analyse</h5>
+                            ${staerken.length ? `<div class="gutachten-highlight"><strong>Relative Stärken:</strong> ${pat.name} zeigt überdurchschnittliche Fähigkeiten im Bereich: ${staerken.map(([k])=>WISC_NAMES[k].n).join(', ')}. Diese Stärken können als Ressourcen für schulisches Lernen und Kompensation eventueller Schwächen genutzt werden.</div>` : ''}
+                            ${schwaechen.length ? `<div class="gutachten-warning"><strong>Relative Schwächen:</strong> Unterdurchschnittliche Leistungen zeigen sich im Bereich: ${schwaechen.map(([k])=>WISC_NAMES[k].n).join(', ')}. Diese Schwächen sollten bei der Förderplanung berücksichtigt werden und könnten gezielte Unterstützung erfordern.</div>` : ''}
+                            ` : ''}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">5. Diagnostische Einordnung</h4>
+                        <h4 class="gutachten-section-title">7. Diagnostische Einordnung nach ICD-10/ICD-11</h4>
                         <div class="gutachten-text">
-                            ${fsiq && fsiq < 70 ? '<p>Die Ergebnisse sind vereinbar mit einer <strong>Intelligenzminderung</strong>. Zur Diagnosestellung nach ICD-10/ICD-11 ist zusätzlich eine Beeinträchtigung der Anpassungsfähigkeit erforderlich.</p><span class="icd-code">F70-F79</span> Intelligenzminderung' : ''}
-                            ${fsiq && fsiq >= 70 && fsiq < 85 ? '<p>Die Ergebnisse liegen im <strong>Lernbehinderungsbereich</strong> (IQ 70-84). Dies kann mit Lernschwierigkeiten einhergehen.</p><span class="icd-code">Z55</span> Probleme im Zusammenhang mit der Erziehung' : ''}
-                            ${fsiq && fsiq >= 85 && fsiq < 115 ? '<p>Die intellektuelle Leistungsfähigkeit liegt im <strong>Normalbereich</strong>. Es ergeben sich keine Hinweise auf eine intellektuelle Beeinträchtigung.</p>' : ''}
-                            ${fsiq && fsiq >= 115 && fsiq < 130 ? '<p>Die intellektuelle Leistungsfähigkeit liegt im <strong>überdurchschnittlichen Bereich</strong>.</p>' : ''}
-                            ${fsiq && fsiq >= 130 ? '<p>Die Ergebnisse sind vereinbar mit einer <strong>intellektuellen Hochbegabung</strong> (IQ ≥130).</p>' : ''}
+                            ${fsiq && fsiq < 70 ? `
+                                <p>Die Ergebnisse der Intelligenzdiagnostik sind vereinbar mit dem Vorliegen einer <strong>Intelligenzminderung</strong> nach ICD-10 (F70-F79) bzw. ICD-11 (Disorders of intellectual development). Der Schweregrad richtet sich nach dem IQ-Wert:</p>
+                                <ul class="gutachten-list">
+                                    <li>IQ 50-69: Leichte Intelligenzminderung (F70)</li>
+                                    <li>IQ 35-49: Mittelgradige Intelligenzminderung (F71)</li>
+                                    <li>IQ 20-34: Schwere Intelligenzminderung (F72)</li>
+                                    <li>IQ <20: Schwerste Intelligenzminderung (F73)</li>
+                                </ul>
+                                <p><strong>Wichtig:</strong> Die Diagnose einer Intelligenzminderung erfordert neben dem IQ-Kriterium auch den Nachweis von Defiziten in der adaptiven Funktionsfähigkeit (konzeptuelle, soziale und praktische Fähigkeiten), die vor dem 18. Lebensjahr aufgetreten sind.</p>
+                                <span class="icd-code">F70-F79</span> Intelligenzminderung
+                            ` : ''}
+                            ${fsiq && fsiq >= 70 && fsiq < 85 ? `
+                                <p>Die intellektuelle Leistungsfähigkeit liegt im <strong>Grenzbereich</strong> (IQ 70-84), der auch als "Lernbehinderung" bezeichnet wird. Dieser Bereich ist nicht als Intelligenzminderung klassifiziert, kann jedoch mit Lernschwierigkeiten und erhöhtem Förderbedarf einhergehen.</p>
+                                <span class="icd-code">Z55</span> Probleme in Zusammenhang mit der Erziehung und Alphabetisierung
+                            ` : ''}
+                            ${fsiq && fsiq >= 85 ? `
+                                <p>Die intellektuelle Leistungsfähigkeit liegt im ${fsiq >= 130 ? 'weit überdurchschnittlichen' : fsiq >= 115 ? 'überdurchschnittlichen' : 'durchschnittlichen'} Bereich. Es ergeben sich <strong>keine Hinweise auf eine intellektuelle Beeinträchtigung</strong>. ${fsiq >= 130 ? 'Die Ergebnisse sind vereinbar mit einer intellektuellen Hochbegabung.' : ''}</p>
+                            ` : ''}
+                            ${(c.wmi?.c === 'clinical' || c.psi?.c === 'clinical') && fsiq >= 85 ? `
+                                <p><strong>Hinweis:</strong> Bei durchschnittlicher Gesamtintelligenz mit selektiven Defiziten im Arbeitsgedächtnis und/oder der Verarbeitungsgeschwindigkeit sollte differenzialdiagnostisch an eine Aufmerksamkeitsdefizit-/Hyperaktivitätsstörung (ADHS, F90.x) gedacht werden.</p>
+                            ` : ''}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">6. Empfehlungen</h4>
-                        <div class="gutachten-text">${empf}</div>
+                        <h4 class="gutachten-section-title">8. Empfehlungen</h4>
+                        <div class="gutachten-text">
+                            ${fsiq && fsiq >= 130 ? `
+                                <p>Aufgrund der festgestellten intellektuellen Hochbegabung werden folgende Maßnahmen empfohlen:</p>
+                                <ul class="gutachten-list">
+                                    <li>Prüfung von <strong>Enrichment-Maßnahmen</strong> (Vertiefung und Erweiterung der Lerninhalte)</li>
+                                    <li>Ggf. <strong>Akzeleration</strong> (vorzeitige Einschulung, Überspringen einer Klasse) nach individueller Prüfung</li>
+                                    <li>Angebote zur <strong>kognitiven Förderung</strong> (AGs, Wettbewerbe, Mentoring)</li>
+                                    <li>Beratung zu Begabtenförderungsprogrammen</li>
+                                    <li>Aufmerksamkeit für mögliche <strong>Unterforderungssymptome</strong> (Langeweile, Verhaltensauffälligkeiten, Underachievement)</li>
+                                </ul>
+                            ` : fsiq && fsiq < 70 ? `
+                                <p>Aufgrund der festgestellten deutlich unterdurchschnittlichen kognitiven Leistungsfähigkeit werden folgende Maßnahmen dringend empfohlen:</p>
+                                <ul class="gutachten-list">
+                                    <li><strong>Umfassende Entwicklungsdiagnostik</strong> zur Abklärung adaptiver Fähigkeiten</li>
+                                    <li>Prüfung eines <strong>sonderpädagogischen Förderbedarfs</strong> im Förderschwerpunkt geistige Entwicklung oder Lernen</li>
+                                    <li>Medizinische Abklärung möglicher <strong>organischer Ursachen</strong></li>
+                                    <li>Einleitung geeigneter <strong>Fördermaßnahmen</strong> entsprechend dem individuellen Entwicklungsstand</li>
+                                    <li>Beratung der Familie zu Unterstützungsmöglichkeiten und Entlastungsangeboten</li>
+                                </ul>
+                            ` : fsiq && fsiq < 85 ? `
+                                <p>Aufgrund der unterdurchschnittlichen kognitiven Leistungsfähigkeit werden folgende Maßnahmen empfohlen:</p>
+                                <ul class="gutachten-list">
+                                    <li><strong>Lernstandsdiagnostik</strong> zur Identifikation spezifischer Lernlücken</li>
+                                    <li>Prüfung von <strong>Nachteilsausgleich</strong> (z.B. Zeitverlängerung, reduzierte Aufgabenmenge)</li>
+                                    <li>Ggf. Prüfung eines <strong>sonderpädagogischen Förderbedarfs</strong> im Bereich Lernen</li>
+                                    <li><strong>Individuelle Förderung</strong> mit angepasstem Anforderungsniveau</li>
+                                    <li>Stärkung des <strong>Selbstwertgefühls</strong> durch Erfolgserlebnisse in Stärkebereichen</li>
+                                </ul>
+                            ` : `
+                                <p>Aufgrund der ${fsiq >= 115 ? 'überdurchschnittlichen' : 'durchschnittlichen'} kognitiven Leistungsfähigkeit werden folgende Maßnahmen empfohlen:</p>
+                                <ul class="gutachten-list">
+                                    ${schwaechen.length ? `<li><strong>Gezielte Förderung</strong> in den Bereichen: ${schwaechen.map(([k])=>WISC_NAMES[k].n).join(', ')}</li>` : ''}
+                                    ${staerken.length ? `<li><strong>Nutzung der Stärken</strong> (${staerken.map(([k])=>WISC_NAMES[k].n).join(', ')}) als Ressource für das Lernen</li>` : ''}
+                                    ${(c.wmi?.c === 'clinical' || c.wmi?.c === 'borderline') ? '<li><strong>Arbeitsgedächtnistraining</strong> (z.B. computergestützte Programme)</li>' : ''}
+                                    ${(c.psi?.c === 'clinical' || c.psi?.c === 'borderline') ? '<li>Prüfung von <strong>Zeitverlängerung</strong> bei Klassenarbeiten</li>' : ''}
+                                    <li>Integration der Ergebnisse mit schulischen Leistungsdaten</li>
+                                    ${(c.wmi?.c === 'clinical' || c.psi?.c === 'clinical') ? '<li><strong>ADHS-Diagnostik</strong> bei Verdacht auf Aufmerksamkeitsprobleme</li>' : ''}
+                                </ul>
+                            `}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">9. Zusammenfassung</h4>
+                        <div class="gutachten-text">
+                            <p>${pat.name} (${pat.age ? pat.age + ' Jahre' : 'Alter nicht angegeben'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) wurde am ${formatDate(pat.date)} mittels WISC-V untersucht. ${fsiq ? `Der Gesamt-IQ von <strong>${fsiq}</strong> liegt im <strong>${c.fsiq.l.toLowerCase()}en Bereich</strong> (PR ${c.fsiq.pr}).` : 'Es wurden einzelne Indexwerte erhoben.'}</p>
+                            ${fsiq >= 130 ? `<p>Die Ergebnisse sind vereinbar mit einer intellektuellen Hochbegabung. Eine entsprechende Förderung wird empfohlen.</p>` : ''}
+                            ${fsiq >= 85 && fsiq < 130 ? `<p>Die intellektuelle Leistungsfähigkeit liegt im ${fsiq >= 115 ? 'überdurchschnittlichen' : 'durchschnittlichen'} Bereich. Es ergeben sich keine Hinweise auf kognitive Beeinträchtigungen.</p>` : ''}
+                            ${fsiq >= 70 && fsiq < 85 ? `<p>Die intellektuelle Leistungsfähigkeit liegt im unterdurchschnittlichen Bereich (Lernbehinderung). Unterstützungsmaßnahmen werden empfohlen.</p>` : ''}
+                            ${fsiq < 70 ? `<p>Die Ergebnisse sind vereinbar mit einer Intelligenzminderung. Eine umfassende Entwicklungsdiagnostik und die Prüfung sonderpädagogischer Fördermaßnahmen werden dringend empfohlen.</p>` : ''}
+                            ${diff >= 23 ? `<p>Das kognitive Profil ist heterogen (Streuung: ${diff} IQ-Punkte), sodass die Einzelindizes mehr Aussagekraft besitzen als der Gesamt-IQ.</p>` : ''}
+                        </div>
                     </div>
 
                     ${gutachtenFooter()}
