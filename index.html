@@ -7,6 +7,8 @@
     <!-- docx.js für echte Word-Dokumente -->
     <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- Diagnostic Textbausteine -->
+    <script src="diagnostic-textbausteine.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -716,6 +718,160 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* Klickbare Beobachtungsoptionen */
+        .beob-optionen-section {
+            margin-bottom: 20px;
+        }
+
+        .beob-optionen-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 10px;
+        }
+
+        .beob-option {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .beob-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+        }
+
+        .beob-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+        }
+
+        .beob-option[data-type="staerken"].selected {
+            border-color: #2ecc71;
+            background: linear-gradient(135deg, #2ecc7115 0%, #27ae6015 100%);
+        }
+
+        .beob-option[data-type="schwierigkeiten"].selected {
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, #e74c3c15 0%, #c0392b15 100%);
+        }
+
+        .beob-checkbox {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .beob-option.selected .beob-checkbox {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        .beob-option[data-type="staerken"].selected .beob-checkbox {
+            background: #2ecc71;
+            border-color: #2ecc71;
+        }
+
+        .beob-option[data-type="schwierigkeiten"].selected .beob-checkbox {
+            background: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        .beob-text {
+            font-size: 0.95em;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        /* Berichts-Vorschau */
+        #bericht-vorschau {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+            max-height: 700px;
+            overflow-y: auto;
+            font-family: 'Times New Roman', serif;
+            line-height: 1.6;
+        }
+
+        #bericht-vorschau h1 { font-size: 1.5em; }
+        #bericht-vorschau h2 { font-size: 1.2em; margin-top: 20px; }
+        #bericht-vorschau h3 { font-size: 1.1em; }
+        #bericht-vorschau p { margin-bottom: 10px; }
+        #bericht-vorschau ul { margin-left: 20px; margin-bottom: 10px; }
+        #bericht-vorschau table { font-size: 0.95em; }
+
+        /* Bereich-Tabs im Beobachtungen-Tab */
+        .beob-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .beob-tab {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: all 0.2s;
+            background: #e9ecef;
+            color: #666;
+        }
+
+        .beob-tab:hover {
+            background: #dee2e6;
+        }
+
+        .beob-tab.active {
+            color: white;
+        }
+
+        .beob-tab[data-bereich="verhalten"].active { background: #e74c3c; }
+        .beob-tab[data-bereich="kommunikation"].active { background: #3498db; }
+        .beob-tab[data-bereich="sozialisation"].active { background: #2ecc71; }
+        .beob-tab[data-bereich="kognition"].active { background: #f39c12; }
+
+        .beob-bereich-content {
+            display: none;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 0 8px 8px 8px;
+        }
+
+        .beob-bereich-content.active {
+            display: block;
+        }
+
+        /* Ausgewählte Zähler */
+        .selection-count {
+            background: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
@@ -1143,91 +1299,83 @@
 
         <!-- Beobachtungen Tab -->
         <div id="beobachtungen" class="tab-content">
-            <h2 style="margin-bottom: 20px; color: #333;">Beobachtungen dokumentieren</h2>
+            <h2 style="margin-bottom: 10px; color: #333;">Beobachtungen dokumentieren</h2>
             <p style="margin-bottom: 20px; color: #666;">
-                Dokumentieren Sie hier Ihre Beobachtungen des Schülers in den verschiedenen Entwicklungsbereichen.
-                Diese Beobachtungen werden für den diagnostischen Bericht verwendet.
+                Wählen Sie die zutreffenden Beobachtungen per Klick aus. Diese werden automatisch in den diagnostischen Bericht übernommen.
             </p>
 
-            <!-- Allgemeine Beobachtungen -->
-            <div class="form-section" style="border-left: 4px solid #667eea;">
-                <h3 style="color: #667eea;">Allgemeine Beobachtungen</h3>
-                <div class="form-group">
-                    <label for="beob_allgemein">Allgemeiner Eindruck und Kontext</label>
-                    <textarea id="beob_allgemein" rows="4" placeholder="Beschreiben Sie den allgemeinen Eindruck des Schülers, Beobachtungskontext, besondere Umstände..." onchange="saveBeobachtungen()"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="beob_staerken">Stärken und Ressourcen</label>
-                    <textarea id="beob_staerken" rows="3" placeholder="Welche Stärken und Ressourcen zeigt der Schüler?" onchange="saveBeobachtungen()"></textarea>
+            <div class="info-box" style="margin-bottom: 25px; background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); border-color: #f39c12;">
+                <p style="color: #856404;"><strong>Tipp:</strong> Klicken Sie auf die Kästchen, um Stärken und Förderbedarfe auszuwählen. Fahren Sie mit der Maus über eine Option für mehr Details.</p>
+            </div>
+
+            <!-- Bereich-Tabs -->
+            <div class="beob-tabs">
+                <button class="beob-tab active" data-bereich="verhalten" onclick="showBeobBereich('verhalten')">
+                    Verhalten <span class="selection-count" id="count-verhalten">0</span>
+                </button>
+                <button class="beob-tab" data-bereich="kommunikation" onclick="showBeobBereich('kommunikation')">
+                    Kommunikation <span class="selection-count" id="count-kommunikation">0</span>
+                </button>
+                <button class="beob-tab" data-bereich="sozialisation" onclick="showBeobBereich('sozialisation')">
+                    Sozialisation <span class="selection-count" id="count-sozialisation">0</span>
+                </button>
+                <button class="beob-tab" data-bereich="kognition" onclick="showBeobBereich('kognition')">
+                    Kognition <span class="selection-count" id="count-kognition">0</span>
+                </button>
+            </div>
+
+            <!-- Verhalten -->
+            <div id="beob-verhalten" class="beob-bereich-content active" style="border-left: 4px solid #e74c3c;">
+                <h3 style="color: #e74c3c; margin-bottom: 15px;">Bereich Verhalten - Beobachtungen auswählen</h3>
+                <div id="beob-optionen-verhalten"></div>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="beob_verhalten">Zusätzliche Notizen zum Verhalten (optional)</label>
+                    <textarea id="beob_verhalten" rows="3" placeholder="Weitere Beobachtungen, die nicht in den Optionen enthalten sind..." onchange="saveBeobachtungen()"></textarea>
                 </div>
             </div>
 
-            <!-- Verhalten Beobachtungen -->
-            <div class="form-section" style="border-left: 4px solid #e74c3c;">
-                <h3 style="color: #e74c3c;">Bereich Verhalten</h3>
-                <div class="form-group">
-                    <label for="beob_verhalten">Beobachtungen zum Verhalten</label>
-                    <textarea id="beob_verhalten" rows="4" placeholder="Selbstregulation, Impulskontrolle, Frustrationstoleranz, Reaktion auf Regeln und Strukturen, Umgang mit Veränderungen..." onchange="saveBeobachtungen()"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="beob_verhalten_beispiele">Konkrete Beispiele/Situationen</label>
-                    <textarea id="beob_verhalten_beispiele" rows="3" placeholder="Beschreiben Sie konkrete Situationen, die Ihr Beobachtungen illustrieren..." onchange="saveBeobachtungen()"></textarea>
+            <!-- Kommunikation -->
+            <div id="beob-kommunikation" class="beob-bereich-content" style="border-left: 4px solid #3498db;">
+                <h3 style="color: #3498db; margin-bottom: 15px;">Bereich Kommunikation - Beobachtungen auswählen</h3>
+                <div id="beob-optionen-kommunikation"></div>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="beob_kommunikation">Zusätzliche Notizen zur Kommunikation (optional)</label>
+                    <textarea id="beob_kommunikation" rows="3" placeholder="Weitere Beobachtungen, die nicht in den Optionen enthalten sind..." onchange="saveBeobachtungen()"></textarea>
                 </div>
             </div>
 
-            <!-- Kommunikation Beobachtungen -->
-            <div class="form-section" style="border-left: 4px solid #3498db;">
-                <h3 style="color: #3498db;">Bereich Kommunikation</h3>
-                <div class="form-group">
-                    <label for="beob_kommunikation">Beobachtungen zur Kommunikation</label>
-                    <textarea id="beob_kommunikation" rows="4" placeholder="Sprachverständnis, Ausdrucksfähigkeit, verbale/nonverbale Kommunikation, Gesprächsverhalten..." onchange="saveBeobachtungen()"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="beob_kommunikation_beispiele">Konkrete Beispiele/Situationen</label>
-                    <textarea id="beob_kommunikation_beispiele" rows="3" placeholder="Beschreiben Sie konkrete Situationen, die Ihr Beobachtungen illustrieren..." onchange="saveBeobachtungen()"></textarea>
+            <!-- Sozialisation -->
+            <div id="beob-sozialisation" class="beob-bereich-content" style="border-left: 4px solid #2ecc71;">
+                <h3 style="color: #2ecc71; margin-bottom: 15px;">Bereich Sozialisation - Beobachtungen auswählen</h3>
+                <div id="beob-optionen-sozialisation"></div>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="beob_sozialisation">Zusätzliche Notizen zur Sozialisation (optional)</label>
+                    <textarea id="beob_sozialisation" rows="3" placeholder="Weitere Beobachtungen, die nicht in den Optionen enthalten sind..." onchange="saveBeobachtungen()"></textarea>
                 </div>
             </div>
 
-            <!-- Sozialisation Beobachtungen -->
-            <div class="form-section" style="border-left: 4px solid #2ecc71;">
-                <h3 style="color: #2ecc71;">Bereich Sozialisation</h3>
-                <div class="form-group">
-                    <label for="beob_sozialisation">Beobachtungen zur Sozialisation</label>
-                    <textarea id="beob_sozialisation" rows="4" placeholder="Kontaktaufnahme, Kooperationsfähigkeit, Gruppenverhalten, Beziehungen zu Peers und Erwachsenen, Empathie..." onchange="saveBeobachtungen()"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="beob_sozialisation_beispiele">Konkrete Beispiele/Situationen</label>
-                    <textarea id="beob_sozialisation_beispiele" rows="3" placeholder="Beschreiben Sie konkrete Situationen, die Ihr Beobachtungen illustrieren..." onchange="saveBeobachtungen()"></textarea>
+            <!-- Kognition -->
+            <div id="beob-kognition" class="beob-bereich-content" style="border-left: 4px solid #f39c12;">
+                <h3 style="color: #f39c12; margin-bottom: 15px;">Bereich Kognition - Beobachtungen auswählen</h3>
+                <div id="beob-optionen-kognition"></div>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="beob_kognition">Zusätzliche Notizen zur Kognition (optional)</label>
+                    <textarea id="beob_kognition" rows="3" placeholder="Weitere Beobachtungen, die nicht in den Optionen enthalten sind..." onchange="saveBeobachtungen()"></textarea>
                 </div>
             </div>
 
-            <!-- Kognition Beobachtungen -->
-            <div class="form-section" style="border-left: 4px solid #f39c12;">
-                <h3 style="color: #f39c12;">Bereich Kognition</h3>
-                <div class="form-group">
-                    <label for="beob_kognition">Beobachtungen zur Kognition</label>
-                    <textarea id="beob_kognition" rows="4" placeholder="Aufmerksamkeit, Konzentration, Arbeitsgedächtnis, Problemlösung, Lernverhalten, schulische Leistungen..." onchange="saveBeobachtungen()"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="beob_kognition_beispiele">Konkrete Beispiele/Situationen</label>
-                    <textarea id="beob_kognition_beispiele" rows="3" placeholder="Beschreiben Sie konkrete Situationen, die Ihr Beobachtungen illustrieren..." onchange="saveBeobachtungen()"></textarea>
-                </div>
-            </div>
-
-            <!-- Zusätzliche Beobachtungen -->
-            <div class="form-section" style="border-left: 4px solid #9b59b6;">
-                <h3 style="color: #9b59b6;">Weitere Beobachtungen</h3>
-                <div class="form-group">
-                    <label for="beob_motorik">Motorik (Grob- und Feinmotorik)</label>
-                    <textarea id="beob_motorik" rows="3" placeholder="Koordination, Geschicklichkeit, Schriftbild, Sport..." onchange="saveBeobachtungen()"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="beob_selbststaendigkeit">Selbstständigkeit und Autonomie</label>
-                    <textarea id="beob_selbststaendigkeit" rows="3" placeholder="Alltagskompetenzen, Organisation, Eigeninitiative..." onchange="saveBeobachtungen()"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="beob_sonstiges">Sonstige Beobachtungen</label>
-                    <textarea id="beob_sonstiges" rows="3" placeholder="Weitere relevante Beobachtungen..." onchange="saveBeobachtungen()"></textarea>
+            <!-- Zusätzliche Felder -->
+            <div class="form-section" style="margin-top: 25px; border-left: 4px solid #9b59b6;">
+                <h3 style="color: #9b59b6;">Weitere Informationen für den Bericht</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="beob_allgemein">Allgemeiner Eindruck / Kontext</label>
+                        <textarea id="beob_allgemein" rows="3" placeholder="Beschreiben Sie den allgemeinen Eindruck, Beobachtungskontext..." onchange="saveBeobachtungen()"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="beob_staerken">Besondere Stärken / Ressourcen</label>
+                        <textarea id="beob_staerken" rows="3" placeholder="Welche besonderen Stärken zeigt der Schüler?" onchange="saveBeobachtungen()"></textarea>
+                    </div>
                 </div>
             </div>
 
@@ -3527,6 +3675,75 @@ function downloadAsWord(html, filename) {
     a.click();
     document.body.removeChild(a);
 }
+
+// ========================================
+// BEOBACHTUNGS-UI FUNKTIONEN
+// ========================================
+
+// Beobachtungs-Bereich wechseln
+function showBeobBereich(bereich) {
+    // Alle Bereiche ausblenden
+    document.querySelectorAll('.beob-bereich-content').forEach(el => {
+        el.classList.remove('active');
+    });
+    document.querySelectorAll('.beob-tab').forEach(el => {
+        el.classList.remove('active');
+    });
+
+    // Ausgewählten Bereich anzeigen
+    document.getElementById(`beob-${bereich}`).classList.add('active');
+    document.querySelector(`.beob-tab[data-bereich="${bereich}"]`).classList.add('active');
+}
+
+// Beobachtungsoptionen initialisieren
+function initBeobachtungsOptionen() {
+    const bereiche = ['verhalten', 'kommunikation', 'sozialisation', 'kognition'];
+
+    for (const bereich of bereiche) {
+        const container = document.getElementById(`beob-optionen-${bereich}`);
+        if (container && typeof renderBeobachtungsOptionen === 'function') {
+            renderBeobachtungsOptionen(bereich, container);
+        }
+    }
+
+    updateSelectionCounts();
+}
+
+// Auswahl-Zähler aktualisieren
+function updateSelectionCounts() {
+    const bereiche = ['verhalten', 'kommunikation', 'sozialisation', 'kognition'];
+
+    for (const bereich of bereiche) {
+        if (typeof selectedObservations !== 'undefined') {
+            const count = (selectedObservations[bereich]?.staerken?.length || 0) +
+                         (selectedObservations[bereich]?.schwierigkeiten?.length || 0);
+            const countEl = document.getElementById(`count-${bereich}`);
+            if (countEl) {
+                countEl.textContent = count;
+            }
+        }
+    }
+}
+
+// Ursprüngliches toggleObservation erweitern
+const originalToggleObservation = typeof toggleObservation === 'function' ? toggleObservation : null;
+if (originalToggleObservation) {
+    toggleObservation = function(bereich, type, id) {
+        originalToggleObservation(bereich, type, id);
+        updateSelectionCounts();
+    };
+}
+
+// Beim Laden initialisieren
+document.addEventListener('DOMContentLoaded', function() {
+    // Beobachtungsoptionen nach kurzer Verzögerung initialisieren
+    setTimeout(function() {
+        if (typeof loadSelectedObservations === 'function') {
+            loadSelectedObservations();
+        }
+        initBeobachtungsOptionen();
+    }, 200);
+});
     </script>
 </body>
 </html>
