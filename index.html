@@ -9,49 +9,58 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
         :root {
-            --primary: #a855f7;
-            --primary-light: #c084fc;
-            --primary-dark: #9333ea;
-            --primary-neon: #d946ef;
-            --primary-glow: rgba(168, 85, 247, 0.5);
-            --success: #22c55e;
-            --success-light: #4ade80;
-            --success-dark: #16a34a;
+            /* Klinisch-professionelles Farbschema */
+            --primary: #4A90A4;
+            --primary-light: #6BA8B9;
+            --primary-dark: #3A7A8E;
+            --primary-neon: #5CB3C9;
+            --primary-glow: rgba(74, 144, 164, 0.4);
+            --success: #48BB78;
+            --success-light: #68D391;
+            --success-dark: #38A169;
             --success-neon: #00ff88;
-            --success-glow: rgba(34, 197, 94, 0.5);
-            --warning: #f59e0b;
-            --warning-light: #fbbf24;
-            --warning-dark: #d97706;
+            --success-glow: rgba(72, 187, 120, 0.4);
+            --warning: #ECC94B;
+            --warning-light: #F6E05E;
+            --warning-dark: #D69E2E;
             --warning-neon: #ffaa00;
-            --danger: #f43f5e;
-            --danger-light: #fb7185;
-            --danger-dark: #e11d48;
+            --danger: #F56565;
+            --danger-light: #FC8181;
+            --danger-dark: #E53E3E;
             --danger-neon: #ff3366;
-            --info: #06b6d4;
-            --info-light: #22d3ee;
-            --info-dark: #0891b2;
+            --info: #4299E1;
+            --info-light: #63B3ED;
+            --info-dark: #3182CE;
             --info-neon: #00d4ff;
-            --gray-50: #fafafa;
-            --gray-100: #f4f4f5;
-            --gray-200: #e4e4e7;
-            --gray-300: #d4d4d8;
-            --gray-400: #a1a1aa;
-            --gray-500: #71717a;
-            --gray-600: #52525b;
-            --gray-700: #3f3f46;
-            --gray-800: #27272a;
-            --gray-900: #18181b;
-            --radius-sm: 18px;
-            --radius: 28px;
-            --radius-lg: 36px;
-            --radius-xl: 48px;
+            --gray-50: #F7FAFC;
+            --gray-100: #EDF2F7;
+            --gray-200: #E2E8F0;
+            --gray-300: #CBD5E0;
+            --gray-400: #A0AEC0;
+            --gray-500: #718096;
+            --gray-600: #4A5568;
+            --gray-700: #2D3748;
+            --gray-800: #1A202C;
+            --gray-900: #171923;
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
             --radius-full: 9999px;
             --shadow-soft: 0 4px 25px -4px rgba(0, 0, 0, 0.1), 0 10px 40px -10px rgba(0, 0, 0, 0.08);
             --shadow-medium: 0 10px 40px -8px rgba(0, 0, 0, 0.15), 0 20px 60px -15px rgba(0, 0, 0, 0.1);
             --shadow-neon: 0 0 30px var(--primary-glow), 0 0 60px var(--primary-glow);
             --shadow-elevated: 0 40px 80px -20px rgba(0, 0, 0, 0.25);
-            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-bg: rgba(255, 255, 255, 0.95);
             --glass-border: rgba(255, 255, 255, 0.2);
+
+            /* Sidebar Variablen */
+            --sidebar-width: 280px;
+            --sidebar-collapsed-width: 70px;
+            --sidebar-bg: #2D3748;
+            --sidebar-text: #E2E8F0;
+            --sidebar-hover: #4A5568;
+            --sidebar-active: #4A90A4;
         }
 
         * {
@@ -62,39 +71,202 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #0a0a0f;
+            background: var(--gray-100);
             min-height: 100vh;
-            padding: 32px;
-            line-height: 1.7;
+            padding: 0;
+            line-height: 1.6;
             position: relative;
             overflow-x: hidden;
+            display: flex;
         }
 
-        /* Animated background */
-        body::before {
-            content: '';
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
             position: fixed;
-            top: 0;
             left: 0;
-            width: 100%;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            transition: width 0.3s ease;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary), var(--info));
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .sidebar-logo-text h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+        }
+
+        .sidebar-logo-text span {
+            font-size: 0.75rem;
+            color: var(--gray-400);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 0;
+        }
+
+        .sidebar-section {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-section-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gray-500);
+            padding: 12px 20px 8px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--sidebar-text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-item:hover {
+            background: var(--sidebar-hover);
+        }
+
+        .sidebar-item.active {
+            background: rgba(74, 144, 164, 0.2);
+            border-left-color: var(--primary);
+            color: white;
+        }
+
+        .sidebar-item-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .sidebar-item-badge {
+            margin-left: auto;
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-progress {
+            margin-bottom: 12px;
+        }
+
+        .sidebar-progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--gray-400);
+            margin-bottom: 6px;
+        }
+
+        .sidebar-progress-bar {
+            height: 4px;
+            background: var(--sidebar-hover);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .sidebar-progress-fill {
             height: 100%;
-            background:
-                radial-gradient(ellipse at 20% 20%, rgba(168, 85, 247, 0.3) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(6, 182, 212, 0.25) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(217, 70, 239, 0.2) 0%, transparent 60%),
-                linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 50%, #0f0f1a 100%);
-            animation: bgPulse 15s ease-in-out infinite;
-            z-index: -1;
+            background: linear-gradient(90deg, var(--success), var(--primary));
+            border-radius: var(--radius-full);
+            transition: width 0.5s ease;
         }
 
-        @keyframes bgPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            background: var(--gray-50);
         }
 
-        /* Floating orbs */
+        .main-header {
+            background: white;
+            padding: 20px 32px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .main-header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-800);
+        }
+
+        .main-header-subtitle {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .main-header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .main-body {
+            padding: 32px;
+        }
+
+        /* Clean up old styles - keep for compatibility but hide */
+        body::before {
+            display: none;
+        }
+
         body::after {
-            content: '';
+            display: none;
             position: fixed;
             width: 600px;
             height: 600px;
@@ -1979,33 +2151,136 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>ELDiB Generator</h1>
-            <p>Entwicklungstherapeutischer/entwicklungspädagogischer Lernziel-Diagnose-Bogen</p>
-            <div class="progress-indicator" id="progress-indicator">
-                <div class="progress-dot" data-tab="stammdaten"></div>
-                <div class="progress-dot" data-tab="verhalten"></div>
-                <div class="progress-dot" data-tab="kommunikation"></div>
-                <div class="progress-dot" data-tab="sozialisation"></div>
-                <div class="progress-dot" data-tab="kognition"></div>
-                <div class="progress-dot" data-tab="zusaetzlich"></div>
-                <div class="progress-dot" data-tab="export"></div>
+    <!-- SIDEBAR NAVIGATION -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">🧠</div>
+                <div class="sidebar-logo-text">
+                    <h1>KPB</h1>
+                    <span>Klinisch-Pädagogischer Berater</span>
+                </div>
             </div>
         </div>
 
-        <div class="tabs">
-            <button class="tab active" onclick="showTab('stammdaten')" title="Schülerdaten eingeben">Stammdaten</button>
-            <button class="tab" onclick="showTab('verhalten')" title="Verhalten V-1 bis V-33">Verhalten</button>
-            <button class="tab" onclick="showTab('kommunikation')" title="Kommunikation K-1 bis K-35">Kommunikation</button>
-            <button class="tab" onclick="showTab('sozialisation')" title="Sozialisation S-1 bis S-41">Sozialisation</button>
-            <button class="tab" onclick="showTab('kognition')" title="Kognition KOG-1 bis KOG-62">Kognition</button>
-            <button class="tab" onclick="showTab('zusaetzlich')" title="Weitere Förderziele">Zusätzliche Ziele</button>
-            <button class="tab" onclick="showTab('export')" title="Dokumente herunterladen">Export</button>
-            <button class="tab" onclick="showTab('beratung')" title="Pädagogische Beratung" style="background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1));">🧠 Beratung</button>
-            <button class="tab" onclick="showTab('diagnostik')" title="Screening & Diagnostik">📋 Diagnostik</button>
-            <button class="tab" onclick="showTab('ki-berater')" title="KI-gestützte Fallberatung">🤖 KI-Berater</button>
+        <div class="sidebar-nav">
+            <!-- Dashboard -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Übersicht</div>
+                <div class="sidebar-item active" onclick="showTab('stammdaten')" data-tab="stammdaten">
+                    <span class="sidebar-item-icon">👤</span>
+                    <span>Stammdaten</span>
+                </div>
+                <div class="sidebar-item" onclick="showTab('uebersicht')" data-tab="uebersicht">
+                    <span class="sidebar-item-icon">📊</span>
+                    <span>Dashboard</span>
+                </div>
+            </div>
+
+            <!-- ELDiB Erfassung -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">ELDiB Erfassung</div>
+                <div class="sidebar-item" onclick="showTab('verhalten')" data-tab="verhalten">
+                    <span class="sidebar-item-icon">🎯</span>
+                    <span>Verhalten</span>
+                    <span class="sidebar-item-badge" id="badge-verhalten">0</span>
+                </div>
+                <div class="sidebar-item" onclick="showTab('kommunikation')" data-tab="kommunikation">
+                    <span class="sidebar-item-icon">💬</span>
+                    <span>Kommunikation</span>
+                    <span class="sidebar-item-badge" id="badge-kommunikation">0</span>
+                </div>
+                <div class="sidebar-item" onclick="showTab('sozialisation')" data-tab="sozialisation">
+                    <span class="sidebar-item-icon">👥</span>
+                    <span>Sozialisation</span>
+                    <span class="sidebar-item-badge" id="badge-sozialisation">0</span>
+                </div>
+                <div class="sidebar-item" onclick="showTab('kognition')" data-tab="kognition">
+                    <span class="sidebar-item-icon">🧩</span>
+                    <span>Kognition</span>
+                    <span class="sidebar-item-badge" id="badge-kognition">0</span>
+                </div>
+                <div class="sidebar-item" onclick="showTab('zusaetzlich')" data-tab="zusaetzlich">
+                    <span class="sidebar-item-icon">➕</span>
+                    <span>Zusätzliche Ziele</span>
+                </div>
+            </div>
+
+            <!-- Klinische Module -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Klinische Erfassung</div>
+                <div class="sidebar-item" onclick="showTab('anamnese')" data-tab="anamnese">
+                    <span class="sidebar-item-icon">📋</span>
+                    <span>Anamnese</span>
+                </div>
+                <div class="sidebar-item" onclick="showTab('screening')" data-tab="screening">
+                    <span class="sidebar-item-icon">🔬</span>
+                    <span>Klinisches Screening</span>
+                </div>
+                <div class="sidebar-item" onclick="showTab('verhaltensanalyse')" data-tab="verhaltensanalyse">
+                    <span class="sidebar-item-icon">🔍</span>
+                    <span>Verhaltensanalyse</span>
+                </div>
+                <div class="sidebar-item" onclick="showTab('ressourcen')" data-tab="ressourcen">
+                    <span class="sidebar-item-icon">💪</span>
+                    <span>Ressourcen</span>
+                </div>
+            </div>
+
+            <!-- Beratung -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Beratung</div>
+                <div class="sidebar-item" onclick="showTab('beratung')" data-tab="beratung">
+                    <span class="sidebar-item-icon">💡</span>
+                    <span>Empfehlungen</span>
+                </div>
+                <div class="sidebar-item" onclick="showTab('interventionen')" data-tab="interventionen">
+                    <span class="sidebar-item-icon">🛠️</span>
+                    <span>Interventionen</span>
+                </div>
+            </div>
+
+            <!-- Export -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Export</div>
+                <div class="sidebar-item" onclick="showTab('export')" data-tab="export">
+                    <span class="sidebar-item-icon">📄</span>
+                    <span>Berichte & PEI</span>
+                </div>
+            </div>
         </div>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-progress">
+                <div class="sidebar-progress-text">
+                    <span>Fortschritt</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="sidebar-progress-bar">
+                    <div class="sidebar-progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            <div style="font-size: 0.7rem; color: var(--gray-500); text-align: center;">
+                CDSE Luxembourg
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="main-header">
+            <div>
+                <div class="main-header-title" id="current-page-title">Stammdaten</div>
+                <div class="main-header-subtitle" id="current-page-subtitle">Grunddaten des Kindes erfassen</div>
+            </div>
+            <div class="main-header-actions">
+                <button class="btn btn-secondary" onclick="saveToLocalStorage()">💾 Speichern</button>
+                <button class="btn btn-primary" onclick="showTab('export')">📤 Exportieren</button>
+            </div>
+        </div>
+
+        <div class="main-body">
+            <div class="container">
 
         <!-- Stammdaten Tab -->
         <div id="stammdaten" class="tab-content active">
@@ -2651,9 +2926,518 @@
             </div>
         </div>
 
+        <!-- ANAMNESE Tab -->
+        <div id="anamnese" class="tab-content">
+            <div class="form-section">
+                <h3>📋 Entwicklungsanamnese</h3>
+                <p style="color: var(--gray-500); margin-bottom: 20px;">Erfassen Sie wichtige Informationen zur Entwicklungsgeschichte.</p>
+
+                <!-- Schwangerschaft & Geburt -->
+                <div style="background: var(--gray-50); padding: 20px; border-radius: var(--radius); margin-bottom: 20px;">
+                    <h4 style="color: var(--primary); margin-bottom: 15px;">Schwangerschaft & Geburt</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Komplikationen während der Schwangerschaft?</label>
+                            <select id="anamnese_schwangerschaft" onchange="saveAnamneseData()">
+                                <option value="">-- Auswählen --</option>
+                                <option value="keine">Keine bekannt</option>
+                                <option value="leicht">Leichte Komplikationen</option>
+                                <option value="schwer">Schwere Komplikationen</option>
+                                <option value="unbekannt">Unbekannt</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Frühgeburt?</label>
+                            <select id="anamnese_fruehgeburt" onchange="saveAnamneseData()">
+                                <option value="">-- Auswählen --</option>
+                                <option value="nein">Nein (≥37 SSW)</option>
+                                <option value="leicht">Leicht (32-36 SSW)</option>
+                                <option value="stark">Stark (<32 SSW)</option>
+                                <option value="unbekannt">Unbekannt</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Geburtskomplikationen?</label>
+                            <select id="anamnese_geburt" onchange="saveAnamneseData()">
+                                <option value="">-- Auswählen --</option>
+                                <option value="keine">Keine</option>
+                                <option value="leicht">Leichte</option>
+                                <option value="schwer">Schwere</option>
+                                <option value="unbekannt">Unbekannt</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Bemerkungen zur Schwangerschaft/Geburt</label>
+                        <textarea id="anamnese_geburt_bemerkung" rows="2" placeholder="Weitere Details..." onchange="saveAnamneseData()"></textarea>
+                    </div>
+                </div>
+
+                <!-- Frühe Entwicklung -->
+                <div style="background: var(--gray-50); padding: 20px; border-radius: var(--radius); margin-bottom: 20px;">
+                    <h4 style="color: var(--primary); margin-bottom: 15px;">Frühe Entwicklung (0-3 Jahre)</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Motorische Entwicklung</label>
+                            <select id="anamnese_motorik" onchange="saveAnamneseData()">
+                                <option value="">-- Auswählen --</option>
+                                <option value="normal">Altersgemäß</option>
+                                <option value="verzoegert">Verzögert</option>
+                                <option value="auffaellig">Auffällig</option>
+                                <option value="unbekannt">Unbekannt</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Sprachentwicklung</label>
+                            <select id="anamnese_sprache" onchange="saveAnamneseData()">
+                                <option value="">-- Auswählen --</option>
+                                <option value="normal">Altersgemäß</option>
+                                <option value="verzoegert">Verzögert</option>
+                                <option value="auffaellig">Auffällig</option>
+                                <option value="unbekannt">Unbekannt</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Regulation (Schlafen, Essen, Schreien)</label>
+                            <select id="anamnese_regulation" onchange="saveAnamneseData()">
+                                <option value="">-- Auswählen --</option>
+                                <option value="unauffaellig">Unauffällig</option>
+                                <option value="schwierigkeiten">Schwierigkeiten</option>
+                                <option value="stark_auffaellig">Stark auffällig</option>
+                                <option value="unbekannt">Unbekannt</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kindergarten & Schule -->
+                <div style="background: var(--gray-50); padding: 20px; border-radius: var(--radius); margin-bottom: 20px;">
+                    <h4 style="color: var(--primary); margin-bottom: 15px;">Kindergarten & Schulzeit</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Kindergartenzeit</label>
+                            <select id="anamnese_kiga" onchange="saveAnamneseData()">
+                                <option value="">-- Auswählen --</option>
+                                <option value="unauffaellig">Unauffällig</option>
+                                <option value="anpassung">Anpassungsschwierigkeiten</option>
+                                <option value="auffaellig">Auffälligkeiten</option>
+                                <option value="kein_besuch">Kein Kindergartenbesuch</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Schulstart</label>
+                            <select id="anamnese_schulstart" onchange="saveAnamneseData()">
+                                <option value="">-- Auswählen --</option>
+                                <option value="regelmaessig">Regeleinschulung</option>
+                                <option value="vorzeitig">Vorzeitig</option>
+                                <option value="zurueckgestellt">Zurückgestellt</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Schulverlauf</label>
+                            <select id="anamnese_schulverlauf" onchange="saveAnamneseData()">
+                                <option value="">-- Auswählen --</option>
+                                <option value="unauffaellig">Unauffällig</option>
+                                <option value="schwierigkeiten">Schwierigkeiten</option>
+                                <option value="klassenwiederholung">Klassenwiederholung</option>
+                                <option value="schulwechsel">Mehrfacher Schulwechsel</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>👨‍👩‍👧‍👦 Familienanamnese</h3>
+
+                <!-- Familienstruktur -->
+                <div style="background: var(--gray-50); padding: 20px; border-radius: var(--radius); margin-bottom: 20px;">
+                    <h4 style="color: var(--primary); margin-bottom: 15px;">Familienstruktur</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Familiensituation</label>
+                            <select id="anamnese_familie" onchange="saveAnamneseData()">
+                                <option value="">-- Auswählen --</option>
+                                <option value="beide_eltern">Beide leibliche Eltern</option>
+                                <option value="alleinerziehend">Alleinerziehend</option>
+                                <option value="patchwork">Patchwork-Familie</option>
+                                <option value="pflegefamilie">Pflegefamilie</option>
+                                <option value="heim">Heim/Wohngruppe</option>
+                                <option value="andere">Andere</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Geschwister</label>
+                            <input type="text" id="anamnese_geschwister" placeholder="z.B. 2 ältere Brüder" onchange="saveAnamneseData()">
+                        </div>
+                        <div class="form-group">
+                            <label>Geschwisterposition</label>
+                            <select id="anamnese_position" onchange="saveAnamneseData()">
+                                <option value="">-- Auswählen --</option>
+                                <option value="einzelkind">Einzelkind</option>
+                                <option value="aeltestes">Ältestes Kind</option>
+                                <option value="mittleres">Mittleres Kind</option>
+                                <option value="juengstes">Jüngstes Kind</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Familiäre Belastungen -->
+                <div style="background: #FFF5F5; padding: 20px; border-radius: var(--radius); margin-bottom: 20px; border: 1px solid #FED7D7;">
+                    <h4 style="color: var(--danger); margin-bottom: 15px;">Familiäre Belastungsfaktoren</h4>
+                    <p style="font-size: 0.85rem; color: var(--gray-500); margin-bottom: 15px;">Mehrfachauswahl möglich. Diese Informationen sind vertraulich.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="belastung_psychisch" onchange="saveAnamneseData()"> Psychische Erkrankung (Eltern)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="belastung_sucht" onchange="saveAnamneseData()"> Suchtproblematik
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="belastung_trennung" onchange="saveAnamneseData()"> Trennung/Scheidung
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="belastung_gewalt" onchange="saveAnamneseData()"> Häusliche Gewalt
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="belastung_armut" onchange="saveAnamneseData()"> Finanzielle Belastung
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="belastung_migration" onchange="saveAnamneseData()"> Migrationshintergrund
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="belastung_verlust" onchange="saveAnamneseData()"> Verlust/Trauer
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="belastung_trauma" onchange="saveAnamneseData()"> Bekanntes Trauma
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREENING Tab -->
+        <div id="screening" class="tab-content">
+            <div class="form-section">
+                <h3>🔬 Klinisches Screening</h3>
+                <p style="color: var(--gray-500); margin-bottom: 20px;">Systematische Erfassung von Symptomclustern. Ampelsystem: 🟢 unauffällig | 🟡 grenzwertig | 🔴 auffällig</p>
+
+                <!-- ADHS Screening -->
+                <div style="background: var(--gray-50); padding: 20px; border-radius: var(--radius); margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4 style="color: var(--primary);">Aufmerksamkeit & Aktivität</h4>
+                        <span id="ampel-adhs" style="font-size: 1.5rem;">⚪</span>
+                    </div>
+                    <div style="display: grid; gap: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
+                            <span>Unaufmerksamkeit</span>
+                            <div style="display: flex; gap: 10px;">
+                                <label><input type="radio" name="adhs_unaufmerksamkeit" value="0" onchange="updateScreening()"> Nein</label>
+                                <label><input type="radio" name="adhs_unaufmerksamkeit" value="1" onchange="updateScreening()"> Etwas</label>
+                                <label><input type="radio" name="adhs_unaufmerksamkeit" value="2" onchange="updateScreening()"> Stark</label>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
+                            <span>Hyperaktivität</span>
+                            <div style="display: flex; gap: 10px;">
+                                <label><input type="radio" name="adhs_hyperaktiv" value="0" onchange="updateScreening()"> Nein</label>
+                                <label><input type="radio" name="adhs_hyperaktiv" value="1" onchange="updateScreening()"> Etwas</label>
+                                <label><input type="radio" name="adhs_hyperaktiv" value="2" onchange="updateScreening()"> Stark</label>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
+                            <span>Impulsivität</span>
+                            <div style="display: flex; gap: 10px;">
+                                <label><input type="radio" name="adhs_impulsiv" value="0" onchange="updateScreening()"> Nein</label>
+                                <label><input type="radio" name="adhs_impulsiv" value="1" onchange="updateScreening()"> Etwas</label>
+                                <label><input type="radio" name="adhs_impulsiv" value="2" onchange="updateScreening()"> Stark</label>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
+                            <span>Situationsübergreifend?</span>
+                            <div style="display: flex; gap: 10px;">
+                                <label><input type="radio" name="adhs_situation" value="0" onchange="updateScreening()"> Nein</label>
+                                <label><input type="radio" name="adhs_situation" value="1" onchange="updateScreening()"> Ja</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Angst Screening -->
+                <div style="background: var(--gray-50); padding: 20px; border-radius: var(--radius); margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4 style="color: var(--primary);">Ängste & Sorgen</h4>
+                        <span id="ampel-angst" style="font-size: 1.5rem;">⚪</span>
+                    </div>
+                    <div style="display: grid; gap: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
+                            <span>Trennungsangst</span>
+                            <div style="display: flex; gap: 10px;">
+                                <label><input type="radio" name="angst_trennung" value="0" onchange="updateScreening()"> Nein</label>
+                                <label><input type="radio" name="angst_trennung" value="1" onchange="updateScreening()"> Etwas</label>
+                                <label><input type="radio" name="angst_trennung" value="2" onchange="updateScreening()"> Stark</label>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
+                            <span>Soziale Ängste</span>
+                            <div style="display: flex; gap: 10px;">
+                                <label><input type="radio" name="angst_sozial" value="0" onchange="updateScreening()"> Nein</label>
+                                <label><input type="radio" name="angst_sozial" value="1" onchange="updateScreening()"> Etwas</label>
+                                <label><input type="radio" name="angst_sozial" value="2" onchange="updateScreening()"> Stark</label>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
+                            <span>Generalisierte Sorgen</span>
+                            <div style="display: flex; gap: 10px;">
+                                <label><input type="radio" name="angst_generell" value="0" onchange="updateScreening()"> Nein</label>
+                                <label><input type="radio" name="angst_generell" value="1" onchange="updateScreening()"> Etwas</label>
+                                <label><input type="radio" name="angst_generell" value="2" onchange="updateScreening()"> Stark</label>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
+                            <span>Schulangst/-verweigerung</span>
+                            <div style="display: flex; gap: 10px;">
+                                <label><input type="radio" name="angst_schule" value="0" onchange="updateScreening()"> Nein</label>
+                                <label><input type="radio" name="angst_schule" value="1" onchange="updateScreening()"> Etwas</label>
+                                <label><input type="radio" name="angst_schule" value="2" onchange="updateScreening()"> Stark</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sozialverhalten Screening -->
+                <div style="background: var(--gray-50); padding: 20px; border-radius: var(--radius); margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4 style="color: var(--primary);">Sozialverhalten</h4>
+                        <span id="ampel-sozial" style="font-size: 1.5rem;">⚪</span>
+                    </div>
+                    <div style="display: grid; gap: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
+                            <span>Oppositionelles Verhalten</span>
+                            <div style="display: flex; gap: 10px;">
+                                <label><input type="radio" name="sozial_opposition" value="0" onchange="updateScreening()"> Nein</label>
+                                <label><input type="radio" name="sozial_opposition" value="1" onchange="updateScreening()"> Etwas</label>
+                                <label><input type="radio" name="sozial_opposition" value="2" onchange="updateScreening()"> Stark</label>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
+                            <span>Aggressives Verhalten</span>
+                            <div style="display: flex; gap: 10px;">
+                                <label><input type="radio" name="sozial_aggression" value="0" onchange="updateScreening()"> Nein</label>
+                                <label><input type="radio" name="sozial_aggression" value="1" onchange="updateScreening()"> Etwas</label>
+                                <label><input type="radio" name="sozial_aggression" value="2" onchange="updateScreening()"> Stark</label>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
+                            <span>Regelverletzungen</span>
+                            <div style="display: flex; gap: 10px;">
+                                <label><input type="radio" name="sozial_regeln" value="0" onchange="updateScreening()"> Nein</label>
+                                <label><input type="radio" name="sozial_regeln" value="1" onchange="updateScreening()"> Etwas</label>
+                                <label><input type="radio" name="sozial_regeln" value="2" onchange="updateScreening()"> Stark</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stimmung Screening -->
+                <div style="background: var(--gray-50); padding: 20px; border-radius: var(--radius); margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4 style="color: var(--primary);">Stimmung & Antrieb</h4>
+                        <span id="ampel-stimmung" style="font-size: 1.5rem;">⚪</span>
+                    </div>
+                    <div style="display: grid; gap: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
+                            <span>Traurigkeit</span>
+                            <div style="display: flex; gap: 10px;">
+                                <label><input type="radio" name="stimmung_traurig" value="0" onchange="updateScreening()"> Nein</label>
+                                <label><input type="radio" name="stimmung_traurig" value="1" onchange="updateScreening()"> Etwas</label>
+                                <label><input type="radio" name="stimmung_traurig" value="2" onchange="updateScreening()"> Stark</label>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
+                            <span>Interessenverlust</span>
+                            <div style="display: flex; gap: 10px;">
+                                <label><input type="radio" name="stimmung_interesse" value="0" onchange="updateScreening()"> Nein</label>
+                                <label><input type="radio" name="stimmung_interesse" value="1" onchange="updateScreening()"> Etwas</label>
+                                <label><input type="radio" name="stimmung_interesse" value="2" onchange="updateScreening()"> Stark</label>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: var(--radius-sm);">
+                            <span>Reizbarkeit</span>
+                            <div style="display: flex; gap: 10px;">
+                                <label><input type="radio" name="stimmung_reizbar" value="0" onchange="updateScreening()"> Nein</label>
+                                <label><input type="radio" name="stimmung_reizbar" value="1" onchange="updateScreening()"> Etwas</label>
+                                <label><input type="radio" name="stimmung_reizbar" value="2" onchange="updateScreening()"> Stark</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Screening Zusammenfassung -->
+                <div id="screening-summary" style="background: linear-gradient(135deg, #EBF8FF, #E6FFFA); padding: 20px; border-radius: var(--radius); border: 1px solid var(--info);">
+                    <h4 style="color: var(--info-dark); margin-bottom: 15px;">📊 Screening-Zusammenfassung</h4>
+                    <div id="screening-results" style="color: var(--gray-600);">
+                        Bitte füllen Sie die Screenings aus, um eine Zusammenfassung zu erhalten.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VERHALTENSANALYSE Tab -->
+        <div id="verhaltensanalyse" class="tab-content">
+            <div class="form-section">
+                <h3>🔍 Funktionale Verhaltensanalyse (ABC)</h3>
+                <p style="color: var(--gray-500); margin-bottom: 20px;">Dokumentieren Sie konkrete Verhaltenssituationen nach dem ABC-Schema.</p>
+
+                <div style="background: var(--gray-50); padding: 20px; border-radius: var(--radius); margin-bottom: 20px;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Datum & Uhrzeit</label>
+                            <input type="datetime-local" id="abc-datetime">
+                        </div>
+                        <div class="form-group">
+                            <label>Situation/Kontext</label>
+                            <input type="text" id="abc-context" placeholder="z.B. Mathematikunterricht, Gruppenarbeit">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 20px 0;">
+                        <div style="background: #FFF5F5; padding: 15px; border-radius: var(--radius); border-left: 4px solid var(--danger);">
+                            <label style="font-weight: 600; color: var(--danger); display: block; margin-bottom: 8px;">A - Auslöser</label>
+                            <p style="font-size: 0.8rem; color: var(--gray-500); margin-bottom: 8px;">Was passierte unmittelbar VOR dem Verhalten?</p>
+                            <textarea id="abc-antecedent" rows="4" placeholder="Beschreiben Sie die Situation..."></textarea>
+                        </div>
+                        <div style="background: #FFFFF0; padding: 15px; border-radius: var(--radius); border-left: 4px solid var(--warning);">
+                            <label style="font-weight: 600; color: var(--warning-dark); display: block; margin-bottom: 8px;">B - Verhalten</label>
+                            <p style="font-size: 0.8rem; color: var(--gray-500); margin-bottom: 8px;">Was genau hat das Kind getan/gesagt?</p>
+                            <textarea id="abc-behavior" rows="4" placeholder="Beobachtbares Verhalten..."></textarea>
+                        </div>
+                        <div style="background: #F0FFF4; padding: 15px; border-radius: var(--radius); border-left: 4px solid var(--success);">
+                            <label style="font-weight: 600; color: var(--success-dark); display: block; margin-bottom: 8px;">C - Konsequenz</label>
+                            <p style="font-size: 0.8rem; color: var(--gray-500); margin-bottom: 8px;">Was passierte unmittelbar NACH dem Verhalten?</p>
+                            <textarea id="abc-consequence" rows="4" placeholder="Reaktionen der Umwelt..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="font-weight: 600;">Vermutete Funktion des Verhaltens</label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 12px; background: white; border-radius: var(--radius-sm); border: 1px solid var(--gray-200);">
+                                <input type="checkbox" name="abc-function" value="attention"> Aufmerksamkeit erhalten
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 12px; background: white; border-radius: var(--radius-sm); border: 1px solid var(--gray-200);">
+                                <input type="checkbox" name="abc-function" value="escape"> Vermeidung/Flucht
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 12px; background: white; border-radius: var(--radius-sm); border: 1px solid var(--gray-200);">
+                                <input type="checkbox" name="abc-function" value="tangible"> Etwas erhalten
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 12px; background: white; border-radius: var(--radius-sm); border: 1px solid var(--gray-200);">
+                                <input type="checkbox" name="abc-function" value="sensory"> Sensorisch
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 12px; background: white; border-radius: var(--radius-sm); border: 1px solid var(--gray-200);">
+                                <input type="checkbox" name="abc-function" value="control"> Kontrolle/Autonomie
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="saveABCEntry()" style="margin-top: 15px;">+ Analyse speichern</button>
+                </div>
+
+                <div id="abc-history" style="margin-top: 20px;">
+                    <h4 style="margin-bottom: 15px;">Gespeicherte Analysen</h4>
+                    <div id="abc-entries" style="color: var(--gray-500);">Noch keine Analysen gespeichert.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESSOURCEN Tab -->
+        <div id="ressourcen" class="tab-content">
+            <div class="form-section">
+                <h3>💪 Ressourcen & Schutzfaktoren</h3>
+                <p style="color: var(--gray-500); margin-bottom: 20px;">Erfassen Sie Stärken, Interessen und unterstützende Faktoren.</p>
+
+                <!-- Kind-Ebene -->
+                <div style="background: linear-gradient(135deg, #F0FFF4, #E6FFFA); padding: 20px; border-radius: var(--radius); margin-bottom: 20px; border: 1px solid var(--success);">
+                    <h4 style="color: var(--success-dark); margin-bottom: 15px;">🧒 Ressourcen auf Kindebene</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Stärken & Talente</label>
+                            <textarea id="ressourcen_staerken" rows="3" placeholder="z.B. musikalisch, sportlich, kreativ, hilfsbereit..." onchange="saveRessourcenData()"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Interessen & Hobbys</label>
+                            <textarea id="ressourcen_interessen" rows="3" placeholder="z.B. Fußball, Lego, Tiere, Musik..." onchange="saveRessourcenData()"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Erfolge & positive Erfahrungen</label>
+                            <textarea id="ressourcen_erfolge" rows="2" placeholder="Worauf ist das Kind stolz?" onchange="saveRessourcenData()"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Bewältigungsstrategien</label>
+                            <textarea id="ressourcen_coping" rows="2" placeholder="Was hilft dem Kind, sich zu beruhigen?" onchange="saveRessourcenData()"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Familien-Ebene -->
+                <div style="background: linear-gradient(135deg, #EBF8FF, #E6FFFA); padding: 20px; border-radius: var(--radius); margin-bottom: 20px; border: 1px solid var(--info);">
+                    <h4 style="color: var(--info-dark); margin-bottom: 15px;">👨‍👩‍👧 Ressourcen auf Familienebene</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Unterstützende Bezugspersonen</label>
+                            <textarea id="ressourcen_bezugspersonen" rows="2" placeholder="Wer steht dem Kind nahe? Wer ist verlässlich?" onchange="saveRessourcenData()"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Erziehungskompetenzen der Eltern</label>
+                            <textarea id="ressourcen_eltern" rows="2" placeholder="Was machen die Eltern gut?" onchange="saveRessourcenData()"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Positive Familienrituale</label>
+                        <textarea id="ressourcen_rituale" rows="2" placeholder="z.B. gemeinsame Mahlzeiten, Spieleabende..." onchange="saveRessourcenData()"></textarea>
+                    </div>
+                </div>
+
+                <!-- Soziale Ebene -->
+                <div style="background: linear-gradient(135deg, #FAF5FF, #FEF3F2); padding: 20px; border-radius: var(--radius); margin-bottom: 20px; border: 1px solid #9F7AEA;">
+                    <h4 style="color: #6B46C1; margin-bottom: 15px;">🤝 Ressourcen auf sozialer Ebene</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Freundschaften</label>
+                            <textarea id="ressourcen_freunde" rows="2" placeholder="Hat das Kind Freunde? Wie stabil sind diese?" onchange="saveRessourcenData()"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Vereinszugehörigkeit / Aktivitäten</label>
+                            <textarea id="ressourcen_vereine" rows="2" placeholder="z.B. Sportverein, Musikschule..." onchange="saveRessourcenData()"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Professionelles Unterstützungsnetzwerk</label>
+                        <textarea id="ressourcen_profis" rows="2" placeholder="z.B. Therapeut, Nachhilfe, Mentor..." onchange="saveRessourcenData()"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INTERVENTIONEN Tab -->
+        <div id="interventionen" class="tab-content">
+            <div class="form-section">
+                <h3>🛠️ Interventionskatalog</h3>
+                <p style="color: var(--gray-500); margin-bottom: 20px;">Evidenzbasierte Interventionen, sortiert nach Entwicklungsstufe und Problembereich.</p>
+
+                <div id="interventions-content">
+                    <p style="color: var(--gray-500);">Füllen Sie zuerst die ELDiB-Einschätzung und das Screening aus, um passende Interventionen zu erhalten.</p>
+                    <button class="btn btn-primary" onclick="generateInterventions()">Interventionen generieren</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Beratung Tab -->
         <div id="beratung" class="tab-content">
-            <h2 style="margin-bottom: 20px; color: #333;">🧠 Pädagogische Beratung</h2>
+            <h2 style="margin-bottom: 20px; color: #333;">💡 Regelbasierte Beratung</h2>
 
             <!-- Automatische Analyse -->
             <div class="form-section" style="background: linear-gradient(135deg, #e8f5e9, #f1f8e9); border-color: #81c784;">
@@ -6856,7 +7640,345 @@ function saveObservation() {
     closeDiagnosticTool();
 }
 
-// KI-BERATER FUNKTIONEN
+// ============================================
+// KLINISCHE MODULE FUNKTIONEN
+// ============================================
+
+// Anamnese speichern
+function saveAnamneseData() {
+    const anamneseData = {
+        schwangerschaft: document.getElementById('anamnese_schwangerschaft')?.value || '',
+        fruehgeburt: document.getElementById('anamnese_fruehgeburt')?.value || '',
+        geburt: document.getElementById('anamnese_geburt')?.value || '',
+        geburt_bemerkung: document.getElementById('anamnese_geburt_bemerkung')?.value || '',
+        motorik: document.getElementById('anamnese_motorik')?.value || '',
+        sprache: document.getElementById('anamnese_sprache')?.value || '',
+        regulation: document.getElementById('anamnese_regulation')?.value || '',
+        kiga: document.getElementById('anamnese_kiga')?.value || '',
+        schulstart: document.getElementById('anamnese_schulstart')?.value || '',
+        schulverlauf: document.getElementById('anamnese_schulverlauf')?.value || '',
+        familie: document.getElementById('anamnese_familie')?.value || '',
+        geschwister: document.getElementById('anamnese_geschwister')?.value || '',
+        position: document.getElementById('anamnese_position')?.value || '',
+        belastungen: {
+            psychisch: document.getElementById('belastung_psychisch')?.checked || false,
+            sucht: document.getElementById('belastung_sucht')?.checked || false,
+            trennung: document.getElementById('belastung_trennung')?.checked || false,
+            gewalt: document.getElementById('belastung_gewalt')?.checked || false,
+            armut: document.getElementById('belastung_armut')?.checked || false,
+            migration: document.getElementById('belastung_migration')?.checked || false,
+            verlust: document.getElementById('belastung_verlust')?.checked || false,
+            trauma: document.getElementById('belastung_trauma')?.checked || false
+        }
+    };
+    state.anamnese = anamneseData;
+    saveToLocalStorage();
+}
+
+// Anamnese laden
+function loadAnamneseData() {
+    if (!state.anamnese) return;
+    const a = state.anamnese;
+
+    if (document.getElementById('anamnese_schwangerschaft')) document.getElementById('anamnese_schwangerschaft').value = a.schwangerschaft || '';
+    if (document.getElementById('anamnese_fruehgeburt')) document.getElementById('anamnese_fruehgeburt').value = a.fruehgeburt || '';
+    if (document.getElementById('anamnese_geburt')) document.getElementById('anamnese_geburt').value = a.geburt || '';
+    if (document.getElementById('anamnese_geburt_bemerkung')) document.getElementById('anamnese_geburt_bemerkung').value = a.geburt_bemerkung || '';
+    if (document.getElementById('anamnese_motorik')) document.getElementById('anamnese_motorik').value = a.motorik || '';
+    if (document.getElementById('anamnese_sprache')) document.getElementById('anamnese_sprache').value = a.sprache || '';
+    if (document.getElementById('anamnese_regulation')) document.getElementById('anamnese_regulation').value = a.regulation || '';
+    if (document.getElementById('anamnese_kiga')) document.getElementById('anamnese_kiga').value = a.kiga || '';
+    if (document.getElementById('anamnese_schulstart')) document.getElementById('anamnese_schulstart').value = a.schulstart || '';
+    if (document.getElementById('anamnese_schulverlauf')) document.getElementById('anamnese_schulverlauf').value = a.schulverlauf || '';
+    if (document.getElementById('anamnese_familie')) document.getElementById('anamnese_familie').value = a.familie || '';
+    if (document.getElementById('anamnese_geschwister')) document.getElementById('anamnese_geschwister').value = a.geschwister || '';
+    if (document.getElementById('anamnese_position')) document.getElementById('anamnese_position').value = a.position || '';
+
+    if (a.belastungen) {
+        if (document.getElementById('belastung_psychisch')) document.getElementById('belastung_psychisch').checked = a.belastungen.psychisch || false;
+        if (document.getElementById('belastung_sucht')) document.getElementById('belastung_sucht').checked = a.belastungen.sucht || false;
+        if (document.getElementById('belastung_trennung')) document.getElementById('belastung_trennung').checked = a.belastungen.trennung || false;
+        if (document.getElementById('belastung_gewalt')) document.getElementById('belastung_gewalt').checked = a.belastungen.gewalt || false;
+        if (document.getElementById('belastung_armut')) document.getElementById('belastung_armut').checked = a.belastungen.armut || false;
+        if (document.getElementById('belastung_migration')) document.getElementById('belastung_migration').checked = a.belastungen.migration || false;
+        if (document.getElementById('belastung_verlust')) document.getElementById('belastung_verlust').checked = a.belastungen.verlust || false;
+        if (document.getElementById('belastung_trauma')) document.getElementById('belastung_trauma').checked = a.belastungen.trauma || false;
+    }
+}
+
+// Screening Update
+function updateScreening() {
+    // ADHS Screening
+    const adhs1 = parseInt(document.querySelector('input[name="adhs_unaufmerksamkeit"]:checked')?.value || 0);
+    const adhs2 = parseInt(document.querySelector('input[name="adhs_hyperaktiv"]:checked')?.value || 0);
+    const adhs3 = parseInt(document.querySelector('input[name="adhs_impulsiv"]:checked')?.value || 0);
+    const adhsSituation = parseInt(document.querySelector('input[name="adhs_situation"]:checked')?.value || 0);
+    const adhsTotal = adhs1 + adhs2 + adhs3;
+
+    let adhsAmpel = '⚪';
+    if (adhsTotal >= 1) adhsAmpel = adhsTotal <= 2 ? '🟢' : (adhsTotal <= 4 ? '🟡' : '🔴');
+    document.getElementById('ampel-adhs').textContent = adhsAmpel;
+
+    // Angst Screening
+    const angst1 = parseInt(document.querySelector('input[name="angst_trennung"]:checked')?.value || 0);
+    const angst2 = parseInt(document.querySelector('input[name="angst_sozial"]:checked')?.value || 0);
+    const angst3 = parseInt(document.querySelector('input[name="angst_generell"]:checked')?.value || 0);
+    const angst4 = parseInt(document.querySelector('input[name="angst_schule"]:checked')?.value || 0);
+    const angstTotal = angst1 + angst2 + angst3 + angst4;
+
+    let angstAmpel = '⚪';
+    if (angstTotal >= 1) angstAmpel = angstTotal <= 2 ? '🟢' : (angstTotal <= 5 ? '🟡' : '🔴');
+    document.getElementById('ampel-angst').textContent = angstAmpel;
+
+    // Sozialverhalten Screening
+    const sozial1 = parseInt(document.querySelector('input[name="sozial_opposition"]:checked')?.value || 0);
+    const sozial2 = parseInt(document.querySelector('input[name="sozial_aggression"]:checked')?.value || 0);
+    const sozial3 = parseInt(document.querySelector('input[name="sozial_regeln"]:checked')?.value || 0);
+    const sozialTotal = sozial1 + sozial2 + sozial3;
+
+    let sozialAmpel = '⚪';
+    if (sozialTotal >= 1) sozialAmpel = sozialTotal <= 2 ? '🟢' : (sozialTotal <= 4 ? '🟡' : '🔴');
+    document.getElementById('ampel-sozial').textContent = sozialAmpel;
+
+    // Stimmung Screening
+    const stimmung1 = parseInt(document.querySelector('input[name="stimmung_traurig"]:checked')?.value || 0);
+    const stimmung2 = parseInt(document.querySelector('input[name="stimmung_interesse"]:checked')?.value || 0);
+    const stimmung3 = parseInt(document.querySelector('input[name="stimmung_reizbar"]:checked')?.value || 0);
+    const stimmungTotal = stimmung1 + stimmung2 + stimmung3;
+
+    let stimmungAmpel = '⚪';
+    if (stimmungTotal >= 1) stimmungAmpel = stimmungTotal <= 2 ? '🟢' : (stimmungTotal <= 4 ? '🟡' : '🔴');
+    document.getElementById('ampel-stimmung').textContent = stimmungAmpel;
+
+    // Zusammenfassung
+    const results = [];
+    if (adhsAmpel === '🔴') results.push('ADHS-Symptome auffällig');
+    else if (adhsAmpel === '🟡') results.push('ADHS-Symptome grenzwertig');
+    if (angstAmpel === '🔴') results.push('Angstsymptome auffällig');
+    else if (angstAmpel === '🟡') results.push('Angstsymptome grenzwertig');
+    if (sozialAmpel === '🔴') results.push('Sozialverhalten auffällig');
+    else if (sozialAmpel === '🟡') results.push('Sozialverhalten grenzwertig');
+    if (stimmungAmpel === '🔴') results.push('Stimmung auffällig');
+    else if (stimmungAmpel === '🟡') results.push('Stimmung grenzwertig');
+
+    const summaryDiv = document.getElementById('screening-results');
+    if (results.length === 0) {
+        summaryDiv.innerHTML = '<p style="color: var(--success);">✓ Keine auffälligen Bereiche im Screening</p>';
+    } else {
+        summaryDiv.innerHTML = `
+            <p style="margin-bottom: 10px;"><strong>Auffällige Bereiche:</strong></p>
+            <ul style="margin: 0; padding-left: 20px;">
+                ${results.map(r => `<li>${r}</li>`).join('')}
+            </ul>
+            <p style="margin-top: 15px; font-size: 0.85rem; color: var(--gray-500);">
+                ⚠️ Dies ist ein Screening und ersetzt keine klinische Diagnostik.
+            </p>
+        `;
+    }
+
+    // Speichern
+    state.screening = { adhsTotal, angstTotal, sozialTotal, stimmungTotal, adhsSituation };
+    saveToLocalStorage();
+}
+
+// ABC Eintrag speichern (neue Version)
+function saveABCEntry() {
+    const entry = {
+        id: Date.now(),
+        datetime: document.getElementById('abc-datetime')?.value || new Date().toISOString(),
+        context: document.getElementById('abc-context')?.value || '',
+        antecedent: document.getElementById('abc-antecedent')?.value || '',
+        behavior: document.getElementById('abc-behavior')?.value || '',
+        consequence: document.getElementById('abc-consequence')?.value || '',
+        functions: Array.from(document.querySelectorAll('input[name="abc-function"]:checked')).map(cb => cb.value)
+    };
+
+    if (!entry.behavior) {
+        showToast('Bitte mindestens das Verhalten beschreiben.');
+        return;
+    }
+
+    if (!state.abcEntries) state.abcEntries = [];
+    state.abcEntries.push(entry);
+    saveToLocalStorage();
+
+    // Clear form
+    document.getElementById('abc-datetime').value = '';
+    document.getElementById('abc-context').value = '';
+    document.getElementById('abc-antecedent').value = '';
+    document.getElementById('abc-behavior').value = '';
+    document.getElementById('abc-consequence').value = '';
+    document.querySelectorAll('input[name="abc-function"]:checked').forEach(cb => cb.checked = false);
+
+    renderABCEntries();
+    showToast('ABC-Analyse gespeichert!');
+}
+
+function renderABCEntries() {
+    const container = document.getElementById('abc-entries');
+    if (!container) return;
+
+    if (!state.abcEntries || state.abcEntries.length === 0) {
+        container.innerHTML = '<p style="color: var(--gray-500);">Noch keine Analysen gespeichert.</p>';
+        return;
+    }
+
+    container.innerHTML = state.abcEntries.map((entry, idx) => `
+        <div style="background: var(--gray-50); padding: 15px; border-radius: var(--radius); margin-bottom: 10px; border-left: 4px solid var(--primary);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <strong>${entry.context || 'Ohne Kontext'}</strong>
+                <span style="color: var(--gray-400); font-size: 0.85rem;">${new Date(entry.datetime).toLocaleString('de-DE')}</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 0.9rem;">
+                <div><strong>A:</strong> ${entry.antecedent || '-'}</div>
+                <div><strong>B:</strong> ${entry.behavior || '-'}</div>
+                <div><strong>C:</strong> ${entry.consequence || '-'}</div>
+            </div>
+            ${entry.functions?.length ? `<div style="margin-top: 8px; font-size: 0.85rem; color: var(--primary);">Funktion: ${entry.functions.join(', ')}</div>` : ''}
+            <button onclick="deleteABCEntry(${entry.id})" style="margin-top: 10px; padding: 4px 8px; font-size: 0.8rem; background: var(--danger-light); color: white; border: none; border-radius: 4px; cursor: pointer;">Löschen</button>
+        </div>
+    `).join('');
+}
+
+function deleteABCEntry(id) {
+    state.abcEntries = state.abcEntries.filter(e => e.id !== id);
+    saveToLocalStorage();
+    renderABCEntries();
+    showToast('Eintrag gelöscht');
+}
+
+// Ressourcen speichern
+function saveRessourcenData() {
+    state.ressourcen = {
+        staerken: document.getElementById('ressourcen_staerken')?.value || '',
+        interessen: document.getElementById('ressourcen_interessen')?.value || '',
+        erfolge: document.getElementById('ressourcen_erfolge')?.value || '',
+        coping: document.getElementById('ressourcen_coping')?.value || '',
+        bezugspersonen: document.getElementById('ressourcen_bezugspersonen')?.value || '',
+        eltern: document.getElementById('ressourcen_eltern')?.value || '',
+        rituale: document.getElementById('ressourcen_rituale')?.value || '',
+        freunde: document.getElementById('ressourcen_freunde')?.value || '',
+        vereine: document.getElementById('ressourcen_vereine')?.value || '',
+        profis: document.getElementById('ressourcen_profis')?.value || ''
+    };
+    saveToLocalStorage();
+}
+
+function loadRessourcenData() {
+    if (!state.ressourcen) return;
+    const r = state.ressourcen;
+
+    if (document.getElementById('ressourcen_staerken')) document.getElementById('ressourcen_staerken').value = r.staerken || '';
+    if (document.getElementById('ressourcen_interessen')) document.getElementById('ressourcen_interessen').value = r.interessen || '';
+    if (document.getElementById('ressourcen_erfolge')) document.getElementById('ressourcen_erfolge').value = r.erfolge || '';
+    if (document.getElementById('ressourcen_coping')) document.getElementById('ressourcen_coping').value = r.coping || '';
+    if (document.getElementById('ressourcen_bezugspersonen')) document.getElementById('ressourcen_bezugspersonen').value = r.bezugspersonen || '';
+    if (document.getElementById('ressourcen_eltern')) document.getElementById('ressourcen_eltern').value = r.eltern || '';
+    if (document.getElementById('ressourcen_rituale')) document.getElementById('ressourcen_rituale').value = r.rituale || '';
+    if (document.getElementById('ressourcen_freunde')) document.getElementById('ressourcen_freunde').value = r.freunde || '';
+    if (document.getElementById('ressourcen_vereine')) document.getElementById('ressourcen_vereine').value = r.vereine || '';
+    if (document.getElementById('ressourcen_profis')) document.getElementById('ressourcen_profis').value = r.profis || '';
+}
+
+// Interventionen generieren
+function generateInterventions() {
+    const container = document.getElementById('interventions-content');
+
+    // Sammle alle Daten
+    const screening = state.screening || {};
+    const eldibZiele = [];
+
+    ['verhalten', 'kommunikation', 'sozialisation', 'kognition'].forEach(bereich => {
+        const selections = state.selections[bereich] || {};
+        Object.entries(selections).forEach(([code, status]) => {
+            if (status === 'ziel') eldibZiele.push(code);
+        });
+    });
+
+    if (eldibZiele.length === 0 && !screening.adhsTotal) {
+        container.innerHTML = `
+            <div style="padding: 20px; background: #FFF5F5; border-radius: var(--radius); border: 1px solid var(--danger);">
+                <p style="color: var(--danger);">Bitte füllen Sie zuerst die ELDiB-Einschätzung oder das Screening aus.</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = '<div style="display: grid; gap: 20px;">';
+
+    // ADHS-bezogene Interventionen
+    if (screening.adhsTotal >= 4) {
+        html += `
+            <div style="background: #FFF5F5; padding: 20px; border-radius: var(--radius); border-left: 4px solid var(--danger);">
+                <h4 style="color: var(--danger); margin-bottom: 15px;">🎯 Interventionen bei Aufmerksamkeitsproblemen</h4>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li>Reizarme Lernumgebung schaffen (Sitzplatz vorne, wenig Ablenkung)</li>
+                    <li>Kurze, klare Anweisungen geben (eine Anweisung zur Zeit)</li>
+                    <li>Häufige Bewegungspausen einplanen (alle 15-20 Min)</li>
+                    <li>Visualisierung nutzen (Piktogramme, Timer)</li>
+                    <li>Positives Verstärken bei Aufgabenbewältigung</li>
+                    <li>Strukturhilfen anbieten (Checklisten, Tagesplan)</li>
+                </ul>
+                <p style="margin-top: 15px; font-size: 0.85rem; color: var(--gray-500);">
+                    ⚠️ Bei starker Ausprägung: Fachärztliche Abklärung empfohlen
+                </p>
+            </div>
+        `;
+    }
+
+    // Angst-bezogene Interventionen
+    if (screening.angstTotal >= 4) {
+        html += `
+            <div style="background: #EBF8FF; padding: 20px; border-radius: var(--radius); border-left: 4px solid var(--info);">
+                <h4 style="color: var(--info-dark); margin-bottom: 15px;">😰 Interventionen bei Ängsten</h4>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li>Sichere, vorhersehbare Umgebung schaffen</li>
+                    <li>Ängste validieren, nicht bagatellisieren</li>
+                    <li>Graduelle Exposition (kleine Schritte)</li>
+                    <li>Entspannungstechniken vermitteln</li>
+                    <li>Erfolgserlebnisse ermöglichen</li>
+                    <li>Bei Schulangst: Kooperation mit Eltern, evtl. gestufter Wiedereinstieg</li>
+                </ul>
+            </div>
+        `;
+    }
+
+    // Sozialverhalten-bezogene Interventionen
+    if (screening.sozialTotal >= 4) {
+        html += `
+            <div style="background: #FFFFF0; padding: 20px; border-radius: var(--radius); border-left: 4px solid var(--warning);">
+                <h4 style="color: var(--warning-dark); margin-bottom: 15px;">⚡ Interventionen bei Sozialverhaltensproblemen</h4>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li>Klare, konsistente Regeln und Konsequenzen</li>
+                    <li>Positive Beziehungszeit einplanen</li>
+                    <li>Wahlmöglichkeiten anbieten (Autonomie)</li>
+                    <li>Frühwarnsignale erkennen und intervenieren</li>
+                    <li>Emotions- und Impulskontrolle trainieren</li>
+                    <li>Soziale Problemlösung üben (Rollenspiele)</li>
+                </ul>
+            </div>
+        `;
+    }
+
+    // ELDiB-basierte Interventionen
+    if (eldibZiele.length > 0) {
+        html += `
+            <div style="background: #F0FFF4; padding: 20px; border-radius: var(--radius); border-left: 4px solid var(--success);">
+                <h4 style="color: var(--success-dark); margin-bottom: 15px;">📈 ELDiB-basierte Förderung</h4>
+                <p style="margin-bottom: 10px;">Basierend auf ${eldibZiele.length} definierten Zielen:</p>
+                <ul style="margin: 0; padding-left: 20px;">
+                    ${eldibZiele.slice(0, 5).map(z => `<li>${z}: Siehe spezifische Zielformulierung</li>`).join('')}
+                    ${eldibZiele.length > 5 ? `<li>... und ${eldibZiele.length - 5} weitere Ziele</li>` : ''}
+                </ul>
+            </div>
+        `;
+    }
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// KI-BERATER FUNKTIONEN (Optional - kann entfernt werden)
 
 const AI_CONFIG = {
     provider: null,
@@ -7116,7 +8238,82 @@ showTab = function(tabId) {
     if (tabId === 'beratung') {
         runAutoAnalysis();
     }
+    updateSidebarActive(tabId);
+    updatePageTitle(tabId);
+    updateProgress();
+};
+
+// Sidebar Navigation
+function updateSidebarActive(tabId) {
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.tab === tabId) {
+            item.classList.add('active');
+        }
+    });
+}
+
+// Page titles for each tab
+const PAGE_TITLES = {
+    stammdaten: { title: 'Stammdaten', subtitle: 'Grunddaten des Kindes erfassen' },
+    uebersicht: { title: 'Dashboard', subtitle: 'Übersicht aller Einschätzungen' },
+    verhalten: { title: 'Verhalten', subtitle: 'ELDiB Bereich V-1 bis V-33' },
+    kommunikation: { title: 'Kommunikation', subtitle: 'ELDiB Bereich K-1 bis K-35' },
+    sozialisation: { title: 'Sozialisation', subtitle: 'ELDiB Bereich S-1 bis S-41' },
+    kognition: { title: 'Kognition', subtitle: 'ELDiB Bereich C-1 bis C-62' },
+    zusaetzlich: { title: 'Zusätzliche Ziele', subtitle: 'Weitere Förderziele definieren' },
+    anamnese: { title: 'Anamnese', subtitle: 'Entwicklungs- und Familiengeschichte' },
+    screening: { title: 'Klinisches Screening', subtitle: 'Systematische Symptomerfassung' },
+    verhaltensanalyse: { title: 'Verhaltensanalyse', subtitle: 'Funktionale Analyse (ABC)' },
+    ressourcen: { title: 'Ressourcen', subtitle: 'Stärken und Schutzfaktoren' },
+    beratung: { title: 'Empfehlungen', subtitle: 'Regelbasierte Beratung' },
+    interventionen: { title: 'Interventionen', subtitle: 'Konkrete Maßnahmen' },
+    diagnostik: { title: 'Diagnostik', subtitle: 'Screening-Instrumente' },
+    export: { title: 'Export', subtitle: 'Berichte und PEI erstellen' }
+};
+
+function updatePageTitle(tabId) {
+    const pageInfo = PAGE_TITLES[tabId] || { title: tabId, subtitle: '' };
+    const titleEl = document.getElementById('current-page-title');
+    const subtitleEl = document.getElementById('current-page-subtitle');
+    if (titleEl) titleEl.textContent = pageInfo.title;
+    if (subtitleEl) subtitleEl.textContent = pageInfo.subtitle;
+}
+
+function updateProgress() {
+    let total = 0;
+    let filled = 0;
+
+    ['verhalten', 'kommunikation', 'sozialisation', 'kognition'].forEach(bereich => {
+        const selections = state.selections[bereich] || {};
+        const count = Object.keys(selections).length;
+        if (count > 0) filled++;
+        total++;
+
+        const badge = document.getElementById(`badge-${bereich}`);
+        if (badge) badge.textContent = count;
+    });
+
+    if (state.stammdaten && state.stammdaten.schueler_name) filled++;
+    total++;
+
+    const percent = Math.round((filled / total) * 100);
+    const percentEl = document.getElementById('progress-percent');
+    const fillEl = document.getElementById('progress-fill');
+    if (percentEl) percentEl.textContent = percent + '%';
+    if (fillEl) fillEl.style.width = percent + '%';
+}
+
+// Initialize sidebar on load
+const origInit = window.onload;
+window.onload = function() {
+    if (origInit) origInit();
+    updateProgress();
+    updateSidebarActive('stammdaten');
 };
     </script>
+            </div><!-- end container -->
+        </div><!-- end main-body -->
+    </div><!-- end main-content -->
 </body>
 </html>
