@@ -2149,9 +2149,6 @@
             font-style: italic;
         }
     </style>
-    <!-- Klinisches Gehirn & Assessment -->
-    <script src="clinical-brain.js"></script>
-    <script src="clinical-assessment.js"></script>
 </head>
 <body>
     <!-- SIDEBAR NAVIGATION -->
@@ -3929,6 +3926,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }, 100);
+
+    // Initialisiere Clinical Assessment wenn verfügbar
+    if (typeof ClinicalAssessment !== 'undefined') {
+        ClinicalAssessment.loadState();
+        // Pre-render wenn screening tab existiert
+        const container = document.getElementById('clinical-assessment-content');
+        if (container) {
+            ClinicalAssessment.renderAssessmentHome('clinical-assessment-content');
+        }
+    }
 });
 
 // Tab Navigation
@@ -8159,6 +8166,16 @@ window.onload = function() {
     updateProgress();
     updateSidebarActive('stammdaten');
 };
+    </script>
+
+    <!-- Klinisches Gehirn & Assessment System -->
+    <script src="clinical-brain.js"></script>
+    <script src="clinical-assessment.js"></script>
+    <script>
+        // Initialisiere Clinical Assessment sobald geladen
+        if (typeof ClinicalAssessment !== 'undefined') {
+            ClinicalAssessment.loadState();
+        }
     </script>
             </div><!-- end container -->
         </div><!-- end main-body -->
