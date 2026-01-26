@@ -873,6 +873,42 @@
             font-size: 0.8em;
             margin-left: 8px;
         }
+
+        /* Fragebogen Radio/Checkbox Styles */
+        .radio-option:hover, .checkbox-option:hover {
+            background: #f0f0f0 !important;
+            border-color: #667eea !important;
+        }
+
+        .radio-option.selected, .checkbox-option.selected {
+            background: #e8f5e9 !important;
+            border-color: #4caf50 !important;
+            border-width: 2px;
+        }
+
+        .radio-option.selected::after, .checkbox-option.selected::after {
+            content: ' ✓';
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .frage-gruppe {
+            transition: all 0.2s ease;
+        }
+
+        .frage-gruppe p {
+            color: #333;
+        }
+
+        /* Fragebogen Section Navigation */
+        .fragebogen-section {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -1336,13 +1372,1038 @@
             </div>
 
             <!-- Fragebogen Abschnitte -->
-            <div id="fragebogen-anlass" class="fragebogen-section active" style="display: block;"></div>
-            <div id="fragebogen-verhalten" class="fragebogen-section" style="display: none;"></div>
-            <div id="fragebogen-kommunikation" class="fragebogen-section" style="display: none;"></div>
-            <div id="fragebogen-sozialisation" class="fragebogen-section" style="display: none;"></div>
-            <div id="fragebogen-kognition" class="fragebogen-section" style="display: none;"></div>
-            <div id="fragebogen-ressourcen" class="fragebogen-section" style="display: none;"></div>
-            <div id="fragebogen-empfehlungen" class="fragebogen-section" style="display: none;"></div>
+
+            <!-- 1. ANLASS DER DIAGNOSTIK -->
+            <div id="fragebogen-anlass" class="fragebogen-section active" style="display: block;">
+                <h3 style="color: #1a1a2e; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-bottom: 20px;">
+                    1. Anlass der Diagnostik
+                </h3>
+
+                <div class="frage-gruppe" data-kategorie="anlass" data-frage="grund" style="margin-bottom: 25px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Aus welchem Grund wurde die Diagnostik beantragt?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                            <input type="radio" name="anlass-grund" value="schulprobleme"
+                                data-kategorie="anlass" data-frage="grund"
+                                data-text="{name} wurde dem Centre de Diagnostic Spécialisé de l'Éducation (CDSE) aufgrund anhaltender schulischer Schwierigkeiten vorgestellt. Die zuständige Lehrperson äußerte Bedenken bezüglich des Lern- und Sozialverhaltens."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Schulische Schwierigkeiten / Lernprobleme</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                            <input type="radio" name="anlass-grund" value="verhalten"
+                                data-kategorie="anlass" data-frage="grund"
+                                data-text="{name} wurde dem Centre de Diagnostic Spécialisé de l'Éducation (CDSE) aufgrund auffälliger Verhaltensweisen im schulischen Kontext vorgestellt. Die Lehrperson berichtete von Schwierigkeiten in der Verhaltensregulation."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Verhaltensauffälligkeiten</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                            <input type="radio" name="anlass-grund" value="emotional"
+                                data-kategorie="anlass" data-frage="grund"
+                                data-text="{name} wurde dem Centre de Diagnostic Spécialisé de l'Éducation (CDSE) aufgrund emotionaler Auffälligkeiten und vermuteter sozial-emotionaler Entwicklungsverzögerung vorgestellt."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Emotionale Auffälligkeiten / sozial-emotionale Probleme</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                            <input type="radio" name="anlass-grund" value="orientierung"
+                                data-kategorie="anlass" data-frage="grund"
+                                data-text="{name} wurde dem Centre de Diagnostic Spécialisé de l'Éducation (CDSE) im Rahmen einer schulischen Orientierungsentscheidung vorgestellt. Ziel war die Einschätzung der sozial-emotionalen Entwicklung zur Unterstützung der weiteren Schullaufbahnplanung."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Schulische Orientierung / Schullaufbahnberatung</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                            <input type="radio" name="anlass-grund" value="verlauf"
+                                data-kategorie="anlass" data-frage="grund"
+                                data-text="{name} wurde dem Centre de Diagnostic Spécialisé de l'Éducation (CDSE) zur Verlaufskontrolle und Überprüfung bereits eingeleiteter Fördermaßnahmen vorgestellt."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Verlaufskontrolle / Überprüfung von Fördermaßnahmen</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="anlass" data-frage="fragestellung" style="margin-bottom: 25px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Welche Fragestellungen stehen im Vordergrund? (Mehrfachauswahl möglich)</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                            <input type="checkbox" value="entwicklungsstand"
+                                data-kategorie="anlass" data-frage="fragestellung"
+                                data-text="Erfassung des aktuellen sozial-emotionalen Entwicklungsstandes"
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Wie ist der aktuelle Entwicklungsstand?</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                            <input type="checkbox" value="foerderbedarf"
+                                data-kategorie="anlass" data-frage="fragestellung"
+                                data-text="Ermittlung des individuellen Förderbedarfs"
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Besteht ein besonderer Förderbedarf?</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                            <input type="checkbox" value="massnahmen"
+                                data-kategorie="anlass" data-frage="fragestellung"
+                                data-text="Ableitung geeigneter pädagogischer Maßnahmen"
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Welche Fördermaßnahmen sind geeignet?</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                            <input type="checkbox" value="schulform"
+                                data-kategorie="anlass" data-frage="fragestellung"
+                                data-text="Beratung bezüglich der geeigneten Beschulung"
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Ist die aktuelle Beschulung angemessen?</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. VERHALTEN -->
+            <div id="fragebogen-verhalten" class="fragebogen-section" style="display: none;">
+                <h3 style="color: #e74c3c; border-bottom: 2px solid #e74c3c; padding-bottom: 10px; margin-bottom: 20px;">
+                    2. Verhalten
+                </h3>
+
+                <div class="frage-gruppe" data-kategorie="verhalten" data-frage="grundverhalten" style="margin-bottom: 25px; padding: 15px; background: #fff5f5; border-radius: 8px; border-left: 4px solid #e74c3c;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Wie zeigt sich das allgemeine Verhalten im Unterricht?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="verhalten-grundverhalten" value="angepasst"
+                                data-kategorie="verhalten" data-frage="grundverhalten"
+                                data-text="{name} zeigt im Unterricht ein überwiegend angepasstes Verhalten und befolgt die geltenden Regeln weitgehend zuverlässig."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Zeigt angepasstes, regelkonformes Verhalten</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="verhalten-grundverhalten" value="unruhig"
+                                data-kategorie="verhalten" data-frage="grundverhalten"
+                                data-text="{name} zeigt im Unterricht eine erhöhte motorische Unruhe. Das Sitzenbleiben und die Einhaltung von Verhaltensregeln fallen schwer."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Zeigt erhöhte motorische Unruhe</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="verhalten-grundverhalten" value="passiv"
+                                data-kategorie="verhalten" data-frage="grundverhalten"
+                                data-text="{name} verhält sich im Unterricht passiv und zurückgezogen. Eine aktive Beteiligung am Unterrichtsgeschehen erfolgt selten von selbst."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Verhält sich passiv/zurückgezogen</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="verhalten-grundverhalten" value="oppositionell"
+                                data-kategorie="verhalten" data-frage="grundverhalten"
+                                data-text="{name} zeigt im Unterricht ein oppositionelles Verhalten. Anweisungen werden häufig verweigert oder in Frage gestellt."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Zeigt oppositionelles/verweigerdes Verhalten</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="verhalten" data-frage="aufmerksamkeit" style="margin-bottom: 25px; padding: 15px; background: #fff5f5; border-radius: 8px; border-left: 4px solid #e74c3c;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Wie ist die Aufmerksamkeit und Konzentration?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="verhalten-aufmerksamkeit" value="gut"
+                                data-kategorie="verhalten" data-frage="aufmerksamkeit"
+                                data-text="Die Aufmerksamkeitsspanne ist altersgerecht. {name} kann sich über längere Zeiträume auf eine Aufgabe konzentrieren."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Altersgerechte Aufmerksamkeit, kann sich gut konzentrieren</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="verhalten-aufmerksamkeit" value="kurz"
+                                data-kategorie="verhalten" data-frage="aufmerksamkeit"
+                                data-text="Die Aufmerksamkeitsspanne ist verkürzt. {name} ist leicht ablenkbar und benötigt regelmäßige Impulse zur Rückführung auf die Aufgabe."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Verkürzte Aufmerksamkeit, leicht ablenkbar</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="verhalten-aufmerksamkeit" value="stark_reduziert"
+                                data-kategorie="verhalten" data-frage="aufmerksamkeit"
+                                data-text="Die Aufmerksamkeitsfähigkeit ist deutlich reduziert. {name} hat große Schwierigkeiten, sich auf Aufgaben zu fokussieren und benötigt intensive Unterstützung."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Stark reduzierte Aufmerksamkeit, intensive Unterstützung nötig</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="verhalten-aufmerksamkeit" value="schwankend"
+                                data-kategorie="verhalten" data-frage="aufmerksamkeit"
+                                data-text="Die Aufmerksamkeitsleistung ist stark schwankend und abhängig von der Tagesform und dem Interesse am Thema."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Schwankende Aufmerksamkeit, abhängig von Tagesform/Interesse</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="verhalten" data-frage="impulskontrolle" style="margin-bottom: 25px; padding: 15px; background: #fff5f5; border-radius: 8px; border-left: 4px solid #e74c3c;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Wie ist die Impulskontrolle?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="verhalten-impulskontrolle" value="gut"
+                                data-kategorie="verhalten" data-frage="impulskontrolle"
+                                data-text="{name} verfügt über eine altersgemäße Impulskontrolle und kann eigene Bedürfnisse angemessen aufschieben."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Altersgerechte Impulskontrolle</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="verhalten-impulskontrolle" value="reduziert"
+                                data-kategorie="verhalten" data-frage="impulskontrolle"
+                                data-text="{name} zeigt eine reduzierte Impulskontrolle. Es fällt schwer, abzuwarten und eigene Impulse zu hemmen."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Reduzierte Impulskontrolle, fällt schwer abzuwarten</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="verhalten-impulskontrolle" value="gering"
+                                data-kategorie="verhalten" data-frage="impulskontrolle"
+                                data-text="{name} hat erhebliche Schwierigkeiten mit der Impulskontrolle. Spontane Handlungen ohne vorheriges Nachdenken kommen häufig vor."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Geringe Impulskontrolle, handelt häufig impulsiv</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="verhalten" data-frage="frustration" style="margin-bottom: 25px; padding: 15px; background: #fff5f5; border-radius: 8px; border-left: 4px solid #e74c3c;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Wie geht das Kind mit Frustration und Misserfolg um?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="verhalten-frustration" value="angemessen"
+                                data-kategorie="verhalten" data-frage="frustration"
+                                data-text="{name} kann mit Frustration und Misserfolg angemessen umgehen und versucht nach kurzer Zeit erneut, die Aufgabe zu lösen."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Kann angemessen mit Frustration umgehen</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="verhalten-frustration" value="schwierig"
+                                data-kategorie="verhalten" data-frage="frustration"
+                                data-text="{name} zeigt eine geringe Frustrationstoleranz. Bei Misserfolgen kommt es häufig zu emotionalen Reaktionen wie Weinen, Wut oder Aufgeben."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Geringe Frustrationstoleranz, reagiert emotional</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="verhalten-frustration" value="stark"
+                                data-kategorie="verhalten" data-frage="frustration"
+                                data-text="{name} kann Frustration kaum aushalten. Bereits kleine Misserfolge führen zu starken emotionalen Ausbrüchen oder vollständigem Rückzug."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Kann Frustration kaum aushalten, starke Reaktionen</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="verhalten" data-frage="besonderheiten" style="margin-bottom: 25px; padding: 15px; background: #fff5f5; border-radius: 8px; border-left: 4px solid #e74c3c;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Welche besonderen Verhaltensweisen werden beobachtet? (Mehrfachauswahl)</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="aggression"
+                                data-kategorie="verhalten" data-frage="besonderheiten"
+                                data-text="Es werden aggressive Verhaltensweisen gegenüber anderen beobachtet."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Aggressives Verhalten gegenüber anderen</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="autoaggression"
+                                data-kategorie="verhalten" data-frage="besonderheiten"
+                                data-text="Es werden selbstverletzende Verhaltensweisen beobachtet."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Selbstverletzendes Verhalten</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="stoerungen"
+                                data-kategorie="verhalten" data-frage="besonderheiten"
+                                data-text="Häufige Unterrichtsstörungen wie Reinrufen, Herumlaufen oder lautes Verhalten werden beobachtet."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Häufige Unterrichtsstörungen</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="verweigerung"
+                                data-kategorie="verhalten" data-frage="besonderheiten"
+                                data-text="Es zeigt sich eine Arbeitsverweigerung bei bestimmten Aufgaben oder in bestimmten Situationen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Arbeitsverweigerung</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="aengstlichkeit"
+                                data-kategorie="verhalten" data-frage="besonderheiten"
+                                data-text="Es werden ängstliche Verhaltensweisen und Vermeidungsverhalten beobachtet."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Ängstlichkeit/Vermeidungsverhalten</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="rueckzug"
+                                data-kategorie="verhalten" data-frage="besonderheiten"
+                                data-text="Es zeigt sich ein sozialer Rückzug und eine Tendenz zur Isolation."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Sozialer Rückzug/Isolation</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. KOMMUNIKATION -->
+            <div id="fragebogen-kommunikation" class="fragebogen-section" style="display: none;">
+                <h3 style="color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px;">
+                    3. Kommunikation
+                </h3>
+
+                <div class="frage-gruppe" data-kategorie="kommunikation" data-frage="sprachentwicklung" style="margin-bottom: 25px; padding: 15px; background: #f0f8ff; border-radius: 8px; border-left: 4px solid #3498db;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Wie ist der allgemeine Sprachentwicklungsstand?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kommunikation-sprachentwicklung" value="altersgerecht"
+                                data-kategorie="kommunikation" data-frage="sprachentwicklung"
+                                data-text="Die sprachliche Entwicklung von {name} entspricht den altersgemäßen Erwartungen. Der Wortschatz ist angemessen und die Satzbildung korrekt."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Altersgerechte Sprachentwicklung</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kommunikation-sprachentwicklung" value="leicht_verzoegert"
+                                data-kategorie="kommunikation" data-frage="sprachentwicklung"
+                                data-text="Die Sprachentwicklung von {name} zeigt leichte Verzögerungen. Der Wortschatz ist etwas eingeschränkt und es zeigen sich vereinzelt grammatikalische Unsicherheiten."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Leicht verzögerte Sprachentwicklung</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kommunikation-sprachentwicklung" value="deutlich_verzoegert"
+                                data-kategorie="kommunikation" data-frage="sprachentwicklung"
+                                data-text="Die Sprachentwicklung von {name} ist deutlich verzögert. Der Wortschatz ist begrenzt und die Satzstrukturen sind vereinfacht."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Deutlich verzögerte Sprachentwicklung</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kommunikation-sprachentwicklung" value="mehrsprachig"
+                                data-kategorie="kommunikation" data-frage="sprachentwicklung"
+                                data-text="{name} wächst mehrsprachig auf. Die Sprachentwicklung zeigt typische Merkmale des Mehrsprachenerwerbs und muss im mehrsprachigen Kontext betrachtet werden."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Mehrsprachige Entwicklung (mit Besonderheiten)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="kommunikation" data-frage="sprachgebrauch" style="margin-bottom: 25px; padding: 15px; background: #f0f8ff; border-radius: 8px; border-left: 4px solid #3498db;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Wie nutzt das Kind Sprache im Alltag?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kommunikation-sprachgebrauch" value="aktiv"
+                                data-kategorie="kommunikation" data-frage="sprachgebrauch"
+                                data-text="{name} nutzt Sprache aktiv und kommuniziert bereitwillig mit Erwachsenen und Gleichaltrigen."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Nutzt Sprache aktiv und kommuniziert gern</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kommunikation-sprachgebrauch" value="zurueckhaltend"
+                                data-kategorie="kommunikation" data-frage="sprachgebrauch"
+                                data-text="{name} kommuniziert eher zurückhaltend und spricht meist nur bei direkter Ansprache oder Notwendigkeit."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Kommuniziert zurückhaltend, spricht nur bei Bedarf</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kommunikation-sprachgebrauch" value="selten"
+                                data-kategorie="kommunikation" data-frage="sprachgebrauch"
+                                data-text="{name} spricht selten von sich aus und zeigt eine eingeschränkte verbale Kommunikation im schulischen Kontext."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Spricht selten von sich aus</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kommunikation-sprachgebrauch" value="selektiv"
+                                data-kategorie="kommunikation" data-frage="sprachgebrauch"
+                                data-text="{name} zeigt ein selektives Kommunikationsverhalten und spricht nur mit bestimmten Personen oder in vertrauten Situationen."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Spricht nur mit bestimmten Personen (selektiv)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="kommunikation" data-frage="verstaendnis" style="margin-bottom: 25px; padding: 15px; background: #f0f8ff; border-radius: 8px; border-left: 4px solid #3498db;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Wie ist das Sprachverständnis?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kommunikation-verstaendnis" value="gut"
+                                data-kategorie="kommunikation" data-frage="verstaendnis"
+                                data-text="{name} versteht Anweisungen und Erklärungen im Regelfall gut und kann diese umsetzen."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Versteht Anweisungen und Erklärungen gut</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kommunikation-verstaendnis" value="eingeschraenkt"
+                                data-kategorie="kommunikation" data-frage="verstaendnis"
+                                data-text="Das Sprachverständnis von {name} ist eingeschränkt. Komplexere Anweisungen müssen vereinfacht oder wiederholt werden."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Eingeschränktes Verständnis, braucht Wiederholungen</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kommunikation-verstaendnis" value="reduziert"
+                                data-kategorie="kommunikation" data-frage="verstaendnis"
+                                data-text="Das Sprachverständnis von {name} ist deutlich reduziert. Selbst einfache Anweisungen werden nicht immer verstanden und erfordern zusätzliche visuelle oder gestische Unterstützung."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Deutlich reduziert, braucht visuelle Unterstützung</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="kommunikation" data-frage="besonderheiten" style="margin-bottom: 25px; padding: 15px; background: #f0f8ff; border-radius: 8px; border-left: 4px solid #3498db;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Welche kommunikativen Besonderheiten werden beobachtet? (Mehrfachauswahl)</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="blickkontakt"
+                                data-kategorie="kommunikation" data-frage="besonderheiten"
+                                data-text="Der Blickkontakt ist eingeschränkt oder inkonsistent."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Eingeschränkter Blickkontakt</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="aussprache"
+                                data-kategorie="kommunikation" data-frage="besonderheiten"
+                                data-text="Es zeigen sich Ausspracheschwierigkeiten (Artikulationsstörung)."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Ausspracheschwierigkeiten</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="stottern"
+                                data-kategorie="kommunikation" data-frage="besonderheiten"
+                                data-text="Es zeigt sich Stottern oder Redeflussstörungen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Stottern/Redeflussstörung</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="echolalie"
+                                data-kategorie="kommunikation" data-frage="besonderheiten"
+                                data-text="Es werden echolalische Äußerungen (Wiederholen von gehörten Worten/Sätzen) beobachtet."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Echolalie (Wiederholen von Gehörtem)</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="nonverbal"
+                                data-kategorie="kommunikation" data-frage="besonderheiten"
+                                data-text="{name} kommuniziert überwiegend nonverbal durch Gesten, Zeigen oder Mimik."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Überwiegend nonverbale Kommunikation</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. SOZIALISATION -->
+            <div id="fragebogen-sozialisation" class="fragebogen-section" style="display: none;">
+                <h3 style="color: #2ecc71; border-bottom: 2px solid #2ecc71; padding-bottom: 10px; margin-bottom: 20px;">
+                    4. Sozialisation
+                </h3>
+
+                <div class="frage-gruppe" data-kategorie="sozialisation" data-frage="kontakt_erwachsene" style="margin-bottom: 25px; padding: 15px; background: #f0fff4; border-radius: 8px; border-left: 4px solid #2ecc71;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Wie ist der Kontakt zu Erwachsenen?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-kontakt_erwachsene" value="positiv"
+                                data-kategorie="sozialisation" data-frage="kontakt_erwachsene"
+                                data-text="{name} zeigt einen positiven und angemessenen Kontakt zu Erwachsenen. Die Beziehung zur Lehrperson ist vertrauensvoll."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Positiver, vertrauensvoller Kontakt</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-kontakt_erwachsene" value="distanziert"
+                                data-kategorie="sozialisation" data-frage="kontakt_erwachsene"
+                                data-text="{name} zeigt einen eher distanzierten Kontakt zu Erwachsenen und hält lieber Abstand."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Distanzierter Kontakt</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-kontakt_erwachsene" value="uebermaessig"
+                                data-kategorie="sozialisation" data-frage="kontakt_erwachsene"
+                                data-text="{name} sucht übermäßig die Nähe zu Erwachsenen und zeigt ein erhöhtes Bedürfnis nach Aufmerksamkeit und Bestätigung."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Sucht übermäßig Nähe, hoher Aufmerksamkeitsbedarf</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-kontakt_erwachsene" value="ablehnend"
+                                data-kategorie="sozialisation" data-frage="kontakt_erwachsene"
+                                data-text="{name} zeigt eine ablehnende Haltung gegenüber Erwachsenen und reagiert auf Annäherung oft mit Widerstand."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Ablehnende Haltung, zeigt Widerstand</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="sozialisation" data-frage="kontakt_gleichaltrige" style="margin-bottom: 25px; padding: 15px; background: #f0fff4; border-radius: 8px; border-left: 4px solid #2ecc71;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Wie ist der Kontakt zu Gleichaltrigen?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-kontakt_gleichaltrige" value="integriert"
+                                data-kategorie="sozialisation" data-frage="kontakt_gleichaltrige"
+                                data-text="{name} ist gut in die Klassengemeinschaft integriert und hat stabile Freundschaften."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Gut integriert, hat Freundschaften</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-kontakt_gleichaltrige" value="randstaendig"
+                                data-kategorie="sozialisation" data-frage="kontakt_gleichaltrige"
+                                data-text="{name} nimmt eine randständige Position in der Klasse ein und hat wenige soziale Kontakte zu Gleichaltrigen."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Randständig, wenige Kontakte</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-kontakt_gleichaltrige" value="konflikte"
+                                data-kategorie="sozialisation" data-frage="kontakt_gleichaltrige"
+                                data-text="{name} hat häufig Konflikte mit Gleichaltrigen und Schwierigkeiten, positive Beziehungen aufzubauen."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Häufige Konflikte mit anderen Kindern</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-kontakt_gleichaltrige" value="isoliert"
+                                data-kategorie="sozialisation" data-frage="kontakt_gleichaltrige"
+                                data-text="{name} ist sozial isoliert und hat kaum Kontakt zu Gleichaltrigen. In den Pausen spielt das Kind oft allein."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Isoliert, spielt meist allein</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="sozialisation" data-frage="gruppenverhalten" style="margin-bottom: 25px; padding: 15px; background: #f0fff4; border-radius: 8px; border-left: 4px solid #2ecc71;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Wie verhält sich das Kind in Gruppensituationen?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-gruppenverhalten" value="kooperativ"
+                                data-kategorie="sozialisation" data-frage="gruppenverhalten"
+                                data-text="In Gruppensituationen zeigt {name} kooperatives Verhalten und kann sich gut in die Gruppe einfügen."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Kooperativ, fügt sich gut ein</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-gruppenverhalten" value="dominierend"
+                                data-kategorie="sozialisation" data-frage="gruppenverhalten"
+                                data-text="In Gruppensituationen zeigt {name} ein dominierendes Verhalten und versucht oft, die Führung zu übernehmen."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Dominierend, will die Führung übernehmen</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-gruppenverhalten" value="passiv"
+                                data-kategorie="sozialisation" data-frage="gruppenverhalten"
+                                data-text="In Gruppensituationen verhält sich {name} eher passiv und überlässt anderen die Initiative."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Passiv, überlässt anderen die Initiative</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-gruppenverhalten" value="schwierig"
+                                data-kategorie="sozialisation" data-frage="gruppenverhalten"
+                                data-text="Gruppensituationen stellen für {name} eine große Herausforderung dar. Es fällt schwer, sich anzupassen und Regeln einzuhalten."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Schwierig, kann sich kaum anpassen</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="sozialisation" data-frage="empathie" style="margin-bottom: 25px; padding: 15px; background: #f0fff4; border-radius: 8px; border-left: 4px solid #2ecc71;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Wie ist die Empathiefähigkeit?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-empathie" value="gut"
+                                data-kategorie="sozialisation" data-frage="empathie"
+                                data-text="{name} zeigt altersgemäße Empathiefähigkeit und kann sich in andere hineinversetzen."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Kann sich gut in andere einfühlen</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-empathie" value="eingeschraenkt"
+                                data-kategorie="sozialisation" data-frage="empathie"
+                                data-text="Die Empathiefähigkeit von {name} ist eingeschränkt. Das Verstehen von Gefühlen anderer fällt manchmal schwer."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Eingeschränkte Empathie</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="sozialisation-empathie" value="gering"
+                                data-kategorie="sozialisation" data-frage="empathie"
+                                data-text="{name} zeigt eine deutlich reduzierte Empathiefähigkeit. Es fällt schwer, die Gefühle und Perspektiven anderer zu erkennen und angemessen darauf zu reagieren."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Geringe Empathie, versteht Gefühle anderer kaum</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="sozialisation" data-frage="besonderheiten" style="margin-bottom: 25px; padding: 15px; background: #f0fff4; border-radius: 8px; border-left: 4px solid #2ecc71;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Welche sozialen Besonderheiten werden beobachtet? (Mehrfachauswahl)</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="mobbingopfer"
+                                data-kategorie="sozialisation" data-frage="besonderheiten"
+                                data-text="{name} ist gelegentlich Opfer von Ausgrenzung oder Hänseleien durch Mitschüler."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Ist Opfer von Ausgrenzung/Hänseleien</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="mobbing_aktiv"
+                                data-kategorie="sozialisation" data-frage="besonderheiten"
+                                data-text="{name} zeigt gelegentlich ausgrenzendes oder schikanierendes Verhalten gegenüber anderen Kindern."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Grenzt selbst andere aus/schikaniert</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="teilen"
+                                data-kategorie="sozialisation" data-frage="besonderheiten"
+                                data-text="{name} hat Schwierigkeiten beim Teilen und Abgeben von Spielzeug oder Material."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Schwierigkeiten beim Teilen</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="konflikte"
+                                data-kategorie="sozialisation" data-frage="besonderheiten"
+                                data-text="{name} kann Konflikte nicht selbstständig lösen und benötigt häufig Unterstützung durch Erwachsene."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Kann Konflikte nicht selbst lösen</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="kontaktaufnahme"
+                                data-kategorie="sozialisation" data-frage="besonderheiten"
+                                data-text="Die Kontaktaufnahme zu anderen Kindern gelingt {name} nur schwer oder auf unangemessene Weise."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Schwierigkeiten bei der Kontaktaufnahme</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. KOGNITION -->
+            <div id="fragebogen-kognition" class="fragebogen-section" style="display: none;">
+                <h3 style="color: #f39c12; border-bottom: 2px solid #f39c12; padding-bottom: 10px; margin-bottom: 20px;">
+                    5. Kognition / Lern- und Arbeitsverhalten
+                </h3>
+
+                <div class="frage-gruppe" data-kategorie="kognition" data-frage="lernverhalten" style="margin-bottom: 25px; padding: 15px; background: #fffcf0; border-radius: 8px; border-left: 4px solid #f39c12;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Wie ist das allgemeine Lernverhalten?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kognition-lernverhalten" value="motiviert"
+                                data-kategorie="kognition" data-frage="lernverhalten"
+                                data-text="{name} zeigt eine hohe Lernmotivation und geht neue Aufgaben interessiert und engagiert an."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Hohe Lernmotivation, engagiert</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kognition-lernverhalten" value="wechselhaft"
+                                data-kategorie="kognition" data-frage="lernverhalten"
+                                data-text="Die Lernmotivation von {name} ist wechselhaft und stark vom Thema und der Tagesform abhängig."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Wechselhafte Motivation, abhängig vom Thema</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kognition-lernverhalten" value="gering"
+                                data-kategorie="kognition" data-frage="lernverhalten"
+                                data-text="{name} zeigt eine geringe Lernmotivation und muss häufig zum Arbeiten angehalten werden."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Geringe Motivation, muss angehalten werden</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kognition-lernverhalten" value="vermeidend"
+                                data-kategorie="kognition" data-frage="lernverhalten"
+                                data-text="{name} zeigt ein vermeidendes Lernverhalten und geht schulischen Anforderungen häufig aus dem Weg."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Vermeidendes Verhalten, weicht Anforderungen aus</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="kognition" data-frage="arbeitsweise" style="margin-bottom: 25px; padding: 15px; background: #fffcf0; border-radius: 8px; border-left: 4px solid #f39c12;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Wie ist die Arbeitsweise?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kognition-arbeitsweise" value="selbststaendig"
+                                data-kategorie="kognition" data-frage="arbeitsweise"
+                                data-text="{name} arbeitet selbstständig und kann Aufgaben eigenständig strukturieren und zu Ende führen."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Selbstständig, kann Aufgaben eigenständig bearbeiten</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kognition-arbeitsweise" value="angeleitet"
+                                data-kategorie="kognition" data-frage="arbeitsweise"
+                                data-text="{name} benötigt Anleitung und Struktur, um Aufgaben zu beginnen und abzuschließen."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Braucht Anleitung und Struktur</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kognition-arbeitsweise" value="intensiv"
+                                data-kategorie="kognition" data-frage="arbeitsweise"
+                                data-text="{name} benötigt intensive Unterstützung und engmaschige Begleitung bei schulischen Aufgaben."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Braucht intensive Unterstützung und Begleitung</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kognition-arbeitsweise" value="fluechtig"
+                                data-kategorie="kognition" data-frage="arbeitsweise"
+                                data-text="{name} zeigt eine flüchtige Arbeitsweise mit vielen Fehlern und unvollständigen Aufgaben."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Flüchtig, viele Fehler und unvollständige Aufgaben</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="kognition" data-frage="tempo" style="margin-bottom: 25px; padding: 15px; background: #fffcf0; border-radius: 8px; border-left: 4px solid #f39c12;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Wie ist das Arbeitstempo?</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kognition-tempo" value="angemessen"
+                                data-kategorie="kognition" data-frage="tempo"
+                                data-text="Das Arbeitstempo von {name} ist angemessen und entspricht den Anforderungen."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Angemessenes Arbeitstempo</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kognition-tempo" value="langsam"
+                                data-kategorie="kognition" data-frage="tempo"
+                                data-text="{name} arbeitet langsamer als die meisten Mitschüler und benötigt mehr Zeit für Aufgaben."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Langsam, braucht mehr Zeit</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kognition-tempo" value="sehr_langsam"
+                                data-kategorie="kognition" data-frage="tempo"
+                                data-text="Das Arbeitstempo von {name} ist deutlich verlangsamt. Aufgaben werden häufig nicht im vorgegebenen Zeitrahmen fertiggestellt."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Sehr langsam, schafft Aufgaben oft nicht in der Zeit</span>
+                        </label>
+                        <label class="radio-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="radio" name="kognition-tempo" value="hastig"
+                                data-kategorie="kognition" data-frage="tempo"
+                                data-text="{name} arbeitet hastig und übereilt, was zu vielen Flüchtigkeitsfehlern führt."
+                                onchange="handleRadioSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Hastig, viele Flüchtigkeitsfehler</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="kognition" data-frage="besonderheiten" style="margin-bottom: 25px; padding: 15px; background: #fffcf0; border-radius: 8px; border-left: 4px solid #f39c12;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Welche kognitiven Besonderheiten werden beobachtet? (Mehrfachauswahl)</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="lesen"
+                                data-kategorie="kognition" data-frage="besonderheiten"
+                                data-text="Im Bereich Lesen zeigen sich Schwierigkeiten."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Schwierigkeiten beim Lesen</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="schreiben"
+                                data-kategorie="kognition" data-frage="besonderheiten"
+                                data-text="Im Bereich Schreiben zeigen sich Schwierigkeiten."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Schwierigkeiten beim Schreiben</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="rechnen"
+                                data-kategorie="kognition" data-frage="besonderheiten"
+                                data-text="Im Bereich Mathematik/Rechnen zeigen sich Schwierigkeiten."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Schwierigkeiten in Mathematik</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="merkfaehigkeit"
+                                data-kategorie="kognition" data-frage="besonderheiten"
+                                data-text="Die Merkfähigkeit ist eingeschränkt. Gelerntes wird schnell wieder vergessen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Eingeschränkte Merkfähigkeit</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="organisation"
+                                data-kategorie="kognition" data-frage="besonderheiten"
+                                data-text="{name} hat Schwierigkeiten mit der Organisation und Strukturierung von Arbeitsmaterial und Aufgaben."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Schwierigkeiten bei Organisation/Strukturierung</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="transfer"
+                                data-kategorie="kognition" data-frage="besonderheiten"
+                                data-text="Der Transfer von Gelerntem auf neue Situationen fällt {name} schwer."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Schwierigkeiten beim Wissenstransfer</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. RESSOURCEN -->
+            <div id="fragebogen-ressourcen" class="fragebogen-section" style="display: none;">
+                <h3 style="color: #9b59b6; border-bottom: 2px solid #9b59b6; padding-bottom: 10px; margin-bottom: 20px;">
+                    6. Ressourcen und Stärken
+                </h3>
+
+                <p style="background: #f3e8ff; padding: 12px; border-radius: 8px; margin-bottom: 20px; color: #6b21a8;">
+                    <strong>Hinweis:</strong> Wählen Sie alle Stärken und Ressourcen aus, die auf das Kind zutreffen. Diese bilden eine wichtige Grundlage für die Förderplanung.
+                </p>
+
+                <div class="frage-gruppe" data-kategorie="ressourcen" data-frage="persoenlich" style="margin-bottom: 25px; padding: 15px; background: #faf5ff; border-radius: 8px; border-left: 4px solid #9b59b6;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Persönliche Stärken (Mehrfachauswahl)</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="freundlich"
+                                data-kategorie="ressourcen" data-frage="persoenlich"
+                                data-text="{name} ist ein freundliches und höfliches Kind."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Freundlich und höflich</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="hilfsbereit"
+                                data-kategorie="ressourcen" data-frage="persoenlich"
+                                data-text="{name} zeigt sich hilfsbereit und unterstützt andere gern."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Hilfsbereit</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="kreativ"
+                                data-kategorie="ressourcen" data-frage="persoenlich"
+                                data-text="{name} zeigt Kreativität und hat originelle Ideen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Kreativ</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="neugierig"
+                                data-kategorie="ressourcen" data-frage="persoenlich"
+                                data-text="{name} ist neugierig und interessiert sich für neue Themen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Neugierig und wissbegierig</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="humorvoll"
+                                data-kategorie="ressourcen" data-frage="persoenlich"
+                                data-text="{name} hat einen guten Sinn für Humor."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Humorvoll</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="sensibel"
+                                data-kategorie="ressourcen" data-frage="persoenlich"
+                                data-text="{name} ist sensibel und nimmt die Gefühle anderer wahr."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Sensibel und einfühlsam</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="ehrlich"
+                                data-kategorie="ressourcen" data-frage="persoenlich"
+                                data-text="{name} ist ehrlich und aufrichtig."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Ehrlich</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="ressourcen" data-frage="schulisch" style="margin-bottom: 25px; padding: 15px; background: #faf5ff; border-radius: 8px; border-left: 4px solid #9b59b6;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Schulische Stärken (Mehrfachauswahl)</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="muendlich"
+                                data-kategorie="ressourcen" data-frage="schulisch"
+                                data-text="Mündliche Mitarbeit ist eine Stärke von {name}."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Gute mündliche Mitarbeit</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="praktisch"
+                                data-kategorie="ressourcen" data-frage="schulisch"
+                                data-text="{name} zeigt gute praktische Fähigkeiten und kann gut mit den Händen arbeiten."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Praktische Fähigkeiten (handwerklich begabt)</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="sport"
+                                data-kategorie="ressourcen" data-frage="schulisch"
+                                data-text="{name} zeigt besondere Stärken im sportlichen Bereich."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Sportlich begabt</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="kunst"
+                                data-kategorie="ressourcen" data-frage="schulisch"
+                                data-text="{name} hat besondere Stärken im künstlerisch-musischen Bereich."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Künstlerisch/musisch begabt</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="ausdauer"
+                                data-kategorie="ressourcen" data-frage="schulisch"
+                                data-text="Bei Interesse zeigt {name} Ausdauer und Durchhaltevermögen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Ausdauer bei interessanten Themen</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="ordnung"
+                                data-kategorie="ressourcen" data-frage="schulisch"
+                                data-text="{name} achtet auf Ordnung und hält den Arbeitsplatz sauber."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Ordentlich</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="ressourcen" data-frage="umfeld" style="margin-bottom: 25px; padding: 15px; background: #faf5ff; border-radius: 8px; border-left: 4px solid #9b59b6;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Ressourcen im Umfeld (Mehrfachauswahl)</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="eltern"
+                                data-kategorie="ressourcen" data-frage="umfeld"
+                                data-text="Die Eltern sind kooperativ und unterstützen die schulische Entwicklung aktiv."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Kooperative und unterstützende Eltern</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="beziehung_lehrer"
+                                data-kategorie="ressourcen" data-frage="umfeld"
+                                data-text="{name} hat eine positive Beziehung zur Lehrperson."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Gute Beziehung zur Lehrperson</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="freunde"
+                                data-kategorie="ressourcen" data-frage="umfeld"
+                                data-text="{name} hat mindestens einen stabilen Freund in der Klasse."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Hat Freunde in der Klasse</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="therapie"
+                                data-kategorie="ressourcen" data-frage="umfeld"
+                                data-text="{name} erhält bereits therapeutische Unterstützung, die genutzt werden kann."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Bereits in therapeutischer Begleitung</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. EMPFEHLUNGEN -->
+            <div id="fragebogen-empfehlungen" class="fragebogen-section" style="display: none;">
+                <h3 style="color: #16a085; border-bottom: 2px solid #16a085; padding-bottom: 10px; margin-bottom: 20px;">
+                    7. Förderempfehlungen
+                </h3>
+
+                <p style="background: #e0f2f1; padding: 12px; border-radius: 8px; margin-bottom: 20px; color: #00695c;">
+                    <strong>Hinweis:</strong> Wählen Sie die passenden Förderempfehlungen aus. Diese werden im Bericht professionell formuliert.
+                </p>
+
+                <div class="frage-gruppe" data-kategorie="empfehlungen" data-frage="schule" style="margin-bottom: 25px; padding: 15px; background: #e8f5e9; border-radius: 8px; border-left: 4px solid #16a085;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Empfehlungen für die Schule (Mehrfachauswahl)</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="kleingruppe"
+                                data-kategorie="empfehlungen" data-frage="schule"
+                                data-text="Es wird eine Beschulung in einer Kleingruppe empfohlen, um eine intensivere Betreuung zu gewährleisten."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Beschulung in Kleingruppe</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="assistenz"
+                                data-kategorie="empfehlungen" data-frage="schule"
+                                data-text="Die Unterstützung durch einen I-EBS oder eine persönliche Assistenz wird empfohlen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>I-EBS / Persönliche Assistenz</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="nachteilsausgleich"
+                                data-kategorie="empfehlungen" data-frage="schule"
+                                data-text="Es wird ein Nachteilsausgleich bei Prüfungen und Leistungserhebungen empfohlen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Nachteilsausgleich</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="strukturhilfen"
+                                data-kategorie="empfehlungen" data-frage="schule"
+                                data-text="Der Einsatz von Strukturhilfen (Tagesplan, visuelle Zeitgeber, Token-System) wird empfohlen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Strukturhilfen (Tagesplan, Token-System etc.)</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="sitzplatz"
+                                data-kategorie="empfehlungen" data-frage="schule"
+                                data-text="Ein reizarmer Sitzplatz in der Nähe der Lehrperson wird empfohlen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Reizarmer Sitzplatz nahe der Lehrperson</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="bewegungspausen"
+                                data-kategorie="empfehlungen" data-frage="schule"
+                                data-text="Regelmäßige Bewegungspausen im Unterricht werden empfohlen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Regelmäßige Bewegungspausen</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="differenzierung"
+                                data-kategorie="empfehlungen" data-frage="schule"
+                                data-text="Eine Differenzierung der Aufgaben nach Umfang und Schwierigkeitsgrad wird empfohlen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Differenzierung der Aufgaben</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="empfehlungen" data-frage="therapie" style="margin-bottom: 25px; padding: 15px; background: #e8f5e9; border-radius: 8px; border-left: 4px solid #16a085;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Therapeutische Empfehlungen (Mehrfachauswahl)</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="logopaedie"
+                                data-kategorie="empfehlungen" data-frage="therapie"
+                                data-text="Eine logopädische Behandlung zur Förderung der Sprachentwicklung wird empfohlen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Logopädie</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="ergotherapie"
+                                data-kategorie="empfehlungen" data-frage="therapie"
+                                data-text="Eine ergotherapeutische Behandlung wird empfohlen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Ergotherapie</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="psychotherapie"
+                                data-kategorie="empfehlungen" data-frage="therapie"
+                                data-text="Eine psychotherapeutische Begleitung wird empfohlen, um die emotionale Entwicklung zu unterstützen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Psychotherapie / Kinderpsychiatrie</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="psychomotorik"
+                                data-kategorie="empfehlungen" data-frage="therapie"
+                                data-text="Psychomotorik-Stunden zur Förderung der Körperwahrnehmung und Bewegungskoordination werden empfohlen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Psychomotorik</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="sozialtraining"
+                                data-kategorie="empfehlungen" data-frage="therapie"
+                                data-text="Die Teilnahme an einem sozialen Kompetenztraining wird empfohlen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Soziales Kompetenztraining</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="frage-gruppe" data-kategorie="empfehlungen" data-frage="weiteres" style="margin-bottom: 25px; padding: 15px; background: #e8f5e9; border-radius: 8px; border-left: 4px solid #16a085;">
+                    <p style="font-weight: bold; margin-bottom: 12px;">Weitere Empfehlungen (Mehrfachauswahl)</p>
+                    <div class="optionen" style="display: flex; flex-direction: column; gap: 8px;">
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="elternberatung"
+                                data-kategorie="empfehlungen" data-frage="weiteres"
+                                data-text="Eine regelmäßige Elternberatung wird empfohlen, um die Erziehungsarbeit zu unterstützen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Elternberatung</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="verlaufskontrolle"
+                                data-kategorie="empfehlungen" data-frage="weiteres"
+                                data-text="Eine Verlaufskontrolle nach 6-12 Monaten wird empfohlen, um die Entwicklung zu evaluieren."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Verlaufskontrolle in 6-12 Monaten</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="diagnostik"
+                                data-kategorie="empfehlungen" data-frage="weiteres"
+                                data-text="Eine weiterführende diagnostische Abklärung (z.B. ADHS, ASS, Lernstörung) wird empfohlen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Weiterführende Diagnostik (ADHS, ASS, etc.)</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="foerderplanung"
+                                data-kategorie="empfehlungen" data-frage="weiteres"
+                                data-text="Die Erstellung eines individuellen Förderplans (PEI) wird empfohlen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Individueller Förderplan (PEI)</span>
+                        </label>
+                        <label class="checkbox-option" style="display: flex; align-items: flex-start; padding: 10px; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; background: white;">
+                            <input type="checkbox" value="austausch"
+                                data-kategorie="empfehlungen" data-frage="weiteres"
+                                data-text="Ein regelmäßiger Austausch zwischen Schule, Eltern und Therapeuten wird empfohlen."
+                                onchange="handleCheckboxSelect(this)" style="margin-right: 10px; margin-top: 3px;">
+                            <span>Regelmäßiger Austausch (Schule-Eltern-Therapeuten)</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
 
             <div class="button-group">
                 <button class="btn btn-secondary" onclick="prevFragebogenSection()">&#8592; Zurück</button>
