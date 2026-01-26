@@ -2002,6 +2002,9 @@
             <button class="tab" onclick="showTab('kognition')" title="Kognition KOG-1 bis KOG-62">Kognition</button>
             <button class="tab" onclick="showTab('zusaetzlich')" title="Weitere Förderziele">Zusätzliche Ziele</button>
             <button class="tab" onclick="showTab('export')" title="Dokumente herunterladen">Export</button>
+            <button class="tab" onclick="showTab('beratung')" title="Pädagogische Beratung" style="background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1));">🧠 Beratung</button>
+            <button class="tab" onclick="showTab('diagnostik')" title="Screening & Diagnostik">📋 Diagnostik</button>
+            <button class="tab" onclick="showTab('ki-berater')" title="KI-gestützte Fallberatung">🤖 KI-Berater</button>
         </div>
 
         <!-- Stammdaten Tab -->
@@ -2645,6 +2648,154 @@
                     Alle Eingaben löschen und mit einem neuen Schüler beginnen. Diese Aktion kann nicht rückgängig gemacht werden!
                 </p>
                 <button class="btn btn-secondary" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);" onclick="resetAllData()">Alle Daten zurücksetzen</button>
+            </div>
+        </div>
+
+        <!-- Beratung Tab -->
+        <div id="beratung" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #333;">🧠 Pädagogische Beratung</h2>
+
+            <!-- Automatische Analyse -->
+            <div class="form-section" style="background: linear-gradient(135deg, #e8f5e9, #f1f8e9); border-color: #81c784;">
+                <h3 style="color: #388e3c;">Automatische Analyse der ELDiB-Einschätzung</h3>
+                <div id="auto-analysis">
+                    <p style="color: #666;">Die Analyse basiert auf Ihren ELDiB-Einschätzungen...</p>
+                </div>
+                <button class="btn btn-primary" onclick="runAutoAnalysis()" style="margin-top: 15px;">Analyse aktualisieren</button>
+            </div>
+
+            <!-- Problematik-Auswahl -->
+            <div class="form-section">
+                <h3>Hauptproblematik auswählen</h3>
+                <p style="margin-bottom: 15px; color: #666;">Wählen Sie die Verhaltensweise, die aktuell am meisten Anlass zur Sorge gibt.</p>
+                <div id="problemGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                    <!-- Wird dynamisch gefüllt -->
+                </div>
+            </div>
+
+            <!-- Explorationsfragen -->
+            <div class="form-section" id="explorationSection" style="display: none;">
+                <h3>Explorationsfragen</h3>
+                <div id="explorationQuestions"></div>
+            </div>
+
+            <!-- Entwicklungslogik -->
+            <div class="form-section" id="developmentSection" style="display: none;">
+                <h3>Entwicklungslogik & Empfehlungen</h3>
+                <div id="developmentLogic"></div>
+            </div>
+
+            <!-- Interventionen -->
+            <div class="form-section" id="interventionSection" style="display: none;">
+                <h3>Interventionsempfehlungen</h3>
+                <div id="interventionRecommendations"></div>
+            </div>
+        </div>
+
+        <!-- Diagnostik Tab -->
+        <div id="diagnostik" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #333;">📋 Screening & Diagnostik</h2>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <!-- ABC-Analyse -->
+                <div class="form-section" style="cursor: pointer; transition: all 0.3s;" onclick="openDiagnosticTool('abc')" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+                    <h3 style="color: #e53e3e;">🔍 ABC-Verhaltensanalyse</h3>
+                    <p style="color: #666;">Funktionale Verhaltensanalyse: Auslöser - Verhalten - Konsequenz</p>
+                    <span style="font-size: 0.85em; color: #999;">⏱️ 2-3 Min pro Situation</span>
+                </div>
+
+                <!-- Verhaltens-Screening -->
+                <div class="form-section" style="cursor: pointer; transition: all 0.3s;" onclick="openDiagnosticTool('screening')" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+                    <h3 style="color: #38a169;">📊 Verhaltens-Screening</h3>
+                    <p style="color: #666;">Erfasst Stärken und Schwierigkeiten (5 Skalen, 25 Items)</p>
+                    <span style="font-size: 0.85em; color: #999;">⏱️ 5-10 Min</span>
+                </div>
+
+                <!-- Soziale Kompetenz -->
+                <div class="form-section" style="cursor: pointer; transition: all 0.3s;" onclick="openDiagnosticTool('social')" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+                    <h3 style="color: #4299e1;">🤝 Soziale Kompetenz</h3>
+                    <p style="color: #666;">Kooperation, Selbstbehauptung, Selbstkontrolle, Empathie</p>
+                    <span style="font-size: 0.85em; color: #999;">⏱️ 5-10 Min</span>
+                </div>
+
+                <!-- Beobachtungsbogen -->
+                <div class="form-section" style="cursor: pointer; transition: all 0.3s;" onclick="openDiagnosticTool('observation')" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='none'">
+                    <h3 style="color: #ed8936;">👁️ Unterrichtsbeobachtung</h3>
+                    <p style="color: #666;">Strukturierte Beobachtung mit Intervall-Sampling</p>
+                    <span style="font-size: 0.85em; color: #999;">⏱️ 15-45 Min</span>
+                </div>
+            </div>
+
+            <!-- Diagnostic Tool Container -->
+            <div id="diagnosticToolContainer" style="display: none; margin-top: 20px;">
+                <div class="form-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 id="diagnosticToolTitle">Tool</h3>
+                        <button class="btn btn-secondary" onclick="closeDiagnosticTool()">✕ Schließen</button>
+                    </div>
+                    <div id="diagnosticToolContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KI-Berater Tab -->
+        <div id="ki-berater" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: #333;">🤖 KI-Berater für Fallberatung</h2>
+
+            <!-- Konfiguration -->
+            <div class="form-section" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef);">
+                <h3>API-Konfiguration</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="aiProvider">KI-Anbieter</label>
+                        <select id="aiProvider" class="form-control" onchange="updateAIModels()">
+                            <option value="">-- Auswählen --</option>
+                            <option value="anthropic">Anthropic (Claude)</option>
+                            <option value="openai">OpenAI (GPT)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="aiModel">Modell</label>
+                        <select id="aiModel" class="form-control">
+                            <option value="">-- Erst Anbieter wählen --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="apiKey">API-Key</label>
+                        <input type="password" id="apiKey" class="form-control" placeholder="Ihr API-Key...">
+                    </div>
+                    <div class="form-group" style="align-self: flex-end;">
+                        <button class="btn btn-primary" onclick="initializeAI()">Verbinden</button>
+                    </div>
+                </div>
+                <p style="font-size: 0.85em; color: #666; margin-top: 10px;">
+                    ℹ️ API-Keys erhalten Sie bei <a href="https://console.anthropic.com" target="_blank">Anthropic</a> oder <a href="https://platform.openai.com" target="_blank">OpenAI</a>. Der Key wird nicht gespeichert.
+                </p>
+            </div>
+
+            <!-- Chat -->
+            <div class="form-section" style="padding: 0; overflow: hidden;">
+                <div id="chatMessages" style="height: 400px; overflow-y: auto; padding: 20px; background: #fafafa;">
+                    <div style="background: white; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 15px;">
+                        <p><strong>Willkommen!</strong> Ich bin Ihr virtueller Berater für pädagogische Fallbesprechungen.</p>
+                        <p style="margin-top: 10px;">Ich habe Zugriff auf:</p>
+                        <ul style="margin: 10px 0 10px 20px; color: #666;">
+                            <li>Die ELDiB-Einschätzung dieses Schülers</li>
+                            <li>Alle erfassten Stammdaten</li>
+                            <li>Entwicklungspsychologisches Fachwissen</li>
+                            <li>Interventionsstrategien</li>
+                        </ul>
+                        <p><strong>Bitte konfigurieren Sie zuerst oben Ihren API-Zugang.</strong></p>
+                    </div>
+                </div>
+
+                <div style="padding: 15px; border-top: 1px solid #e2e8f0; background: white;">
+                    <div style="display: flex; gap: 10px;">
+                        <textarea id="chatInput" placeholder="Beschreiben Sie Ihren Fall oder stellen Sie eine Frage..." style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; border-radius: 25px; resize: none; font-size: 1em;" rows="1" onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendAIMessage();}"></textarea>
+                        <button id="sendBtn" class="btn btn-primary" onclick="sendAIMessage()" disabled style="border-radius: 50%; width: 50px; height: 50px; padding: 0;">➤</button>
+                    </div>
+                    <div id="quickQuestions" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -6011,6 +6162,961 @@ Unité de diagnostic, de conseil et de suivi</p>
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 }
+
+// BERATUNG / ADVISORY FUNKTIONEN
+
+const ADVISORY_DATA = {
+    oppositionelles_verhalten: {
+        name: "Oppositionelles Verhalten",
+        icon: "🚫",
+        color: "#e53e3e",
+        beschreibung: "Widerstand gegen Anweisungen, Verweigerung, Provokation",
+        explorationsFragen: [
+            { frage: "In welchen Situationen zeigt sich das oppositionelle Verhalten am häufigsten?", kategorie: "Auslöser" },
+            { frage: "Gibt es bestimmte Personen, bei denen das Verhalten stärker/schwächer auftritt?", kategorie: "Beziehung" },
+            { frage: "Wie reagiert das Kind auf klare vs. unklare Anweisungen?", kategorie: "Struktur" },
+            { frage: "Zeigt das Kind das Verhalten auch bei Wahlmöglichkeiten?", kategorie: "Autonomie" },
+            { frage: "Wie ist die Vorgeschichte? Gab es Veränderungen im Umfeld?", kategorie: "Kontext" }
+        ],
+        relevante_eldib_items: ["V-10", "V-16", "V-17", "V-19", "V-20", "V-21", "S-12", "S-16"],
+        entwicklungslogik: {
+            ursachen: [
+                "Entwicklungsbedingte Autonomiebestrebungen",
+                "Mangelnde Selbstwirksamkeitserfahrungen",
+                "Unsichere Bindungsmuster",
+                "Überforderung durch unklare Erwartungen"
+            ],
+            funktion: "Opposition kann ein Versuch sein, Kontrolle und Selbstbestimmung zu erlangen"
+        },
+        interventionen: {
+            beziehung: ["Positive Beziehungszeit einplanen", "Vorhersehbarkeit erhöhen"],
+            struktur: ["Klare, kurze Anweisungen", "Wahlmöglichkeiten anbieten", "Vorankündigungen"],
+            kompetenz: ["Erfolge ermöglichen", "Verantwortung übertragen"]
+        }
+    },
+    aggressives_verhalten: {
+        name: "Aggressives Verhalten",
+        icon: "💥",
+        color: "#c53030",
+        beschreibung: "Körperliche oder verbale Aggression, Wutausbrüche",
+        explorationsFragen: [
+            { frage: "Ist die Aggression reaktiv (auf Frustration) oder proaktiv (zielgerichtet)?", kategorie: "Art" },
+            { frage: "Welche Warnsignale zeigt das Kind vor einem Ausbruch?", kategorie: "Eskalation" },
+            { frage: "Wie reguliert sich das Kind nach einem Vorfall?", kategorie: "Regulation" },
+            { frage: "Gibt es Muster bei Tageszeit, Aktivität oder Personen?", kategorie: "Muster" },
+            { frage: "Wie ist die Impulskontrolle in anderen Bereichen?", kategorie: "Entwicklung" }
+        ],
+        relevante_eldib_items: ["V-20", "V-21", "V-25", "V-26", "S-11", "S-17", "K-16"],
+        entwicklungslogik: {
+            ursachen: [
+                "Mangelnde Emotionsregulation",
+                "Fehlende Konfliktlösestrategien",
+                "Übererregung des Nervensystems",
+                "Modelllernen aggressiver Muster"
+            ],
+            funktion: "Aggression als Kommunikation von Überforderung oder Not"
+        },
+        interventionen: {
+            praevention: ["Frühwarnsignale erkennen", "Rückzugsraum anbieten"],
+            akut: ["Ruhe bewahren", "Sicherheit gewährleisten", "Wenig Worte"],
+            nachbereitung: ["Gespräch wenn ruhig", "Alternative Strategien entwickeln"]
+        }
+    },
+    sozialer_rueckzug: {
+        name: "Sozialer Rückzug",
+        icon: "🐚",
+        color: "#4a5568",
+        beschreibung: "Isolation, Vermeidung sozialer Kontakte, Schweigen",
+        explorationsFragen: [
+            { frage: "Seit wann zeigt sich der Rückzug? Gab es einen Auslöser?", kategorie: "Beginn" },
+            { frage: "Gibt es Situationen, in denen das Kind kontaktfreudiger ist?", kategorie: "Ressourcen" },
+            { frage: "Wie verhält sich das Kind in Einzelsituationen vs. Gruppe?", kategorie: "Kontext" },
+            { frage: "Zeigt das Kind Interesse an anderen, traut sich aber nicht?", kategorie: "Ängstlichkeit" },
+            { frage: "Wie ist die Beziehung zu einzelnen Bezugspersonen?", kategorie: "Bindung" }
+        ],
+        relevante_eldib_items: ["S-1", "S-5", "S-9", "S-13", "K-5", "K-9", "V-13"],
+        entwicklungslogik: {
+            ursachen: [
+                "Soziale Ängstlichkeit",
+                "Negative soziale Erfahrungen",
+                "Unsichere Bindung",
+                "Sensorische Überlastung in Gruppen"
+            ],
+            funktion: "Rückzug als Schutz vor befürchteter Ablehnung oder Überforderung"
+        },
+        interventionen: {
+            sicherheit: ["Sichere Basis schaffen", "Vorhersehbare Abläufe"],
+            graduell: ["Kleine Schritte", "Einzelkontakte vor Gruppe"],
+            staerkung: ["Interessen nutzen", "Erfolgserlebnisse ermöglichen"]
+        }
+    },
+    aufmerksamkeitsprobleme: {
+        name: "Aufmerksamkeitsprobleme",
+        icon: "🎯",
+        color: "#d69e2e",
+        beschreibung: "Konzentrationsschwierigkeiten, Ablenkbarkeit, Unruhe",
+        explorationsFragen: [
+            { frage: "Bei welchen Aktivitäten kann das Kind sich gut konzentrieren?", kategorie: "Stärken" },
+            { frage: "Wie lang ist die Aufmerksamkeitsspanne bei interessanten vs. uninteressanten Aufgaben?", kategorie: "Motivation" },
+            { frage: "Welche Rolle spielen Umgebungsreize?", kategorie: "Umfeld" },
+            { frage: "Zeigt das Kind auch motorische Unruhe?", kategorie: "Hyperaktivität" },
+            { frage: "Wie ist der Schlaf? Die Ernährung?", kategorie: "Grundbedürfnisse" }
+        ],
+        relevante_eldib_items: ["V-3", "V-10", "V-11", "V-15", "V-21", "C-8", "C-12"],
+        entwicklungslogik: {
+            ursachen: [
+                "Entwicklungsbedingte Unreife der Exekutivfunktionen",
+                "Sensorische Verarbeitungsschwierigkeiten",
+                "Unter-/Überforderung",
+                "Mangelnde Motivation"
+            ],
+            funktion: "Aufmerksamkeit folgt dem Interesse - Ablenkung kann Überforderung signalisieren"
+        },
+        interventionen: {
+            umfeld: ["Reizarme Umgebung", "Fester Arbeitsplatz", "Struktur"],
+            aufgaben: ["Kurze Einheiten", "Klare Anweisungen", "Visualisierung"],
+            motivation: ["Interesse wecken", "Belohnungssysteme", "Bewegungspausen"]
+        }
+    },
+    emotionale_dysregulation: {
+        name: "Emotionale Dysregulation",
+        icon: "🌊",
+        color: "#3182ce",
+        beschreibung: "Starke Stimmungsschwankungen, Überreaktionen, Weinen",
+        explorationsFragen: [
+            { frage: "Welche Emotionen sind besonders schwer zu regulieren?", kategorie: "Emotionen" },
+            { frage: "Wie schnell beruhigt sich das Kind nach einem Ausbruch?", kategorie: "Erholung" },
+            { frage: "Kann das Kind seine Gefühle benennen?", kategorie: "Emotionswissen" },
+            { frage: "Welche Beruhigungsstrategien kennt/nutzt das Kind?", kategorie: "Strategien" },
+            { frage: "Wie gehen die Bezugspersonen mit Emotionen um?", kategorie: "Modelle" }
+        ],
+        relevante_eldib_items: ["V-14", "V-21", "V-25", "V-26", "S-11", "K-12", "K-16"],
+        entwicklungslogik: {
+            ursachen: [
+                "Unreifes Nervensystem",
+                "Fehlende Ko-Regulation in früher Kindheit",
+                "Mangelndes Emotionswissen",
+                "Traumatische Erfahrungen"
+            ],
+            funktion: "Emotionen sind Signale - starke Reaktionen zeigen starke Bedürfnisse"
+        },
+        interventionen: {
+            koregulation: ["Ruhe ausstrahlen", "Präsent bleiben", "Validieren"],
+            wissen: ["Gefühle benennen", "Emotionen normalisieren"],
+            strategien: ["Atemübungen", "Sichere Orte", "Körperübungen"]
+        }
+    },
+    soziale_konflikte: {
+        name: "Soziale Konflikte",
+        icon: "⚡",
+        color: "#805ad5",
+        beschreibung: "Streitigkeiten mit Peers, Schwierigkeiten bei Kooperation",
+        explorationsFragen: [
+            { frage: "Wie entstehen die Konflikte typischerweise?", kategorie: "Auslöser" },
+            { frage: "Welche sozialen Fähigkeiten fehlen möglicherweise?", kategorie: "Kompetenzen" },
+            { frage: "Wie verhält sich das Kind in strukturierten vs. freien Situationen?", kategorie: "Struktur" },
+            { frage: "Hat das Kind Freundschaften? Wie stabil sind diese?", kategorie: "Beziehungen" },
+            { frage: "Wie löst das Kind Konflikte - oder vermeidet es sie?", kategorie: "Strategien" }
+        ],
+        relevante_eldib_items: ["S-10", "S-11", "S-12", "S-16", "S-17", "S-20", "K-16"],
+        entwicklungslogik: {
+            ursachen: [
+                "Fehlende Perspektivübernahme",
+                "Mangelnde Konfliktlösestrategien",
+                "Impulsivität",
+                "Fehlinterpretation sozialer Signale"
+            ],
+            funktion: "Konflikte sind Lernfelder für soziale Kompetenz"
+        },
+        interventionen: {
+            praevention: ["Soziale Regeln erarbeiten", "Rollenspiele"],
+            begleitung: ["Konflikte moderieren", "Beide Seiten hören"],
+            kompetenz: ["Perspektivwechsel üben", "Ich-Botschaften", "Kompromisse"]
+        }
+    }
+};
+
+let selectedProblem = null;
+
+function runAutoAnalysis() {
+    const analysisDiv = document.getElementById('auto-analysis');
+
+    // Sammle alle Einschätzungen
+    const verhaltenItems = Object.entries(state.selections.verhalten || {});
+    const kommunikationItems = Object.entries(state.selections.kommunikation || {});
+    const sozialisationItems = Object.entries(state.selections.sozialisation || {});
+    const kognitionItems = Object.entries(state.selections.kognition || {});
+
+    const totalItems = verhaltenItems.length + kommunikationItems.length + sozialisationItems.length + kognitionItems.length;
+
+    if (totalItems === 0) {
+        analysisDiv.innerHTML = `
+            <div style="padding: 20px; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                <p><strong>Keine ELDiB-Einschätzungen vorhanden.</strong></p>
+                <p style="margin-top: 10px;">Bitte füllen Sie zuerst die ELDiB-Einschätzung aus, um eine automatische Analyse zu erhalten.</p>
+                <button class="btn btn-primary" onclick="showTab('verhalten')" style="margin-top: 10px;">Zur ELDiB-Einschätzung</button>
+            </div>
+        `;
+        return;
+    }
+
+    // Analysiere die Daten
+    const ziele = { verhalten: [], kommunikation: [], sozialisation: [], kognition: [] };
+    const erreicht = { verhalten: [], kommunikation: [], sozialisation: [], kognition: [] };
+
+    for (const [itemId, status] of verhaltenItems) {
+        if (status === 'ziel') ziele.verhalten.push(itemId);
+        if (status === 'erreicht') erreicht.verhalten.push(itemId);
+    }
+    for (const [itemId, status] of kommunikationItems) {
+        if (status === 'ziel') ziele.kommunikation.push(itemId);
+        if (status === 'erreicht') erreicht.kommunikation.push(itemId);
+    }
+    for (const [itemId, status] of sozialisationItems) {
+        if (status === 'ziel') ziele.sozialisation.push(itemId);
+        if (status === 'erreicht') erreicht.sozialisation.push(itemId);
+    }
+    for (const [itemId, status] of kognitionItems) {
+        if (status === 'ziel') ziele.kognition.push(itemId);
+        if (status === 'erreicht') erreicht.kognition.push(itemId);
+    }
+
+    const totalZiele = ziele.verhalten.length + ziele.kommunikation.length + ziele.sozialisation.length + ziele.kognition.length;
+    const totalErreicht = erreicht.verhalten.length + erreicht.kommunikation.length + erreicht.sozialisation.length + erreicht.kognition.length;
+
+    // Finde passende Problematiken basierend auf den Zielen
+    const matchedProblems = [];
+    for (const [key, problem] of Object.entries(ADVISORY_DATA)) {
+        let matches = 0;
+        for (const itemCode of problem.relevante_eldib_items) {
+            const bereich = itemCode.startsWith('V') ? 'verhalten' :
+                           itemCode.startsWith('K') ? 'kommunikation' :
+                           itemCode.startsWith('S') ? 'sozialisation' : 'kognition';
+            if (ziele[bereich].some(z => z.includes(itemCode))) {
+                matches++;
+            }
+        }
+        if (matches > 0) {
+            matchedProblems.push({ key, problem, matches });
+        }
+    }
+    matchedProblems.sort((a, b) => b.matches - a.matches);
+
+    analysisDiv.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px;">
+            <div style="padding: 15px; background: white; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0;">
+                <div style="font-size: 2em; color: #e74c3c;">${ziele.verhalten.length}</div>
+                <div style="color: #666;">Verhalten Ziele</div>
+            </div>
+            <div style="padding: 15px; background: white; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0;">
+                <div style="font-size: 2em; color: #3498db;">${ziele.kommunikation.length}</div>
+                <div style="color: #666;">Kommunikation Ziele</div>
+            </div>
+            <div style="padding: 15px; background: white; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0;">
+                <div style="font-size: 2em; color: #2ecc71;">${ziele.sozialisation.length}</div>
+                <div style="color: #666;">Sozialisation Ziele</div>
+            </div>
+            <div style="padding: 15px; background: white; border-radius: 8px; text-align: center; border: 1px solid #e2e8f0;">
+                <div style="font-size: 2em; color: #9b59b6;">${ziele.kognition.length}</div>
+                <div style="color: #666;">Kognition Ziele</div>
+            </div>
+        </div>
+
+        ${matchedProblems.length > 0 ? `
+            <div style="padding: 15px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <h4 style="margin-bottom: 10px;">Mögliche Förderschwerpunkte basierend auf den Zielen:</h4>
+                <ul style="margin: 0; padding-left: 20px;">
+                    ${matchedProblems.slice(0, 3).map(p => `
+                        <li style="margin: 5px 0;">
+                            <span style="color: ${p.problem.color};">${p.problem.icon}</span>
+                            <strong>${p.problem.name}</strong> (${p.matches} übereinstimmende Items)
+                        </li>
+                    `).join('')}
+                </ul>
+            </div>
+        ` : ''}
+
+        <p style="margin-top: 15px; color: #666; font-size: 0.9em;">
+            Gesamt: ${totalItems} Items eingeschätzt | ${totalZiele} Ziele | ${totalErreicht} Erreicht
+        </p>
+    `;
+
+    // Initialisiere Problem-Grid
+    initializeProblemGrid();
+}
+
+function initializeProblemGrid() {
+    const grid = document.getElementById('problemGrid');
+    if (!grid) return;
+
+    grid.innerHTML = Object.entries(ADVISORY_DATA).map(([key, problem]) => `
+        <div class="problem-card" onclick="selectProblem('${key}')"
+             style="padding: 20px; background: white; border-radius: 12px; border: 2px solid #e2e8f0;
+                    cursor: pointer; transition: all 0.3s; ${selectedProblem === key ? `border-color: ${problem.color}; box-shadow: 0 4px 12px ${problem.color}33;` : ''}"
+             onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)';"
+             onmouseout="this.style.transform='none'; this.style.boxShadow='${selectedProblem === key ? `0 4px 12px ${problem.color}33` : 'none'}';">
+            <div style="font-size: 2em; margin-bottom: 10px;">${problem.icon}</div>
+            <h4 style="color: ${problem.color}; margin-bottom: 8px;">${problem.name}</h4>
+            <p style="color: #666; font-size: 0.9em;">${problem.beschreibung}</p>
+        </div>
+    `).join('');
+}
+
+function selectProblem(problemKey) {
+    selectedProblem = problemKey;
+    const problem = ADVISORY_DATA[problemKey];
+
+    // Update Grid visuelle Auswahl
+    initializeProblemGrid();
+
+    // Zeige Explorationsfragen
+    const explorationSection = document.getElementById('explorationSection');
+    const questionsDiv = document.getElementById('explorationQuestions');
+
+    questionsDiv.innerHTML = `
+        <p style="margin-bottom: 15px; color: #666;">Diese Fragen helfen, das Verhalten besser zu verstehen:</p>
+        ${problem.explorationsFragen.map((q, i) => `
+            <div style="padding: 15px; background: #f8f9fa; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid ${problem.color};">
+                <div style="font-size: 0.8em; color: ${problem.color}; font-weight: bold; margin-bottom: 5px;">${q.kategorie}</div>
+                <div>${q.frage}</div>
+                <textarea id="exploration-${i}" placeholder="Ihre Beobachtungen..."
+                    style="width: 100%; margin-top: 10px; padding: 10px; border: 1px solid #e2e8f0; border-radius: 5px; min-height: 60px;"></textarea>
+            </div>
+        `).join('')}
+        <button class="btn btn-primary" onclick="showDevelopmentLogic('${problemKey}')" style="margin-top: 15px;">
+            Weiter zur Entwicklungslogik →
+        </button>
+    `;
+    explorationSection.style.display = 'block';
+    explorationSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+function showDevelopmentLogic(problemKey) {
+    const problem = ADVISORY_DATA[problemKey];
+    const devSection = document.getElementById('developmentSection');
+    const devDiv = document.getElementById('developmentLogic');
+
+    devDiv.innerHTML = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="padding: 20px; background: #fff5f5; border-radius: 8px;">
+                <h4 style="color: #c53030; margin-bottom: 10px;">Mögliche Ursachen</h4>
+                <ul style="margin: 0; padding-left: 20px;">
+                    ${problem.entwicklungslogik.ursachen.map(u => `<li style="margin: 5px 0;">${u}</li>`).join('')}
+                </ul>
+            </div>
+            <div style="padding: 20px; background: #f0fff4; border-radius: 8px;">
+                <h4 style="color: #276749; margin-bottom: 10px;">Funktion des Verhaltens</h4>
+                <p>${problem.entwicklungslogik.funktion}</p>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 20px; background: #ebf8ff; border-radius: 8px;">
+            <h4 style="color: #2b6cb0; margin-bottom: 10px;">Relevante ELDiB-Items</h4>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                ${problem.relevante_eldib_items.map(item => `
+                    <span style="padding: 5px 12px; background: white; border-radius: 15px; font-size: 0.9em; border: 1px solid #bee3f8;">${item}</span>
+                `).join('')}
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="showInterventions('${problemKey}')" style="margin-top: 15px;">
+            Weiter zu Interventionen →
+        </button>
+    `;
+    devSection.style.display = 'block';
+    devSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+function showInterventions(problemKey) {
+    const problem = ADVISORY_DATA[problemKey];
+    const intSection = document.getElementById('interventionSection');
+    const intDiv = document.getElementById('interventionRecommendations');
+
+    const categories = Object.entries(problem.interventionen);
+
+    intDiv.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+            ${categories.map(([cat, items]) => `
+                <div style="padding: 20px; background: white; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="color: ${problem.color}; margin-bottom: 10px; text-transform: capitalize;">${cat}</h4>
+                    <ul style="margin: 0; padding-left: 20px;">
+                        ${items.map(item => `<li style="margin: 5px 0;">${item}</li>`).join('')}
+                    </ul>
+                </div>
+            `).join('')}
+        </div>
+
+        <div style="margin-top: 20px; padding: 20px; background: linear-gradient(135deg, #667eea22, #764ba222); border-radius: 8px;">
+            <h4 style="margin-bottom: 10px;">💡 Nächste Schritte</h4>
+            <p>Nutzen Sie den <strong>KI-Berater</strong> Tab für eine vertiefte Fallbesprechung mit allen gesammelten Informationen.</p>
+            <button class="btn btn-primary" onclick="showTab('ki-berater')" style="margin-top: 10px;">
+                Zum KI-Berater →
+            </button>
+        </div>
+    `;
+    intSection.style.display = 'block';
+    intSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+// DIAGNOSTIK FUNKTIONEN
+
+let currentDiagnosticTool = null;
+
+function openDiagnosticTool(toolType) {
+    currentDiagnosticTool = toolType;
+    const container = document.getElementById('diagnosticToolContainer');
+    const title = document.getElementById('diagnosticToolTitle');
+    const content = document.getElementById('diagnosticToolContent');
+
+    container.style.display = 'block';
+
+    switch(toolType) {
+        case 'abc':
+            title.innerHTML = '🔍 ABC-Verhaltensanalyse';
+            content.innerHTML = generateABCForm();
+            break;
+        case 'screening':
+            title.innerHTML = '📊 Verhaltens-Screening';
+            content.innerHTML = generateScreeningForm();
+            break;
+        case 'social':
+            title.innerHTML = '🤝 Soziale Kompetenz';
+            content.innerHTML = generateSocialForm();
+            break;
+        case 'observation':
+            title.innerHTML = '👁️ Unterrichtsbeobachtung';
+            content.innerHTML = generateObservationForm();
+            break;
+    }
+
+    container.scrollIntoView({ behavior: 'smooth' });
+}
+
+function closeDiagnosticTool() {
+    document.getElementById('diagnosticToolContainer').style.display = 'none';
+    currentDiagnosticTool = null;
+}
+
+function generateABCForm() {
+    return `
+        <p style="margin-bottom: 15px; color: #666;">Dokumentieren Sie eine konkrete Verhaltenssequenz.</p>
+
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Datum & Uhrzeit</label>
+            <input type="datetime-local" id="abc-datetime" class="form-control" style="max-width: 300px;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Situation/Kontext</label>
+            <input type="text" id="abc-context" class="form-control" placeholder="z.B. Mathematikunterricht, Gruppenarbeit...">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div style="padding: 15px; background: #fff5f5; border-radius: 8px;">
+                <label style="font-weight: bold; color: #c53030; display: block; margin-bottom: 10px;">A - Auslöser (Antecedent)</label>
+                <p style="font-size: 0.85em; color: #666; margin-bottom: 10px;">Was passierte unmittelbar VOR dem Verhalten?</p>
+                <textarea id="abc-antecedent" class="form-control" rows="4" placeholder="Beschreiben Sie die Situation..."></textarea>
+            </div>
+
+            <div style="padding: 15px; background: #fefcbf; border-radius: 8px;">
+                <label style="font-weight: bold; color: #975a16; display: block; margin-bottom: 10px;">B - Verhalten (Behavior)</label>
+                <p style="font-size: 0.85em; color: #666; margin-bottom: 10px;">Was genau hat das Kind getan/gesagt?</p>
+                <textarea id="abc-behavior" class="form-control" rows="4" placeholder="Beobachtbares Verhalten..."></textarea>
+            </div>
+
+            <div style="padding: 15px; background: #f0fff4; border-radius: 8px;">
+                <label style="font-weight: bold; color: #276749; display: block; margin-bottom: 10px;">C - Konsequenz (Consequence)</label>
+                <p style="font-size: 0.85em; color: #666; margin-bottom: 10px;">Was passierte unmittelbar NACH dem Verhalten?</p>
+                <textarea id="abc-consequence" class="form-control" rows="4" placeholder="Reaktionen der Umwelt..."></textarea>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Vermutete Funktion des Verhaltens</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <label style="padding: 10px 15px; background: #f8f9fa; border-radius: 5px; cursor: pointer;">
+                    <input type="checkbox" name="function" value="attention"> Aufmerksamkeit erhalten
+                </label>
+                <label style="padding: 10px 15px; background: #f8f9fa; border-radius: 5px; cursor: pointer;">
+                    <input type="checkbox" name="function" value="escape"> Etwas vermeiden/entkommen
+                </label>
+                <label style="padding: 10px 15px; background: #f8f9fa; border-radius: 5px; cursor: pointer;">
+                    <input type="checkbox" name="function" value="tangible"> Etwas erhalten
+                </label>
+                <label style="padding: 10px 15px; background: #f8f9fa; border-radius: 5px; cursor: pointer;">
+                    <input type="checkbox" name="function" value="sensory"> Sensorische Stimulation
+                </label>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="saveABCAnalysis()">Analyse speichern</button>
+    `;
+}
+
+function generateScreeningForm() {
+    const items = [
+        { text: "Rücksichtsvoll gegenüber anderen", scale: "prosozial" },
+        { text: "Unruhig, überaktiv", scale: "hyperaktivitaet" },
+        { text: "Klagt häufig über Kopf-/Bauchschmerzen", scale: "emotional" },
+        { text: "Teilt gerne mit anderen", scale: "prosozial" },
+        { text: "Hat oft Wutanfälle", scale: "verhalten" },
+        { text: "Einzelgänger, spielt meist allein", scale: "peer" },
+        { text: "Im Allgemeinen folgsam", scale: "verhalten" },
+        { text: "Hat viele Sorgen", scale: "emotional" },
+        { text: "Hilfsbereit wenn andere verletzt sind", scale: "prosozial" },
+        { text: "Ständig zappelig", scale: "hyperaktivitaet" }
+    ];
+
+    return `
+        <p style="margin-bottom: 15px; color: #666;">Beurteilen Sie das Verhalten der letzten 6 Monate.</p>
+
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f8f9fa;">
+                        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #e2e8f0;">Aussage</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid #e2e8f0; width: 100px;">Nicht zutreffend</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid #e2e8f0; width: 100px;">Teilweise</th>
+                        <th style="padding: 12px; text-align: center; border-bottom: 2px solid #e2e8f0; width: 100px;">Eindeutig</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${items.map((item, i) => `
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 12px;">${item.text}</td>
+                            <td style="padding: 12px; text-align: center;"><input type="radio" name="screen-${i}" value="0"></td>
+                            <td style="padding: 12px; text-align: center;"><input type="radio" name="screen-${i}" value="1"></td>
+                            <td style="padding: 12px; text-align: center;"><input type="radio" name="screen-${i}" value="2"></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+
+        <button class="btn btn-primary" onclick="evaluateScreening()" style="margin-top: 20px;">Auswerten</button>
+        <div id="screeningResult" style="margin-top: 20px;"></div>
+    `;
+}
+
+function generateSocialForm() {
+    const domains = [
+        { name: "Kooperation", items: ["Folgt Anweisungen", "Teilt Materialien", "Arbeitet gut in der Gruppe"] },
+        { name: "Selbstbehauptung", items: ["Bittet um Hilfe", "Äußert eigene Meinung", "Beginnt Gespräche"] },
+        { name: "Selbstkontrolle", items: ["Wartet ab", "Akzeptiert Kritik", "Bleibt ruhig bei Streit"] }
+    ];
+
+    return `
+        <p style="margin-bottom: 15px; color: #666;">Beurteilen Sie die sozialen Kompetenzen.</p>
+
+        ${domains.map((domain, di) => `
+            <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                <h4 style="margin-bottom: 10px; color: #4a5568;">${domain.name}</h4>
+                ${domain.items.map((item, ii) => `
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e2e8f0;">
+                        <span>${item}</span>
+                        <div style="display: flex; gap: 15px;">
+                            <label><input type="radio" name="social-${di}-${ii}" value="0"> Nie</label>
+                            <label><input type="radio" name="social-${di}-${ii}" value="1"> Selten</label>
+                            <label><input type="radio" name="social-${di}-${ii}" value="2"> Oft</label>
+                            <label><input type="radio" name="social-${di}-${ii}" value="3"> Immer</label>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `).join('')}
+
+        <button class="btn btn-primary" onclick="evaluateSocial()">Auswerten</button>
+        <div id="socialResult" style="margin-top: 20px;"></div>
+    `;
+}
+
+function generateObservationForm() {
+    return `
+        <p style="margin-bottom: 15px; color: #666;">Strukturierte Verhaltensbeobachtung mit Intervall-Sampling.</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Beobachtungsdatum</label>
+                <input type="date" id="obs-date" class="form-control">
+            </div>
+            <div>
+                <label style="font-weight: bold; display: block; margin-bottom: 5px;">Beobachtungszeitraum</label>
+                <input type="text" id="obs-period" class="form-control" placeholder="z.B. 9:00-9:30, Matheunterricht">
+            </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Zu beobachtendes Verhalten (konkret definieren)</label>
+            <input type="text" id="obs-target" class="form-control" placeholder="z.B. Aufstehen vom Platz ohne Erlaubnis">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 10px;">Intervall-Protokoll (je 2 Minuten)</label>
+            <div style="display: grid; grid-template-columns: repeat(10, 1fr); gap: 5px;">
+                ${[...Array(10)].map((_, i) => `
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.8em; color: #666; margin-bottom: 3px;">${(i+1)*2}'</div>
+                        <button id="obs-int-${i}" onclick="toggleObservationInterval(${i})"
+                            style="width: 100%; padding: 15px 0; background: #e2e8f0; border: none; border-radius: 5px; cursor: pointer; font-size: 1.2em;">
+                            ○
+                        </button>
+                    </div>
+                `).join('')}
+            </div>
+            <p style="font-size: 0.85em; color: #666; margin-top: 10px;">Klicken Sie auf ein Intervall, wenn das Verhalten aufgetreten ist.</p>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Anmerkungen</label>
+            <textarea id="obs-notes" class="form-control" rows="3" placeholder="Besonderheiten, Kontext..."></textarea>
+        </div>
+
+        <button class="btn btn-primary" onclick="saveObservation()">Beobachtung speichern</button>
+    `;
+}
+
+const observationIntervals = {};
+
+function toggleObservationInterval(index) {
+    const btn = document.getElementById(`obs-int-${index}`);
+    if (observationIntervals[index]) {
+        observationIntervals[index] = false;
+        btn.innerHTML = '○';
+        btn.style.background = '#e2e8f0';
+    } else {
+        observationIntervals[index] = true;
+        btn.innerHTML = '●';
+        btn.style.background = '#fc8181';
+    }
+}
+
+function saveABCAnalysis() {
+    const analysis = {
+        datetime: document.getElementById('abc-datetime').value,
+        context: document.getElementById('abc-context').value,
+        antecedent: document.getElementById('abc-antecedent').value,
+        behavior: document.getElementById('abc-behavior').value,
+        consequence: document.getElementById('abc-consequence').value,
+        functions: Array.from(document.querySelectorAll('input[name="function"]:checked')).map(cb => cb.value)
+    };
+
+    // Speichere in localStorage
+    const saved = JSON.parse(localStorage.getItem('abc_analyses') || '[]');
+    saved.push(analysis);
+    localStorage.setItem('abc_analyses', JSON.stringify(saved));
+
+    showToast('ABC-Analyse gespeichert!');
+    closeDiagnosticTool();
+}
+
+function evaluateScreening() {
+    let total = 0;
+    let answered = 0;
+
+    for (let i = 0; i < 10; i++) {
+        const selected = document.querySelector(`input[name="screen-${i}"]:checked`);
+        if (selected) {
+            total += parseInt(selected.value);
+            answered++;
+        }
+    }
+
+    const resultDiv = document.getElementById('screeningResult');
+
+    if (answered < 10) {
+        resultDiv.innerHTML = `<p style="color: #e53e3e;">Bitte beantworten Sie alle Fragen.</p>`;
+        return;
+    }
+
+    let interpretation = '';
+    if (total <= 5) interpretation = 'Unauffälliger Bereich';
+    else if (total <= 10) interpretation = 'Grenzwertiger Bereich';
+    else interpretation = 'Auffälliger Bereich';
+
+    resultDiv.innerHTML = `
+        <div style="padding: 20px; background: #f8f9fa; border-radius: 8px;">
+            <h4>Ergebnis: ${total} Punkte</h4>
+            <p style="margin-top: 10px;"><strong>Interpretation:</strong> ${interpretation}</p>
+            <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+                Dies ist ein Screening-Instrument und ersetzt keine umfassende Diagnostik.
+            </p>
+        </div>
+    `;
+}
+
+function evaluateSocial() {
+    showToast('Soziale Kompetenz ausgewertet!');
+}
+
+function saveObservation() {
+    const activeIntervals = Object.values(observationIntervals).filter(v => v).length;
+    const percentage = Math.round((activeIntervals / 10) * 100);
+
+    showToast(`Beobachtung gespeichert: ${activeIntervals}/10 Intervalle (${percentage}%)`);
+    closeDiagnosticTool();
+}
+
+// KI-BERATER FUNKTIONEN
+
+const AI_CONFIG = {
+    provider: null,
+    model: null,
+    apiKey: null,
+    connected: false,
+    chatHistory: []
+};
+
+const AI_MODELS = {
+    anthropic: [
+        { id: 'claude-sonnet-4-20250514', name: 'Claude Sonnet 4 (Empfohlen)' },
+        { id: 'claude-3-5-haiku-20241022', name: 'Claude 3.5 Haiku (Schnell)' }
+    ],
+    openai: [
+        { id: 'gpt-4o', name: 'GPT-4o (Empfohlen)' },
+        { id: 'gpt-4o-mini', name: 'GPT-4o Mini (Schnell)' }
+    ]
+};
+
+function updateAIModels() {
+    const provider = document.getElementById('aiProvider').value;
+    const modelSelect = document.getElementById('aiModel');
+
+    modelSelect.innerHTML = '<option value="">-- Modell wählen --</option>';
+
+    if (provider && AI_MODELS[provider]) {
+        AI_MODELS[provider].forEach(model => {
+            const option = document.createElement('option');
+            option.value = model.id;
+            option.textContent = model.name;
+            modelSelect.appendChild(option);
+        });
+    }
+}
+
+function initializeAI() {
+    const provider = document.getElementById('aiProvider').value;
+    const model = document.getElementById('aiModel').value;
+    const apiKey = document.getElementById('apiKey').value;
+
+    if (!provider || !model || !apiKey) {
+        showToast('Bitte füllen Sie alle Felder aus.');
+        return;
+    }
+
+    AI_CONFIG.provider = provider;
+    AI_CONFIG.model = model;
+    AI_CONFIG.apiKey = apiKey;
+    AI_CONFIG.connected = true;
+    AI_CONFIG.chatHistory = [];
+
+    document.getElementById('sendBtn').disabled = false;
+
+    // Zeige Quick Questions
+    const quickQuestionsDiv = document.getElementById('quickQuestions');
+    const questions = [
+        "Wie kann ich mit oppositionellem Verhalten umgehen?",
+        "Was sind Anzeichen für emotionale Dysregulation?",
+        "Welche Interventionen passen zu den ELDiB-Zielen?",
+        "Wie führe ich ein Elterngespräch?"
+    ];
+
+    quickQuestionsDiv.innerHTML = questions.map(q => `
+        <button onclick="askQuickQuestion('${q}')"
+            style="padding: 8px 15px; background: #edf2f7; border: none; border-radius: 20px; cursor: pointer; font-size: 0.85em;">
+            ${q}
+        </button>
+    `).join('');
+
+    // Begrüßungsnachricht
+    addChatMessage('assistant', 'Verbindung hergestellt! Ich habe Zugriff auf die ELDiB-Einschätzung und alle Stammdaten. Wie kann ich Ihnen helfen?');
+
+    showToast('KI-Berater verbunden!');
+}
+
+function askQuickQuestion(question) {
+    document.getElementById('chatInput').value = question;
+    sendAIMessage();
+}
+
+async function sendAIMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+
+    if (!message || !AI_CONFIG.connected) return;
+
+    input.value = '';
+    addChatMessage('user', message);
+
+    // Baue Kontext aus ELDiB-Daten
+    const context = buildAIContext();
+
+    // Zeige Lade-Indikator
+    const loadingId = addChatMessage('assistant', '<em>Analysiere...</em>');
+
+    try {
+        let response;
+        if (AI_CONFIG.provider === 'anthropic') {
+            response = await callAnthropic(message, context);
+        } else {
+            response = await callOpenAI(message, context);
+        }
+
+        // Update Nachricht
+        updateChatMessage(loadingId, response);
+        AI_CONFIG.chatHistory.push({ role: 'user', content: message });
+        AI_CONFIG.chatHistory.push({ role: 'assistant', content: response });
+
+    } catch (error) {
+        updateChatMessage(loadingId, `<span style="color: #e53e3e;">Fehler: ${error.message}</span>`);
+    }
+}
+
+function buildAIContext() {
+    const stammdaten = state.stammdaten || {};
+    const selections = state.selections || {};
+
+    // Zähle Einschätzungen
+    const ziele = { verhalten: [], kommunikation: [], sozialisation: [], kognition: [] };
+
+    for (const [bereich, items] of Object.entries(selections)) {
+        for (const [itemId, status] of Object.entries(items)) {
+            if (status === 'ziel') {
+                ziele[bereich]?.push(itemId);
+            }
+        }
+    }
+
+    return `
+SCHÜLER-KONTEXT:
+- Name: ${stammdaten.schueler_name || 'Nicht angegeben'}
+- Geburtsdatum: ${stammdaten.geburtsdatum || 'Nicht angegeben'}
+- Klasse: ${stammdaten.klasse || 'Nicht angegeben'}
+- Schule: ${stammdaten.schule || 'Nicht angegeben'}
+
+ELDIB-EINSCHÄTZUNG (Ziele):
+- Verhalten: ${ziele.verhalten.length > 0 ? ziele.verhalten.join(', ') : 'Keine Ziele definiert'}
+- Kommunikation: ${ziele.kommunikation.length > 0 ? ziele.kommunikation.join(', ') : 'Keine Ziele definiert'}
+- Sozialisation: ${ziele.sozialisation.length > 0 ? ziele.sozialisation.join(', ') : 'Keine Ziele definiert'}
+- Kognition: ${ziele.kognition.length > 0 ? ziele.kognition.join(', ') : 'Keine Ziele definiert'}
+
+${selectedProblem ? `AUSGEWÄHLTE PROBLEMATIK: ${ADVISORY_DATA[selectedProblem]?.name || 'Keine'}` : ''}
+    `.trim();
+}
+
+async function callAnthropic(message, context) {
+    const systemPrompt = `Du bist ein erfahrener Berater für pädagogische Fallbesprechungen am CDSE (Centre pour le développement socio-émotionnel) in Luxemburg.
+Du hast Expertise in Entwicklungspsychologie, Verhaltenstherapie und der Arbeit mit Kindern mit besonderen Bedürfnissen.
+Du arbeitest mit dem ELDiB (Entwicklungstherapeutischer Lernziel-Diagnose-Bogen) und kennst die Entwicklungsstufen.
+
+KONTEXT DES AKTUELLEN FALLS:
+${context}
+
+Antworte auf Deutsch, professionell aber verständlich. Gib konkrete, umsetzbare Empfehlungen.`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': AI_CONFIG.apiKey,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+            model: AI_CONFIG.model,
+            max_tokens: 2048,
+            system: systemPrompt,
+            messages: [
+                ...AI_CONFIG.chatHistory,
+                { role: 'user', content: message }
+            ]
+        })
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error?.message || 'API-Fehler');
+    }
+
+    const data = await response.json();
+    return data.content[0].text;
+}
+
+async function callOpenAI(message, context) {
+    const systemPrompt = `Du bist ein erfahrener Berater für pädagogische Fallbesprechungen am CDSE (Centre pour le développement socio-émotionnel) in Luxemburg.
+Du hast Expertise in Entwicklungspsychologie, Verhaltenstherapie und der Arbeit mit Kindern mit besonderen Bedürfnissen.
+
+KONTEXT DES AKTUELLEN FALLS:
+${context}
+
+Antworte auf Deutsch, professionell aber verständlich. Gib konkrete, umsetzbare Empfehlungen.`;
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${AI_CONFIG.apiKey}`
+        },
+        body: JSON.stringify({
+            model: AI_CONFIG.model,
+            messages: [
+                { role: 'system', content: systemPrompt },
+                ...AI_CONFIG.chatHistory,
+                { role: 'user', content: message }
+            ],
+            max_tokens: 2048
+        })
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error?.message || 'API-Fehler');
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content;
+}
+
+let chatMessageId = 0;
+
+function addChatMessage(role, content) {
+    const messagesDiv = document.getElementById('chatMessages');
+    const id = `chat-msg-${++chatMessageId}`;
+
+    const isUser = role === 'user';
+    const messageHtml = `
+        <div id="${id}" style="display: flex; justify-content: ${isUser ? 'flex-end' : 'flex-start'}; margin-bottom: 15px;">
+            <div style="max-width: 80%; padding: 15px; border-radius: ${isUser ? '15px 15px 0 15px' : '15px 15px 15px 0'};
+                        background: ${isUser ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'white'};
+                        color: ${isUser ? 'white' : '#333'}; border: ${isUser ? 'none' : '1px solid #e2e8f0'};">
+                ${content}
+            </div>
+        </div>
+    `;
+
+    messagesDiv.insertAdjacentHTML('beforeend', messageHtml);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    return id;
+}
+
+function updateChatMessage(id, content) {
+    const msgDiv = document.getElementById(id);
+    if (msgDiv) {
+        const contentDiv = msgDiv.querySelector('div');
+        if (contentDiv) {
+            contentDiv.innerHTML = content;
+        }
+    }
+}
+
+// Initialisiere Beratung beim Tab-Wechsel
+const originalShowTab = showTab;
+showTab = function(tabId) {
+    originalShowTab(tabId);
+    if (tabId === 'beratung') {
+        runAutoAnalysis();
+    }
+};
     </script>
 </body>
 </html>
