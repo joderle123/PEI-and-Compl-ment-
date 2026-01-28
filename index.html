@@ -7,6 +7,8 @@
     <!-- docx.js für echte Word-Dokumente -->
     <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- Chart.js für Visualisierungen -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         :root {
             /* Klinisch-professionelles Farbschema */
@@ -2173,6 +2175,16 @@
                 </div>
             </div>
 
+            <!-- Diagnostic Spécialisée (Anamnese) -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Diagnostic Spécialisée</div>
+                <div class="sidebar-item" onclick="showTab('diagnostic')" data-tab="diagnostic">
+                    <span class="sidebar-item-icon">📋</span>
+                    <span>Anamnese</span>
+                    <span class="sidebar-item-badge" id="badge-diagnostic">0</span>
+                </div>
+            </div>
+
             <!-- ELDiB -->
             <div class="sidebar-section">
                 <div class="sidebar-section-title">ELDiB Erfassung</div>
@@ -2374,6 +2386,180 @@
                         <button class="action-btn secondary" onclick="showTab('synthese')">🔬 Fallsynthese</button>
                         <button class="action-btn secondary" onclick="showTab('export')">📄 Export</button>
                         <button class="action-btn secondary" onclick="resetAllData()" style="margin-left: auto; background: #fed7d7; color: #c53030;">🗑️ Neuer Fall</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAGNOSTIC SPÉCIALISÉE Tab - Anamnese mit Tag-System -->
+        <div id="diagnostic" class="tab-content">
+            <style>
+                .diagnostic-container { max-width: 1200px; margin: 0 auto; }
+                .diagnostic-header { background: linear-gradient(135deg, #1e3a5f, #2d5a87); padding: 30px; border-radius: 16px; color: white; margin-bottom: 30px; }
+                .diagnostic-layout { display: grid; grid-template-columns: 250px 1fr 300px; gap: 25px; min-height: 600px; }
+                .diagnostic-nav { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+                .diagnostic-nav-item { padding: 12px 15px; border-radius: 8px; cursor: pointer; margin-bottom: 8px; transition: all 0.2s; display: flex; align-items: center; gap: 10px; }
+                .diagnostic-nav-item:hover { background: #f8fafc; }
+                .diagnostic-nav-item.active { background: #ebf8ff; border-left: 3px solid #3182ce; }
+                .diagnostic-nav-item.completed { background: #f0fff4; }
+                .diagnostic-nav-item .nav-icon { font-size: 1.2rem; }
+                .diagnostic-nav-item .nav-count { margin-left: auto; font-size: 0.75rem; background: #e2e8f0; padding: 2px 8px; border-radius: 10px; }
+                .diagnostic-nav-item.completed .nav-count { background: #c6f6d5; color: #22543d; }
+                .diagnostic-main { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+                .diagnostic-question-area { min-height: 400px; }
+                .diagnostic-question { margin-bottom: 25px; }
+                .diagnostic-question h4 { margin: 0 0 15px; color: #2d3748; font-size: 1.1rem; }
+                .diagnostic-question p { color: #718096; font-size: 0.9rem; margin-bottom: 15px; }
+                .diagnostic-options { display: flex; flex-direction: column; gap: 10px; }
+                .diagnostic-option { padding: 15px 20px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
+                .diagnostic-option:hover { border-color: #4A90A4; background: #f8fafc; }
+                .diagnostic-option.selected { border-color: #4A90A4; background: #ebf8ff; }
+                .diagnostic-option.severity-green { border-left: 4px solid #48bb78; }
+                .diagnostic-option.severity-yellow { border-left: 4px solid #ecc94b; }
+                .diagnostic-option.severity-orange { border-left: 4px solid #ed8936; }
+                .diagnostic-option.severity-red { border-left: 4px solid #e53e3e; }
+                .diagnostic-option .option-icon { font-size: 1.3rem; }
+                .diagnostic-option .option-text { flex: 1; }
+                .diagnostic-option .option-check { width: 24px; height: 24px; border: 2px solid #cbd5e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+                .diagnostic-option.selected .option-check { background: #4A90A4; border-color: #4A90A4; color: white; }
+                .diagnostic-summary { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+                .diagnostic-summary h4 { margin: 0 0 15px; color: #2d3748; font-size: 1rem; }
+                .diagnostic-summary-item { padding: 10px 12px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px; font-size: 0.85rem; }
+                .diagnostic-summary-item.alert { background: #fff5f5; border-left: 3px solid #e53e3e; }
+                .diagnostic-progress { margin-top: 20px; }
+                .diagnostic-progress-bar { height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+                .diagnostic-progress-fill { height: 100%; background: linear-gradient(90deg, #4A90A4, #48bb78); transition: width 0.3s; }
+                .diagnostic-nav-btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+                .diagnostic-nav-btn.primary { background: #4A90A4; color: white; }
+                .diagnostic-nav-btn.secondary { background: #e2e8f0; color: #4a5568; }
+                @media (max-width: 1000px) { .diagnostic-layout { grid-template-columns: 1fr; } .diagnostic-nav, .diagnostic-summary { display: none; } }
+            </style>
+
+            <div class="diagnostic-container">
+                <div class="diagnostic-header">
+                    <h2 style="margin: 0 0 10px 0;">📋 Diagnostic Spécialisée</h2>
+                    <p style="margin: 0; opacity: 0.9;">Strukturierte Anamnese durch Klick-Auswahl - Alle Antworten fließen automatisch in die Synthese ein</p>
+                </div>
+
+                <div class="diagnostic-layout">
+                    <!-- Navigation -->
+                    <div class="diagnostic-nav">
+                        <h4 style="margin: 0 0 15px; color: #2d3748; font-size: 0.9rem;">BEREICHE</h4>
+                        <div class="diagnostic-nav-item active" data-section="entwicklung" onclick="showDiagnosticSection('entwicklung')">
+                            <span class="nav-icon">🌱</span>
+                            <span>Entwicklung</span>
+                            <span class="nav-count" id="diag-count-entwicklung">0/0</span>
+                        </div>
+                        <div class="diagnostic-nav-item" data-section="geburt" onclick="showDiagnosticSection('geburt')">
+                            <span class="nav-icon">👶</span>
+                            <span>Schwangerschaft/Geburt</span>
+                            <span class="nav-count" id="diag-count-geburt">0/0</span>
+                        </div>
+                        <div class="diagnostic-nav-item" data-section="motorik" onclick="showDiagnosticSection('motorik')">
+                            <span class="nav-icon">🏃</span>
+                            <span>Motorik</span>
+                            <span class="nav-count" id="diag-count-motorik">0/0</span>
+                        </div>
+                        <div class="diagnostic-nav-item" data-section="sprache" onclick="showDiagnosticSection('sprache')">
+                            <span class="nav-icon">🗣️</span>
+                            <span>Sprache</span>
+                            <span class="nav-count" id="diag-count-sprache">0/0</span>
+                        </div>
+                        <div class="diagnostic-nav-item" data-section="sauberkeit" onclick="showDiagnosticSection('sauberkeit')">
+                            <span class="nav-icon">🚿</span>
+                            <span>Sauberkeit</span>
+                            <span class="nav-count" id="diag-count-sauberkeit">0/0</span>
+                        </div>
+                        <div class="diagnostic-nav-item" data-section="schlaf" onclick="showDiagnosticSection('schlaf')">
+                            <span class="nav-icon">😴</span>
+                            <span>Schlaf</span>
+                            <span class="nav-count" id="diag-count-schlaf">0/0</span>
+                        </div>
+                        <div class="diagnostic-nav-item" data-section="ernaehrung" onclick="showDiagnosticSection('ernaehrung')">
+                            <span class="nav-icon">🍎</span>
+                            <span>Ernährung</span>
+                            <span class="nav-count" id="diag-count-ernaehrung">0/0</span>
+                        </div>
+                        <div class="diagnostic-nav-item" data-section="medizin" onclick="showDiagnosticSection('medizin')">
+                            <span class="nav-icon">🏥</span>
+                            <span>Medizinisch</span>
+                            <span class="nav-count" id="diag-count-medizin">0/0</span>
+                        </div>
+                        <div class="diagnostic-nav-item" data-section="sozial" onclick="showDiagnosticSection('sozial')">
+                            <span class="nav-icon">👥</span>
+                            <span>Soziales Umfeld</span>
+                            <span class="nav-count" id="diag-count-sozial">0/0</span>
+                        </div>
+                        <div class="diagnostic-nav-item" data-section="familie" onclick="showDiagnosticSection('familie')">
+                            <span class="nav-icon">👨‍👩‍👧</span>
+                            <span>Familie</span>
+                            <span class="nav-count" id="diag-count-familie">0/0</span>
+                        </div>
+                        <div class="diagnostic-nav-item" data-section="schule" onclick="showDiagnosticSection('schule')">
+                            <span class="nav-icon">🏫</span>
+                            <span>Schule/Betreuung</span>
+                            <span class="nav-count" id="diag-count-schule">0/0</span>
+                        </div>
+
+                        <div class="diagnostic-progress">
+                            <div style="font-size: 0.75rem; color: #718096; margin-bottom: 5px;">Gesamtfortschritt</div>
+                            <div class="diagnostic-progress-bar">
+                                <div class="diagnostic-progress-fill" id="diag-progress-fill" style="width: 0%;"></div>
+                            </div>
+                            <div style="font-size: 0.8rem; margin-top: 5px; text-align: center; font-weight: 600;" id="diag-progress-text">0%</div>
+                        </div>
+                    </div>
+
+                    <!-- Fragen-Bereich -->
+                    <div class="diagnostic-main">
+                        <div class="diagnostic-question-area" id="diagnostic-questions">
+                            <div style="text-align: center; padding: 60px 20px; color: #718096;">
+                                <div style="font-size: 4rem; margin-bottom: 20px;">📋</div>
+                                <h3 style="color: #2d3748; margin-bottom: 15px;">Diagnostic Spécialisée</h3>
+                                <p style="max-width: 500px; margin: 0 auto;">
+                                    Dieser Bereich wird mit strukturierten Anamnese-Fragen gefüllt.<br><br>
+                                    <strong>So funktioniert es:</strong><br>
+                                    Jede Frage hat Klick-Optionen mit Schweregrad-Farbkodierung (grün/gelb/orange/rot).<br>
+                                    Alle Antworten werden automatisch getaggt und fließen in die Modelle ein.
+                                </p>
+                                <div style="margin-top: 30px; padding: 20px; background: #f0fff4; border-radius: 12px; text-align: left; max-width: 400px; margin-left: auto; margin-right: auto;">
+                                    <strong style="color: #276749;">Tag-System für jede Frage:</strong>
+                                    <ul style="margin: 10px 0 0 20px; font-size: 0.9rem; color: #4a5568;">
+                                        <li><code>bio/psycho/sozial</code> - BPS-Modell</li>
+                                        <li><code>risk/protect</code> - Risiko/Schutz</li>
+                                        <li><code>icf-*</code> - ICF-Klassifikation</li>
+                                        <li><code>timeline</code> - Zeitstrahl</li>
+                                        <li><code>severity</code> - Schweregrad</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button class="diagnostic-nav-btn secondary" onclick="previousDiagnosticQuestion()">← Zurück</button>
+                            <button class="diagnostic-nav-btn primary" onclick="nextDiagnosticQuestion()">Weiter →</button>
+                        </div>
+                    </div>
+
+                    <!-- Zusammenfassung -->
+                    <div class="diagnostic-summary">
+                        <h4>📝 Erfasste Informationen</h4>
+                        <div id="diagnostic-summary-list">
+                            <div style="color: #a0aec0; font-size: 0.85rem; text-align: center; padding: 20px;">
+                                Noch keine Antworten erfasst.
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                            <h4 style="color: #c53030; margin-bottom: 10px;">⚠️ Auffälligkeiten</h4>
+                            <div id="diagnostic-alerts-list">
+                                <div style="color: #a0aec0; font-size: 0.85rem;">Keine Auffälligkeiten</div>
+                            </div>
+                        </div>
+
+                        <button class="diagnostic-nav-btn primary" style="margin-top: 20px;" onclick="showTab('synthese'); generateFullSynthesis();">
+                            🔬 Zur Synthese
+                        </button>
                     </div>
                 </div>
             </div>
@@ -9493,6 +9679,864 @@ function resetAssessment() {
 }
 
 // ============================================
+// ZENTRALES DATEN-MAPPING & MODELL-SYSTEM
+// ============================================
+
+// Zentrale Registry für alle gesammelten Daten mit Tags
+const ClinicalDataRegistry = {
+    // Daten-Speicher mit Tag-Zuordnung
+    items: [],
+
+    // Registriert ein neues Datenobjekt mit Tags
+    register(data) {
+        const item = {
+            id: `item_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            timestamp: new Date().toISOString(),
+            source: data.source || 'unknown', // diagnostic, eldib, assessment, anamnese
+            question: data.question || '',
+            answer: data.answer || '',
+            value: data.value || null,
+            severity: data.severity || 'normal', // normal, mild, moderate, severe, critical
+            tags: data.tags || [],
+            models: data.models || [], // Welche Modelle sollen diese Daten nutzen
+            meta: data.meta || {}
+        };
+        this.items.push(item);
+        this.saveToStorage();
+        return item.id;
+    },
+
+    // Holt alle Items für ein bestimmtes Modell
+    getByModel(modelName) {
+        return this.items.filter(item => item.models.includes(modelName));
+    },
+
+    // Holt alle Items mit einem bestimmten Tag
+    getByTag(tag) {
+        return this.items.filter(item => item.tags.includes(tag));
+    },
+
+    // Holt alle Items einer bestimmten Quelle
+    getBySource(source) {
+        return this.items.filter(item => item.source === source);
+    },
+
+    // Speichert in localStorage
+    saveToStorage() {
+        localStorage.setItem('clinical_data_registry', JSON.stringify(this.items));
+    },
+
+    // Lädt aus localStorage
+    loadFromStorage() {
+        const stored = localStorage.getItem('clinical_data_registry');
+        if (stored) {
+            this.items = JSON.parse(stored);
+        }
+    },
+
+    // Löscht alle Daten
+    clear() {
+        this.items = [];
+        localStorage.removeItem('clinical_data_registry');
+    },
+
+    // Aggregiert Daten nach Kategorien
+    aggregate() {
+        const agg = {
+            bio: { risk: [], protect: [] },
+            psycho: { risk: [], protect: [] },
+            sozial: { risk: [], protect: [] },
+            icf: { functions: [], activities: [], participation: [], environment: [], personal: [] },
+            timeline: [],
+            behaviors: [],
+            symptoms: [],
+            strengths: []
+        };
+
+        this.items.forEach(item => {
+            // Bio-Psycho-Sozial Zuordnung
+            if (item.tags.includes('bio')) {
+                if (item.severity === 'severe' || item.severity === 'critical' || item.tags.includes('risk')) {
+                    agg.bio.risk.push(item);
+                } else if (item.tags.includes('protect') || item.tags.includes('strength')) {
+                    agg.bio.protect.push(item);
+                }
+            }
+            if (item.tags.includes('psycho')) {
+                if (item.severity === 'severe' || item.severity === 'critical' || item.tags.includes('risk')) {
+                    agg.psycho.risk.push(item);
+                } else if (item.tags.includes('protect') || item.tags.includes('strength')) {
+                    agg.psycho.protect.push(item);
+                }
+            }
+            if (item.tags.includes('sozial')) {
+                if (item.severity === 'severe' || item.severity === 'critical' || item.tags.includes('risk')) {
+                    agg.sozial.risk.push(item);
+                } else if (item.tags.includes('protect') || item.tags.includes('strength')) {
+                    agg.sozial.protect.push(item);
+                }
+            }
+
+            // ICF Zuordnung
+            if (item.tags.includes('icf-function')) agg.icf.functions.push(item);
+            if (item.tags.includes('icf-activity')) agg.icf.activities.push(item);
+            if (item.tags.includes('icf-participation')) agg.icf.participation.push(item);
+            if (item.tags.includes('icf-environment')) agg.icf.environment.push(item);
+            if (item.tags.includes('icf-personal')) agg.icf.personal.push(item);
+
+            // Timeline Events
+            if (item.tags.includes('timeline') || item.meta.date) {
+                agg.timeline.push(item);
+            }
+
+            // Behaviors
+            if (item.tags.includes('behavior')) agg.behaviors.push(item);
+
+            // Symptoms
+            if (item.tags.includes('symptom')) agg.symptoms.push(item);
+
+            // Strengths
+            if (item.tags.includes('strength') || item.tags.includes('protect')) {
+                agg.strengths.push(item);
+            }
+        });
+
+        return agg;
+    }
+};
+
+// ============================================
+// MODELL-GENERATOREN
+// ============================================
+
+const ModelGenerators = {
+
+    // 1. ICF-MODELL (International Classification of Functioning)
+    generateICF() {
+        const data = ClinicalDataRegistry.aggregate();
+        const eldibData = getEldibSummary();
+        const assessmentData = cdse.data || {};
+
+        const icf = {
+            koerperfunktionen: [],
+            aktivitaeten: [],
+            partizipation: [],
+            umweltfaktoren: { barrieren: [], foerderfaktoren: [] },
+            personenbezogen: []
+        };
+
+        // Aus Assessment-Daten
+        if (assessmentData.domains) {
+            // Somatik -> Körperfunktionen
+            if (assessmentData.domains.somatik) {
+                Object.entries(assessmentData.domains.somatik).forEach(([key, val]) => {
+                    if (val && val !== 'nein' && val !== 'normal') {
+                        icf.koerperfunktionen.push({
+                            bereich: key,
+                            status: val,
+                            severity: val === 'ja' || val === 'auffaellig' ? 'beeintraechtigt' : 'normal'
+                        });
+                    }
+                });
+            }
+
+            // Schule -> Aktivitäten & Partizipation
+            if (assessmentData.domains.schule) {
+                Object.entries(assessmentData.domains.schule).forEach(([key, val]) => {
+                    if (val) {
+                        if (key.includes('leistung') || key.includes('lernen')) {
+                            icf.aktivitaeten.push({ bereich: key, status: val });
+                        } else {
+                            icf.partizipation.push({ bereich: key, status: val });
+                        }
+                    }
+                });
+            }
+
+            // Familie -> Umweltfaktoren
+            if (assessmentData.domains.familie) {
+                Object.entries(assessmentData.domains.familie).forEach(([key, val]) => {
+                    if (val) {
+                        const isNegative = val === 'belastet' || val === 'konfliktreich' || val === 'instabil';
+                        if (isNegative) {
+                            icf.umweltfaktoren.barrieren.push({ bereich: key, status: val });
+                        } else if (val === 'stabil' || val === 'unterstuetzend') {
+                            icf.umweltfaktoren.foerderfaktoren.push({ bereich: key, status: val });
+                        }
+                    }
+                });
+            }
+        }
+
+        // ELDiB -> Personenbezogene Faktoren
+        if (eldibData) {
+            icf.personenbezogen.push({
+                bereich: 'Sozio-emotionale Entwicklung',
+                verhalten: `Stufe ${eldibData.V.stufe}`,
+                kommunikation: `Stufe ${eldibData.K.stufe}`,
+                sozialisation: `Stufe ${eldibData.S.stufe}`,
+                kognition: `Stufe ${eldibData.C.stufe}`
+            });
+        }
+
+        return icf;
+    },
+
+    // 2. RISIKO-SCHUTZFAKTOREN MODELL
+    generateRisikoSchutz() {
+        const data = ClinicalDataRegistry.aggregate();
+        const assessmentData = cdse.data || {};
+        const eldibData = getEldibSummary();
+
+        const model = {
+            risikofaktoren: {
+                individuell: [],
+                familiaer: [],
+                schulisch: [],
+                sozial: []
+            },
+            schutzfaktoren: {
+                individuell: [],
+                familiaer: [],
+                schulisch: [],
+                sozial: []
+            },
+            balance: 0 // Negativ = mehr Risiko, Positiv = mehr Schutz
+        };
+
+        // Aus Assessment extrahieren
+        if (assessmentData.domains) {
+            // Somatik Risiken
+            if (assessmentData.domains.somatik) {
+                const som = assessmentData.domains.somatik;
+                if (som.schlafprobleme === 'ja') model.risikofaktoren.individuell.push('Schlafprobleme');
+                if (som.chronische_erkrankung === 'ja') model.risikofaktoren.individuell.push('Chronische Erkrankung');
+                if (som.medikation === 'ja') model.risikofaktoren.individuell.push('Medikamenteneinnahme');
+            }
+
+            // Familie
+            if (assessmentData.domains.familie) {
+                const fam = assessmentData.domains.familie;
+                if (fam.eltern_getrennt === 'ja') model.risikofaktoren.familiaer.push('Elterntrennung');
+                if (fam.psychische_belastung_eltern === 'ja') model.risikofaktoren.familiaer.push('Psychische Belastung Eltern');
+                if (fam.familienklima === 'konfliktreich') model.risikofaktoren.familiaer.push('Konfliktreiches Familienklima');
+                if (fam.familienklima === 'stabil') model.schutzfaktoren.familiaer.push('Stabiles Familienklima');
+                if (fam.unterstuetzung === 'ja') model.schutzfaktoren.familiaer.push('Familiäre Unterstützung');
+            }
+
+            // Schule
+            if (assessmentData.domains.schule) {
+                const sch = assessmentData.domains.schule;
+                if (sch.leistungsprobleme === 'ja') model.risikofaktoren.schulisch.push('Schulische Leistungsprobleme');
+                if (sch.mobbing === 'ja') model.risikofaktoren.sozial.push('Mobbing-Erfahrungen');
+                if (sch.freunde === 'ja') model.schutzfaktoren.sozial.push('Freundschaften');
+                if (sch.integration === 'gut') model.schutzfaktoren.schulisch.push('Gute schulische Integration');
+            }
+
+            // Risiko-Domain
+            if (assessmentData.domains.risiko) {
+                const risk = assessmentData.domains.risiko;
+                if (risk.suizidalitaet === 'ja') model.risikofaktoren.individuell.push('⚠️ Suizidalität');
+                if (risk.selbstverletzung === 'ja') model.risikofaktoren.individuell.push('⚠️ Selbstverletzung');
+                if (risk.fremdgefaehrdung === 'ja') model.risikofaktoren.individuell.push('⚠️ Fremdgefährdung');
+                if (risk.missbrauch === 'ja') model.risikofaktoren.familiaer.push('⚠️ Missbrauchsverdacht');
+            }
+        }
+
+        // ELDiB-basierte Faktoren
+        if (eldibData) {
+            const avgStufe = (parseInt(eldibData.V.stufe) || 0 + parseInt(eldibData.K.stufe) || 0 +
+                            parseInt(eldibData.S.stufe) || 0 + parseInt(eldibData.C.stufe) || 0) / 4;
+            if (avgStufe < 2) {
+                model.risikofaktoren.individuell.push('Deutliche Entwicklungsverzögerung');
+            }
+            if (eldibData.foerderziele && eldibData.foerderziele.length > 0) {
+                model.schutzfaktoren.individuell.push(`${eldibData.foerderziele.length} aktive Förderziele`);
+            }
+        }
+
+        // Balance berechnen
+        const totalRisk = Object.values(model.risikofaktoren).flat().length;
+        const totalProtect = Object.values(model.schutzfaktoren).flat().length;
+        model.balance = totalProtect - totalRisk;
+
+        return model;
+    },
+
+    // 3. BRONFENBRENNER ÖKOSYSTEM
+    generateBronfenbrenner() {
+        const assessmentData = cdse.data || {};
+
+        const model = {
+            mikrosystem: {
+                familie: { status: 'neutral', details: [] },
+                schule: { status: 'neutral', details: [] },
+                peers: { status: 'neutral', details: [] }
+            },
+            mesosystem: [], // Verbindungen zwischen Mikrosystemen
+            exosystem: [], // Indirekte Einflüsse
+            makrosystem: [] // Kulturelle/gesellschaftliche Faktoren
+        };
+
+        if (assessmentData.domains) {
+            // Familie im Mikrosystem
+            if (assessmentData.domains.familie) {
+                const fam = assessmentData.domains.familie;
+                model.mikrosystem.familie.status = fam.familienklima || 'unbekannt';
+                if (fam.eltern_getrennt === 'ja') model.mikrosystem.familie.details.push('Getrennte Eltern');
+                if (fam.geschwister) model.mikrosystem.familie.details.push(`Geschwister: ${fam.geschwister}`);
+            }
+
+            // Schule im Mikrosystem
+            if (assessmentData.domains.schule) {
+                const sch = assessmentData.domains.schule;
+                model.mikrosystem.schule.status = sch.integration || 'unbekannt';
+                if (sch.klassenklima) model.mikrosystem.schule.details.push(`Klassenklima: ${sch.klassenklima}`);
+                if (sch.lehrer_beziehung) model.mikrosystem.schule.details.push(`Lehrer-Beziehung: ${sch.lehrer_beziehung}`);
+            }
+
+            // Peers im Mikrosystem
+            if (assessmentData.domains.schule) {
+                const sch = assessmentData.domains.schule;
+                model.mikrosystem.peers.status = sch.freunde === 'ja' ? 'positiv' : 'belastet';
+                if (sch.mobbing === 'ja') model.mikrosystem.peers.details.push('Mobbing-Erfahrung');
+            }
+        }
+
+        // Mesosystem: Verbindungen
+        if (model.mikrosystem.familie.status === 'stabil' && model.mikrosystem.schule.status === 'gut') {
+            model.mesosystem.push('Gute Eltern-Schule-Kommunikation');
+        }
+
+        return model;
+    },
+
+    // 4. ABC VERHALTENSANALYSE (aggregiert)
+    generateABCAnalysis() {
+        const behaviors = ClinicalDataRegistry.getByTag('behavior');
+        const patterns = [];
+
+        // Gruppiere nach vermuteter Funktion
+        const functions = {
+            attention: { count: 0, examples: [] },
+            escape: { count: 0, examples: [] },
+            tangible: { count: 0, examples: [] },
+            sensory: { count: 0, examples: [] },
+            control: { count: 0, examples: [] }
+        };
+
+        behaviors.forEach(b => {
+            if (b.meta && b.meta.function) {
+                b.meta.function.forEach(f => {
+                    if (functions[f]) {
+                        functions[f].count++;
+                        functions[f].examples.push(b.answer);
+                    }
+                });
+            }
+        });
+
+        // Identifiziere Hauptfunktion
+        let mainFunction = null;
+        let maxCount = 0;
+        Object.entries(functions).forEach(([func, data]) => {
+            if (data.count > maxCount) {
+                maxCount = data.count;
+                mainFunction = func;
+            }
+        });
+
+        return {
+            functions,
+            mainFunction,
+            totalBehaviors: behaviors.length,
+            patterns
+        };
+    },
+
+    // 5. TIMELINE/ZEITSTRAHL
+    generateTimeline() {
+        const events = [];
+        const assessmentData = cdse.data || {};
+
+        // Geburtsdatum
+        const geb = document.getElementById('geburtsdatum')?.value;
+        if (geb) {
+            events.push({
+                date: geb,
+                type: 'geburt',
+                label: 'Geburt',
+                icon: '👶'
+            });
+        }
+
+        // Aus Anamnese/Assessment extrahieren
+        if (assessmentData.intake) {
+            if (assessmentData.intake.symptom_beginn) {
+                events.push({
+                    date: assessmentData.intake.symptom_beginn,
+                    type: 'symptom',
+                    label: 'Symptombeginn',
+                    icon: '⚠️'
+                });
+            }
+            if (assessmentData.intake.vorstellung_grund) {
+                events.push({
+                    date: new Date().toISOString().split('T')[0],
+                    type: 'vorstellung',
+                    label: 'Vorstellung CDSE',
+                    icon: '🏥'
+                });
+            }
+        }
+
+        // Sortiere nach Datum
+        events.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        return events;
+    },
+
+    // 6. TEUFELSKREIS-DIAGRAMME
+    generateTeufelskreis() {
+        const synthesis = cdse.data.synthesis || {};
+        const cycles = [];
+
+        // Je nach Hauptdiagnose unterschiedliche Teufelskreise
+        if (synthesis.hauptdiagnose) {
+            const dx = synthesis.hauptdiagnose.key;
+
+            if (dx === 'anxiety' || dx === 'soziale_angst') {
+                cycles.push({
+                    name: 'Angst-Vermeidungs-Kreislauf',
+                    steps: [
+                        { label: 'Angstauslöser', icon: '⚡' },
+                        { label: 'Körperliche Reaktion', icon: '💓' },
+                        { label: 'Katastrophisierende Gedanken', icon: '💭' },
+                        { label: 'Vermeidungsverhalten', icon: '🏃' },
+                        { label: 'Kurzfristige Erleichterung', icon: '😌' },
+                        { label: 'Verstärkung der Angst', icon: '📈' }
+                    ]
+                });
+            }
+
+            if (dx === 'depression') {
+                cycles.push({
+                    name: 'Depressions-Rückzugs-Kreislauf',
+                    steps: [
+                        { label: 'Negative Gedanken', icon: '💭' },
+                        { label: 'Antriebslosigkeit', icon: '😔' },
+                        { label: 'Sozialer Rückzug', icon: '🚪' },
+                        { label: 'Weniger positive Erfahrungen', icon: '📉' },
+                        { label: 'Bestätigung negativer Gedanken', icon: '🔄' }
+                    ]
+                });
+            }
+
+            if (dx === 'adhs' || dx === 'hyperkinetisch') {
+                cycles.push({
+                    name: 'Aufmerksamkeits-Misserfolgs-Kreislauf',
+                    steps: [
+                        { label: 'Konzentrationsschwierigkeit', icon: '🎯' },
+                        { label: 'Aufgaben nicht beendet', icon: '📝' },
+                        { label: 'Negative Rückmeldung', icon: '👎' },
+                        { label: 'Frustration/Demotivation', icon: '😤' },
+                        { label: 'Vermeidung von Anforderungen', icon: '🏃' },
+                        { label: 'Weniger Übung', icon: '📉' }
+                    ]
+                });
+            }
+
+            if (dx === 'ssv' || dx === 'opposition') {
+                cycles.push({
+                    name: 'Eskalations-Kreislauf',
+                    steps: [
+                        { label: 'Anforderung/Grenze', icon: '🚧' },
+                        { label: 'Opposition/Verweigerung', icon: '✋' },
+                        { label: 'Eskalation Erwachsener', icon: '📢' },
+                        { label: 'Eskalation Kind', icon: '💥' },
+                        { label: 'Nachgeben/Aufgeben', icon: '🏳️' },
+                        { label: 'Verstärkung des Verhaltens', icon: '📈' }
+                    ]
+                });
+            }
+        }
+
+        return cycles;
+    },
+
+    // 7. ENTWICKLUNGS-RADAR (für ELDiB)
+    generateDevelopmentRadar() {
+        const eldibData = getEldibSummary();
+        const alter = document.getElementById('geburtsdatum')?.value
+            ? Math.floor((new Date() - new Date(document.getElementById('geburtsdatum').value)) / 31557600000)
+            : null;
+
+        // Erwartete Stufe basierend auf Alter
+        let expectedStufe = 5;
+        if (alter) {
+            if (alter <= 2) expectedStufe = 1;
+            else if (alter <= 5) expectedStufe = 2;
+            else if (alter <= 9) expectedStufe = 3;
+            else if (alter <= 12) expectedStufe = 4;
+            else expectedStufe = 5;
+        }
+
+        return {
+            labels: ['Verhalten', 'Kommunikation', 'Sozialisation', 'Kognition'],
+            actual: [
+                parseInt(eldibData.V.stufe) || 0,
+                parseInt(eldibData.K.stufe) || 0,
+                parseInt(eldibData.S.stufe) || 0,
+                parseInt(eldibData.C.stufe) || 0
+            ],
+            expected: [expectedStufe, expectedStufe, expectedStufe, expectedStufe],
+            maxValue: 5
+        };
+    }
+};
+
+// ============================================
+// VISUALISIERUNGS-RENDERER
+// ============================================
+
+const VisualizationRenderer = {
+    charts: {},
+
+    // Radar-Chart für ELDiB
+    renderRadarChart(containerId) {
+        const data = ModelGenerators.generateDevelopmentRadar();
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        container.innerHTML = '<canvas id="radar-canvas"></canvas>';
+        const ctx = document.getElementById('radar-canvas').getContext('2d');
+
+        if (this.charts.radar) this.charts.radar.destroy();
+
+        this.charts.radar = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: data.labels,
+                datasets: [
+                    {
+                        label: 'Aktuelles Niveau',
+                        data: data.actual,
+                        backgroundColor: 'rgba(74, 144, 164, 0.3)',
+                        borderColor: '#4A90A4',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#4A90A4'
+                    },
+                    {
+                        label: 'Altersentsprechend',
+                        data: data.expected,
+                        backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                        borderColor: '#48BB78',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        pointBackgroundColor: '#48BB78'
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 5,
+                        ticks: { stepSize: 1 }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    },
+
+    // Risiko-Schutz Balkendiagramm
+    renderRisikoSchutzChart(containerId) {
+        const model = ModelGenerators.generateRisikoSchutz();
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        container.innerHTML = '<canvas id="risiko-canvas"></canvas>';
+        const ctx = document.getElementById('risiko-canvas').getContext('2d');
+
+        const categories = ['Individuell', 'Familiär', 'Schulisch', 'Sozial'];
+        const riskData = [
+            model.risikofaktoren.individuell.length,
+            model.risikofaktoren.familiaer.length,
+            model.risikofaktoren.schulisch.length,
+            model.risikofaktoren.sozial.length
+        ];
+        const protectData = [
+            model.schutzfaktoren.individuell.length,
+            model.schutzfaktoren.familiaer.length,
+            model.schutzfaktoren.schulisch.length,
+            model.schutzfaktoren.sozial.length
+        ];
+
+        if (this.charts.risiko) this.charts.risiko.destroy();
+
+        this.charts.risiko = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: categories,
+                datasets: [
+                    {
+                        label: 'Risikofaktoren',
+                        data: riskData.map(v => -v),
+                        backgroundColor: 'rgba(229, 62, 62, 0.7)',
+                        borderColor: '#E53E3E',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Schutzfaktoren',
+                        data: protectData,
+                        backgroundColor: 'rgba(72, 187, 120, 0.7)',
+                        borderColor: '#48BB78',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: { display: true, text: 'Risiko ← → Schutz' }
+                    },
+                    y: { stacked: true }
+                },
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${Math.abs(context.raw)}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    },
+
+    // ICF-Modell als strukturierte Darstellung
+    renderICFModel(containerId) {
+        const icf = ModelGenerators.generateICF();
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        container.innerHTML = `
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;">
+                <div style="background:#fef3c7;padding:15px;border-radius:12px;border-left:4px solid #f59e0b;">
+                    <h5 style="margin:0 0 10px;color:#92400e;">🧠 Körperfunktionen</h5>
+                    ${icf.koerperfunktionen.length > 0
+                        ? `<ul style="margin:0;padding-left:18px;font-size:0.9rem;">${icf.koerperfunktionen.map(k => `<li>${k.bereich}: ${k.status}</li>`).join('')}</ul>`
+                        : '<span style="color:#a0aec0;font-size:0.9rem;">Keine Auffälligkeiten dokumentiert</span>'}
+                </div>
+                <div style="background:#dbeafe;padding:15px;border-radius:12px;border-left:4px solid #3b82f6;">
+                    <h5 style="margin:0 0 10px;color:#1e40af;">🎯 Aktivitäten</h5>
+                    ${icf.aktivitaeten.length > 0
+                        ? `<ul style="margin:0;padding-left:18px;font-size:0.9rem;">${icf.aktivitaeten.map(a => `<li>${a.bereich}: ${a.status}</li>`).join('')}</ul>`
+                        : '<span style="color:#a0aec0;font-size:0.9rem;">Keine Einschränkungen dokumentiert</span>'}
+                </div>
+                <div style="background:#d1fae5;padding:15px;border-radius:12px;border-left:4px solid #10b981;">
+                    <h5 style="margin:0 0 10px;color:#065f46;">🤝 Partizipation</h5>
+                    ${icf.partizipation.length > 0
+                        ? `<ul style="margin:0;padding-left:18px;font-size:0.9rem;">${icf.partizipation.map(p => `<li>${p.bereich}: ${p.status}</li>`).join('')}</ul>`
+                        : '<span style="color:#a0aec0;font-size:0.9rem;">Keine Einschränkungen dokumentiert</span>'}
+                </div>
+                <div style="background:#ede9fe;padding:15px;border-radius:12px;border-left:4px solid #8b5cf6;">
+                    <h5 style="margin:0 0 10px;color:#5b21b6;">🌍 Umweltfaktoren</h5>
+                    ${icf.umweltfaktoren.barrieren.length > 0 || icf.umweltfaktoren.foerderfaktoren.length > 0
+                        ? `<div style="font-size:0.9rem;">
+                            ${icf.umweltfaktoren.barrieren.length > 0 ? `<div style="color:#dc2626;margin-bottom:5px;">Barrieren: ${icf.umweltfaktoren.barrieren.map(b => b.bereich).join(', ')}</div>` : ''}
+                            ${icf.umweltfaktoren.foerderfaktoren.length > 0 ? `<div style="color:#059669;">Förderfaktoren: ${icf.umweltfaktoren.foerderfaktoren.map(f => f.bereich).join(', ')}</div>` : ''}
+                           </div>`
+                        : '<span style="color:#a0aec0;font-size:0.9rem;">Keine Faktoren dokumentiert</span>'}
+                </div>
+            </div>
+            ${icf.personenbezogen.length > 0 ? `
+                <div style="background:#fce7f3;padding:15px;border-radius:12px;border-left:4px solid #ec4899;margin-top:15px;">
+                    <h5 style="margin:0 0 10px;color:#9d174d;">👤 Personenbezogene Faktoren (ELDiB)</h5>
+                    <div style="display:flex;gap:20px;flex-wrap:wrap;font-size:0.9rem;">
+                        <span>V: ${icf.personenbezogen[0].verhalten}</span>
+                        <span>K: ${icf.personenbezogen[0].kommunikation}</span>
+                        <span>S: ${icf.personenbezogen[0].sozialisation}</span>
+                        <span>C: ${icf.personenbezogen[0].kognition}</span>
+                    </div>
+                </div>
+            ` : ''}
+        `;
+    },
+
+    // Bronfenbrenner Ökosystem
+    renderBronfenbrenner(containerId) {
+        const model = ModelGenerators.generateBronfenbrenner();
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const getStatusColor = (status) => {
+            if (status === 'stabil' || status === 'gut' || status === 'positiv') return '#48BB78';
+            if (status === 'belastet' || status === 'konfliktreich') return '#E53E3E';
+            return '#A0AEC0';
+        };
+
+        container.innerHTML = `
+            <div style="position:relative;width:100%;height:400px;display:flex;align-items:center;justify-content:center;">
+                <!-- Makrosystem (äußerster Kreis) -->
+                <div style="position:absolute;width:380px;height:380px;border-radius:50%;background:rgba(139,92,246,0.1);border:3px dashed #8B5CF6;display:flex;align-items:center;justify-content:center;">
+                    <span style="position:absolute;top:10px;font-size:0.75rem;color:#6B46C1;font-weight:600;">MAKROSYSTEM</span>
+                </div>
+
+                <!-- Exosystem -->
+                <div style="position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(59,130,246,0.1);border:3px dashed #3B82F6;display:flex;align-items:center;justify-content:center;">
+                    <span style="position:absolute;top:10px;font-size:0.75rem;color:#1D4ED8;font-weight:600;">EXOSYSTEM</span>
+                </div>
+
+                <!-- Mesosystem -->
+                <div style="position:absolute;width:220px;height:220px;border-radius:50%;background:rgba(16,185,129,0.1);border:3px solid #10B981;display:flex;align-items:center;justify-content:center;">
+                    <span style="position:absolute;top:10px;font-size:0.75rem;color:#047857;font-weight:600;">MESOSYSTEM</span>
+                </div>
+
+                <!-- Mikrosystem: Familie -->
+                <div style="position:absolute;left:calc(50% - 120px);top:calc(50% - 30px);background:white;padding:10px 15px;border-radius:10px;border:3px solid ${getStatusColor(model.mikrosystem.familie.status)};box-shadow:0 2px 8px rgba(0,0,0,0.1);font-size:0.85rem;text-align:center;">
+                    <div style="font-weight:600;">👨‍👩‍👧 Familie</div>
+                    <div style="font-size:0.75rem;color:#718096;">${model.mikrosystem.familie.status}</div>
+                </div>
+
+                <!-- Mikrosystem: Schule -->
+                <div style="position:absolute;right:calc(50% - 120px);top:calc(50% - 30px);background:white;padding:10px 15px;border-radius:10px;border:3px solid ${getStatusColor(model.mikrosystem.schule.status)};box-shadow:0 2px 8px rgba(0,0,0,0.1);font-size:0.85rem;text-align:center;">
+                    <div style="font-weight:600;">🏫 Schule</div>
+                    <div style="font-size:0.75rem;color:#718096;">${model.mikrosystem.schule.status}</div>
+                </div>
+
+                <!-- Mikrosystem: Peers -->
+                <div style="position:absolute;bottom:calc(50% - 80px);left:50%;transform:translateX(-50%);background:white;padding:10px 15px;border-radius:10px;border:3px solid ${getStatusColor(model.mikrosystem.peers.status)};box-shadow:0 2px 8px rgba(0,0,0,0.1);font-size:0.85rem;text-align:center;">
+                    <div style="font-weight:600;">👥 Peers</div>
+                    <div style="font-size:0.75rem;color:#718096;">${model.mikrosystem.peers.status}</div>
+                </div>
+
+                <!-- Kind im Zentrum -->
+                <div style="position:absolute;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#4A90A4,#2c5282);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(44,82,130,0.4);z-index:10;">
+                    <span style="font-size:1.8rem;">👧</span>
+                </div>
+            </div>
+            <div style="display:flex;justify-content:center;gap:20px;margin-top:15px;font-size:0.8rem;">
+                <span><span style="display:inline-block;width:12px;height:12px;background:#48BB78;border-radius:50%;margin-right:5px;"></span>Positiv</span>
+                <span><span style="display:inline-block;width:12px;height:12px;background:#E53E3E;border-radius:50%;margin-right:5px;"></span>Belastet</span>
+                <span><span style="display:inline-block;width:12px;height:12px;background:#A0AEC0;border-radius:50%;margin-right:5px;"></span>Neutral/Unbekannt</span>
+            </div>
+        `;
+    },
+
+    // Teufelskreis-Diagramm
+    renderTeufelskreis(containerId) {
+        const cycles = ModelGenerators.generateTeufelskreis();
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        if (cycles.length === 0) {
+            container.innerHTML = `
+                <div style="text-align:center;padding:40px;color:#718096;">
+                    <div style="font-size:2rem;margin-bottom:10px;">🔄</div>
+                    <p>Kein spezifischer Teufelskreis identifiziert.<br>Führen Sie das Assessment durch, um relevante Muster zu erkennen.</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '';
+        cycles.forEach(cycle => {
+            const steps = cycle.steps;
+            const angleStep = 360 / steps.length;
+            const radius = 120;
+
+            html += `
+                <div style="margin-bottom:30px;">
+                    <h4 style="text-align:center;margin-bottom:20px;color:#2d3748;">${cycle.name}</h4>
+                    <div style="position:relative;width:300px;height:300px;margin:0 auto;">
+                        <!-- Verbindungslinien -->
+                        <svg style="position:absolute;width:100%;height:100%;top:0;left:0;" viewBox="0 0 300 300">
+                            ${steps.map((_, i) => {
+                                const angle1 = (i * angleStep - 90) * Math.PI / 180;
+                                const angle2 = ((i + 1) % steps.length * angleStep - 90) * Math.PI / 180;
+                                const x1 = 150 + radius * Math.cos(angle1);
+                                const y1 = 150 + radius * Math.sin(angle1);
+                                const x2 = 150 + radius * Math.cos(angle2);
+                                const y2 = 150 + radius * Math.sin(angle2);
+                                return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#CBD5E0" stroke-width="2" marker-end="url(#arrow)"/>`;
+                            }).join('')}
+                            <defs>
+                                <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                                    <path d="M0,0 L0,6 L9,3 z" fill="#CBD5E0"/>
+                                </marker>
+                            </defs>
+                        </svg>
+
+                        <!-- Schritte -->
+                        ${steps.map((step, i) => {
+                            const angle = (i * angleStep - 90) * Math.PI / 180;
+                            const x = 150 + radius * Math.cos(angle) - 40;
+                            const y = 150 + radius * Math.sin(angle) - 25;
+                            return `
+                                <div style="position:absolute;left:${x}px;top:${y}px;width:80px;text-align:center;">
+                                    <div style="width:50px;height:50px;margin:0 auto;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 2px 10px rgba(0,0,0,0.1);border:2px solid #E2E8F0;">
+                                        ${step.icon}
+                                    </div>
+                                    <div style="font-size:0.7rem;margin-top:5px;color:#4A5568;line-height:1.2;">${step.label}</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    },
+
+    // Timeline/Zeitstrahl
+    renderTimeline(containerId) {
+        const events = ModelGenerators.generateTimeline();
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        if (events.length === 0) {
+            container.innerHTML = `
+                <div style="text-align:center;padding:30px;color:#718096;">
+                    <p>Keine Timeline-Ereignisse dokumentiert.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <div style="position:relative;padding:20px 0 20px 30px;">
+                <!-- Vertikale Linie -->
+                <div style="position:absolute;left:15px;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,#4A90A4,#48BB78);border-radius:3px;"></div>
+
+                ${events.map((event, i) => `
+                    <div style="position:relative;margin-bottom:25px;padding-left:30px;">
+                        <!-- Punkt -->
+                        <div style="position:absolute;left:-22px;top:5px;width:20px;height:20px;background:white;border:3px solid ${event.type === 'symptom' ? '#E53E3E' : '#4A90A4'};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;">
+                            ${event.icon}
+                        </div>
+
+                        <!-- Inhalt -->
+                        <div style="background:white;padding:12px 15px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                            <div style="font-size:0.75rem;color:#718096;">${new Date(event.date).toLocaleDateString('de-DE')}</div>
+                            <div style="font-weight:600;color:#2d3748;">${event.label}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+};
+
+// ============================================
 // DOSSIER FUNKTIONEN
 // ============================================
 
@@ -9778,10 +10822,122 @@ function generateFullSynthesis() {
         `;
     }
 
+    // ===============================
+    // ERWEITERTE MODELL-VISUALISIERUNGEN
+    // ===============================
+
+    // Entwicklungs-Radar Chart (ELDiB)
+    html += `
+        <div class="synthese-section">
+            <h3>📈 Entwicklungs-Radar</h3>
+            <p style="color:#718096;font-size:0.9rem;margin-bottom:15px;">Vergleich des aktuellen Entwicklungsstands mit dem altersentsprechenden Niveau</p>
+            <div id="radar-chart-container" style="max-width:400px;margin:0 auto;"></div>
+        </div>
+    `;
+
+    // Risiko-Schutzfaktoren Modell
+    html += `
+        <div class="synthese-section">
+            <h3>⚖️ Risiko-Schutzfaktoren-Balance</h3>
+            <p style="color:#718096;font-size:0.9rem;margin-bottom:15px;">Gegenüberstellung von Belastungs- und Schutzfaktoren nach Lebensbereichen</p>
+            <div id="risiko-schutz-container" style="max-width:600px;margin:0 auto;"></div>
+            <div id="risiko-details" style="margin-top:20px;"></div>
+        </div>
+    `;
+
+    // ICF-Modell
+    html += `
+        <div class="synthese-section">
+            <h3>🏥 ICF-Klassifikation</h3>
+            <p style="color:#718096;font-size:0.9rem;margin-bottom:15px;">Internationale Klassifikation der Funktionsfähigkeit, Behinderung und Gesundheit</p>
+            <div id="icf-model-container"></div>
+        </div>
+    `;
+
+    // Bronfenbrenner Ökosystem
+    html += `
+        <div class="synthese-section">
+            <h3>🌍 Ökosystemisches Modell (Bronfenbrenner)</h3>
+            <p style="color:#718096;font-size:0.9rem;margin-bottom:15px;">Systemische Einbettung des Kindes in seine Umwelt</p>
+            <div id="bronfenbrenner-container"></div>
+        </div>
+    `;
+
+    // Teufelskreis-Diagramm
+    html += `
+        <div class="synthese-section">
+            <h3>🔄 Teufelskreis-Analyse</h3>
+            <p style="color:#718096;font-size:0.9rem;margin-bottom:15px;">Aufrechterhaltende Dynamiken basierend auf den identifizierten Symptomen</p>
+            <div id="teufelskreis-container"></div>
+        </div>
+    `;
+
+    // Timeline
+    html += `
+        <div class="synthese-section">
+            <h3>📅 Entwicklungs-Zeitstrahl</h3>
+            <p style="color:#718096;font-size:0.9rem;margin-bottom:15px;">Chronologische Übersicht wichtiger Ereignisse und Meilensteine</p>
+            <div id="timeline-container"></div>
+        </div>
+    `;
+
     content.innerHTML = html;
     content.style.display = 'block';
     placeholder.style.display = 'none';
     exportBtns.style.display = 'flex';
+
+    // Render alle Visualisierungen nach DOM-Update
+    setTimeout(() => {
+        // Radar Chart
+        if (typeof VisualizationRenderer !== 'undefined') {
+            VisualizationRenderer.renderRadarChart('radar-chart-container');
+            VisualizationRenderer.renderRisikoSchutzChart('risiko-schutz-container');
+            VisualizationRenderer.renderICFModel('icf-model-container');
+            VisualizationRenderer.renderBronfenbrenner('bronfenbrenner-container');
+            VisualizationRenderer.renderTeufelskreis('teufelskreis-container');
+            VisualizationRenderer.renderTimeline('timeline-container');
+        }
+
+        // Risiko-Details hinzufügen
+        const risikoModel = ModelGenerators.generateRisikoSchutz();
+        const risikoDetails = document.getElementById('risiko-details');
+        if (risikoDetails) {
+            let detailsHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:15px;">';
+
+            // Risikofaktoren
+            detailsHtml += '<div style="background:#fff5f5;padding:15px;border-radius:10px;border-left:4px solid #e53e3e;">';
+            detailsHtml += '<h5 style="margin:0 0 10px;color:#c53030;">⚠️ Risikofaktoren</h5>';
+            Object.entries(risikoModel.risikofaktoren).forEach(([kategorie, faktoren]) => {
+                if (faktoren.length > 0) {
+                    detailsHtml += `<div style="margin-bottom:8px;"><strong style="font-size:0.8rem;color:#718096;">${kategorie.charAt(0).toUpperCase() + kategorie.slice(1)}:</strong>`;
+                    detailsHtml += `<ul style="margin:5px 0 0 15px;font-size:0.85rem;">${faktoren.map(f => `<li>${f}</li>`).join('')}</ul></div>`;
+                }
+            });
+            detailsHtml += '</div>';
+
+            // Schutzfaktoren
+            detailsHtml += '<div style="background:#f0fff4;padding:15px;border-radius:10px;border-left:4px solid #48bb78;">';
+            detailsHtml += '<h5 style="margin:0 0 10px;color:#276749;">🛡️ Schutzfaktoren</h5>';
+            Object.entries(risikoModel.schutzfaktoren).forEach(([kategorie, faktoren]) => {
+                if (faktoren.length > 0) {
+                    detailsHtml += `<div style="margin-bottom:8px;"><strong style="font-size:0.8rem;color:#718096;">${kategorie.charAt(0).toUpperCase() + kategorie.slice(1)}:</strong>`;
+                    detailsHtml += `<ul style="margin:5px 0 0 15px;font-size:0.85rem;">${faktoren.map(f => `<li>${f}</li>`).join('')}</ul></div>`;
+                }
+            });
+            detailsHtml += '</div>';
+
+            detailsHtml += '</div>';
+
+            // Balance-Anzeige
+            const balanceColor = risikoModel.balance >= 0 ? '#48bb78' : '#e53e3e';
+            const balanceText = risikoModel.balance >= 0 ? 'Mehr Schutzfaktoren' : 'Mehr Risikofaktoren';
+            detailsHtml += `<div style="text-align:center;margin-top:15px;padding:10px;background:${risikoModel.balance >= 0 ? '#f0fff4' : '#fff5f5'};border-radius:8px;">`;
+            detailsHtml += `<span style="font-weight:600;color:${balanceColor};">Balance: ${risikoModel.balance > 0 ? '+' : ''}${risikoModel.balance} (${balanceText})</span>`;
+            detailsHtml += '</div>';
+
+            risikoDetails.innerHTML = detailsHtml;
+        }
+    }, 100);
 
     // Update dossier
     updateDossier();
@@ -9860,6 +11016,380 @@ function exportSynthesisPDF() {
     showTab('export');
 }
 
+// ============================================
+// DIAGNOSTIC SPÉCIALISÉE FUNKTIONEN
+// ============================================
+
+// Datenstruktur für Diagnostic Spécialisée
+const diagnosticData = {
+    currentSection: 'entwicklung',
+    currentQuestion: 0,
+    answers: {},
+    sections: {} // Wird mit Fragen gefüllt
+};
+
+// Placeholder-Fragen-Struktur (wird vom Benutzer mit echten Fragen gefüllt)
+// WICHTIG: Jede Frage hat Tags für die automatische Zuordnung zu Modellen
+const DIAGNOSTIC_QUESTIONS = {
+    entwicklung: {
+        name: 'Entwicklung',
+        icon: '🌱',
+        questions: [
+            {
+                id: 'entw_1',
+                text: 'Wurden entwicklungsbezogene Meilensteine zeitgerecht erreicht?',
+                hint: 'Motorik, Sprache, Soziales',
+                options: [
+                    { text: 'Alle Meilensteine zeitgerecht', value: 'normal', severity: 'green', tags: ['bio', 'icf-function', 'protect'] },
+                    { text: 'Leichte Verzögerungen', value: 'leicht', severity: 'yellow', tags: ['bio', 'icf-function', 'risk'] },
+                    { text: 'Deutliche Verzögerungen', value: 'deutlich', severity: 'orange', tags: ['bio', 'icf-function', 'risk'] },
+                    { text: 'Schwere Entwicklungsverzögerung', value: 'schwer', severity: 'red', tags: ['bio', 'icf-function', 'risk', 'critical'] }
+                ],
+                tags: ['bio', 'timeline', 'icf-function'],
+                models: ['bps', 'icf', 'risiko', 'timeline']
+            }
+        ]
+    },
+    geburt: {
+        name: 'Schwangerschaft/Geburt',
+        icon: '👶',
+        questions: [
+            {
+                id: 'geb_1',
+                text: 'Gab es Komplikationen während der Schwangerschaft?',
+                hint: 'z.B. Infektionen, Blutungen, vorzeitige Wehen',
+                options: [
+                    { text: 'Keine Komplikationen', value: 'nein', severity: 'green', tags: ['bio', 'protect'] },
+                    { text: 'Leichte Komplikationen', value: 'leicht', severity: 'yellow', tags: ['bio', 'risk'] },
+                    { text: 'Schwere Komplikationen', value: 'schwer', severity: 'red', tags: ['bio', 'risk', 'critical'] }
+                ],
+                tags: ['bio', 'timeline'],
+                models: ['bps', 'risiko', 'timeline']
+            }
+        ]
+    },
+    motorik: {
+        name: 'Motorik',
+        icon: '🏃',
+        questions: []
+    },
+    sprache: {
+        name: 'Sprache',
+        icon: '🗣️',
+        questions: []
+    },
+    sauberkeit: {
+        name: 'Sauberkeit',
+        icon: '🚿',
+        questions: []
+    },
+    schlaf: {
+        name: 'Schlaf',
+        icon: '😴',
+        questions: []
+    },
+    ernaehrung: {
+        name: 'Ernährung',
+        icon: '🍎',
+        questions: []
+    },
+    medizin: {
+        name: 'Medizinisch',
+        icon: '🏥',
+        questions: []
+    },
+    sozial: {
+        name: 'Soziales Umfeld',
+        icon: '👥',
+        questions: []
+    },
+    familie: {
+        name: 'Familie',
+        icon: '👨‍👩‍👧',
+        questions: []
+    },
+    schule: {
+        name: 'Schule/Betreuung',
+        icon: '🏫',
+        questions: []
+    }
+};
+
+function showDiagnosticSection(sectionId) {
+    diagnosticData.currentSection = sectionId;
+    diagnosticData.currentQuestion = 0;
+
+    // Navigation aktualisieren
+    document.querySelectorAll('.diagnostic-nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.section === sectionId) {
+            item.classList.add('active');
+        }
+    });
+
+    renderDiagnosticQuestion();
+}
+
+function renderDiagnosticQuestion() {
+    const container = document.getElementById('diagnostic-questions');
+    const section = DIAGNOSTIC_QUESTIONS[diagnosticData.currentSection];
+
+    if (!section || !section.questions || section.questions.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px; color: #718096;">
+                <div style="font-size: 4rem; margin-bottom: 20px;">${section?.icon || '📋'}</div>
+                <h3 style="color: #2d3748; margin-bottom: 15px;">${section?.name || 'Bereich'}</h3>
+                <p style="max-width: 400px; margin: 0 auto;">
+                    Für diesen Bereich sind noch keine Fragen hinterlegt.<br><br>
+                    Die Fragen werden durch den Benutzer hinzugefügt und automatisch mit dem Tag-System verbunden.
+                </p>
+                <div style="margin-top: 30px; padding: 20px; background: #ebf8ff; border-radius: 12px;">
+                    <strong style="color: #2b6cb0;">Hinweis für Entwickler:</strong><br>
+                    <span style="font-size: 0.9rem;">Fragen in <code>DIAGNOSTIC_QUESTIONS.${diagnosticData.currentSection}.questions</code> hinzufügen</span>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    const question = section.questions[diagnosticData.currentQuestion];
+    const answerKey = `${diagnosticData.currentSection}_${question.id}`;
+    const currentAnswer = diagnosticData.answers[answerKey];
+
+    let html = `
+        <div class="diagnostic-question">
+            <div style="font-size: 0.8rem; color: #718096; margin-bottom: 10px;">
+                ${section.icon} ${section.name} • Frage ${diagnosticData.currentQuestion + 1} von ${section.questions.length}
+            </div>
+            <h4>${question.text}</h4>
+            ${question.hint ? `<p>${question.hint}</p>` : ''}
+            <div class="diagnostic-options">
+    `;
+
+    question.options.forEach((option, index) => {
+        const isSelected = currentAnswer === option.value;
+        html += `
+            <div class="diagnostic-option severity-${option.severity} ${isSelected ? 'selected' : ''}"
+                 onclick="selectDiagnosticAnswer('${answerKey}', '${option.value}', ${JSON.stringify(option.tags).replace(/"/g, '&quot;')}, '${question.text}', '${option.text}', '${option.severity}')">
+                <span class="option-icon">${option.severity === 'green' ? '✅' : option.severity === 'yellow' ? '⚠️' : option.severity === 'orange' ? '🟠' : '🔴'}</span>
+                <span class="option-text">${option.text}</span>
+                <span class="option-check">${isSelected ? '✓' : ''}</span>
+            </div>
+        `;
+    });
+
+    html += `
+            </div>
+        </div>
+    `;
+
+    // Fortschritt anzeigen
+    const totalQuestions = section.questions.length;
+    const answeredInSection = section.questions.filter(q => diagnosticData.answers[`${diagnosticData.currentSection}_${q.id}`]).length;
+    html += `
+        <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 10px;">
+            <div style="font-size: 0.85rem; color: #718096;">Fortschritt in diesem Bereich: ${answeredInSection} / ${totalQuestions}</div>
+            <div style="height: 4px; background: #e2e8f0; border-radius: 2px; margin-top: 8px;">
+                <div style="height: 100%; width: ${(answeredInSection / totalQuestions) * 100}%; background: linear-gradient(90deg, #4A90A4, #48bb78); border-radius: 2px;"></div>
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = html;
+    updateDiagnosticProgress();
+    updateDiagnosticSummary();
+}
+
+function selectDiagnosticAnswer(key, value, tags, questionText, answerText, severity) {
+    diagnosticData.answers[key] = value;
+
+    // In die zentrale Registry eintragen
+    ClinicalDataRegistry.register({
+        source: 'diagnostic',
+        question: questionText,
+        answer: answerText,
+        value: value,
+        severity: severity === 'green' ? 'normal' : severity === 'yellow' ? 'mild' : severity === 'orange' ? 'moderate' : 'severe',
+        tags: tags,
+        models: ['bps', 'icf', 'risiko', 'bronfenbrenner'],
+        meta: {
+            section: diagnosticData.currentSection,
+            key: key
+        }
+    });
+
+    // Speichern
+    saveDiagnosticData();
+
+    // UI aktualisieren
+    renderDiagnosticQuestion();
+}
+
+function nextDiagnosticQuestion() {
+    const section = DIAGNOSTIC_QUESTIONS[diagnosticData.currentSection];
+    if (!section || !section.questions) return;
+
+    if (diagnosticData.currentQuestion < section.questions.length - 1) {
+        diagnosticData.currentQuestion++;
+        renderDiagnosticQuestion();
+    } else {
+        // Nächste Section mit Fragen finden
+        const sectionKeys = Object.keys(DIAGNOSTIC_QUESTIONS);
+        const currentIndex = sectionKeys.indexOf(diagnosticData.currentSection);
+
+        for (let i = currentIndex + 1; i < sectionKeys.length; i++) {
+            if (DIAGNOSTIC_QUESTIONS[sectionKeys[i]].questions?.length > 0) {
+                showDiagnosticSection(sectionKeys[i]);
+                return;
+            }
+        }
+
+        // Keine weitere Section - zur Synthese
+        if (confirm('Sie haben alle verfügbaren Fragen beantwortet. Möchten Sie zur Fallsynthese wechseln?')) {
+            showTab('synthese');
+            generateFullSynthesis();
+        }
+    }
+}
+
+function previousDiagnosticQuestion() {
+    if (diagnosticData.currentQuestion > 0) {
+        diagnosticData.currentQuestion--;
+        renderDiagnosticQuestion();
+    } else {
+        // Vorherige Section mit Fragen finden
+        const sectionKeys = Object.keys(DIAGNOSTIC_QUESTIONS);
+        const currentIndex = sectionKeys.indexOf(diagnosticData.currentSection);
+
+        for (let i = currentIndex - 1; i >= 0; i--) {
+            const prevSection = DIAGNOSTIC_QUESTIONS[sectionKeys[i]];
+            if (prevSection.questions?.length > 0) {
+                diagnosticData.currentSection = sectionKeys[i];
+                diagnosticData.currentQuestion = prevSection.questions.length - 1;
+                document.querySelectorAll('.diagnostic-nav-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.dataset.section === sectionKeys[i]) {
+                        item.classList.add('active');
+                    }
+                });
+                renderDiagnosticQuestion();
+                return;
+            }
+        }
+    }
+}
+
+function updateDiagnosticProgress() {
+    let totalQuestions = 0;
+    let answeredQuestions = 0;
+
+    Object.entries(DIAGNOSTIC_QUESTIONS).forEach(([sectionId, section]) => {
+        if (section.questions) {
+            totalQuestions += section.questions.length;
+            const answeredInSection = section.questions.filter(q => diagnosticData.answers[`${sectionId}_${q.id}`]).length;
+            answeredQuestions += answeredInSection;
+
+            // Nav-Item Counter aktualisieren
+            const countEl = document.getElementById(`diag-count-${sectionId}`);
+            if (countEl) {
+                countEl.textContent = `${answeredInSection}/${section.questions.length}`;
+            }
+
+            // Completed Status
+            const navItem = document.querySelector(`.diagnostic-nav-item[data-section="${sectionId}"]`);
+            if (navItem && answeredInSection === section.questions.length && section.questions.length > 0) {
+                navItem.classList.add('completed');
+            } else if (navItem) {
+                navItem.classList.remove('completed');
+            }
+        }
+    });
+
+    // Badge aktualisieren
+    const badge = document.getElementById('badge-diagnostic');
+    if (badge) {
+        badge.textContent = answeredQuestions;
+    }
+
+    // Fortschrittsbalken
+    const progressFill = document.getElementById('diag-progress-fill');
+    const progressText = document.getElementById('diag-progress-text');
+    if (progressFill && totalQuestions > 0) {
+        const percent = Math.round((answeredQuestions / totalQuestions) * 100);
+        progressFill.style.width = `${percent}%`;
+        if (progressText) progressText.textContent = `${percent}%`;
+    }
+}
+
+function updateDiagnosticSummary() {
+    const summaryList = document.getElementById('diagnostic-summary-list');
+    const alertsList = document.getElementById('diagnostic-alerts-list');
+    if (!summaryList) return;
+
+    const items = [];
+    const alerts = [];
+
+    Object.entries(diagnosticData.answers).forEach(([key, value]) => {
+        const [section, ...rest] = key.split('_');
+        const questionId = rest.join('_');
+        const sectionData = DIAGNOSTIC_QUESTIONS[section];
+        if (!sectionData) return;
+
+        const question = sectionData.questions?.find(q => q.id === questionId);
+        if (!question) return;
+
+        const selectedOption = question.options.find(o => o.value === value);
+        if (!selectedOption) return;
+
+        const item = {
+            section: sectionData.name,
+            icon: sectionData.icon,
+            question: question.text,
+            answer: selectedOption.text,
+            severity: selectedOption.severity
+        };
+
+        items.push(item);
+
+        if (selectedOption.severity === 'red' || selectedOption.severity === 'orange') {
+            alerts.push(item);
+        }
+    });
+
+    if (items.length === 0) {
+        summaryList.innerHTML = '<div style="color: #a0aec0; font-size: 0.85rem; text-align: center; padding: 20px;">Noch keine Antworten erfasst.</div>';
+    } else {
+        summaryList.innerHTML = items.slice(-5).map(item => `
+            <div class="diagnostic-summary-item ${item.severity === 'red' || item.severity === 'orange' ? 'alert' : ''}">
+                <div style="font-size: 0.75rem; color: #718096;">${item.icon} ${item.section}</div>
+                <div style="font-weight: 500; color: #2d3748; margin-top: 3px;">${item.answer}</div>
+            </div>
+        `).join('');
+    }
+
+    if (alerts.length === 0) {
+        alertsList.innerHTML = '<div style="color: #a0aec0; font-size: 0.85rem;">Keine Auffälligkeiten</div>';
+    } else {
+        alertsList.innerHTML = alerts.map(item => `
+            <div style="padding: 8px 10px; background: #fff5f5; border-radius: 6px; margin-bottom: 6px; font-size: 0.8rem;">
+                <strong style="color: #c53030;">${item.icon}</strong> ${item.answer}
+            </div>
+        `).join('');
+    }
+}
+
+function saveDiagnosticData() {
+    localStorage.setItem('diagnostic_data', JSON.stringify(diagnosticData.answers));
+}
+
+function loadDiagnosticData() {
+    const stored = localStorage.getItem('diagnostic_data');
+    if (stored) {
+        diagnosticData.answers = JSON.parse(stored);
+        updateDiagnosticProgress();
+    }
+}
+
 function resetAllData() {
     if (confirm('Möchten Sie wirklich ALLE Daten löschen und einen neuen Fall beginnen?\\n\\nDies löscht:\\n- Alle Stammdaten\\n- Alle ELDiB-Einschätzungen\\n- Das gesamte klinische Assessment\\n\\nDieser Vorgang kann nicht rückgängig gemacht werden!')) {
         // Clear form fields
@@ -9882,6 +11412,14 @@ function resetAllData() {
         cdse.alerts = [];
         cdse.completedDomains = [];
 
+        // Clear Diagnostic Spécialisée
+        diagnosticData.answers = {};
+        diagnosticData.currentSection = 'entwicklung';
+        diagnosticData.currentQuestion = 0;
+
+        // Clear Clinical Data Registry
+        ClinicalDataRegistry.clear();
+
         // Clear localStorage
         localStorage.clear();
 
@@ -9903,6 +11441,8 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
         loadCdseState();
         updateDossier();
+        loadDiagnosticData();
+        ClinicalDataRegistry.loadFromStorage();
     }, 300);
 });
 
