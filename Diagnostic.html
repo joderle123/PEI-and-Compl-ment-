@@ -7,6 +7,8 @@
     <!-- docx.js für echte Word-Dokumente -->
     <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- Chart.js für Visualisierungen -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         :root {
             --primary: #a855f7;
@@ -2565,6 +2567,7 @@
             <button class="tab" onclick="showTab('kognition')" title="Kognition KOG-1 bis KOG-62">Kognition</button>
             <button class="tab" onclick="showTab('zusaetzlich')" title="Weitere Förderziele">Zusätzliche Ziele</button>
             <button class="tab" onclick="showTab('diagnostic')" title="DS-Fragebogen ausfüllen">Diagnostic</button>
+            <button class="tab" onclick="showTab('synthese')" title="Integrierte Fallsynthese mit Visualisierungen">🔬 Synthese</button>
             <button class="tab" onclick="showTab('export')" title="Dokumente herunterladen">Export</button>
         </div>
 
@@ -4811,6 +4814,85 @@
             </div>
                 </div><!-- Ende ds-main-content -->
             </div><!-- Ende ds-layout -->
+        </div>
+
+        <!-- SYNTHESE Tab - Integrierte Fallsynthese mit Visualisierungen -->
+        <div id="synthese" class="tab-content">
+            <style>
+                .synthese-container { max-width: 1000px; margin: 0 auto; }
+                .synthese-header { background: linear-gradient(135deg, #1a365d, #2c5282); padding: 30px; border-radius: 16px; color: white; margin-bottom: 30px; }
+                .synthese-section { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+                .synthese-section h3 { margin: 0 0 20px 0; color: #2d3748; display: flex; align-items: center; gap: 12px; padding-bottom: 15px; border-bottom: 2px solid #e2e8f0; }
+                .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+                .profile-item { background: #f8fafc; padding: 15px; border-radius: 10px; }
+                .profile-item label { display: block; font-size: 0.8rem; color: #718096; text-transform: uppercase; margin-bottom: 5px; }
+                .profile-item .value { font-size: 1.1rem; color: #2d3748; font-weight: 500; }
+                .eldib-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+                .eldib-box { padding: 20px; border-radius: 12px; text-align: center; }
+                .eldib-box.v { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+                .eldib-box.k { background: linear-gradient(135deg, #dbeafe, #93c5fd); }
+                .eldib-box.s { background: linear-gradient(135deg, #d1fae5, #6ee7b7); }
+                .eldib-box.c { background: linear-gradient(135deg, #ede9fe, #c4b5fd); }
+                .eldib-box .stufe { font-size: 2rem; font-weight: 700; }
+                .eldib-box .label { font-size: 0.85rem; color: #4a5568; }
+                .hypothesis-box { background: linear-gradient(135deg, #ebf8ff, #e6fffa); padding: 20px; border-radius: 12px; border-left: 5px solid #2c5282; margin-bottom: 15px; }
+                .hypothesis-box.main { border-left-color: #9b59b6; background: linear-gradient(135deg, #faf5ff, #f3e8ff); }
+                .bps-model { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+                .bps-box { padding: 20px; border-radius: 12px; }
+                .bps-box.praed { background: #fef3c7; border-top: 4px solid #f59e0b; }
+                .bps-box.ausl { background: #fce7f3; border-top: 4px solid #db2777; }
+                .bps-box.aufr { background: #dbeafe; border-top: 4px solid #3b82f6; }
+                .bps-box h4 { margin: 0 0 12px 0; font-size: 0.9rem; }
+                .bps-box ul { margin: 0; padding-left: 18px; font-size: 0.9rem; }
+                .generate-btn { display: block; width: 100%; padding: 18px; background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-bottom: 30px; transition: all 0.3s; }
+                .generate-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(155,89,182,0.3); }
+                .model-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 20px; }
+                @media (max-width: 800px) { .profile-grid, .eldib-summary, .bps-model, .model-grid { grid-template-columns: 1fr; } }
+            </style>
+
+            <div class="synthese-container">
+                <div class="synthese-header">
+                    <h2 style="margin: 0 0 10px 0;">🔬 Integrierte Fallsynthese</h2>
+                    <p style="margin: 0; opacity: 0.9;">Automatische Zusammenführung aller Daten aus ELDiB, Diagnostic Spécialisé und Zusätzlichen Zielen</p>
+                </div>
+
+                <button class="generate-btn" onclick="generateFullSynthesisFromDS()">
+                    ⚡ Fallsynthese generieren
+                </button>
+
+                <div id="synthese-content" style="display: none;">
+                    <!-- Wird dynamisch generiert -->
+                </div>
+
+                <div id="synthese-placeholder">
+                    <div class="synthese-section" style="text-align: center; padding: 60px;">
+                        <div style="font-size: 4rem; margin-bottom: 20px;">📊</div>
+                        <h3 style="border: none; justify-content: center;">Noch keine Synthese erstellt</h3>
+                        <p style="color: #718096; max-width: 500px; margin: 0 auto;">
+                            Klicken Sie auf "Fallsynthese generieren", um alle vorhandenen Daten aus ELDiB-Erfassung,
+                            Diagnostic Spécialisé und zusätzlichen Zielen zu einer integrierten Fallformulierung zusammenzuführen.
+                        </p>
+                        <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                            <div style="background: #fef3c7; padding: 15px 25px; border-radius: 10px;">
+                                <div style="font-weight: 600; color: #92400e;">📋 Diagnostic</div>
+                                <div style="font-size: 0.85rem; color: #a16207;">Anamnese & Befunde</div>
+                            </div>
+                            <div style="background: #dbeafe; padding: 15px 25px; border-radius: 10px;">
+                                <div style="font-weight: 600; color: #1e40af;">📊 ELDiB</div>
+                                <div style="font-size: 0.85rem; color: #1d4ed8;">Entwicklungsprofil</div>
+                            </div>
+                            <div style="background: #d1fae5; padding: 15px 25px; border-radius: 10px;">
+                                <div style="font-weight: 600; color: #065f46;">🎯 Ziele</div>
+                                <div style="font-size: 0.85rem; color: #047857;">Förderziele</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="export-buttons" id="synthese-export" style="display: none; justify-content: center; gap: 15px; margin-top: 30px;">
+                    <button onclick="exportSynthesisText()" style="padding: 12px 25px; border-radius: 10px; background: #edf2f7; border: 2px solid #a0aec0; color: #4a5568; font-weight: 500; cursor: pointer;">📄 Export als .txt</button>
+                </div>
+            </div>
         </div>
 
         <!-- Export Tab -->
@@ -10830,6 +10912,523 @@ Unité de diagnostic, de conseil et de suivi</p>
 
     showToast('Vollständiger DS wurde generiert!');
 }
+
+// ============================================
+// ZENTRALES DATEN-MAPPING & MODELL-SYSTEM
+// ============================================
+
+// Zentrale Registry für alle gesammelten Daten mit Tags
+const ClinicalDataRegistry = {
+    items: [],
+
+    register(data) {
+        const item = {
+            id: `item_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            timestamp: new Date().toISOString(),
+            source: data.source || 'unknown',
+            question: data.question || '',
+            answer: data.answer || '',
+            value: data.value || null,
+            severity: data.severity || 'normal',
+            tags: data.tags || [],
+            models: data.models || [],
+            meta: data.meta || {}
+        };
+        this.items.push(item);
+        this.saveToStorage();
+        return item.id;
+    },
+
+    getByTag(tag) {
+        return this.items.filter(item => item.tags.includes(tag));
+    },
+
+    saveToStorage() {
+        localStorage.setItem('clinical_data_registry', JSON.stringify(this.items));
+    },
+
+    loadFromStorage() {
+        const stored = localStorage.getItem('clinical_data_registry');
+        if (stored) this.items = JSON.parse(stored);
+    },
+
+    clear() {
+        this.items = [];
+        localStorage.removeItem('clinical_data_registry');
+    }
+};
+
+// ============================================
+// MODELL-GENERATOREN
+// ============================================
+
+const ModelGenerators = {
+
+    // ELDiB Summary aus aktuellem State
+    getEldibSummary() {
+        const result = {
+            V: { count: 0, total: 33, stufe: '-', items: [] },
+            K: { count: 0, total: 35, stufe: '-', items: [] },
+            S: { count: 0, total: 41, stufe: '-', items: [] },
+            C: { count: 0, total: 62, stufe: '-', items: [] },
+            foerderziele: []
+        };
+
+        if (typeof state === 'undefined' || !state.selections) return result;
+
+        const stufenRanges = {
+            V: [[1,8,1],[9,14,2],[15,21,3],[22,28,4],[29,33,5]],
+            K: [[1,8,1],[9,14,2],[15,22,3],[23,29,4],[30,35,5]],
+            S: [[1,12,1],[13,18,2],[19,27,3],[28,36,4],[37,41,5]],
+            C: [[1,14,1],[15,30,2],[31,46,3],[47,56,4],[57,62,5]]
+        };
+
+        Object.entries(state.selections).forEach(([key, val]) => {
+            let prefix = key.startsWith('KOG') ? 'C' : key.charAt(0);
+            if (prefix === 'S' && key.startsWith('SOZ')) prefix = 'S';
+
+            if (result[prefix]) {
+                result[prefix].count++;
+                if (val.status === 'foerderziel' || val.status === 'ziel') {
+                    result.foerderziele.push(key);
+                }
+                const num = parseInt(key.split('-')[1]);
+                if (val.status === 'erreicht') {
+                    const ranges = prefix === 'C' ? stufenRanges.C : stufenRanges[prefix];
+                    ranges?.forEach(([min, max, stufe]) => {
+                        if (num >= min && num <= max) {
+                            result[prefix].stufe = Math.max(parseInt(result[prefix].stufe) || 0, stufe).toString();
+                        }
+                    });
+                }
+            }
+        });
+
+        return result;
+    },
+
+    // Risiko-Schutzfaktoren aus DS-Daten
+    generateRisikoSchutz() {
+        const model = {
+            risikofaktoren: { individuell: [], familiaer: [], schulisch: [], sozial: [] },
+            schutzfaktoren: { individuell: [], familiaer: [], schulisch: [], sozial: [] },
+            balance: 0
+        };
+
+        // Aus DS-Daten extrahieren
+        const schwangerschaft = document.getElementById('ds_schwangerschaft')?.value;
+        if (schwangerschaft === 'komplikationen') model.risikofaktoren.individuell.push('Schwangerschaftskomplikationen');
+
+        const geburt = document.getElementById('ds_geburt')?.value;
+        if (geburt === 'komplikationen') model.risikofaktoren.individuell.push('Geburtskomplikationen');
+
+        const motorik = document.getElementById('ds_motorik')?.value;
+        if (motorik === 'verzoegert') model.risikofaktoren.individuell.push('Motorische Verzögerung');
+        if (motorik === 'altersgerecht') model.schutzfaktoren.individuell.push('Altersgerechte Motorik');
+
+        const sprache = document.getElementById('ds_sprache')?.value;
+        if (sprache === 'verzoegert') model.risikofaktoren.individuell.push('Sprachverzögerung');
+        if (sprache === 'altersgerecht') model.schutzfaktoren.individuell.push('Altersgerechte Sprache');
+
+        // Anlass-Checkboxen
+        document.querySelectorAll('input[name="ds_anlass"]:checked').forEach(cb => {
+            const anlassMap = {
+                'verhaltensauffaelligkeiten_schule': { cat: 'schulisch', text: 'Verhaltensauffälligkeiten Schule' },
+                'verhaltensauffaelligkeiten_zuhause': { cat: 'familiaer', text: 'Verhaltensauffälligkeiten zu Hause' },
+                'emotionale_schwierigkeiten': { cat: 'individuell', text: 'Emotionale Schwierigkeiten' },
+                'soziale_schwierigkeiten': { cat: 'sozial', text: 'Soziale Schwierigkeiten' },
+                'schulleistungsprobleme': { cat: 'schulisch', text: 'Schulleistungsprobleme' },
+                'aufmerksamkeit': { cat: 'individuell', text: 'Aufmerksamkeitsprobleme' },
+                'aggressives_verhalten': { cat: 'individuell', text: 'Aggressives Verhalten' },
+                'rueckzugsverhalten': { cat: 'individuell', text: 'Rückzugsverhalten' },
+                'schulverweigerung': { cat: 'schulisch', text: 'Schulverweigerung' }
+            };
+            if (anlassMap[cb.value]) {
+                model.risikofaktoren[anlassMap[cb.value].cat].push(anlassMap[cb.value].text);
+            }
+        });
+
+        // ELDiB-basierte Faktoren
+        const eldib = this.getEldibSummary();
+        if (eldib.foerderziele.length > 0) {
+            model.schutzfaktoren.individuell.push(`${eldib.foerderziele.length} aktive Förderziele definiert`);
+        }
+
+        // Balance berechnen
+        const totalRisk = Object.values(model.risikofaktoren).flat().length;
+        const totalProtect = Object.values(model.schutzfaktoren).flat().length;
+        model.balance = totalProtect - totalRisk;
+
+        return model;
+    },
+
+    // Entwicklungs-Radar
+    generateDevelopmentRadar() {
+        const eldib = this.getEldibSummary();
+        const gebEl = document.getElementById('geburtsdatum');
+        const alter = gebEl?.value ? Math.floor((new Date() - new Date(gebEl.value)) / 31557600000) : null;
+
+        let expectedStufe = 5;
+        if (alter) {
+            if (alter <= 2) expectedStufe = 1;
+            else if (alter <= 5) expectedStufe = 2;
+            else if (alter <= 9) expectedStufe = 3;
+            else if (alter <= 12) expectedStufe = 4;
+        }
+
+        return {
+            labels: ['Verhalten', 'Kommunikation', 'Sozialisation', 'Kognition'],
+            actual: [
+                parseInt(eldib.V.stufe) || 0,
+                parseInt(eldib.K.stufe) || 0,
+                parseInt(eldib.S.stufe) || 0,
+                parseInt(eldib.C.stufe) || 0
+            ],
+            expected: [expectedStufe, expectedStufe, expectedStufe, expectedStufe],
+            maxValue: 5
+        };
+    },
+
+    // BPS-Modell aus DS-Daten
+    generateBPSModel() {
+        const bps = {
+            praedisponierend: [],
+            ausloesend: [],
+            aufrechterhaltend: []
+        };
+
+        // Prädisponierende Faktoren (Entwicklung, Geburt, Familie)
+        if (document.getElementById('ds_schwangerschaft')?.value === 'komplikationen') {
+            bps.praedisponierend.push('Schwangerschaftskomplikationen');
+        }
+        if (document.getElementById('ds_geburt')?.value === 'komplikationen') {
+            bps.praedisponierend.push('Geburtskomplikationen');
+        }
+        if (document.getElementById('ds_motorik')?.value === 'verzoegert') {
+            bps.praedisponierend.push('Frühe motorische Verzögerung');
+        }
+        if (document.getElementById('ds_sprache')?.value === 'verzoegert') {
+            bps.praedisponierend.push('Frühe Sprachverzögerung');
+        }
+
+        // Auslösende Faktoren (aus Anlass)
+        document.querySelectorAll('input[name="ds_anlass"]:checked').forEach(cb => {
+            const map = {
+                'schulleistungsprobleme': 'Schulische Überforderung',
+                'schulverweigerung': 'Schulverweigerung',
+                'aggressives_verhalten': 'Konfliktsituationen'
+            };
+            if (map[cb.value]) bps.ausloesend.push(map[cb.value]);
+        });
+
+        // Aufrechterhaltende Faktoren
+        document.querySelectorAll('input[name="ds_anlass"]:checked').forEach(cb => {
+            const map = {
+                'verhaltensauffaelligkeiten_schule': 'Negative Lehrer-Schüler-Interaktion',
+                'soziale_schwierigkeiten': 'Peer-Ablehnung',
+                'emotionale_schwierigkeiten': 'Emotionale Dysregulation'
+            };
+            if (map[cb.value]) bps.aufrechterhaltend.push(map[cb.value]);
+        });
+
+        return bps;
+    }
+};
+
+// ============================================
+// VISUALISIERUNGS-RENDERER
+// ============================================
+
+const VisualizationRenderer = {
+    charts: {},
+
+    renderRadarChart(containerId) {
+        const data = ModelGenerators.generateDevelopmentRadar();
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        container.innerHTML = '<canvas id="radar-canvas" style="max-height:350px;"></canvas>';
+        const ctx = document.getElementById('radar-canvas').getContext('2d');
+
+        if (this.charts.radar) this.charts.radar.destroy();
+
+        this.charts.radar = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: data.labels,
+                datasets: [
+                    {
+                        label: 'Aktuelles Niveau',
+                        data: data.actual,
+                        backgroundColor: 'rgba(155, 89, 182, 0.3)',
+                        borderColor: '#9b59b6',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#9b59b6'
+                    },
+                    {
+                        label: 'Altersentsprechend',
+                        data: data.expected,
+                        backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                        borderColor: '#48BB78',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        pointBackgroundColor: '#48BB78'
+                    }
+                ]
+            },
+            options: {
+                scales: { r: { min: 0, max: 5, ticks: { stepSize: 1 } } },
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    },
+
+    renderRisikoSchutzChart(containerId) {
+        const model = ModelGenerators.generateRisikoSchutz();
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        container.innerHTML = '<canvas id="risiko-canvas" style="max-height:300px;"></canvas>';
+        const ctx = document.getElementById('risiko-canvas').getContext('2d');
+
+        const categories = ['Individuell', 'Familiär', 'Schulisch', 'Sozial'];
+        const riskData = [
+            model.risikofaktoren.individuell.length,
+            model.risikofaktoren.familiaer.length,
+            model.risikofaktoren.schulisch.length,
+            model.risikofaktoren.sozial.length
+        ];
+        const protectData = [
+            model.schutzfaktoren.individuell.length,
+            model.schutzfaktoren.familiaer.length,
+            model.schutzfaktoren.schulisch.length,
+            model.schutzfaktoren.sozial.length
+        ];
+
+        if (this.charts.risiko) this.charts.risiko.destroy();
+
+        this.charts.risiko = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: categories,
+                datasets: [
+                    {
+                        label: 'Risikofaktoren',
+                        data: riskData.map(v => -v),
+                        backgroundColor: 'rgba(229, 62, 62, 0.7)',
+                        borderColor: '#E53E3E',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Schutzfaktoren',
+                        data: protectData,
+                        backgroundColor: 'rgba(72, 187, 120, 0.7)',
+                        borderColor: '#48BB78',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                scales: {
+                    x: { stacked: true, title: { display: true, text: 'Risiko ← → Schutz' } },
+                    y: { stacked: true }
+                },
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    }
+};
+
+// ============================================
+// SYNTHESE GENERATOR
+// ============================================
+
+function generateFullSynthesisFromDS() {
+    const content = document.getElementById('synthese-content');
+    const placeholder = document.getElementById('synthese-placeholder');
+    const exportBtns = document.getElementById('synthese-export');
+
+    // Stammdaten
+    const name = document.getElementById('schueler_name')?.value || 'Unbekannt';
+    const geb = document.getElementById('geburtsdatum')?.value;
+    const alter = geb ? Math.floor((new Date() - new Date(geb)) / 31557600000) + ' Jahre' : '-';
+    const schule = document.getElementById('schule')?.value || '-';
+    const klasse = document.getElementById('klasse')?.value || '-';
+
+    // ELDiB
+    const eldib = ModelGenerators.getEldibSummary();
+
+    // BPS-Modell
+    const bps = ModelGenerators.generateBPSModel();
+
+    // Risiko-Schutz
+    const risikoSchutz = ModelGenerators.generateRisikoSchutz();
+
+    // DS-Anlass
+    const anlassItems = [];
+    document.querySelectorAll('input[name="ds_anlass"]:checked').forEach(cb => {
+        anlassItems.push(cb.parentElement.textContent.trim());
+    });
+
+    // DS-Anliegen
+    const anliegenItems = [];
+    document.querySelectorAll('input[name="ds_anliegen"]:checked').forEach(cb => {
+        anliegenItems.push(cb.parentElement.textContent.trim());
+    });
+
+    let html = `
+        <!-- Profil -->
+        <div class="synthese-section">
+            <h3>👤 Profil</h3>
+            <div class="profile-grid">
+                <div class="profile-item"><label>Name</label><div class="value">${name}</div></div>
+                <div class="profile-item"><label>Alter</label><div class="value">${alter}</div></div>
+                <div class="profile-item"><label>Schule</label><div class="value">${schule}</div></div>
+                <div class="profile-item"><label>Klasse</label><div class="value">${klasse}</div></div>
+                <div class="profile-item"><label>Auftraggeber</label><div class="value">${document.getElementById('ds_auftraggeber')?.selectedOptions[0]?.text || '-'}</div></div>
+                <div class="profile-item"><label>Datum</label><div class="value">${new Date().toLocaleDateString('de-DE')}</div></div>
+            </div>
+        </div>
+
+        <!-- Anlass -->
+        ${anlassItems.length > 0 ? `
+        <div class="synthese-section">
+            <h3>📋 Anlass der Anfrage</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;">
+                ${anlassItems.map(a => `<span style="background:#fef3c7;padding:8px 15px;border-radius:8px;font-size:0.9rem;">${a}</span>`).join('')}
+            </div>
+            ${anliegenItems.length > 0 ? `
+                <div style="margin-top:15px;"><strong>Ziel:</strong> ${anliegenItems.join(', ')}</div>
+            ` : ''}
+        </div>
+        ` : ''}
+
+        <!-- ELDiB Entwicklungsprofil -->
+        <div class="synthese-section">
+            <h3>📊 ELDiB Entwicklungsprofil</h3>
+            <div class="eldib-summary">
+                <div class="eldib-box v">
+                    <div class="stufe">${eldib.V.stufe || '-'}</div>
+                    <div class="label">Verhalten</div>
+                    <div style="font-size:0.8rem;color:#666;margin-top:5px;">${eldib.V.count}/${eldib.V.total} Items</div>
+                </div>
+                <div class="eldib-box k">
+                    <div class="stufe">${eldib.K.stufe || '-'}</div>
+                    <div class="label">Kommunikation</div>
+                    <div style="font-size:0.8rem;color:#666;margin-top:5px;">${eldib.K.count}/${eldib.K.total} Items</div>
+                </div>
+                <div class="eldib-box s">
+                    <div class="stufe">${eldib.S.stufe || '-'}</div>
+                    <div class="label">Sozialisation</div>
+                    <div style="font-size:0.8rem;color:#666;margin-top:5px;">${eldib.S.count}/${eldib.S.total} Items</div>
+                </div>
+                <div class="eldib-box c">
+                    <div class="stufe">${eldib.C.stufe || '-'}</div>
+                    <div class="label">Kognition</div>
+                    <div style="font-size:0.8rem;color:#666;margin-top:5px;">${eldib.C.count}/${eldib.C.total} Items</div>
+                </div>
+            </div>
+            ${eldib.foerderziele.length > 0 ? `
+                <div style="margin-top:20px;">
+                    <strong>Aktuelle Förderziele:</strong>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+                        ${eldib.foerderziele.map(z => `<span style="background:#d1fae5;padding:6px 12px;border-radius:6px;font-size:0.85rem;">${z}</span>`).join('')}
+                    </div>
+                </div>
+            ` : ''}
+        </div>
+
+        <!-- Entwicklungs-Radar -->
+        <div class="synthese-section">
+            <h3>📈 Entwicklungs-Radar</h3>
+            <p style="color:#718096;font-size:0.9rem;margin-bottom:15px;">Vergleich des aktuellen Entwicklungsstands mit dem altersentsprechenden Niveau</p>
+            <div id="radar-chart-container" style="max-width:400px;margin:0 auto;"></div>
+        </div>
+
+        <!-- BPS-Modell -->
+        <div class="synthese-section">
+            <h3>🧩 Biopsychosoziales Modell</h3>
+            <div class="bps-model">
+                <div class="bps-box praed">
+                    <h4>⚡ Prädisponierend</h4>
+                    ${bps.praedisponierend.length > 0 ? `<ul>${bps.praedisponierend.map(p => `<li>${p}</li>`).join('')}</ul>` : '<p style="color:#a0aec0;font-size:0.9rem;">Keine Faktoren dokumentiert</p>'}
+                </div>
+                <div class="bps-box ausl">
+                    <h4>🎯 Auslösend</h4>
+                    ${bps.ausloesend.length > 0 ? `<ul>${bps.ausloesend.map(p => `<li>${p}</li>`).join('')}</ul>` : '<p style="color:#a0aec0;font-size:0.9rem;">Keine Faktoren dokumentiert</p>'}
+                </div>
+                <div class="bps-box aufr">
+                    <h4>🔄 Aufrechterhaltend</h4>
+                    ${bps.aufrechterhaltend.length > 0 ? `<ul>${bps.aufrechterhaltend.map(p => `<li>${p}</li>`).join('')}</ul>` : '<p style="color:#a0aec0;font-size:0.9rem;">Keine Faktoren dokumentiert</p>'}
+                </div>
+            </div>
+        </div>
+
+        <!-- Risiko-Schutzfaktoren -->
+        <div class="synthese-section">
+            <h3>⚖️ Risiko-Schutzfaktoren-Balance</h3>
+            <div id="risiko-schutz-container" style="max-width:600px;margin:0 auto;"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px;">
+                <div style="background:#fff5f5;padding:15px;border-radius:10px;border-left:4px solid #e53e3e;">
+                    <h5 style="margin:0 0 10px;color:#c53030;">⚠️ Risikofaktoren</h5>
+                    ${Object.entries(risikoSchutz.risikofaktoren).map(([cat, items]) =>
+                        items.length > 0 ? `<div style="margin-bottom:8px;"><strong style="font-size:0.8rem;color:#718096;">${cat}:</strong><ul style="margin:5px 0 0 15px;font-size:0.85rem;">${items.map(i => `<li>${i}</li>`).join('')}</ul></div>` : ''
+                    ).join('')}
+                </div>
+                <div style="background:#f0fff4;padding:15px;border-radius:10px;border-left:4px solid #48bb78;">
+                    <h5 style="margin:0 0 10px;color:#276749;">🛡️ Schutzfaktoren</h5>
+                    ${Object.entries(risikoSchutz.schutzfaktoren).map(([cat, items]) =>
+                        items.length > 0 ? `<div style="margin-bottom:8px;"><strong style="font-size:0.8rem;color:#718096;">${cat}:</strong><ul style="margin:5px 0 0 15px;font-size:0.85rem;">${items.map(i => `<li>${i}</li>`).join('')}</ul></div>` : ''
+                    ).join('')}
+                </div>
+            </div>
+            <div style="text-align:center;margin-top:15px;padding:10px;background:${risikoSchutz.balance >= 0 ? '#f0fff4' : '#fff5f5'};border-radius:8px;">
+                <span style="font-weight:600;color:${risikoSchutz.balance >= 0 ? '#48bb78' : '#e53e3e'};">
+                    Balance: ${risikoSchutz.balance > 0 ? '+' : ''}${risikoSchutz.balance} (${risikoSchutz.balance >= 0 ? 'Mehr Schutzfaktoren' : 'Mehr Risikofaktoren'})
+                </span>
+            </div>
+        </div>
+    `;
+
+    content.innerHTML = html;
+    content.style.display = 'block';
+    placeholder.style.display = 'none';
+    exportBtns.style.display = 'flex';
+
+    // Charts rendern
+    setTimeout(() => {
+        VisualizationRenderer.renderRadarChart('radar-chart-container');
+        VisualizationRenderer.renderRisikoSchutzChart('risiko-schutz-container');
+    }, 100);
+
+    showToast('Fallsynthese wurde generiert!');
+}
+
+function exportSynthesisText() {
+    const name = document.getElementById('schueler_name')?.value || 'Unbekannt';
+    const date = new Date().toLocaleDateString('de-DE');
+    const content = document.getElementById('synthese-content');
+
+    let txt = `INTEGRIERTE FALLSYNTHESE\n${'='.repeat(50)}\nErstellt: ${date}\nKind: ${name}\n\n`;
+
+    if (content) {
+        const temp = document.createElement('div');
+        temp.innerHTML = content.innerHTML;
+        txt += temp.textContent.replace(/\s+/g, ' ').trim();
+    }
+
+    const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `Fallsynthese_${name.replace(/\s+/g, '_')}_${date.replace(/\./g, '-')}.txt`;
+    a.click();
+}
+
+// Initialisierung
+document.addEventListener('DOMContentLoaded', function() {
+    ClinicalDataRegistry.loadFromStorage();
+});
     </script>
 </body>
 </html>
