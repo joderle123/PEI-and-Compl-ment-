@@ -2157,95 +2157,66 @@
             <div class="sidebar-logo">
                 <div class="sidebar-logo-icon">🧠</div>
                 <div class="sidebar-logo-text">
-                    <h1>KPB</h1>
-                    <span>Klinisch-Pädagogischer Berater</span>
+                    <h1>CDSE</h1>
+                    <span>Klinisch-Pädagogisches Dossier</span>
                 </div>
             </div>
         </div>
 
         <div class="sidebar-nav">
-            <!-- Dashboard -->
+            <!-- Dossier -->
             <div class="sidebar-section">
-                <div class="sidebar-section-title">Übersicht</div>
-                <div class="sidebar-item active" onclick="showTab('stammdaten')" data-tab="stammdaten">
-                    <span class="sidebar-item-icon">👤</span>
-                    <span>Stammdaten</span>
-                </div>
-                <div class="sidebar-item" onclick="showTab('uebersicht')" data-tab="uebersicht">
+                <div class="sidebar-section-title">Fall-Dossier</div>
+                <div class="sidebar-item active" onclick="showTab('dossier')" data-tab="dossier">
                     <span class="sidebar-item-icon">📊</span>
-                    <span>Dashboard</span>
+                    <span>Dossier</span>
                 </div>
             </div>
 
-            <!-- ELDiB Erfassung -->
+            <!-- ELDiB -->
             <div class="sidebar-section">
                 <div class="sidebar-section-title">ELDiB Erfassung</div>
                 <div class="sidebar-item" onclick="showTab('verhalten')" data-tab="verhalten">
                     <span class="sidebar-item-icon">🎯</span>
-                    <span>Verhalten</span>
+                    <span>V - Verhalten</span>
                     <span class="sidebar-item-badge" id="badge-verhalten">0</span>
                 </div>
                 <div class="sidebar-item" onclick="showTab('kommunikation')" data-tab="kommunikation">
                     <span class="sidebar-item-icon">💬</span>
-                    <span>Kommunikation</span>
+                    <span>K - Kommunikation</span>
                     <span class="sidebar-item-badge" id="badge-kommunikation">0</span>
                 </div>
                 <div class="sidebar-item" onclick="showTab('sozialisation')" data-tab="sozialisation">
                     <span class="sidebar-item-icon">👥</span>
-                    <span>Sozialisation</span>
+                    <span>S - Sozialisation</span>
                     <span class="sidebar-item-badge" id="badge-sozialisation">0</span>
                 </div>
                 <div class="sidebar-item" onclick="showTab('kognition')" data-tab="kognition">
                     <span class="sidebar-item-icon">🧩</span>
-                    <span>Kognition</span>
+                    <span>C - Kognition</span>
                     <span class="sidebar-item-badge" id="badge-kognition">0</span>
                 </div>
-                <div class="sidebar-item" onclick="showTab('zusaetzlich')" data-tab="zusaetzlich">
-                    <span class="sidebar-item-icon">➕</span>
-                    <span>Zusätzliche Ziele</span>
-                </div>
             </div>
 
-            <!-- Klinische Module -->
+            <!-- Klinisches Assessment -->
             <div class="sidebar-section">
-                <div class="sidebar-section-title">Klinische Erfassung</div>
-                <div class="sidebar-item" onclick="showTab('anamnese')" data-tab="anamnese">
-                    <span class="sidebar-item-icon">📋</span>
-                    <span>Anamnese</span>
-                </div>
+                <div class="sidebar-section-title">Klinisches Assessment</div>
                 <div class="sidebar-item" onclick="showTab('screening')" data-tab="screening">
+                    <span class="sidebar-item-icon">🧠</span>
+                    <span>4-Phasen Assessment</span>
+                </div>
+            </div>
+
+            <!-- Synthese -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Auswertung</div>
+                <div class="sidebar-item" onclick="showTab('synthese')" data-tab="synthese">
                     <span class="sidebar-item-icon">🔬</span>
-                    <span>Klinisches Screening</span>
+                    <span>Fallsynthese</span>
                 </div>
-                <div class="sidebar-item" onclick="showTab('verhaltensanalyse')" data-tab="verhaltensanalyse">
-                    <span class="sidebar-item-icon">🔍</span>
-                    <span>Verhaltensanalyse</span>
-                </div>
-                <div class="sidebar-item" onclick="showTab('ressourcen')" data-tab="ressourcen">
-                    <span class="sidebar-item-icon">💪</span>
-                    <span>Ressourcen</span>
-                </div>
-            </div>
-
-            <!-- Beratung -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">Beratung</div>
-                <div class="sidebar-item" onclick="showTab('beratung')" data-tab="beratung">
-                    <span class="sidebar-item-icon">💡</span>
-                    <span>Empfehlungen</span>
-                </div>
-                <div class="sidebar-item" onclick="showTab('interventionen')" data-tab="interventionen">
-                    <span class="sidebar-item-icon">🛠️</span>
-                    <span>Interventionen</span>
-                </div>
-            </div>
-
-            <!-- Export -->
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">Export</div>
                 <div class="sidebar-item" onclick="showTab('export')" data-tab="export">
                     <span class="sidebar-item-icon">📄</span>
-                    <span>Berichte & PEI</span>
+                    <span>Export & Berichte</span>
                 </div>
             </div>
         </div>
@@ -2283,83 +2254,128 @@
             <div class="container">
 
         <!-- Stammdaten Tab -->
-        <div id="stammdaten" class="tab-content active">
-            <div class="form-section">
-                <h3>Schuler Informationen</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="schueler_name">Name des Kindes/Jugendlichen</label>
-                        <input type="text" id="schueler_name" placeholder="Nachname, Vorname">
-                    </div>
-                    <div class="form-group">
-                        <label for="geburtsdatum">Geburtsdatum <span id="alter-anzeige" class="alter-anzeige hidden"></span></label>
-                        <input type="date" id="geburtsdatum" onchange="updateAlterAnzeige()">
-                    </div>
-                    <div class="form-group">
-                        <label for="matricule">Matricule</label>
-                        <input type="text" id="matricule" placeholder="Matricule">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="foerderort">Forderort / Schule</label>
-                        <input type="text" id="foerderort" placeholder="Schule/Lycee">
-                    </div>
-                    <div class="form-group">
-                        <label for="klasse">Klasse/Cycle</label>
-                        <input type="text" id="klasse" placeholder="z.B. C2.1">
-                    </div>
-                    <div class="form-group">
-                        <label for="schuljahr">Schuljahr</label>
-                        <input type="text" id="schuljahr" placeholder="z.B. 2025/2026">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="trimester">Trimester</label>
-                        <select id="trimester">
-                            <option value="1">Trimester 1</option>
-                            <option value="2">Trimester 2</option>
-                            <option value="3">Trimester 3</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="einschaetzungsdatum">Datum der Einschatzung</label>
-                        <input type="date" id="einschaetzungsdatum">
-                    </div>
-                </div>
+        <!-- DOSSIER - Alles auf einen Blick -->
+        <div id="dossier" class="tab-content active">
+            <style>
+                .dossier-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+                .dossier-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+                .dossier-card h4 { margin: 0 0 15px 0; color: #2d3748; display: flex; align-items: center; gap: 10px; }
+                .dossier-full { grid-column: 1 / -1; }
+                .dossier-half { grid-column: span 2; }
+                .status-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+                .status-card { background: #f8fafc; padding: 15px; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
+                .status-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+                .status-card.complete { border-color: #48bb78; background: #f0fff4; }
+                .status-card.partial { border-color: #ecc94b; background: #fffff0; }
+                .status-card.alert { border-color: #e53e3e; background: #fff5f5; }
+                .status-icon { font-size: 2rem; margin-bottom: 8px; }
+                .status-label { font-size: 0.85rem; color: #718096; }
+                .status-value { font-size: 1.1rem; font-weight: 600; color: #2d3748; }
+                .alert-banner { background: linear-gradient(135deg, #fff5f5, #fed7d7); border: 2px solid #e53e3e; padding: 15px 20px; border-radius: 10px; margin-bottom: 20px; display: none; }
+                .alert-banner.visible { display: block; }
+                .alert-banner h4 { color: #c53030; margin: 0 0 10px 0; }
+                .quick-input { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+                .quick-input input, .quick-input select { padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; }
+                .quick-input input:focus, .quick-input select:focus { outline: none; border-color: #4a90a4; box-shadow: 0 0 0 3px rgba(74,144,164,0.1); }
+                .hypothesis-card { background: linear-gradient(135deg, #ebf8ff, #e6fffa); padding: 15px; border-radius: 10px; border-left: 4px solid #2c5282; }
+                .action-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+                .action-btn { padding: 12px 20px; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s; border: none; display: flex; align-items: center; gap: 8px; }
+                .action-btn.primary { background: linear-gradient(135deg, #2c5282, #4a90a4); color: white; }
+                .action-btn.secondary { background: #edf2f7; color: #4a5568; }
+                .action-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+                @media (max-width: 1000px) { .dossier-grid { grid-template-columns: 1fr; } .dossier-half { grid-column: span 1; } .status-grid { grid-template-columns: repeat(2, 1fr); } .quick-input { grid-template-columns: repeat(2, 1fr); } }
+            </style>
+
+            <!-- Alert Banner (wird sichtbar wenn Alerts vorhanden) -->
+            <div class="alert-banner" id="dossier-alerts">
+                <h4>🚨 Wichtige Warnungen</h4>
+                <ul id="dossier-alerts-list" style="margin: 0; padding-left: 20px;"></ul>
             </div>
 
-            <div class="form-section">
-                <h3>Einschatzende Person(en)</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="einschaetzende">Name und Funktion</label>
-                        <textarea id="einschaetzende" rows="3" placeholder="Namen und Funktionen der einschatzenden Personen"></textarea>
+            <div class="dossier-grid">
+                <!-- Kind-Infos (kompakt) -->
+                <div class="dossier-card dossier-full">
+                    <h4>👤 Kind / Jugendlicher</h4>
+                    <div class="quick-input">
+                        <input type="text" id="schueler_name" placeholder="Name" onchange="updateDossier()">
+                        <input type="date" id="geburtsdatum" onchange="updateAlterAnzeige(); updateDossier()">
+                        <input type="text" id="foerderort" placeholder="Schule" onchange="updateDossier()">
+                        <input type="text" id="klasse" placeholder="Klasse" onchange="updateDossier()">
+                    </div>
+                    <div style="margin-top: 10px; display: flex; gap: 15px; color: #718096; font-size: 0.9rem;">
+                        <span id="alter-anzeige-dossier"></span>
+                        <span id="matricule-display"></span>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-section">
-                <h3>Kontaktdaten Erziehungsberechtigte</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="eltern1_name">Erziehungsberechtigte/r 1 - Name</label>
-                        <input type="text" id="eltern1_name" placeholder="Name">
-                    </div>
-                    <div class="form-group">
-                        <label for="eltern1_tel">Telefon</label>
-                        <input type="tel" id="eltern1_tel" placeholder="Telefonnummer">
-                    </div>
-                    <div class="form-group">
-                        <label for="eltern1_email">E-Mail</label>
-                        <input type="email" id="eltern1_email" placeholder="E-Mail">
+                <!-- Status-Übersicht -->
+                <div class="dossier-card dossier-full">
+                    <h4>📊 Status-Übersicht</h4>
+                    <div class="status-grid">
+                        <div class="status-card" onclick="showTab('verhalten')" id="status-eldib-v">
+                            <div class="status-icon">🎯</div>
+                            <div class="status-value" id="status-v-count">0/33</div>
+                            <div class="status-label">Verhalten</div>
+                        </div>
+                        <div class="status-card" onclick="showTab('kommunikation')" id="status-eldib-k">
+                            <div class="status-icon">💬</div>
+                            <div class="status-value" id="status-k-count">0/35</div>
+                            <div class="status-label">Kommunikation</div>
+                        </div>
+                        <div class="status-card" onclick="showTab('sozialisation')" id="status-eldib-s">
+                            <div class="status-icon">👥</div>
+                            <div class="status-value" id="status-s-count">0/41</div>
+                            <div class="status-label">Sozialisation</div>
+                        </div>
+                        <div class="status-card" onclick="showTab('kognition')" id="status-eldib-c">
+                            <div class="status-icon">🧩</div>
+                            <div class="status-value" id="status-c-count">0/62</div>
+                            <div class="status-label">Kognition</div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="button-group">
-                <button class="btn btn-primary" onclick="showTab('verhalten')">Weiter zu Verhalten &rarr;</button>
+                <!-- Klinisches Assessment Status -->
+                <div class="dossier-card dossier-half">
+                    <h4>🧠 Klinisches Assessment</h4>
+                    <div id="assessment-status-content">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                            <div style="flex: 1; background: #edf2f7; height: 8px; border-radius: 4px; overflow: hidden;">
+                                <div id="assessment-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #2c5282, #4a90a4); transition: width 0.5s;"></div>
+                            </div>
+                            <span id="assessment-progress-text" style="color: #4a5568; font-weight: 600;">0%</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 0.9rem;">
+                            <div id="phase1-status" style="padding: 8px 12px; background: #f8fafc; border-radius: 6px;">Phase 1: Intake</div>
+                            <div id="phase2-status" style="padding: 8px 12px; background: #f8fafc; border-radius: 6px;">Phase 2: Domänen</div>
+                            <div id="phase3-status" style="padding: 8px 12px; background: #f8fafc; border-radius: 6px;">Phase 3: Synthese</div>
+                            <div id="phase4-status" style="padding: 8px 12px; background: #f8fafc; border-radius: 6px;">Phase 4: Aktionsplan</div>
+                        </div>
+                        <button class="action-btn primary" style="margin-top: 15px; width: 100%;" onclick="showTab('screening')">
+                            🧠 Assessment starten/fortsetzen
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Haupthypothese -->
+                <div class="dossier-card">
+                    <h4>🔬 Haupthypothese</h4>
+                    <div id="main-hypothesis-content">
+                        <p style="color: #a0aec0; font-style: italic;">Führen Sie das klinische Assessment durch, um Hypothesen zu erhalten.</p>
+                    </div>
+                </div>
+
+                <!-- Schnell-Aktionen -->
+                <div class="dossier-card dossier-full">
+                    <h4>⚡ Schnell-Aktionen</h4>
+                    <div class="action-buttons">
+                        <button class="action-btn primary" onclick="showTab('screening')">🧠 Assessment</button>
+                        <button class="action-btn secondary" onclick="showTab('verhalten')">📝 ELDiB erfassen</button>
+                        <button class="action-btn secondary" onclick="showTab('synthese')">🔬 Fallsynthese</button>
+                        <button class="action-btn secondary" onclick="showTab('export')">📄 Export</button>
+                        <button class="action-btn secondary" onclick="resetAllData()" style="margin-left: auto; background: #fed7d7; color: #c53030;">🗑️ Neuer Fall</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -3253,7 +3269,91 @@
             </div>
         </div>
 
-        <!-- VERHALTENSANALYSE Tab -->
+        <!-- FALLSYNTHESE Tab - Kombiniert ELDiB + Assessment -->
+        <div id="synthese" class="tab-content">
+            <style>
+                .synthese-container { max-width: 1000px; margin: 0 auto; }
+                .synthese-header { background: linear-gradient(135deg, #1a365d, #2c5282); padding: 30px; border-radius: 16px; color: white; margin-bottom: 30px; }
+                .synthese-section { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+                .synthese-section h3 { margin: 0 0 20px 0; color: #2d3748; display: flex; align-items: center; gap: 12px; padding-bottom: 15px; border-bottom: 2px solid #e2e8f0; }
+                .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+                .profile-item { background: #f8fafc; padding: 15px; border-radius: 10px; }
+                .profile-item label { display: block; font-size: 0.8rem; color: #718096; text-transform: uppercase; margin-bottom: 5px; }
+                .profile-item .value { font-size: 1.1rem; color: #2d3748; font-weight: 500; }
+                .eldib-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+                .eldib-box { padding: 20px; border-radius: 12px; text-align: center; }
+                .eldib-box.v { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+                .eldib-box.k { background: linear-gradient(135deg, #dbeafe, #93c5fd); }
+                .eldib-box.s { background: linear-gradient(135deg, #d1fae5, #6ee7b7); }
+                .eldib-box.c { background: linear-gradient(135deg, #ede9fe, #c4b5fd); }
+                .eldib-box .stufe { font-size: 2rem; font-weight: 700; }
+                .eldib-box .label { font-size: 0.85rem; color: #4a5568; }
+                .hypothesis-box { background: linear-gradient(135deg, #ebf8ff, #e6fffa); padding: 20px; border-radius: 12px; border-left: 5px solid #2c5282; margin-bottom: 15px; }
+                .hypothesis-box.main { border-left-color: #e53e3e; background: linear-gradient(135deg, #fff5f5, #fecaca); }
+                .hypothesis-box h4 { margin: 0 0 10px 0; color: #1a365d; display: flex; justify-content: space-between; }
+                .hypothesis-box .icd { background: #2c5282; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; }
+                .confidence { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
+                .confidence.high { background: #fed7d7; color: #c53030; }
+                .confidence.medium { background: #feebc8; color: #c05621; }
+                .confidence.low { background: #bee3f8; color: #2b6cb0; }
+                .intervention-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+                .intervention-card { background: #f8fafc; padding: 20px; border-radius: 12px; }
+                .intervention-card h4 { margin: 0 0 15px 0; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+                .intervention-card.sofort h4 { color: #c53030; }
+                .intervention-card.schule h4 { color: #2b6cb0; }
+                .intervention-card.langfristig h4 { color: #276749; }
+                .intervention-card ul { margin: 0; padding-left: 18px; font-size: 0.9rem; color: #4a5568; }
+                .intervention-card li { margin-bottom: 6px; }
+                .bps-model { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+                .bps-box { padding: 20px; border-radius: 12px; }
+                .bps-box.praed { background: #fef3c7; border-top: 4px solid #f59e0b; }
+                .bps-box.ausl { background: #fce7f3; border-top: 4px solid #db2777; }
+                .bps-box.aufr { background: #dbeafe; border-top: 4px solid #3b82f6; }
+                .bps-box h4 { margin: 0 0 12px 0; font-size: 0.9rem; }
+                .bps-box ul { margin: 0; padding-left: 18px; font-size: 0.9rem; }
+                .generate-btn { display: block; width: 100%; padding: 18px; background: linear-gradient(135deg, #2c5282, #4a90a4); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-bottom: 30px; }
+                .generate-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(44,82,130,0.3); }
+                .export-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 30px; }
+                .export-btn { padding: 12px 25px; border-radius: 10px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+                .export-btn.txt { background: #edf2f7; border: 2px solid #a0aec0; color: #4a5568; }
+                .export-btn.pdf { background: linear-gradient(135deg, #e53e3e, #c53030); border: none; color: white; }
+                .export-btn:hover { transform: translateY(-2px); }
+                @media (max-width: 800px) { .profile-grid, .eldib-summary, .intervention-grid, .bps-model { grid-template-columns: 1fr; } }
+            </style>
+
+            <div class="synthese-container">
+                <div class="synthese-header">
+                    <h2 style="margin: 0 0 10px 0;">🔬 Integrierte Fallsynthese</h2>
+                    <p style="margin: 0; opacity: 0.9;">Automatische Zusammenführung aller Daten aus ELDiB und klinischem Assessment</p>
+                </div>
+
+                <button class="generate-btn" onclick="generateFullSynthesis()">
+                    ⚡ Fallsynthese generieren
+                </button>
+
+                <div id="synthese-content" style="display: none;">
+                    <!-- Wird dynamisch generiert -->
+                </div>
+
+                <div id="synthese-placeholder">
+                    <div class="synthese-section" style="text-align: center; padding: 60px;">
+                        <div style="font-size: 4rem; margin-bottom: 20px;">📊</div>
+                        <h3 style="border: none; justify-content: center;">Noch keine Synthese erstellt</h3>
+                        <p style="color: #718096; max-width: 500px; margin: 0 auto;">
+                            Klicken Sie auf "Fallsynthese generieren", um alle vorhandenen Daten aus ELDiB-Erfassung
+                            und klinischem Assessment zu einer integrierten Fallformulierung zusammenzuführen.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="export-buttons" id="synthese-export" style="display: none;">
+                    <button class="export-btn txt" onclick="exportSynthesisText()">📄 Export als .txt</button>
+                    <button class="export-btn pdf" onclick="exportSynthesisPDF()">📑 Export als Word</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXPORT Tab -->
         <div id="verhaltensanalyse" class="tab-content">
             <div class="form-section">
                 <h3>🔍 Funktionale Verhaltensanalyse (ABC)</h3>
@@ -9392,10 +9492,417 @@ function resetAssessment() {
     }
 }
 
+// ============================================
+// DOSSIER FUNKTIONEN
+// ============================================
+
+function updateDossier() {
+    // Update Alter-Anzeige im Dossier
+    const geb = document.getElementById('geburtsdatum')?.value;
+    const alterAnzeige = document.getElementById('alter-anzeige-dossier');
+    if (geb && alterAnzeige) {
+        const age = Math.floor((new Date() - new Date(geb)) / 31557600000);
+        alterAnzeige.textContent = `${age} Jahre`;
+    }
+
+    // ELDiB Status Cards aktualisieren
+    updateEldibStatusCards();
+
+    // Assessment Status aktualisieren
+    updateAssessmentStatusInDossier();
+
+    // Alerts aktualisieren
+    updateDossierAlerts();
+
+    // Haupthypothese anzeigen
+    updateMainHypothesis();
+}
+
+function updateEldibStatusCards() {
+    const areas = ['verhalten', 'kommunikation', 'sozialisation', 'kognition'];
+    const totals = { verhalten: 33, kommunikation: 35, sozialisation: 41, kognition: 62 };
+    const prefixes = { verhalten: 'V', kommunikation: 'K', sozialisation: 'S', kognition: 'C' };
+
+    areas.forEach(area => {
+        let count = 0;
+        const prefix = prefixes[area];
+        // Count filled items (this assumes state.selections exists from ELDiB)
+        if (typeof state !== 'undefined' && state.selections) {
+            Object.keys(state.selections).forEach(key => {
+                if (key.startsWith(prefix + '-')) count++;
+            });
+        }
+        const el = document.getElementById(`status-${prefix.toLowerCase()}-count`);
+        if (el) el.textContent = `${count}/${totals[area]}`;
+
+        const card = document.getElementById(`status-eldib-${prefix.toLowerCase()}`);
+        if (card) {
+            card.classList.remove('complete', 'partial');
+            if (count >= totals[area]) card.classList.add('complete');
+            else if (count > 0) card.classList.add('partial');
+        }
+    });
+}
+
+function updateAssessmentStatusInDossier() {
+    // Calculate progress from cdse state
+    let total = 12; // 4 intake + 6 domains + 2 synthesis/action
+    let completed = 0;
+
+    if (cdse.data.intake && Object.keys(cdse.data.intake).length >= 3) completed += 4;
+    completed += cdse.completedDomains.length;
+    if (cdse.data.synthesis) completed++;
+    if (cdse.data.actionPlan) completed++;
+
+    const percent = Math.round((completed / total) * 100);
+    const bar = document.getElementById('assessment-progress-bar');
+    const text = document.getElementById('assessment-progress-text');
+    if (bar) bar.style.width = percent + '%';
+    if (text) text.textContent = percent + '%';
+
+    // Phase status
+    const phases = ['phase1', 'phase2', 'phase3', 'phase4'];
+    phases.forEach((p, i) => {
+        const el = document.getElementById(p + '-status');
+        if (el) {
+            el.style.background = i < cdse.currentPhase - 1 ? '#c6f6d5' :
+                                  i === cdse.currentPhase - 1 ? '#bee3f8' : '#f8fafc';
+        }
+    });
+}
+
+function updateDossierAlerts() {
+    const alertBanner = document.getElementById('dossier-alerts');
+    const alertList = document.getElementById('dossier-alerts-list');
+
+    if (cdse.alerts && cdse.alerts.length > 0) {
+        alertBanner.classList.add('visible');
+        alertList.innerHTML = cdse.alerts.map(a => `<li>${a}</li>`).join('');
+    } else {
+        alertBanner.classList.remove('visible');
+    }
+}
+
+function updateMainHypothesis() {
+    const container = document.getElementById('main-hypothesis-content');
+    if (!container) return;
+
+    if (cdse.data.synthesis && cdse.data.synthesis.hauptdiagnose) {
+        const h = cdse.data.synthesis.hauptdiagnose;
+        const conf = cdse.data.synthesis.konfidenz;
+        container.innerHTML = `
+            <div style="margin-bottom:12px;">
+                <strong style="color:#1a365d;font-size:1.1rem;">${h.name}</strong>
+                <span class="confidence ${conf}" style="margin-left:10px;">${conf}</span>
+            </div>
+            <div style="color:#4a5568;font-size:0.9rem;">ICD-11: ${h.icd}</div>
+            <button onclick="showTab('synthese')" style="margin-top:12px;padding:8px 15px;background:#edf2f7;border:none;border-radius:6px;cursor:pointer;font-size:0.9rem;">Details ansehen →</button>
+        `;
+    } else {
+        container.innerHTML = '<p style="color:#a0aec0;font-style:italic;">Führen Sie das klinische Assessment durch.</p>';
+    }
+}
+
+// ============================================
+// INTEGRIERTE FALLSYNTHESE
+// ============================================
+
+function generateFullSynthesis() {
+    const content = document.getElementById('synthese-content');
+    const placeholder = document.getElementById('synthese-placeholder');
+    const exportBtns = document.getElementById('synthese-export');
+
+    // Get student info
+    const name = document.getElementById('schueler_name')?.value || 'Unbekannt';
+    const geb = document.getElementById('geburtsdatum')?.value;
+    const alter = geb ? Math.floor((new Date() - new Date(geb)) / 31557600000) + ' Jahre' : '-';
+    const schule = document.getElementById('foerderort')?.value || '-';
+    const klasse = document.getElementById('klasse')?.value || '-';
+
+    // Get ELDiB data
+    const eldibData = getEldibSummary();
+
+    // Get Assessment synthesis
+    const assessmentSynthesis = cdse.data.synthesis || generateSynthesis();
+
+    // Generate combined output
+    let html = `
+        <!-- Profil -->
+        <div class="synthese-section">
+            <h3>👤 Profil</h3>
+            <div class="profile-grid">
+                <div class="profile-item"><label>Name</label><div class="value">${name}</div></div>
+                <div class="profile-item"><label>Alter</label><div class="value">${alter}</div></div>
+                <div class="profile-item"><label>Schule</label><div class="value">${schule}</div></div>
+                <div class="profile-item"><label>Klasse</label><div class="value">${klasse}</div></div>
+                <div class="profile-item"><label>Assessment</label><div class="value">${cdse.currentPhase >= 3 ? 'Abgeschlossen' : 'In Bearbeitung'}</div></div>
+                <div class="profile-item"><label>Datum</label><div class="value">${new Date().toLocaleDateString('de-DE')}</div></div>
+            </div>
+        </div>
+
+        <!-- ELDiB Entwicklungsstufen -->
+        <div class="synthese-section">
+            <h3>📊 ELDiB Entwicklungsprofil</h3>
+            <div class="eldib-summary">
+                <div class="eldib-box v">
+                    <div class="stufe">${eldibData.V.stufe || '-'}</div>
+                    <div class="label">Verhalten</div>
+                    <div style="font-size:0.8rem;color:#666;margin-top:5px;">${eldibData.V.count}/${eldibData.V.total} Items</div>
+                </div>
+                <div class="eldib-box k">
+                    <div class="stufe">${eldibData.K.stufe || '-'}</div>
+                    <div class="label">Kommunikation</div>
+                    <div style="font-size:0.8rem;color:#666;margin-top:5px;">${eldibData.K.count}/${eldibData.K.total} Items</div>
+                </div>
+                <div class="eldib-box s">
+                    <div class="stufe">${eldibData.S.stufe || '-'}</div>
+                    <div class="label">Sozialisation</div>
+                    <div style="font-size:0.8rem;color:#666;margin-top:5px;">${eldibData.S.count}/${eldibData.S.total} Items</div>
+                </div>
+                <div class="eldib-box c">
+                    <div class="stufe">${eldibData.C.stufe || '-'}</div>
+                    <div class="label">Kognition</div>
+                    <div style="font-size:0.8rem;color:#666;margin-top:5px;">${eldibData.C.count}/${eldibData.C.total} Items</div>
+                </div>
+            </div>
+            ${eldibData.foerderziele.length > 0 ? `
+                <div style="margin-top:20px;">
+                    <strong>Aktuelle Förderziele:</strong>
+                    <ul style="margin:10px 0 0 20px;color:#4a5568;">
+                        ${eldibData.foerderziele.map(z => `<li>${z}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+        </div>
+    `;
+
+    // Alerts
+    if (cdse.alerts && cdse.alerts.length > 0) {
+        html += `
+            <div class="synthese-section" style="background:linear-gradient(135deg,#fff5f5,#fed7d7);border:2px solid #e53e3e;">
+                <h3 style="color:#c53030;">🚨 Risiko-Warnungen</h3>
+                <ul style="margin:0;padding-left:20px;">
+                    ${cdse.alerts.map(a => `<li style="margin-bottom:8px;">${a}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+
+    // Hypotheses
+    if (assessmentSynthesis && assessmentSynthesis.hauptdiagnose) {
+        html += `
+            <div class="synthese-section">
+                <h3>🔬 Klinische Hypothesen</h3>
+                <div class="hypothesis-box main">
+                    <h4>
+                        ${assessmentSynthesis.hauptdiagnose.full}
+                        <span class="icd">ICD-11: ${assessmentSynthesis.hauptdiagnose.icd}</span>
+                    </h4>
+                    <div style="display:flex;align-items:center;gap:15px;">
+                        <span class="confidence ${assessmentSynthesis.konfidenz}">Konfidenz: ${assessmentSynthesis.konfidenz}</span>
+                        <span style="color:#718096;font-size:0.9rem;">Hauptverdachtsdiagnose</span>
+                    </div>
+                </div>
+                ${assessmentSynthesis.differenzial && assessmentSynthesis.differenzial.length > 0 ? `
+                    <div style="margin-top:15px;">
+                        <strong style="color:#4a5568;">Differentialdiagnosen:</strong>
+                        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;">
+                            ${assessmentSynthesis.differenzial.map(d => `
+                                <span style="background:#f8fafc;padding:8px 15px;border-radius:8px;font-size:0.9rem;">
+                                    ${d.name} <span style="color:#718096;">(${d.icd})</span>
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+
+        // BPS Model
+        if (assessmentSynthesis.bps) {
+            html += `
+                <div class="synthese-section">
+                    <h3>🧩 Biopsychosoziales Modell</h3>
+                    <div class="bps-model">
+                        <div class="bps-box praed">
+                            <h4>⚡ Prädisponierend</h4>
+                            <ul>${(assessmentSynthesis.bps.praedisponierend || []).map(p => `<li>${p}</li>`).join('')}</ul>
+                        </div>
+                        <div class="bps-box ausl">
+                            <h4>🎯 Auslösend</h4>
+                            <ul>${(assessmentSynthesis.bps.ausloesend || []).map(p => `<li>${p}</li>`).join('')}</ul>
+                        </div>
+                        <div class="bps-box aufr">
+                            <h4>🔄 Aufrechterhaltend</h4>
+                            <ul>${(assessmentSynthesis.bps.aufrechterhaltend || []).map(p => `<li>${p}</li>`).join('')}</ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // Interventions
+    const plan = cdse.data.actionPlan || generateActionPlan();
+    if (plan) {
+        html += `
+            <div class="synthese-section">
+                <h3>🛠️ Empfohlene Interventionen</h3>
+                <div class="intervention-grid">
+                    <div class="intervention-card sofort">
+                        <h4>🚨 Sofortmaßnahmen</h4>
+                        <ul>${(plan.diagnostik || []).slice(0,4).map(i => `<li>${i}</li>`).join('')}</ul>
+                    </div>
+                    <div class="intervention-card schule">
+                        <h4>🏫 Schulische Maßnahmen</h4>
+                        <ul>${(plan.schule || []).slice(0,4).map(i => `<li>${i}</li>`).join('')}</ul>
+                    </div>
+                    <div class="intervention-card langfristig">
+                        <h4>📋 CDSE-Strategie</h4>
+                        <ul>${(plan.cdse || []).slice(0,4).map(i => `<li>${i}</li>`).join('')}</ul>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Fehlende Daten
+    if (assessmentSynthesis && assessmentSynthesis.fehlend && assessmentSynthesis.fehlend.length > 0) {
+        html += `
+            <div class="synthese-section" style="background:#fffbeb;border-left:4px solid #f59e0b;">
+                <h3 style="color:#b45309;">📝 Empfohlene weitere Diagnostik</h3>
+                <ul style="margin:0;padding-left:20px;">
+                    ${assessmentSynthesis.fehlend.map(f => `<li>${f}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+
+    content.innerHTML = html;
+    content.style.display = 'block';
+    placeholder.style.display = 'none';
+    exportBtns.style.display = 'flex';
+
+    // Update dossier
+    updateDossier();
+}
+
+function getEldibSummary() {
+    const result = {
+        V: { count: 0, total: 33, stufe: '-', items: [] },
+        K: { count: 0, total: 35, stufe: '-', items: [] },
+        S: { count: 0, total: 41, stufe: '-', items: [] },
+        C: { count: 0, total: 62, stufe: '-', items: [] },
+        foerderziele: []
+    };
+
+    if (typeof state === 'undefined' || !state.selections) return result;
+
+    // Count items and determine stufe
+    Object.entries(state.selections).forEach(([key, val]) => {
+        const prefix = key.charAt(0);
+        if (result[prefix]) {
+            result[prefix].count++;
+            if (val.status === 'foerderziel') {
+                result.foerderziele.push(key);
+            }
+            // Determine stufe from item number
+            const num = parseInt(key.split('-')[1]);
+            // Rough estimation of developmental stage based on item range
+            const stufenRanges = {
+                V: [[1,7,1],[8,14,2],[15,21,3],[22,28,4],[29,33,5]],
+                K: [[1,7,1],[8,14,2],[15,21,3],[22,28,4],[29,35,5]],
+                S: [[1,8,1],[9,16,2],[17,24,3],[25,33,4],[34,41,5]],
+                C: [[1,12,1],[13,24,2],[25,37,3],[38,50,4],[51,62,5]]
+            };
+            if (val.status === 'erreicht') {
+                stufenRanges[prefix]?.forEach(([min, max, stufe]) => {
+                    if (num >= min && num <= max) {
+                        result[prefix].stufe = Math.max(parseInt(result[prefix].stufe) || 0, stufe).toString();
+                    }
+                });
+            }
+        }
+    });
+
+    return result;
+}
+
+function exportSynthesisText() {
+    const name = document.getElementById('schueler_name')?.value || 'Unbekannt';
+    const date = new Date().toLocaleDateString('de-DE');
+
+    let txt = `CDSE INTEGRIERTE FALLSYNTHESE
+==============================
+Erstellt: ${date}
+Kind: ${name}
+
+`;
+    // Get content from synthese-content
+    const content = document.getElementById('synthese-content');
+    if (content) {
+        // Strip HTML and format
+        const temp = document.createElement('div');
+        temp.innerHTML = content.innerHTML;
+        txt += temp.textContent.replace(/\s+/g, ' ').replace(/\s([.!?])/g, '$1');
+    }
+
+    const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `Fallsynthese_${name.replace(/\s+/g, '_')}_${date.replace(/\./g, '-')}.txt`;
+    a.click();
+}
+
+function exportSynthesisPDF() {
+    // Use existing export functionality
+    alert('Word-Export wird über den Export-Tab generiert.');
+    showTab('export');
+}
+
+function resetAllData() {
+    if (confirm('Möchten Sie wirklich ALLE Daten löschen und einen neuen Fall beginnen?\\n\\nDies löscht:\\n- Alle Stammdaten\\n- Alle ELDiB-Einschätzungen\\n- Das gesamte klinische Assessment\\n\\nDieser Vorgang kann nicht rückgängig gemacht werden!')) {
+        // Clear form fields
+        document.querySelectorAll('input, textarea, select').forEach(el => {
+            if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+            else el.value = '';
+        });
+
+        // Clear ELDiB state
+        if (typeof state !== 'undefined') {
+            state.selections = {};
+            state.zusaetzlicheZiele = [];
+        }
+
+        // Clear CDSE Assessment
+        cdse.currentPhase = 1;
+        cdse.currentDomain = null;
+        cdse.currentQuestion = 0;
+        cdse.data = { intake: {}, domains: { somatik: {}, schule: {}, familie: {}, symptome: {}, psychometrie: {}, risiko: {} }, synthesis: null, actionPlan: null };
+        cdse.alerts = [];
+        cdse.completedDomains = [];
+
+        // Clear localStorage
+        localStorage.clear();
+
+        // Reset UI
+        document.getElementById('synthese-content').style.display = 'none';
+        document.getElementById('synthese-placeholder').style.display = 'block';
+        document.getElementById('synthese-export').style.display = 'none';
+
+        updateDossier();
+        if (typeof updateCdseUI === 'function') updateCdseUI();
+
+        alert('Alle Daten wurden gelöscht. Sie können jetzt einen neuen Fall beginnen.');
+        showTab('dossier');
+    }
+}
+
 // Initialisierung
 document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
         loadCdseState();
+        updateDossier();
     }, 300);
 });
 
