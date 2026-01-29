@@ -4353,6 +4353,357 @@
                 </div>
             </div>
 
+            <!-- 7. ELDiB Ergebnisse -->
+            <div class="form-section" id="ds-section-7">
+                <div class="ds-section-header">
+                    <span class="ds-section-number">7</span>
+                    <div class="ds-section-title">
+                        <h2>ELDiB Ergebnisse</h2>
+                        <p>Zusammenfassung der sozio-emotionalen Entwicklungsdiagnostik</p>
+                    </div>
+                </div>
+
+                <div class="ds-info-card" style="background: linear-gradient(135deg, #dbeafe, #ede9fe); border-left: 4px solid #6366f1;">
+                    <span class="ds-info-card-icon">📊</span>
+                    <span class="ds-info-card-text">
+                        Die ELDiB-Ergebnisse werden automatisch aus dem ELDiB-Tab übernommen.
+                        Hier können Sie zusätzliche Interpretationen und Beobachtungen dokumentieren.
+                    </span>
+                </div>
+
+                <!-- ELDiB Zusammenfassung wird dynamisch geladen -->
+                <div id="ds_eldib_summary" style="margin: 20px 0; padding: 20px; background: #f8fafc; border-radius: 12px;">
+                    <h4 style="color: #6366f1; margin-bottom: 15px;">Entwicklungsprofil</h4>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px;">
+                        <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 0.8rem; color: #92400e;">Verhalten</div>
+                            <div id="ds_eldib_v_stufe" style="font-size: 1.8rem; font-weight: 700; color: #78350f;">-</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #dbeafe, #93c5fd); padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 0.8rem; color: #1e40af;">Kognition</div>
+                            <div id="ds_eldib_k_stufe" style="font-size: 1.8rem; font-weight: 700; color: #1e3a8a;">-</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #d1fae5, #6ee7b7); padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 0.8rem; color: #065f46;">Sozialverhalten</div>
+                            <div id="ds_eldib_s_stufe" style="font-size: 1.8rem; font-weight: 700; color: #064e3b;">-</div>
+                        </div>
+                        <div style="background: linear-gradient(135deg, #ede9fe, #c4b5fd); padding: 15px; border-radius: 10px; text-align: center;">
+                            <div style="font-size: 0.8rem; color: #5b21b6;">Kommunikation</div>
+                            <div id="ds_eldib_c_stufe" style="font-size: 1.8rem; font-weight: 700; color: #4c1d95;">-</div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="loadEldibIntoDS()" style="width: 100%;">
+                        🔄 ELDiB-Daten aktualisieren
+                    </button>
+                </div>
+
+                <div class="ds-subsection">
+                    <h4 style="color: #8e44ad; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0;">7.1 Verhaltensbeobachtungen während der Testung</h4>
+
+                    <p style="font-weight: 600; margin-bottom: 15px; color: #555;">Beobachtetes Verhalten</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_test_verhalten" value="kooperativ"> Kooperativ</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_test_verhalten" value="motiviert"> Motiviert</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_test_verhalten" value="konzentriert"> Konzentriert</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_test_verhalten" value="ausdauernd"> Ausdauernd</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_test_verhalten" value="unsicher"> Unsicher</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_test_verhalten" value="aengstlich"> Ängstlich</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_test_verhalten" value="unruhig"> Motorisch unruhig</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_test_verhalten" value="ablenkbar"> Leicht ablenkbar</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_test_verhalten" value="verweigert"> Verweigert teilweise</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_test_verhalten" value="frustriert"> Schnell frustriert</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ds_test_beobachtung">Detaillierte Beobachtungen während der Diagnostik</label>
+                        <textarea id="ds_test_beobachtung" rows="4" placeholder="Beschreiben Sie das Verhalten des Kindes während der Testsituation..."></textarea>
+                    </div>
+                </div>
+
+                <div class="ds-subsection" style="margin-top: 20px;">
+                    <h4 style="color: #8e44ad; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0;">7.2 Stärken und Ressourcen</h4>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_staerken" value="soziale_kompetenz"> Soziale Kompetenz</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_staerken" value="empathie"> Empathiefähigkeit</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_staerken" value="kreativitaet"> Kreativität</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_staerken" value="motorik"> Motorische Fähigkeiten</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_staerken" value="sprachlich"> Sprachliche Fähigkeiten</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_staerken" value="musisch"> Musische Begabung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_staerken" value="praktisch"> Praktische Fähigkeiten</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_staerken" value="hilfsbereit"> Hilfsbereitschaft</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_staerken" value="humor"> Humor</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_staerken" value="resilienz"> Resilienz</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ds_staerken_text">Weitere Stärken und Ressourcen</label>
+                        <textarea id="ds_staerken_text" rows="3" placeholder="Beschreiben Sie weitere beobachtete Stärken..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. Interpretation -->
+            <div class="form-section" id="ds-section-8">
+                <div class="ds-section-header">
+                    <span class="ds-section-number">8</span>
+                    <div class="ds-section-title">
+                        <h2>Interpretation</h2>
+                        <p>Klinische Einordnung und Fallverständnis</p>
+                    </div>
+                </div>
+
+                <div class="ds-subsection">
+                    <h4 style="color: #8e44ad; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0;">8.1 Zusammenfassende Beurteilung</h4>
+
+                    <div class="form-group">
+                        <label for="ds_zusammenfassung">Zusammenfassende Beurteilung der Ergebnisse</label>
+                        <textarea id="ds_zusammenfassung" rows="5" placeholder="Fassen Sie die wichtigsten Befunde zusammen und ordnen Sie diese klinisch ein..."></textarea>
+                    </div>
+                </div>
+
+                <div class="ds-subsection" style="margin-top: 20px;">
+                    <h4 style="color: #8e44ad; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0;">8.2 Biopsychosoziales Modell</h4>
+
+                    <p style="font-weight: 600; margin-bottom: 15px; color: #555;">Prädisponierende Faktoren (Vulnerabilität)</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_praedisp" value="genetik"> Genetische/familiäre Belastung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_praedisp" value="temperament"> Schwieriges Temperament</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_praedisp" value="entwicklung"> Entwicklungsverzögerung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_praedisp" value="bindung"> Unsichere Bindung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_praedisp" value="trauma_frueh"> Frühkindliches Trauma</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_praedisp" value="neuro"> Neurologische Auffälligkeiten</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="ds_praedisp_text">Weitere prädisponierende Faktoren</label>
+                        <textarea id="ds_praedisp_text" rows="2" placeholder="Beschreiben Sie weitere Vulnerabilitätsfaktoren..."></textarea>
+                    </div>
+
+                    <p style="font-weight: 600; margin: 20px 0 15px 0; color: #555;">Auslösende Faktoren (Trigger)</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_ausloesend" value="schulwechsel"> Schulwechsel</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_ausloesend" value="trennung"> Trennung der Eltern</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_ausloesend" value="verlust"> Verlust/Trauer</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_ausloesend" value="mobbing"> Mobbing/Ausgrenzung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_ausloesend" value="ueberforderung"> Schulische Überforderung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_ausloesend" value="konflikt"> Familiäre Konflikte</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="ds_ausloesend_text">Weitere auslösende Faktoren</label>
+                        <textarea id="ds_ausloesend_text" rows="2" placeholder="Beschreiben Sie weitere Auslöser..."></textarea>
+                    </div>
+
+                    <p style="font-weight: 600; margin: 20px 0 15px 0; color: #555;">Aufrechterhaltende Faktoren</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_aufrecht" value="teufelskreis"> Teufelskreis (Verhalten-Reaktion)</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_aufrecht" value="verstaerkung"> Unbeabsichtigte Verstärkung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_aufrecht" value="vermeidung"> Vermeidungsverhalten</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_aufrecht" value="mangel_strategie"> Fehlende Bewältigungsstrategien</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_aufrecht" value="umfeld"> Ungünstiges Umfeld</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_aufrecht" value="beziehung"> Belastete Beziehungen</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="ds_aufrecht_text">Weitere aufrechterhaltende Faktoren</label>
+                        <textarea id="ds_aufrecht_text" rows="2" placeholder="Beschreiben Sie weitere aufrechterhaltende Faktoren..."></textarea>
+                    </div>
+                </div>
+
+                <div class="ds-subsection" style="margin-top: 20px;">
+                    <h4 style="color: #8e44ad; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0;">8.3 Diagnostische Einschätzung</h4>
+
+                    <div class="form-group">
+                        <label>Verdachtsdiagnosen / Arbeitsdiagnosen</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin: 10px 0;">
+                            <label class="checkbox-label-ds"><input type="checkbox" name="ds_verdacht" value="f90"> F90 - Hyperkinetische Störung (ADHS)</label>
+                            <label class="checkbox-label-ds"><input type="checkbox" name="ds_verdacht" value="f91"> F91 - Störung des Sozialverhaltens</label>
+                            <label class="checkbox-label-ds"><input type="checkbox" name="ds_verdacht" value="f92"> F92 - Kombinierte Störung</label>
+                            <label class="checkbox-label-ds"><input type="checkbox" name="ds_verdacht" value="f93"> F93 - Emotionale Störung des Kindesalters</label>
+                            <label class="checkbox-label-ds"><input type="checkbox" name="ds_verdacht" value="f94"> F94 - Bindungsstörung</label>
+                            <label class="checkbox-label-ds"><input type="checkbox" name="ds_verdacht" value="f84"> F84 - Autismus-Spektrum</label>
+                            <label class="checkbox-label-ds"><input type="checkbox" name="ds_verdacht" value="f81"> F81 - Umschriebene Entwicklungsstörung</label>
+                            <label class="checkbox-label-ds"><input type="checkbox" name="ds_verdacht" value="andere_diagnose"> Andere</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ds_verdacht_text">Erläuterungen zur diagnostischen Einschätzung</label>
+                        <textarea id="ds_verdacht_text" rows="3" placeholder="Begründen Sie Ihre diagnostische Einschätzung..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. Bedürfnisse -->
+            <div class="form-section" id="ds-section-9">
+                <div class="ds-section-header">
+                    <span class="ds-section-number">9</span>
+                    <div class="ds-section-title">
+                        <h2>Spezifische Bedürfnisse</h2>
+                        <p>Individuelle Förder- und Unterstützungsbedürfnisse</p>
+                    </div>
+                </div>
+
+                <div class="ds-subsection">
+                    <h4 style="color: #8e44ad; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0;">9.1 Emotionale Bedürfnisse</h4>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_emotional" value="sicherheit"> Sicherheit und Geborgenheit</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_emotional" value="wertschaetzung"> Wertschätzung und Anerkennung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_emotional" value="zugehoerigkeit"> Zugehörigkeitsgefühl</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_emotional" value="selbstwirksamkeit"> Selbstwirksamkeitserfahrungen</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_emotional" value="regulation"> Unterstützung bei Emotionsregulation</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_emotional" value="bindung"> Stabile Bindungsbeziehung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_emotional" value="vorhersehbarkeit"> Vorhersehbarkeit und Struktur</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_emotional" value="ausdruck"> Raum für emotionalen Ausdruck</label>
+                    </div>
+                </div>
+
+                <div class="ds-subsection" style="margin-top: 20px;">
+                    <h4 style="color: #8e44ad; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0;">9.2 Soziale Bedürfnisse</h4>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_sozial" value="freundschaften"> Unterstützung beim Aufbau von Freundschaften</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_sozial" value="konflikt"> Hilfe bei Konfliktlösung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_sozial" value="gruppe"> Positive Gruppenerfahrungen</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_sozial" value="kommunikation"> Förderung sozialer Kommunikation</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_sozial" value="perspektive"> Perspektivübernahme üben</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_sozial" value="kooperation"> Kooperationsfähigkeit stärken</label>
+                    </div>
+                </div>
+
+                <div class="ds-subsection" style="margin-top: 20px;">
+                    <h4 style="color: #8e44ad; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0;">9.3 Schulische Bedürfnisse</h4>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_schule" value="struktur"> Klare Strukturen und Regeln</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_schule" value="kleingruppe"> Arbeit in Kleingruppen</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_schule" value="einzelfoerderung"> Individuelle Einzelförderung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_schule" value="nachteilsausgleich"> Nachteilsausgleich</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_schule" value="rueckzug"> Rückzugsmöglichkeiten</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_schule" value="bewegung"> Bewegungsmöglichkeiten</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_schule" value="visualisierung"> Visualisierte Abläufe</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_schule" value="beziehung_lehrperson"> Tragfähige Beziehung zur Lehrperson</label>
+                    </div>
+                </div>
+
+                <div class="ds-subsection" style="margin-top: 20px;">
+                    <h4 style="color: #8e44ad; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0;">9.4 Familiäre Bedürfnisse</h4>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_familie" value="elternberatung"> Elternberatung/-begleitung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_familie" value="erziehungsberatung"> Erziehungsberatung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_familie" value="entlastung"> Entlastung der Familie</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_familie" value="kommunikation_eltern"> Verbesserung Eltern-Kind-Kommunikation</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_familie" value="netzwerk"> Aufbau eines Unterstützungsnetzwerks</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_bedarf_familie" value="therapie_eltern"> Therapeutische Unterstützung für Eltern</label>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="ds_beduerfnisse_weitere">Weitere spezifische Bedürfnisse</label>
+                    <textarea id="ds_beduerfnisse_weitere" rows="4" placeholder="Beschreiben Sie weitere individuelle Bedürfnisse des Kindes..."></textarea>
+                </div>
+            </div>
+
+            <!-- 10. Empfehlungen -->
+            <div class="form-section" id="ds-section-10">
+                <div class="ds-section-header">
+                    <span class="ds-section-number">10</span>
+                    <div class="ds-section-title">
+                        <h2>Empfehlungen</h2>
+                        <p>Maßnahmen und Empfehlungen für die weitere Förderung</p>
+                    </div>
+                </div>
+
+                <div class="ds-subsection">
+                    <h4 style="color: #8e44ad; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0;">10.1 Empfehlungen für die Schule</h4>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_schule" value="sitzplatz"> Günstiger Sitzplatz (vorne, reizarm)</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_schule" value="pausen"> Regelmäßige Bewegungspausen</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_schule" value="struktur"> Klare Tages-/Unterrichtsstruktur</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_schule" value="visualisierung"> Visuelle Unterstützung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_schule" value="lob"> Verstärkte positive Rückmeldung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_schule" value="rueckzug"> Rückzugsraum bei Überforderung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_schule" value="zeitverlaengerung"> Zeitverlängerung bei Arbeiten</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_schule" value="einzelarbeit"> Möglichkeit zur Einzelarbeit</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_schule" value="hilfsmittel"> Hilfsmittel erlauben</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_schule" value="aufgaben_teilen"> Aufgaben in kleinere Schritte teilen</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="ds_empf_schule_text">Weitere schulische Empfehlungen</label>
+                        <textarea id="ds_empf_schule_text" rows="3" placeholder="Weitere spezifische Empfehlungen für die Schule..."></textarea>
+                    </div>
+                </div>
+
+                <div class="ds-subsection" style="margin-top: 20px;">
+                    <h4 style="color: #8e44ad; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0;">10.2 Empfehlungen für die Familie</h4>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_familie" value="routine"> Feste Routinen und Strukturen</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_familie" value="qualitaetszeit"> Regelmäßige Qualitätszeit</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_familie" value="regeln"> Klare, konsequente Regeln</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_familie" value="loben"> Positives Verhalten loben</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_familie" value="gefuehle"> Gefühle benennen und validieren</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_familie" value="bewegung"> Ausreichend Bewegung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_familie" value="medien"> Medienzeitbegrenzung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_familie" value="schlaf"> Regelmäßiger Schlafrhythmus</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="ds_empf_familie_text">Weitere Empfehlungen für die Familie</label>
+                        <textarea id="ds_empf_familie_text" rows="3" placeholder="Weitere spezifische Empfehlungen für die Familie..."></textarea>
+                    </div>
+                </div>
+
+                <div class="ds-subsection" style="margin-top: 20px;">
+                    <h4 style="color: #8e44ad; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0;">10.3 Therapeutische / Fachliche Empfehlungen</h4>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_therapie" value="kinderpsychotherapie"> Kinder-/Jugendpsychotherapie</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_therapie" value="familientherapie"> Familientherapie</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_therapie" value="ergotherapie"> Ergotherapie</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_therapie" value="logopaedie"> Logopädie</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_therapie" value="psychomotorik"> Psychomotorik</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_therapie" value="psychiatrie"> Kinder-/Jugendpsychiatrische Abklärung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_therapie" value="paediatrie"> Pädiatrische Abklärung</label>
+                        <label class="checkbox-label-ds"><input type="checkbox" name="ds_empf_therapie" value="sozialtraining"> Soziales Kompetenztraining</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="ds_empf_therapie_text">Weitere therapeutische Empfehlungen</label>
+                        <textarea id="ds_empf_therapie_text" rows="3" placeholder="Weitere spezifische therapeutische Empfehlungen..."></textarea>
+                    </div>
+                </div>
+
+                <div class="ds-subsection" style="margin-top: 20px; background: linear-gradient(135deg, rgba(155, 89, 182, 0.1), rgba(142, 68, 173, 0.05)); padding: 25px; border-radius: 12px; border: 2px solid #9b59b6;">
+                    <h4 style="color: #9b59b6; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #9b59b6;">10.4 Empfehlungen an die CNI</h4>
+
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+                        <label class="checkbox-label-ds" style="padding: 12px; background: white; border-radius: 8px;"><input type="checkbox" name="ds_cni_empfehlung" value="diagnostik_kz"> Spezialisierte Diagnostik in Zusammenarbeit mit einem Kompetenzzentrum</label>
+                        <label class="checkbox-label-ds" style="padding: 12px; background: white; border-radius: 8px;"><input type="checkbox" name="ds_cni_empfehlung" value="beratung_eltern"> Beratung und Begleitung der Eltern und des/der betroffenen Schülers/-in</label>
+                        <label class="checkbox-label-ds" style="padding: 12px; background: white; border-radius: 8px;"><input type="checkbox" name="ds_cni_empfehlung" value="beratung_fachleute"> Beratung und Begleitung der Fachleute</label>
+                        <label class="checkbox-label-ds" style="padding: 12px; background: white; border-radius: 8px;"><input type="checkbox" name="ds_cni_empfehlung" value="lernwerkstatt_cni"> Spezialisierte Lernwerkstatt</label>
+                        <label class="checkbox-label-ds" style="padding: 12px; background: white; border-radius: 8px;"><input type="checkbox" name="ds_cni_empfehlung" value="isa_cni"> Spezialisierte ambulante Intervention (ISA)</label>
+                        <label class="checkbox-label-ds" style="padding: 12px; background: white; border-radius: 8px;"><input type="checkbox" name="ds_cni_empfehlung" value="beschulung_cdse"> Spezialisierte Beschulung im CDSE</label>
+                        <div style="margin-left: 30px; display: grid; gap: 8px;">
+                            <label class="checkbox-label-ds" style="padding: 10px; background: #f3e8ff; border-radius: 8px;"><input type="checkbox" name="ds_cni_empfehlung" value="clapa_cni"> Classe de Participation (ClaPa)</label>
+                            <label class="checkbox-label-ds" style="padding: 10px; background: #f3e8ff; border-radius: 8px;"><input type="checkbox" name="ds_cni_empfehlung" value="cst_cni"> Centre socio-thérapeutique (CST)</label>
+                            <label class="checkbox-label-ds" style="padding: 10px; background: #f3e8ff; border-radius: 8px;"><input type="checkbox" name="ds_cni_empfehlung" value="annexe_junglinster"> Annexe Junglinster</label>
+                        </div>
+                        <label class="checkbox-label-ds" style="padding: 12px; background: white; border-radius: 8px;"><input type="checkbox" name="ds_cni_empfehlung" value="beschulung_ausland"> Spezialisierte Beschulung im Ausland</label>
+                        <label class="checkbox-label-ds" style="padding: 12px; background: white; border-radius: 8px;"><input type="checkbox" name="ds_cni_empfehlung" value="abschluss"> Abschluss der Aktivitäten des CDSE</label>
+                        <label class="checkbox-label-ds" style="padding: 12px; background: white; border-radius: 8px;"><input type="checkbox" name="ds_cni_empfehlung" value="schliessung"> Schließung der Akte im CDSE</label>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="ds_cni_begruendung">Begründung der CNI-Empfehlung</label>
+                        <textarea id="ds_cni_begruendung" rows="4" placeholder="Begründen Sie Ihre Empfehlung an die CNI..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="ds_prognose">Prognose und Ausblick</label>
+                    <textarea id="ds_prognose" rows="4" placeholder="Geben Sie eine Einschätzung zur Prognose bei Umsetzung der empfohlenen Maßnahmen..."></textarea>
+                </div>
+            </div>
+
             <div class="button-group" style="margin-top: 30px; display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
                 <button class="btn" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white; padding: 15px 40px; font-size: 1.1rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);" onclick="generateAndExportDS()">
                     📄 DS generieren
@@ -13642,6 +13993,74 @@ function loadDSData(data) {
     // Ereignisse Details anzeigen
     if (data.checkboxes && data.checkboxes.ds_ereignis) {
         data.checkboxes.ds_ereignis.forEach(e => toggleEreignisDetails(e));
+    }
+}
+
+// ELDiB-Daten in DS-Sektion 7 laden
+function loadEldibIntoDS() {
+    // Hole die aktuellen ELDiB-Stufen aus dem state
+    if (typeof state !== 'undefined' && state.selections) {
+        // Berechne die höchsten erreichten Stufen pro Bereich
+        const bereiche = {
+            'V': { name: 'Verhalten', maxStufe: 0 },
+            'K': { name: 'Kognition', maxStufe: 0 },
+            'S': { name: 'Sozialverhalten', maxStufe: 0 },
+            'C': { name: 'Kommunikation', maxStufe: 0 }
+        };
+
+        for (const [key, value] of Object.entries(state.selections)) {
+            if (value && value.selected) {
+                const bereich = key.charAt(0).toUpperCase();
+                if (bereiche[bereich]) {
+                    // Extrahiere die Stufe aus dem Key (z.B. "V-1" -> Stufe 1 ist Teil von Stufe I)
+                    const match = key.match(/[VKSC]-(\d+)/i);
+                    if (match) {
+                        const itemNum = parseInt(match[1]);
+                        // Berechne Stufe basierend auf Item-Nummer
+                        let stufe = 0;
+                        if (bereich === 'V') {
+                            if (itemNum <= 3) stufe = 1;
+                            else if (itemNum <= 9) stufe = 2;
+                            else if (itemNum <= 17) stufe = 3;
+                            else if (itemNum <= 26) stufe = 4;
+                            else stufe = 5;
+                        } else if (bereich === 'K') {
+                            if (itemNum <= 3) stufe = 1;
+                            else if (itemNum <= 8) stufe = 2;
+                            else if (itemNum <= 16) stufe = 3;
+                            else if (itemNum <= 26) stufe = 4;
+                            else stufe = 5;
+                        } else if (bereich === 'S') {
+                            if (itemNum <= 3) stufe = 1;
+                            else if (itemNum <= 9) stufe = 2;
+                            else if (itemNum <= 17) stufe = 3;
+                            else if (itemNum <= 27) stufe = 4;
+                            else stufe = 5;
+                        } else if (bereich === 'C') {
+                            if (itemNum <= 3) stufe = 1;
+                            else if (itemNum <= 8) stufe = 2;
+                            else if (itemNum <= 16) stufe = 3;
+                            else if (itemNum <= 24) stufe = 4;
+                            else stufe = 5;
+                        }
+                        if (stufe > bereiche[bereich].maxStufe) {
+                            bereiche[bereich].maxStufe = stufe;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Aktualisiere die Anzeige
+        const stufeRoemisch = ['', 'I', 'II', 'III', 'IV', 'V'];
+        document.getElementById('ds_eldib_v_stufe').textContent = bereiche['V'].maxStufe > 0 ? stufeRoemisch[bereiche['V'].maxStufe] : '-';
+        document.getElementById('ds_eldib_k_stufe').textContent = bereiche['K'].maxStufe > 0 ? stufeRoemisch[bereiche['K'].maxStufe] : '-';
+        document.getElementById('ds_eldib_s_stufe').textContent = bereiche['S'].maxStufe > 0 ? stufeRoemisch[bereiche['S'].maxStufe] : '-';
+        document.getElementById('ds_eldib_c_stufe').textContent = bereiche['C'].maxStufe > 0 ? stufeRoemisch[bereiche['C'].maxStufe] : '-';
+
+        showToast('ELDiB-Daten wurden aktualisiert!');
+    } else {
+        showToast('Keine ELDiB-Daten gefunden. Bitte zuerst ELDiB ausfüllen.', 'warning');
     }
 }
 
