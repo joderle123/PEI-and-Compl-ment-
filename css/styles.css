@@ -1,0 +1,48 @@
+/* ===========================================
+   HAUPTSTYLESHEET - ELDiB Generator Suite
+   ===========================================
+
+   Dieses Stylesheet importiert alle Module
+   und kann direkt in HTML-Dateien eingebunden werden.
+
+   Struktur:
+   1. variables.css - Design-Tokens (Farben, Abstände, etc.)
+   2. base.css      - Reset und Grundlegende Styles
+   3. components.css - Wiederverwendbare UI-Komponenten
+
+   =========================================== */
+
+@import url('variables.css');
+@import url('base.css');
+@import url('components.css');
+
+/* ===========================================
+   SEITENSPEZIFISCHE STYLES
+   (Können hier ergänzt werden für gemeinsame Anpassungen)
+   =========================================== */
+
+/* Inter Font laden */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ===========================================
+   PRINT STYLES
+   =========================================== */
+@media print {
+    .header,
+    .nav-links,
+    .btn,
+    .modal {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+
+    .card,
+    .form-section {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+}
