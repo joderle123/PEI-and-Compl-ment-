@@ -2381,9 +2381,14 @@
             <div class="sidebar-section">
                 <div class="sidebar-section-title">2. Anamnese (DS)</div>
                 <div class="sidebar-item" onclick="showTab('dossier')" data-tab="dossier">
-                    <span class="sidebar-item-icon">📋</span>
-                    <span>Diagnostic Spécialisé</span>
+                    <span class="sidebar-item-icon">📊</span>
+                    <span>Übersicht</span>
                     <span class="sidebar-item-badge" id="badge-dossier">0</span>
+                </div>
+                <div class="sidebar-item" onclick="showTab('diagnostic')" data-tab="diagnostic">
+                    <span class="sidebar-item-icon">📋</span>
+                    <span>DS-Formular</span>
+                    <span class="sidebar-item-badge" id="badge-diagnostic">0</span>
                 </div>
             </div>
 
@@ -4742,7 +4747,7 @@
                 <button class="btn" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); color: white; padding: 15px 40px; font-size: 1.1rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);" onclick="generateAndExportDS()">
                     📄 DS generieren
                 </button>
-                <button class="btn btn-primary" onclick="showMainSection('export')">Weitere Export-Optionen →</button>
+                <button class="btn btn-primary" onclick="showTab('export')">Weitere Export-Optionen →</button>
             </div>
                 </div><!-- Ende ds-main-content -->
             </div><!-- Ende ds-layout -->
