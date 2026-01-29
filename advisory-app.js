@@ -1,6 +1,49 @@
 // Advisory Tool - Application Logic
+/**
+ * @fileoverview Advisory Tool für pädagogische Fallberatung
+ * @description Ermöglicht die systematische Exploration von Verhaltensauffälligkeiten
+ *              und bietet Interventionsempfehlungen basierend auf ELDiB.
+ * @version 1.0.0
+ */
 
-// State
+/**
+ * Zeigt dem Benutzer eine Fehlermeldung an
+ * @param {string} message - Die anzuzeigende Nachricht
+ * @param {string} [type='error'] - Typ: 'error', 'warning', 'info'
+ */
+function showUserMessage(message, type = 'error') {
+    // Prüfe ob ein Toast-Container existiert, sonst verwende alert
+    const toastContainer = document.getElementById('toast-container');
+    if (toastContainer) {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'polite');
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
+        setTimeout(() => toast.remove(), 5000);
+    } else {
+        // Fallback auf console und ggf. visuelle Anzeige
+        console.error(`[${type.toUpperCase()}] ${message}`);
+        if (type === 'error') {
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = 'position:fixed;top:20px;right:20px;background:#ef4444;color:white;padding:15px 20px;border-radius:8px;z-index:10000;max-width:400px;box-shadow:0 4px 12px rgba(0,0,0,0.15);';
+            errorDiv.setAttribute('role', 'alert');
+            errorDiv.textContent = message;
+            document.body.appendChild(errorDiv);
+            setTimeout(() => errorDiv.remove(), 5000);
+        }
+    }
+}
+
+/**
+ * Globaler Anwendungszustand
+ * @type {Object}
+ * @property {string|null} selectedProblem - ID der ausgewählten Problematik
+ * @property {Object} explorationNotes - Notizen aus der Exploration (Index -> Text)
+ * @property {Object} eldibAssessment - ELDiB-Einschätzungen (Code -> Status)
+ * @property {string} caseNotes - Allgemeine Fallnotizen
+ */
 const advisoryState = {
     selectedProblem: null,
     explorationNotes: {},
@@ -410,37 +453,96 @@ function findItemByCode(code) {
 // LOCAL STORAGE
 // ============================================
 
+/**
+ * Speichert den aktuellen Zustand in localStorage
+ * @returns {boolean} true bei Erfolg, false bei Fehler
+ */
 function saveToLocalStorage() {
-    const data = {
-        selectedProblem: advisoryState.selectedProblem,
-        explorationNotes: advisoryState.explorationNotes,
-        eldibAssessment: advisoryState.eldibAssessment,
-        caseNotes: document.getElementById('caseNotes')?.value || ''
-    };
-    localStorage.setItem('advisory-data', JSON.stringify(data));
+    try {
+        // Prüfe ob localStorage verfügbar ist
+        if (typeof localStorage === 'undefined') {
+            console.warn('localStorage nicht verfügbar');
+            return false;
+        }
+
+        const data = {
+            selectedProblem: advisoryState.selectedProblem,
+            explorationNotes: advisoryState.explorationNotes,
+            eldibAssessment: advisoryState.eldibAssessment,
+            caseNotes: document.getElementById('caseNotes')?.value || '',
+            savedAt: new Date().toISOString()
+        };
+
+        localStorage.setItem('advisory-data', JSON.stringify(data));
+        return true;
+    } catch (error) {
+        if (error.name === 'QuotaExceededError') {
+            console.error('localStorage-Speicher voll');
+            showUserMessage('Speicher voll. Bitte exportieren Sie Ihre Daten.', 'warning');
+        } else {
+            console.error('Fehler beim Speichern:', error.message);
+        }
+        return false;
+    }
 }
 
+/**
+ * Lädt gespeicherte Daten aus localStorage
+ * @returns {boolean} true bei erfolgreichem Laden, false bei Fehler
+ */
 function loadFromLocalStorage() {
-    const saved = localStorage.getItem('advisory-data');
-    if (saved) {
-        try {
-            const data = JSON.parse(saved);
-            advisoryState.selectedProblem = data.selectedProblem;
-            advisoryState.explorationNotes = data.explorationNotes || {};
-            advisoryState.eldibAssessment = data.eldibAssessment || {};
-
-            // Restore UI
-            if (advisoryState.selectedProblem) {
-                selectProblem(advisoryState.selectedProblem);
-            }
-
-            if (data.caseNotes) {
-                const notesEl = document.getElementById('caseNotes');
-                if (notesEl) notesEl.value = data.caseNotes;
-            }
-        } catch (e) {
-            console.error('Error loading advisory data:', e);
+    try {
+        // Prüfe ob localStorage verfügbar ist
+        if (typeof localStorage === 'undefined') {
+            console.warn('localStorage nicht verfügbar (Private Mode?)');
+            return false;
         }
+
+        const saved = localStorage.getItem('advisory-data');
+        if (!saved) {
+            return false;
+        }
+
+        const data = JSON.parse(saved);
+
+        // Validiere die geladenen Daten
+        if (typeof data !== 'object' || data === null) {
+            console.warn('Ungültige Datenstruktur in localStorage');
+            return false;
+        }
+
+        // Sichere Zuweisung mit Fallbacks
+        advisoryState.selectedProblem = data.selectedProblem || null;
+        advisoryState.explorationNotes = (typeof data.explorationNotes === 'object' && data.explorationNotes !== null)
+            ? data.explorationNotes
+            : {};
+        advisoryState.eldibAssessment = (typeof data.eldibAssessment === 'object' && data.eldibAssessment !== null)
+            ? data.eldibAssessment
+            : {};
+
+        // Restore UI
+        if (advisoryState.selectedProblem) {
+            // Prüfe ob die Problematik noch existiert
+            if (typeof ADVISORY_DATA !== 'undefined' &&
+                ADVISORY_DATA.problematiken &&
+                ADVISORY_DATA.problematiken[advisoryState.selectedProblem]) {
+                selectProblem(advisoryState.selectedProblem);
+            } else {
+                console.warn(`Problematik "${advisoryState.selectedProblem}" nicht mehr vorhanden`);
+                advisoryState.selectedProblem = null;
+            }
+        }
+
+        if (data.caseNotes && typeof data.caseNotes === 'string') {
+            const notesEl = document.getElementById('caseNotes');
+            if (notesEl) notesEl.value = data.caseNotes;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Fehler beim Laden der Advisory-Daten:', error.message);
+        showUserMessage('Gespeicherte Daten konnten nicht geladen werden.', 'warning');
+        return false;
     }
 }
 

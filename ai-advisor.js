@@ -1,6 +1,22 @@
 // KI-Berater Modul
 // Integration mit Claude (Anthropic) oder GPT (OpenAI)
+//
+// ⚠️ SICHERHEITSHINWEIS:
+// API-Keys werden hier im Browser gespeichert und direkt an die APIs gesendet.
+// Für Produktionsumgebungen sollte ein Backend-Proxy verwendet werden!
+// Siehe: https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching#best-practices
 
+/**
+ * @fileoverview KI-Berater Modul für sozial-emotionale Beratung
+ * @description Ermöglicht Chat-Interaktionen mit Claude (Anthropic) oder GPT (OpenAI)
+ *              für Fallbesprechungen und pädagogische Beratung.
+ * @version 1.0.0
+ */
+
+/**
+ * KI-Berater Singleton für API-Kommunikation
+ * @namespace AI_ADVISOR
+ */
 const AI_ADVISOR = {
     // Konfiguration
     config: {
@@ -95,12 +111,34 @@ Antworte auf Deutsch. Sei empathisch aber professionell.`,
         ]
     },
 
-    // Initialisierung
+    /**
+     * Initialisiert den KI-Berater mit Provider-Konfiguration
+     * @param {string} provider - 'anthropic' oder 'openai'
+     * @param {string} apiKey - Der API-Schlüssel des Providers
+     * @param {string} model - Die Modell-ID (z.B. 'claude-sonnet-4-20250514')
+     * @throws {Error} Wenn Provider oder API-Key fehlen
+     */
     init(provider, apiKey, model) {
+        if (!provider || !['anthropic', 'openai'].includes(provider)) {
+            throw new Error('Ungültiger Provider. Erlaubt: "anthropic" oder "openai"');
+        }
+        if (!apiKey || typeof apiKey !== 'string' || apiKey.trim().length === 0) {
+            throw new Error('API-Key ist erforderlich und darf nicht leer sein');
+        }
+        if (!model || typeof model !== 'string') {
+            throw new Error('Modell ist erforderlich');
+        }
+
         this.config.provider = provider;
-        this.config.apiKey = apiKey;
+        this.config.apiKey = apiKey.trim();
         this.config.model = model;
         this.loadChatHistory();
+
+        // Sicherheitswarnung in der Konsole
+        console.warn(
+            '⚠️ AI_ADVISOR: API-Key wird im Browser verwendet. ' +
+            'Für Produktionsumgebungen einen Backend-Proxy implementieren!'
+        );
     },
 
     // API-Aufruf
@@ -202,16 +240,50 @@ Antworte auf Deutsch. Sei empathisch aber professionell.`,
         return data.choices[0].message.content;
     },
 
-    // Chat-Verlauf speichern
+    /**
+     * Speichert den Chat-Verlauf in localStorage
+     * @returns {boolean} true bei Erfolg, false bei Fehler
+     */
     saveChatHistory() {
-        localStorage.setItem('ai-advisor-history', JSON.stringify(this.chatHistory));
+        try {
+            const data = JSON.stringify(this.chatHistory);
+            localStorage.setItem('ai-advisor-history', data);
+            return true;
+        } catch (error) {
+            // localStorage könnte voll sein oder im Private Mode nicht verfügbar
+            console.error('Fehler beim Speichern des Chat-Verlaufs:', error.message);
+            if (error.name === 'QuotaExceededError') {
+                console.warn('localStorage-Speicher voll. Alte Nachrichten werden entfernt.');
+                // Versuche ältere Nachrichten zu entfernen
+                if (this.chatHistory.length > 10) {
+                    this.chatHistory = this.chatHistory.slice(-10);
+                    return this.saveChatHistory();
+                }
+            }
+            return false;
+        }
     },
 
-    // Chat-Verlauf laden
+    /**
+     * Lädt den Chat-Verlauf aus localStorage
+     * @returns {boolean} true bei Erfolg, false bei Fehler oder leeren Daten
+     */
     loadChatHistory() {
-        const saved = localStorage.getItem('ai-advisor-history');
-        if (saved) {
-            this.chatHistory = JSON.parse(saved);
+        try {
+            const saved = localStorage.getItem('ai-advisor-history');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed)) {
+                    this.chatHistory = parsed;
+                    return true;
+                }
+            }
+            this.chatHistory = [];
+            return false;
+        } catch (error) {
+            console.error('Fehler beim Laden des Chat-Verlaufs:', error.message);
+            this.chatHistory = [];
+            return false;
         }
     },
 
@@ -314,15 +386,45 @@ Antworte auf Deutsch. Sei empathisch aber professionell.`,
     ]
 };
 
-// Hilfsfunktion: Markdown zu HTML (einfach)
+/**
+ * Konvertiert einfaches Markdown zu HTML
+ * @param {string} text - Der Markdown-Text
+ * @returns {string} Der konvertierte HTML-String
+ * @example
+ * markdownToHtml('**fett** und *kursiv*');
+ * // => '<strong>fett</strong> und <em>kursiv</em>'
+ *
+ * @note Für komplexere Markdown-Parsing sollte eine Bibliothek wie
+ *       marked.js oder remark verwendet werden.
+ */
 function markdownToHtml(text) {
-    if (!text) return '';
+    if (!text || typeof text !== 'string') return '';
 
-    return text
-        // Code-Blöcke
-        .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-        // Inline-Code
-        .replace(/`([^`]+)`/g, '<code>$1</code>')
+    // Escape HTML-Zeichen zur Vermeidung von XSS
+    const escapeHtml = (str) => str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+    // Zuerst Code-Blöcke extrahieren und schützen
+    const codeBlocks = [];
+    let processedText = text.replace(/```(\w*)\n([\s\S]*?)```/g, (match, lang, code) => {
+        const index = codeBlocks.length;
+        codeBlocks.push(`<pre><code class="language-${lang || 'text'}">${escapeHtml(code.trim())}</code></pre>`);
+        return `%%CODEBLOCK_${index}%%`;
+    });
+
+    // Inline-Code extrahieren und schützen
+    const inlineCodes = [];
+    processedText = processedText.replace(/`([^`]+)`/g, (match, code) => {
+        const index = inlineCodes.length;
+        inlineCodes.push(`<code>${escapeHtml(code)}</code>`);
+        return `%%INLINECODE_${index}%%`;
+    });
+
+    processedText = processedText
         // Überschriften
         .replace(/^### (.*$)/gm, '<h4>$1</h4>')
         .replace(/^## (.*$)/gm, '<h3>$1</h3>')
@@ -338,6 +440,16 @@ function markdownToHtml(text) {
         .replace(/\n\n/g, '</p><p>')
         // Zeilenumbrüche
         .replace(/\n/g, '<br>');
+
+    // Code-Blöcke und Inline-Code wiederherstellen
+    codeBlocks.forEach((block, index) => {
+        processedText = processedText.replace(`%%CODEBLOCK_${index}%%`, block);
+    });
+    inlineCodes.forEach((code, index) => {
+        processedText = processedText.replace(`%%INLINECODE_${index}%%`, code);
+    });
+
+    return processedText;
 }
 
 // Export

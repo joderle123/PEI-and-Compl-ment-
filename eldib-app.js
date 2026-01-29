@@ -1,14 +1,82 @@
 // ELDiB App - Main Application Logic
+/**
+ * @fileoverview ELDiB-Anwendung zur Erfassung von Entwicklungszielen
+ * @description Ermöglicht die systematische Einschätzung von Entwicklungsständen
+ *              nach dem ELDiB-System und die Generierung von PEI-Dokumenten.
+ * @version 1.0.0
+ */
 
-// State Management
+/**
+ * Validiert einen ELDiB-Item-Code
+ * @param {string} code - Der zu validierende Code (z.B. "V-1", "K-10")
+ * @returns {boolean} true wenn gültig
+ */
+function isValidItemCode(code) {
+    if (!code || typeof code !== 'string') return false;
+    // Format: V-1, K-10, SOZ-5, KOG-15
+    return /^(V|K|SOZ|KOG)-\d+$/.test(code);
+}
+
+/**
+ * Zeigt eine Benutzernachricht an
+ * @param {string} message - Die Nachricht
+ * @param {string} [type='info'] - 'error', 'warning', 'info', 'success'
+ */
+function showNotification(message, type = 'info') {
+    const colors = {
+        error: '#ef4444',
+        warning: '#f59e0b',
+        info: '#3b82f6',
+        success: '#10b981'
+    };
+
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed; top: 20px; right: 20px;
+        background: ${colors[type] || colors.info}; color: white;
+        padding: 12px 20px; border-radius: 8px; z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        animation: slideIn 0.3s ease-out;
+    `;
+    notification.setAttribute('role', 'alert');
+    notification.setAttribute('aria-live', 'polite');
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transition = 'opacity 0.3s';
+        setTimeout(() => notification.remove(), 300);
+    }, 4000);
+}
+
+/**
+ * Globaler Anwendungszustand
+ * @type {Object}
+ * @property {Object} selections - Einschätzungen pro Item-Code
+ */
 const state = {
-    selections: {},  // Format: { "V-1": { status: "erreicht"|"nicht-erreicht"|"ziel", zieltext: "..." } }
+    selections: {}  // Format: { "V-1": { status: "erreicht"|"nicht-erreicht"|"ziel", zieltext: "..." } }
 };
 
-// Initialize the application
+// Debounce-Timer für localStorage-Speicherung
+let saveDebounceTimer = null;
+
+/**
+ * Initialisiert die Anwendung nach DOM-Ladung
+ */
 document.addEventListener('DOMContentLoaded', function() {
-    initializeItems();
-    loadFromLocalStorage();
+    try {
+        // Prüfe ob ELDIB_DATA vorhanden ist
+        if (typeof ELDIB_DATA === 'undefined') {
+            throw new Error('ELDIB_DATA nicht geladen');
+        }
+        initializeItems();
+        loadFromLocalStorage();
+    } catch (error) {
+        console.error('Initialisierungsfehler:', error.message);
+        showNotification('Fehler beim Laden der Anwendung. Bitte Seite neu laden.', 'error');
+    }
 });
 
 // Tab Navigation
@@ -44,49 +112,120 @@ function toggleBereich(contentId) {
     content.classList.toggle('hidden');
 }
 
-// Initialize all items from ELDIB_DATA
+/**
+ * Initialisiert alle Items aus ELDIB_DATA
+ * Verwendet DocumentFragment für optimierte DOM-Performance
+ */
 function initializeItems() {
     for (const [bereichKey, bereich] of Object.entries(ELDIB_DATA)) {
+        if (!bereich || !bereich.stufen) {
+            console.warn(`Ungültige Bereichsdaten für "${bereichKey}"`);
+            continue;
+        }
+
         for (const [stufeNr, stufe] of Object.entries(bereich.stufen)) {
             const containerId = `${bereichKey}-stufe${stufeNr}-items`;
             const container = document.getElementById(containerId);
 
-            if (container) {
-                stufe.items.forEach(item => {
-                    container.appendChild(createItemElement(item, bereichKey));
-                });
+            if (!container) {
+                console.warn(`Container nicht gefunden: ${containerId}`);
+                continue;
             }
+
+            if (!stufe.items || !Array.isArray(stufe.items)) {
+                console.warn(`Keine Items für ${containerId}`);
+                continue;
+            }
+
+            // DocumentFragment für bessere Performance (weniger Reflows)
+            const fragment = document.createDocumentFragment();
+
+            stufe.items.forEach(item => {
+                if (item && item.code) {
+                    fragment.appendChild(createItemElement(item, bereichKey));
+                }
+            });
+
+            // Einmaliges DOM-Update statt vieler einzelner
+            container.appendChild(fragment);
         }
     }
 }
 
-// Create a single item element
+/**
+ * Erstellt ein einzelnes ELDiB-Item-Element mit Accessibility-Features
+ * @param {Object} item - Das Item-Objekt aus ELDIB_DATA
+ * @param {string} item.code - Der Item-Code (z.B. "V-1")
+ * @param {string} item.keyword - Das Schlüsselwort
+ * @param {string} item.description - Die Beschreibung
+ * @param {string[]} item.zielformulierungen - Array der Zielformulierungen
+ * @param {string} bereichKey - Der Bereichsschlüssel
+ * @returns {HTMLElement} Das erstellte DOM-Element
+ */
 function createItemElement(item, bereichKey) {
     const itemDiv = document.createElement('div');
     itemDiv.className = 'item';
     itemDiv.id = `item-${item.code}`;
+    itemDiv.setAttribute('role', 'group');
+    itemDiv.setAttribute('aria-labelledby', `item-label-${item.code}`);
 
-    // Create ziel options HTML
-    const zielOptions = item.zielformulierungen.map((z, i) =>
-        `<option value="${i}">${z}</option>`
+    // Escape HTML-Zeichen zur Vermeidung von XSS
+    const escapeHtml = (str) => {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    };
+
+    // Create ziel options HTML mit Escape
+    const zielOptions = (item.zielformulierungen || []).map((z, i) =>
+        `<option value="${i}">${escapeHtml(z)}</option>`
     ).join('');
 
+    const escapedCode = escapeHtml(item.code);
+    const escapedKeyword = escapeHtml(item.keyword);
+    const escapedDescription = escapeHtml(item.description);
+
     itemDiv.innerHTML = `
-        <div class="item-code">${item.code}</div>
+        <div class="item-code" id="item-label-${escapedCode}">${escapedCode}</div>
         <div class="item-description">
-            <span class="item-keyword">${item.keyword}:</span> ${item.description}
+            <span class="item-keyword">${escapedKeyword}:</span> ${escapedDescription}
         </div>
-        <div class="item-options">
-            <button class="option-btn erreicht" onclick="selectOption('${item.code}', 'erreicht', this)">Erreicht</button>
-            <button class="option-btn nicht-erreicht" onclick="selectOption('${item.code}', 'nicht-erreicht', this)">Nicht erreicht</button>
-            <button class="option-btn ziel" onclick="selectOption('${item.code}', 'ziel', this)">Ziel</button>
+        <div class="item-options" role="group" aria-label="Bewertungsoptionen für ${escapedCode}">
+            <button class="option-btn erreicht"
+                    onclick="selectOption('${escapedCode}', 'erreicht', this)"
+                    aria-label="${escapedCode} als erreicht markieren"
+                    aria-pressed="false">
+                Erreicht
+            </button>
+            <button class="option-btn nicht-erreicht"
+                    onclick="selectOption('${escapedCode}', 'nicht-erreicht', this)"
+                    aria-label="${escapedCode} als nicht erreicht markieren"
+                    aria-pressed="false">
+                Nicht erreicht
+            </button>
+            <button class="option-btn ziel"
+                    onclick="selectOption('${escapedCode}', 'ziel', this)"
+                    aria-label="${escapedCode} als Ziel setzen"
+                    aria-pressed="false">
+                Ziel
+            </button>
         </div>
-        <div class="ziel-box" id="ziel-box-${item.code}">
+        <div class="ziel-box" id="ziel-box-${escapedCode}" aria-hidden="true">
             <h4>Zielformulierung auswählen:</h4>
-            <select class="ziel-select" id="ziel-select-${item.code}" onchange="updateZieltext('${item.code}')">
+            <select class="ziel-select"
+                    id="ziel-select-${escapedCode}"
+                    onchange="updateZieltext('${escapedCode}')"
+                    aria-label="Vordefinierte Zielformulierung für ${escapedCode}">
                 ${zielOptions}
             </select>
-            <textarea class="ziel-custom" id="ziel-custom-${item.code}" placeholder="Oder eigene Formulierung eingeben..." onchange="updateCustomZiel('${item.code}')"></textarea>
+            <textarea class="ziel-custom"
+                      id="ziel-custom-${escapedCode}"
+                      placeholder="Oder eigene Formulierung eingeben..."
+                      onchange="updateCustomZiel('${escapedCode}')"
+                      aria-label="Eigene Zielformulierung für ${escapedCode}"></textarea>
         </div>
     `;
 
@@ -124,19 +263,41 @@ function selectOption(code, status, button) {
     saveToLocalStorage();
 }
 
-// Update zieltext from dropdown
+/**
+ * Aktualisiert den Zieltext aus dem Dropdown
+ * @param {string} code - Der ELDiB-Item-Code
+ */
 function updateZieltext(code) {
+    // Validiere Code
+    if (!isValidItemCode(code)) {
+        console.warn('Ungültiger Item-Code:', code);
+        return;
+    }
+
     const select = document.getElementById(`ziel-select-${code}`);
     const customTextarea = document.getElementById(`ziel-custom-${code}`);
 
-    if (select && state.selections[code]) {
-        const selectedIndex = select.value;
-        const item = findItemByCode(code);
-        if (item && item.zielformulierungen[selectedIndex]) {
-            state.selections[code].zieltext = item.zielformulierungen[selectedIndex];
+    if (!select || !state.selections[code]) {
+        return;
+    }
+
+    // Konvertiere zu Zahl für Array-Zugriff
+    const selectedIndex = parseInt(select.value, 10);
+
+    // Validiere Index
+    if (isNaN(selectedIndex) || selectedIndex < 0) {
+        console.warn('Ungültiger Auswahlindex:', select.value);
+        return;
+    }
+
+    const item = findItemByCode(code);
+    if (item && Array.isArray(item.zielformulierungen) && item.zielformulierungen[selectedIndex]) {
+        state.selections[code].zieltext = item.zielformulierungen[selectedIndex];
+        if (customTextarea) {
             customTextarea.value = item.zielformulierungen[selectedIndex];
         }
     }
+
     saveToLocalStorage();
 }
 
@@ -172,17 +333,28 @@ function findBereichByCode(code) {
     return mapping[prefix];
 }
 
-// Update statistics
+/**
+ * Aktualisiert die Statistik-Anzeige
+ * Berechnet erreichte Items und Ziele pro Bereich
+ */
 function updateStats() {
+    // Prüfe ob ITEM_COUNTS definiert ist
+    if (typeof ITEM_COUNTS === 'undefined') {
+        console.warn('ITEM_COUNTS nicht definiert');
+        return;
+    }
+
     const stats = {
-        verhalten: { erreicht: 0, ziele: 0, total: ITEM_COUNTS.verhalten },
-        kommunikation: { erreicht: 0, ziele: 0, total: ITEM_COUNTS.kommunikation },
-        sozialisation: { erreicht: 0, ziele: 0, total: ITEM_COUNTS.sozialisation },
-        kognition: { erreicht: 0, ziele: 0, total: ITEM_COUNTS.kognition }
+        verhalten: { erreicht: 0, ziele: 0, total: ITEM_COUNTS.verhalten || 0 },
+        kommunikation: { erreicht: 0, ziele: 0, total: ITEM_COUNTS.kommunikation || 0 },
+        sozialisation: { erreicht: 0, ziele: 0, total: ITEM_COUNTS.sozialisation || 0 },
+        kognition: { erreicht: 0, ziele: 0, total: ITEM_COUNTS.kognition || 0 }
     };
 
     // Count selections
     for (const [code, selection] of Object.entries(state.selections)) {
+        if (!selection || !selection.status) continue;
+
         const bereich = findBereichByCode(code);
         if (bereich && stats[bereich]) {
             if (selection.status === 'erreicht') {
@@ -193,13 +365,22 @@ function updateStats() {
         }
     }
 
-    // Update display
+    // Update display mit Null-Checks
     for (const [bereich, data] of Object.entries(stats)) {
-        document.getElementById(`stats-${bereich}-ziele`).textContent = data.ziele;
-        document.getElementById(`stats-${bereich}-erreicht`).textContent = `${data.erreicht}/${data.total} erreicht`;
+        const zieleEl = document.getElementById(`stats-${bereich}-ziele`);
+        const erreichtEl = document.getElementById(`stats-${bereich}-erreicht`);
+        const progressEl = document.getElementById(`progress-${bereich}`);
 
-        const progress = (data.erreicht / data.total) * 100;
-        document.getElementById(`progress-${bereich}`).style.width = `${progress}%`;
+        if (zieleEl) {
+            zieleEl.textContent = data.ziele;
+        }
+        if (erreichtEl) {
+            erreichtEl.textContent = `${data.erreicht}/${data.total} erreicht`;
+        }
+        if (progressEl) {
+            const progress = data.total > 0 ? (data.erreicht / data.total) * 100 : 0;
+            progressEl.style.width = `${Math.min(100, progress)}%`;
+        }
     }
 
     // Update Ziele Liste
@@ -288,67 +469,143 @@ function updateErreichteListe() {
     });
 }
 
-// Save data to localStorage
-function saveToLocalStorage() {
-    const data = {
-        selections: state.selections,
-        stammdaten: {
-            schueler_name: document.getElementById('schueler_name')?.value,
-            geburtsdatum: document.getElementById('geburtsdatum')?.value,
-            matricule: document.getElementById('matricule')?.value,
-            foerderort: document.getElementById('foerderort')?.value,
-            klasse: document.getElementById('klasse')?.value,
-            schuljahr: document.getElementById('schuljahr')?.value,
-            trimester: document.getElementById('trimester')?.value,
-            einschaetzungsdatum: document.getElementById('einschaetzungsdatum')?.value,
-            einschaetzende: document.getElementById('einschaetzende')?.value,
-            eltern1_name: document.getElementById('eltern1_name')?.value,
-            eltern1_tel: document.getElementById('eltern1_tel')?.value,
-            eltern1_email: document.getElementById('eltern1_email')?.value
+/**
+ * Speichert Daten in localStorage mit Debouncing
+ * Verhindert zu häufige Speichervorgänge bei schnellen Änderungen
+ * @param {boolean} [immediate=false] - Sofort speichern ohne Debounce
+ * @returns {void}
+ */
+function saveToLocalStorage(immediate = false) {
+    const doSave = () => {
+        try {
+            if (typeof localStorage === 'undefined') {
+                console.warn('localStorage nicht verfügbar');
+                return;
+            }
+
+            const data = {
+                selections: state.selections,
+                stammdaten: {
+                    schueler_name: document.getElementById('schueler_name')?.value || '',
+                    geburtsdatum: document.getElementById('geburtsdatum')?.value || '',
+                    matricule: document.getElementById('matricule')?.value || '',
+                    foerderort: document.getElementById('foerderort')?.value || '',
+                    klasse: document.getElementById('klasse')?.value || '',
+                    schuljahr: document.getElementById('schuljahr')?.value || '',
+                    trimester: document.getElementById('trimester')?.value || '',
+                    einschaetzungsdatum: document.getElementById('einschaetzungsdatum')?.value || '',
+                    einschaetzende: document.getElementById('einschaetzende')?.value || '',
+                    eltern1_name: document.getElementById('eltern1_name')?.value || '',
+                    eltern1_tel: document.getElementById('eltern1_tel')?.value || '',
+                    eltern1_email: document.getElementById('eltern1_email')?.value || ''
+                },
+                version: '1.0',
+                savedAt: new Date().toISOString()
+            };
+
+            localStorage.setItem('eldib-data', JSON.stringify(data));
+        } catch (error) {
+            if (error.name === 'QuotaExceededError') {
+                showNotification('Speicher voll. Bitte exportieren Sie Ihre Daten.', 'warning');
+            } else {
+                console.error('Speicherfehler:', error.message);
+            }
         }
     };
-    localStorage.setItem('eldib-data', JSON.stringify(data));
+
+    if (immediate) {
+        doSave();
+    } else {
+        // Debounce: Warte 500ms nach letzter Änderung
+        clearTimeout(saveDebounceTimer);
+        saveDebounceTimer = setTimeout(doSave, 500);
+    }
 }
 
-// Load data from localStorage
+/**
+ * Lädt Daten aus localStorage und stellt den UI-Zustand wieder her
+ * @returns {boolean} true bei Erfolg, false bei Fehler
+ */
 function loadFromLocalStorage() {
-    const saved = localStorage.getItem('eldib-data');
-    if (saved) {
+    try {
+        if (typeof localStorage === 'undefined') {
+            console.warn('localStorage nicht verfügbar');
+            return false;
+        }
+
+        const saved = localStorage.getItem('eldib-data');
+        if (!saved) {
+            return false;
+        }
+
         const data = JSON.parse(saved);
 
-        // Restore selections
-        state.selections = data.selections || {};
+        // Validiere Datenstruktur
+        if (typeof data !== 'object' || data === null) {
+            console.warn('Ungültige Datenstruktur in localStorage');
+            return false;
+        }
+
+        // Restore selections mit Validierung
+        state.selections = {};
+        if (data.selections && typeof data.selections === 'object') {
+            for (const [code, selection] of Object.entries(data.selections)) {
+                // Validiere Item-Code
+                if (!isValidItemCode(code)) {
+                    console.warn(`Ungültiger Item-Code übersprungen: ${code}`);
+                    continue;
+                }
+
+                // Validiere Selection-Objekt
+                if (selection && typeof selection === 'object' && selection.status) {
+                    state.selections[code] = {
+                        status: selection.status,
+                        zieltext: selection.zieltext || ''
+                    };
+                }
+            }
+        }
 
         // Restore UI state
         for (const [code, selection] of Object.entries(state.selections)) {
             const itemDiv = document.getElementById(`item-${code}`);
-            if (itemDiv) {
-                const button = itemDiv.querySelector(`.option-btn.${selection.status}`);
-                if (button) {
-                    button.classList.add('selected');
-                }
+            if (!itemDiv) continue;
 
-                if (selection.status === 'ziel') {
-                    const zielBox = document.getElementById(`ziel-box-${code}`);
-                    if (zielBox) zielBox.classList.add('visible');
+            const button = itemDiv.querySelector(`.option-btn.${selection.status}`);
+            if (button) {
+                button.classList.add('selected');
+            }
 
-                    const customTextarea = document.getElementById(`ziel-custom-${code}`);
-                    if (customTextarea && selection.zieltext) {
-                        customTextarea.value = selection.zieltext;
-                    }
+            if (selection.status === 'ziel') {
+                const zielBox = document.getElementById(`ziel-box-${code}`);
+                if (zielBox) zielBox.classList.add('visible');
+
+                const customTextarea = document.getElementById(`ziel-custom-${code}`);
+                if (customTextarea && selection.zieltext) {
+                    customTextarea.value = selection.zieltext;
                 }
             }
         }
 
-        // Restore stammdaten
-        if (data.stammdaten) {
+        // Restore stammdaten mit Validierung
+        if (data.stammdaten && typeof data.stammdaten === 'object') {
             for (const [key, value] of Object.entries(data.stammdaten)) {
+                // Nur alphanumerische Keys erlauben (Schutz vor Injection)
+                if (!/^[a-z0-9_]+$/.test(key)) continue;
+
                 const element = document.getElementById(key);
-                if (element && value) {
+                if (element && value && typeof value === 'string') {
                     element.value = value;
                 }
             }
         }
+
+        console.log(`Daten geladen (${Object.keys(state.selections).length} Items)`);
+        return true;
+    } catch (error) {
+        console.error('Fehler beim Laden der ELDiB-Daten:', error.message);
+        showNotification('Gespeicherte Daten konnten nicht geladen werden.', 'warning');
+        return false;
     }
 }
 
