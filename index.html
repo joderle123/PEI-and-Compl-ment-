@@ -11959,9 +11959,14 @@ const ClinicalDataRegistry = {
 
 const ModelGenerators = {
 
+    // Hilfsfunktion: DS-Daten holen
+    getDSFormData() {
+        return typeof getDSData === 'function' ? getDSData() : {};
+    },
+
     // 1. ICF-MODELL (International Classification of Functioning)
     generateICF() {
-        const data = ClinicalDataRegistry.aggregate();
+        const dsData = this.getDSFormData();
         const eldibData = getEldibSummary();
         const assessmentData = cdse.data || {};
 
@@ -11973,48 +11978,63 @@ const ModelGenerators = {
             personenbezogen: []
         };
 
-        // Aus Assessment-Daten
-        if (assessmentData.domains) {
-            // Somatik -> Körperfunktionen
-            if (assessmentData.domains.somatik) {
-                Object.entries(assessmentData.domains.somatik).forEach(([key, val]) => {
-                    if (val && val !== 'nein' && val !== 'normal') {
-                        icf.koerperfunktionen.push({
-                            bereich: key,
-                            status: val,
-                            severity: val === 'ja' || val === 'auffaellig' ? 'beeintraechtigt' : 'normal'
-                        });
-                    }
-                });
-            }
+        // Aus DS-Daten: Körperfunktionen (Entwicklung)
+        if (dsData.ds_schwangerschaft === 'komplikationen') icf.koerperfunktionen.push({ bereich: 'Schwangerschaft', status: 'Komplikationen' });
+        if (dsData.ds_geburt === 'komplikationen') icf.koerperfunktionen.push({ bereich: 'Geburt', status: 'Komplikationen' });
+        if (dsData.ds_motorik === 'verzoegert') icf.koerperfunktionen.push({ bereich: 'Motorik', status: 'Verzögert' });
+        if (dsData.ds_sprache === 'verzoegert') icf.koerperfunktionen.push({ bereich: 'Sprachentwicklung', status: 'Verzögert' });
 
-            // Schule -> Aktivitäten & Partizipation
-            if (assessmentData.domains.schule) {
-                Object.entries(assessmentData.domains.schule).forEach(([key, val]) => {
-                    if (val) {
-                        if (key.includes('leistung') || key.includes('lernen')) {
-                            icf.aktivitaeten.push({ bereich: key, status: val });
-                        } else {
-                            icf.partizipation.push({ bereich: key, status: val });
-                        }
-                    }
-                });
-            }
+        // Diagnosen -> Körperfunktionen
+        const diagnosen = dsData.checkboxes?.ds_diagnose || [];
+        const diagnoseNamen = {
+            'adhs': 'ADHS/ADS', 'asd': 'Autismus-Spektrum', 'lernstoerung': 'Lernstörung',
+            'sprachstoerung': 'Sprachstörung', 'emotional': 'Emotionale Störung',
+            'bindung': 'Bindungsstörung', 'angst': 'Angststörung', 'opposition': 'Oppositionelle Störung'
+        };
+        diagnosen.forEach(d => {
+            if (diagnoseNamen[d]) icf.koerperfunktionen.push({ bereich: 'Diagnose', status: diagnoseNamen[d] });
+        });
 
-            // Familie -> Umweltfaktoren
-            if (assessmentData.domains.familie) {
-                Object.entries(assessmentData.domains.familie).forEach(([key, val]) => {
-                    if (val) {
-                        const isNegative = val === 'belastet' || val === 'konfliktreich' || val === 'instabil';
-                        if (isNegative) {
-                            icf.umweltfaktoren.barrieren.push({ bereich: key, status: val });
-                        } else if (val === 'stabil' || val === 'unterstuetzend') {
-                            icf.umweltfaktoren.foerderfaktoren.push({ bereich: key, status: val });
-                        }
-                    }
-                });
-            }
-        }
+        // Schulverhalten -> Aktivitäten & Partizipation
+        const schulNegativ = dsData.checkboxes?.ds_schule_negativ || [];
+        const negTexte = {
+            'unaufmerksam': 'Aufmerksamkeitsprobleme', 'impulsiv': 'Impulsivität',
+            'motorisch_unruhig': 'Motorische Unruhe', 'verweigert': 'Arbeitsverweigerung',
+            'rueckzug': 'Sozialer Rückzug', 'stoert': 'Unterrichtsstörungen'
+        };
+        schulNegativ.forEach(n => {
+            if (negTexte[n]) icf.aktivitaeten.push({ bereich: 'Schule', status: negTexte[n] });
+        });
+
+        // Familiensituation -> Umweltfaktoren
+        const ereignisse = dsData.checkboxes?.ds_ereignis || [];
+        const ereignisTexte = {
+            'trennung': 'Elterntrennung', 'umzug': 'Umzug', 'verlust': 'Verlusterlebnis',
+            'krankheit': 'Krankheit in Familie', 'konflikte': 'Familiäre Konflikte', 'trauma': 'Trauma'
+        };
+        ereignisse.forEach(e => {
+            if (ereignisTexte[e]) icf.umweltfaktoren.barrieren.push({ bereich: 'Familie', status: ereignisTexte[e] });
+        });
+
+        // Stärken -> Förderfaktoren
+        const staerken = dsData.checkboxes?.ds_staerken || [];
+        const staerkenTexte = {
+            'soziale_kompetenz': 'Soziale Kompetenz', 'empathie': 'Empathie', 'kreativitaet': 'Kreativität',
+            'motorik': 'Motorische Fähigkeiten', 'hilfsbereit': 'Hilfsbereitschaft', 'resilienz': 'Resilienz'
+        };
+        staerken.forEach(s => {
+            if (staerkenTexte[s]) icf.umweltfaktoren.foerderfaktoren.push({ bereich: 'Kind', status: staerkenTexte[s] });
+        });
+
+        // Positive Schulverhaltensweisen -> Förderfaktoren
+        const schulPositiv = dsData.checkboxes?.ds_schule_positiv || [];
+        const posTexte = {
+            'kooperativ': 'Kooperativ', 'hilfsbereit': 'Hilfsbereit', 'motiviert': 'Motiviert',
+            'respektvoll': 'Respektvoll', 'kreativ': 'Kreativ', 'selbststaendig': 'Selbstständig'
+        };
+        schulPositiv.forEach(p => {
+            if (posTexte[p]) icf.umweltfaktoren.foerderfaktoren.push({ bereich: 'Schule', status: posTexte[p] });
+        });
 
         // ELDiB -> Personenbezogene Faktoren
         if (eldibData) {
@@ -12030,10 +12050,9 @@ const ModelGenerators = {
         return icf;
     },
 
-    // 2. RISIKO-SCHUTZFAKTOREN MODELL
+    // 2. RISIKO-SCHUTZFAKTOREN MODELL - Jetzt mit DS-Daten!
     generateRisikoSchutz() {
-        const data = ClinicalDataRegistry.aggregate();
-        const assessmentData = cdse.data || {};
+        const dsData = this.getDSFormData();
         const eldibData = getEldibSummary();
 
         const model = {
@@ -12049,58 +12068,109 @@ const ModelGenerators = {
                 schulisch: [],
                 sozial: []
             },
-            balance: 0 // Negativ = mehr Risiko, Positiv = mehr Schutz
+            balance: 0
         };
 
-        // Aus Assessment extrahieren
-        if (assessmentData.domains) {
-            // Somatik Risiken
-            if (assessmentData.domains.somatik) {
-                const som = assessmentData.domains.somatik;
-                if (som.schlafprobleme === 'ja') model.risikofaktoren.individuell.push('Schlafprobleme');
-                if (som.chronische_erkrankung === 'ja') model.risikofaktoren.individuell.push('Chronische Erkrankung');
-                if (som.medikation === 'ja') model.risikofaktoren.individuell.push('Medikamenteneinnahme');
-            }
+        // ===== RISIKOFAKTOREN aus DS =====
 
-            // Familie
-            if (assessmentData.domains.familie) {
-                const fam = assessmentData.domains.familie;
-                if (fam.eltern_getrennt === 'ja') model.risikofaktoren.familiaer.push('Elterntrennung');
-                if (fam.psychische_belastung_eltern === 'ja') model.risikofaktoren.familiaer.push('Psychische Belastung Eltern');
-                if (fam.familienklima === 'konfliktreich') model.risikofaktoren.familiaer.push('Konfliktreiches Familienklima');
-                if (fam.familienklima === 'stabil') model.schutzfaktoren.familiaer.push('Stabiles Familienklima');
-                if (fam.unterstuetzung === 'ja') model.schutzfaktoren.familiaer.push('Familiäre Unterstützung');
-            }
+        // Entwicklungsrisiken
+        if (dsData.ds_schwangerschaft === 'komplikationen') model.risikofaktoren.individuell.push('Schwangerschaftskomplikationen');
+        if (dsData.ds_geburt === 'komplikationen') model.risikofaktoren.individuell.push('Geburtskomplikationen');
+        if (dsData.ds_motorik === 'verzoegert') model.risikofaktoren.individuell.push('Verzögerte Motorik');
+        if (dsData.ds_sprache === 'verzoegert') model.risikofaktoren.individuell.push('Verzögerte Sprachentwicklung');
 
-            // Schule
-            if (assessmentData.domains.schule) {
-                const sch = assessmentData.domains.schule;
-                if (sch.leistungsprobleme === 'ja') model.risikofaktoren.schulisch.push('Schulische Leistungsprobleme');
-                if (sch.mobbing === 'ja') model.risikofaktoren.sozial.push('Mobbing-Erfahrungen');
-                if (sch.freunde === 'ja') model.schutzfaktoren.sozial.push('Freundschaften');
-                if (sch.integration === 'gut') model.schutzfaktoren.schulisch.push('Gute schulische Integration');
-            }
+        // Bestehende Diagnosen
+        const diagnosen = dsData.checkboxes?.ds_diagnose || [];
+        const diagnoseRisiken = {
+            'adhs': 'ADHS/ADS', 'asd': 'Autismus-Spektrum', 'lernstoerung': 'Lernstörung',
+            'emotional': 'Emotionale Störung', 'bindung': 'Bindungsstörung', 'angst': 'Angststörung',
+            'opposition': 'Oppositionelle Störung'
+        };
+        diagnosen.forEach(d => {
+            if (diagnoseRisiken[d]) model.risikofaktoren.individuell.push(diagnoseRisiken[d]);
+        });
 
-            // Risiko-Domain
-            if (assessmentData.domains.risiko) {
-                const risk = assessmentData.domains.risiko;
-                if (risk.suizidalitaet === 'ja') model.risikofaktoren.individuell.push('⚠️ Suizidalität');
-                if (risk.selbstverletzung === 'ja') model.risikofaktoren.individuell.push('⚠️ Selbstverletzung');
-                if (risk.fremdgefaehrdung === 'ja') model.risikofaktoren.individuell.push('⚠️ Fremdgefährdung');
-                if (risk.missbrauch === 'ja') model.risikofaktoren.familiaer.push('⚠️ Missbrauchsverdacht');
-            }
+        // Familiäre Risiken
+        const ereignisse = dsData.checkboxes?.ds_ereignis || [];
+        if (ereignisse.includes('trennung')) model.risikofaktoren.familiaer.push('Elterntrennung');
+        if (ereignisse.includes('verlust')) model.risikofaktoren.familiaer.push('Verlusterlebnis');
+        if (ereignisse.includes('krankheit')) model.risikofaktoren.familiaer.push('Krankheit in der Familie');
+        if (ereignisse.includes('konflikte')) model.risikofaktoren.familiaer.push('Familiäre Konflikte');
+        if (ereignisse.includes('trauma')) model.risikofaktoren.familiaer.push('⚠️ Traumatische Erfahrung');
+
+        if (dsData.ds_familienstand === 'getrennt' || dsData.ds_familienstand === 'alleinerziehend_mutter' || dsData.ds_familienstand === 'alleinerziehend_vater') {
+            model.risikofaktoren.familiaer.push('Alleinerziehend/Getrennt');
         }
 
-        // ELDiB-basierte Faktoren
-        if (eldibData) {
-            const avgStufe = (parseInt(eldibData.V.stufe) || 0 + parseInt(eldibData.K.stufe) || 0 +
-                            parseInt(eldibData.S.stufe) || 0 + parseInt(eldibData.C.stufe) || 0) / 4;
-            if (avgStufe < 2) {
-                model.risikofaktoren.individuell.push('Deutliche Entwicklungsverzögerung');
+        // Schulische Risiken
+        const anlaesse = dsData.checkboxes?.ds_anlass || [];
+        if (anlaesse.includes('schulleistungsprobleme')) model.risikofaktoren.schulisch.push('Schulleistungsprobleme');
+        if (anlaesse.includes('schulverweigerung')) model.risikofaktoren.schulisch.push('Schulverweigerung');
+
+        const schulNegativ = dsData.checkboxes?.ds_schule_negativ || [];
+        const schulRisikoTexte = {
+            'verbal_aggressiv': 'Verbale Aggression', 'koerperlich_aggressiv': 'Körperliche Aggression',
+            'stoert': 'Unterrichtsstörungen', 'regelverletzend': 'Regelverletzendes Verhalten',
+            'niedrige_frustration': 'Niedrige Frustrationstoleranz'
+        };
+        schulNegativ.forEach(n => {
+            if (schulRisikoTexte[n]) model.risikofaktoren.schulisch.push(schulRisikoTexte[n]);
+        });
+
+        // Soziale Risiken
+        const sozialNegativ = ['unaufmerksam', 'impulsiv', 'rueckzug', 'aengstlich', 'weinerlich'];
+        schulNegativ.forEach(n => {
+            if (sozialNegativ.includes(n)) {
+                const texte = { 'rueckzug': 'Soziale Isolation', 'aengstlich': 'Ängstlichkeit', 'weinerlich': 'Emotionale Labilität' };
+                if (texte[n]) model.risikofaktoren.sozial.push(texte[n]);
             }
-            if (eldibData.foerderziele && eldibData.foerderziele.length > 0) {
-                model.schutzfaktoren.individuell.push(`${eldibData.foerderziele.length} aktive Förderziele`);
-            }
+        });
+
+        // Prädisponierende Faktoren aus DS Sektion 8
+        const praedisp = dsData.checkboxes?.ds_praedisp || [];
+        const praedispTexte = {
+            'genetik': 'Genetische/familiäre Belastung', 'temperament': 'Schwieriges Temperament',
+            'entwicklung': 'Entwicklungsverzögerung', 'bindung': 'Unsichere Bindung',
+            'trauma_frueh': 'Frühkindliches Trauma', 'neuro': 'Neurologische Auffälligkeiten'
+        };
+        praedisp.forEach(p => {
+            if (praedispTexte[p]) model.risikofaktoren.individuell.push(praedispTexte[p]);
+        });
+
+        // ===== SCHUTZFAKTOREN aus DS =====
+
+        // Individuelle Stärken
+        const staerken = dsData.checkboxes?.ds_staerken || [];
+        const staerkenTexte = {
+            'soziale_kompetenz': 'Soziale Kompetenz', 'empathie': 'Empathiefähigkeit',
+            'kreativitaet': 'Kreativität', 'motorik': 'Gute Motorik',
+            'sprachlich': 'Sprachliche Fähigkeiten', 'hilfsbereit': 'Hilfsbereitschaft',
+            'humor': 'Humor', 'resilienz': 'Resilienz'
+        };
+        staerken.forEach(s => {
+            if (staerkenTexte[s]) model.schutzfaktoren.individuell.push(staerkenTexte[s]);
+        });
+
+        // Positive Schulverhaltensweisen
+        const schulPositiv = dsData.checkboxes?.ds_schule_positiv || [];
+        const schulSchutzTexte = {
+            'kooperativ': 'Kooperativ', 'hilfsbereit': 'Hilfsbereit', 'motiviert': 'Motiviert',
+            'respektvoll': 'Respektvoll', 'kreativ': 'Kreativ', 'selbststaendig': 'Selbstständig',
+            'frustrationstoleranz': 'Gute Frustrationstoleranz', 'empathisch': 'Empathisch'
+        };
+        schulPositiv.forEach(p => {
+            if (schulSchutzTexte[p]) model.schutzfaktoren.schulisch.push(schulSchutzTexte[p]);
+        });
+
+        // Familiäre Schutzfaktoren
+        if (dsData.ds_familienstand === 'verheiratet') model.schutzfaktoren.familiaer.push('Intakte Familie');
+        const betreuung = dsData.checkboxes?.ds_betreuung || [];
+        if (betreuung.includes('grosseltern')) model.schutzfaktoren.familiaer.push('Großeltern verfügbar');
+        if (betreuung.includes('maison_relais')) model.schutzfaktoren.sozial.push('Maison Relais');
+
+        // ELDiB Förderziele als Schutzfaktor
+        if (eldibData && eldibData.foerderziele && eldibData.foerderziele.length > 0) {
+            model.schutzfaktoren.individuell.push(`${eldibData.foerderziele.length} aktive Förderziele`);
         }
 
         // Balance berechnen
@@ -12111,50 +12181,439 @@ const ModelGenerators = {
         return model;
     },
 
-    // 3. BRONFENBRENNER ÖKOSYSTEM
+    // 3. BIOPSYCHOSOZIALES MODELL - Direkt aus DS Sektion 8!
+    generateBPSModel() {
+        const dsData = this.getDSFormData();
+
+        const model = {
+            praedisponierend: [],
+            ausloesend: [],
+            aufrechterhaltend: []
+        };
+
+        // Prädisponierende Faktoren
+        const praedisp = dsData.checkboxes?.ds_praedisp || [];
+        const praedispTexte = {
+            'genetik': 'Genetische/familiäre Belastung', 'temperament': 'Schwieriges Temperament',
+            'entwicklung': 'Entwicklungsverzögerung', 'bindung': 'Unsichere Bindung',
+            'trauma_frueh': 'Frühkindliches Trauma', 'neuro': 'Neurologische Auffälligkeiten'
+        };
+        praedisp.forEach(p => {
+            if (praedispTexte[p]) model.praedisponierend.push(praedispTexte[p]);
+        });
+        if (dsData.ds_praedisp_text) model.praedisponierend.push(dsData.ds_praedisp_text);
+
+        // Diagnosen als prädisponierend
+        const diagnosen = dsData.checkboxes?.ds_diagnose || [];
+        diagnosen.forEach(d => {
+            const texte = { 'adhs': 'ADHS/ADS', 'asd': 'Autismus-Spektrum', 'bindung': 'Bindungsstörung' };
+            if (texte[d]) model.praedisponierend.push(texte[d]);
+        });
+
+        // Auslösende Faktoren
+        const ausloesend = dsData.checkboxes?.ds_ausloesend || [];
+        const auslTexte = {
+            'schulwechsel': 'Schulwechsel', 'trennung': 'Trennung der Eltern',
+            'verlust': 'Verlust/Trauer', 'mobbing': 'Mobbing/Ausgrenzung',
+            'ueberforderung': 'Schulische Überforderung', 'konflikt': 'Familiäre Konflikte'
+        };
+        ausloesend.forEach(a => {
+            if (auslTexte[a]) model.ausloesend.push(auslTexte[a]);
+        });
+        if (dsData.ds_ausloesend_text) model.ausloesend.push(dsData.ds_ausloesend_text);
+
+        // Ereignisse können auch Auslöser sein
+        const ereignisse = dsData.checkboxes?.ds_ereignis || [];
+        const ereignisTexte = { 'trennung': 'Elterntrennung', 'umzug': 'Umzug', 'verlust': 'Verlusterlebnis' };
+        ereignisse.forEach(e => {
+            if (ereignisTexte[e] && !model.ausloesend.includes(ereignisTexte[e])) {
+                model.ausloesend.push(ereignisTexte[e]);
+            }
+        });
+
+        // Aufrechterhaltende Faktoren
+        const aufrecht = dsData.checkboxes?.ds_aufrecht || [];
+        const aufrTexte = {
+            'teufelskreis': 'Teufelskreis (Verhalten-Reaktion)', 'verstaerkung': 'Unbeabsichtigte Verstärkung',
+            'vermeidung': 'Vermeidungsverhalten', 'mangel_strategie': 'Fehlende Bewältigungsstrategien',
+            'umfeld': 'Ungünstiges Umfeld', 'beziehung': 'Belastete Beziehungen'
+        };
+        aufrecht.forEach(a => {
+            if (aufrTexte[a]) model.aufrechterhaltend.push(aufrTexte[a]);
+        });
+        if (dsData.ds_aufrecht_text) model.aufrechterhaltend.push(dsData.ds_aufrecht_text);
+
+        return model;
+    },
+
+    // 4. BRONFENBRENNER ÖKOSYSTEM - Mit DS-Daten!
     generateBronfenbrenner() {
-        const assessmentData = cdse.data || {};
+        const dsData = this.getDSFormData();
 
         const model = {
             mikrosystem: {
-                familie: { status: 'neutral', details: [] },
-                schule: { status: 'neutral', details: [] },
-                peers: { status: 'neutral', details: [] }
+                familie: { status: 'neutral', details: [], color: '#fef3c7' },
+                schule: { status: 'neutral', details: [], color: '#dbeafe' },
+                peers: { status: 'neutral', details: [], color: '#d1fae5' }
             },
-            mesosystem: [], // Verbindungen zwischen Mikrosystemen
-            exosystem: [], // Indirekte Einflüsse
-            makrosystem: [] // Kulturelle/gesellschaftliche Faktoren
+            mesosystem: [],
+            exosystem: [],
+            makrosystem: []
         };
 
-        if (assessmentData.domains) {
-            // Familie im Mikrosystem
-            if (assessmentData.domains.familie) {
-                const fam = assessmentData.domains.familie;
-                model.mikrosystem.familie.status = fam.familienklima || 'unbekannt';
-                if (fam.eltern_getrennt === 'ja') model.mikrosystem.familie.details.push('Getrennte Eltern');
-                if (fam.geschwister) model.mikrosystem.familie.details.push(`Geschwister: ${fam.geschwister}`);
-            }
+        // Familie im Mikrosystem
+        if (dsData.ds_familienstand) {
+            const famStatus = {
+                'verheiratet': 'stabil', 'getrennt': 'belastet',
+                'alleinerziehend_mutter': 'belastet', 'alleinerziehend_vater': 'belastet',
+                'patchwork': 'neutral', 'pflege': 'belastet'
+            };
+            model.mikrosystem.familie.status = famStatus[dsData.ds_familienstand] || 'neutral';
+            model.mikrosystem.familie.details.push(`Familienstand: ${dsData.ds_familienstand}`);
+        }
 
-            // Schule im Mikrosystem
-            if (assessmentData.domains.schule) {
-                const sch = assessmentData.domains.schule;
-                model.mikrosystem.schule.status = sch.integration || 'unbekannt';
-                if (sch.klassenklima) model.mikrosystem.schule.details.push(`Klassenklima: ${sch.klassenklima}`);
-                if (sch.lehrer_beziehung) model.mikrosystem.schule.details.push(`Lehrer-Beziehung: ${sch.lehrer_beziehung}`);
-            }
+        if (dsData.ds_kind_lebt_bei) {
+            const lebtBei = { 'beide_eltern': 'Bei beiden Eltern', 'mutter': 'Bei Mutter', 'vater': 'Bei Vater', 'wechselmodell': 'Wechselmodell' };
+            model.mikrosystem.familie.details.push(lebtBei[dsData.ds_kind_lebt_bei] || dsData.ds_kind_lebt_bei);
+        }
 
-            // Peers im Mikrosystem
-            if (assessmentData.domains.schule) {
-                const sch = assessmentData.domains.schule;
-                model.mikrosystem.peers.status = sch.freunde === 'ja' ? 'positiv' : 'belastet';
-                if (sch.mobbing === 'ja') model.mikrosystem.peers.details.push('Mobbing-Erfahrung');
-            }
+        if (dsData.geschwister && dsData.geschwister.length > 0) {
+            model.mikrosystem.familie.details.push(`${dsData.geschwister.length} Geschwister`);
+        }
+
+        // Ereignisse beeinflussen Familie
+        const ereignisse = dsData.checkboxes?.ds_ereignis || [];
+        if (ereignisse.includes('trennung') || ereignisse.includes('konflikte')) {
+            model.mikrosystem.familie.status = 'belastet';
+            model.mikrosystem.familie.color = '#fed7d7';
+        }
+
+        // Schule im Mikrosystem
+        if (dsData.ds_schule_verhalten) {
+            const schulStatus = { 'unauffaellig': 'positiv', 'teilweise': 'neutral', 'stark': 'belastet' };
+            model.mikrosystem.schule.status = schulStatus[dsData.ds_schule_verhalten] || 'neutral';
+        }
+
+        const schulPositiv = dsData.checkboxes?.ds_schule_positiv || [];
+        const schulNegativ = dsData.checkboxes?.ds_schule_negativ || [];
+
+        if (schulPositiv.length > schulNegativ.length) {
+            model.mikrosystem.schule.status = 'positiv';
+            model.mikrosystem.schule.color = '#d1fae5';
+        } else if (schulNegativ.length > schulPositiv.length) {
+            model.mikrosystem.schule.status = 'belastet';
+            model.mikrosystem.schule.color = '#fed7d7';
+        }
+
+        model.mikrosystem.schule.details.push(`${schulPositiv.length} positive Verhaltensweisen`);
+        model.mikrosystem.schule.details.push(`${schulNegativ.length} herausfordernde Verhaltensweisen`);
+
+        // Peers im Mikrosystem
+        const anlaesse = dsData.checkboxes?.ds_anlass || [];
+        if (anlaesse.includes('soziale_schwierigkeiten')) {
+            model.mikrosystem.peers.status = 'belastet';
+            model.mikrosystem.peers.color = '#fed7d7';
+            model.mikrosystem.peers.details.push('Soziale Schwierigkeiten');
+        }
+        if (schulNegativ.includes('rueckzug')) {
+            model.mikrosystem.peers.status = 'belastet';
+            model.mikrosystem.peers.details.push('Rückzugsverhalten');
         }
 
         // Mesosystem: Verbindungen
-        if (model.mikrosystem.familie.status === 'stabil' && model.mikrosystem.schule.status === 'gut') {
-            model.mesosystem.push('Gute Eltern-Schule-Kommunikation');
+        if (dsData.ds_eseb_referenz) {
+            model.mesosystem.push('ESEB-Begleitung verbindet Schule-Familie');
         }
+        if (dsData.aktuelleMassnahmen && dsData.aktuelleMassnahmen.length > 0) {
+            model.mesosystem.push(`${dsData.aktuelleMassnahmen.length} aktive Unterstützungsmaßnahmen`);
+        }
+
+        // Exosystem
+        const betreuung = dsData.checkboxes?.ds_betreuung || [];
+        if (betreuung.includes('maison_relais')) model.exosystem.push('Maison Relais');
+        if (dsData.ds_beruf_mutter || dsData.ds_beruf_vater) {
+            model.exosystem.push('Elterliche Arbeitssituation');
+        }
+
+        // Makrosystem
+        const sprachen = dsData.checkboxes?.ds_sprachen || [];
+        if (sprachen.length > 1) model.makrosystem.push('Mehrsprachiger Kontext');
+        model.makrosystem.push('Luxemburger Schulsystem');
+
+        return model;
+    },
+
+    // 5. TEUFELSKREIS-DIAGRAMME
+    generateTeufelskreis() {
+        const dsData = this.getDSFormData();
+        const cycles = [];
+
+        const anlaesse = dsData.checkboxes?.ds_anlass || [];
+        const schulNegativ = dsData.checkboxes?.ds_schule_negativ || [];
+
+        // Aufmerksamkeits-Teufelskreis
+        if (anlaesse.includes('aufmerksamkeit') || schulNegativ.includes('unaufmerksam')) {
+            cycles.push({
+                name: 'Aufmerksamkeitsprobleme',
+                steps: [
+                    'Kind kann sich nicht konzentrieren',
+                    'Verpasst Anweisungen/Lerninhalte',
+                    'Schlechtere Leistungen',
+                    'Negatives Feedback',
+                    'Frustration & Demotivation',
+                    'Noch weniger Aufmerksamkeit'
+                ],
+                color: '#f59e0b'
+            });
+        }
+
+        // Aggressions-Teufelskreis
+        if (anlaesse.includes('aggressives_verhalten') || schulNegativ.includes('verbal_aggressiv') || schulNegativ.includes('koerperlich_aggressiv')) {
+            cycles.push({
+                name: 'Aggressives Verhalten',
+                steps: [
+                    'Frustration/Überforderung',
+                    'Aggressiver Ausbruch',
+                    'Soziale Zurückweisung',
+                    'Isolation & Außenseiterrolle',
+                    'Weniger soziale Übung',
+                    'Erhöhte Frustration'
+                ],
+                color: '#ef4444'
+            });
+        }
+
+        // Rückzugs-Teufelskreis
+        if (anlaesse.includes('rueckzugsverhalten') || schulNegativ.includes('rueckzug') || schulNegativ.includes('aengstlich')) {
+            cycles.push({
+                name: 'Rückzug & Angst',
+                steps: [
+                    'Angst vor sozialen Situationen',
+                    'Vermeidung & Rückzug',
+                    'Weniger soziale Erfahrungen',
+                    'Mangelnde soziale Kompetenz',
+                    'Negative Erlebnisse bei Kontakt',
+                    'Verstärkte Angst'
+                ],
+                color: '#8b5cf6'
+            });
+        }
+
+        // Schulverweigerungs-Teufelskreis
+        if (anlaesse.includes('schulverweigerung')) {
+            cycles.push({
+                name: 'Schulverweigerung',
+                steps: [
+                    'Negative Schulerfahrungen',
+                    'Vermeidung/Fernbleiben',
+                    'Wissenslücken entstehen',
+                    'Überforderung bei Rückkehr',
+                    'Erneute negative Erfahrung',
+                    'Verstärkte Vermeidung'
+                ],
+                color: '#06b6d4'
+            });
+        }
+
+        return cycles;
+    },
+
+    // 6. ENTWICKLUNGS-RADAR (ELDiB-basiert)
+    generateDevelopmentRadar() {
+        const eldibData = getEldibSummary();
+        const birthDate = document.getElementById('geburtsdatum')?.value;
+        let expectedLevel = 3; // Default: Stufe 3 (ca. 6-8 Jahre)
+
+        if (birthDate) {
+            const age = Math.floor((new Date() - new Date(birthDate)) / 31557600000);
+            if (age <= 4) expectedLevel = 1;
+            else if (age <= 6) expectedLevel = 2;
+            else if (age <= 8) expectedLevel = 3;
+            else if (age <= 10) expectedLevel = 4;
+            else expectedLevel = 5;
+        }
+
+        return {
+            labels: ['Verhalten', 'Kognition', 'Sozialverhalten', 'Kommunikation'],
+            current: [
+                parseInt(eldibData.V.stufe) || 0,
+                parseInt(eldibData.K.stufe) || 0,
+                parseInt(eldibData.S.stufe) || 0,
+                parseInt(eldibData.C.stufe) || 0
+            ],
+            expected: [expectedLevel, expectedLevel, expectedLevel, expectedLevel],
+            maxValue: 5
+        };
+    },
+
+    // 7. TIMELINE (Aus DS-Daten)
+    generateTimeline() {
+        const dsData = this.getDSFormData();
+        const events = [];
+
+        // Geburtsdatum
+        const geburtsdatum = document.getElementById('geburtsdatum')?.value;
+        if (geburtsdatum) {
+            events.push({ date: geburtsdatum, type: 'geburt', label: 'Geburt', color: '#10b981' });
+        }
+
+        // Entwicklungsbesonderheiten
+        if (dsData.ds_schwangerschaft === 'komplikationen') {
+            events.push({ date: geburtsdatum, type: 'risiko', label: 'Schwangerschaftskomplikationen', color: '#f59e0b' });
+        }
+
+        // Ereignisse mit Datum
+        const ereignisse = dsData.checkboxes?.ds_ereignis || [];
+        const ereignisTexte = {
+            'trennung': 'Elterntrennung', 'umzug': 'Umzug', 'verlust': 'Verlusterlebnis',
+            'krankheit': 'Krankheit in Familie', 'trauma': 'Traumatisches Ereignis'
+        };
+        ereignisse.forEach(e => {
+            const datumEl = document.getElementById(`ds_ereignis_${e}_wann`);
+            if (datumEl && datumEl.value) {
+                events.push({ date: datumEl.value, type: 'ereignis', label: ereignisTexte[e] || e, color: '#ef4444' });
+            } else if (ereignisTexte[e]) {
+                events.push({ date: 'unbekannt', type: 'ereignis', label: ereignisTexte[e], color: '#ef4444' });
+            }
+        });
+
+        // Maßnahmen
+        if (dsData.massnahmen) {
+            dsData.massnahmen.forEach(m => {
+                if (m.zeitraum) {
+                    events.push({ date: m.zeitraum, type: 'massnahme', label: `Maßnahme: ${m.art}`, color: '#3b82f6' });
+                }
+            });
+        }
+
+        // Diagnosen
+        const diagnosen = dsData.checkboxes?.ds_diagnose || [];
+        diagnosen.forEach(d => {
+            const datumEl = document.getElementById(`ds_diagnose_${d}_datum`);
+            if (datumEl && datumEl.value) {
+                const diagnoseNamen = { 'adhs': 'ADHS', 'asd': 'Autismus', 'lernstoerung': 'Lernstörung' };
+                events.push({ date: datumEl.value, type: 'diagnose', label: `Diagnose: ${diagnoseNamen[d] || d}`, color: '#8b5cf6' });
+            }
+        });
+
+        // Auftragsdatum
+        if (dsData.ds_auftrag_datum) {
+            events.push({ date: dsData.ds_auftrag_datum, type: 'auftrag', label: 'CDSE-Auftrag', color: '#9b59b6' });
+        }
+
+        // Sortieren nach Datum
+        events.sort((a, b) => {
+            if (a.date === 'unbekannt') return 1;
+            if (b.date === 'unbekannt') return -1;
+            return new Date(a.date) - new Date(b.date);
+        });
+
+        return events;
+    },
+
+    // 8. BEDÜRFNISSE-ÜBERSICHT (aus DS Sektion 9)
+    generateBeduerfnisse() {
+        const dsData = this.getDSFormData();
+        const beduerfnisse = {
+            emotional: [],
+            sozial: [],
+            schulisch: [],
+            familiaer: []
+        };
+
+        const emotionalTexte = {
+            'sicherheit': 'Sicherheit & Geborgenheit', 'wertschaetzung': 'Wertschätzung',
+            'zugehoerigkeit': 'Zugehörigkeitsgefühl', 'selbstwirksamkeit': 'Selbstwirksamkeit',
+            'regulation': 'Emotionsregulation', 'bindung': 'Stabile Bindung',
+            'vorhersehbarkeit': 'Vorhersehbarkeit', 'ausdruck': 'Emotionaler Ausdruck'
+        };
+        (dsData.checkboxes?.ds_bedarf_emotional || []).forEach(b => {
+            if (emotionalTexte[b]) beduerfnisse.emotional.push(emotionalTexte[b]);
+        });
+
+        const sozialTexte = {
+            'freundschaften': 'Freundschaften aufbauen', 'konflikt': 'Konfliktlösung',
+            'gruppe': 'Positive Gruppenerfahrungen', 'kommunikation': 'Soziale Kommunikation',
+            'perspektive': 'Perspektivübernahme', 'kooperation': 'Kooperationsfähigkeit'
+        };
+        (dsData.checkboxes?.ds_bedarf_sozial || []).forEach(b => {
+            if (sozialTexte[b]) beduerfnisse.sozial.push(sozialTexte[b]);
+        });
+
+        const schulischTexte = {
+            'struktur': 'Klare Strukturen', 'kleingruppe': 'Kleingruppen', 'einzelfoerderung': 'Einzelförderung',
+            'nachteilsausgleich': 'Nachteilsausgleich', 'rueckzug': 'Rückzugsmöglichkeiten',
+            'bewegung': 'Bewegungsmöglichkeiten', 'visualisierung': 'Visualisierte Abläufe',
+            'beziehung_lehrperson': 'Beziehung zur Lehrperson'
+        };
+        (dsData.checkboxes?.ds_bedarf_schule || []).forEach(b => {
+            if (schulischTexte[b]) beduerfnisse.schulisch.push(schulischTexte[b]);
+        });
+
+        const familiaerTexte = {
+            'elternberatung': 'Elternberatung', 'erziehungsberatung': 'Erziehungsberatung',
+            'entlastung': 'Familienentlastung', 'kommunikation_eltern': 'Eltern-Kind-Kommunikation',
+            'netzwerk': 'Unterstützungsnetzwerk', 'therapie_eltern': 'Eltern-Therapie'
+        };
+        (dsData.checkboxes?.ds_bedarf_familie || []).forEach(b => {
+            if (familiaerTexte[b]) beduerfnisse.familiaer.push(familiaerTexte[b]);
+        });
+
+        return beduerfnisse;
+    },
+
+    // 9. EMPFEHLUNGEN-ÜBERSICHT (aus DS Sektion 10)
+    generateEmpfehlungen() {
+        const dsData = this.getDSFormData();
+        const empfehlungen = {
+            schule: [],
+            familie: [],
+            therapie: [],
+            cni: []
+        };
+
+        const schuleTexte = {
+            'sitzplatz': 'Günstiger Sitzplatz', 'pausen': 'Bewegungspausen', 'struktur': 'Klare Struktur',
+            'visualisierung': 'Visuelle Unterstützung', 'lob': 'Positive Rückmeldung', 'rueckzug': 'Rückzugsraum',
+            'zeitverlaengerung': 'Zeitverlängerung', 'einzelarbeit': 'Einzelarbeit', 'hilfsmittel': 'Hilfsmittel',
+            'aufgaben_teilen': 'Aufgaben aufteilen'
+        };
+        (dsData.checkboxes?.ds_empf_schule || []).forEach(e => {
+            if (schuleTexte[e]) empfehlungen.schule.push(schuleTexte[e]);
+        });
+
+        const familieTexte = {
+            'routine': 'Feste Routinen', 'qualitaetszeit': 'Qualitätszeit', 'regeln': 'Klare Regeln',
+            'loben': 'Positives Loben', 'gefuehle': 'Gefühle validieren', 'bewegung': 'Bewegung',
+            'medien': 'Medienzeitbegrenzung', 'schlaf': 'Schlafrhythmus'
+        };
+        (dsData.checkboxes?.ds_empf_familie || []).forEach(e => {
+            if (familieTexte[e]) empfehlungen.familie.push(familieTexte[e]);
+        });
+
+        const therapieTexte = {
+            'kinderpsychotherapie': 'Kinderpsychotherapie', 'familientherapie': 'Familientherapie',
+            'ergotherapie': 'Ergotherapie', 'logopaedie': 'Logopädie', 'psychomotorik': 'Psychomotorik',
+            'psychiatrie': 'Kinder-/Jugendpsychiatrie', 'paediatrie': 'Pädiatrie', 'sozialtraining': 'Soziales Kompetenztraining'
+        };
+        (dsData.checkboxes?.ds_empf_therapie || []).forEach(e => {
+            if (therapieTexte[e]) empfehlungen.therapie.push(therapieTexte[e]);
+        });
+
+        const cniTexte = {
+            'diagnostik_kz': 'Spezialisierte Diagnostik (KZ)', 'beratung_eltern': 'Beratung Eltern/Kind',
+            'beratung_fachleute': 'Beratung Fachleute', 'lernwerkstatt_cni': 'Spezialisierte Lernwerkstatt',
+            'isa_cni': 'ISA (Ambulante Intervention)', 'beschulung_cdse': 'Beschulung CDSE',
+            'clapa_cni': 'ClaPa', 'cst_cni': 'CST', 'annexe_junglinster': 'Annexe Junglinster',
+            'beschulung_ausland': 'Beschulung Ausland', 'abschluss': 'Abschluss CDSE', 'schliessung': 'Aktenschließung'
+        };
+        (dsData.checkboxes?.ds_cni_empfehlung || []).forEach(e => {
+            if (cniTexte[e]) empfehlungen.cni.push(cniTexte[e]);
+        });
+
+        return empfehlungen;
+    }
+};
 
         return model;
     },
@@ -12966,6 +13425,154 @@ function generateFullSynthesis() {
                 <ul style="margin:0;padding-left:20px;">
                     ${assessmentSynthesis.fehlend.map(f => `<li>${f}</li>`).join('')}
                 </ul>
+            </div>
+        `;
+    }
+
+    // ===============================
+    // DS-BASIERTE MODELLE (aus Diagnostic Spécialisé)
+    // ===============================
+
+    // Biopsychosoziales Modell aus DS Sektion 8
+    const bpsModel = ModelGenerators.generateBPSModel();
+    const hasBPSData = bpsModel.praedisponierend.length > 0 || bpsModel.ausloesend.length > 0 || bpsModel.aufrechterhaltend.length > 0;
+
+    if (hasBPSData) {
+        html += `
+            <div class="synthese-section" style="border: 2px solid #9b59b6;">
+                <h3 style="color:#9b59b6;">🧩 Biopsychosoziales Fallverständnis</h3>
+                <p style="color:#718096;font-size:0.9rem;margin-bottom:15px;">Basierend auf den Angaben im Diagnostic Spécialisé (Sektion 8)</p>
+                <div class="bps-model">
+                    <div class="bps-box praed" style="background:#fef3c7;border-top:4px solid #f59e0b;padding:20px;border-radius:12px;">
+                        <h4 style="margin:0 0 12px;color:#92400e;">⚡ Prädisponierend</h4>
+                        ${bpsModel.praedisponierend.length > 0 ?
+                            `<ul style="margin:0;padding-left:18px;">${bpsModel.praedisponierend.map(p => `<li style="margin-bottom:5px;">${p}</li>`).join('')}</ul>` :
+                            '<p style="color:#a0aec0;font-style:italic;margin:0;">Keine Faktoren angegeben</p>'
+                        }
+                    </div>
+                    <div class="bps-box ausl" style="background:#fce7f3;border-top:4px solid #db2777;padding:20px;border-radius:12px;">
+                        <h4 style="margin:0 0 12px;color:#9d174d;">🎯 Auslösend</h4>
+                        ${bpsModel.ausloesend.length > 0 ?
+                            `<ul style="margin:0;padding-left:18px;">${bpsModel.ausloesend.map(p => `<li style="margin-bottom:5px;">${p}</li>`).join('')}</ul>` :
+                            '<p style="color:#a0aec0;font-style:italic;margin:0;">Keine Faktoren angegeben</p>'
+                        }
+                    </div>
+                    <div class="bps-box aufr" style="background:#dbeafe;border-top:4px solid #3b82f6;padding:20px;border-radius:12px;">
+                        <h4 style="margin:0 0 12px;color:#1e40af;">🔄 Aufrechterhaltend</h4>
+                        ${bpsModel.aufrechterhaltend.length > 0 ?
+                            `<ul style="margin:0;padding-left:18px;">${bpsModel.aufrechterhaltend.map(p => `<li style="margin-bottom:5px;">${p}</li>`).join('')}</ul>` :
+                            '<p style="color:#a0aec0;font-style:italic;margin:0;">Keine Faktoren angegeben</p>'
+                        }
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Bedürfnisse aus DS Sektion 9
+    const beduerfnisse = ModelGenerators.generateBeduerfnisse();
+    const hasBeduerfnisse = beduerfnisse.emotional.length > 0 || beduerfnisse.sozial.length > 0 ||
+                           beduerfnisse.schulisch.length > 0 || beduerfnisse.familiaer.length > 0;
+
+    if (hasBeduerfnisse) {
+        html += `
+            <div class="synthese-section" style="border: 2px solid #10b981;">
+                <h3 style="color:#10b981;">💚 Spezifische Bedürfnisse</h3>
+                <p style="color:#718096;font-size:0.9rem;margin-bottom:15px;">Basierend auf den Angaben im Diagnostic Spécialisé (Sektion 9)</p>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:15px;">
+                    ${beduerfnisse.emotional.length > 0 ? `
+                        <div style="background:#fef3c7;padding:15px;border-radius:12px;border-left:4px solid #f59e0b;">
+                            <h5 style="margin:0 0 10px;color:#92400e;">💛 Emotional</h5>
+                            <ul style="margin:0;padding-left:18px;font-size:0.9rem;">${beduerfnisse.emotional.map(b => `<li>${b}</li>`).join('')}</ul>
+                        </div>
+                    ` : ''}
+                    ${beduerfnisse.sozial.length > 0 ? `
+                        <div style="background:#d1fae5;padding:15px;border-radius:12px;border-left:4px solid #10b981;">
+                            <h5 style="margin:0 0 10px;color:#065f46;">💚 Sozial</h5>
+                            <ul style="margin:0;padding-left:18px;font-size:0.9rem;">${beduerfnisse.sozial.map(b => `<li>${b}</li>`).join('')}</ul>
+                        </div>
+                    ` : ''}
+                    ${beduerfnisse.schulisch.length > 0 ? `
+                        <div style="background:#dbeafe;padding:15px;border-radius:12px;border-left:4px solid #3b82f6;">
+                            <h5 style="margin:0 0 10px;color:#1e40af;">💙 Schulisch</h5>
+                            <ul style="margin:0;padding-left:18px;font-size:0.9rem;">${beduerfnisse.schulisch.map(b => `<li>${b}</li>`).join('')}</ul>
+                        </div>
+                    ` : ''}
+                    ${beduerfnisse.familiaer.length > 0 ? `
+                        <div style="background:#ede9fe;padding:15px;border-radius:12px;border-left:4px solid #8b5cf6;">
+                            <h5 style="margin:0 0 10px;color:#5b21b6;">💜 Familiär</h5>
+                            <ul style="margin:0;padding-left:18px;font-size:0.9rem;">${beduerfnisse.familiaer.map(b => `<li>${b}</li>`).join('')}</ul>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    // Empfehlungen aus DS Sektion 10
+    const empfehlungen = ModelGenerators.generateEmpfehlungen();
+    const hasEmpfehlungen = empfehlungen.schule.length > 0 || empfehlungen.familie.length > 0 ||
+                          empfehlungen.therapie.length > 0 || empfehlungen.cni.length > 0;
+
+    if (hasEmpfehlungen) {
+        html += `
+            <div class="synthese-section" style="border: 2px solid #3b82f6;">
+                <h3 style="color:#3b82f6;">📋 Empfehlungen</h3>
+                <p style="color:#718096;font-size:0.9rem;margin-bottom:15px;">Basierend auf den Angaben im Diagnostic Spécialisé (Sektion 10)</p>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:15px;">
+                    ${empfehlungen.schule.length > 0 ? `
+                        <div style="background:#dbeafe;padding:15px;border-radius:12px;">
+                            <h5 style="margin:0 0 10px;color:#1e40af;">🏫 Schule</h5>
+                            <ul style="margin:0;padding-left:18px;font-size:0.9rem;">${empfehlungen.schule.map(e => `<li>${e}</li>`).join('')}</ul>
+                        </div>
+                    ` : ''}
+                    ${empfehlungen.familie.length > 0 ? `
+                        <div style="background:#fef3c7;padding:15px;border-radius:12px;">
+                            <h5 style="margin:0 0 10px;color:#92400e;">🏠 Familie</h5>
+                            <ul style="margin:0;padding-left:18px;font-size:0.9rem;">${empfehlungen.familie.map(e => `<li>${e}</li>`).join('')}</ul>
+                        </div>
+                    ` : ''}
+                    ${empfehlungen.therapie.length > 0 ? `
+                        <div style="background:#d1fae5;padding:15px;border-radius:12px;">
+                            <h5 style="margin:0 0 10px;color:#065f46;">🩺 Therapie</h5>
+                            <ul style="margin:0;padding-left:18px;font-size:0.9rem;">${empfehlungen.therapie.map(e => `<li>${e}</li>`).join('')}</ul>
+                        </div>
+                    ` : ''}
+                    ${empfehlungen.cni.length > 0 ? `
+                        <div style="background:linear-gradient(135deg, #ede9fe, #f3e8ff);padding:15px;border-radius:12px;border:2px solid #9b59b6;">
+                            <h5 style="margin:0 0 10px;color:#9b59b6;">🏛️ CNI-Empfehlung</h5>
+                            <ul style="margin:0;padding-left:18px;font-size:0.9rem;">${empfehlungen.cni.map(e => `<li style="font-weight:500;">${e}</li>`).join('')}</ul>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    // Verdachtsdiagnosen aus DS Sektion 8.3
+    const dsData = typeof getDSData === 'function' ? getDSData() : {};
+    const verdacht = dsData.checkboxes?.ds_verdacht || [];
+    if (verdacht.length > 0) {
+        const icdTexte = {
+            'f90': 'F90 - Hyperkinetische Störung (ADHS)',
+            'f91': 'F91 - Störung des Sozialverhaltens',
+            'f92': 'F92 - Kombinierte Störung',
+            'f93': 'F93 - Emotionale Störung des Kindesalters',
+            'f94': 'F94 - Bindungsstörung',
+            'f84': 'F84 - Autismus-Spektrum',
+            'f81': 'F81 - Umschriebene Entwicklungsstörung'
+        };
+        html += `
+            <div class="synthese-section" style="background:linear-gradient(135deg, #faf5ff, #f3e8ff);border:2px solid #8b5cf6;">
+                <h3 style="color:#8b5cf6;">🔬 Diagnostische Einschätzung (ICD-10)</h3>
+                <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:15px;">
+                    ${verdacht.filter(v => v !== 'andere_diagnose').map(v => `
+                        <span style="background:white;padding:10px 18px;border-radius:10px;font-weight:500;border:1px solid #c4b5fd;">
+                            ${icdTexte[v] || v}
+                        </span>
+                    `).join('')}
+                </div>
+                ${dsData.ds_verdacht_text ? `<p style="margin-top:15px;padding:15px;background:white;border-radius:8px;border-left:4px solid #8b5cf6;">${dsData.ds_verdacht_text}</p>` : ''}
             </div>
         `;
     }
