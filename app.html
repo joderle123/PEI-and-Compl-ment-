@@ -1352,11 +1352,12 @@
                 <div class="alert alert-info">
                     <div class="alert-icon">🔍</div>
                     <div class="alert-content">
-                        <div class="alert-title">Funktionale Verhaltensanalyse</div>
-                        <div>Analysieren Sie konkrete Situationen, um die Funktion des Verhaltens zu verstehen: Was geschieht vorher? Was ist das Verhalten? Was geschieht danach?</div>
+                        <div class="alert-title">Funktionale Verhaltensanalyse & Beratung</div>
+                        <div>Analysieren Sie konkrete Situationen und nutzen Sie die Beratungsmodule für passgenaue Interventionen.</div>
                     </div>
                 </div>
 
+                <!-- ABC-Analyse Card -->
                 <div class="card">
                     <div class="card-header">
                         <div class="card-icon">📋</div>
@@ -1383,27 +1384,84 @@
                             <div class="option-card" data-value="aufmerksamkeit" onclick="selectOption(this, 'funktion')">
                                 <div class="option-content">
                                     <div class="option-title">Aufmerksamkeit erlangen</div>
+                                    <div class="option-desc">Verhalten tritt auf, um Beachtung zu bekommen</div>
                                 </div>
                                 <div class="option-checkbox">✓</div>
                             </div>
                             <div class="option-card" data-value="vermeidung" onclick="selectOption(this, 'funktion')">
                                 <div class="option-content">
                                     <div class="option-title">Vermeidung/Flucht</div>
+                                    <div class="option-desc">Verhalten hilft, einer Anforderung zu entkommen</div>
                                 </div>
                                 <div class="option-checkbox">✓</div>
                             </div>
                             <div class="option-card" data-value="gegenstand" onclick="selectOption(this, 'funktion')">
                                 <div class="option-content">
                                     <div class="option-title">Zugang zu etwas</div>
+                                    <div class="option-desc">Verhalten dient dazu, etwas zu bekommen</div>
                                 </div>
                                 <div class="option-checkbox">✓</div>
                             </div>
                             <div class="option-card" data-value="kontrolle" onclick="selectOption(this, 'funktion')">
                                 <div class="option-content">
                                     <div class="option-title">Kontrolle/Autonomie</div>
+                                    <div class="option-desc">Verhalten dient der Selbstbestimmung</div>
                                 </div>
                                 <div class="option-checkbox">✓</div>
                             </div>
+                            <div class="option-card" data-value="sensorisch" onclick="selectOption(this, 'funktion')">
+                                <div class="option-content">
+                                    <div class="option-title">Sensorische Stimulation</div>
+                                    <div class="option-desc">Verhalten fühlt sich gut an oder reguliert</div>
+                                </div>
+                                <div class="option-checkbox">✓</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beratungsmodule Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">💡</div>
+                        <div>
+                            <div class="card-title">Beratungsmodule</div>
+                            <div class="card-subtitle">Vertiefte Exploration und Interventionen nach Problematik</div>
+                        </div>
+                    </div>
+                    <p style="color: var(--gray-600); margin-bottom: 16px;">
+                        Wählen Sie die passende Problematik, um Explorationsfragen, Interventionen und Ich-Ziele zu erhalten.
+                    </p>
+                    <div class="module-grid">
+                        <div class="module-card" onclick="openAdvisoryModule('oppositionell')">
+                            <div class="module-icon">🚫</div>
+                            <div class="module-title">Oppositionelles Verhalten</div>
+                            <div class="module-status">Verweigerung, Widerstand</div>
+                        </div>
+                        <div class="module-card" onclick="openAdvisoryModule('aggression')">
+                            <div class="module-icon">💥</div>
+                            <div class="module-title">Aggression & Wut</div>
+                            <div class="module-status">Wutausbrüche, Gewalt</div>
+                        </div>
+                        <div class="module-card" onclick="openAdvisoryModule('rueckzug')">
+                            <div class="module-icon">🐚</div>
+                            <div class="module-title">Rückzug & Vermeidung</div>
+                            <div class="module-status">Isolation, Ängstlichkeit</div>
+                        </div>
+                        <div class="module-card" onclick="openAdvisoryModule('sozial')">
+                            <div class="module-icon">👥</div>
+                            <div class="module-title">Soziale Schwierigkeiten</div>
+                            <div class="module-status">Probleme mit Gleichaltrigen</div>
+                        </div>
+                        <div class="module-card" onclick="openAdvisoryModule('aufmerksamkeit')">
+                            <div class="module-icon">🎯</div>
+                            <div class="module-title">Aufmerksamkeit</div>
+                            <div class="module-status">Konzentration, Unruhe</div>
+                        </div>
+                        <div class="module-card" onclick="openAdvisoryModule('emotionsregulation')">
+                            <div class="module-icon">🎭</div>
+                            <div class="module-title">Emotionale Dysregulation</div>
+                            <div class="module-status">Stimmungsschwankungen</div>
                         </div>
                     </div>
                 </div>
@@ -1487,6 +1545,7 @@
     <script src="js/data/advisory-data.js"></script>
     <script src="js/data/screening-data.js"></script>
     <script src="js/app/synthesis-engine.js"></script>
+    <script src="js/app/module-renderer.js"></script>
 
     <script>
         // ============================================
@@ -1667,31 +1726,219 @@
         // ============================================
         // MODALS
         // ============================================
+        let currentModule = null;
+        let currentModuleType = null;
+
         function openAnamneseModule(module) {
+            currentModule = module;
+            currentModuleType = 'anamnese';
+
             document.getElementById('modal-overlay').classList.add('active');
             document.getElementById('modal-title').textContent = getModuleTitle(module);
-            document.getElementById('modal-body').innerHTML = getAnamneseModuleContent(module);
+
+            // Use ModuleRenderer for full content
+            if (typeof ModuleRenderer !== 'undefined') {
+                document.getElementById('modal-body').innerHTML = ModuleRenderer.renderAnamneseModule(module);
+                restoreModuleData(module, 'anamnese');
+            } else {
+                document.getElementById('modal-body').innerHTML = '<p>ModuleRenderer wird geladen...</p>';
+            }
         }
 
         function openScreeningModule(module) {
+            currentModule = module;
+            currentModuleType = 'screening';
+
             document.getElementById('modal-overlay').classList.add('active');
             document.getElementById('modal-title').textContent = getModuleTitle(module);
-            document.getElementById('modal-body').innerHTML = getScreeningModuleContent(module);
+
+            // Use ModuleRenderer for full content
+            if (typeof ModuleRenderer !== 'undefined') {
+                document.getElementById('modal-body').innerHTML = ModuleRenderer.renderScreeningModule(module);
+                restoreModuleData(module, 'screening');
+            } else {
+                document.getElementById('modal-body').innerHTML = '<p>ModuleRenderer wird geladen...</p>';
+            }
         }
 
         function openELDiBBereich(bereich) {
+            currentModule = bereich;
+            currentModuleType = 'eldib';
+
             document.getElementById('modal-overlay').classList.add('active');
             document.getElementById('modal-title').textContent = `ELDiB: ${bereich.charAt(0).toUpperCase() + bereich.slice(1)}`;
-            document.getElementById('modal-body').innerHTML = getELDiBContent(bereich);
+
+            // Use ModuleRenderer for full content
+            if (typeof ModuleRenderer !== 'undefined') {
+                document.getElementById('modal-body').innerHTML = ModuleRenderer.renderELDiBBereich(bereich);
+
+                // If we have a stored stufe, select it
+                const storedStufe = appData.eldib[bereich]?.stufe || 2;
+                setTimeout(() => {
+                    const stufeSelector = document.querySelector(`#stufen-selector-${bereich} .option-card[data-value="${storedStufe}"]`);
+                    if (stufeSelector) {
+                        ModuleRenderer.selectStufe(bereich, storedStufe, stufeSelector);
+                    }
+                }, 100);
+            } else {
+                document.getElementById('modal-body').innerHTML = '<p>ModuleRenderer wird geladen...</p>';
+            }
+        }
+
+        function openAdvisoryModule(problematikId) {
+            currentModule = problematikId;
+            currentModuleType = 'advisory';
+
+            document.getElementById('modal-overlay').classList.add('active');
+
+            const problematik = ADVISORY_DATA?.problematiken?.[problematikId];
+            document.getElementById('modal-title').textContent = problematik?.name || 'Beratung';
+
+            if (typeof ModuleRenderer !== 'undefined') {
+                document.getElementById('modal-body').innerHTML = ModuleRenderer.renderSituationsRezepte(problematikId);
+            } else {
+                document.getElementById('modal-body').innerHTML = '<p>ModuleRenderer wird geladen...</p>';
+            }
         }
 
         function closeModal() {
+            // Save data before closing
+            if (currentModule && currentModuleType) {
+                collectModuleData(currentModule, currentModuleType);
+            }
             document.getElementById('modal-overlay').classList.remove('active');
+            currentModule = null;
+            currentModuleType = null;
+
+            // Update module status cards
+            updateModuleStatuses();
         }
 
         function saveModule() {
-            // Collect modal data and save
+            if (currentModule && currentModuleType) {
+                collectModuleData(currentModule, currentModuleType);
+            }
             closeModal();
+            saveToStorage();
+        }
+
+        function collectModuleData(module, type) {
+            const modalBody = document.getElementById('modal-body');
+
+            if (type === 'anamnese') {
+                appData.anamnese[module] = appData.anamnese[module] || {};
+
+                // Collect all checked items
+                modalBody.querySelectorAll('.checklist-item.checked').forEach(item => {
+                    const field = item.closest('.checklist')?.dataset?.field || module;
+                    appData.anamnese[module][field] = appData.anamnese[module][field] || [];
+                    if (!appData.anamnese[module][field].includes(item.dataset.value)) {
+                        appData.anamnese[module][field].push(item.dataset.value);
+                    }
+                });
+
+                // Collect single selections
+                modalBody.querySelectorAll('.options-grid[data-type="single"] .option-card.selected').forEach(card => {
+                    const field = card.closest('.options-grid')?.dataset?.field || module;
+                    appData.anamnese[module][field] = card.dataset.value;
+                });
+
+                // Collect text fields
+                modalBody.querySelectorAll('textarea').forEach(textarea => {
+                    const field = textarea.dataset?.field || 'notes';
+                    if (textarea.value.trim()) {
+                        appData.anamnese[module][field] = textarea.value;
+                    }
+                });
+            }
+
+            if (type === 'screening') {
+                appData.screening[module] = appData.screening[module] || {};
+
+                // Collect all checked items
+                modalBody.querySelectorAll('.checklist-item.checked').forEach(item => {
+                    const question = item.closest('.checklist')?.dataset?.question || module;
+                    appData.screening[module][question] = appData.screening[module][question] || [];
+                    if (!appData.screening[module][question].includes(item.dataset.value)) {
+                        appData.screening[module][question].push(item.dataset.value);
+                    }
+                });
+
+                // Collect single selections
+                modalBody.querySelectorAll('.options-grid[data-type="single"] .option-card.selected').forEach(card => {
+                    const question = card.closest('.options-grid')?.dataset?.question || module;
+                    appData.screening[module][question] = card.dataset.value;
+                });
+            }
+        }
+
+        function restoreModuleData(module, type) {
+            const modalBody = document.getElementById('modal-body');
+
+            setTimeout(() => {
+                if (type === 'anamnese' && appData.anamnese[module]) {
+                    Object.entries(appData.anamnese[module]).forEach(([field, values]) => {
+                        if (Array.isArray(values)) {
+                            values.forEach(value => {
+                                const item = modalBody.querySelector(`.checklist-item[data-value="${value}"]`);
+                                if (item) item.classList.add('checked');
+                            });
+                        } else if (typeof values === 'string') {
+                            const card = modalBody.querySelector(`.option-card[data-value="${values}"]`);
+                            if (card) card.classList.add('selected');
+
+                            const textarea = modalBody.querySelector(`textarea[data-field="${field}"]`);
+                            if (textarea) textarea.value = values;
+                        }
+                    });
+                }
+
+                if (type === 'screening' && appData.screening[module]) {
+                    Object.entries(appData.screening[module]).forEach(([question, values]) => {
+                        if (Array.isArray(values)) {
+                            values.forEach(value => {
+                                const item = modalBody.querySelector(`.checklist-item[data-value="${value}"]`);
+                                if (item) item.classList.add('checked');
+                            });
+                        } else if (typeof values === 'string') {
+                            const card = modalBody.querySelector(`.option-card[data-value="${values}"]`);
+                            if (card) card.classList.add('selected');
+                        }
+                    });
+                }
+            }, 100);
+        }
+
+        function updateModuleStatuses() {
+            // Update anamnese module statuses
+            ['entwicklung', 'familie', 'belastungen', 'ressourcen'].forEach(module => {
+                const hasData = appData.anamnese[module] && Object.keys(appData.anamnese[module]).length > 0;
+                const cards = document.querySelectorAll(`.module-card`);
+                cards.forEach(card => {
+                    if (card.textContent.includes(getModuleTitle(module))) {
+                        const status = card.querySelector('.module-status');
+                        if (status) {
+                            status.textContent = hasData ? 'Ausgefüllt ✓' : 'Nicht ausgefüllt';
+                            card.classList.toggle('completed', hasData);
+                        }
+                    }
+                });
+            });
+
+            // Update screening module statuses
+            ['aufmerksamkeit', 'emotionen', 'soziales', 'verhalten'].forEach(module => {
+                const hasData = appData.screening[module] && Object.keys(appData.screening[module]).length > 0;
+                const cards = document.querySelectorAll(`.module-card`);
+                cards.forEach(card => {
+                    if (card.textContent.includes(getModuleTitle(module))) {
+                        const status = card.querySelector('.module-status');
+                        if (status) {
+                            status.textContent = hasData ? 'Ausgefüllt ✓' : 'Nicht ausgefüllt';
+                            card.classList.toggle('completed', hasData);
+                        }
+                    }
+                });
+            });
         }
 
         function getModuleTitle(module) {
@@ -1706,70 +1953,6 @@
                 'verhalten': 'Verhalten & Regeln'
             };
             return titles[module] || module;
-        }
-
-        function getAnamneseModuleContent(module) {
-            // Return HTML content for anamnese module
-            return `<p>Modul-Inhalt für ${module} wird geladen...</p>
-                    <div class="checklist">
-                        <div class="checklist-item" onclick="this.classList.toggle('checked')">
-                            <div class="checklist-checkbox">✓</div>
-                            <div class="checklist-label">Beispiel-Item 1</div>
-                        </div>
-                        <div class="checklist-item" onclick="this.classList.toggle('checked')">
-                            <div class="checklist-checkbox">✓</div>
-                            <div class="checklist-label">Beispiel-Item 2</div>
-                        </div>
-                    </div>`;
-        }
-
-        function getScreeningModuleContent(module) {
-            // Get content from CLINICAL_BRAIN
-            if (typeof CLINICAL_BRAIN !== 'undefined' && CLINICAL_BRAIN.assessmentModules[module]) {
-                const moduleData = CLINICAL_BRAIN.assessmentModules[module];
-                let html = `<p class="card-subtitle">${moduleData.description}</p>`;
-
-                moduleData.questions.forEach(q => {
-                    html += `<div class="form-group">
-                        <label class="form-label">${q.question}</label>
-                        <div class="checklist">`;
-
-                    q.options.forEach(opt => {
-                        html += `<div class="checklist-item" onclick="this.classList.toggle('checked')" data-value="${opt.value}">
-                            <div class="checklist-checkbox">✓</div>
-                            <div class="checklist-label">${opt.label}</div>
-                        </div>`;
-                    });
-
-                    html += `</div></div>`;
-                });
-
-                return html;
-            }
-            return '<p>Modul nicht gefunden.</p>';
-        }
-
-        function getELDiBContent(bereich) {
-            return `<p>ELDiB-Items für ${bereich} werden geladen...</p>
-                    <div class="form-group">
-                        <label class="form-label">Aktuelle Stufe</label>
-                        <select class="form-input" onchange="updateELDiBStufe('${bereich}', this.value)">
-                            <option value="1">Stufe I</option>
-                            <option value="2" selected>Stufe II</option>
-                            <option value="3">Stufe III</option>
-                            <option value="4">Stufe IV</option>
-                            <option value="5">Stufe V</option>
-                        </select>
-                    </div>`;
-        }
-
-        function updateELDiBStufe(bereich, stufe) {
-            appData.eldib[bereich].stufe = parseInt(stufe);
-            const barId = `eldib-bar-${bereich === 'verhalten' ? 'v' : bereich === 'kommunikation' ? 'k' : bereich === 'sozialisation' ? 'soz' : 'kog'}`;
-            const stufeId = `eldib-stufe-${bereich === 'verhalten' ? 'v' : bereich === 'kommunikation' ? 'k' : bereich === 'sozialisation' ? 'soz' : 'kog'}`;
-
-            document.getElementById(barId).style.height = `${stufe * 20}%`;
-            document.getElementById(stufeId).textContent = `Stufe ${['I', 'II', 'III', 'IV', 'V'][stufe - 1]}`;
         }
 
         // ============================================
@@ -1872,26 +2055,56 @@
                     <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
 
                     <h4>5. So geht es mit ${name}</h4>
+
+                    ${s.interventionen?.allgemein?.length > 0 ? `
+                        <div style="margin-bottom: 20px;">
+                            <div style="font-weight: 500; margin-bottom: 12px; color: var(--gray-700);">Allgemeine Strategien:</div>
+                            ${s.interventionen.allgemein.slice(0, 4).map(int => `
+                                <div style="background: var(--gray-50); padding: 14px; border-radius: var(--radius); margin-bottom: 10px; border-left: 3px solid var(--primary);">
+                                    <div style="font-weight: 600; margin-bottom: 6px;">${int.kategorie}</div>
+                                    ${int.beschreibung ? `<div style="color: var(--gray-600); font-size: 0.9rem; margin-bottom: 8px;">${int.beschreibung}</div>` : ''}
+                                    <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem;">
+                                        ${int.massnahmen.map(m => `<li style="margin-bottom: 4px;">${m}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+
                     ${s.interventionen?.situationen?.length > 0 ? `
+                        <div style="font-weight: 500; margin-bottom: 12px; color: var(--gray-700);">Situations-Rezepte:</div>
                         <table class="situations-table">
                             <thead>
                                 <tr>
-                                    <th>Situation</th>
+                                    <th>Situation / Wenn...</th>
                                     <th>Tu das</th>
                                     <th>Vermeide</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                ${s.interventionen.situationen.map(sit => `
+                                ${s.interventionen.situationen.slice(0, 8).map(sit => `
                                     <tr>
                                         <td>${sit.situation}</td>
-                                        <td class="do-this">${sit.tuDas.join('<br>')}</td>
-                                        <td class="avoid-this">${sit.vermeide.join('<br>')}</td>
+                                        <td class="do-this">${Array.isArray(sit.tuDas) ? sit.tuDas.join('<br>') : sit.tuDas}</td>
+                                        <td class="avoid-this">${Array.isArray(sit.vermeide) && sit.vermeide.length > 0 ? sit.vermeide.join('<br>') : '-'}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
                         </table>
                     ` : '<p>Keine Situationsempfehlungen verfügbar.</p>'}
+
+                    ${s.interventionen?.ichZiele?.length > 0 ? `
+                        <div style="margin-top: 20px;">
+                            <div style="font-weight: 500; margin-bottom: 12px; color: var(--gray-700);">Mögliche Ich-Ziele zur Auswahl:</div>
+                            <div style="display: grid; gap: 8px;">
+                                ${s.interventionen.ichZiele.slice(0, 6).map(ziel => `
+                                    <div style="padding: 10px 14px; background: var(--primary-subtle); border-radius: var(--radius); font-size: 0.9rem; border-left: 3px solid var(--primary);">
+                                        "${ziel}"
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
 
                     <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
 

@@ -755,13 +755,97 @@ const SynthesisEngine = {
     generateInterventionen(data) {
         const interventionen = {
             situationen: [],
-            allgemein: []
+            allgemein: [],
+            ichZiele: [],
+            explorationsFragen: []
         };
 
         const hypothesen = this.generateHypothesen(data);
         const eldib = data.eldib || {};
+        const hauptproblem = data.screening?.aktuelleSymptome?.hauptproblem;
 
-        // Situations-Rezepte basierend auf Hypothesen
+        // Situations-Rezepte aus ADVISORY_DATA integrieren
+        if (typeof ADVISORY_DATA !== 'undefined') {
+            // Mapping von Hypothesen/Problemen zu Advisory-Modulen
+            const problematikMapping = {
+                'verhalten_extern': ['oppositionell', 'aggression'],
+                'verhalten_intern': ['rueckzug', 'emotionsregulation'],
+                'aufmerksamkeit': ['aufmerksamkeit'],
+                'sozial': ['sozial', 'rueckzug'],
+                'odd': ['oppositionell'],
+                'adhs': ['aufmerksamkeit'],
+                'angst': ['rueckzug', 'emotionsregulation'],
+                'depression': ['rueckzug', 'emotionsregulation'],
+                'trauma': ['emotionsregulation', 'rueckzug']
+            };
+
+            // Sammle relevante Problematiken
+            const relevanteProblematiken = new Set();
+
+            // Aus Hauptproblem
+            if (hauptproblem && problematikMapping[hauptproblem]) {
+                problematikMapping[hauptproblem].forEach(p => relevanteProblematiken.add(p));
+            }
+
+            // Aus Hypothesen
+            hypothesen.forEach(h => {
+                if (h.konfidenz >= 40 && problematikMapping[h.id]) {
+                    problematikMapping[h.id].forEach(p => relevanteProblematiken.add(p));
+                }
+            });
+
+            // Hole Daten aus ADVISORY_DATA für jede relevante Problematik
+            relevanteProblematiken.forEach(problematikId => {
+                const problematik = ADVISORY_DATA.problematiken[problematikId];
+                if (!problematik) return;
+
+                // Explorationsfragen hinzufügen
+                if (problematik.explorationsFragen) {
+                    problematik.explorationsFragen.forEach(frage => {
+                        interventionen.explorationsFragen.push({
+                            frage: frage.frage,
+                            hinweis: frage.hinweis,
+                            kategorie: frage.kategorie,
+                            quelle: problematik.name
+                        });
+                    });
+                }
+
+                // Entwicklungslogik als Situations-Rezepte
+                if (problematik.entwicklungslogik) {
+                    problematik.entwicklungslogik.forEach(logik => {
+                        interventionen.situationen.push({
+                            situation: logik.wenn,
+                            tuDas: [logik.dann, logik.intervention],
+                            vermeide: [],
+                            quelle: problematik.name
+                        });
+                    });
+                }
+
+                // Allgemeine Interventionen
+                if (problematik.interventionen?.allgemein) {
+                    problematik.interventionen.allgemein.forEach(intervention => {
+                        interventionen.allgemein.push({
+                            kategorie: `${problematik.name}: ${intervention.name}`,
+                            beschreibung: intervention.beschreibung,
+                            massnahmen: intervention.massnahmen
+                        });
+                    });
+                }
+
+                // Ich-Ziele
+                if (problematik.interventionen?.ichZiele) {
+                    problematik.interventionen.ichZiele.forEach(ziel => {
+                        if (!interventionen.ichZiele.includes(ziel)) {
+                            interventionen.ichZiele.push(ziel);
+                        }
+                    });
+                }
+            });
+        }
+
+        // Fallback: Statische Situations-Rezepte basierend auf Hypothesen
         hypothesen.forEach(hypothese => {
             if (hypothese.konfidenz < 30) return;
 
@@ -813,11 +897,31 @@ const SynthesisEngine = {
                         tuDas: ['Sicherheit vermitteln', 'Trigger wenn möglich vermeiden', 'Grounding-Techniken anbieten'],
                         vermeide: ['Trigger konfrontieren', 'Fragen "Warum reagierst du so?"', 'Vor anderen thematisieren']
                     }
+                ],
+                depression: [
+                    {
+                        situation: 'Kind ist antriebslos und beteiligt sich nicht',
+                        tuDas: ['Kleine Schritte würdigen', 'Niedrige Erwartungen, hohe Wertschätzung', 'Interessen einbeziehen'],
+                        vermeide: ['Auffordern "Reiß dich zusammen"', 'Vergleiche mit anderen', 'Überforderung']
+                    }
+                ],
+                bindung: [
+                    {
+                        situation: 'Kind testet Grenzen exzessiv',
+                        tuDas: ['Grenzen halten MIT Beziehung', 'Nicht persönlich nehmen', 'Immer wieder neu anfangen'],
+                        vermeide: ['Aufgeben', 'Beziehungsabbruch androhen', 'Inkonsistenz']
+                    }
                 ]
             };
 
             if (situationenMap[hypothese.id]) {
-                interventionen.situationen.push(...situationenMap[hypothese.id]);
+                situationenMap[hypothese.id].forEach(sit => {
+                    // Nur hinzufügen wenn nicht schon vorhanden
+                    const exists = interventionen.situationen.some(s => s.situation === sit.situation);
+                    if (!exists) {
+                        interventionen.situationen.push(sit);
+                    }
+                });
             }
         });
 
@@ -843,6 +947,16 @@ const SynthesisEngine = {
                     'Gruppenbasierte Verstärkung einführen',
                     'Selbstbeobachtung anbahnen',
                     'Wahlmöglichkeiten anbieten'
+                ]
+            });
+        } else {
+            interventionen.allgemein.push({
+                kategorie: 'Verhaltensregulation (Stufe IV-V)',
+                massnahmen: [
+                    'Selbstverantwortung fördern',
+                    'Reflexion anleiten',
+                    'Peer-Unterstützung nutzen',
+                    'Langfristige Ziele setzen'
                 ]
             });
         }
