@@ -2366,28 +2366,28 @@
         </div>
 
         <div class="sidebar-nav">
-            <!-- Dossier -->
+            <!-- PHASE 1: EINGANG -->
             <div class="sidebar-section">
-                <div class="sidebar-section-title">Fall-Dossier</div>
-                <div class="sidebar-item active" onclick="showTab('dossier')" data-tab="dossier">
-                    <span class="sidebar-item-icon">📊</span>
-                    <span>Dossier</span>
+                <div class="sidebar-section-title">1. Eingang</div>
+                <div class="sidebar-item active" onclick="showTab('stammdaten')" data-tab="stammdaten">
+                    <span class="sidebar-item-icon">📥</span>
+                    <span>Stammdaten</span>
                 </div>
             </div>
 
-            <!-- Diagnostic Spécialisée (Anamnese) -->
+            <!-- PHASE 2: ANAMNESE / DS -->
             <div class="sidebar-section">
-                <div class="sidebar-section-title">Diagnostic Spécialisée</div>
-                <div class="sidebar-item" onclick="showTab('diagnostic')" data-tab="diagnostic">
+                <div class="sidebar-section-title">2. Anamnese (DS)</div>
+                <div class="sidebar-item" onclick="showTab('dossier')" data-tab="dossier">
                     <span class="sidebar-item-icon">📋</span>
-                    <span>Anamnese</span>
-                    <span class="sidebar-item-badge" id="badge-diagnostic">0</span>
+                    <span>Diagnostic Spécialisé</span>
+                    <span class="sidebar-item-badge" id="badge-dossier">0</span>
                 </div>
             </div>
 
-            <!-- ELDiB -->
+            <!-- PHASE 3: ELDiB -->
             <div class="sidebar-section">
-                <div class="sidebar-section-title">ELDiB Erfassung</div>
+                <div class="sidebar-section-title">3. ELDiB Erfassung</div>
                 <div class="sidebar-item" onclick="showTab('verhalten')" data-tab="verhalten">
                     <span class="sidebar-item-icon">🎯</span>
                     <span>V - Verhalten</span>
@@ -2410,22 +2410,39 @@
                 </div>
             </div>
 
-            <!-- Klinisches Assessment -->
+            <!-- PHASE 4: DIAGNOSTIK & VERSTEHEN -->
             <div class="sidebar-section">
-                <div class="sidebar-section-title">Klinisches Assessment</div>
+                <div class="sidebar-section-title">4. Diagnostik & Verstehen</div>
                 <div class="sidebar-item" onclick="showTab('screening')" data-tab="screening">
+                    <span class="sidebar-item-icon">🔍</span>
+                    <span>Vertiefte Diagnostik</span>
+                </div>
+                <div class="sidebar-item" onclick="showTab('modelle')" data-tab="modelle">
                     <span class="sidebar-item-icon">🧠</span>
-                    <span>4-Phasen Assessment</span>
+                    <span>Erklärungsmodelle</span>
+                </div>
+                <div class="sidebar-item" onclick="showTab('psychoedukation')" data-tab="psychoedukation">
+                    <span class="sidebar-item-icon">💡</span>
+                    <span>Psychoedukation</span>
                 </div>
             </div>
 
-            <!-- Synthese -->
+            <!-- PHASE 5: HANDELN -->
             <div class="sidebar-section">
-                <div class="sidebar-section-title">Auswertung</div>
+                <div class="sidebar-section-title">5. Handeln</div>
                 <div class="sidebar-item" onclick="showTab('synthese')" data-tab="synthese">
                     <span class="sidebar-item-icon">🔬</span>
                     <span>Fallsynthese</span>
                 </div>
+                <div class="sidebar-item" onclick="showTab('handlungsplan')" data-tab="handlungsplan">
+                    <span class="sidebar-item-icon">🎯</span>
+                    <span>Was ist zu tun?</span>
+                </div>
+            </div>
+
+            <!-- EXPORT -->
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">6. Abschluss</div>
                 <div class="sidebar-item" onclick="showTab('export')" data-tab="export">
                     <span class="sidebar-item-icon">📄</span>
                     <span>Export & Berichte</span>
@@ -2465,9 +2482,142 @@
         <div class="main-body">
             <div class="container">
 
-        <!-- Stammdaten Tab -->
-        <!-- DOSSIER - Alles auf einen Blick -->
-        <div id="dossier" class="tab-content active">
+        <!-- ========== PHASE 1: STAMMDATEN (Eingang) ========== -->
+        <div id="stammdaten" class="tab-content active">
+            <style>
+                .stammdaten-container { max-width: 900px; margin: 0 auto; }
+                .stammdaten-header { text-align: center; margin-bottom: 30px; padding: 30px; background: linear-gradient(135deg, var(--primary-subtle), var(--info-subtle)); border-radius: var(--radius-xl); }
+                .stammdaten-header h2 { color: var(--gray-900); margin: 0 0 8px 0; font-size: 1.5rem; }
+                .stammdaten-header p { color: var(--gray-600); margin: 0; }
+                .stammdaten-section { background: white; border-radius: var(--radius-lg); padding: 24px; margin-bottom: 20px; border: 1px solid var(--gray-200); }
+                .stammdaten-section h3 { color: var(--gray-800); margin: 0 0 20px 0; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--gray-100); }
+                .stammdaten-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+                .stammdaten-grid.full { grid-template-columns: 1fr; }
+                .stammdaten-field { display: flex; flex-direction: column; gap: 6px; }
+                .stammdaten-field label { font-size: 0.85rem; font-weight: 500; color: var(--gray-600); }
+                .stammdaten-field input, .stammdaten-field select, .stammdaten-field textarea { padding: 12px 14px; border: 1px solid var(--gray-300); border-radius: var(--radius); font-size: 0.95rem; transition: all var(--transition-fast); }
+                .stammdaten-field input:focus, .stammdaten-field select:focus, .stammdaten-field textarea:focus { outline: none; border-color: var(--primary); box-shadow: var(--shadow-focus); }
+                .workflow-hint { background: var(--info-subtle); border-left: 4px solid var(--info); padding: 16px; border-radius: var(--radius); margin-top: 24px; }
+                .workflow-hint h4 { color: var(--info-dark); margin: 0 0 8px 0; font-size: 0.95rem; }
+                .workflow-hint p { color: var(--gray-700); margin: 0; font-size: 0.9rem; }
+                .next-step-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: var(--radius-lg); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all var(--transition-fast); margin-top: 24px; }
+                .next-step-btn:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+                @media (max-width: 768px) { .stammdaten-grid { grid-template-columns: 1fr; } }
+            </style>
+
+            <div class="stammdaten-container">
+                <div class="stammdaten-header">
+                    <h2>📥 Dossier-Eingang</h2>
+                    <p>Erfassen Sie die Grunddaten des Kindes/Jugendlichen</p>
+                </div>
+
+                <!-- Persönliche Daten -->
+                <div class="stammdaten-section">
+                    <h3>👤 Persönliche Angaben</h3>
+                    <div class="stammdaten-grid">
+                        <div class="stammdaten-field">
+                            <label>Vorname</label>
+                            <input type="text" id="stamm_vorname" placeholder="Vorname des Kindes" onchange="syncStammdaten()">
+                        </div>
+                        <div class="stammdaten-field">
+                            <label>Nachname</label>
+                            <input type="text" id="stamm_nachname" placeholder="Nachname" onchange="syncStammdaten()">
+                        </div>
+                        <div class="stammdaten-field">
+                            <label>Geburtsdatum</label>
+                            <input type="date" id="stamm_geburtsdatum" onchange="syncStammdaten(); berechneSAlter()">
+                        </div>
+                        <div class="stammdaten-field">
+                            <label>Geschlecht</label>
+                            <select id="stamm_geschlecht" onchange="syncStammdaten()">
+                                <option value="">Bitte wählen...</option>
+                                <option value="m">Männlich</option>
+                                <option value="w">Weiblich</option>
+                                <option value="d">Divers</option>
+                            </select>
+                        </div>
+                        <div class="stammdaten-field">
+                            <label>Berechnetes Alter</label>
+                            <input type="text" id="stamm_alter_anzeige" readonly style="background: var(--gray-50);">
+                        </div>
+                        <div class="stammdaten-field">
+                            <label>Matrikelnummer</label>
+                            <input type="text" id="stamm_matricule" placeholder="Matrikelnummer">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schulische Situation -->
+                <div class="stammdaten-section">
+                    <h3>🏫 Schulische Situation</h3>
+                    <div class="stammdaten-grid">
+                        <div class="stammdaten-field">
+                            <label>Aktuelle Schule / Förderort</label>
+                            <input type="text" id="stamm_schule" placeholder="Name der Schule" onchange="syncStammdaten()">
+                        </div>
+                        <div class="stammdaten-field">
+                            <label>Aktuelle Klasse</label>
+                            <input type="text" id="stamm_klasse" placeholder="z.B. 3.1" onchange="syncStammdaten()">
+                        </div>
+                        <div class="stammdaten-field">
+                            <label>Klassenlehrperson</label>
+                            <input type="text" id="stamm_lehrperson" placeholder="Name der Klassenlehrperson">
+                        </div>
+                        <div class="stammdaten-field">
+                            <label>Schulzyklus</label>
+                            <select id="stamm_zyklus">
+                                <option value="">Bitte wählen...</option>
+                                <option value="c1">Zyklus 1 (Précoce - Cycle 2.2)</option>
+                                <option value="c2">Zyklus 2 (Cycle 2.1 - 4.2)</option>
+                                <option value="c3">Zyklus 3 (Cycle 4.1 - 6e)</option>
+                                <option value="c4">Zyklus 4 (Sekundar)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auftragsdaten -->
+                <div class="stammdaten-section">
+                    <h3>📋 Auftragsdaten</h3>
+                    <div class="stammdaten-grid">
+                        <div class="stammdaten-field">
+                            <label>Eingangsdatum des Dossiers</label>
+                            <input type="date" id="stamm_eingangsdatum">
+                        </div>
+                        <div class="stammdaten-field">
+                            <label>Auftraggeber</label>
+                            <select id="stamm_auftraggeber">
+                                <option value="">Bitte wählen...</option>
+                                <option value="schule">Schule / I-EBS</option>
+                                <option value="eltern">Eltern</option>
+                                <option value="arzt">Arzt / Kinderarzt</option>
+                                <option value="cni">CNI / Regionaldirektion</option>
+                                <option value="andere">Andere</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="stammdaten-grid full" style="margin-top: 16px;">
+                        <div class="stammdaten-field">
+                            <label>Kurze Beschreibung des Anliegens</label>
+                            <textarea id="stamm_anliegen" rows="3" placeholder="Warum wurde das Kind angemeldet? Was ist das Hauptanliegen?"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workflow-Hinweis -->
+                <div class="workflow-hint">
+                    <h4>💡 Nächster Schritt: Diagnostic Spécialisé (DS)</h4>
+                    <p>Nach dem Erfassen der Stammdaten erstellen Sie das Diagnostic Spécialisé. Dort dokumentieren Sie die Anamnese, Vorgeschichte und aktuelle Situation des Kindes.</p>
+                </div>
+
+                <button class="next-step-btn" onclick="showTab('dossier')">
+                    Weiter zum Diagnostic Spécialisé →
+                </button>
+            </div>
+        </div>
+
+        <!-- ========== PHASE 2: DIAGNOSTIC SPÉCIALISÉ (Anamnese) ========== -->
+        <div id="dossier" class="tab-content">
             <style>
                 .dossier-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
                 .dossier-card { background: white; border-radius: var(--radius-lg); padding: 20px; border: 1px solid var(--gray-200); box-shadow: var(--shadow-xs); transition: all var(--transition-fast); }
@@ -5867,6 +6017,464 @@
                 </div>
             </div>
         </div>
+
+        <!-- ========== PHASE 4a: ERKLÄRUNGSMODELLE ========== -->
+        <div id="modelle" class="tab-content">
+            <style>
+                .modelle-container { max-width: 1200px; margin: 0 auto; }
+                .modelle-header { text-align: center; margin-bottom: 30px; padding: 30px; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1)); border-radius: var(--radius-xl); }
+                .modelle-header h2 { color: var(--gray-900); margin: 0 0 8px 0; font-size: 1.5rem; }
+                .modelle-header p { color: var(--gray-600); margin: 0; }
+                .modelle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; margin-bottom: 24px; }
+                .modell-card { background: white; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--gray-200); transition: all var(--transition-fast); }
+                .modell-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+                .modell-card-header { padding: 20px; background: linear-gradient(135deg, #8B5CF6, #6366F1); color: white; }
+                .modell-card-header.bio { background: linear-gradient(135deg, #10B981, #059669); }
+                .modell-card-header.psycho { background: linear-gradient(135deg, #6366F1, #4F46E5); }
+                .modell-card-header.sozial { background: linear-gradient(135deg, #F59E0B, #D97706); }
+                .modell-card-header.funktional { background: linear-gradient(135deg, #EF4444, #DC2626); }
+                .modell-card-header.entwicklung { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+                .modell-card-header h3 { margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+                .modell-card-body { padding: 20px; }
+                .modell-card-body p { color: var(--gray-600); margin: 0 0 16px 0; font-size: 0.9rem; line-height: 1.6; }
+                .modell-factors { display: flex; flex-direction: column; gap: 12px; }
+                .modell-factor { padding: 12px; background: var(--gray-50); border-radius: var(--radius); border-left: 3px solid var(--primary); }
+                .modell-factor-label { font-size: 0.8rem; font-weight: 600; color: var(--gray-500); text-transform: uppercase; margin-bottom: 4px; }
+                .modell-factor-content { color: var(--gray-700); font-size: 0.9rem; }
+                .modell-factor-content:empty::before { content: "Noch nicht erfasst"; color: var(--gray-400); font-style: italic; }
+                .modell-btn { width: 100%; padding: 12px; background: var(--gray-100); color: var(--gray-700); border: none; border-radius: var(--radius); cursor: pointer; font-weight: 500; transition: all var(--transition-fast); margin-top: 16px; }
+                .modell-btn:hover { background: var(--primary); color: white; }
+                .integration-section { background: white; border-radius: var(--radius-lg); padding: 24px; border: 1px solid var(--gray-200); margin-top: 24px; }
+                .integration-section h3 { color: var(--gray-800); margin: 0 0 20px 0; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+            </style>
+
+            <div class="modelle-container">
+                <div class="modelle-header">
+                    <h2>🧠 Erklärungsmodelle</h2>
+                    <p>Verstehen Sie das Verhalten durch verschiedene theoretische Perspektiven</p>
+                </div>
+
+                <div class="modelle-grid">
+                    <!-- Biopsychosoziales Modell -->
+                    <div class="modell-card">
+                        <div class="modell-card-header">
+                            <h3>🔄 Biopsychosoziales Modell</h3>
+                        </div>
+                        <div class="modell-card-body">
+                            <p>Das biopsychosoziale Modell betrachtet Verhalten als Ergebnis biologischer, psychologischer und sozialer Faktoren.</p>
+                            <div class="modell-factors">
+                                <div class="modell-factor" style="border-left-color: #10B981;">
+                                    <div class="modell-factor-label">Biologische Faktoren</div>
+                                    <div class="modell-factor-content" id="modell-bio-content">Genetik, Neurologie, körperliche Gesundheit, Temperament</div>
+                                </div>
+                                <div class="modell-factor" style="border-left-color: #6366F1;">
+                                    <div class="modell-factor-label">Psychologische Faktoren</div>
+                                    <div class="modell-factor-content" id="modell-psycho-content">Kognition, Emotionsregulation, Selbstbild, Bindung</div>
+                                </div>
+                                <div class="modell-factor" style="border-left-color: #F59E0B;">
+                                    <div class="modell-factor-label">Soziale Faktoren</div>
+                                    <div class="modell-factor-content" id="modell-sozial-content">Familie, Peers, Schule, Kultur</div>
+                                </div>
+                            </div>
+                            <button class="modell-btn" onclick="generateBiopsychosozialFromData()">📊 Aus Daten generieren</button>
+                        </div>
+                    </div>
+
+                    <!-- Vulnerabilitäts-Stress-Modell -->
+                    <div class="modell-card">
+                        <div class="modell-card-header psycho">
+                            <h3>⚡ Vulnerabilitäts-Stress-Modell</h3>
+                        </div>
+                        <div class="modell-card-body">
+                            <p>Erklärt, wie Vulnerabilitäten (Anfälligkeiten) in Kombination mit Stressoren zu Problemen führen können.</p>
+                            <div class="modell-factors">
+                                <div class="modell-factor" style="border-left-color: #EF4444;">
+                                    <div class="modell-factor-label">Prädisponierende Faktoren</div>
+                                    <div class="modell-factor-content" id="modell-praedisp-content">Faktoren, die das Kind anfällig machen</div>
+                                </div>
+                                <div class="modell-factor" style="border-left-color: #F59E0B;">
+                                    <div class="modell-factor-label">Auslösende Faktoren</div>
+                                    <div class="modell-factor-content" id="modell-ausloesend-content">Aktuelle Stressoren, die Probleme triggern</div>
+                                </div>
+                                <div class="modell-factor" style="border-left-color: #6366F1;">
+                                    <div class="modell-factor-label">Aufrechterhaltende Faktoren</div>
+                                    <div class="modell-factor-content" id="modell-aufrecht-content">Was das Problem am Laufen hält</div>
+                                </div>
+                                <div class="modell-factor" style="border-left-color: #10B981;">
+                                    <div class="modell-factor-label">Protektive Faktoren</div>
+                                    <div class="modell-factor-content" id="modell-protektiv-content">Ressourcen und Schutzfaktoren</div>
+                                </div>
+                            </div>
+                            <button class="modell-btn" onclick="generateVulnerabilitaetFromData()">📊 Aus Daten generieren</button>
+                        </div>
+                    </div>
+
+                    <!-- Funktionale Verhaltensanalyse -->
+                    <div class="modell-card">
+                        <div class="modell-card-header funktional">
+                            <h3>🎯 Funktionale Verhaltensanalyse</h3>
+                        </div>
+                        <div class="modell-card-body">
+                            <p>Jedes Verhalten hat eine Funktion. Verstehen Sie, welches Bedürfnis das Problemverhalten erfüllt.</p>
+                            <div class="modell-factors">
+                                <div class="modell-factor" style="border-left-color: #3B82F6;">
+                                    <div class="modell-factor-label">Aufmerksamkeit</div>
+                                    <div class="modell-factor-content">Verhalten dient dazu, Aufmerksamkeit zu bekommen</div>
+                                </div>
+                                <div class="modell-factor" style="border-left-color: #10B981;">
+                                    <div class="modell-factor-label">Vermeidung/Flucht</div>
+                                    <div class="modell-factor-content">Verhalten dient dazu, unangenehme Situationen zu vermeiden</div>
+                                </div>
+                                <div class="modell-factor" style="border-left-color: #F59E0B;">
+                                    <div class="modell-factor-label">Zugang zu Dingen</div>
+                                    <div class="modell-factor-content">Verhalten dient dazu, Zugang zu erwünschten Objekten/Aktivitäten zu bekommen</div>
+                                </div>
+                                <div class="modell-factor" style="border-left-color: #8B5CF6;">
+                                    <div class="modell-factor-label">Sensorische Stimulation</div>
+                                    <div class="modell-factor-content">Verhalten dient der Selbststimulation</div>
+                                </div>
+                            </div>
+                            <button class="modell-btn" onclick="showTab('screening')">🔍 ABC-Analyse durchführen</button>
+                        </div>
+                    </div>
+
+                    <!-- Entwicklungsmodell -->
+                    <div class="modell-card">
+                        <div class="modell-card-header entwicklung">
+                            <h3>📈 Entwicklungsperspektive</h3>
+                        </div>
+                        <div class="modell-card-body">
+                            <p>Betrachtet das Verhalten im Kontext der Entwicklungsaufgaben und -phasen des Kindes.</p>
+                            <div class="modell-factors">
+                                <div class="modell-factor" style="border-left-color: #3B82F6;">
+                                    <div class="modell-factor-label">Entwicklungsalter vs. Chronologisches Alter</div>
+                                    <div class="modell-factor-content" id="modell-entwicklung-content">ELDiB-Ergebnisse zeigen das Entwicklungsalter</div>
+                                </div>
+                                <div class="modell-factor" style="border-left-color: #8B5CF6;">
+                                    <div class="modell-factor-label">Nicht gemeisterte Entwicklungsaufgaben</div>
+                                    <div class="modell-factor-content" id="modell-aufgaben-content">Welche Schritte wurden übersprungen?</div>
+                                </div>
+                                <div class="modell-factor" style="border-left-color: #10B981;">
+                                    <div class="modell-factor-label">Nächste Entwicklungsschritte</div>
+                                    <div class="modell-factor-content" id="modell-naechste-content">Was steht als nächstes an?</div>
+                                </div>
+                            </div>
+                            <button class="modell-btn" onclick="generateEntwicklungsmodellFromData()">📊 Aus ELDiB generieren</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Integrierte Sichtweise -->
+                <div class="integration-section">
+                    <h3>🔬 Integrierte Fallkonzeption</h3>
+                    <p style="color: var(--gray-600); margin-bottom: 16px;">Hier werden alle Modelle zu einem Gesamtbild zusammengeführt.</p>
+                    <div id="integrierte-konzeption" style="padding: 20px; background: var(--gray-50); border-radius: var(--radius); min-height: 150px;">
+                        <p style="color: var(--gray-400); font-style: italic;">Generieren Sie zuerst die einzelnen Modelle, um eine integrierte Sicht zu erhalten.</p>
+                    </div>
+                    <button class="modell-btn" style="background: var(--primary); color: white; margin-top: 16px;" onclick="generateIntegriertesModell()">🧩 Integrierte Konzeption erstellen</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== PHASE 4b: PSYCHOEDUKATION ========== -->
+        <div id="psychoedukation" class="tab-content">
+            <style>
+                .psychoeduk-container { max-width: 1200px; margin: 0 auto; }
+                .psychoeduk-header { text-align: center; margin-bottom: 30px; padding: 30px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1)); border-radius: var(--radius-xl); }
+                .psychoeduk-header h2 { color: var(--gray-900); margin: 0 0 8px 0; font-size: 1.5rem; }
+                .psychoeduk-header p { color: var(--gray-600); margin: 0; }
+                .audience-tabs { display: flex; gap: 10px; margin-bottom: 24px; }
+                .audience-tab { flex: 1; padding: 16px; background: white; border: 2px solid var(--gray-200); border-radius: var(--radius-lg); cursor: pointer; text-align: center; transition: all var(--transition-fast); }
+                .audience-tab:hover { border-color: var(--primary-light); }
+                .audience-tab.active { border-color: var(--primary); background: var(--primary-subtle); }
+                .audience-tab h4 { margin: 0 0 4px 0; color: var(--gray-800); }
+                .audience-tab p { margin: 0; font-size: 0.85rem; color: var(--gray-500); }
+                .psychoeduk-content { display: none; }
+                .psychoeduk-content.active { display: block; }
+                .info-card { background: white; border-radius: var(--radius-lg); padding: 24px; border: 1px solid var(--gray-200); margin-bottom: 20px; }
+                .info-card h3 { color: var(--gray-800); margin: 0 0 16px 0; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+                .info-card p { color: var(--gray-600); line-height: 1.7; }
+                .tip-box { background: var(--success-subtle); border-left: 4px solid var(--success); padding: 16px; border-radius: var(--radius); margin: 16px 0; }
+                .tip-box h4 { color: var(--success-dark); margin: 0 0 8px 0; font-size: 0.95rem; }
+                .warning-box { background: var(--warning-subtle); border-left: 4px solid var(--warning); padding: 16px; border-radius: var(--radius); margin: 16px 0; }
+                .strategy-list { list-style: none; padding: 0; margin: 16px 0; }
+                .strategy-list li { padding: 12px 16px; background: var(--gray-50); border-radius: var(--radius); margin-bottom: 8px; display: flex; align-items: flex-start; gap: 12px; }
+                .strategy-list li::before { content: "✓"; color: var(--success); font-weight: bold; }
+                .print-btn { padding: 12px 24px; background: var(--gray-100); color: var(--gray-700); border: 1px solid var(--gray-300); border-radius: var(--radius); cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 8px; transition: all var(--transition-fast); }
+                .print-btn:hover { background: var(--gray-200); }
+            </style>
+
+            <div class="psychoeduk-container">
+                <div class="psychoeduk-header">
+                    <h2>💡 Psychoedukation</h2>
+                    <p>Verständliche Erklärungen und praktische Tipps für Eltern, Lehrer und das Kind</p>
+                </div>
+
+                <!-- Zielgruppen-Tabs -->
+                <div class="audience-tabs">
+                    <div class="audience-tab active" onclick="showPsychoedukTab('eltern')">
+                        <h4>👨‍👩‍👧 Eltern</h4>
+                        <p>Informationen für zu Hause</p>
+                    </div>
+                    <div class="audience-tab" onclick="showPsychoedukTab('lehrer')">
+                        <h4>👩‍🏫 Lehrpersonen</h4>
+                        <p>Tipps für die Schule</p>
+                    </div>
+                    <div class="audience-tab" onclick="showPsychoedukTab('kind')">
+                        <h4>👧 Kind/Jugendlicher</h4>
+                        <p>Altersgerechte Erklärungen</p>
+                    </div>
+                </div>
+
+                <!-- Eltern-Content -->
+                <div id="psychoeduk-eltern" class="psychoeduk-content active">
+                    <div class="info-card">
+                        <h3>📖 Das Verhalten verstehen</h3>
+                        <div id="eltern-erklaerung">
+                            <p>Basierend auf der Diagnostik werden hier individuelle Erklärungen generiert, die helfen, das Verhalten Ihres Kindes besser zu verstehen.</p>
+                        </div>
+                        <button class="modell-btn" onclick="generateElternErklaerung()">📝 Individuelle Erklärung generieren</button>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>🏠 Strategien für zu Hause</h3>
+                        <ul class="strategy-list" id="eltern-strategien">
+                            <li>Klare und konsistente Regeln etablieren</li>
+                            <li>Positive Verstärkung einsetzen - Lob für erwünschtes Verhalten</li>
+                            <li>Ruhig bleiben bei Ausbrüchen - nicht eskalieren</li>
+                            <li>Vorhersehbare Routinen schaffen</li>
+                            <li>Qualitätszeit ohne Leistungsdruck einplanen</li>
+                        </ul>
+                    </div>
+
+                    <div class="tip-box">
+                        <h4>💡 Wichtig zu wissen</h4>
+                        <p>Das Verhalten Ihres Kindes ist nicht Ihre Schuld. Viele Faktoren spielen zusammen. Mit den richtigen Strategien können Sie Ihr Kind wirksam unterstützen.</p>
+                    </div>
+
+                    <button class="print-btn" onclick="printPsychoedukation('eltern')">🖨️ Eltern-Handout drucken</button>
+                </div>
+
+                <!-- Lehrer-Content -->
+                <div id="psychoeduk-lehrer" class="psychoeduk-content">
+                    <div class="info-card">
+                        <h3>📖 Das Verhalten im Schulkontext</h3>
+                        <div id="lehrer-erklaerung">
+                            <p>Hier finden Sie schulspezifische Erklärungen und Hintergründe zum Verhalten des Schülers.</p>
+                        </div>
+                        <button class="modell-btn" onclick="generateLehrerErklaerung()">📝 Schulbezogene Erklärung generieren</button>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>🎓 Strategien für den Unterricht</h3>
+                        <ul class="strategy-list" id="lehrer-strategien">
+                            <li>Klare Strukturen und visuelle Hilfen einsetzen</li>
+                            <li>Kurze, eindeutige Anweisungen geben</li>
+                            <li>Positive Beziehung aufbauen - 5:1 Verhältnis positiv/negativ</li>
+                            <li>Auszeiten als Hilfe, nicht als Strafe anbieten</li>
+                            <li>Differenzierte Aufgaben und Wahlmöglichkeiten</li>
+                            <li>Bewegungspausen einbauen</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Vermeiden Sie</h4>
+                        <p>Öffentliche Kritik, Machtkämpfe vor der Klasse, inkonsistente Regeln und übermäßigen Leistungsdruck können das Verhalten verschlechtern.</p>
+                    </div>
+
+                    <button class="print-btn" onclick="printPsychoedukation('lehrer')">🖨️ Lehrer-Handout drucken</button>
+                </div>
+
+                <!-- Kind-Content -->
+                <div id="psychoeduk-kind" class="psychoeduk-content">
+                    <div class="info-card">
+                        <h3>🌟 Für dich erklärt</h3>
+                        <div id="kind-erklaerung">
+                            <p>Hier findest du Erklärungen, die dir helfen zu verstehen, warum manche Dinge für dich schwieriger sind als für andere - und was du tun kannst.</p>
+                        </div>
+                        <button class="modell-btn" onclick="generateKindErklaerung()">📝 Altersgerechte Erklärung generieren</button>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>💪 Das kannst du tun</h3>
+                        <ul class="strategy-list" id="kind-strategien">
+                            <li>Wenn du merkst, dass du wütend wirst: Tief durchatmen!</li>
+                            <li>Frag um Hilfe, wenn etwas zu schwer ist</li>
+                            <li>Mach Pausen, wenn du müde bist</li>
+                            <li>Rede mit jemandem, wenn es dir nicht gut geht</li>
+                        </ul>
+                    </div>
+
+                    <div class="tip-box">
+                        <h4>🎉 Vergiss nicht</h4>
+                        <p>Du hast viele Stärken! Jeder ist anders und das ist okay. Mit Übung wird vieles leichter.</p>
+                    </div>
+
+                    <button class="print-btn" onclick="printPsychoedukation('kind')">🖨️ Kind-Handout drucken</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== PHASE 5: HANDLUNGSPLAN ========== -->
+        <div id="handlungsplan" class="tab-content">
+            <style>
+                .handlung-container { max-width: 1200px; margin: 0 auto; }
+                .handlung-header { text-align: center; margin-bottom: 30px; padding: 30px; background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(245, 158, 11, 0.1)); border-radius: var(--radius-xl); }
+                .handlung-header h2 { color: var(--gray-900); margin: 0 0 8px 0; font-size: 1.5rem; }
+                .handlung-header p { color: var(--gray-600); margin: 0; }
+                .priority-section { background: white; border-radius: var(--radius-lg); padding: 24px; border: 1px solid var(--gray-200); margin-bottom: 20px; }
+                .priority-section h3 { color: var(--gray-800); margin: 0 0 20px 0; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+                .priority-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 600; }
+                .priority-badge.urgent { background: var(--danger-subtle); color: var(--danger-dark); }
+                .priority-badge.high { background: var(--warning-subtle); color: var(--warning-dark); }
+                .priority-badge.normal { background: var(--info-subtle); color: var(--info-dark); }
+                .action-item { display: flex; gap: 16px; padding: 16px; background: var(--gray-50); border-radius: var(--radius); margin-bottom: 12px; align-items: flex-start; }
+                .action-checkbox { width: 24px; height: 24px; border: 2px solid var(--gray-300); border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all var(--transition-fast); }
+                .action-checkbox:hover { border-color: var(--primary); }
+                .action-checkbox.checked { background: var(--success); border-color: var(--success); color: white; }
+                .action-content { flex: 1; }
+                .action-title { font-weight: 600; color: var(--gray-800); margin-bottom: 4px; }
+                .action-desc { font-size: 0.9rem; color: var(--gray-600); }
+                .action-meta { display: flex; gap: 16px; margin-top: 8px; font-size: 0.8rem; color: var(--gray-500); }
+                .action-meta span { display: flex; align-items: center; gap: 4px; }
+                .timeline-section { background: white; border-radius: var(--radius-lg); padding: 24px; border: 1px solid var(--gray-200); margin-bottom: 20px; }
+                .timeline { position: relative; padding-left: 30px; }
+                .timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: var(--gray-200); }
+                .timeline-item { position: relative; padding-bottom: 24px; }
+                .timeline-item::before { content: ''; position: absolute; left: -24px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--primary); border: 2px solid white; box-shadow: 0 0 0 2px var(--primary); }
+                .timeline-item.completed::before { background: var(--success); box-shadow: 0 0 0 2px var(--success); }
+                .timeline-item.upcoming::before { background: var(--gray-300); box-shadow: 0 0 0 2px var(--gray-300); }
+                .timeline-date { font-size: 0.8rem; color: var(--gray-500); font-weight: 600; }
+                .timeline-content { margin-top: 4px; }
+                .timeline-title { font-weight: 600; color: var(--gray-800); }
+                .add-action-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; background: var(--gray-50); border: 2px dashed var(--gray-300); border-radius: var(--radius); cursor: pointer; color: var(--gray-500); font-weight: 500; transition: all var(--transition-fast); }
+                .add-action-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-subtle); }
+            </style>
+
+            <div class="handlung-container">
+                <div class="handlung-header">
+                    <h2>🎯 Was ist zu tun?</h2>
+                    <p>Konkrete Handlungsempfehlungen und Aktionsplan</p>
+                </div>
+
+                <!-- Sofortmaßnahmen -->
+                <div class="priority-section">
+                    <h3><span class="priority-badge urgent">🚨 Dringend</span> Sofortmaßnahmen</h3>
+                    <div id="sofort-actions">
+                        <div class="action-item">
+                            <div class="action-checkbox" onclick="toggleAction(this)"></div>
+                            <div class="action-content">
+                                <div class="action-title">Sicherheitsplan erstellen</div>
+                                <div class="action-desc">Falls Risikofaktoren identifiziert wurden, sofort einen Sicherheitsplan mit allen Beteiligten erstellen.</div>
+                                <div class="action-meta">
+                                    <span>👤 Verantwortlich: CDSE</span>
+                                    <span>📅 Diese Woche</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="add-action-btn" onclick="addCustomAction('sofort')">+ Maßnahme hinzufügen</button>
+                </div>
+
+                <!-- Kurzfristige Maßnahmen -->
+                <div class="priority-section">
+                    <h3><span class="priority-badge high">⚡ Kurzfristig</span> Nächste 2-4 Wochen</h3>
+                    <div id="kurzfristig-actions">
+                        <div class="action-item">
+                            <div class="action-checkbox" onclick="toggleAction(this)"></div>
+                            <div class="action-content">
+                                <div class="action-title">Elterngespräch vereinbaren</div>
+                                <div class="action-desc">Ergebnisse der Diagnostik besprechen und gemeinsame Strategie entwickeln.</div>
+                                <div class="action-meta">
+                                    <span>👤 Verantwortlich: CDSE + Schule</span>
+                                    <span>📅 Innerhalb 2 Wochen</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-checkbox" onclick="toggleAction(this)"></div>
+                            <div class="action-content">
+                                <div class="action-title">Schulische Anpassungen einleiten</div>
+                                <div class="action-desc">Nachteilsausgleich beantragen, Klassenleitung informieren, I-EBS einbinden.</div>
+                                <div class="action-meta">
+                                    <span>👤 Verantwortlich: Schule</span>
+                                    <span>📅 Innerhalb 3 Wochen</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="add-action-btn" onclick="addCustomAction('kurzfristig')">+ Maßnahme hinzufügen</button>
+                </div>
+
+                <!-- Mittelfristige Maßnahmen -->
+                <div class="priority-section">
+                    <h3><span class="priority-badge normal">📋 Mittelfristig</span> Nächste 1-3 Monate</h3>
+                    <div id="mittelfristig-actions">
+                        <div class="action-item">
+                            <div class="action-checkbox" onclick="toggleAction(this)"></div>
+                            <div class="action-content">
+                                <div class="action-title">Externe Therapie einleiten</div>
+                                <div class="action-desc">Falls indiziert: Psychotherapie, Ergotherapie oder andere Maßnahmen in die Wege leiten.</div>
+                                <div class="action-meta">
+                                    <span>👤 Verantwortlich: Eltern + CDSE</span>
+                                    <span>📅 Innerhalb 6 Wochen</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-checkbox" onclick="toggleAction(this)"></div>
+                            <div class="action-content">
+                                <div class="action-title">Förderplan erstellen</div>
+                                <div class="action-desc">Individuellen Förderplan mit konkreten Zielen und Maßnahmen entwickeln.</div>
+                                <div class="action-meta">
+                                    <span>👤 Verantwortlich: CDSE + Schule</span>
+                                    <span>📅 Innerhalb 4 Wochen</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="add-action-btn" onclick="addCustomAction('mittelfristig')">+ Maßnahme hinzufügen</button>
+                </div>
+
+                <!-- Follow-up -->
+                <div class="timeline-section">
+                    <h3>📅 Follow-up Termine</h3>
+                    <div class="timeline" id="followup-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-date">In 4 Wochen</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Erstes Review-Gespräch</div>
+                                <div class="action-desc">Stand der Umsetzung besprechen, Anpassungen vornehmen.</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item upcoming">
+                            <div class="timeline-date">In 3 Monaten</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Zwischenevaluation</div>
+                                <div class="action-desc">Fortschritte evaluieren, ELDiB-Kontrolle durchführen.</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item upcoming">
+                            <div class="timeline-date">In 6 Monaten</div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Abschlussevaluation</div>
+                                <div class="action-desc">Gesamtevaluation, Entscheidung über weiteres Vorgehen.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generieren Button -->
+                <button class="next-step-btn" onclick="generateHandlungsplanFromData()" style="background: var(--success);">
+                    📊 Individuellen Handlungsplan aus Daten generieren
+                </button>
+
+                <button class="next-step-btn" onclick="showTab('export')" style="margin-top: 12px;">
+                    Weiter zum Export →
+                </button>
+            </div>
+        </div>
+
     </div>
 
     <!-- Modal für Item-Details -->
@@ -6385,13 +6993,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Tab Navigation
 function showTab(tabId) {
+    // Hide all tabs
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
+
+    // Show selected tab
+    const tabElement = document.getElementById(tabId);
+    if (tabElement) {
+        tabElement.classList.add('active');
+    }
+
+    // Update old-style tabs
     document.querySelectorAll('.tab').forEach(tab => {
         const onclickAttr = tab.getAttribute('onclick');
         if (onclickAttr && onclickAttr.includes("'" + tabId + "'")) tab.classList.add('active');
     });
+
+    // Update sidebar items
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.tab === tabId) {
+            item.classList.add('active');
+        }
+    });
+
     // Update progress indicator
     updateProgressIndicator(tabId);
 
@@ -6426,6 +7051,392 @@ function showToast(message) {
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
 }
+
+// ========== NEUE FUNKTIONEN FÜR WORKFLOW ==========
+
+// Stammdaten synchronisieren
+function syncStammdaten() {
+    // Von Stammdaten zu anderen Feldern synchronisieren
+    const vorname = document.getElementById('stamm_vorname')?.value || '';
+    const nachname = document.getElementById('stamm_nachname')?.value || '';
+    const fullName = (vorname + ' ' + nachname).trim();
+
+    // Sync zu Dossier
+    const schuelerNameField = document.getElementById('schueler_name');
+    if (schuelerNameField && fullName) {
+        schuelerNameField.value = fullName;
+    }
+
+    // Sync Geburtsdatum
+    const stammGeb = document.getElementById('stamm_geburtsdatum')?.value;
+    const dossierGeb = document.getElementById('geburtsdatum');
+    if (dossierGeb && stammGeb) {
+        dossierGeb.value = stammGeb;
+        updateAlterAnzeige();
+    }
+
+    // Sync Schule
+    const stammSchule = document.getElementById('stamm_schule')?.value;
+    const foerderort = document.getElementById('foerderort');
+    if (foerderort && stammSchule) {
+        foerderort.value = stammSchule;
+    }
+
+    // Sync Klasse
+    const stammKlasse = document.getElementById('stamm_klasse')?.value;
+    const klasse = document.getElementById('klasse');
+    if (klasse && stammKlasse) {
+        klasse.value = stammKlasse;
+    }
+
+    // Update Dossier
+    if (typeof updateDossier === 'function') {
+        updateDossier();
+    }
+
+    saveToLocalStorage();
+}
+
+// Alter berechnen für Stammdaten
+function berechneSAlter() {
+    const gebDatum = document.getElementById('stamm_geburtsdatum')?.value;
+    const alterAnzeige = document.getElementById('stamm_alter_anzeige');
+
+    if (gebDatum && alterAnzeige) {
+        const heute = new Date();
+        const geb = new Date(gebDatum);
+        let alter = heute.getFullYear() - geb.getFullYear();
+        const monateAlt = heute.getMonth() - geb.getMonth();
+
+        if (monateAlt < 0 || (monateAlt === 0 && heute.getDate() < geb.getDate())) {
+            alter--;
+        }
+
+        const monate = (12 + heute.getMonth() - geb.getMonth()) % 12;
+        alterAnzeige.value = `${alter} Jahre, ${monate} Monate`;
+    }
+}
+
+// Psychoedukation Tab-Wechsel
+function showPsychoedukTab(audience) {
+    // Tabs aktualisieren
+    document.querySelectorAll('.audience-tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.psychoeduk-content').forEach(content => content.classList.remove('active'));
+
+    // Aktiven Tab setzen
+    event.target.closest('.audience-tab').classList.add('active');
+    document.getElementById('psychoeduk-' + audience).classList.add('active');
+}
+
+// Handlungsplan: Aktion als erledigt markieren
+function toggleAction(checkbox) {
+    checkbox.classList.toggle('checked');
+    if (checkbox.classList.contains('checked')) {
+        checkbox.innerHTML = '✓';
+    } else {
+        checkbox.innerHTML = '';
+    }
+    saveToLocalStorage();
+}
+
+// Handlungsplan: Neue Aktion hinzufügen
+function addCustomAction(category) {
+    const title = prompt('Titel der Maßnahme:');
+    if (!title) return;
+
+    const desc = prompt('Beschreibung (optional):') || '';
+    const responsible = prompt('Verantwortlich:') || 'Noch festzulegen';
+    const deadline = prompt('Zeitrahmen:') || 'Nach Absprache';
+
+    const container = document.getElementById(category + '-actions');
+    const newAction = document.createElement('div');
+    newAction.className = 'action-item';
+    newAction.innerHTML = `
+        <div class="action-checkbox" onclick="toggleAction(this)"></div>
+        <div class="action-content">
+            <div class="action-title">${escapeHtml(title)}</div>
+            <div class="action-desc">${escapeHtml(desc)}</div>
+            <div class="action-meta">
+                <span>👤 Verantwortlich: ${escapeHtml(responsible)}</span>
+                <span>📅 ${escapeHtml(deadline)}</span>
+            </div>
+        </div>
+    `;
+
+    container.appendChild(newAction);
+    saveToLocalStorage();
+}
+
+// Erklärungsmodelle aus Daten generieren
+function generateBiopsychosozialFromData() {
+    const stammdaten = getStammdaten();
+    const dsData = typeof getDSFormData === 'function' ? getDSFormData() : {};
+
+    // Biologische Faktoren
+    let bioFactors = [];
+    if (dsData.ds_schwangerschaft) bioFactors.push('Schwangerschaftskomplikationen');
+    if (dsData.ds_geburt) bioFactors.push('Geburtskomplikationen');
+    if (dsData.checkboxes?.ds_diagnose?.length) {
+        const diagnosen = { 'adhs': 'ADHS', 'asd': 'Autismus-Spektrum', 'lernstoerung': 'Lernstörung' };
+        dsData.checkboxes.ds_diagnose.forEach(d => {
+            if (diagnosen[d]) bioFactors.push(diagnosen[d]);
+        });
+    }
+    document.getElementById('modell-bio-content').textContent = bioFactors.length ? bioFactors.join(', ') : 'Keine spezifischen biologischen Faktoren dokumentiert';
+
+    // Psychologische Faktoren
+    let psychoFactors = [];
+    const items = getAllItemStatus();
+    const verhaltensItems = items.filter(i => i.bereich === 'verhalten' && i.status === 'problematisch');
+    if (verhaltensItems.length > 3) psychoFactors.push('Verhaltensauffälligkeiten');
+    const kognitionsItems = items.filter(i => i.bereich === 'kognition' && i.status === 'nicht_beobachtet');
+    if (kognitionsItems.length > 5) psychoFactors.push('Kognitive Entwicklungsverzögerung');
+    document.getElementById('modell-psycho-content').textContent = psychoFactors.length ? psychoFactors.join(', ') : 'Basierend auf ELDiB-Ergebnissen zu analysieren';
+
+    // Soziale Faktoren
+    let sozialFactors = [];
+    if (dsData.ds_familiensituation) sozialFactors.push('Familiäre Situation: ' + dsData.ds_familiensituation.substring(0, 50) + '...');
+    const sozialItems = items.filter(i => i.bereich === 'sozialisation' && i.status === 'problematisch');
+    if (sozialItems.length > 3) sozialFactors.push('Soziale Schwierigkeiten');
+    document.getElementById('modell-sozial-content').textContent = sozialFactors.length ? sozialFactors.join(', ') : 'Basierend auf DS-Anamnese zu ergänzen';
+
+    showToast('Biopsychosoziales Modell wurde aktualisiert');
+}
+
+function generateVulnerabilitaetFromData() {
+    const dsData = typeof getDSFormData === 'function' ? getDSFormData() : {};
+
+    document.getElementById('modell-praedisp-content').textContent =
+        dsData.ds_vorgeschichte ? dsData.ds_vorgeschichte.substring(0, 100) + '...' : 'Aus Anamnese zu ergänzen';
+    document.getElementById('modell-ausloesend-content').textContent =
+        dsData.ds_aktuell_ausloeser || 'Aktuelle Auslöser dokumentieren';
+    document.getElementById('modell-aufrecht-content').textContent =
+        dsData.ds_aufrechterhalter || 'Aufrechterhaltende Faktoren analysieren';
+    document.getElementById('modell-protektiv-content').textContent =
+        dsData.ds_ressourcen || 'Ressourcen und Schutzfaktoren identifizieren';
+
+    showToast('Vulnerabilitäts-Stress-Modell wurde aktualisiert');
+}
+
+function generateEntwicklungsmodellFromData() {
+    const devAges = berechneEntwicklungsalter();
+    const stammdaten = getStammdaten();
+
+    let entwicklungsText = '';
+    if (devAges.verhalten) entwicklungsText += `Verhalten: ${devAges.verhalten}, `;
+    if (devAges.kommunikation) entwicklungsText += `Kommunikation: ${devAges.kommunikation}, `;
+    if (devAges.sozialisation) entwicklungsText += `Sozialisation: ${devAges.sozialisation}, `;
+    if (devAges.kognition) entwicklungsText += `Kognition: ${devAges.kognition}`;
+
+    document.getElementById('modell-entwicklung-content').textContent =
+        entwicklungsText || 'ELDiB-Erfassung durchführen für Entwicklungsalter';
+
+    showToast('Entwicklungsmodell wurde aktualisiert');
+}
+
+function generateIntegriertesModell() {
+    const konzeption = document.getElementById('integrierte-konzeption');
+    const stammdaten = getStammdaten();
+    const name = stammdaten.schueler_name || 'Das Kind';
+
+    konzeption.innerHTML = `
+        <div style="line-height: 1.8; color: var(--gray-700);">
+            <p><strong>Integrierte Fallkonzeption für ${escapeHtml(name)}:</strong></p>
+            <p style="margin-top: 12px;">
+                Basierend auf der biopsychosozialen Analyse zeigt sich ein komplexes Zusammenspiel verschiedener Faktoren.
+                Die prädisponierenden Faktoren (biologisch und psychologisch) in Kombination mit aktuellen Stressoren
+                führen zu den beobachteten Verhaltensweisen.
+            </p>
+            <p style="margin-top: 12px;">
+                <strong>Kernhypothese:</strong> Das Verhalten ist als Ausdruck unerfüllter Grundbedürfnisse
+                (Sicherheit, Zugehörigkeit, Selbstwirksamkeit) zu verstehen und dient einer funktionalen Rolle
+                im Kontext der aktuellen Lebenssituation.
+            </p>
+            <p style="margin-top: 12px;">
+                <strong>Implikationen:</strong> Interventionen sollten auf mehreren Ebenen ansetzen:
+                Umgebungsanpassungen (Schule), Kompetenzaufbau (Kind), Psychoedukation (Eltern/Lehrer)
+                und ggf. therapeutische Unterstützung.
+            </p>
+        </div>
+    `;
+
+    showToast('Integrierte Konzeption wurde erstellt');
+}
+
+// Psychoedukation generieren
+function generateElternErklaerung() {
+    const stammdaten = getStammdaten();
+    const name = stammdaten.schueler_name || 'Ihr Kind';
+
+    document.getElementById('eltern-erklaerung').innerHTML = `
+        <p>Das Verhalten von <strong>${escapeHtml(name)}</strong> kann verschiedene Ursachen haben.
+        Basierend auf unserer Diagnostik möchten wir Ihnen helfen zu verstehen, was hinter dem Verhalten steckt.</p>
+        <p style="margin-top: 12px;">Kinder zeigen schwieriges Verhalten oft, wenn sie:</p>
+        <ul style="margin: 12px 0 12px 20px; color: var(--gray-600);">
+            <li>Überfordert sind (emotional oder kognitiv)</li>
+            <li>Grundbedürfnisse nicht erfüllt werden (Aufmerksamkeit, Sicherheit)</li>
+            <li>Noch nicht gelernt haben, mit bestimmten Situationen umzugehen</li>
+            <li>Auf Stress oder Veränderungen reagieren</li>
+        </ul>
+        <p>Das bedeutet <strong>nicht</strong>, dass Sie als Eltern versagt haben. Es zeigt, dass Ihr Kind Unterstützung braucht,
+        um bestimmte Fähigkeiten zu entwickeln.</p>
+    `;
+    showToast('Eltern-Erklärung wurde generiert');
+}
+
+function generateLehrerErklaerung() {
+    const stammdaten = getStammdaten();
+    const name = stammdaten.schueler_name || 'Der Schüler/Die Schülerin';
+
+    document.getElementById('lehrer-erklaerung').innerHTML = `
+        <p><strong>${escapeHtml(name)}</strong> zeigt im schulischen Kontext Verhaltensweisen,
+        die auf bestimmte Bedürfnisse und Herausforderungen hindeuten.</p>
+        <p style="margin-top: 12px;">Aus entwicklungspsychologischer Sicht ist zu beachten:</p>
+        <ul style="margin: 12px 0 12px 20px; color: var(--gray-600);">
+            <li>Das Entwicklungsalter kann vom chronologischen Alter abweichen</li>
+            <li>Stress reduziert die Selbstregulationsfähigkeit</li>
+            <li>Beziehung ist die Grundlage für Verhaltensänderung</li>
+            <li>Struktur und Vorhersehbarkeit erhöhen die Sicherheit</li>
+        </ul>
+        <p>Mit angepassten Erwartungen und gezielter Unterstützung kann das Kind seine Kompetenzen entwickeln.</p>
+    `;
+    showToast('Lehrer-Erklärung wurde generiert');
+}
+
+function generateKindErklaerung() {
+    const stammdaten = getStammdaten();
+    const geburtsdatum = document.getElementById('stamm_geburtsdatum')?.value;
+    let alter = 10; // Default
+    if (geburtsdatum) {
+        alter = new Date().getFullYear() - new Date(geburtsdatum).getFullYear();
+    }
+
+    let erklaerung = '';
+    if (alter < 8) {
+        erklaerung = `
+            <p>Weißt du was? <strong>Jeder ist anders</strong> - und das ist gut so! 🌟</p>
+            <p style="margin-top: 12px;">Manchmal ist es für dich schwer, ruhig zu bleiben. Das passiert vielen Kindern!</p>
+            <p style="margin-top: 12px;">Wir wollen dir helfen, damit es dir leichter fällt. Zusammen schaffen wir das! 💪</p>
+        `;
+    } else if (alter < 12) {
+        erklaerung = `
+            <p>Wir haben zusammen herausgefunden, dass manche Dinge für dich gerade schwieriger sind als für andere.</p>
+            <p style="margin-top: 12px;">Das ist kein Grund, sich schlecht zu fühlen! Dein Gehirn arbeitet einfach ein bisschen anders -
+            und das hat auch Vorteile.</p>
+            <p style="margin-top: 12px;">Mit ein paar Tricks kannst du lernen, besser damit umzugehen. Wir zeigen dir, wie!</p>
+        `;
+    } else {
+        erklaerung = `
+            <p>Die Diagnostik hat gezeigt, dass du in manchen Bereichen Unterstützung gebrauchen kannst.</p>
+            <p style="margin-top: 12px;">Das ist völlig normal - jeder Mensch hat Stärken und Schwächen.
+            Wichtig ist, dass du lernst, mit deinen Herausforderungen umzugehen.</p>
+            <p style="margin-top: 12px;">Gemeinsam erarbeiten wir Strategien, die dir im Alltag helfen können.</p>
+        `;
+    }
+
+    document.getElementById('kind-erklaerung').innerHTML = erklaerung;
+    showToast('Altersgerechte Erklärung wurde generiert');
+}
+
+function printPsychoedukation(audience) {
+    const content = document.getElementById('psychoeduk-' + audience);
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Psychoedukation - ${audience}</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; }
+                h3 { color: #333; }
+                ul { line-height: 1.8; }
+                .tip-box, .warning-box { padding: 15px; margin: 15px 0; border-radius: 8px; }
+                .tip-box { background: #e8f5e9; border-left: 4px solid #4caf50; }
+                .warning-box { background: #fff3e0; border-left: 4px solid #ff9800; }
+            </style>
+        </head>
+        <body>
+            ${content.innerHTML}
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
+
+function generateHandlungsplanFromData() {
+    // Basierend auf den erfassten Daten individuelle Maßnahmen generieren
+    const dsData = typeof getDSFormData === 'function' ? getDSFormData() : {};
+    const empfehlungen = dsData.checkboxes || {};
+
+    // Sofortmaßnahmen basierend auf Risikofaktoren
+    const sofortContainer = document.getElementById('sofort-actions');
+    if (empfehlungen.ds_risiko?.length) {
+        const risikoAction = document.createElement('div');
+        risikoAction.className = 'action-item';
+        risikoAction.innerHTML = `
+            <div class="action-checkbox" onclick="toggleAction(this)"></div>
+            <div class="action-content">
+                <div class="action-title">Risikoabklärung vertiefen</div>
+                <div class="action-desc">Identifizierte Risikofaktoren erfordern vertiefte Abklärung und ggf. Einbeziehung weiterer Fachstellen.</div>
+                <div class="action-meta">
+                    <span>👤 Verantwortlich: CDSE</span>
+                    <span>📅 Sofort</span>
+                </div>
+            </div>
+        `;
+        sofortContainer.insertBefore(risikoAction, sofortContainer.lastElementChild);
+    }
+
+    // Kurzfristige Maßnahmen basierend auf Empfehlungen
+    const kurzContainer = document.getElementById('kurzfristig-actions');
+    if (empfehlungen.ds_empf_schule?.length) {
+        empfehlungen.ds_empf_schule.forEach(emp => {
+            const texte = {
+                'sitzplatz': 'Sitzplatzanpassung vornehmen',
+                'strukturhilfen': 'Strukturhilfen bereitstellen',
+                'zeitverlaengerung': 'Zeitverlängerung beantragen'
+            };
+            if (texte[emp]) {
+                const newAction = document.createElement('div');
+                newAction.className = 'action-item';
+                newAction.innerHTML = `
+                    <div class="action-checkbox" onclick="toggleAction(this)"></div>
+                    <div class="action-content">
+                        <div class="action-title">${texte[emp]}</div>
+                        <div class="action-desc">Schulische Anpassung gemäß DS-Empfehlung</div>
+                        <div class="action-meta">
+                            <span>👤 Verantwortlich: Schule</span>
+                            <span>📅 Innerhalb 2 Wochen</span>
+                        </div>
+                    </div>
+                `;
+                kurzContainer.insertBefore(newAction, kurzContainer.lastElementChild);
+            }
+        });
+    }
+
+    showToast('Handlungsplan wurde aus Daten generiert');
+}
+
+// Helper: Alle Item-Status holen
+function getAllItemStatus() {
+    const items = [];
+    ['verhalten', 'kommunikation', 'sozialisation', 'kognition'].forEach(bereich => {
+        document.querySelectorAll(`[data-bereich="${bereich}"] .item`).forEach(item => {
+            const radio = item.querySelector('input[type="radio"]:checked');
+            if (radio) {
+                items.push({
+                    bereich: bereich,
+                    code: item.dataset.code,
+                    status: radio.value
+                });
+            }
+        });
+    });
+    return items;
+}
+
+// ========== ENDE NEUE FUNKTIONEN ==========
 
 function toggleBereich(contentId) {
     document.getElementById(contentId).classList.toggle('hidden');
