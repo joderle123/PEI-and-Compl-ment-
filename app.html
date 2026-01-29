@@ -2017,11 +2017,44 @@
                 return;
             }
 
+            // Erstelle Quick-Reference
+            const topHypothese = s.hypothesen?.find(h => h.konfidenz >= 40);
+            const topIntervention = s.interventionen?.allgemein?.[0];
+
             let html = `
                 <div class="card" style="margin-bottom: 0;">
                     <h3 style="text-align: center; margin-bottom: 20px; color: var(--primary);">
                         BEDIENUNGSANLEITUNG FÜR ${name.toUpperCase()}
                     </h3>
+
+                    <!-- QUICK REFERENCE BOX -->
+                    <div style="background: linear-gradient(135deg, var(--primary-subtle), var(--info-subtle)); padding: 20px; border-radius: var(--radius-lg); margin-bottom: 24px; border: 2px solid var(--primary);">
+                        <h4 style="margin: 0 0 16px 0; color: var(--primary);">Auf einen Blick</h4>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                            <div>
+                                <strong>Hauptherausforderung:</strong><br>
+                                ${s.kind?.herausforderungen?.[0] || 'Nicht definiert'}
+                            </div>
+                            <div>
+                                <strong>Wichtigste Stärke:</strong><br>
+                                ${s.kind?.staerken?.[0] || 'Nicht definiert'}
+                            </div>
+                            <div>
+                                <strong>Entwicklungsstufe:</strong><br>
+                                Durchschnitt Stufe ${s.kind?.eldibProfil?.durchschnittsstufe || '-'} (V/K/SOZ/KOG)
+                            </div>
+                            <div>
+                                <strong>Verdacht auf:</strong><br>
+                                ${topHypothese ? `${topHypothese.name.split('(')[0]} (${topHypothese.konfidenz}%)` : 'Keine klare Hypothese'}
+                            </div>
+                        </div>
+                        ${topIntervention ? `
+                            <div style="margin-top: 16px; padding: 12px; background: white; border-radius: var(--radius); border-left: 4px solid var(--success);">
+                                <strong style="color: var(--success);">Wichtigste Strategie:</strong> ${topIntervention.kategorie}
+                                <br><span style="font-size: 0.9rem; color: var(--gray-600);">${topIntervention.massnahmen?.[0] || ''}</span>
+                            </div>
+                        ` : ''}
+                    </div>
 
                     <h4>1. Wer ist ${name}?</h4>
                     <p>${s.kind?.zusammenfassung || ''}</p>
@@ -2029,13 +2062,13 @@
                     ${s.kind?.herausforderungen?.length > 0 ? `<p><strong>Herausforderungen:</strong> ${s.kind.herausforderungen.join(', ')}</p>` : ''}
 
                     ${s.kind?.eldibProfil ? `
-                        <div style="margin-top: 16px; padding: 16px; background: var(--info-subtle); border-radius: var(--radius); border-left: 4px solid var(--info);">
-                            <strong style="color: var(--info);">ELDiB-Profil auf einen Blick:</strong>
+                        <div style="margin-top: 16px; padding: 16px; background: var(--gray-50); border-radius: var(--radius); border-left: 4px solid var(--info);">
+                            <strong>ELDiB-Entwicklungsprofil:</strong>
                             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px;">
-                                <div>Durchschnittliche Entwicklungsstufe: <strong>${s.kind.eldibProfil.durchschnittsstufe}</strong></div>
-                                <div>Stärkster Bereich: <strong>${s.kind.eldibProfil.staerksterBereich || '-'}</strong></div>
-                                <div>Entwicklungsbedarf: <strong>${s.kind.eldibProfil.schwachsterBereich || '-'}</strong></div>
-                                <div>Items erreicht: <strong>${s.kind.eldibProfil.ressourcenAnzahl}</strong> | In Arbeit: <strong>${s.kind.eldibProfil.inArbeitAnzahl}</strong></div>
+                                <div>Stufe: <strong>${s.kind.eldibProfil.durchschnittsstufe}</strong></div>
+                                <div>Stärke: <strong>${s.kind.eldibProfil.staerksterBereich || '-'}</strong></div>
+                                <div>Bedarf: <strong>${s.kind.eldibProfil.schwachsterBereich || '-'}</strong></div>
+                                <div>Erreicht: <strong>${s.kind.eldibProfil.ressourcenAnzahl}</strong> Items</div>
                             </div>
                         </div>
                     ` : ''}
@@ -2046,28 +2079,35 @@
                     ${s.entwicklung?.interpretation?.map(i => `<p>• ${i}</p>`).join('') || '<p>Keine Daten verfügbar.</p>'}
 
                     ${s.entwicklung?.ressourcen?.length > 0 ? `
-                        <div style="margin-top: 16px;">
-                            <strong style="color: var(--success);">Entwickelte Kompetenzen (ELDiB):</strong>
-                            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
-                                ${s.entwicklung.ressourcen.slice(0, 8).map(r => `
-                                    <span style="padding: 4px 10px; background: var(--success-subtle); border-radius: 20px; font-size: 0.8rem; color: var(--success);">
-                                        ${r.code}: ${r.keyword}
-                                    </span>
+                        <div style="margin-top: 16px; padding: 16px; background: var(--success-subtle); border-radius: var(--radius);">
+                            <strong style="color: var(--success);">Das kann ${name} schon:</strong>
+                            <ul style="margin-top: 8px; columns: 2; column-gap: 20px;">
+                                ${s.entwicklung.ressourcen.slice(0, 10).map(r => `
+                                    <li style="margin-bottom: 4px;">${r.keyword}</li>
                                 `).join('')}
-                            </div>
+                            </ul>
                         </div>
                     ` : ''}
 
                     ${s.entwicklung?.defizite?.length > 0 ? `
-                        <div style="margin-top: 16px;">
-                            <strong style="color: var(--warning);">Entwicklungsbedarf (ELDiB):</strong>
-                            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
-                                ${s.entwicklung.defizite.slice(0, 8).map(d => `
-                                    <span style="padding: 4px 10px; background: var(--warning-subtle); border-radius: 20px; font-size: 0.8rem; color: var(--warning);">
-                                        ${d.code}: ${d.keyword}
-                                    </span>
+                        <div style="margin-top: 16px; padding: 16px; background: var(--warning-subtle); border-radius: var(--radius);">
+                            <strong style="color: var(--warning);">Daran arbeiten wir (Entwicklungsziele):</strong>
+                            <ul style="margin-top: 8px; columns: 2; column-gap: 20px;">
+                                ${s.entwicklung.defizite.slice(0, 10).map(d => `
+                                    <li style="margin-bottom: 4px;">${d.keyword}</li>
                                 `).join('')}
-                            </div>
+                            </ul>
+                        </div>
+                    ` : ''}
+
+                    ${s.entwicklung?.inArbeit?.length > 0 ? `
+                        <div style="margin-top: 16px; padding: 16px; background: var(--info-subtle); border-radius: var(--radius);">
+                            <strong style="color: var(--info);">In Arbeit (aktuelle Lernziele):</strong>
+                            <ul style="margin-top: 8px;">
+                                ${s.entwicklung.inArbeit.slice(0, 6).map(i => `
+                                    <li style="margin-bottom: 4px;">${i.keyword}</li>
+                                `).join('')}
+                            </ul>
                         </div>
                     ` : ''}
 

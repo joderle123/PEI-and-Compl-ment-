@@ -250,7 +250,8 @@ const SynthesisEngine = {
     },
 
     /**
-     * NEU: Analysiert einzelne ELDiB-Items und extrahiert Ressourcen/Defizite
+     * Analysiert ELDiB-Items und extrahiert Ressourcen/Defizite
+     * WICHTIG: Nicht ausgefüllte Items gelten als "nicht erreicht"
      * Dies ist entscheidend für die Hypothesen-Stärkung
      */
     analyzeELDiBItems(eldib) {
@@ -300,17 +301,110 @@ const SynthesisEngine = {
             'K-23': { bereich: 'trauma', bedeutung: 'Kreativität - Gefühle kanalisieren', gewicht: 1 }
         };
 
-        // Durch alle Bereiche iterieren
-        const bereiche = ['verhalten', 'kommunikation', 'sozialisation', 'kognition'];
+        // Bereichs-Mapping für ELDIB_DATA
+        const bereichMap = {
+            'verhalten': 'verhalten',
+            'kommunikation': 'kommunikation',
+            'sozialisation': 'sozialisation',
+            'kognition': 'kognition'
+        };
 
-        bereiche.forEach(bereich => {
+        // Erstelle ein Set der als "erreicht" markierten Item-Codes
+        const erreichteItems = new Set();
+        const inArbeitItems = new Set();
+
+        // Sammle alle markierten Items aus eldib
+        Object.keys(bereichMap).forEach(bereich => {
             const bereichData = eldib[bereich];
-            if (!bereichData?.items) return;
+            if (bereichData?.items) {
+                bereichData.items.forEach(item => {
+                    if (item.status === 'erreicht') {
+                        erreichteItems.add(item.code);
+                    } else if (item.status === 'in_arbeit') {
+                        inArbeitItems.add(item.code);
+                    }
+                });
+            }
+        });
 
-            bereichData.items.forEach(item => {
-                const itemCode = item.code;
-                const status = item.status;
-                const itemInfo = klinischeItems[itemCode];
+        // Durch alle Bereiche und deren Stufen in ELDIB_DATA iterieren
+        if (typeof ELDIB_DATA !== 'undefined') {
+            Object.keys(bereichMap).forEach(bereich => {
+                const eldibBereich = ELDIB_DATA[bereich];
+                if (!eldibBereich?.stufen) return;
+
+                const gewaehleStufe = eldib[bereich]?.stufe || 2;
+
+                // NUR Items der GEWÄHLTEN STUFE analysieren
+                // Items niedrigerer Stufen sollten bereits beherrscht werden
+                // Items höherer Stufen sind entwicklungsgemäß noch nicht erreichbar
+                const stufeData = eldibBereich.stufen[gewaehleStufe];
+                if (!stufeData?.items) return;
+
+                stufeData.items.forEach(item => {
+                    const itemCode = item.code;
+                    const itemInfo = klinischeItems[itemCode];
+                    const keyword = item.keyword || itemCode;
+
+                    // Status bestimmen: erreicht > in_arbeit > nicht_erreicht (Standard!)
+                    // Nicht ausgefüllt = nicht erreicht (Entwicklungsziel)
+                    let status = 'nicht_erreicht';
+                    if (erreichteItems.has(itemCode)) {
+                        status = 'erreicht';
+                    } else if (inArbeitItems.has(itemCode)) {
+                        status = 'in_arbeit';
+                    }
+
+                    // Item kategorisieren
+                    if (status === 'erreicht') {
+                        ressourcen.push({
+                            code: itemCode,
+                            keyword: keyword,
+                            bereich: bereich,
+                            bedeutung: itemInfo?.bedeutung || keyword,
+                            stufe: gewaehleStufe
+                        });
+                    } else if (status === 'nicht_erreicht') {
+                        defizite.push({
+                            code: itemCode,
+                            keyword: keyword,
+                            bereich: bereich,
+                            bedeutung: itemInfo?.bedeutung || keyword,
+                            stufe: gewaehleStufe,
+                            istEntwicklungsziel: true // Markierung als Entwicklungsziel
+                        });
+
+                        // Klinischen Marker hinzufügen wenn relevant
+                        if (itemInfo) {
+                            klinischeMarker.push({
+                                code: itemCode,
+                                hypothese: itemInfo.bereich,
+                                bedeutung: itemInfo.bedeutung,
+                                gewicht: itemInfo.gewicht,
+                                typ: 'defizit'
+                            });
+                        }
+                    } else if (status === 'in_arbeit') {
+                        inArbeit.push({
+                            code: itemCode,
+                            keyword: keyword,
+                            bereich: bereich,
+                            bedeutung: itemInfo?.bedeutung || keyword,
+                            stufe: gewaehleStufe
+                        });
+                    }
+                });
+            });
+        } else {
+            // Fallback: Nur gespeicherte Items verwenden (alte Logik)
+            Object.keys(bereichMap).forEach(bereich => {
+                const bereichData = eldib[bereich];
+                if (!bereichData?.items) return;
+
+                bereichData.items.forEach(item => {
+                    const itemCode = item.code;
+                    const status = item.status || 'nicht_erreicht'; // Default: nicht erreicht
+                    const itemInfo = klinischeItems[itemCode];
 
                 // Item kategorisieren
                 if (status === 'erreicht') {
@@ -338,16 +432,17 @@ const SynthesisEngine = {
                             typ: 'defizit'
                         });
                     }
-                } else if (status === 'in_arbeit') {
-                    inArbeit.push({
-                        code: itemCode,
-                        keyword: item.keyword || this.getItemKeyword(itemCode),
-                        bereich: bereich,
-                        bedeutung: itemInfo?.bedeutung || item.keyword
-                    });
-                }
+                    } else if (status === 'in_arbeit') {
+                        inArbeit.push({
+                            code: itemCode,
+                            keyword: item.keyword || this.getItemKeyword(itemCode),
+                            bereich: bereich,
+                            bedeutung: itemInfo?.bedeutung || item.keyword
+                        });
+                    }
+                });
             });
-        });
+        }
 
         return { ressourcen, defizite, inArbeit, klinischeMarker };
     },
