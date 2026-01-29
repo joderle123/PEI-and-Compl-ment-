@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDSE 2.0 - Klinisch-Pädagogischer Berater</title>
+    <!-- docx.js für Word-Export -->
+    <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- Chart.js für Visualisierungen -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            /* Modern Professional Color Palette */
+            --primary: #6366F1;
+            --primary-light: #818CF8;
+            --primary-dark: #4F46E5;
+            --primary-subtle: rgba(99, 102, 241, 0.08);
+            --primary-glow: rgba(99, 102, 241, 0.25);
+
+            --success: #10B981;
+            --success-light: #34D399;
+            --success-subtle: rgba(16, 185, 129, 0.1);
+
+            --warning: #F59E0B;
+            --warning-light: #FBBF24;
+            --warning-subtle: rgba(245, 158, 11, 0.1);
+
+            --danger: #EF4444;
+            --danger-light: #F87171;
+            --danger-subtle: rgba(239, 68, 68, 0.1);
+
+            --info: #3B82F6;
+            --info-subtle: rgba(59, 130, 246, 0.1);
+
+            /* Neutrals */
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-400: #9CA3AF;
+            --gray-500: #6B7280;
+            --gray-600: #4B5563;
+            --gray-700: #374151;
+            --gray-800: #1F2937;
+            --gray-900: #111827;
+
+            /* Layout */
+            --sidebar-width: 300px;
+            --header-height: 64px;
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+
+            /* Radius */
+            --radius-sm: 6px;
+            --radius: 8px;
+            --radius-md: 10px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+
+            /* Transitions */
+            --transition: 200ms ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--gray-50);
+            min-height: 100vh;
+            line-height: 1.6;
+            color: var(--gray-900);
+            display: flex;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ================================ */
+        /* SIDEBAR                          */
+        /* ================================ */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--gray-900) 0%, var(--gray-800) 100%);
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, #8B5CF6 100%);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .sidebar-logo h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .sidebar-logo span {
+            font-size: 0.7rem;
+            color: var(--gray-400);
+            display: block;
+        }
+
+        /* Steps Navigation */
+        .steps-nav {
+            flex: 1;
+            padding: 16px 0;
+            overflow-y: auto;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 24px;
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+            color: var(--gray-400);
+        }
+
+        .step-item:hover {
+            background: rgba(255,255,255,0.05);
+            color: white;
+        }
+
+        .step-item.active {
+            background: rgba(99, 102, 241, 0.15);
+            color: white;
+        }
+
+        .step-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .step-item.completed {
+            color: var(--success);
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--gray-700);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all var(--transition);
+        }
+
+        .step-item.active .step-number {
+            background: var(--primary);
+            color: white;
+        }
+
+        .step-item.completed .step-number {
+            background: var(--success);
+            color: white;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .step-subtitle {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        /* Sidebar Footer */
+        .sidebar-footer {
+            padding: 20px 24px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .progress-info {
+            margin-bottom: 12px;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--gray-400);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--gray-700);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .child-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius);
+            margin-top: 12px;
+        }
+
+        .child-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .child-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .child-info {
+            font-size: 0.7rem;
+            color: var(--gray-400);
+        }
+
+        /* ================================ */
+        /* MAIN CONTENT                     */
+        /* ================================ */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-header {
+            height: var(--header-height);
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-left h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .header-left p {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+            border: none;
+            outline: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-400);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: var(--success-light);
+        }
+
+        /* Main Body */
+        .main-body {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        /* Step Content Panels */
+        .step-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--primary-subtle);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-700);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            font-size: 0.95rem;
+            transition: all var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        /* Option Cards (for selections) */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .option-card {
+            padding: 18px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .option-card:hover {
+            border-color: var(--primary-light);
+            background: var(--primary-subtle);
+        }
+
+        .option-card.selected {
+            border-color: var(--primary);
+            background: var(--primary-subtle);
+        }
+
+        .option-icon {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+
+        .option-desc {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        .option-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--gray-300);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+        }
+
+        .option-card.selected .option-checkbox {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* Checklist Items */
+        .checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .checklist-item:hover {
+            background: var(--primary-subtle);
+            border-color: var(--primary-light);
+        }
+
+        .checklist-item.checked {
+            background: var(--primary-subtle);
+            border-color: var(--primary);
+        }
+
+        .checklist-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-300);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+            flex-shrink: 0;
+        }
+
+        .checklist-item.checked .checklist-checkbox {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .checklist-label {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        /* Screening Modules */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .module-card {
+            padding: 20px;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .module-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .module-card.completed {
+            border-color: var(--success);
+            background: var(--success-subtle);
+        }
+
+        .module-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .module-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .module-status {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+
+        .module-card.completed .module-status {
+            color: var(--success);
+        }
+
+        /* Status Indicators */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-green {
+            background: var(--success-subtle);
+            color: var(--success);
+        }
+
+        .status-yellow {
+            background: var(--warning-subtle);
+            color: var(--warning);
+        }
+
+        .status-red {
+            background: var(--danger-subtle);
+            color: var(--danger);
+        }
+
+        /* Navigation Footer */
+        .nav-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 24px 32px;
+            background: white;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        /* ELDiB Profile Visualization */
+        .eldib-profile {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .eldib-bereich {
+            text-align: center;
+        }
+
+        .eldib-bar-container {
+            height: 200px;
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .eldib-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-radius: var(--radius);
+            transition: height 0.5s ease;
+        }
+
+        .eldib-bereich-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .eldib-stufe {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        /* Hypothesis Cards */
+        .hypothesis-card {
+            padding: 20px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 16px;
+            border-left: 4px solid;
+        }
+
+        .hypothesis-high {
+            background: var(--danger-subtle);
+            border-color: var(--danger);
+        }
+
+        .hypothesis-medium {
+            background: var(--warning-subtle);
+            border-color: var(--warning);
+        }
+
+        .hypothesis-low {
+            background: var(--gray-100);
+            border-color: var(--gray-400);
+        }
+
+        .hypothesis-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .hypothesis-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .hypothesis-confidence {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .hypothesis-evidence {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        .hypothesis-evidence li {
+            margin-bottom: 4px;
+        }
+
+        /* Situations Table */
+        .situations-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .situations-table th,
+        .situations-table td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .situations-table th {
+            background: var(--gray-50);
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--gray-600);
+        }
+
+        .situations-table .do-this {
+            color: var(--success);
+        }
+
+        .situations-table .avoid-this {
+            color: var(--danger);
+        }
+
+        /* Learning Goals */
+        .goal-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 18px;
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            margin-bottom: 12px;
+        }
+
+        .goal-code {
+            background: var(--primary);
+            color: white;
+            padding: 6px 12px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .goal-content {
+            flex: 1;
+        }
+
+        .goal-text {
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .goal-measure {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        /* Alert Box */
+        .alert {
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .alert-danger {
+            background: var(--danger-subtle);
+            border: 1px solid var(--danger-light);
+            color: var(--danger);
+        }
+
+        .alert-warning {
+            background: var(--warning-subtle);
+            border: 1px solid var(--warning-light);
+            color: #92400E;
+        }
+
+        .alert-info {
+            background: var(--info-subtle);
+            border: 1px solid var(--info);
+            color: #1E40AF;
+        }
+
+        .alert-icon {
+            font-size: 1.2rem;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-500);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--radius-xl);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalIn 0.2s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: var(--gray-100);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--gray-500);
+        }
+
+        .modal-close:hover {
+            background: var(--gray-200);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* Print Styles */
+        @media print {
+            .sidebar, .main-header, .nav-footer {
+                display: none !important;
+            }
+            .main-content {
+                margin-left: 0 !important;
+            }
+            .card {
+                break-inside: avoid;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 240px;
+            }
+            --sidebar-width: 240px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">🧠</div>
+                <div>
+                    <h1>CDSE 2.0</h1>
+                    <span>Klinisch-Pädagogischer Berater</span>
+                </div>
+            </div>
+        </div>
+
+        <nav class="steps-nav">
+            <div class="step-item active" data-step="1" onclick="goToStep(1)">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-title">Kennenlernen</div>
+                    <div class="step-subtitle">Stammdaten & Vorstellung</div>
+                </div>
+            </div>
+            <div class="step-item" data-step="2" onclick="goToStep(2)">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-title">Verstehen</div>
+                    <div class="step-subtitle">Anamnese</div>
+                </div>
+            </div>
+            <div class="step-item" data-step="3" onclick="goToStep(3)">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-title">Einschätzen</div>
+                    <div class="step-subtitle">ELDiB-Profil</div>
+                </div>
+            </div>
+            <div class="step-item" data-step="4" onclick="goToStep(4)">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <div class="step-title">Screenen</div>
+                    <div class="step-subtitle">Klinisches Screening</div>
+                </div>
+            </div>
+            <div class="step-item" data-step="5" onclick="goToStep(5)">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <div class="step-title">Analysieren</div>
+                    <div class="step-subtitle">Verhaltensanalyse</div>
+                </div>
+            </div>
+            <div class="step-item" data-step="6" onclick="goToStep(6)">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                    <div class="step-title">Synthetisieren</div>
+                    <div class="step-subtitle">Hypothesen & Diagnose</div>
+                </div>
+            </div>
+            <div class="step-item" data-step="7" onclick="goToStep(7)">
+                <div class="step-number">7</div>
+                <div class="step-content">
+                    <div class="step-title">Handeln</div>
+                    <div class="step-subtitle">Bedienungsanleitung</div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="progress-info">
+                <div class="progress-text">
+                    <span>Fortschritt</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="child-indicator" id="child-indicator" style="display: none;">
+                <div class="child-avatar">👤</div>
+                <div>
+                    <div class="child-name" id="child-name">-</div>
+                    <div class="child-info" id="child-info">-</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="main-header">
+            <div class="header-left">
+                <h2 id="header-title">Schritt 1: Kennenlernen</h2>
+                <p id="header-subtitle">Erfassen Sie die Grunddaten des Kindes</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="saveData()">
+                    <span>💾</span> Speichern
+                </button>
+                <button class="btn btn-secondary" onclick="loadData()">
+                    <span>📂</span> Laden
+                </button>
+            </div>
+        </header>
+
+        <div class="main-body">
+            <!-- STEP 1: Kennenlernen -->
+            <div class="step-panel active" id="step-1">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">👤</div>
+                        <div>
+                            <div class="card-title">Stammdaten</div>
+                            <div class="card-subtitle">Grundlegende Informationen zum Kind</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Name des Kindes *</label>
+                            <input type="text" class="form-input" id="input-name" placeholder="Vorname Nachname" onchange="updateChildIndicator()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Alter</label>
+                            <input type="number" class="form-input" id="input-alter" placeholder="z.B. 8" min="3" max="18" onchange="updateChildIndicator()">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Klasse</label>
+                            <input type="text" class="form-input" id="input-klasse" placeholder="z.B. 3a">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Schule</label>
+                            <input type="text" class="form-input" id="input-schule" placeholder="Name der Schule">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🎯</div>
+                        <div>
+                            <div class="card-title">Vorstellungsgrund</div>
+                            <div class="card-subtitle">Was ist der Hauptgrund der Vorstellung?</div>
+                        </div>
+                    </div>
+                    <div class="options-grid" id="hauptproblem-options">
+                        <div class="option-card" data-value="verhalten_extern" onclick="selectOption(this, 'hauptproblem')">
+                            <div class="option-icon">💥</div>
+                            <div class="option-content">
+                                <div class="option-title">Externalisierendes Verhalten</div>
+                                <div class="option-desc">Aggression, Wutanfälle, Verweigerung</div>
+                            </div>
+                            <div class="option-checkbox">✓</div>
+                        </div>
+                        <div class="option-card" data-value="verhalten_intern" onclick="selectOption(this, 'hauptproblem')">
+                            <div class="option-icon">😢</div>
+                            <div class="option-content">
+                                <div class="option-title">Internalisierendes Verhalten</div>
+                                <div class="option-desc">Rückzug, Ängste, Traurigkeit</div>
+                            </div>
+                            <div class="option-checkbox">✓</div>
+                        </div>
+                        <div class="option-card" data-value="aufmerksamkeit" onclick="selectOption(this, 'hauptproblem')">
+                            <div class="option-icon">🎯</div>
+                            <div class="option-content">
+                                <div class="option-title">Aufmerksamkeit</div>
+                                <div class="option-desc">Konzentration, Unruhe, Impulsivität</div>
+                            </div>
+                            <div class="option-checkbox">✓</div>
+                        </div>
+                        <div class="option-card" data-value="sozial" onclick="selectOption(this, 'hauptproblem')">
+                            <div class="option-icon">👥</div>
+                            <div class="option-content">
+                                <div class="option-title">Soziale Schwierigkeiten</div>
+                                <div class="option-desc">Probleme mit Gleichaltrigen</div>
+                            </div>
+                            <div class="option-checkbox">✓</div>
+                        </div>
+                        <div class="option-card" data-value="lernen" onclick="selectOption(this, 'hauptproblem')">
+                            <div class="option-icon">📚</div>
+                            <div class="option-content">
+                                <div class="option-title">Schulische Probleme</div>
+                                <div class="option-desc">Lernrückstände, Leistungsabfall</div>
+                            </div>
+                            <div class="option-checkbox">✓</div>
+                        </div>
+                        <div class="option-card" data-value="entwicklung" onclick="selectOption(this, 'hauptproblem')">
+                            <div class="option-icon">📈</div>
+                            <div class="option-content">
+                                <div class="option-title">Entwicklungsverzögerung</div>
+                                <div class="option-desc">Allgemeine Entwicklungsprobleme</div>
+                            </div>
+                            <div class="option-checkbox">✓</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">⏱️</div>
+                        <div>
+                            <div class="card-title">Zeitlicher Verlauf</div>
+                            <div class="card-subtitle">Seit wann bestehen die Schwierigkeiten?</div>
+                        </div>
+                    </div>
+                    <div class="options-grid" id="beginn-options">
+                        <div class="option-card" data-value="immer" onclick="selectOption(this, 'symptom_beginn')">
+                            <div class="option-content">
+                                <div class="option-title">Schon immer</div>
+                                <div class="option-desc">Von Anfang an</div>
+                            </div>
+                            <div class="option-checkbox">✓</div>
+                        </div>
+                        <div class="option-card" data-value="frueh" onclick="selectOption(this, 'symptom_beginn')">
+                            <div class="option-content">
+                                <div class="option-title">Frühe Kindheit</div>
+                                <div class="option-desc">Vor dem 6. Lebensjahr</div>
+                            </div>
+                            <div class="option-checkbox">✓</div>
+                        </div>
+                        <div class="option-card" data-value="schulstart" onclick="selectOption(this, 'symptom_beginn')">
+                            <div class="option-content">
+                                <div class="option-title">Seit Schulbeginn</div>
+                                <div class="option-desc">Mit der Einschulung</div>
+                            </div>
+                            <div class="option-checkbox">✓</div>
+                        </div>
+                        <div class="option-card" data-value="kuerzlich" onclick="selectOption(this, 'symptom_beginn')">
+                            <div class="option-content">
+                                <div class="option-title">Seit kurzem</div>
+                                <div class="option-desc">Weniger als 6 Monate</div>
+                            </div>
+                            <div class="option-checkbox">✓</div>
+                        </div>
+                        <div class="option-card" data-value="ereignis" onclick="selectOption(this, 'symptom_beginn')">
+                            <div class="option-content">
+                                <div class="option-title">Nach einem Ereignis</div>
+                                <div class="option-desc">Nach bestimmtem Vorfall</div>
+                            </div>
+                            <div class="option-checkbox">✓</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Verstehen (Anamnese) -->
+            <div class="step-panel" id="step-2">
+                <div class="alert alert-info">
+                    <div class="alert-icon">💡</div>
+                    <div class="alert-content">
+                        <div class="alert-title">Anamnese-Module</div>
+                        <div>Klicken Sie auf die Module, um die entsprechenden Informationen zu erfassen. Die Anamnese hilft, die Hintergründe des Verhaltens zu verstehen.</div>
+                    </div>
+                </div>
+
+                <div class="module-grid">
+                    <div class="module-card" onclick="openAnamneseModule('entwicklung')">
+                        <div class="module-icon">👶</div>
+                        <div class="module-title">Entwicklungsgeschichte</div>
+                        <div class="module-status">Nicht ausgefüllt</div>
+                    </div>
+                    <div class="module-card" onclick="openAnamneseModule('familie')">
+                        <div class="module-icon">👨‍👩‍👧‍👦</div>
+                        <div class="module-title">Familie & Umfeld</div>
+                        <div class="module-status">Nicht ausgefüllt</div>
+                    </div>
+                    <div class="module-card" onclick="openAnamneseModule('belastungen')">
+                        <div class="module-icon">⚠️</div>
+                        <div class="module-title">Belastungen & Trauma</div>
+                        <div class="module-status">Nicht ausgefüllt</div>
+                    </div>
+                    <div class="module-card" onclick="openAnamneseModule('ressourcen')">
+                        <div class="module-icon">💪</div>
+                        <div class="module-title">Ressourcen & Stärken</div>
+                        <div class="module-status">Nicht ausgefüllt</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: Einschätzen (ELDiB) -->
+            <div class="step-panel" id="step-3">
+                <div class="alert alert-info">
+                    <div class="alert-icon">📊</div>
+                    <div class="alert-content">
+                        <div class="alert-title">ELDiB-Entwicklungsprofil</div>
+                        <div>Schätzen Sie den Entwicklungsstand in den 4 Bereichen ein. Dies ist die Grundlage für passende Lernziele.</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">📈</div>
+                        <div>
+                            <div class="card-title">Entwicklungsprofil</div>
+                            <div class="card-subtitle">Aktuelle Einschätzung in den 4 Bereichen</div>
+                        </div>
+                    </div>
+                    <div class="eldib-profile">
+                        <div class="eldib-bereich" onclick="openELDiBBereich('verhalten')">
+                            <div class="eldib-bar-container">
+                                <div class="eldib-bar" id="eldib-bar-v" style="height: 40%; background: #EF4444;"></div>
+                            </div>
+                            <div class="eldib-bereich-name">Verhalten</div>
+                            <div class="eldib-stufe" id="eldib-stufe-v">Stufe II</div>
+                        </div>
+                        <div class="eldib-bereich" onclick="openELDiBBereich('kommunikation')">
+                            <div class="eldib-bar-container">
+                                <div class="eldib-bar" id="eldib-bar-k" style="height: 40%; background: #3B82F6;"></div>
+                            </div>
+                            <div class="eldib-bereich-name">Kommunikation</div>
+                            <div class="eldib-stufe" id="eldib-stufe-k">Stufe II</div>
+                        </div>
+                        <div class="eldib-bereich" onclick="openELDiBBereich('sozialisation')">
+                            <div class="eldib-bar-container">
+                                <div class="eldib-bar" id="eldib-bar-soz" style="height: 40%; background: #10B981;"></div>
+                            </div>
+                            <div class="eldib-bereich-name">Sozialisation</div>
+                            <div class="eldib-stufe" id="eldib-stufe-soz">Stufe II</div>
+                        </div>
+                        <div class="eldib-bereich" onclick="openELDiBBereich('kognition')">
+                            <div class="eldib-bar-container">
+                                <div class="eldib-bar" id="eldib-bar-kog" style="height: 60%; background: #F59E0B;"></div>
+                            </div>
+                            <div class="eldib-bereich-name">Kognition</div>
+                            <div class="eldib-stufe" id="eldib-stufe-kog">Stufe III</div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 20px; color: var(--gray-500); font-size: 0.9rem;">
+                        Klicken Sie auf einen Bereich, um die Items im Detail zu bearbeiten
+                    </p>
+                </div>
+            </div>
+
+            <!-- STEP 4: Screenen -->
+            <div class="step-panel" id="step-4">
+                <div class="alert alert-info">
+                    <div class="alert-icon">🔬</div>
+                    <div class="alert-content">
+                        <div class="alert-title">Klinisches Screening</div>
+                        <div>Wählen Sie die relevanten Module basierend auf dem Vorstellungsgrund. Das System schlägt passende Module vor.</div>
+                    </div>
+                </div>
+
+                <div class="module-grid">
+                    <div class="module-card" onclick="openScreeningModule('aufmerksamkeit')">
+                        <div class="module-icon">🎯</div>
+                        <div class="module-title">Aufmerksamkeit & Aktivität</div>
+                        <div class="module-status">Empfohlen</div>
+                    </div>
+                    <div class="module-card" onclick="openScreeningModule('emotionen')">
+                        <div class="module-icon">😢</div>
+                        <div class="module-title">Emotionen & Ängste</div>
+                        <div class="module-status">Nicht ausgefüllt</div>
+                    </div>
+                    <div class="module-card" onclick="openScreeningModule('soziales')">
+                        <div class="module-icon">👥</div>
+                        <div class="module-title">Soziales & Beziehungen</div>
+                        <div class="module-status">Nicht ausgefüllt</div>
+                    </div>
+                    <div class="module-card" onclick="openScreeningModule('verhalten')">
+                        <div class="module-icon">⚡</div>
+                        <div class="module-title">Verhalten & Regeln</div>
+                        <div class="module-status">Nicht ausgefüllt</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 5: Analysieren (Verhaltensanalyse) -->
+            <div class="step-panel" id="step-5">
+                <div class="alert alert-info">
+                    <div class="alert-icon">🔍</div>
+                    <div class="alert-content">
+                        <div class="alert-title">Funktionale Verhaltensanalyse</div>
+                        <div>Analysieren Sie konkrete Situationen, um die Funktion des Verhaltens zu verstehen: Was geschieht vorher? Was ist das Verhalten? Was geschieht danach?</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">📋</div>
+                        <div>
+                            <div class="card-title">ABC-Analyse</div>
+                            <div class="card-subtitle">Dokumentieren Sie eine konkrete Situation</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">A - Was geschah VORHER? (Antecedent)</label>
+                        <textarea class="form-input" id="abc-antecedent" rows="3" placeholder="Beschreiben Sie die Situation unmittelbar vor dem Verhalten..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">B - Was war das VERHALTEN? (Behavior)</label>
+                        <textarea class="form-input" id="abc-behavior" rows="3" placeholder="Beschreiben Sie das beobachtbare Verhalten genau..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">C - Was geschah DANACH? (Consequence)</label>
+                        <textarea class="form-input" id="abc-consequence" rows="3" placeholder="Wie haben Sie und andere reagiert? Was war das Ergebnis für das Kind?"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Vermutete Funktion des Verhaltens</label>
+                        <div class="options-grid">
+                            <div class="option-card" data-value="aufmerksamkeit" onclick="selectOption(this, 'funktion')">
+                                <div class="option-content">
+                                    <div class="option-title">Aufmerksamkeit erlangen</div>
+                                </div>
+                                <div class="option-checkbox">✓</div>
+                            </div>
+                            <div class="option-card" data-value="vermeidung" onclick="selectOption(this, 'funktion')">
+                                <div class="option-content">
+                                    <div class="option-title">Vermeidung/Flucht</div>
+                                </div>
+                                <div class="option-checkbox">✓</div>
+                            </div>
+                            <div class="option-card" data-value="gegenstand" onclick="selectOption(this, 'funktion')">
+                                <div class="option-content">
+                                    <div class="option-title">Zugang zu etwas</div>
+                                </div>
+                                <div class="option-checkbox">✓</div>
+                            </div>
+                            <div class="option-card" data-value="kontrolle" onclick="selectOption(this, 'funktion')">
+                                <div class="option-content">
+                                    <div class="option-title">Kontrolle/Autonomie</div>
+                                </div>
+                                <div class="option-checkbox">✓</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 6: Synthetisieren -->
+            <div class="step-panel" id="step-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">🧠</div>
+                        <div>
+                            <div class="card-title">Hypothesen</div>
+                            <div class="card-subtitle">Automatisch generierte klinische Einschätzung</div>
+                        </div>
+                    </div>
+                    <div id="hypothesen-container">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📊</div>
+                            <div class="empty-state-text">Die Hypothesen werden generiert, sobald ausreichend Daten eingegeben wurden.</div>
+                            <button class="btn btn-primary" onclick="generateSynthesis()">Synthese starten</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 7: Handeln (Bedienungsanleitung) -->
+            <div class="step-panel" id="step-7">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">📖</div>
+                        <div>
+                            <div class="card-title">Bedienungsanleitung</div>
+                            <div class="card-subtitle">Personalisierter Leitfaden für die Arbeit mit dem Kind</div>
+                        </div>
+                        <button class="btn btn-success" onclick="exportBedienungsanleitung()" style="margin-left: auto;">
+                            <span>📥</span> Als Word exportieren
+                        </button>
+                    </div>
+                    <div id="bedienungsanleitung-container">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📖</div>
+                            <div class="empty-state-text">Die Bedienungsanleitung wird erstellt, sobald die Synthese abgeschlossen ist.</div>
+                            <button class="btn btn-primary" onclick="goToStep(6)">Zur Synthese</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Footer -->
+        <div class="nav-footer">
+            <button class="btn btn-secondary" id="btn-prev" onclick="prevStep()" disabled>
+                <span>←</span> Zurück
+            </button>
+            <button class="btn btn-primary" id="btn-next" onclick="nextStep()">
+                Weiter <span>→</span>
+            </button>
+        </div>
+    </main>
+
+    <!-- Modal for Modules -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="modal-title">Modul</div>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Abbrechen</button>
+                <button class="btn btn-primary" onclick="saveModule()">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Scripts -->
+    <script src="js/data/eldib-data.js"></script>
+    <script src="js/data/clinical-brain.js"></script>
+    <script src="js/data/advisory-data.js"></script>
+    <script src="js/data/screening-data.js"></script>
+    <script src="js/app/synthesis-engine.js"></script>
+
+    <script>
+        // ============================================
+        // APP STATE
+        // ============================================
+        let currentStep = 1;
+        const totalSteps = 7;
+
+        // Collected Data
+        let appData = {
+            stammdaten: {},
+            screening: {
+                aktuelleSymptome: {}
+            },
+            anamnese: {},
+            eldib: {
+                verhalten: { stufe: 2, items: [] },
+                kommunikation: { stufe: 2, items: [] },
+                sozialisation: { stufe: 2, items: [] },
+                kognition: { stufe: 3, items: [] }
+            },
+            verhaltensanalyse: {},
+            synthesis: null
+        };
+
+        // Load from localStorage
+        function loadFromStorage() {
+            const saved = localStorage.getItem('cdse_data');
+            if (saved) {
+                try {
+                    appData = JSON.parse(saved);
+                    updateChildIndicator();
+                    updateProgress();
+                } catch (e) {
+                    console.error('Error loading data:', e);
+                }
+            }
+        }
+
+        // Save to localStorage
+        function saveToStorage() {
+            localStorage.setItem('cdse_data', JSON.stringify(appData));
+        }
+
+        // ============================================
+        // NAVIGATION
+        // ============================================
+        function goToStep(step) {
+            if (step < 1 || step > totalSteps) return;
+
+            // Update UI
+            document.querySelectorAll('.step-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            document.getElementById(`step-${step}`).classList.add('active');
+
+            // Update sidebar
+            document.querySelectorAll('.step-item').forEach(item => {
+                item.classList.remove('active');
+                const itemStep = parseInt(item.dataset.step);
+                if (itemStep < step) {
+                    item.classList.add('completed');
+                }
+            });
+            document.querySelector(`.step-item[data-step="${step}"]`).classList.add('active');
+
+            // Update header
+            const titles = [
+                { title: 'Schritt 1: Kennenlernen', subtitle: 'Erfassen Sie die Grunddaten des Kindes' },
+                { title: 'Schritt 2: Verstehen', subtitle: 'Anamnese - Was hat das Kind erlebt?' },
+                { title: 'Schritt 3: Einschätzen', subtitle: 'ELDiB-Entwicklungsprofil erstellen' },
+                { title: 'Schritt 4: Screenen', subtitle: 'Klinisches Screening durchführen' },
+                { title: 'Schritt 5: Analysieren', subtitle: 'Funktionale Verhaltensanalyse' },
+                { title: 'Schritt 6: Synthetisieren', subtitle: 'Hypothesen und Differenzialdiagnose' },
+                { title: 'Schritt 7: Handeln', subtitle: 'Bedienungsanleitung erstellen' }
+            ];
+            document.getElementById('header-title').textContent = titles[step - 1].title;
+            document.getElementById('header-subtitle').textContent = titles[step - 1].subtitle;
+
+            // Update navigation buttons
+            document.getElementById('btn-prev').disabled = step === 1;
+            document.getElementById('btn-next').textContent = step === totalSteps ? 'Fertig ✓' : 'Weiter →';
+
+            currentStep = step;
+            updateProgress();
+
+            // Special actions for certain steps
+            if (step === 6) {
+                generateSynthesis();
+            }
+            if (step === 7) {
+                generateBedienungsanleitung();
+            }
+        }
+
+        function nextStep() {
+            collectCurrentStepData();
+            saveToStorage();
+
+            if (currentStep < totalSteps) {
+                goToStep(currentStep + 1);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                goToStep(currentStep - 1);
+            }
+        }
+
+        function updateProgress() {
+            const progress = Math.round(((currentStep - 1) / (totalSteps - 1)) * 100);
+            document.getElementById('progress-percent').textContent = `${progress}%`;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+
+        // ============================================
+        // DATA COLLECTION
+        // ============================================
+        function collectCurrentStepData() {
+            if (currentStep === 1) {
+                appData.stammdaten = {
+                    name: document.getElementById('input-name').value,
+                    alter: document.getElementById('input-alter').value,
+                    klasse: document.getElementById('input-klasse').value,
+                    schule: document.getElementById('input-schule').value
+                };
+            }
+
+            if (currentStep === 5) {
+                appData.verhaltensanalyse = {
+                    antecedent: document.getElementById('abc-antecedent').value,
+                    behavior: document.getElementById('abc-behavior').value,
+                    consequence: document.getElementById('abc-consequence').value,
+                    funktion: appData.verhaltensanalyse?.funktion
+                };
+            }
+        }
+
+        function selectOption(element, field) {
+            const container = element.parentElement;
+            const isMulti = container.classList.contains('multi-select');
+
+            if (!isMulti) {
+                container.querySelectorAll('.option-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+            }
+
+            element.classList.toggle('selected');
+
+            // Save to appData
+            const value = element.dataset.value;
+
+            if (field === 'hauptproblem') {
+                appData.screening.aktuelleSymptome.hauptproblem = value;
+            } else if (field === 'symptom_beginn') {
+                appData.screening.aktuelleSymptome.symptom_beginn = value;
+            } else if (field === 'funktion') {
+                appData.verhaltensanalyse.funktion = value;
+            }
+        }
+
+        // ============================================
+        // CHILD INDICATOR
+        // ============================================
+        function updateChildIndicator() {
+            const name = document.getElementById('input-name')?.value || appData.stammdaten?.name;
+            const alter = document.getElementById('input-alter')?.value || appData.stammdaten?.alter;
+
+            if (name) {
+                document.getElementById('child-indicator').style.display = 'flex';
+                document.getElementById('child-name').textContent = name;
+                document.getElementById('child-info').textContent = alter ? `${alter} Jahre` : '';
+            }
+        }
+
+        // ============================================
+        // MODALS
+        // ============================================
+        function openAnamneseModule(module) {
+            document.getElementById('modal-overlay').classList.add('active');
+            document.getElementById('modal-title').textContent = getModuleTitle(module);
+            document.getElementById('modal-body').innerHTML = getAnamneseModuleContent(module);
+        }
+
+        function openScreeningModule(module) {
+            document.getElementById('modal-overlay').classList.add('active');
+            document.getElementById('modal-title').textContent = getModuleTitle(module);
+            document.getElementById('modal-body').innerHTML = getScreeningModuleContent(module);
+        }
+
+        function openELDiBBereich(bereich) {
+            document.getElementById('modal-overlay').classList.add('active');
+            document.getElementById('modal-title').textContent = `ELDiB: ${bereich.charAt(0).toUpperCase() + bereich.slice(1)}`;
+            document.getElementById('modal-body').innerHTML = getELDiBContent(bereich);
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+        }
+
+        function saveModule() {
+            // Collect modal data and save
+            closeModal();
+        }
+
+        function getModuleTitle(module) {
+            const titles = {
+                'entwicklung': 'Entwicklungsgeschichte',
+                'familie': 'Familie & Umfeld',
+                'belastungen': 'Belastungen & Trauma',
+                'ressourcen': 'Ressourcen & Stärken',
+                'aufmerksamkeit': 'Aufmerksamkeit & Aktivität',
+                'emotionen': 'Emotionen & Ängste',
+                'soziales': 'Soziales & Beziehungen',
+                'verhalten': 'Verhalten & Regeln'
+            };
+            return titles[module] || module;
+        }
+
+        function getAnamneseModuleContent(module) {
+            // Return HTML content for anamnese module
+            return `<p>Modul-Inhalt für ${module} wird geladen...</p>
+                    <div class="checklist">
+                        <div class="checklist-item" onclick="this.classList.toggle('checked')">
+                            <div class="checklist-checkbox">✓</div>
+                            <div class="checklist-label">Beispiel-Item 1</div>
+                        </div>
+                        <div class="checklist-item" onclick="this.classList.toggle('checked')">
+                            <div class="checklist-checkbox">✓</div>
+                            <div class="checklist-label">Beispiel-Item 2</div>
+                        </div>
+                    </div>`;
+        }
+
+        function getScreeningModuleContent(module) {
+            // Get content from CLINICAL_BRAIN
+            if (typeof CLINICAL_BRAIN !== 'undefined' && CLINICAL_BRAIN.assessmentModules[module]) {
+                const moduleData = CLINICAL_BRAIN.assessmentModules[module];
+                let html = `<p class="card-subtitle">${moduleData.description}</p>`;
+
+                moduleData.questions.forEach(q => {
+                    html += `<div class="form-group">
+                        <label class="form-label">${q.question}</label>
+                        <div class="checklist">`;
+
+                    q.options.forEach(opt => {
+                        html += `<div class="checklist-item" onclick="this.classList.toggle('checked')" data-value="${opt.value}">
+                            <div class="checklist-checkbox">✓</div>
+                            <div class="checklist-label">${opt.label}</div>
+                        </div>`;
+                    });
+
+                    html += `</div></div>`;
+                });
+
+                return html;
+            }
+            return '<p>Modul nicht gefunden.</p>';
+        }
+
+        function getELDiBContent(bereich) {
+            return `<p>ELDiB-Items für ${bereich} werden geladen...</p>
+                    <div class="form-group">
+                        <label class="form-label">Aktuelle Stufe</label>
+                        <select class="form-input" onchange="updateELDiBStufe('${bereich}', this.value)">
+                            <option value="1">Stufe I</option>
+                            <option value="2" selected>Stufe II</option>
+                            <option value="3">Stufe III</option>
+                            <option value="4">Stufe IV</option>
+                            <option value="5">Stufe V</option>
+                        </select>
+                    </div>`;
+        }
+
+        function updateELDiBStufe(bereich, stufe) {
+            appData.eldib[bereich].stufe = parseInt(stufe);
+            const barId = `eldib-bar-${bereich === 'verhalten' ? 'v' : bereich === 'kommunikation' ? 'k' : bereich === 'sozialisation' ? 'soz' : 'kog'}`;
+            const stufeId = `eldib-stufe-${bereich === 'verhalten' ? 'v' : bereich === 'kommunikation' ? 'k' : bereich === 'sozialisation' ? 'soz' : 'kog'}`;
+
+            document.getElementById(barId).style.height = `${stufe * 20}%`;
+            document.getElementById(stufeId).textContent = `Stufe ${['I', 'II', 'III', 'IV', 'V'][stufe - 1]}`;
+        }
+
+        // ============================================
+        // SYNTHESIS
+        // ============================================
+        function generateSynthesis() {
+            if (typeof SynthesisEngine !== 'undefined') {
+                appData.synthesis = SynthesisEngine.synthesize(appData);
+                displayHypothesen(appData.synthesis.hypothesen);
+            }
+        }
+
+        function displayHypothesen(hypothesen) {
+            const container = document.getElementById('hypothesen-container');
+
+            if (!hypothesen || hypothesen.length === 0) {
+                container.innerHTML = `<div class="alert alert-warning">
+                    <div class="alert-icon">ℹ️</div>
+                    <div class="alert-content">
+                        <div class="alert-title">Keine ausreichenden Daten</div>
+                        <div>Bitte füllen Sie mehr Screening-Module aus, um Hypothesen zu generieren.</div>
+                    </div>
+                </div>`;
+                return;
+            }
+
+            let html = '';
+            hypothesen.forEach(h => {
+                const level = h.konfidenz >= 60 ? 'high' : h.konfidenz >= 40 ? 'medium' : 'low';
+                html += `<div class="hypothesis-card hypothesis-${level}">
+                    <div class="hypothesis-header">
+                        <div class="hypothesis-name">${h.name}</div>
+                        <div class="hypothesis-confidence status-badge ${h.konfidenz >= 60 ? 'status-red' : h.konfidenz >= 40 ? 'status-yellow' : 'status-green'}">
+                            ${h.konfidenz}% Konfidenz
+                        </div>
+                    </div>
+                    <div class="hypothesis-evidence">
+                        <strong>Evidenz:</strong>
+                        <ul>${h.evidenz.map(e => `<li>${e}</li>`).join('')}</ul>
+                        ${h.gegenEvidenz.length > 0 ? `<strong>Gegen-Evidenz:</strong><ul>${h.gegenEvidenz.map(e => `<li>${e}</li>`).join('')}</ul>` : ''}
+                        <p style="margin-top: 12px;"><strong>Empfehlung:</strong> ${h.empfehlung}</p>
+                    </div>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ============================================
+        // BEDIENUNGSANLEITUNG
+        // ============================================
+        function generateBedienungsanleitung() {
+            if (!appData.synthesis) {
+                generateSynthesis();
+            }
+
+            const container = document.getElementById('bedienungsanleitung-container');
+            const s = appData.synthesis;
+            const name = appData.stammdaten?.name || 'Kind';
+
+            if (!s) {
+                return;
+            }
+
+            let html = `
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 style="text-align: center; margin-bottom: 20px; color: var(--primary);">
+                        BEDIENUNGSANLEITUNG FÜR ${name.toUpperCase()}
+                    </h3>
+
+                    <h4>1. Wer ist ${name}?</h4>
+                    <p>${s.kind?.zusammenfassung || ''}</p>
+                    ${s.kind?.staerken?.length > 0 ? `<p><strong>Stärken:</strong> ${s.kind.staerken.join(', ')}</p>` : ''}
+                    ${s.kind?.herausforderungen?.length > 0 ? `<p><strong>Herausforderungen:</strong> ${s.kind.herausforderungen.join(', ')}</p>` : ''}
+
+                    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
+
+                    <h4>2. Wie funktioniert ${name}?</h4>
+                    ${s.entwicklung?.interpretation?.map(i => `<p>• ${i}</p>`).join('') || '<p>Keine Daten verfügbar.</p>'}
+
+                    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
+
+                    <h4>3. Warum verhält sich ${name} so?</h4>
+                    ${s.hypothesen?.filter(h => h.konfidenz >= 40).map(h => `
+                        <p><strong>${h.name}</strong> (${h.konfidenz}% Konfidenz)</p>
+                        <ul>${h.evidenz.map(e => `<li>${e}</li>`).join('')}</ul>
+                    `).join('') || '<p>Keine Hypothesen mit ausreichender Konfidenz.</p>'}
+
+                    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
+
+                    <h4>4. Was braucht ${name}?</h4>
+                    ${s.beduerfnisse?.map(b => `
+                        <div style="margin-bottom: 16px;">
+                            <strong>${b.icon} ${b.beduerfnis}</strong> (${b.wichtigkeit})
+                            <p style="color: var(--gray-600); font-size: 0.9rem;">${b.begruendung}</p>
+                            <ul>${b.umsetzung.map(u => `<li>${u}</li>`).join('')}</ul>
+                        </div>
+                    `).join('') || ''}
+
+                    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
+
+                    <h4>5. So geht es mit ${name}</h4>
+                    ${s.interventionen?.situationen?.length > 0 ? `
+                        <table class="situations-table">
+                            <thead>
+                                <tr>
+                                    <th>Situation</th>
+                                    <th>Tu das</th>
+                                    <th>Vermeide</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${s.interventionen.situationen.map(sit => `
+                                    <tr>
+                                        <td>${sit.situation}</td>
+                                        <td class="do-this">${sit.tuDas.join('<br>')}</td>
+                                        <td class="avoid-this">${sit.vermeide.join('<br>')}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    ` : '<p>Keine Situationsempfehlungen verfügbar.</p>'}
+
+                    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
+
+                    <h4>6. Lernziele</h4>
+                    ${s.lernziele?.map(z => `
+                        <div class="goal-item">
+                            <div class="goal-code">${z.code}</div>
+                            <div class="goal-content">
+                                <div class="goal-text">${z.ziel}</div>
+                                <div class="goal-measure">Maßnahme: ${z.massnahme}</div>
+                            </div>
+                        </div>
+                    `).join('') || '<p>Keine Lernziele definiert.</p>'}
+
+                    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
+
+                    <h4>7. Warnsignale & Notfallplan</h4>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                        <div style="background: var(--success-subtle); padding: 16px; border-radius: var(--radius); border-left: 4px solid var(--success);">
+                            <strong style="color: var(--success);">🟢 Guter Tag</strong>
+                            <ul style="margin-top: 8px; font-size: 0.9rem;">
+                                ${s.warnsignale?.guterTag?.map(w => `<li>${w}</li>`).join('') || ''}
+                            </ul>
+                        </div>
+                        <div style="background: var(--warning-subtle); padding: 16px; border-radius: var(--radius); border-left: 4px solid var(--warning);">
+                            <strong style="color: var(--warning);">🟡 Vorsicht</strong>
+                            <ul style="margin-top: 8px; font-size: 0.9rem;">
+                                ${s.warnsignale?.vorsicht?.map(w => `<li>${w}</li>`).join('') || ''}
+                            </ul>
+                        </div>
+                        <div style="background: var(--danger-subtle); padding: 16px; border-radius: var(--radius); border-left: 4px solid var(--danger);">
+                            <strong style="color: var(--danger);">🔴 Eskalation</strong>
+                            <ul style="margin-top: 8px; font-size: 0.9rem;">
+                                ${s.warnsignale?.eskalation?.map(w => `<li>${w}</li>`).join('') || ''}
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="margin-top: 16px; padding: 16px; background: var(--gray-100); border-radius: var(--radius);">
+                        <strong>Notfallplan:</strong>
+                        <ol style="margin-top: 8px;">
+                            ${s.warnsignale?.notfallPlan?.map(n => `<li>${n}</li>`).join('') || ''}
+                        </ol>
+                    </div>
+
+                    <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
+
+                    <h4>8. Empfehlungen & Kooperation</h4>
+                    ${s.empfehlungen?.abklaerung?.map(e => `
+                        <div class="alert ${e.dringlichkeit === 'SOFORT' ? 'alert-danger' : 'alert-warning'}">
+                            <div class="alert-icon">${e.dringlichkeit === 'SOFORT' ? '⚠️' : '📋'}</div>
+                            <div class="alert-content">
+                                <div class="alert-title">${e.text}</div>
+                                <div>Dringlichkeit: ${e.dringlichkeit} | Grund: ${e.grund}</div>
+                            </div>
+                        </div>
+                    `).join('') || ''}
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // ============================================
+        // EXPORT
+        // ============================================
+        function exportBedienungsanleitung() {
+            if (typeof docx === 'undefined') {
+                alert('Export-Bibliothek wird geladen...');
+                return;
+            }
+
+            const name = appData.stammdaten?.name || 'Kind';
+            const s = appData.synthesis;
+
+            if (!s) {
+                alert('Bitte führen Sie zuerst die Synthese durch.');
+                return;
+            }
+
+            // Create Word document
+            const { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle } = docx;
+
+            const doc = new Document({
+                sections: [{
+                    properties: {},
+                    children: [
+                        new Paragraph({
+                            text: `BEDIENUNGSANLEITUNG FÜR ${name.toUpperCase()}`,
+                            heading: HeadingLevel.TITLE,
+                            alignment: 'center'
+                        }),
+                        new Paragraph({
+                            text: `Erstellt am: ${new Date().toLocaleDateString('de-DE')}`,
+                            alignment: 'center'
+                        }),
+                        new Paragraph({ text: '' }),
+
+                        new Paragraph({ text: '1. Wer ist ' + name + '?', heading: HeadingLevel.HEADING_1 }),
+                        new Paragraph({ text: s.kind?.zusammenfassung || '' }),
+                        new Paragraph({ text: '' }),
+
+                        new Paragraph({ text: '2. Hypothesen', heading: HeadingLevel.HEADING_1 }),
+                        ...s.hypothesen?.filter(h => h.konfidenz >= 40).map(h => [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({ text: h.name, bold: true }),
+                                    new TextRun({ text: ` (${h.konfidenz}% Konfidenz)` })
+                                ]
+                            }),
+                            ...h.evidenz.map(e => new Paragraph({ text: `• ${e}` })),
+                            new Paragraph({ text: '' })
+                        ]).flat() || [],
+
+                        new Paragraph({ text: '3. Was braucht ' + name + '?', heading: HeadingLevel.HEADING_1 }),
+                        ...s.beduerfnisse?.map(b => [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({ text: `${b.icon} ${b.beduerfnis}`, bold: true })
+                                ]
+                            }),
+                            ...b.umsetzung.map(u => new Paragraph({ text: `• ${u}` })),
+                            new Paragraph({ text: '' })
+                        ]).flat() || [],
+
+                        new Paragraph({ text: '4. Lernziele', heading: HeadingLevel.HEADING_1 }),
+                        ...s.lernziele?.map(z => new Paragraph({
+                            text: `${z.code}: ${z.ziel} → ${z.massnahme}`
+                        })) || []
+                    ]
+                }]
+            });
+
+            Packer.toBlob(doc).then(blob => {
+                saveAs(blob, `Bedienungsanleitung_${name.replace(/\s/g, '_')}.docx`);
+            });
+        }
+
+        // ============================================
+        // SAVE / LOAD
+        // ============================================
+        function saveData() {
+            collectCurrentStepData();
+            saveToStorage();
+            alert('Daten wurden gespeichert!');
+        }
+
+        function loadData() {
+            loadFromStorage();
+            alert('Daten wurden geladen!');
+            goToStep(1);
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromStorage();
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
