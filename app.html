@@ -2028,10 +2028,48 @@
                     ${s.kind?.staerken?.length > 0 ? `<p><strong>Stärken:</strong> ${s.kind.staerken.join(', ')}</p>` : ''}
                     ${s.kind?.herausforderungen?.length > 0 ? `<p><strong>Herausforderungen:</strong> ${s.kind.herausforderungen.join(', ')}</p>` : ''}
 
+                    ${s.kind?.eldibProfil ? `
+                        <div style="margin-top: 16px; padding: 16px; background: var(--info-subtle); border-radius: var(--radius); border-left: 4px solid var(--info);">
+                            <strong style="color: var(--info);">ELDiB-Profil auf einen Blick:</strong>
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px;">
+                                <div>Durchschnittliche Entwicklungsstufe: <strong>${s.kind.eldibProfil.durchschnittsstufe}</strong></div>
+                                <div>Stärkster Bereich: <strong>${s.kind.eldibProfil.staerksterBereich || '-'}</strong></div>
+                                <div>Entwicklungsbedarf: <strong>${s.kind.eldibProfil.schwachsterBereich || '-'}</strong></div>
+                                <div>Items erreicht: <strong>${s.kind.eldibProfil.ressourcenAnzahl}</strong> | In Arbeit: <strong>${s.kind.eldibProfil.inArbeitAnzahl}</strong></div>
+                            </div>
+                        </div>
+                    ` : ''}
+
                     <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
 
                     <h4>2. Wie funktioniert ${name}?</h4>
                     ${s.entwicklung?.interpretation?.map(i => `<p>• ${i}</p>`).join('') || '<p>Keine Daten verfügbar.</p>'}
+
+                    ${s.entwicklung?.ressourcen?.length > 0 ? `
+                        <div style="margin-top: 16px;">
+                            <strong style="color: var(--success);">Entwickelte Kompetenzen (ELDiB):</strong>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+                                ${s.entwicklung.ressourcen.slice(0, 8).map(r => `
+                                    <span style="padding: 4px 10px; background: var(--success-subtle); border-radius: 20px; font-size: 0.8rem; color: var(--success);">
+                                        ${r.code}: ${r.keyword}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${s.entwicklung?.defizite?.length > 0 ? `
+                        <div style="margin-top: 16px;">
+                            <strong style="color: var(--warning);">Entwicklungsbedarf (ELDiB):</strong>
+                            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+                                ${s.entwicklung.defizite.slice(0, 8).map(d => `
+                                    <span style="padding: 4px 10px; background: var(--warning-subtle); border-radius: 20px; font-size: 0.8rem; color: var(--warning);">
+                                        ${d.code}: ${d.keyword}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
 
                     <hr style="margin: 24px 0; border: none; border-top: 1px solid var(--gray-200);">
 

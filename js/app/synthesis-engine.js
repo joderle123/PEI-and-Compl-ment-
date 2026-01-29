@@ -48,24 +48,37 @@ const SynthesisEngine = {
         const ressourcen = data.screening?.ressourcen || {};
         const symptome = data.screening?.aktuelleSymptome || {};
 
+        // ELDiB-Analyse für tiefere Einsichten
+        const eldibAnalyse = this.analyzeELDiB(data.eldib);
+
         return {
             name: stammdaten.name || 'Unbekannt',
             alter: stammdaten.alter,
             klasse: stammdaten.klasse,
             bezugspersonen: stammdaten.bezugspersonen || [],
 
-            // Kernstärken aus Ressourcen-Screening
-            staerken: this.extractStaerken(ressourcen),
+            // Kernstärken aus Ressourcen-Screening + ELDiB
+            staerken: this.extractStaerken(ressourcen, eldibAnalyse),
 
-            // Hauptherausforderungen
-            herausforderungen: this.extractHerausforderungen(symptome, data.eldib),
+            // Hauptherausforderungen + ELDiB-Defizite
+            herausforderungen: this.extractHerausforderungen(symptome, data.eldib, eldibAnalyse),
 
             // Kurzbeschreibung
-            zusammenfassung: this.generateKurzprofil(data)
+            zusammenfassung: this.generateKurzprofil(data),
+
+            // NEU: ELDiB-basierte Detailinformationen
+            eldibProfil: eldibAnalyse ? {
+                durchschnittsstufe: eldibAnalyse.durchschnitt,
+                staerksterBereich: eldibAnalyse.staerksterBereich?.name,
+                schwachsterBereich: eldibAnalyse.schwachsterBereich?.name,
+                ressourcenAnzahl: eldibAnalyse.ressourcen?.length || 0,
+                defiziteAnzahl: eldibAnalyse.defizite?.length || 0,
+                inArbeitAnzahl: eldibAnalyse.inArbeit?.length || 0
+            } : null
         };
     },
 
-    extractStaerken(ressourcen) {
+    extractStaerken(ressourcen, eldibAnalyse = null) {
         const staerken = [];
         const kindRessourcen = ressourcen.kind_ressourcen || [];
 
@@ -86,10 +99,42 @@ const SynthesisEngine = {
             }
         });
 
-        return staerken;
+        // NEU: ELDiB-basierte Ressourcen hinzufügen
+        if (eldibAnalyse?.ressourcen) {
+            // Gruppiere erreichte Items nach Bereich
+            const bereicheReached = {};
+            eldibAnalyse.ressourcen.forEach(r => {
+                bereicheReached[r.bereich] = (bereicheReached[r.bereich] || 0) + 1;
+            });
+
+            // Wenn viele Items in einem Bereich erreicht -> Stärke
+            if (bereicheReached.kommunikation >= 3) {
+                staerken.push('Gute kommunikative Fähigkeiten (ELDiB)');
+            }
+            if (bereicheReached.sozialisation >= 3) {
+                staerken.push('Soziale Grundkompetenzen vorhanden (ELDiB)');
+            }
+            if (bereicheReached.kognition >= 3) {
+                staerken.push('Altersgemäße kognitive Entwicklung (ELDiB)');
+            }
+            if (bereicheReached.verhalten >= 3) {
+                staerken.push('Verhaltensregulation entwickelt (ELDiB)');
+            }
+
+            // Spezifische hochwertige Ressourcen hervorheben
+            const hervorragendeItems = ['V-21', 'V-26', 'K-16', 'K-21', 'SOZ-18', 'SOZ-37'];
+            eldibAnalyse.ressourcen.forEach(r => {
+                if (hervorragendeItems.includes(r.code)) {
+                    staerken.push(`${r.bedeutung} (${r.code})`);
+                }
+            });
+        }
+
+        // Duplikate entfernen
+        return [...new Set(staerken)];
     },
 
-    extractHerausforderungen(symptome, eldib) {
+    extractHerausforderungen(symptome, eldib, eldibAnalyse = null) {
         const herausforderungen = [];
 
         // Aus Hauptproblem
@@ -122,7 +167,19 @@ const SynthesisEngine = {
             });
         }
 
-        return herausforderungen;
+        // NEU: Spezifische Defizite aus ELDiB-Itemanalyse
+        if (eldibAnalyse?.defizite?.length > 0) {
+            // Klinisch relevante Defizite hervorheben
+            const klinischRelevant = eldibAnalyse.klinischeMarker || [];
+            const kritischeItems = klinischRelevant.filter(m => m.gewicht >= 2);
+
+            kritischeItems.slice(0, 3).forEach(item => {
+                herausforderungen.push(`${item.bedeutung} noch nicht entwickelt (${item.code})`);
+            });
+        }
+
+        // Duplikate entfernen
+        return [...new Set(herausforderungen)];
     },
 
     generateKurzprofil(data) {
@@ -149,7 +206,7 @@ const SynthesisEngine = {
     },
 
     // ============================================
-    // ELDiB-ANALYSE
+    // ELDiB-ANALYSE (Erweitert mit Item-Analyse)
     // ============================================
 
     analyzeELDiB(eldib) {
@@ -174,14 +231,152 @@ const SynthesisEngine = {
         const minStufe = Math.min(...stufen);
         const ungleichmaessig = (maxStufe - minStufe) >= 2;
 
+        // NEU: Item-basierte Ressourcen und Defizite extrahieren
+        const itemAnalysis = this.analyzeELDiBItems(eldib);
+
         return {
             bereiche,
             durchschnitt: Math.round(durchschnitt * 10) / 10,
             interpretation,
             ungleichmaessig,
             staerksterBereich: Object.values(bereiche).sort((a, b) => b.stufe - a.stufe)[0],
-            schwachsterBereich: Object.values(bereiche).sort((a, b) => a.stufe - b.stufe)[0]
+            schwachsterBereich: Object.values(bereiche).sort((a, b) => a.stufe - b.stufe)[0],
+            // NEU: Item-basierte Analyse
+            ressourcen: itemAnalysis.ressourcen,
+            defizite: itemAnalysis.defizite,
+            inArbeit: itemAnalysis.inArbeit,
+            klinischeMarker: itemAnalysis.klinischeMarker
         };
+    },
+
+    /**
+     * NEU: Analysiert einzelne ELDiB-Items und extrahiert Ressourcen/Defizite
+     * Dies ist entscheidend für die Hypothesen-Stärkung
+     */
+    analyzeELDiBItems(eldib) {
+        const ressourcen = [];
+        const defizite = [];
+        const inArbeit = [];
+        const klinischeMarker = [];
+
+        // Klinisch relevante Items mit Mapping zu Hypothesen
+        const klinischeItems = {
+            // ADHS-relevante Items
+            'V-10': { bereich: 'adhs', bedeutung: 'Warten - Impulskontrolle', gewicht: 2 },
+            'V-11': { bereich: 'adhs', bedeutung: 'Stillsitzen - motorische Kontrolle', gewicht: 2 },
+            'V-15': { bereich: 'adhs', bedeutung: 'Aufgaben beenden - Durchhaltevermögen', gewicht: 1 },
+            'KOG-2': { bereich: 'adhs', bedeutung: 'Aufmerksamkeit aufrechterhalten', gewicht: 2 },
+            'KOG-24': { bereich: 'adhs', bedeutung: 'Wechselnde Anweisungen', gewicht: 1 },
+
+            // Emotionsregulation / Depression / Angst
+            'K-16': { bereich: 'emotionsregulation', bedeutung: 'Gefühle benennen', gewicht: 2 },
+            'K-21': { bereich: 'emotionsregulation', bedeutung: 'Gefühle anderer erkennen', gewicht: 1 },
+            'K-26': { bereich: 'emotionsregulation', bedeutung: 'Eigene Gefühle ausdrücken', gewicht: 2 },
+            'V-14': { bereich: 'emotionsregulation', bedeutung: 'Lob/Erfolg akzeptieren', gewicht: 1 },
+
+            // Soziale Schwierigkeiten / ASD
+            'SOZ-15': { bereich: 'sozial', bedeutung: 'Sozialen Kontakt aufnehmen', gewicht: 2 },
+            'SOZ-17': { bereich: 'sozial', bedeutung: 'Interaktives Spiel', gewicht: 2 },
+            'SOZ-18': { bereich: 'sozial', bedeutung: 'Kooperation', gewicht: 1 },
+            'K-14': { bereich: 'sozial', bedeutung: 'Austausch mit Gleichaltrigen', gewicht: 2 },
+            'K-7': { bereich: 'sozial', bedeutung: 'Kommunikation mit Peers', gewicht: 1 },
+
+            // Oppositionelles Verhalten
+            'V-16': { bereich: 'odd', bedeutung: 'Erwartungen kennen', gewicht: 1 },
+            'V-17': { bereich: 'odd', bedeutung: 'Regeln begründen können', gewicht: 1 },
+            'V-18': { bereich: 'odd', bedeutung: 'Alternativen beschreiben', gewicht: 2 },
+            'V-20': { bereich: 'odd', bedeutung: 'Sich zurückhalten bei anderen', gewicht: 1 },
+            'V-21': { bereich: 'odd', bedeutung: 'Selbstkontrolle in Gruppe', gewicht: 2 },
+            'V-26': { bereich: 'odd', bedeutung: 'Auf Provokation reagieren', gewicht: 2 },
+
+            // Bindung
+            'SOZ-12': { bereich: 'bindung', bedeutung: 'Kontakt zu Erwachsenen suchen', gewicht: 2 },
+            'SOZ-1': { bereich: 'bindung', bedeutung: 'Gegenwart anderer wahrnehmen', gewicht: 1 },
+            'SOZ-8': { bereich: 'bindung', bedeutung: 'Kommunikation mit Erwachsenen', gewicht: 1 },
+
+            // Trauma
+            'V-23': { bereich: 'trauma', bedeutung: 'Flexibilität bei Änderungen', gewicht: 2 },
+            'V-24': { bereich: 'trauma', bedeutung: 'Neue Erfahrungen', gewicht: 1 },
+            'K-23': { bereich: 'trauma', bedeutung: 'Kreativität - Gefühle kanalisieren', gewicht: 1 }
+        };
+
+        // Durch alle Bereiche iterieren
+        const bereiche = ['verhalten', 'kommunikation', 'sozialisation', 'kognition'];
+
+        bereiche.forEach(bereich => {
+            const bereichData = eldib[bereich];
+            if (!bereichData?.items) return;
+
+            bereichData.items.forEach(item => {
+                const itemCode = item.code;
+                const status = item.status;
+                const itemInfo = klinischeItems[itemCode];
+
+                // Item kategorisieren
+                if (status === 'erreicht') {
+                    ressourcen.push({
+                        code: itemCode,
+                        keyword: item.keyword || this.getItemKeyword(itemCode),
+                        bereich: bereich,
+                        bedeutung: itemInfo?.bedeutung || item.keyword
+                    });
+                } else if (status === 'nicht_erreicht') {
+                    defizite.push({
+                        code: itemCode,
+                        keyword: item.keyword || this.getItemKeyword(itemCode),
+                        bereich: bereich,
+                        bedeutung: itemInfo?.bedeutung || item.keyword
+                    });
+
+                    // Klinischen Marker hinzufügen wenn relevant
+                    if (itemInfo) {
+                        klinischeMarker.push({
+                            code: itemCode,
+                            hypothese: itemInfo.bereich,
+                            bedeutung: itemInfo.bedeutung,
+                            gewicht: itemInfo.gewicht,
+                            typ: 'defizit'
+                        });
+                    }
+                } else if (status === 'in_arbeit') {
+                    inArbeit.push({
+                        code: itemCode,
+                        keyword: item.keyword || this.getItemKeyword(itemCode),
+                        bereich: bereich,
+                        bedeutung: itemInfo?.bedeutung || item.keyword
+                    });
+                }
+            });
+        });
+
+        return { ressourcen, defizite, inArbeit, klinischeMarker };
+    },
+
+    /**
+     * Holt das Keyword für ein Item aus ELDIB_DATA
+     */
+    getItemKeyword(code) {
+        if (typeof ELDIB_DATA === 'undefined') return code;
+
+        const bereichMap = {
+            'V': 'verhalten',
+            'K': 'kommunikation',
+            'SOZ': 'sozialisation',
+            'KOG': 'kognition'
+        };
+
+        const prefix = code.split('-')[0];
+        const bereich = bereichMap[prefix];
+
+        if (!bereich || !ELDIB_DATA[bereich]) return code;
+
+        // Durch alle Stufen suchen
+        for (const stufe of Object.values(ELDIB_DATA[bereich].stufen)) {
+            const item = stufe.items?.find(i => i.code === code);
+            if (item) return item.keyword;
+        }
+
+        return code;
     },
 
     interpretELDiBProfile(bereiche) {
@@ -214,7 +409,7 @@ const SynthesisEngine = {
     },
 
     // ============================================
-    // HYPOTHESEN-GENERIERUNG
+    // HYPOTHESEN-GENERIERUNG (Erweitert mit ELDiB-Integration)
     // ============================================
 
     generateHypothesen(data) {
@@ -223,33 +418,41 @@ const SynthesisEngine = {
         const anamnese = data.anamnese || {};
         const eldib = data.eldib || {};
 
-        // ADHS-Hypothese
-        const adhs = this.checkADHS(screening, anamnese);
+        // NEU: ELDiB-Analyse für klinische Marker
+        const eldibAnalyse = this.analyzeELDiB(eldib);
+        const klinischeMarker = eldibAnalyse?.klinischeMarker || [];
+
+        // ADHS-Hypothese (mit ELDiB)
+        const adhs = this.checkADHS(screening, anamnese, klinischeMarker);
         if (adhs.score > 0) hypothesen.push(adhs);
 
-        // Angst-Hypothese
-        const angst = this.checkAngst(screening, anamnese);
+        // Angst-Hypothese (mit ELDiB)
+        const angst = this.checkAngst(screening, anamnese, klinischeMarker);
         if (angst.score > 0) hypothesen.push(angst);
 
-        // Depression-Hypothese
-        const depression = this.checkDepression(screening, anamnese);
+        // Depression-Hypothese (mit ELDiB)
+        const depression = this.checkDepression(screening, anamnese, klinischeMarker);
         if (depression.score > 0) hypothesen.push(depression);
 
-        // ODD-Hypothese (Oppositionelle Störung)
-        const odd = this.checkODD(screening, anamnese);
+        // ODD-Hypothese (mit ELDiB)
+        const odd = this.checkODD(screening, anamnese, klinischeMarker);
         if (odd.score > 0) hypothesen.push(odd);
 
-        // Trauma-Hypothese
-        const trauma = this.checkTrauma(screening, anamnese);
+        // Trauma-Hypothese (mit ELDiB)
+        const trauma = this.checkTrauma(screening, anamnese, klinischeMarker);
         if (trauma.score > 0) hypothesen.push(trauma);
 
-        // Autismus-Spektrum-Hypothese
-        const asd = this.checkASD(screening, anamnese);
+        // Autismus-Spektrum-Hypothese (mit ELDiB)
+        const asd = this.checkASD(screening, anamnese, klinischeMarker);
         if (asd.score > 0) hypothesen.push(asd);
 
-        // Bindungsproblematik
-        const bindung = this.checkBindung(screening, anamnese);
+        // Bindungsproblematik (mit ELDiB)
+        const bindung = this.checkBindung(screening, anamnese, klinischeMarker);
         if (bindung.score > 0) hypothesen.push(bindung);
+
+        // NEU: Emotionsregulation-Hypothese (aus ELDiB)
+        const emotionsreg = this.checkEmotionsregulation(screening, anamnese, klinischeMarker, eldib);
+        if (emotionsreg.score > 0) hypothesen.push(emotionsreg);
 
         // Sortieren nach Konfidenz
         hypothesen.sort((a, b) => b.konfidenz - a.konfidenz);
@@ -257,7 +460,23 @@ const SynthesisEngine = {
         return hypothesen;
     },
 
-    checkADHS(screening, anamnese) {
+    /**
+     * NEU: Holt ELDiB-Evidenz für eine bestimmte Hypothese
+     */
+    getELDiBEvidenz(klinischeMarker, hypotheseId) {
+        const relevant = klinischeMarker.filter(m => m.hypothese === hypotheseId);
+        let score = 0;
+        const evidenz = [];
+
+        relevant.forEach(marker => {
+            score += marker.gewicht;
+            evidenz.push(`ELDiB ${marker.code}: ${marker.bedeutung} nicht erreicht`);
+        });
+
+        return { score, evidenz };
+    },
+
+    checkADHS(screening, anamnese, klinischeMarker = []) {
         let score = 0;
         let evidenz = [];
         let gegenEvidenz = [];
@@ -303,6 +522,13 @@ const SynthesisEngine = {
             evidenz.push('ADHS in der Familie bekannt');
         }
 
+        // NEU: ELDiB-Integration für ADHS
+        const eldibEvidenz = this.getELDiBEvidenz(klinischeMarker, 'adhs');
+        if (eldibEvidenz.score > 0) {
+            score += eldibEvidenz.score;
+            evidenz.push(...eldibEvidenz.evidenz);
+        }
+
         // Gegen-Evidenz
         const symptomBeginn = screening.aktuelleSymptome?.symptom_beginn;
         if (symptomBeginn === 'kuerzlich' || symptomBeginn === 'ereignis') {
@@ -310,8 +536,8 @@ const SynthesisEngine = {
             gegenEvidenz.push('Symptome erst kürzlich aufgetreten');
         }
 
-        // Konfidenz berechnen (0-100%)
-        const maxScore = 12;
+        // Konfidenz berechnen (0-100%) - Angepasst für erweiterten maxScore
+        const maxScore = 16; // Erhöht wegen ELDiB-Items
         const konfidenz = Math.min(100, Math.max(0, Math.round((score / maxScore) * 100)));
 
         return {
@@ -326,7 +552,7 @@ const SynthesisEngine = {
         };
     },
 
-    checkAngst(screening, anamnese) {
+    checkAngst(screening, anamnese, klinischeMarker = []) {
         let score = 0;
         let evidenz = [];
         let gegenEvidenz = [];
@@ -367,8 +593,15 @@ const SynthesisEngine = {
             evidenz.push('Angststörung in der Familie');
         }
 
+        // NEU: ELDiB-relevante Evidenz (Emotionsregulation zeigt auch Angst-Indikatoren)
+        const emotionEvidenz = this.getELDiBEvidenz(klinischeMarker, 'emotionsregulation');
+        if (emotionEvidenz.score > 0) {
+            score += Math.ceil(emotionEvidenz.score / 2); // Halbes Gewicht
+            evidenz.push('ELDiB: Defizite bei Gefühlsverarbeitung');
+        }
+
         // Konfidenz
-        const maxScore = 8;
+        const maxScore = 10;
         const konfidenz = Math.min(100, Math.max(0, Math.round((score / maxScore) * 100)));
 
         return {
@@ -384,7 +617,7 @@ const SynthesisEngine = {
         };
     },
 
-    checkDepression(screening, anamnese) {
+    checkDepression(screening, anamnese, klinischeMarker = []) {
         let score = 0;
         let evidenz = [];
         let gegenEvidenz = [];
@@ -423,7 +656,14 @@ const SynthesisEngine = {
             evidenz.push('⚠️ Gedanken an Tod/Suizid');
         }
 
-        const maxScore = 12;
+        // NEU: ELDiB-Evidenz für Emotionsregulation
+        const emotionEvidenz = this.getELDiBEvidenz(klinischeMarker, 'emotionsregulation');
+        if (emotionEvidenz.score > 0) {
+            score += Math.ceil(emotionEvidenz.score / 2);
+            evidenz.push('ELDiB: Eingeschränkte emotionale Ausdrucksfähigkeit');
+        }
+
+        const maxScore = 14;
         const konfidenz = Math.min(100, Math.max(0, Math.round((score / maxScore) * 100)));
 
         return {
@@ -440,7 +680,7 @@ const SynthesisEngine = {
         };
     },
 
-    checkODD(screening, anamnese) {
+    checkODD(screening, anamnese, klinischeMarker = []) {
         let score = 0;
         let evidenz = [];
         let gegenEvidenz = [];
@@ -474,7 +714,14 @@ const SynthesisEngine = {
             gegenEvidenz.push('Positive Erziehung vorhanden');
         }
 
-        const maxScore = 7;
+        // NEU: ELDiB-Integration für ODD
+        const eldibEvidenz = this.getELDiBEvidenz(klinischeMarker, 'odd');
+        if (eldibEvidenz.score > 0) {
+            score += eldibEvidenz.score;
+            evidenz.push(...eldibEvidenz.evidenz);
+        }
+
+        const maxScore = 12; // Erhöht wegen ELDiB-Items
         const konfidenz = Math.min(100, Math.max(0, Math.round((score / maxScore) * 100)));
 
         return {
@@ -489,7 +736,7 @@ const SynthesisEngine = {
         };
     },
 
-    checkTrauma(screening, anamnese) {
+    checkTrauma(screening, anamnese, klinischeMarker = []) {
         let score = 0;
         let evidenz = [];
         let gegenEvidenz = [];
@@ -529,7 +776,14 @@ const SynthesisEngine = {
             evidenz.push('Desorganisiertes Bindungsmuster');
         }
 
-        const maxScore = 10;
+        // NEU: ELDiB-Evidenz für Trauma
+        const traumaEvidenz = this.getELDiBEvidenz(klinischeMarker, 'trauma');
+        if (traumaEvidenz.score > 0) {
+            score += traumaEvidenz.score;
+            evidenz.push(...traumaEvidenz.evidenz);
+        }
+
+        const maxScore = 13;
         const konfidenz = Math.min(100, Math.max(0, Math.round((score / maxScore) * 100)));
 
         return {
@@ -546,7 +800,7 @@ const SynthesisEngine = {
         };
     },
 
-    checkASD(screening, anamnese) {
+    checkASD(screening, anamnese, klinischeMarker = []) {
         let score = 0;
         let evidenz = [];
         let gegenEvidenz = [];
@@ -587,12 +841,19 @@ const SynthesisEngine = {
             evidenz.push('Autismus in der Familie');
         }
 
+        // NEU: ELDiB-Evidenz für soziale Schwierigkeiten
+        const sozialEvidenz = this.getELDiBEvidenz(klinischeMarker, 'sozial');
+        if (sozialEvidenz.score > 0) {
+            score += sozialEvidenz.score;
+            evidenz.push(...sozialEvidenz.evidenz);
+        }
+
         // Gegen-Evidenz
         if (sozInteraktion.includes('will_aber_kann_nicht')) {
             gegenEvidenz.push('Soziales Interesse vorhanden (kann aber nicht)');
         }
 
-        const maxScore = 9;
+        const maxScore = 13;
         const konfidenz = Math.min(100, Math.max(0, Math.round((score / maxScore) * 100)));
 
         return {
@@ -607,7 +868,7 @@ const SynthesisEngine = {
         };
     },
 
-    checkBindung(screening, anamnese) {
+    checkBindung(screening, anamnese, klinischeMarker = []) {
         let score = 0;
         let evidenz = [];
         let gegenEvidenz = [];
@@ -644,7 +905,14 @@ const SynthesisEngine = {
             evidenz.push('Frühe Trennungserfahrung');
         }
 
-        const maxScore = 6;
+        // NEU: ELDiB-Evidenz für Bindung
+        const bindungEvidenz = this.getELDiBEvidenz(klinischeMarker, 'bindung');
+        if (bindungEvidenz.score > 0) {
+            score += bindungEvidenz.score;
+            evidenz.push(...bindungEvidenz.evidenz);
+        }
+
+        const maxScore = 10;
         const konfidenz = Math.min(100, Math.max(0, Math.round((score / maxScore) * 100)));
 
         return {
@@ -656,6 +924,56 @@ const SynthesisEngine = {
             gegenEvidenz,
             empfehlung: konfidenz >= 50 ? 'Bindungsbasierte Beratung/Therapie' : 'Beziehungsaufbau fokussieren',
             dringlichkeit: 'geplant'
+        };
+    },
+
+    /**
+     * NEU: Emotionsregulation-Check basierend auf ELDiB und Screening
+     */
+    checkEmotionsregulation(screening, anamnese, klinischeMarker = [], eldib = {}) {
+        let score = 0;
+        let evidenz = [];
+        let gegenEvidenz = [];
+
+        // ELDiB-basierte Evidenz (Hauptquelle)
+        const emotionEvidenz = this.getELDiBEvidenz(klinischeMarker, 'emotionsregulation');
+        if (emotionEvidenz.score > 0) {
+            score += emotionEvidenz.score;
+            evidenz.push(...emotionEvidenz.evidenz);
+        }
+
+        // V-Bereich Stufe als Indikator
+        const vStufe = eldib?.verhalten?.stufe || 3;
+        if (vStufe <= 2) {
+            score += 2;
+            evidenz.push(`ELDiB Verhalten auf Stufe ${vStufe} (entwicklungsverzögert)`);
+        }
+
+        // Screening-Daten ergänzen
+        const emotionen = screening.emotionen || {};
+        const wutausbrueche = emotionen.wutausbrueche || [];
+        if (wutausbrueche.length >= 2) {
+            score += 2;
+            evidenz.push('Häufige Wutausbrüche/Stimmungsschwankungen');
+        }
+
+        // Ressourcen aus ELDiB als Gegen-Evidenz
+        if (vStufe >= 4) {
+            gegenEvidenz.push('ELDiB: Gute Verhaltensregulation (Stufe IV+)');
+        }
+
+        const maxScore = 10;
+        const konfidenz = Math.min(100, Math.max(0, Math.round((score / maxScore) * 100)));
+
+        return {
+            id: 'emotionsregulation',
+            name: 'Emotionsregulationsstörung',
+            score,
+            konfidenz,
+            evidenz,
+            gegenEvidenz,
+            empfehlung: konfidenz >= 50 ? 'Emotionsregulationstraining, ggf. Therapie' : 'Co-Regulation und Modelllernen',
+            dringlichkeit: konfidenz >= 70 ? 'dringend' : 'geplant'
         };
     },
 
