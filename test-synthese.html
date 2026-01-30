@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Test: Synthese-Engine</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 20px; }
+        .section { background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .section h3 { margin-top: 0; color: #333; border-bottom: 2px solid #6366F1; padding-bottom: 10px; }
+        .success { color: green; }
+        .warning { color: orange; }
+        .error { color: red; }
+        pre { background: #1a1a2e; color: #eee; padding: 15px; border-radius: 8px; overflow-x: auto; }
+        ul { margin: 10px 0; }
+        li { margin: 5px 0; }
+        .quick-ref { background: linear-gradient(135deg, #e8e8ff, #e8f4ff); padding: 20px; border-radius: 12px; border: 2px solid #6366F1; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test: CDSE Synthese-Engine</h1>
+    <p>Testet die Bedienungsanleitung mit einem Beispiel-Schüler</p>
+
+    <div id="output"></div>
+
+    <!-- Lade alle Daten-Scripts -->
+    <script src="js/data/eldib-data.js"></script>
+    <script src="js/data/clinical-brain.js"></script>
+    <script src="js/data/advisory-data.js"></script>
+    <script src="js/data/screening-data.js"></script>
+    <script src="js/app/synthesis-engine.js"></script>
+
+    <script>
+        // =============================================
+        // TESTPROFIL: Max, 8 Jahre, externalisierend
+        // =============================================
+        const testData = {
+            stammdaten: {
+                name: 'Max Mustermann',
+                alter: 8,
+                klasse: '2. Klasse',
+                schule: 'Grundschule Sonnenberg'
+            },
+            screening: {
+                aktuelleSymptome: {
+                    hauptproblem: 'verhalten_extern',
+                    symptom_beginn: 'immer_schon'
+                },
+                aufmerksamkeit: {
+                    unaufmerksam: ['fluechtigkeit', 'nicht_zuhoeren', 'nicht_folgen', 'vermeidet_anstrengung'],
+                    hyperaktiv: ['zappelig', 'aufstehen', 'rennen'],
+                    impulsiv: ['herausplatzen', 'nicht_warten'],
+                    adhs_zusatz: ['vor_12', 'mehrere_settings']
+                },
+                verhalten: {
+                    opposition: ['wutausbrueche', 'streitet', 'verweigert', 'provoziert'],
+                    aggression: ['verbal_aggressiv']
+                },
+                emotionen: {
+                    wutausbrueche: ['haeufig', 'intensiv']
+                },
+                ressourcen: {
+                    kind_ressourcen: ['intelligent', 'humor', 'kreativ']
+                }
+            },
+            anamnese: {
+                entwicklung: {
+                    motorik: 'normal',
+                    sprache: 'frueh'
+                },
+                familie: {
+                    struktur: 'kernfamilie',
+                    geschwister: 1
+                }
+            },
+            eldib: {
+                verhalten: {
+                    stufe: 2,
+                    items: [
+                        { code: 'V-6', status: 'erreicht', keyword: 'Blickkontakt' },
+                        { code: 'V-7', status: 'erreicht', keyword: 'Auf Namen reagieren' },
+                        { code: 'V-8', status: 'in_arbeit', keyword: 'Einfache Anweisungen' },
+                        { code: 'V-10', status: 'nicht_erreicht', keyword: 'Warten können' },
+                        { code: 'V-11', status: 'nicht_erreicht', keyword: 'Stillsitzen' }
+                    ]
+                },
+                kommunikation: {
+                    stufe: 3,
+                    items: [
+                        { code: 'K-12', status: 'erreicht', keyword: 'Bedürfnisse ausdrücken' },
+                        { code: 'K-14', status: 'erreicht', keyword: 'Mit Peers sprechen' },
+                        { code: 'K-16', status: 'nicht_erreicht', keyword: 'Gefühle benennen' }
+                    ]
+                },
+                sozialisation: {
+                    stufe: 2,
+                    items: [
+                        { code: 'SOZ-8', status: 'erreicht', keyword: 'Mit Erwachsenen kommunizieren' },
+                        { code: 'SOZ-12', status: 'erreicht', keyword: 'Kontakt suchen' },
+                        { code: 'SOZ-15', status: 'in_arbeit', keyword: 'Interaktion initiieren' }
+                    ]
+                },
+                kognition: {
+                    stufe: 3,
+                    items: [
+                        { code: 'KOG-2', status: 'nicht_erreicht', keyword: 'Aufmerksamkeit halten' },
+                        { code: 'KOG-5', status: 'erreicht', keyword: 'Einfache Aufgaben' }
+                    ]
+                }
+            },
+            verhaltensanalyse: {
+                antecedent: 'Matheaufgabe, die Max als schwer empfindet',
+                behavior: 'Wirft Stifte, schreit "Das ist blöd!", verweigert Weiterarbeit',
+                consequence: 'Lehrerin schickt Max aus dem Unterricht',
+                funktion: 'vermeidung'
+            }
+        };
+
+        // =============================================
+        // SYNTHESE DURCHFÜHREN
+        // =============================================
+        const output = document.getElementById('output');
+
+        try {
+            const synthesis = SynthesisEngine.synthesize(testData);
+
+            // =============================================
+            // ERGEBNIS ANZEIGEN
+            // =============================================
+
+            let html = '';
+
+            // Quick Reference
+            html += `
+            <div class="quick-ref">
+                <h3>📋 AUF EINEN BLICK - Max Mustermann</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div><strong>Hauptproblem:</strong><br>${synthesis.kind?.herausforderungen?.[0] || '-'}</div>
+                    <div><strong>Stärke:</strong><br>${synthesis.kind?.staerken?.[0] || '-'}</div>
+                    <div><strong>ELDiB-Stufe:</strong><br>Durchschnitt ${synthesis.kind?.eldibProfil?.durchschnittsstufe || '-'}</div>
+                    <div><strong>Top-Hypothese:</strong><br>${synthesis.hypothesen?.[0]?.name || '-'} (${synthesis.hypothesen?.[0]?.konfidenz || 0}%)</div>
+                </div>
+            </div>`;
+
+            // Kind-Profil
+            html += `
+            <div class="section">
+                <h3>👤 1. Wer ist Max?</h3>
+                <p>${synthesis.kind?.zusammenfassung || 'Keine Zusammenfassung'}</p>
+                <p><strong>Stärken:</strong> ${synthesis.kind?.staerken?.join(', ') || 'Keine'}</p>
+                <p><strong>Herausforderungen:</strong> ${synthesis.kind?.herausforderungen?.join(', ') || 'Keine'}</p>
+                <p><strong>ELDiB-Profil:</strong>
+                    Stufe ${synthesis.kind?.eldibProfil?.durchschnittsstufe || '-'} |
+                    Stärke: ${synthesis.kind?.eldibProfil?.staerksterBereich || '-'} |
+                    Bedarf: ${synthesis.kind?.eldibProfil?.schwachsterBereich || '-'} |
+                    ${synthesis.kind?.eldibProfil?.ressourcenAnzahl || 0} erreicht,
+                    ${synthesis.kind?.eldibProfil?.inArbeitAnzahl || 0} in Arbeit
+                </p>
+            </div>`;
+
+            // Entwicklung (ELDiB)
+            html += `
+            <div class="section">
+                <h3>📊 2. Wie funktioniert Max? (ELDiB)</h3>
+                <p><strong>Interpretation:</strong></p>
+                <ul>${synthesis.entwicklung?.interpretation?.map(i => `<li>${i}</li>`).join('') || '<li>Keine</li>'}</ul>
+
+                <p><strong class="success">Das kann Max schon:</strong></p>
+                <ul>${synthesis.entwicklung?.ressourcen?.map(r => `<li>${r.keyword} (${r.code})</li>`).join('') || '<li>Keine Items markiert</li>'}</ul>
+
+                <p><strong class="warning">Entwicklungsziele:</strong></p>
+                <ul>${synthesis.entwicklung?.defizite?.slice(0, 8).map(d => `<li>${d.keyword} (${d.code})</li>`).join('') || '<li>Keine</li>'}</ul>
+
+                <p><strong style="color: blue;">In Arbeit:</strong></p>
+                <ul>${synthesis.entwicklung?.inArbeit?.map(i => `<li>${i.keyword} (${i.code})</li>`).join('') || '<li>Keine</li>'}</ul>
+            </div>`;
+
+            // Hypothesen
+            html += `
+            <div class="section">
+                <h3>🔍 3. Warum verhält sich Max so? (Hypothesen)</h3>
+                ${synthesis.hypothesen?.map(h => `
+                    <div style="margin: 15px 0; padding: 15px; background: ${h.konfidenz >= 50 ? '#ffebee' : '#fff3e0'}; border-radius: 8px;">
+                        <strong>${h.name}</strong> - ${h.konfidenz}% Konfidenz
+                        <ul>${h.evidenz?.map(e => `<li>${e}</li>`).join('') || ''}</ul>
+                        ${h.gegenEvidenz?.length > 0 ? `<p><em>Gegen-Evidenz: ${h.gegenEvidenz.join(', ')}</em></p>` : ''}
+                        <p><strong>Empfehlung:</strong> ${h.empfehlung}</p>
+                    </div>
+                `).join('') || '<p>Keine Hypothesen</p>'}
+            </div>`;
+
+            // Bedürfnisse
+            html += `
+            <div class="section">
+                <h3>❤️ 4. Was braucht Max?</h3>
+                ${synthesis.beduerfnisse?.map(b => `
+                    <div style="margin: 10px 0;">
+                        <strong>${b.icon} ${b.beduerfnis}</strong> (${b.wichtigkeit})
+                        <p style="color: #666;">${b.begruendung}</p>
+                        <ul>${b.umsetzung?.map(u => `<li>${u}</li>`).join('') || ''}</ul>
+                    </div>
+                `).join('') || '<p>Keine Bedürfnisse identifiziert</p>'}
+            </div>`;
+
+            // Interventionen
+            html += `
+            <div class="section">
+                <h3>🛠️ 5. So geht es mit Max (Interventionen)</h3>
+
+                <h4>Allgemeine Strategien:</h4>
+                ${synthesis.interventionen?.allgemein?.slice(0, 3).map(int => `
+                    <div style="margin: 10px 0; padding: 10px; background: white; border-left: 3px solid #6366F1;">
+                        <strong>${int.kategorie}</strong>
+                        ${int.beschreibung ? `<p>${int.beschreibung}</p>` : ''}
+                        <ul>${int.massnahmen?.map(m => `<li>${m}</li>`).join('') || ''}</ul>
+                    </div>
+                `).join('') || '<p>Keine</p>'}
+
+                <h4>Situations-Rezepte:</h4>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr style="background: #e0e0e0;">
+                        <th style="padding: 10px; text-align: left;">Wenn...</th>
+                        <th style="padding: 10px; text-align: left;">Tu das</th>
+                        <th style="padding: 10px; text-align: left;">Vermeide</th>
+                    </tr>
+                    ${synthesis.interventionen?.situationen?.slice(0, 5).map(sit => `
+                        <tr style="border-bottom: 1px solid #ddd;">
+                            <td style="padding: 10px;">${sit.situation}</td>
+                            <td style="padding: 10px; color: green;">${Array.isArray(sit.tuDas) ? sit.tuDas.join('<br>') : sit.tuDas}</td>
+                            <td style="padding: 10px; color: red;">${sit.vermeide?.join('<br>') || '-'}</td>
+                        </tr>
+                    `).join('') || '<tr><td colspan="3">Keine Situationen</td></tr>'}
+                </table>
+
+                <h4>Ich-Ziele:</h4>
+                <ul>${synthesis.interventionen?.ichZiele?.slice(0, 5).map(z => `<li>"${z}"</li>`).join('') || '<li>Keine</li>'}</ul>
+            </div>`;
+
+            // Lernziele
+            html += `
+            <div class="section">
+                <h3>🎯 6. Lernziele</h3>
+                ${synthesis.lernziele?.map(z => `
+                    <div style="margin: 10px 0; padding: 10px; background: white; display: flex; gap: 15px;">
+                        <div style="font-weight: bold; color: #6366F1;">${z.code}</div>
+                        <div>
+                            <div>${z.ziel}</div>
+                            <div style="color: #666; font-size: 0.9em;">Maßnahme: ${z.massnahme}</div>
+                        </div>
+                    </div>
+                `).join('') || '<p>Keine Lernziele</p>'}
+            </div>`;
+
+            // Warnsignale
+            html += `
+            <div class="section">
+                <h3>⚠️ 7. Warnsignale & Notfallplan</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                    <div style="background: #e8f5e9; padding: 15px; border-radius: 8px;">
+                        <strong style="color: green;">🟢 Guter Tag</strong>
+                        <ul>${synthesis.warnsignale?.guterTag?.map(w => `<li>${w}</li>`).join('') || '<li>-</li>'}</ul>
+                    </div>
+                    <div style="background: #fff3e0; padding: 15px; border-radius: 8px;">
+                        <strong style="color: orange;">🟡 Vorsicht</strong>
+                        <ul>${synthesis.warnsignale?.vorsicht?.map(w => `<li>${w}</li>`).join('') || '<li>-</li>'}</ul>
+                    </div>
+                    <div style="background: #ffebee; padding: 15px; border-radius: 8px;">
+                        <strong style="color: red;">🔴 Eskalation</strong>
+                        <ul>${synthesis.warnsignale?.eskalation?.map(w => `<li>${w}</li>`).join('') || '<li>-</li>'}</ul>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
+                    <strong>Notfallplan:</strong>
+                    <ol>${synthesis.warnsignale?.notfallPlan?.map(n => `<li>${n}</li>`).join('') || '<li>-</li>'}</ol>
+                </div>
+            </div>`;
+
+            // Empfehlungen
+            html += `
+            <div class="section">
+                <h3>📋 8. Empfehlungen</h3>
+                ${synthesis.empfehlungen?.abklaerung?.map(e => `
+                    <div style="margin: 10px 0; padding: 15px; background: ${e.dringlichkeit === 'SOFORT' ? '#ffebee' : '#fff3e0'}; border-radius: 8px;">
+                        <strong>${e.dringlichkeit === 'SOFORT' ? '⚠️' : '📋'} ${e.text}</strong>
+                        <p>Dringlichkeit: ${e.dringlichkeit} | Grund: ${e.grund}</p>
+                    </div>
+                `).join('') || '<p>Keine spezifischen Empfehlungen</p>'}
+            </div>`;
+
+            // Checkliste: Was fehlt?
+            html += `
+            <div class="section" style="background: #e3f2fd;">
+                <h3>✅ Checkliste: Hat die Bedienungsanleitung alles?</h3>
+                <ul>
+                    <li>${synthesis.kind?.zusammenfassung ? '✅' : '❌'} Kurzbeschreibung des Kindes</li>
+                    <li>${synthesis.kind?.staerken?.length > 0 ? '✅' : '❌'} Stärken identifiziert (${synthesis.kind?.staerken?.length || 0})</li>
+                    <li>${synthesis.kind?.herausforderungen?.length > 0 ? '✅' : '❌'} Herausforderungen benannt (${synthesis.kind?.herausforderungen?.length || 0})</li>
+                    <li>${synthesis.kind?.eldibProfil ? '✅' : '❌'} ELDiB-Profil vorhanden</li>
+                    <li>${synthesis.entwicklung?.ressourcen?.length > 0 ? '✅' : '❌'} ELDiB-Ressourcen extrahiert (${synthesis.entwicklung?.ressourcen?.length || 0})</li>
+                    <li>${synthesis.entwicklung?.defizite?.length > 0 ? '✅' : '❌'} ELDiB-Entwicklungsziele (${synthesis.entwicklung?.defizite?.length || 0})</li>
+                    <li>${synthesis.hypothesen?.length > 0 ? '✅' : '❌'} Hypothesen generiert (${synthesis.hypothesen?.length || 0})</li>
+                    <li>${synthesis.beduerfnisse?.length > 0 ? '✅' : '❌'} Bedürfnisse identifiziert (${synthesis.beduerfnisse?.length || 0})</li>
+                    <li>${synthesis.interventionen?.allgemein?.length > 0 ? '✅' : '❌'} Allgemeine Strategien (${synthesis.interventionen?.allgemein?.length || 0})</li>
+                    <li>${synthesis.interventionen?.situationen?.length > 0 ? '✅' : '❌'} Situations-Rezepte (${synthesis.interventionen?.situationen?.length || 0})</li>
+                    <li>${synthesis.interventionen?.ichZiele?.length > 0 ? '✅' : '❌'} Ich-Ziele (${synthesis.interventionen?.ichZiele?.length || 0})</li>
+                    <li>${synthesis.lernziele?.length > 0 ? '✅' : '❌'} Lernziele definiert (${synthesis.lernziele?.length || 0})</li>
+                    <li>${synthesis.warnsignale?.guterTag?.length > 0 ? '✅' : '❌'} Warnsignale vorhanden</li>
+                    <li>${synthesis.warnsignale?.notfallPlan?.length > 0 ? '✅' : '❌'} Notfallplan vorhanden</li>
+                    <li>${synthesis.empfehlungen?.abklaerung?.length > 0 ? '✅' : '❌'} Empfehlungen generiert (${synthesis.empfehlungen?.abklaerung?.length || 0})</li>
+                </ul>
+            </div>`;
+
+            // Raw Output
+            html += `
+            <div class="section">
+                <h3>🔧 Debug: Rohdaten</h3>
+                <details>
+                    <summary>Synthese-Objekt anzeigen</summary>
+                    <pre>${JSON.stringify(synthesis, null, 2)}</pre>
+                </details>
+            </div>`;
+
+            output.innerHTML = html;
+
+        } catch (error) {
+            output.innerHTML = `<div class="section" style="background: #ffebee;">
+                <h3 class="error">❌ Fehler</h3>
+                <pre>${error.message}\n${error.stack}</pre>
+            </div>`;
+        }
+    </script>
+</body>
+</html>
