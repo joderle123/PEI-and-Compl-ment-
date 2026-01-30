@@ -9,6 +9,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <!-- Chart.js für Visualisierungen -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- ELDiB Daten und Synthese-Engine -->
+    <script src="js/data/eldib-data.js"></script>
+    <script src="js/data/advisory-data.js"></script>
+    <script src="js/app/synthesis-engine.js"></script>
     <!-- Einheitliches CSS-System -->
     <link rel="stylesheet" href="css/styles.css">
     <style>
@@ -4482,13 +4486,25 @@
                 </div>
             </div>
 
+            <!-- Auto-Fill Info Box -->
+            <div class="ds-info-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; margin-bottom: 25px;">
+                <span class="ds-info-card-icon" style="background: rgba(255,255,255,0.2);">🤖</span>
+                <span class="ds-info-card-text" style="flex: 1;">
+                    <strong>Automatische Analyse verfügbar!</strong><br>
+                    Basierend auf Ihren bisherigen Angaben (Anlass, Diagnosen, Sichtweise Schule, ELDiB) können die folgenden Abschnitte automatisch ausgefüllt werden.
+                </span>
+                <button onclick="autoFillDSFromSynthesis()" class="btn" style="background: white; color: #059669; padding: 12px 24px; font-weight: 600; border-radius: 8px; white-space: nowrap;">
+                    ✨ Automatisch ausfüllen
+                </button>
+            </div>
+
             <!-- 8. Interpretation -->
             <div class="form-section" id="ds-section-8">
                 <div class="ds-section-header">
                     <span class="ds-section-number">8</span>
                     <div class="ds-section-title">
                         <h2>Interpretation</h2>
-                        <p>Klinische Einordnung und Fallverständnis</p>
+                        <p>Klinische Einordnung und Fallverständnis - wird automatisch generiert</p>
                     </div>
                 </div>
 
@@ -15565,6 +15581,407 @@ function loadEldibIntoDS() {
     } else {
         showToast('Keine ELDiB-Daten gefunden. Bitte zuerst ELDiB ausfüllen.', 'warning');
     }
+}
+
+// ==========================================
+// AUTO-FILL DS aus Synthese-Engine
+// ==========================================
+
+/**
+ * Füllt die DS-Sektionen 8-10 automatisch aus basierend auf den
+ * generierten Synthese-Daten (Hypothesen, Bedürfnisse, Empfehlungen)
+ */
+function autoFillDSFromSynthesis() {
+    // Sammle alle verfügbaren Daten für die Synthese
+    const synthesisData = collectDataForSynthesis();
+
+    if (!synthesisData || Object.keys(synthesisData).length === 0) {
+        showToast('Bitte füllen Sie zuerst die Befragung aus (Screening, ELDiB).', 'warning');
+        return;
+    }
+
+    // Generiere Synthese mit der SynthesisEngine
+    let synthesis;
+    if (typeof SynthesisEngine !== 'undefined') {
+        synthesis = SynthesisEngine.synthesize(synthesisData);
+    } else {
+        showToast('Synthese-Engine nicht verfügbar.', 'error');
+        return;
+    }
+
+    // Zähler für gefüllte Felder
+    let filledCount = 0;
+
+    // ============================================
+    // SEKTION 8: Interpretation
+    // ============================================
+
+    // 8.2 Biopsychosoziales Modell - Prädisponierende Faktoren
+    if (synthesis.hypothesen) {
+        synthesis.hypothesen.forEach(h => {
+            if (h.konfidenz >= 30) {
+                // Mappen der Hypothesen auf DS-Checkboxen
+                if (h.id === 'bindung' || h.evidenz?.some(e => e.includes('Bindung'))) {
+                    setDSCheckbox('ds_praedisp', 'bindung');
+                    filledCount++;
+                }
+                if (h.id === 'trauma' || h.evidenz?.some(e => e.includes('Trauma'))) {
+                    setDSCheckbox('ds_praedisp', 'trauma_frueh');
+                    filledCount++;
+                }
+                if (h.evidenz?.some(e => e.includes('Familie') || e.includes('familiär'))) {
+                    setDSCheckbox('ds_praedisp', 'genetik');
+                    filledCount++;
+                }
+            }
+        });
+    }
+
+    // ELDiB-basierte prädisponierende Faktoren
+    if (synthesis.entwicklung) {
+        if (synthesis.entwicklung.durchschnitt < 3) {
+            setDSCheckbox('ds_praedisp', 'entwicklung');
+            filledCount++;
+        }
+    }
+
+    // 8.3 Verdachtsdiagnosen basierend auf Hypothesen
+    if (synthesis.hypothesen) {
+        synthesis.hypothesen.forEach(h => {
+            if (h.konfidenz >= 40) {
+                // Mappen der Hypothesen-IDs auf ICD-Codes
+                const hypotheseToICD = {
+                    'adhs': 'f90',
+                    'odd': 'f91',
+                    'angst': 'f93',
+                    'depression': 'f93',
+                    'trauma': 'f93',
+                    'bindung': 'f94',
+                    'asd': 'f84',
+                    'emotionsregulation': 'f92'
+                };
+
+                if (hypotheseToICD[h.id]) {
+                    setDSCheckbox('ds_verdacht', hypotheseToICD[h.id]);
+                    filledCount++;
+                }
+            }
+        });
+
+        // Zusammenfassung in Textfeld
+        const zusammenfassung = synthesis.hypothesen
+            .filter(h => h.konfidenz >= 40)
+            .map(h => `${h.name}: ${h.konfidenz}% Konfidenz`)
+            .join('\n');
+
+        if (zusammenfassung) {
+            const textField = document.getElementById('ds_zusammenfassung');
+            if (textField && !textField.value) {
+                textField.value = `Basierend auf der Analyse ergeben sich folgende Verdachtshypothesen:\n\n${zusammenfassung}`;
+                filledCount++;
+            }
+        }
+    }
+
+    // ============================================
+    // SEKTION 9: Bedürfnisse
+    // ============================================
+
+    if (synthesis.beduerfnisse) {
+        synthesis.beduerfnisse.forEach(b => {
+            // Emotionale Bedürfnisse
+            if (b.beduerfnis.includes('Beziehung') || b.beduerfnis.includes('Sichere')) {
+                setDSCheckbox('ds_bedarf_emotional', 'sicherheit');
+                setDSCheckbox('ds_bedarf_emotional', 'bindung');
+                filledCount += 2;
+            }
+            if (b.beduerfnis.includes('Struktur') || b.beduerfnis.includes('Vorhersehbarkeit')) {
+                setDSCheckbox('ds_bedarf_emotional', 'vorhersehbarkeit');
+                filledCount++;
+            }
+            if (b.beduerfnis.includes('Erfolg')) {
+                setDSCheckbox('ds_bedarf_emotional', 'selbstwirksamkeit');
+                setDSCheckbox('ds_bedarf_emotional', 'wertschaetzung');
+                filledCount += 2;
+            }
+            if (b.beduerfnis.includes('Emotional')) {
+                setDSCheckbox('ds_bedarf_emotional', 'regulation');
+                setDSCheckbox('ds_bedarf_emotional', 'ausdruck');
+                filledCount += 2;
+            }
+
+            // Schulische Bedürfnisse
+            if (b.beduerfnis.includes('Bewegung')) {
+                setDSCheckbox('ds_bedarf_schule', 'bewegung');
+                filledCount++;
+            }
+            if (b.umsetzung?.some(u => u.includes('Struktur') || u.includes('visualis'))) {
+                setDSCheckbox('ds_bedarf_schule', 'struktur');
+                setDSCheckbox('ds_bedarf_schule', 'visualisierung');
+                filledCount += 2;
+            }
+            if (b.umsetzung?.some(u => u.includes('Bezugsperson'))) {
+                setDSCheckbox('ds_bedarf_schule', 'beziehung_lehrperson');
+                filledCount++;
+            }
+            if (b.umsetzung?.some(u => u.includes('Rückzug'))) {
+                setDSCheckbox('ds_bedarf_schule', 'rueckzug');
+                filledCount++;
+            }
+        });
+    }
+
+    // Hypothesen-basierte Bedürfnisse
+    if (synthesis.hypothesen) {
+        synthesis.hypothesen.forEach(h => {
+            if (h.konfidenz >= 40) {
+                if (h.id === 'adhs') {
+                    setDSCheckbox('ds_bedarf_schule', 'bewegung');
+                    setDSCheckbox('ds_bedarf_schule', 'struktur');
+                    filledCount += 2;
+                }
+                if (h.id === 'angst' || h.id === 'depression') {
+                    setDSCheckbox('ds_bedarf_emotional', 'sicherheit');
+                    setDSCheckbox('ds_bedarf_emotional', 'regulation');
+                    filledCount += 2;
+                }
+                if (h.id === 'asd' || h.id === 'sozial') {
+                    setDSCheckbox('ds_bedarf_sozial', 'kommunikation');
+                    setDSCheckbox('ds_bedarf_sozial', 'perspektive');
+                    filledCount += 2;
+                }
+                if (h.id === 'bindung') {
+                    setDSCheckbox('ds_bedarf_familie', 'elternberatung');
+                    setDSCheckbox('ds_bedarf_emotional', 'bindung');
+                    filledCount += 2;
+                }
+            }
+        });
+    }
+
+    // ============================================
+    // SEKTION 10: Empfehlungen
+    // ============================================
+
+    if (synthesis.empfehlungen) {
+        // Schulische Empfehlungen
+        if (synthesis.empfehlungen.sofort) {
+            synthesis.empfehlungen.sofort.forEach(e => {
+                if (e.includes('Struktur') || e.includes('Tagesstruktur')) {
+                    setDSCheckbox('ds_empf_schule', 'struktur');
+                    filledCount++;
+                }
+                if (e.includes('Erfolg') || e.includes('feiern')) {
+                    setDSCheckbox('ds_empf_schule', 'lob');
+                    filledCount++;
+                }
+            });
+        }
+
+        // Therapeutische Empfehlungen basierend auf Abklärungen
+        if (synthesis.empfehlungen.abklaerung) {
+            synthesis.empfehlungen.abklaerung.forEach(a => {
+                if (a.text?.includes('Psychotherap')) {
+                    setDSCheckbox('ds_empf_therapie', 'kinderpsychotherapie');
+                    filledCount++;
+                }
+                if (a.text?.includes('psychiatr')) {
+                    setDSCheckbox('ds_empf_therapie', 'psychiatrie');
+                    filledCount++;
+                }
+                if (a.text?.includes('Elterntraining')) {
+                    setDSCheckbox('ds_empf_therapie', 'familientherapie');
+                    setDSCheckbox('ds_empf_familie', 'regeln');
+                    filledCount += 2;
+                }
+                if (a.text?.includes('Autismus')) {
+                    setDSCheckbox('ds_empf_therapie', 'psychiatrie');
+                    setDSCheckbox('ds_cni_empfehlung', 'diagnostik_kz');
+                    filledCount += 2;
+                }
+            });
+        }
+    }
+
+    // Hypothesen-basierte Empfehlungen
+    if (synthesis.hypothesen) {
+        synthesis.hypothesen.forEach(h => {
+            if (h.konfidenz >= 50) {
+                if (h.id === 'adhs') {
+                    setDSCheckbox('ds_empf_schule', 'sitzplatz');
+                    setDSCheckbox('ds_empf_schule', 'pausen');
+                    setDSCheckbox('ds_empf_schule', 'aufgaben_teilen');
+                    filledCount += 3;
+                }
+                if (h.id === 'angst') {
+                    setDSCheckbox('ds_empf_schule', 'rueckzug');
+                    setDSCheckbox('ds_empf_familie', 'gefuehle');
+                    setDSCheckbox('ds_empf_therapie', 'kinderpsychotherapie');
+                    filledCount += 3;
+                }
+                if (h.id === 'depression') {
+                    setDSCheckbox('ds_empf_therapie', 'kinderpsychotherapie');
+                    setDSCheckbox('ds_empf_schule', 'lob');
+                    filledCount += 2;
+                }
+                if (h.id === 'odd') {
+                    setDSCheckbox('ds_empf_familie', 'regeln');
+                    setDSCheckbox('ds_empf_familie', 'loben');
+                    setDSCheckbox('ds_empf_schule', 'struktur');
+                    filledCount += 3;
+                }
+                if (h.id === 'bindung') {
+                    setDSCheckbox('ds_empf_therapie', 'familientherapie');
+                    setDSCheckbox('ds_empf_familie', 'qualitaetszeit');
+                    filledCount += 2;
+                }
+                if (h.id === 'asd') {
+                    setDSCheckbox('ds_empf_therapie', 'ergotherapie');
+                    setDSCheckbox('ds_empf_therapie', 'sozialtraining');
+                    setDSCheckbox('ds_cni_empfehlung', 'diagnostik_kz');
+                    filledCount += 3;
+                }
+            }
+        });
+    }
+
+    // Familien-Empfehlungen (allgemein)
+    setDSCheckbox('ds_empf_familie', 'routine');
+    setDSCheckbox('ds_empf_familie', 'qualitaetszeit');
+    filledCount += 2;
+
+    showToast(`DS automatisch ausgefüllt: ${filledCount} Felder basierend auf Synthese-Analyse.`, 'success');
+
+    // Scroll zu Sektion 8
+    scrollToDSSection(8);
+}
+
+/**
+ * Setzt eine Checkbox im DS-Formular
+ */
+function setDSCheckbox(name, value) {
+    const checkbox = document.querySelector(`input[name="${name}"][value="${value}"]`);
+    if (checkbox && !checkbox.checked) {
+        checkbox.checked = true;
+        checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+}
+
+/**
+ * Sammelt alle verfügbaren Daten für die Synthese
+ */
+function collectDataForSynthesis() {
+    const data = {};
+
+    // Stammdaten
+    data.stammdaten = {
+        name: document.getElementById('schueler_name')?.value || '',
+        alter: document.getElementById('alter')?.value || '',
+        klasse: document.getElementById('klasse')?.value || ''
+    };
+
+    // ELDiB-Daten aus state
+    if (typeof state !== 'undefined' && state.selections) {
+        data.eldib = {
+            verhalten: { stufe: 2, items: [] },
+            kommunikation: { stufe: 2, items: [] },
+            sozialisation: { stufe: 2, items: [] },
+            kognition: { stufe: 2, items: [] }
+        };
+
+        // Berechne Stufen und Items aus selections
+        for (const [key, value] of Object.entries(state.selections)) {
+            if (value && value.selected) {
+                const match = key.match(/^([VKSC])-(\d+)$/i);
+                if (match) {
+                    const bereichCode = match[1].toUpperCase();
+                    const itemNum = parseInt(match[2]);
+
+                    const bereichMap = {
+                        'V': 'verhalten',
+                        'K': 'kommunikation',
+                        'S': 'sozialisation',
+                        'C': 'kognition'
+                    };
+
+                    const bereich = bereichMap[bereichCode];
+                    if (bereich && data.eldib[bereich]) {
+                        data.eldib[bereich].items.push({
+                            code: key,
+                            status: value.status || 'erreicht'
+                        });
+
+                        // Stufe berechnen
+                        let stufe = 1;
+                        if (itemNum <= 5) stufe = 1;
+                        else if (itemNum <= 10) stufe = 2;
+                        else if (itemNum <= 18) stufe = 3;
+                        else if (itemNum <= 26) stufe = 4;
+                        else stufe = 5;
+
+                        if (stufe > data.eldib[bereich].stufe) {
+                            data.eldib[bereich].stufe = stufe;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Screening-Daten aus DS-Formular
+    data.screening = {
+        aktuelleSymptome: {}
+    };
+
+    // Anlass der Anfrage als Hauptproblem
+    const anlass = document.querySelectorAll('input[name="ds_anlass"]:checked');
+    if (anlass.length > 0) {
+        const anlassWerte = Array.from(anlass).map(a => a.value);
+        if (anlassWerte.includes('verhaltensauffaelligkeiten_schule') || anlassWerte.includes('aggressives_verhalten')) {
+            data.screening.aktuelleSymptome.hauptproblem = 'verhalten_extern';
+        } else if (anlassWerte.includes('rueckzugsverhalten') || anlassWerte.includes('emotionale_schwierigkeiten')) {
+            data.screening.aktuelleSymptome.hauptproblem = 'verhalten_intern';
+        } else if (anlassWerte.includes('aufmerksamkeit')) {
+            data.screening.aktuelleSymptome.hauptproblem = 'aufmerksamkeit';
+        } else if (anlassWerte.includes('soziale_schwierigkeiten')) {
+            data.screening.aktuelleSymptome.hauptproblem = 'sozial';
+        }
+    }
+
+    // Bestehende Diagnosen als Anamnese
+    const diagnosen = document.querySelectorAll('input[name="ds_diagnose"]:checked');
+    if (diagnosen.length > 0) {
+        data.anamnese = {
+            familiaere_psychiatrie: []
+        };
+        Array.from(diagnosen).forEach(d => {
+            if (d.value === 'adhs') data.anamnese.familiaere_psychiatrie.push('fam_adhs');
+            if (d.value === 'asd') data.anamnese.familiaere_psychiatrie.push('fam_autismus');
+            if (d.value === 'angst') data.anamnese.familiaere_psychiatrie.push('fam_angst');
+        });
+    }
+
+    // Sichtweise Schule
+    const negativeVerhaltensweisen = document.querySelectorAll('input[name="ds_schule_negativ"]:checked');
+    if (negativeVerhaltensweisen.length > 0) {
+        data.screening.verhalten = { opposition: [], aggression: [] };
+        data.screening.aufmerksamkeit = { unaufmerksam: [], hyperaktiv: [], impulsiv: [] };
+        data.screening.emotionen = { angst_symptome: [], depression_symptome: [] };
+
+        Array.from(negativeVerhaltensweisen).forEach(v => {
+            if (v.value === 'unaufmerksam') data.screening.aufmerksamkeit.unaufmerksam.push('ablenkbar');
+            if (v.value === 'impulsiv') data.screening.aufmerksamkeit.impulsiv.push('unterbricht');
+            if (v.value === 'motorisch_unruhig') data.screening.aufmerksamkeit.hyperaktiv.push('unruhig');
+            if (v.value === 'verweigert') data.screening.verhalten.opposition.push('verweigert');
+            if (v.value === 'verbal_aggressiv') data.screening.verhalten.aggression.push('verbal');
+            if (v.value === 'koerperlich_aggressiv') data.screening.verhalten.aggression.push('koerperlich');
+            if (v.value === 'rueckzug') data.screening.emotionen.angst_symptome.push('rueckzug');
+            if (v.value === 'aengstlich') data.screening.emotionen.angst_symptome.push('aengstlich');
+            if (v.value === 'weinerlich') data.screening.emotionen.depression_symptome.push('traurig');
+        });
+    }
+
+    return data;
 }
 
 // ==========================================
