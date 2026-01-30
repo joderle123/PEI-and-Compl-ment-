@@ -2630,127 +2630,204 @@
         <!-- ========== PHASE 2: DIAGNOSTIC SPÉCIALISÉ (Anamnese) ========== -->
         <div id="dossier" class="tab-content">
             <style>
-                .dossier-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-                .dossier-card { background: white; border-radius: var(--radius-lg); padding: 20px; border: 1px solid var(--gray-200); box-shadow: var(--shadow-xs); transition: all var(--transition-fast); }
-                .dossier-card:hover { box-shadow: var(--shadow-sm); border-color: var(--gray-300); }
-                .dossier-card h4 { margin: 0 0 14px 0; color: var(--gray-900); display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 600; }
-                .dossier-full { grid-column: 1 / -1; }
-                .dossier-half { grid-column: span 2; }
-                .status-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-                .status-card { background: var(--gray-50); padding: 14px; border-radius: var(--radius); text-align: center; cursor: pointer; transition: all var(--transition-fast); border: 1px solid var(--gray-200); }
-                .status-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); border-color: var(--gray-300); }
-                .status-card.complete { border-color: var(--success); background: var(--success-subtle); }
-                .status-card.partial { border-color: var(--warning); background: var(--warning-subtle); }
-                .status-card.alert { border-color: var(--danger); background: var(--danger-subtle); }
-                .status-icon { font-size: 1.75rem; margin-bottom: 6px; }
-                .status-label { font-size: 0.8rem; color: var(--gray-500); }
-                .status-value { font-size: 1rem; font-weight: 600; color: var(--gray-800); }
-                .alert-banner { background: var(--danger-subtle); border: 1px solid var(--danger); padding: 14px 18px; border-radius: var(--radius); margin-bottom: 16px; display: none; }
+                /* Übersicht - Klarer Workflow */
+                .workflow-container { max-width: 900px; margin: 0 auto; padding: 20px; }
+                .workflow-header { text-align: center; margin-bottom: 40px; }
+                .workflow-header h1 { font-size: 1.8rem; color: var(--gray-900); margin: 0 0 8px 0; }
+                .workflow-header p { color: var(--gray-500); margin: 0; }
+
+                /* Kind-Info Kompakt */
+                .kind-info-bar { background: white; padding: 16px 24px; border-radius: var(--radius-lg); border: 1px solid var(--gray-200); margin-bottom: 30px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+                .kind-info-bar input { padding: 10px 14px; border: 1px solid var(--gray-300); border-radius: var(--radius); font-size: 0.95rem; flex: 1; min-width: 150px; }
+                .kind-info-bar input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+                .kind-alter { color: var(--gray-600); font-weight: 500; white-space: nowrap; }
+
+                /* Workflow Steps */
+                .workflow-steps { display: flex; flex-direction: column; gap: 16px; }
+                .workflow-step { background: white; border-radius: var(--radius-lg); border: 2px solid var(--gray-200); overflow: hidden; transition: all 0.3s ease; cursor: pointer; }
+                .workflow-step:hover { border-color: var(--gray-300); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+                .workflow-step.active { border-color: var(--primary); box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15); }
+                .workflow-step.completed { border-color: var(--success); background: linear-gradient(to right, rgba(16, 185, 129, 0.03), white); }
+
+                .step-header { display: flex; align-items: center; padding: 20px 24px; gap: 20px; }
+                .step-number { width: 48px; height: 48px; border-radius: 50%; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: var(--gray-400); flex-shrink: 0; transition: all 0.3s ease; }
+                .workflow-step.active .step-number { background: var(--primary); color: white; }
+                .workflow-step.completed .step-number { background: var(--success); color: white; }
+
+                .step-content { flex: 1; }
+                .step-title { font-size: 1.1rem; font-weight: 600; color: var(--gray-800); margin: 0 0 4px 0; }
+                .step-description { font-size: 0.9rem; color: var(--gray-500); margin: 0; }
+
+                .step-status { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 500; }
+                .step-status.pending { color: var(--gray-400); }
+                .step-status.in-progress { color: var(--primary); }
+                .step-status.done { color: var(--success); }
+
+                .step-action { padding: 0 24px 20px 92px; display: none; }
+                .workflow-step.active .step-action { display: block; }
+                .step-action-btn { width: 100%; padding: 14px 24px; background: var(--primary); color: white; border: none; border-radius: var(--radius); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 10px; }
+                .step-action-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+
+                /* Progress Bar */
+                .workflow-progress { margin-bottom: 30px; }
+                .progress-bar-bg { height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden; }
+                .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--success)); transition: width 0.5s ease; }
+                .progress-text { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.85rem; color: var(--gray-500); }
+
+                /* Alert Banner */
+                .alert-banner { background: var(--danger-subtle); border: 1px solid var(--danger); padding: 14px 18px; border-radius: var(--radius); margin-bottom: 20px; display: none; }
                 .alert-banner.visible { display: block; }
                 .alert-banner h4 { color: var(--danger-dark); margin: 0 0 8px 0; font-size: 0.95rem; }
-                .quick-input { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-                .quick-input input, .quick-input select { padding: 10px 14px; border: 1px solid var(--gray-300); border-radius: var(--radius); font-size: 0.9rem; transition: all var(--transition-fast); }
-                .quick-input input:focus, .quick-input select:focus { outline: none; border-color: var(--primary); box-shadow: var(--shadow-focus); }
-                .hypothesis-card { background: var(--info-subtle); padding: 14px; border-radius: var(--radius); border-left: 3px solid var(--info); }
-                .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
-                .action-btn { padding: 10px 18px; border-radius: var(--radius); font-weight: 500; cursor: pointer; transition: all var(--transition-fast); border: none; display: flex; align-items: center; gap: 8px; font-size: 0.875rem; }
-                .action-btn.primary { background: var(--primary); color: white; }
-                .action-btn.primary:hover { background: var(--primary-dark); }
-                .action-btn.secondary { background: var(--gray-100); color: var(--gray-700); border: 1px solid var(--gray-200); }
-                .action-btn.secondary:hover { background: var(--gray-200); }
-                .action-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
-                @media (max-width: 1000px) { .dossier-grid { grid-template-columns: 1fr; } .dossier-half { grid-column: span 1; } .status-grid { grid-template-columns: repeat(2, 1fr); } .quick-input { grid-template-columns: repeat(2, 1fr); } }
+
+                /* Quick Actions (minimal) */
+                .quick-actions { display: flex; gap: 10px; justify-content: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--gray-200); }
+                .quick-action-btn { padding: 8px 16px; background: var(--gray-100); color: var(--gray-600); border: none; border-radius: var(--radius); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+                .quick-action-btn:hover { background: var(--gray-200); color: var(--gray-800); }
+                .quick-action-btn.danger { background: #fee2e2; color: #dc2626; }
+                .quick-action-btn.danger:hover { background: #fecaca; }
+
+                @media (max-width: 600px) {
+                    .kind-info-bar { flex-direction: column; align-items: stretch; }
+                    .step-action { padding-left: 24px; }
+                }
             </style>
 
-            <!-- Alert Banner (wird sichtbar wenn Alerts vorhanden) -->
-            <div class="alert-banner" id="dossier-alerts">
-                <h4>🚨 Wichtige Warnungen</h4>
-                <ul id="dossier-alerts-list" style="margin: 0; padding-left: 20px;"></ul>
-            </div>
+            <div class="workflow-container">
+                <!-- Header -->
+                <div class="workflow-header">
+                    <h1>Fallbearbeitung</h1>
+                    <p>Folgen Sie den Schritten der Reihe nach</p>
+                </div>
 
-            <div class="dossier-grid">
-                <!-- Kind-Infos (kompakt) -->
-                <div class="dossier-card dossier-full">
-                    <h4>👤 Kind / Jugendlicher</h4>
-                    <div class="quick-input">
-                        <input type="text" id="schueler_name" placeholder="Name" onchange="updateDossier()">
-                        <input type="date" id="geburtsdatum" onchange="updateAlterAnzeige(); updateDossier()">
-                        <input type="text" id="foerderort" placeholder="Schule" onchange="updateDossier()">
-                        <input type="text" id="klasse" placeholder="Klasse" onchange="updateDossier()">
+                <!-- Alert Banner -->
+                <div class="alert-banner" id="dossier-alerts">
+                    <h4>🚨 Wichtige Warnungen</h4>
+                    <ul id="dossier-alerts-list" style="margin: 0; padding-left: 20px;"></ul>
+                </div>
+
+                <!-- Kind-Info -->
+                <div class="kind-info-bar">
+                    <input type="text" id="schueler_name" placeholder="Name des Kindes" onchange="updateDossier(); updateWorkflowProgress();">
+                    <input type="date" id="geburtsdatum" onchange="updateAlterAnzeige(); updateDossier(); updateWorkflowProgress();">
+                    <input type="text" id="foerderort" placeholder="Schule" onchange="updateDossier()">
+                    <input type="text" id="klasse" placeholder="Klasse" onchange="updateDossier()">
+                    <span class="kind-alter" id="alter-anzeige-dossier"></span>
+                </div>
+
+                <!-- Progress -->
+                <div class="workflow-progress">
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="workflow-progress-bar" style="width: 0%;"></div>
                     </div>
-                    <div style="margin-top: 10px; display: flex; gap: 15px; color: #718096; font-size: 0.9rem;">
-                        <span id="alter-anzeige-dossier"></span>
-                        <span id="matricule-display"></span>
+                    <div class="progress-text">
+                        <span id="workflow-progress-text">Schritt 1 von 5</span>
+                        <span id="workflow-progress-percent">0%</span>
                     </div>
                 </div>
 
-                <!-- Status-Übersicht -->
-                <div class="dossier-card dossier-full">
-                    <h4>📊 Status-Übersicht</h4>
-                    <div class="status-grid">
-                        <div class="status-card" onclick="showTab('verhalten')" id="status-eldib-v">
-                            <div class="status-icon">🎯</div>
-                            <div class="status-value" id="status-v-count">0/33</div>
-                            <div class="status-label">Verhalten</div>
-                        </div>
-                        <div class="status-card" onclick="showTab('kommunikation')" id="status-eldib-k">
-                            <div class="status-icon">💬</div>
-                            <div class="status-value" id="status-k-count">0/35</div>
-                            <div class="status-label">Kommunikation</div>
-                        </div>
-                        <div class="status-card" onclick="showTab('sozialisation')" id="status-eldib-s">
-                            <div class="status-icon">👥</div>
-                            <div class="status-value" id="status-s-count">0/41</div>
-                            <div class="status-label">Sozialisation</div>
-                        </div>
-                        <div class="status-card" onclick="showTab('kognition')" id="status-eldib-c">
-                            <div class="status-icon">🧩</div>
-                            <div class="status-value" id="status-c-count">0/62</div>
-                            <div class="status-label">Kognition</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Klinisches Assessment Status -->
-                <div class="dossier-card dossier-half">
-                    <h4>🧠 Klinisches Assessment</h4>
-                    <div id="assessment-status-content">
-                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                            <div style="flex: 1; background: #edf2f7; height: 8px; border-radius: 4px; overflow: hidden;">
-                                <div id="assessment-progress-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #2c5282, #4a90a4); transition: width 0.5s;"></div>
+                <!-- Workflow Steps -->
+                <div class="workflow-steps">
+                    <!-- Step 1: Stammdaten -->
+                    <div class="workflow-step active" id="workflow-step-1" onclick="activateWorkflowStep(1)">
+                        <div class="step-header">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h3 class="step-title">Stammdaten erfassen</h3>
+                                <p class="step-description">Name, Geburtsdatum, Schule und Klasse eingeben</p>
                             </div>
-                            <span id="assessment-progress-text" style="color: #4a5568; font-weight: 600;">0%</span>
+                            <div class="step-status pending" id="step-1-status">
+                                <span>Ausstehend</span>
+                            </div>
                         </div>
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 0.9rem;">
-                            <div id="phase1-status" style="padding: 8px 12px; background: #f8fafc; border-radius: 6px;">Phase 1: Intake</div>
-                            <div id="phase2-status" style="padding: 8px 12px; background: #f8fafc; border-radius: 6px;">Phase 2: Domänen</div>
-                            <div id="phase3-status" style="padding: 8px 12px; background: #f8fafc; border-radius: 6px;">Phase 3: Synthese</div>
-                            <div id="phase4-status" style="padding: 8px 12px; background: #f8fafc; border-radius: 6px;">Phase 4: Aktionsplan</div>
+                        <div class="step-action">
+                            <button class="step-action-btn" onclick="event.stopPropagation(); completeStep1AndContinue();">
+                                Weiter zu Diagnostic Spécialisé →
+                            </button>
                         </div>
-                        <button class="action-btn primary" style="margin-top: 15px; width: 100%;" onclick="showTab('screening')">
-                            🧠 Assessment starten/fortsetzen
-                        </button>
+                    </div>
+
+                    <!-- Step 2: DS-Formular -->
+                    <div class="workflow-step" id="workflow-step-2" onclick="activateWorkflowStep(2)">
+                        <div class="step-header">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h3 class="step-title">Diagnostic Spécialisé (DS)</h3>
+                                <p class="step-description">Anamnese, Sichtweisen und Beobachtungen erfassen</p>
+                            </div>
+                            <div class="step-status pending" id="step-2-status">
+                                <span>Ausstehend</span>
+                            </div>
+                        </div>
+                        <div class="step-action">
+                            <button class="step-action-btn" onclick="event.stopPropagation(); showTab('diagnostic');">
+                                DS-Formular öffnen →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: ELDiB -->
+                    <div class="workflow-step" id="workflow-step-3" onclick="activateWorkflowStep(3)">
+                        <div class="step-header">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h3 class="step-title">ELDiB-Einschätzung</h3>
+                                <p class="step-description">Entwicklungsniveau in 4 Bereichen einschätzen</p>
+                            </div>
+                            <div class="step-status pending" id="step-3-status">
+                                <span>Ausstehend</span>
+                            </div>
+                        </div>
+                        <div class="step-action">
+                            <button class="step-action-btn" onclick="event.stopPropagation(); showTab('verhalten');">
+                                ELDiB starten →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Modelle & Synthese -->
+                    <div class="workflow-step" id="workflow-step-4" onclick="activateWorkflowStep(4)">
+                        <div class="step-header">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h3 class="step-title">Analyse & Modelle</h3>
+                                <p class="step-description">Automatische Hypothesen und Erklärungsmodelle generieren</p>
+                            </div>
+                            <div class="step-status pending" id="step-4-status">
+                                <span>Ausstehend</span>
+                            </div>
+                        </div>
+                        <div class="step-action">
+                            <button class="step-action-btn" onclick="event.stopPropagation(); showTab('modelle');">
+                                Modelle anzeigen →
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Export -->
+                    <div class="workflow-step" id="workflow-step-5" onclick="activateWorkflowStep(5)">
+                        <div class="step-header">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h3 class="step-title">Export & Abschluss</h3>
+                                <p class="step-description">Berichte und Bedienungsanleitung exportieren</p>
+                            </div>
+                            <div class="step-status pending" id="step-5-status">
+                                <span>Ausstehend</span>
+                            </div>
+                        </div>
+                        <div class="step-action">
+                            <button class="step-action-btn" onclick="event.stopPropagation(); showTab('export');">
+                                Exportieren →
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Haupthypothese -->
-                <div class="dossier-card">
-                    <h4>🔬 Haupthypothese</h4>
-                    <div id="main-hypothesis-content">
-                        <p style="color: #a0aec0; font-style: italic;">Führen Sie das klinische Assessment durch, um Hypothesen zu erhalten.</p>
-                    </div>
-                </div>
-
-                <!-- Schnell-Aktionen -->
-                <div class="dossier-card dossier-full">
-                    <h4>⚡ Schnell-Aktionen</h4>
-                    <div class="action-buttons">
-                        <button class="action-btn primary" onclick="showTab('screening')">🧠 Assessment</button>
-                        <button class="action-btn secondary" onclick="showTab('verhalten')">📝 ELDiB erfassen</button>
-                        <button class="action-btn secondary" onclick="showTab('synthese')">🔬 Fallsynthese</button>
-                        <button class="action-btn secondary" onclick="showTab('export')">📄 Export</button>
-                        <button class="action-btn secondary" onclick="resetAllData()" style="margin-left: auto; background: #fed7d7; color: #c53030;">🗑️ Neuer Fall</button>
-                    </div>
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="quick-action-btn" onclick="showTab('synthese')">Synthese ansehen</button>
+                    <button class="quick-action-btn" onclick="showTab('handlungsplan')">Handlungsplan</button>
+                    <button class="quick-action-btn danger" onclick="resetAllData()">🗑️ Neuer Fall</button>
                 </div>
             </div>
         </div>
@@ -7193,68 +7270,184 @@ function addCustomAction(category) {
 // Erklärungsmodelle aus Daten generieren
 function generateBiopsychosozialFromData() {
     const stammdaten = getStammdaten();
-    const dsData = typeof getDSFormData === 'function' ? getDSFormData() : {};
+    const dsData = typeof getDSData === 'function' ? getDSData() : {};
+
+    // Nutze SynthesisEngine wenn verfügbar
+    let synthesis = null;
+    if (typeof SynthesisEngine !== 'undefined') {
+        const data = typeof collectDataForSynthesis === 'function' ? collectDataForSynthesis() : {};
+        synthesis = SynthesisEngine.synthesize(data);
+        window.lastSynthesis = synthesis; // Speichere für andere Funktionen
+    }
 
     // Biologische Faktoren
     let bioFactors = [];
-    if (dsData.ds_schwangerschaft) bioFactors.push('Schwangerschaftskomplikationen');
-    if (dsData.ds_geburt) bioFactors.push('Geburtskomplikationen');
+    if (dsData.ds_schwangerschaft && dsData.ds_schwangerschaft !== 'unauffaellig') bioFactors.push('Schwangerschaftskomplikationen');
+    if (dsData.ds_geburt && dsData.ds_geburt !== 'unauffaellig') bioFactors.push('Geburtskomplikationen');
     if (dsData.checkboxes?.ds_diagnose?.length) {
-        const diagnosen = { 'adhs': 'ADHS', 'asd': 'Autismus-Spektrum', 'lernstoerung': 'Lernstörung' };
+        const diagnosen = { 'adhs': 'ADHS', 'asd': 'Autismus-Spektrum', 'lernstoerung': 'Lernstörung', 'sprachstoerung': 'Sprachstörung' };
         dsData.checkboxes.ds_diagnose.forEach(d => {
             if (diagnosen[d]) bioFactors.push(diagnosen[d]);
         });
     }
-    document.getElementById('modell-bio-content').textContent = bioFactors.length ? bioFactors.join(', ') : 'Keine spezifischen biologischen Faktoren dokumentiert';
+    // Aus Hypothesen ergänzen
+    if (synthesis?.hypothesen) {
+        synthesis.hypothesen.forEach(h => {
+            if (h.konfidenz >= 50 && h.id === 'adhs') bioFactors.push('Hinweise auf ADHS (neurobiologisch)');
+            if (h.konfidenz >= 50 && h.id === 'asd') bioFactors.push('Hinweise auf Autismus-Spektrum');
+        });
+    }
+    document.getElementById('modell-bio-content').innerHTML = bioFactors.length
+        ? bioFactors.map(f => `<span style="display:inline-block;background:#dcfce7;padding:3px 8px;border-radius:4px;margin:2px;font-size:0.85rem;">${f}</span>`).join('')
+        : '<em style="color:#9ca3af;">Keine spezifischen biologischen Faktoren dokumentiert</em>';
 
     // Psychologische Faktoren
     let psychoFactors = [];
-    const items = getAllItemStatus();
-    const verhaltensItems = items.filter(i => i.bereich === 'verhalten' && i.status === 'problematisch');
-    if (verhaltensItems.length > 3) psychoFactors.push('Verhaltensauffälligkeiten');
-    const kognitionsItems = items.filter(i => i.bereich === 'kognition' && i.status === 'nicht_beobachtet');
-    if (kognitionsItems.length > 5) psychoFactors.push('Kognitive Entwicklungsverzögerung');
-    document.getElementById('modell-psycho-content').textContent = psychoFactors.length ? psychoFactors.join(', ') : 'Basierend auf ELDiB-Ergebnissen zu analysieren';
+    if (synthesis?.hypothesen) {
+        synthesis.hypothesen.forEach(h => {
+            if (h.konfidenz >= 40) {
+                if (h.id === 'angst') psychoFactors.push('Angst/Ängstlichkeit');
+                if (h.id === 'depression') psychoFactors.push('Depressive Symptomatik');
+                if (h.id === 'emotionsregulation') psychoFactors.push('Emotionsregulationsschwierigkeiten');
+                if (h.id === 'bindung') psychoFactors.push('Bindungsunsicherheit');
+            }
+        });
+    }
+    // ELDiB-basiert
+    if (synthesis?.entwicklung) {
+        if (synthesis.entwicklung.verhalten && synthesis.entwicklung.verhalten < 3) psychoFactors.push('Verzögerte Verhaltensregulation');
+        if (synthesis.entwicklung.kognition && synthesis.entwicklung.kognition < 3) psychoFactors.push('Kognitive Entwicklungsverzögerung');
+    }
+    document.getElementById('modell-psycho-content').innerHTML = psychoFactors.length
+        ? psychoFactors.map(f => `<span style="display:inline-block;background:#e0e7ff;padding:3px 8px;border-radius:4px;margin:2px;font-size:0.85rem;">${f}</span>`).join('')
+        : '<em style="color:#9ca3af;">Basierend auf Assessment zu ergänzen</em>';
 
     // Soziale Faktoren
     let sozialFactors = [];
-    if (dsData.ds_familiensituation) sozialFactors.push('Familiäre Situation: ' + dsData.ds_familiensituation.substring(0, 50) + '...');
-    const sozialItems = items.filter(i => i.bereich === 'sozialisation' && i.status === 'problematisch');
-    if (sozialItems.length > 3) sozialFactors.push('Soziale Schwierigkeiten');
-    document.getElementById('modell-sozial-content').textContent = sozialFactors.length ? sozialFactors.join(', ') : 'Basierend auf DS-Anamnese zu ergänzen';
+    if (dsData.ds_familienstand && dsData.ds_familienstand !== 'verheiratet') sozialFactors.push('Familienstruktur: ' + (dsData.ds_familienstand === 'getrennt' ? 'Getrennte Eltern' : 'Alleinerziehend'));
+    if (dsData.checkboxes?.ds_ereignis?.length > 0) sozialFactors.push('Belastende Lebensereignisse');
+    if (synthesis?.hypothesen?.some(h => h.id === 'trauma' && h.konfidenz >= 30)) sozialFactors.push('Mögliche Traumatisierung');
+    // ELDiB Sozialisation
+    if (synthesis?.entwicklung?.sozialisation && synthesis.entwicklung.sozialisation < 3) sozialFactors.push('Verzögerte Sozialisationsentwicklung');
 
-    showToast('Biopsychosoziales Modell wurde aktualisiert');
+    document.getElementById('modell-sozial-content').innerHTML = sozialFactors.length
+        ? sozialFactors.map(f => `<span style="display:inline-block;background:#fef3c7;padding:3px 8px;border-radius:4px;margin:2px;font-size:0.85rem;">${f}</span>`).join('')
+        : '<em style="color:#9ca3af;">Basierend auf Anamnese zu ergänzen</em>';
+
+    showToast('Biopsychosoziales Modell wurde aus Ihren Daten generiert!', 'success');
 }
 
 function generateVulnerabilitaetFromData() {
-    const dsData = typeof getDSFormData === 'function' ? getDSFormData() : {};
+    const dsData = typeof getDSData === 'function' ? getDSData() : {};
 
-    document.getElementById('modell-praedisp-content').textContent =
-        dsData.ds_vorgeschichte ? dsData.ds_vorgeschichte.substring(0, 100) + '...' : 'Aus Anamnese zu ergänzen';
-    document.getElementById('modell-ausloesend-content').textContent =
-        dsData.ds_aktuell_ausloeser || 'Aktuelle Auslöser dokumentieren';
-    document.getElementById('modell-aufrecht-content').textContent =
-        dsData.ds_aufrechterhalter || 'Aufrechterhaltende Faktoren analysieren';
-    document.getElementById('modell-protektiv-content').textContent =
-        dsData.ds_ressourcen || 'Ressourcen und Schutzfaktoren identifizieren';
+    // Nutze gespeicherte oder neue Synthese
+    let synthesis = window.lastSynthesis;
+    if (!synthesis && typeof SynthesisEngine !== 'undefined') {
+        const data = typeof collectDataForSynthesis === 'function' ? collectDataForSynthesis() : {};
+        synthesis = SynthesisEngine.synthesize(data);
+        window.lastSynthesis = synthesis;
+    }
 
-    showToast('Vulnerabilitäts-Stress-Modell wurde aktualisiert');
+    // Prädisponierende Faktoren
+    let praedisp = [];
+    if (dsData.ds_schwangerschaft && dsData.ds_schwangerschaft !== 'unauffaellig') praedisp.push('Schwangerschaftskomplikationen');
+    if (dsData.checkboxes?.ds_diagnose?.length > 0) praedisp.push('Vordiagnosen vorhanden');
+    if (dsData.ds_motorik && dsData.ds_motorik !== 'altersgerecht') praedisp.push('Motorische Auffälligkeiten');
+    if (dsData.ds_sprache && dsData.ds_sprache !== 'altersgerecht') praedisp.push('Sprachliche Auffälligkeiten');
+
+    document.getElementById('modell-praedisp-content').innerHTML = praedisp.length
+        ? praedisp.map(f => `<span style="display:inline-block;background:#fee2e2;padding:3px 8px;border-radius:4px;margin:2px;font-size:0.85rem;">${f}</span>`).join('')
+        : '<em style="color:#9ca3af;">Aus Anamnese zu ergänzen</em>';
+
+    // Auslösende Faktoren
+    let ausloesend = [];
+    if (dsData.checkboxes?.ds_ereignis) {
+        const ereignisse = { 'umzug': 'Umzug', 'schulwechsel': 'Schulwechsel', 'trennung': 'Trennung der Eltern', 'todesfall': 'Todesfall', 'geburt_geschwister': 'Geburt eines Geschwisters' };
+        dsData.checkboxes.ds_ereignis.forEach(e => {
+            if (ereignisse[e]) ausloesend.push(ereignisse[e]);
+        });
+    }
+    if (dsData.ds_auffaelligkeiten) ausloesend.push('Aktuelle Problematik: ' + dsData.ds_auffaelligkeiten.substring(0, 40) + '...');
+
+    document.getElementById('modell-ausloesend-content').innerHTML = ausloesend.length
+        ? ausloesend.map(f => `<span style="display:inline-block;background:#fef3c7;padding:3px 8px;border-radius:4px;margin:2px;font-size:0.85rem;">${f}</span>`).join('')
+        : '<em style="color:#9ca3af;">Aktuelle Auslöser dokumentieren</em>';
+
+    // Aufrechterhaltende Faktoren
+    let aufrecht = [];
+    if (synthesis?.hypothesen) {
+        synthesis.hypothesen.forEach(h => {
+            if (h.konfidenz >= 40) {
+                if (h.id === 'angst') aufrecht.push('Vermeidungsverhalten');
+                if (h.id === 'odd') aufrecht.push('Negative Verstärkungsmuster');
+                if (h.id === 'adhs') aufrecht.push('Mangelnde Strukturen');
+            }
+        });
+    }
+    if (dsData.checkboxes?.ds_schule_negativ?.length > 3) aufrecht.push('Schulische Konflikte');
+
+    document.getElementById('modell-aufrecht-content').innerHTML = aufrecht.length
+        ? aufrecht.map(f => `<span style="display:inline-block;background:#e0e7ff;padding:3px 8px;border-radius:4px;margin:2px;font-size:0.85rem;">${f}</span>`).join('')
+        : '<em style="color:#9ca3af;">Aufrechterhaltende Faktoren analysieren</em>';
+
+    // Protektive Faktoren
+    let protektiv = [];
+    if (dsData.checkboxes?.ds_schule_positiv?.length > 0) protektiv.push('Schulische Stärken vorhanden');
+    if (dsData.ds_ressourcen_kind) protektiv.push('Persönliche Ressourcen: ' + dsData.ds_ressourcen_kind.substring(0, 40));
+    if (dsData.ds_ressourcen_familie) protektiv.push('Familiäre Ressourcen vorhanden');
+
+    document.getElementById('modell-protektiv-content').innerHTML = protektiv.length
+        ? protektiv.map(f => `<span style="display:inline-block;background:#dcfce7;padding:3px 8px;border-radius:4px;margin:2px;font-size:0.85rem;">${f}</span>`).join('')
+        : '<em style="color:#9ca3af;">Ressourcen und Schutzfaktoren identifizieren</em>';
+
+    showToast('Vulnerabilitäts-Stress-Modell wurde aus Ihren Daten generiert!', 'success');
 }
 
 function generateEntwicklungsmodellFromData() {
-    const devAges = berechneEntwicklungsalter();
     const stammdaten = getStammdaten();
 
-    let entwicklungsText = '';
-    if (devAges.verhalten) entwicklungsText += `Verhalten: ${devAges.verhalten}, `;
-    if (devAges.kommunikation) entwicklungsText += `Kommunikation: ${devAges.kommunikation}, `;
-    if (devAges.sozialisation) entwicklungsText += `Sozialisation: ${devAges.sozialisation}, `;
-    if (devAges.kognition) entwicklungsText += `Kognition: ${devAges.kognition}`;
+    // Nutze gespeicherte oder neue Synthese
+    let synthesis = window.lastSynthesis;
+    if (!synthesis && typeof SynthesisEngine !== 'undefined') {
+        const data = typeof collectDataForSynthesis === 'function' ? collectDataForSynthesis() : {};
+        synthesis = SynthesisEngine.synthesize(data);
+        window.lastSynthesis = synthesis;
+    }
 
-    document.getElementById('modell-entwicklung-content').textContent =
-        entwicklungsText || 'ELDiB-Erfassung durchführen für Entwicklungsalter';
+    // Berechne Alter
+    const geb = document.getElementById('geburtsdatum')?.value;
+    let chronoAlter = 'unbekannt';
+    if (geb) {
+        const age = Math.floor((new Date() - new Date(geb)) / 31557600000);
+        chronoAlter = age + ' Jahre';
+    }
 
-    showToast('Entwicklungsmodell wurde aktualisiert');
+    // Entwicklungsalter aus ELDiB
+    let entwicklungsText = `<strong>Chronologisches Alter:</strong> ${chronoAlter}<br><br>`;
+
+    if (synthesis?.entwicklung) {
+        const stufeZuAlter = { 1: '0-2 Jahre', 2: '2-4 Jahre', 3: '4-6 Jahre', 4: '6-9 Jahre', 5: '9-12 Jahre' };
+        entwicklungsText += '<strong>Entwicklungsalter (ELDiB):</strong><br>';
+        if (synthesis.entwicklung.verhalten) entwicklungsText += `• Verhalten: Stufe ${synthesis.entwicklung.verhalten} (${stufeZuAlter[synthesis.entwicklung.verhalten] || '?'})<br>`;
+        if (synthesis.entwicklung.kommunikation) entwicklungsText += `• Kommunikation: Stufe ${synthesis.entwicklung.kommunikation} (${stufeZuAlter[synthesis.entwicklung.kommunikation] || '?'})<br>`;
+        if (synthesis.entwicklung.sozialisation) entwicklungsText += `• Sozialisation: Stufe ${synthesis.entwicklung.sozialisation} (${stufeZuAlter[synthesis.entwicklung.sozialisation] || '?'})<br>`;
+        if (synthesis.entwicklung.kognition) entwicklungsText += `• Kognition: Stufe ${synthesis.entwicklung.kognition} (${stufeZuAlter[synthesis.entwicklung.kognition] || '?'})<br>`;
+    } else {
+        entwicklungsText += '<em style="color:#9ca3af;">ELDiB-Erfassung durchführen für Entwicklungsalter</em>';
+    }
+
+    document.getElementById('modell-entwicklung-content').innerHTML = entwicklungsText;
+
+    // Nächste Entwicklungsschritte
+    let naechsteSchritte = [];
+    if (synthesis?.lernziele) {
+        naechsteSchritte = synthesis.lernziele.slice(0, 3).map(z => z.ziel || z);
+    }
+    document.getElementById('modell-naechste-content').innerHTML = naechsteSchritte.length
+        ? naechsteSchritte.map(s => `<span style="display:inline-block;background:#dcfce7;padding:3px 8px;border-radius:4px;margin:2px;font-size:0.85rem;">${s}</span>`).join('')
+        : '<em style="color:#9ca3af;">Wird aus ELDiB berechnet</em>';
+
+    showToast('Entwicklungsmodell wurde aus ELDiB-Daten generiert!', 'success');
 }
 
 function generateIntegriertesModell() {
@@ -7262,28 +7455,65 @@ function generateIntegriertesModell() {
     const stammdaten = getStammdaten();
     const name = stammdaten.schueler_name || 'Das Kind';
 
+    // Nutze gespeicherte oder neue Synthese
+    let synthesis = window.lastSynthesis;
+    if (!synthesis && typeof SynthesisEngine !== 'undefined') {
+        const data = typeof collectDataForSynthesis === 'function' ? collectDataForSynthesis() : {};
+        synthesis = SynthesisEngine.synthesize(data);
+        window.lastSynthesis = synthesis;
+    }
+
+    // Generiere dynamischen Text basierend auf Synthese
+    let hypothesenText = 'Es konnten keine spezifischen Hypothesen generiert werden.';
+    if (synthesis?.hypothesen && synthesis.hypothesen.length > 0) {
+        const topHypothesen = synthesis.hypothesen.filter(h => h.konfidenz >= 40).slice(0, 3);
+        if (topHypothesen.length > 0) {
+            hypothesenText = topHypothesen.map(h => `<strong>${h.name}</strong> (${h.konfidenz}%)`).join(', ');
+        }
+    }
+
+    let beduerfnisseText = '';
+    if (synthesis?.beduerfnisse && synthesis.beduerfnisse.length > 0) {
+        beduerfnisseText = synthesis.beduerfnisse.slice(0, 3).map(b => b.beduerfnis).join(', ');
+    }
+
+    let empfehlungenText = '';
+    if (synthesis?.empfehlungen?.sofort && synthesis.empfehlungen.sofort.length > 0) {
+        empfehlungenText = synthesis.empfehlungen.sofort.slice(0, 3).join(', ');
+    }
+
     konzeption.innerHTML = `
         <div style="line-height: 1.8; color: var(--gray-700);">
             <p><strong>Integrierte Fallkonzeption für ${escapeHtml(name)}:</strong></p>
-            <p style="margin-top: 12px;">
-                Basierend auf der biopsychosozialen Analyse zeigt sich ein komplexes Zusammenspiel verschiedener Faktoren.
-                Die prädisponierenden Faktoren (biologisch und psychologisch) in Kombination mit aktuellen Stressoren
-                führen zu den beobachteten Verhaltensweisen.
-            </p>
-            <p style="margin-top: 12px;">
-                <strong>Kernhypothese:</strong> Das Verhalten ist als Ausdruck unerfüllter Grundbedürfnisse
-                (Sicherheit, Zugehörigkeit, Selbstwirksamkeit) zu verstehen und dient einer funktionalen Rolle
-                im Kontext der aktuellen Lebenssituation.
-            </p>
-            <p style="margin-top: 12px;">
-                <strong>Implikationen:</strong> Interventionen sollten auf mehreren Ebenen ansetzen:
-                Umgebungsanpassungen (Schule), Kompetenzaufbau (Kind), Psychoedukation (Eltern/Lehrer)
-                und ggf. therapeutische Unterstützung.
+
+            <div style="margin-top: 16px; padding: 16px; background: #f0fdf4; border-radius: 8px; border-left: 4px solid #10b981;">
+                <strong style="color: #059669;">Haupthypothesen:</strong><br>
+                ${hypothesenText}
+            </div>
+
+            ${beduerfnisseText ? `
+            <div style="margin-top: 12px; padding: 16px; background: #eff6ff; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                <strong style="color: #2563eb;">Kernbedürfnisse:</strong><br>
+                ${beduerfnisseText}
+            </div>
+            ` : ''}
+
+            ${empfehlungenText ? `
+            <div style="margin-top: 12px; padding: 16px; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                <strong style="color: #d97706;">Erste Interventionen:</strong><br>
+                ${empfehlungenText}
+            </div>
+            ` : ''}
+
+            <p style="margin-top: 16px; color: #6b7280; font-size: 0.9rem;">
+                <em>Diese Konzeption basiert auf den bisher erfassten Daten. Je mehr Informationen Sie eingeben,
+                desto präziser werden die Analysen.</em>
             </p>
         </div>
     `;
 
-    showToast('Integrierte Konzeption wurde erstellt');
+    showToast('Integrierte Konzeption wurde aus allen Daten erstellt!', 'success');
+    updateWorkflowProgress();
 }
 
 // Psychoedukation generieren
@@ -14079,6 +14309,151 @@ function updateDossier() {
 
     // Haupthypothese anzeigen
     updateMainHypothesis();
+
+    // Workflow Progress aktualisieren
+    updateWorkflowProgress();
+}
+
+// ==========================================
+// WORKFLOW MANAGEMENT
+// ==========================================
+
+let currentWorkflowStep = 1;
+
+function activateWorkflowStep(step) {
+    // Deaktiviere alle Steps
+    for (let i = 1; i <= 5; i++) {
+        const stepEl = document.getElementById(`workflow-step-${i}`);
+        if (stepEl) stepEl.classList.remove('active');
+    }
+    // Aktiviere gewählten Step
+    const activeStep = document.getElementById(`workflow-step-${step}`);
+    if (activeStep) activeStep.classList.add('active');
+    currentWorkflowStep = step;
+}
+
+function updateWorkflowProgress() {
+    const steps = {
+        1: checkStep1Complete(),
+        2: checkStep2Complete(),
+        3: checkStep3Complete(),
+        4: checkStep4Complete(),
+        5: checkStep5Complete()
+    };
+
+    let completedCount = 0;
+    let firstIncomplete = 1;
+
+    for (let i = 1; i <= 5; i++) {
+        const stepEl = document.getElementById(`workflow-step-${i}`);
+        const statusEl = document.getElementById(`step-${i}-status`);
+
+        if (steps[i]) {
+            completedCount++;
+            if (stepEl) stepEl.classList.add('completed');
+            if (statusEl) {
+                statusEl.className = 'step-status done';
+                statusEl.innerHTML = '<span>✓ Erledigt</span>';
+            }
+        } else {
+            if (stepEl) stepEl.classList.remove('completed');
+            if (firstIncomplete === 1 || firstIncomplete > i) firstIncomplete = i;
+
+            // Prüfe ob in Bearbeitung
+            const inProgress = checkStepInProgress(i);
+            if (statusEl) {
+                if (inProgress) {
+                    statusEl.className = 'step-status in-progress';
+                    statusEl.innerHTML = '<span>In Bearbeitung...</span>';
+                } else {
+                    statusEl.className = 'step-status pending';
+                    statusEl.innerHTML = '<span>Ausstehend</span>';
+                }
+            }
+        }
+    }
+
+    // Progress Bar
+    const percent = Math.round((completedCount / 5) * 100);
+    const progressBar = document.getElementById('workflow-progress-bar');
+    const progressText = document.getElementById('workflow-progress-text');
+    const progressPercent = document.getElementById('workflow-progress-percent');
+
+    if (progressBar) progressBar.style.width = percent + '%';
+    if (progressText) progressText.textContent = `Schritt ${Math.min(firstIncomplete, 5)} von 5`;
+    if (progressPercent) progressPercent.textContent = percent + '%';
+
+    // Aktiviere ersten unvollständigen Schritt
+    if (!steps[currentWorkflowStep]) {
+        activateWorkflowStep(firstIncomplete);
+    }
+}
+
+function checkStep1Complete() {
+    const name = document.getElementById('schueler_name')?.value;
+    const geb = document.getElementById('geburtsdatum')?.value;
+    return !!(name && name.trim() && geb);
+}
+
+function checkStep2Complete() {
+    // DS ist ausgefüllt wenn mindestens Auftragsklärung und Anamnese vorhanden
+    const dsData = typeof getDSData === 'function' ? getDSData() : {};
+    const hasAnlass = dsData.checkboxes?.ds_anlass?.length > 0;
+    const hasAnamnese = dsData.ds_schwangerschaft || dsData.ds_motorik;
+    return hasAnlass && hasAnamnese;
+}
+
+function checkStep3Complete() {
+    // ELDiB ist ausgefüllt wenn mindestens 10 Items bewertet wurden
+    if (typeof state !== 'undefined' && state.selections) {
+        return Object.keys(state.selections).length >= 10;
+    }
+    return false;
+}
+
+function checkStep4Complete() {
+    // Modelle sind generiert wenn Synthese existiert
+    return !!(cdse.data.synthesis || (typeof SynthesisEngine !== 'undefined' && window.lastSynthesis));
+}
+
+function checkStep5Complete() {
+    // Export wurde durchgeführt (schwer zu tracken, also false)
+    return false;
+}
+
+function checkStepInProgress(step) {
+    switch(step) {
+        case 1: return !!(document.getElementById('schueler_name')?.value || document.getElementById('geburtsdatum')?.value);
+        case 2: {
+            const dsData = typeof getDSData === 'function' ? getDSData() : {};
+            return Object.keys(dsData).length > 0;
+        }
+        case 3: return typeof state !== 'undefined' && state.selections && Object.keys(state.selections).length > 0;
+        case 4: return false;
+        case 5: return false;
+        default: return false;
+    }
+}
+
+function completeStep1AndContinue() {
+    const name = document.getElementById('schueler_name')?.value;
+    const geb = document.getElementById('geburtsdatum')?.value;
+
+    if (!name || !name.trim()) {
+        showToast('Bitte geben Sie den Namen des Kindes ein.', 'warning');
+        document.getElementById('schueler_name')?.focus();
+        return;
+    }
+    if (!geb) {
+        showToast('Bitte geben Sie das Geburtsdatum ein.', 'warning');
+        document.getElementById('geburtsdatum')?.focus();
+        return;
+    }
+
+    // Schritt 1 als erledigt markieren und zu Schritt 2 wechseln
+    updateWorkflowProgress();
+    showTab('diagnostic');
+    showToast('Stammdaten gespeichert. Weiter mit dem DS-Formular.');
 }
 
 function updateEldibStatusCards() {
