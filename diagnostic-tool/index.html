@@ -1720,6 +1720,51 @@
             }).join('')}</div>`;
         }
 
+        // Word-kompatibles Balkendiagramm (horizontale Balken als Tabelle)
+        function wordChart(labels, values, classes, max, title) {
+            const colors = {
+                normal: '#48bb78',
+                borderline: '#ed8936',
+                clinical: '#f56565',
+                vhigh: '#3182ce',
+                high: '#63b3ed'
+            };
+            const classLabels = {
+                normal: 'Durchschnitt',
+                borderline: 'Grenzwertig',
+                clinical: 'Auffällig',
+                vhigh: 'Weit überdurchschn.',
+                high: 'Überdurchschn.'
+            };
+
+            return `
+                <div class="word-chart">
+                    ${title ? `<p style="font-weight:bold;margin-bottom:8pt;">${title}</p>` : ''}
+                    <table class="chart-table" style="width:100%;border-collapse:collapse;margin:12pt 0;">
+                        ${labels.map((l, i) => {
+                            const pct = Math.min(100, Math.max(5, (values[i] / max) * 100));
+                            const color = colors[classes[i]] || '#a0aec0';
+                            const label = classLabels[classes[i]] || '';
+                            return `
+                                <tr>
+                                    <td style="width:25%;padding:4pt 8pt;border:1pt solid #e2e8f0;font-size:10pt;">${l}</td>
+                                    <td style="width:50%;padding:4pt;border:1pt solid #e2e8f0;">
+                                        <div style="background:${color};width:${pct}%;height:16pt;border-radius:2pt;"></div>
+                                    </td>
+                                    <td style="width:10%;padding:4pt 8pt;border:1pt solid #e2e8f0;text-align:center;font-weight:bold;">${values[i]}</td>
+                                    <td style="width:15%;padding:4pt 8pt;border:1pt solid #e2e8f0;font-size:9pt;color:${color};">${label}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </table>
+                    <p style="font-size:8pt;color:#718096;margin-top:4pt;">Referenz: ${max === 160 ? 'IQ-Skala (M=100, SD=15)' : max === 100 ? 'Prozentrang (0-100)' : max === 10 ? 'Rohwert (0-10)' : `0-${max}`} |
+                    <span style="color:#48bb78;">■</span> Durchschnitt
+                    <span style="color:#ed8936;">■</span> Grenzwertig
+                    <span style="color:#f56565;">■</span> Auffällig</p>
+                </div>
+            `;
+        }
+
         function summary(items) {
             return `<div class="summary-grid">${items.map(i => `
                 <div class="summary-card ${i.c}">
@@ -2423,6 +2468,7 @@
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">4. Grafische Darstellung des Ergebnisprofils</h4>
                         <div class="chart-container">${chart(labels,keys.map(k=>d[k]),keys.map(k=>c[k]),10)}</div>
+                        ${wordChart(labels, keys.map(k=>d[k]), keys.map(k=>c[k]), 10, 'SDQ-Skalenprofil (Rohwerte 0-10)')}
                         <p style="text-align:center;margin-top:1rem;font-size:0.85rem;color:var(--text-muted);">Grün = Unauffällig | Orange = Grenzwertig | Rot = Klinisch auffällig</p>
                     </div>
 
@@ -2649,6 +2695,7 @@
                                 <span>≤69: Weit unterdurchschn.</span><span>90-109: Durchschnitt</span><span>≥130: Weit überdurchschn.</span>
                             </div>
                         </div>
+                        ${wordChart(valid.map(([k])=>WISC_NAMES[k]?.n || k.toUpperCase()), valid.map(([k,x])=>x.v), valid.map(([k])=>c[k].c), 160, 'WISC-V Indexprofil (IQ-Werte, M=100, SD=15)')}
                     </div>
 
                     <div class="gutachten-section">
@@ -2932,6 +2979,7 @@
                                 <span>T&lt;65: unauffällig</span><span>T 65-69: grenzwertig</span><span>T≥70: klinisch</span>
                             </div>
                         </div>
+                        ${wordChart(validSyn.map(([k])=>synLabels[k]), validSyn.map(([k,x])=>x), validSyn.map(([k])=>cSyn[k]), 90, 'CBCL Syndromskalen-Profil (T-Werte)')}
                     </div>` : ''}
 
                     <div class="gutachten-section">
@@ -3085,6 +3133,7 @@
                                 <span>1-4: unauffällig</span><span>5-6: erhöht</span><span>7-9: auffällig</span>
                             </div>
                         </div>
+                        ${wordChart(valid.map(([k])=>labels[k]), valid.map(([k,x])=>x), valid.map(([k])=>c[k]), 9, 'DISYPS-III Skalenprofil (Stanine 1-9)')}
                     </div>
 
                     <div class="gutachten-section">
@@ -3232,6 +3281,7 @@
                         <div class="chart-container">
                             ${chart(valid.map(([k])=>labels[k]),valid.map(([k,x])=>x),valid.map(([k])=>c[k]),9)}
                         </div>
+                        ${wordChart(valid.map(([k])=>labels[k]), valid.map(([k,x])=>x), valid.map(([k])=>c[k]), 9, 'AFS Skalenprofil (Stanine 1-9)')}
                     </div>
 
                     <div class="gutachten-section">
@@ -3396,6 +3446,7 @@
                                 <span>PR &lt;16: unterdurchschn.</span><span>PR 16-84: Durchschnitt</span><span>PR &gt;84: überdurchschn.</span>
                             </div>
                         </div>
+                        ${wordChart(valid.map(([k])=>labels[k]), valid.map(([k,x])=>x), valid.map(([k])=>c[k]), 100, 'd2-R Leistungsprofil (Prozentränge)')}
                     </div>
 
                     <div class="gutachten-section">
@@ -3617,6 +3668,7 @@
                                 ${valid.map(([k,x])=>`<tr${k==='adhd'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${x.n}</td><td><strong>${x.v}</strong></td><td>T < 65</td><td class="${c[k]}"><strong>${cText(x.v)}</strong></td></tr>`).join('')}
                             </tbody>
                         </table>
+                        ${wordChart(valid.map(([k,x])=>x.n.split('/')[0].substring(0,15)), valid.map(([k,x])=>x.v), valid.map(([k])=>c[k]), 90, 'Conners-3 Skalenprofil (T-Werte, M=50, SD=10)')}
                     </div>
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">3. Interpretation</h4>
@@ -3745,6 +3797,8 @@
                                 ${sekundar.maladapt ? `<tr style="font-weight:700;background:var(--bg-input);"><td>Maladaptive Strategien Gesamt</td><td><strong>${sekundar.maladapt}</strong></td><td class="${sekundar.maladapt<=55?'normal':sekundar.maladapt<=60?'borderline':'clinical'}">${cMaladaptText(sekundar.maladapt)}</td></tr>` : ''}
                             </tbody>
                         </table>` : ''}
+                        ${validAdapt.length ? wordChart(validAdapt.map(([k])=>adaptLabels[k]), validAdapt.map(([k,x])=>x), validAdapt.map(([k])=>cAdapt[k]), 80, 'Adaptive Strategien (T-Werte, niedrig = ungünstig)') : ''}
+                        ${validMaladapt.length ? wordChart(validMaladapt.map(([k])=>maladaptLabels[k]), validMaladapt.map(([k,x])=>x), validMaladapt.map(([k])=>cMaladapt[k]), 80, 'Maladaptive Strategien (T-Werte, hoch = ungünstig)') : ''}
                     </div>
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">3. Interpretation</h4>
@@ -3839,6 +3893,7 @@
                                 ${validSub.map(([k,x])=>`<tr><td>${subtestLabels[k]}</td><td>${x}</td><td>${iqClass(x).pr}</td><td class="${iqClass(x).c}">${iqClass(x).l}</td></tr>`).join('')}
                             </tbody>
                         </table>
+                        ${validSub.length ? wordChart(['Gesamt-IQ', ...validSub.map(([k])=>subtestLabels[k])], [iqVal, ...validSub.map(([k,x])=>x)], [c.c, ...validSub.map(([k,x])=>iqClass(x).c)], 160, 'CFT 20-R Profil (IQ-Werte, M=100, SD=15)') : wordChart(['Gesamt-IQ'], [iqVal], [c.c], 160, 'CFT 20-R Ergebnis (IQ-Werte, M=100, SD=15)')}
                     </div>
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">3. Interpretation</h4>
@@ -4021,6 +4076,13 @@
                                 </tbody>
                             </table>
                         ` : ''}
+                        ${wordChart(
+                            [abcVal ? 'ABC Gesamt' : '', ...validDomains.map(([k,d])=>d.n)].filter(x=>x),
+                            [abcVal, ...validDomains.map(([k,d])=>d.v)].filter(x=>x!==null),
+                            [abcVal ? abcClassFinal.c : '', ...validDomains.map(([k])=>domainClasses[k].c)].filter(x=>x),
+                            160,
+                            'Vineland-3 Domänenprofil (Standardwerte, M=100, SD=15)'
+                        )}
                     </div>
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">3. Interpretation</h4>
@@ -4380,8 +4442,12 @@
                         .normal { color: #276749; }
                         .borderline { color: #c05621; }
                         .clinical { color: #c53030; }
+                        .vhigh { color: #2b6cb0; }
+                        .high { color: #3182ce; }
                         .bar-chart, .chart-container { display: none; }
                         .summary-grid, .summary-card { display: none; }
+                        .word-chart { margin: 16pt 0; page-break-inside: avoid; }
+                        .chart-table td { vertical-align: middle; }
                     </style>
                 </head>
                 <body>
