@@ -171,6 +171,14 @@
             margin-bottom: 2rem;
         }
 
+        .card-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
         .card-title {
             font-size: 1.5rem;
             font-weight: 700;
@@ -1104,6 +1112,7 @@
             <button class="nav-btn" data-section="conners"><span class="nav-icon">⚡</span> Conners-3</button>
             <button class="nav-btn" data-section="feelkj"><span class="nav-icon">💗</span> FEEL-KJ</button>
             <button class="nav-btn" data-section="cft"><span class="nav-icon">🧩</span> CFT 20-R</button>
+            <button class="nav-btn" data-section="vineland"><span class="nav-icon">🏠</span> Vineland-3</button>
             <button class="nav-btn" data-section="report" style="margin-left:auto;"><span class="nav-icon">📄</span> Bericht</button>
         </div>
     </nav>
@@ -1126,8 +1135,10 @@
         <section id="sdq" class="section active">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title"><span class="icon">📋</span> SDQ <span class="badge">Screening</span></h2>
-                    <button class="help-btn" onclick="showHelpModal('sdq')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    <div class="card-header-top">
+                        <h2 class="card-title"><span class="icon">📋</span> SDQ <span class="badge">Screening</span></h2>
+                        <button class="help-btn" onclick="showHelpModal('sdq')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    </div>
                     <p class="card-subtitle">Strengths and Difficulties Questionnaire – Screening für Kinder 4-17 Jahre</p>
                 </div>
                 <form id="sdq-form" onsubmit="evaluateSDQ(event)">
@@ -1162,8 +1173,10 @@
         <section id="wisc" class="section">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title"><span class="icon">🧠</span> WISC-V <span class="badge">Intelligenz</span></h2>
-                    <button class="help-btn" onclick="showHelpModal('wisc')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    <div class="card-header-top">
+                        <h2 class="card-title"><span class="icon">🧠</span> WISC-V <span class="badge">Intelligenz</span></h2>
+                        <button class="help-btn" onclick="showHelpModal('wisc')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    </div>
                     <p class="card-subtitle">Wechsler Intelligence Scale for Children – Kognitive Fähigkeiten 6-16 Jahre</p>
                 </div>
                 <form id="wisc-form" onsubmit="evaluateWISC(event)">
@@ -1191,8 +1204,10 @@
         <section id="cbcl" class="section">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title"><span class="icon">📊</span> CBCL <span class="badge">Verhalten</span></h2>
-                    <button class="help-btn" onclick="showHelpModal('cbcl')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    <div class="card-header-top">
+                        <h2 class="card-title"><span class="icon">📊</span> CBCL <span class="badge">Verhalten</span></h2>
+                        <button class="help-btn" onclick="showHelpModal('cbcl')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    </div>
                     <p class="card-subtitle">Child Behavior Checklist – Verhaltensauffälligkeiten 6-18 Jahre</p>
                 </div>
                 <form id="cbcl-form" onsubmit="evaluateCBCL(event)">
@@ -1238,8 +1253,10 @@
         <section id="disyps" class="section">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title"><span class="icon">🎯</span> DISYPS-III <span class="badge">ADHS/SSV</span></h2>
-                    <button class="help-btn" onclick="showHelpModal('disyps')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    <div class="card-header-top">
+                        <h2 class="card-title"><span class="icon">🎯</span> DISYPS-III <span class="badge">ADHS/SSV</span></h2>
+                        <button class="help-btn" onclick="showHelpModal('disyps')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    </div>
                     <p class="card-subtitle">Diagnostik-System für psychische Störungen – ADHS und Sozialverhalten</p>
                 </div>
                 <form id="disyps-form" onsubmit="evaluateDISYPS(event)">
@@ -1273,8 +1290,10 @@
         <section id="afs" class="section">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title"><span class="icon">💭</span> AFS <span class="badge">Angst</span></h2>
-                    <button class="help-btn" onclick="showHelpModal('afs')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    <div class="card-header-top">
+                        <h2 class="card-title"><span class="icon">💭</span> AFS <span class="badge">Angst</span></h2>
+                        <button class="help-btn" onclick="showHelpModal('afs')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    </div>
                     <p class="card-subtitle">Angstfragebogen für Schüler – Schulbezogene Ängste</p>
                 </div>
                 <form id="afs-form" onsubmit="evaluateAFS(event)">
@@ -1300,8 +1319,10 @@
         <section id="d2r" class="section">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title"><span class="icon">🔍</span> d2-R <span class="badge">Aufmerksamkeit</span></h2>
-                    <button class="help-btn" onclick="showHelpModal('d2r')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    <div class="card-header-top">
+                        <h2 class="card-title"><span class="icon">🔍</span> d2-R <span class="badge">Aufmerksamkeit</span></h2>
+                        <button class="help-btn" onclick="showHelpModal('d2r')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    </div>
                     <p class="card-subtitle">Aufmerksamkeits- und Konzentrationstest</p>
                 </div>
                 <form id="d2r-form" onsubmit="evaluateD2R(event)">
@@ -1328,8 +1349,10 @@
         <section id="dikj" class="section">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title"><span class="icon">😢</span> DIKJ <span class="badge">Depression</span></h2>
-                    <button class="help-btn" onclick="showHelpModal('dikj')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    <div class="card-header-top">
+                        <h2 class="card-title"><span class="icon">😢</span> DIKJ <span class="badge">Depression</span></h2>
+                        <button class="help-btn" onclick="showHelpModal('dikj')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    </div>
                     <p class="card-subtitle">Depressions-Inventar für Kinder und Jugendliche – Depressive Symptomatik 8-17 Jahre</p>
                 </div>
                 <form id="dikj-form" onsubmit="evaluateDIKJ(event)">
@@ -1360,8 +1383,10 @@
         <section id="conners" class="section">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title"><span class="icon">⚡</span> Conners-3 <span class="badge">ADHS</span></h2>
-                    <button class="help-btn" onclick="showHelpModal('conners')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    <div class="card-header-top">
+                        <h2 class="card-title"><span class="icon">⚡</span> Conners-3 <span class="badge">ADHS</span></h2>
+                        <button class="help-btn" onclick="showHelpModal('conners')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    </div>
                     <p class="card-subtitle">Conners Skalen zur Aufmerksamkeit und Verhalten – ADHS-Diagnostik 6-18 Jahre</p>
                 </div>
                 <form id="conners-form" onsubmit="evaluateConners(event)">
@@ -1412,8 +1437,10 @@
         <section id="feelkj" class="section">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title"><span class="icon">💗</span> FEEL-KJ <span class="badge">Emotionsregulation</span></h2>
-                    <button class="help-btn" onclick="showHelpModal('feelkj')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    <div class="card-header-top">
+                        <h2 class="card-title"><span class="icon">💗</span> FEEL-KJ <span class="badge">Emotionsregulation</span></h2>
+                        <button class="help-btn" onclick="showHelpModal('feelkj')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    </div>
                     <p class="card-subtitle">Fragebogen zur Erhebung der Emotionsregulation bei Kindern und Jugendlichen</p>
                 </div>
                 <form id="feelkj-form" onsubmit="evaluateFEELKJ(event)">
@@ -1459,8 +1486,10 @@
         <section id="cft" class="section">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title"><span class="icon">🧩</span> CFT 20-R <span class="badge">Intelligenz</span></h2>
-                    <button class="help-btn" onclick="showHelpModal('cft')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    <div class="card-header-top">
+                        <h2 class="card-title"><span class="icon">🧩</span> CFT 20-R <span class="badge">Intelligenz</span></h2>
+                        <button class="help-btn" onclick="showHelpModal('cft')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    </div>
                     <p class="card-subtitle">Culture Fair Intelligence Test – Sprachfreie Grundintelligenz 8-60 Jahre</p>
                 </div>
                 <form id="cft-form" onsubmit="evaluateCFT(event)">
@@ -1493,6 +1522,69 @@
                     </div>
                 </form>
                 <div id="cft-results" class="results"></div>
+            </div>
+        </section>
+
+        <!-- Vineland-3 -->
+        <section id="vineland" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-header-top">
+                        <h2 class="card-title"><span class="icon">🏠</span> Vineland-3 <span class="badge">Adaptives Verhalten</span></h2>
+                        <button class="help-btn" onclick="showHelpModal('vineland')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                    </div>
+                    <p class="card-subtitle">Vineland Adaptive Behavior Scales – Alltagskompetenzen und adaptives Verhalten 0-90 Jahre</p>
+                </div>
+                <form id="vineland-form" onsubmit="evaluateVineland(event)">
+                    <div class="form-section">
+                        <div class="form-section-title">Beurteiler</div>
+                        <div class="radio-group">
+                            <div class="radio-btn"><input type="radio" name="vineland-resp" id="vineland-parent" value="parent" checked><label for="vineland-parent">Eltern/Bezugsperson</label></div>
+                            <div class="radio-btn"><input type="radio" name="vineland-resp" id="vineland-teacher" value="teacher"><label for="vineland-teacher">Lehrer/Erzieher</label></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Hauptdomänen (Standardwerte M=100, SD=15)</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Kommunikation</label><input type="number" id="vin-com" min="20" max="160" placeholder="Standardwert"><span class="form-hint">Rezeptiv, Expressiv, Schriftlich</span></div>
+                            <div class="form-group"><label>Alltagsfertigkeiten</label><input type="number" id="vin-dls" min="20" max="160" placeholder="Standardwert"><span class="form-hint">Persönlich, Haushalt, Gemeinschaft</span></div>
+                            <div class="form-group"><label>Sozialisation</label><input type="number" id="vin-soc" min="20" max="160" placeholder="Standardwert"><span class="form-hint">Beziehungen, Spiel, Coping</span></div>
+                            <div class="form-group"><label>Motorik</label><input type="number" id="vin-mot" min="20" max="160" placeholder="Standardwert"><span class="form-hint">Grob- und Feinmotorik</span></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Gesamtwert</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label><strong>Adaptive Behavior Composite (ABC)</strong></label><input type="number" id="vin-abc" min="20" max="160" placeholder="Standardwert"></div>
+                            <div class="form-group"><label>ABC Prozentrang</label><input type="number" id="vin-abc-pr" min="0" max="100" placeholder="PR"></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Subdomänen (v-Skalenwerte M=15, SD=3) – Optional</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Rezeptiv</label><input type="number" id="vin-rec" min="1" max="24" placeholder="v-Wert"></div>
+                            <div class="form-group"><label>Expressiv</label><input type="number" id="vin-exp" min="1" max="24" placeholder="v-Wert"></div>
+                            <div class="form-group"><label>Schriftlich</label><input type="number" id="vin-wri" min="1" max="24" placeholder="v-Wert"></div>
+                            <div class="form-group"><label>Persönlich</label><input type="number" id="vin-per" min="1" max="24" placeholder="v-Wert"></div>
+                            <div class="form-group"><label>Haushalt</label><input type="number" id="vin-dom" min="1" max="24" placeholder="v-Wert"></div>
+                            <div class="form-group"><label>Gemeinschaft</label><input type="number" id="vin-cmm" min="1" max="24" placeholder="v-Wert"></div>
+                            <div class="form-group"><label>Beziehungen</label><input type="number" id="vin-int" min="1" max="24" placeholder="v-Wert"></div>
+                            <div class="form-group"><label>Spiel/Freizeit</label><input type="number" id="vin-play" min="1" max="24" placeholder="v-Wert"></div>
+                            <div class="form-group"><label>Coping</label><input type="number" id="vin-cop" min="1" max="24" placeholder="v-Wert"></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Maladaptives Verhalten (v-Skalenwerte) – Optional</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Maladaptives Verhalten Index</label><input type="number" id="vin-mal" min="1" max="24" placeholder="v-Wert"><span class="form-hint">Höher = problematischer</span></div>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="clearForm('vineland')">Zurücksetzen</button>
+                        <button type="submit" class="btn btn-primary">Auswerten →</button>
+                    </div>
+                </form>
+                <div id="vineland-results" class="results"></div>
             </div>
         </section>
 
@@ -2094,6 +2186,62 @@
                     <li>❌ Mehr Hilfe geben als bei Übungsitems vorgesehen</li>
                     <li>❌ Nur Teil 1 durchführen (mindert Reliabilität)</li>
                 </ul>
+            `,
+            vineland: `
+                <h5>Material</h5>
+                <ul>
+                    <li>Vineland-3 Comprehensive Interview Form oder Parent/Caregiver Form</li>
+                    <li>Auswertungsbogen oder Online-Auswertung</li>
+                    <li>Protokollbogen für Notizen</li>
+                </ul>
+                <h5>Grundprinzip</h5>
+                <p>Der Vineland-3 erfasst <strong>adaptives Verhalten</strong> – das sind Fähigkeiten, die eine Person im Alltag tatsächlich zeigt (nicht was sie könnte, sondern was sie tut). Erfasst wird über strukturiertes Elterninterview oder Fragebogen.</p>
+                <h5>Vorbereitung</h5>
+                <ul>
+                    <li>Geeignet für 0-90 Jahre</li>
+                    <li>Informant muss das Kind gut kennen (min. 3 Monate regelmäßiger Kontakt)</li>
+                    <li>Interview-Version bevorzugt (valider als Fragebogen)</li>
+                </ul>
+                <h5>Durchführung als Interview</h5>
+                <ol>
+                    <li><strong>Einleitung:</strong> "Ich möchte mehr darüber erfahren, wie [Name] alltägliche Dinge macht. Bitte beschreiben Sie, was [er/sie] normalerweise tut, nicht was [er/sie] könnte."</li>
+                    <li><strong>Domänen systematisch durchgehen:</strong>
+                        <ul>
+                            <li><strong>Kommunikation:</strong> Wie versteht und drückt sich das Kind aus?</li>
+                            <li><strong>Alltagsfertigkeiten:</strong> Selbstversorgung, Haushalt, Orientierung</li>
+                            <li><strong>Sozialisation:</strong> Beziehungen, Spielverhalten, Bewältigungsstrategien</li>
+                            <li><strong>Motorik:</strong> Grob- und Feinmotorik (nur bei Kindern &lt;9 Jahre)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Nachfragen:</strong> Bei unklaren Antworten konkrete Beispiele erfragen</li>
+                </ol>
+                <div class="admin-box">
+                    <div class="admin-box-title">Bewertung der Items</div>
+                    <p><strong>2</strong> = Verhält sich normalerweise so (selbstständig, ohne Erinnerung)</p>
+                    <p><strong>1</strong> = Verhält sich manchmal so oder teilweise</p>
+                    <p><strong>0</strong> = Verhält sich nie/selten so</p>
+                    <p><strong>DK</strong> = Don't Know (nicht bekannt)</p>
+                </div>
+                <div class="admin-box">
+                    <div class="admin-box-title">Zeitangaben</div>
+                    <span class="admin-time">⏱ Interview: 45-60 Minuten</span>
+                    <span class="admin-time">⏱ Fragebogen: 30-40 Minuten</span>
+                </div>
+                <h5>Wichtige Hinweise</h5>
+                <ul>
+                    <li>✓ Immer nach typischem Verhalten fragen, nicht nach Bestleistungen</li>
+                    <li>✓ Konkrete Alltagssituationen erfragen</li>
+                    <li>✓ Auch Fähigkeiten erfassen, die das Kind nicht mehr zeigen muss (z.B. Schnürsenkel weil nur Klettverschluss)</li>
+                    <li>❌ Nicht "Kann er/sie das?" sondern "Macht er/sie das normalerweise?"</li>
+                </ul>
+                <h5>Interpretation der Standardwerte</h5>
+                <ul>
+                    <li><strong>≥115:</strong> Überdurchschnittlich</li>
+                    <li><strong>85-115:</strong> Durchschnittlich</li>
+                    <li><strong>70-84:</strong> Unterdurchschnittlich (leichte Einschränkung)</li>
+                    <li><strong>50-69:</strong> Niedrig (moderate Einschränkung)</li>
+                    <li><strong>&lt;50:</strong> Sehr niedrig (schwere Einschränkung)</li>
+                </ul>
             `
         };
 
@@ -2108,7 +2256,8 @@
             dikj: 'DIKJ – Depressions-Inventar',
             conners: 'Conners-3 – ADHS-Diagnostik',
             feelkj: 'FEEL-KJ – Emotionsregulation',
-            cft: 'CFT 20-R – Culture Fair Intelligence Test'
+            cft: 'CFT 20-R – Culture Fair Intelligence Test',
+            vineland: 'Vineland-3 – Adaptive Behavior Scales'
         };
 
         // Modal öffnen mit Durchführungshinweisen
@@ -3758,6 +3907,221 @@
             R.cft = {iq:iqVal,subtests,c,gutachten}; updateReport();
         }
 
+        // Vineland-3
+        function evaluateVineland(e) {
+            e.preventDefault();
+            const pat = getPatient();
+            const pronomen = pat.sex === 'w' ? {er:'sie',sein:'ihr',ihm:'ihr',den:'die'} : {er:'er',sein:'sein',ihm:'ihm',den:'den'};
+            const resp = document.querySelector('input[name="vineland-resp"]:checked').value;
+            const respText = {parent:'der Eltern/Bezugsperson',teacher:'der Lehrkraft/Erzieher/in'}[resp];
+
+            // Hauptdomänen (Standardwerte M=100, SD=15)
+            const domains = {
+                com: {v:v('vin-com'), n:'Kommunikation', desc:'Sprachverständnis, Ausdruck, Schriftsprache'},
+                dls: {v:v('vin-dls'), n:'Alltagsfertigkeiten', desc:'Selbstversorgung, Haushalt, Orientierung'},
+                soc: {v:v('vin-soc'), n:'Sozialisation', desc:'Beziehungen, Spiel, Bewältigung'},
+                mot: {v:v('vin-mot'), n:'Motorik', desc:'Grob- und Feinmotorik'}
+            };
+
+            const abc = v('vin-abc');
+            const abcPr = v('vin-abc-pr');
+
+            // Subdomänen (v-Skalenwerte M=15, SD=3)
+            const subdomains = {
+                rec: {v:v('vin-rec'), n:'Rezeptiv', parent:'com'},
+                exp: {v:v('vin-exp'), n:'Expressiv', parent:'com'},
+                wri: {v:v('vin-wri'), n:'Schriftlich', parent:'com'},
+                per: {v:v('vin-per'), n:'Persönlich', parent:'dls'},
+                dom: {v:v('vin-dom'), n:'Haushalt', parent:'dls'},
+                cmm: {v:v('vin-cmm'), n:'Gemeinschaft', parent:'dls'},
+                int: {v:v('vin-int'), n:'Beziehungen', parent:'soc'},
+                play: {v:v('vin-play'), n:'Spiel/Freizeit', parent:'soc'},
+                cop: {v:v('vin-cop'), n:'Coping', parent:'soc'}
+            };
+
+            const maladaptive = v('vin-mal');
+
+            const validDomains = Object.entries(domains).filter(([k,d])=>d.v!==null);
+            if(!abc && validDomains.length === 0) return alert('Bitte mindestens den ABC-Gesamtwert oder Domänenwerte eingeben');
+
+            // Klassifikation für Standardwerte (M=100, SD=15)
+            const classifyStandard = (val) => {
+                if(val >= 130) return {l:'Weit überdurchschnittlich', c:'vhigh', pr:'≥98'};
+                if(val >= 115) return {l:'Überdurchschnittlich', c:'high', pr:'84-97'};
+                if(val >= 85) return {l:'Durchschnittlich', c:'normal', pr:'16-84'};
+                if(val >= 70) return {l:'Unterdurchschnittlich', c:'borderline', pr:'3-15'};
+                if(val >= 50) return {l:'Niedrig', c:'clinical', pr:'1-2'};
+                return {l:'Sehr niedrig', c:'clinical', pr:'<1'};
+            };
+
+            // Klassifikation für v-Skalenwerte (M=15, SD=3)
+            const classifyVScale = (val) => {
+                if(val >= 21) return {l:'Weit überdurchschnittlich', c:'vhigh'};
+                if(val >= 18) return {l:'Überdurchschnittlich', c:'high'};
+                if(val >= 12) return {l:'Durchschnittlich', c:'normal'};
+                if(val >= 9) return {l:'Unterdurchschnittlich', c:'borderline'};
+                return {l:'Niedrig', c:'clinical'};
+            };
+
+            const abcClass = abc ? classifyStandard(abc) : null;
+            const domainClasses = {};
+            validDomains.forEach(([k,d]) => { domainClasses[k] = classifyStandard(d.v); });
+
+            // Berechne ABC falls nicht angegeben
+            const abcVal = abc || (validDomains.length >= 3 ? Math.round(validDomains.reduce((sum,[k,d])=>sum+d.v,0)/validDomains.length) : null);
+            const abcClassFinal = abcVal ? classifyStandard(abcVal) : null;
+
+            // Schwächste und stärkste Domäne
+            let weakest = null, strongest = null;
+            if(validDomains.length >= 2) {
+                weakest = validDomains.reduce((min,[k,d]) => d.v < min.v ? d : min, validDomains[0][1]);
+                strongest = validDomains.reduce((max,[k,d]) => d.v > max.v ? d : max, validDomains[0][1]);
+            }
+
+            const validSubdomains = Object.entries(subdomains).filter(([k,s])=>s.v!==null);
+
+            const gutachten = `
+                <div class="gutachten">
+                    ${gutachtenHeader('Vineland-3', 'Vineland Adaptive Behavior Scales – Third Edition', pat)}
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <div class="gutachten-text">
+                            <p>Die Vineland Adaptive Behavior Scales (Vineland-3; Sparrow, Cicchetti & Saulnier, 2016; deutsche Fassung: 2020) sind ein standardisiertes Verfahren zur Erfassung adaptiver Verhaltenskompetenzen. Im Gegensatz zu Intelligenztests messen die Vineland-Skalen nicht das kognitive Potenzial, sondern das tatsächlich gezeigte Verhalten im Alltag.</p>
+                            <p>Das Verfahren erfasst vier Hauptdomänen: Kommunikation (rezeptiv, expressiv, schriftlich), Alltagsfertigkeiten (persönlich, häuslich, gemeinschaftlich), Sozialisation (zwischenmenschliche Beziehungen, Spiel und Freizeit, Bewältigungsstrategien) sowie Motorik (Grob- und Feinmotorik). Aus diesen Domänen wird der Adaptive Behavior Composite (ABC) als Gesamtmaß berechnet.</p>
+                            <p>Die Datenerhebung erfolgte mittels ${resp === 'parent' ? 'Elterninterview' : 'Lehrereinschätzung'} (${respText}).</p>
+                        </div>
+                    </div>
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <div class="gutachten-text">
+                            <p>Die Ergebnisse werden als Standardwerte (M=100, SD=15) berichtet. Werte zwischen 85 und 115 gelten als durchschnittlich.</p>
+                        </div>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Domäne</th><th>Standardwert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                ${abcVal ? `<tr style="font-weight:700;background:var(--bg-input);"><td><strong>Adaptive Behavior Composite (ABC)</strong></td><td><strong>${abcVal}</strong></td><td>${abcPr || abcClassFinal.pr}</td><td class="${abcClassFinal.c}"><strong>${abcClassFinal.l}</strong></td></tr>` : ''}
+                                ${validDomains.map(([k,d]) => `<tr><td>${d.n}</td><td>${d.v}</td><td>${domainClasses[k].pr}</td><td class="${domainClasses[k].c}">${domainClasses[k].l}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                        ${validSubdomains.length > 0 ? `
+                            <p style="margin-top:1.5rem;"><strong>Subdomänen (v-Skalenwerte, M=15, SD=3):</strong></p>
+                            <table class="gutachten-table">
+                                <thead><tr><th>Subdomäne</th><th>v-Wert</th><th>Klassifikation</th></tr></thead>
+                                <tbody>
+                                    ${validSubdomains.map(([k,s]) => `<tr><td>${s.n} (${domains[s.parent]?.n || s.parent})</td><td>${s.v}</td><td class="${classifyVScale(s.v).c}">${classifyVScale(s.v).l}</td></tr>`).join('')}
+                                </tbody>
+                            </table>
+                        ` : ''}
+                        ${maladaptive ? `
+                            <p style="margin-top:1.5rem;"><strong>Maladaptives Verhalten:</strong></p>
+                            <table class="gutachten-table">
+                                <thead><tr><th>Skala</th><th>v-Wert</th><th>Interpretation</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Maladaptiver Verhaltensindex</td><td>${maladaptive}</td><td class="${maladaptive >= 18 ? 'clinical' : maladaptive >= 15 ? 'borderline' : 'normal'}">${maladaptive >= 21 ? 'Stark erhöht' : maladaptive >= 18 ? 'Erhöht' : maladaptive >= 15 ? 'Leicht erhöht' : 'Durchschnittlich'}</td></tr>
+                                </tbody>
+                            </table>
+                        ` : ''}
+                    </div>
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">3. Interpretation</h4>
+                        <div class="gutachten-text">
+                            ${abcVal ? `<p>Der Adaptive Behavior Composite (ABC) von <strong>${abcVal}</strong> (PR: ${abcPr || abcClassFinal.pr}) zeigt, dass ${pat.name} insgesamt <strong>${abcClassFinal.l.toLowerCase()}e</strong> adaptive Fähigkeiten aufweist.</p>` : ''}
+                            ${abcVal && abcVal < 70 ? `<p>Das Gesamtniveau des adaptiven Verhaltens liegt deutlich unter dem Durchschnitt Gleichaltriger. Dies bedeutet, dass ${pat.name} im Alltag erheblich mehr Unterstützung benötigt als andere Kinder/Jugendliche ${pronomen.sein}es Alters.</p>` : ''}
+                            ${abcVal && abcVal >= 70 && abcVal < 85 ? `<p>Das adaptive Verhalten liegt im unterdurchschnittlichen Bereich. ${pat.name} zeigt in einigen Alltagsbereichen Entwicklungsrückstände und benötigt möglicherweise gezielte Förderung.</p>` : ''}
+                            ${abcVal && abcVal >= 85 && abcVal <= 115 ? `<p>Das adaptive Verhalten entspricht dem altersgemäßen Durchschnitt. ${pat.name} bewältigt alltägliche Anforderungen angemessen.</p>` : ''}
+                            ${abcVal && abcVal > 115 ? `<p>Das adaptive Verhalten liegt über dem Durchschnitt. ${pat.name} zeigt besonders gute Alltagskompetenzen.</p>` : ''}
+
+                            ${validDomains.length >= 2 && weakest && strongest && strongest.v - weakest.v >= 15 ? `
+                                <p><strong>Profilanalyse:</strong> Es zeigt sich ein heterogenes Profil mit einer Differenz von ${strongest.v - weakest.v} Punkten zwischen der stärksten Domäne (${strongest.n}: ${strongest.v}) und der schwächsten Domäne (${weakest.n}: ${weakest.v}). Dies deutet auf bereichsspezifische Stärken und Schwächen hin.</p>
+                                <ul class="gutachten-list">
+                                    <li><strong>Relative Stärke:</strong> ${strongest.n} (${strongest.desc})</li>
+                                    <li><strong>Relativer Förderbedarf:</strong> ${weakest.n} (${weakest.desc})</li>
+                                </ul>
+                            ` : validDomains.length >= 2 ? `
+                                <p><strong>Profilanalyse:</strong> Das Profil ist relativ homogen. Die adaptiven Fähigkeiten sind über die verschiedenen Bereiche hinweg gleichmäßig entwickelt.</p>
+                            ` : ''}
+
+                            ${maladaptive && maladaptive >= 18 ? `<p><strong>Maladaptives Verhalten:</strong> Der erhöhte Index für maladaptives Verhalten (v=${maladaptive}) weist auf problematische Verhaltensweisen hin, die die Alltagsfunktion beeinträchtigen können.</p>` : ''}
+                        </div>
+                    </div>
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">4. Diagnostische Einordnung</h4>
+                        <div class="gutachten-text">
+                            ${abcVal && abcVal < 70 ? `
+                                <p>Die Ergebnisse zeigen eine signifikante Beeinträchtigung adaptiver Funktionen, die für die Diagnose einer intellektuellen Beeinträchtigung relevant ist. Nach ICD-11/DSM-5 ist neben unterdurchschnittlicher Intelligenz auch eine Beeinträchtigung adaptiver Fähigkeiten erforderlich.</p>
+                                <span class="icd-code">6A00</span> Störungen der Intelligenzentwicklung (ICD-11)
+                                <p style="margin-top:1rem;">Der Schweregrad richtet sich primär nach dem adaptiven Funktionsniveau:</p>
+                                <ul class="gutachten-list">
+                                    ${abcVal >= 55 && abcVal < 70 ? '<li><strong>Leichte Beeinträchtigung:</strong> Unterstützung in einzelnen Bereichen erforderlich</li>' : ''}
+                                    ${abcVal >= 40 && abcVal < 55 ? '<li><strong>Mittelgradige Beeinträchtigung:</strong> Umfassende Unterstützung in vielen Bereichen erforderlich</li>' : ''}
+                                    ${abcVal < 40 ? '<li><strong>Schwere/Schwerste Beeinträchtigung:</strong> Intensive Betreuung in allen Lebensbereichen erforderlich</li>' : ''}
+                                </ul>
+                            ` : abcVal && abcVal >= 70 && abcVal < 85 ? `
+                                <p>Die adaptiven Fähigkeiten liegen im unterdurchschnittlichen, aber nicht beeinträchtigten Bereich. Dies kann auf eine allgemeine Entwicklungsverzögerung oder spezifische Förderbedarfe hindeuten.</p>
+                            ` : `
+                                <p>Die adaptiven Fähigkeiten liegen im Normalbereich. Es ergeben sich keine Hinweise auf eine klinisch relevante Beeinträchtigung der Alltagskompetenzen.</p>
+                            `}
+
+                            ${domains.soc?.v && domains.soc.v < 70 && domains.com?.v && domains.com.v < 85 ? `
+                                <p style="margin-top:1rem;"><strong>Hinweis:</strong> Die Kombination aus deutlichen Einschränkungen in Sozialisation und Kommunikation sollte differenzialdiagnostisch an eine Autismus-Spektrum-Störung denken lassen.</p>
+                                <span class="icd-code">6A02</span> Autismus-Spektrum-Störung (abzuklären)
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">5. Empfehlungen</h4>
+                        <div class="gutachten-text">
+                            <ul class="gutachten-list">
+                                ${abcVal && abcVal < 70 ? `
+                                    <li>Ergänzende Intelligenzdiagnostik zur Abklärung einer intellektuellen Beeinträchtigung</li>
+                                    <li>Heilpädagogische Förderung der Alltagskompetenzen</li>
+                                    <li>Prüfung von Eingliederungshilfe nach SGB IX</li>
+                                    <li>Elternberatung zu Förderstrategien im Alltag</li>
+                                ` : abcVal && abcVal < 85 ? `
+                                    <li>Gezielte Förderung der identifizierten Schwachbereiche</li>
+                                    <li>Training von Alltagsfertigkeiten (Activities of Daily Living)</li>
+                                    <li>Beratung der Eltern zu entwicklungsfördernden Maßnahmen</li>
+                                ` : `
+                                    <li>Keine spezifische Intervention aufgrund des adaptiven Verhaltens erforderlich</li>
+                                `}
+                                ${weakest && domainClasses[Object.entries(domains).find(([k,d])=>d===weakest)?.[0]]?.c !== 'normal' ? `<li>Besondere Aufmerksamkeit für den Bereich ${weakest.n}</li>` : ''}
+                                ${maladaptive && maladaptive >= 18 ? '<li>Verhaltenstherapeutische Intervention bei maladaptiven Verhaltensweisen</li>' : ''}
+                                <li>Integration mit weiteren diagnostischen Befunden (Intelligenz, Verhalten)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    ${elternZusammenfassung(
+                        'Vineland-3 (Alltagskompetenzen)',
+                        abcVal && abcVal < 70
+                            ? `Der Vineland-Test misst, wie gut ${pat.name} alltägliche Dinge selbstständig erledigen kann - zum Beispiel sich anziehen, mit anderen kommunizieren oder sich in der Umgebung zurechtfinden. Die Ergebnisse zeigen, dass Ihr Kind in diesen Bereichen deutlich mehr Unterstützung braucht als andere Gleichaltrige. Das ist wichtig zu wissen, damit die richtige Hilfe organisiert werden kann.`
+                            : abcVal && abcVal < 85
+                                ? `Der Vineland-Test misst Alltagsfertigkeiten - also wie selbstständig ${pat.name} alltägliche Dinge erledigt. Die Ergebnisse zeigen, dass Ihr Kind in einigen Bereichen noch etwas Unterstützung braucht, um den Anschluss an Gleichaltrige zu halten. Mit gezielter Förderung können diese Fähigkeiten aber gut entwickelt werden.`
+                                : `Der Vineland-Test misst, wie gut ${pat.name} alltägliche Aufgaben bewältigt. Die Ergebnisse zeigen, dass die Alltagskompetenzen Ihres Kindes altersgemäß entwickelt sind. ${pat.name} kann sich angemessen versorgen, kommunizieren und soziale Situationen meistern.`,
+                        abcVal && abcVal < 70
+                            ? ['Lassen Sie sich ausführlich beraten', 'Fragen Sie nach Eingliederungshilfe', 'Üben Sie Alltagsfertigkeiten in kleinen Schritten', 'Feiern Sie jeden Fortschritt']
+                            : abcVal && abcVal < 85
+                                ? ['Üben Sie Alltagsfertigkeiten spielerisch', 'Geben Sie klare Anweisungen in einfacher Sprache', 'Lassen Sie Ihr Kind möglichst viel selbst machen', 'Seien Sie geduldig - Fortschritte brauchen Zeit']
+                                : ['Die Alltagskompetenzen sind gut entwickelt', 'Fördern Sie die Selbstständigkeit weiter', 'Loben Sie eigenständiges Handeln']
+                    )}
+
+                    ${gutachtenFooter()}
+                </div>
+            `;
+
+            const summaryItems = [];
+            if(abcVal) summaryItems.push({l:'ABC Gesamtwert',v:abcVal,c:abcClassFinal.c,s:abcClassFinal.l});
+            validDomains.forEach(([k,d]) => summaryItems.push({l:d.n,v:d.v,c:domainClasses[k].c,s:domainClasses[k].l}));
+
+            document.getElementById('vineland-results').innerHTML = `
+                <div class="results-header"><h3 class="results-title">Ergebnis Vineland-3</h3></div>
+                ${summary(summaryItems)}
+                ${gutachten}
+            `;
+            document.getElementById('vineland-results').classList.add('show');
+            R.vineland = {abc:abcVal,domains:validDomains.map(([k,d])=>({k,...d,c:domainClasses[k]})),maladaptive,gutachten}; updateReport();
+        }
+
         function updateReport() {
             const tests = Object.keys(R);
             if(!tests.length) {
@@ -3765,7 +4129,7 @@
                 return;
             }
 
-            const names = {sdq:'SDQ – Strengths and Difficulties Questionnaire',wisc:'WISC-V – Wechsler Intelligence Scale',cbcl:'CBCL – Child Behavior Checklist',disyps:'DISYPS-III – ADHS/SSV Diagnostik',afs:'AFS – Angstfragebogen für Schüler',d2r:'d2-R – Aufmerksamkeits-/Konzentrationstest'};
+            const names = {sdq:'SDQ – Strengths and Difficulties Questionnaire',wisc:'WISC-V – Wechsler Intelligence Scale',cbcl:'CBCL – Child Behavior Checklist',disyps:'DISYPS-III – ADHS/SSV Diagnostik',afs:'AFS – Angstfragebogen für Schüler',d2r:'d2-R – Aufmerksamkeits-/Konzentrationstest',dikj:'DIKJ – Depressions-Inventar',conners:'Conners-3 – ADHS-Diagnostik',feelkj:'FEEL-KJ – Emotionsregulation',cft:'CFT 20-R – Intelligenztest',vineland:'Vineland-3 – Adaptives Verhalten'};
             const pat = getPatient();
 
             // Gesamtbericht generieren
@@ -3798,7 +4162,12 @@
                                     if(t === 'disyps') { const clin = Object.values(R.disyps.c).some(c=>c==='clinical'); befund = clin?'Auffällig':'Unauffällig'; befundClass = clin?'clinical':'normal'; }
                                     if(t === 'afs') { const clin = Object.values(R.afs.c).some(c=>c==='clinical'); befund = clin?'Auffällig':'Unauffällig'; befundClass = clin?'clinical':'normal'; }
                                     if(t === 'd2r' && R.d2r.c.kl) { befund = R.d2r.c.kl==='normal'?'Durchschnittlich':R.d2r.c.kl==='borderline'?'Unterdurchschnittlich':'Weit unterdurchschnittlich'; befundClass = R.d2r.c.kl; }
-                                    const bereich = {sdq:'Screening',wisc:'Intelligenz',cbcl:'Verhalten',disyps:'ADHS/SSV',afs:'Angst',d2r:'Aufmerksamkeit'}[t];
+                                    if(t === 'dikj' && R.dikj) { befund = R.dikj.c==='clinical'?'Auffällig':R.dikj.c==='borderline'?'Grenzwertig':'Unauffällig'; befundClass = R.dikj.c; }
+                                    if(t === 'conners' && R.conners) { const clin = Object.values(R.conners.c).some(c=>c==='clinical'); befund = clin?'Auffällig':'Unauffällig'; befundClass = clin?'clinical':'normal'; }
+                                    if(t === 'feelkj' && R.feelkj) { befund = R.feelkj.cMaladapt==='clinical'?'Auffällig':R.feelkj.cAdapt==='clinical'?'Defizitär':'Unauffällig'; befundClass = R.feelkj.cMaladapt==='clinical'?'clinical':R.feelkj.cAdapt==='clinical'?'borderline':'normal'; }
+                                    if(t === 'cft' && R.cft) { befund = R.cft.c.l; befundClass = R.cft.c.c; }
+                                    if(t === 'vineland' && R.vineland) { const abc = R.vineland.abc; befund = abc < 70 ? 'Beeinträchtigt' : abc < 85 ? 'Unterdurchschnittlich' : 'Durchschnittlich'; befundClass = abc < 70 ? 'clinical' : abc < 85 ? 'borderline' : 'normal'; }
+                                    const bereich = {sdq:'Screening',wisc:'Intelligenz',cbcl:'Verhalten',disyps:'ADHS/SSV',afs:'Angst',d2r:'Aufmerksamkeit',dikj:'Depression',conners:'ADHS',feelkj:'Emotionsregulation',cft:'Intelligenz',vineland:'Adaptives Verhalten'}[t];
                                     return `<tr><td>${names[t]}</td><td>${bereich}</td><td class="${befundClass}">${befund}</td></tr>`;
                                 }).join('')}
                             </tbody>
@@ -3816,6 +4185,11 @@
                                 ${R.disyps ? `<li><strong>ADHS/Sozialverhalten (DISYPS):</strong> ${R.disyps.c.adhs ? (R.disyps.c.adhs==='clinical'?'ADHS-Symptome auffällig':'ADHS-Symptome unauffällig') : ''} ${R.disyps.c.ssv ? (R.disyps.c.ssv==='clinical'?'/ SSV auffällig':'/ SSV unauffällig') : ''}</li>` : ''}
                                 ${R.afs ? `<li><strong>Schulbezogene Ängste (AFS):</strong> ${R.afs.c.pa==='clinical'||R.afs.c.ma==='clinical'?'Erhöhte Angstwerte':'Angstwerte unauffällig'}</li>` : ''}
                                 ${R.d2r ? `<li><strong>Aufmerksamkeit (d2-R):</strong> ${R.d2r.c.kl ? `Konzentrationsleistung PR ${R.d2r.d.kl} (${R.d2r.c.kl==='normal'?'durchschnittlich':R.d2r.c.kl==='borderline'?'unterdurchschnittlich':'weit unterdurchschnittlich'})` : 'Kennwerte erfasst'}</li>` : ''}
+                                ${R.dikj ? `<li><strong>Depressive Symptomatik (DIKJ):</strong> ${R.dikj.c==='clinical'?'Klinisch auffällig':R.dikj.c==='borderline'?'Grenzwertig auffällig':'Unauffällig'}</li>` : ''}
+                                ${R.conners ? `<li><strong>ADHS-Diagnostik (Conners-3):</strong> ${Object.values(R.conners.c).some(c=>c==='clinical')?'Auffällige Werte':'Unauffällig'}</li>` : ''}
+                                ${R.feelkj ? `<li><strong>Emotionsregulation (FEEL-KJ):</strong> Adaptive Strategien ${R.feelkj.cAdapt==='normal'?'angemessen':'eingeschränkt'}, maladaptive Strategien ${R.feelkj.cMaladapt==='clinical'?'erhöht':'unauffällig'}</li>` : ''}
+                                ${R.cft ? `<li><strong>Grundintelligenz (CFT 20-R):</strong> IQ ${R.cft.iq} (${R.cft.c.l.toLowerCase()})</li>` : ''}
+                                ${R.vineland ? `<li><strong>Adaptives Verhalten (Vineland-3):</strong> ABC ${R.vineland.abc} (${R.vineland.abc < 70 ? 'beeinträchtigt' : R.vineland.abc < 85 ? 'unterdurchschnittlich' : 'durchschnittlich'})</li>` : ''}
                             </ul>
                         </div>
                     </div>
@@ -3867,7 +4241,7 @@
             }
 
             const pat = getPatient();
-            const names = {sdq:'SDQ',wisc:'WISC-V',cbcl:'CBCL',disyps:'DISYPS-III',afs:'AFS',d2r:'d2-R',dikj:'DIKJ',conners:'Conners-3',feelkj:'FEEL-KJ',cft:'CFT 20-R'};
+            const names = {sdq:'SDQ',wisc:'WISC-V',cbcl:'CBCL',disyps:'DISYPS-III',afs:'AFS',d2r:'d2-R',dikj:'DIKJ',conners:'Conners-3',feelkj:'FEEL-KJ',cft:'CFT 20-R',vineland:'Vineland-3'};
 
             // Sammle alle Gutachten
             let gutachtenHTML = '';
