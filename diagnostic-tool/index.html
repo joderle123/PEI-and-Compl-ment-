@@ -1113,7 +1113,6 @@
             <button class="nav-btn" data-section="feelkj"><span class="nav-icon">💗</span> FEEL-KJ</button>
             <button class="nav-btn" data-section="cft"><span class="nav-icon">🧩</span> CFT 20-R</button>
             <button class="nav-btn" data-section="vineland"><span class="nav-icon">🏠</span> Vineland-3</button>
-            <button class="nav-btn" data-section="report" style="margin-left:auto;"><span class="nav-icon">📄</span> Bericht</button>
         </div>
     </nav>
 
@@ -1128,6 +1127,18 @@
                 <div class="form-group"><label>Geschlecht</label><select id="pat-sex"><option value="">-</option><option value="m">männlich</option><option value="w">weiblich</option><option value="d">divers</option></select></div>
                 <div class="form-group"><label>Untersuchungsdatum</label><input type="date" id="pat-date"></div>
                 <div class="form-group"><label>Untersucher/in</label><input type="text" id="pat-examiner" placeholder="Name"></div>
+            </div>
+            <div class="report-options" style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+                <div class="form-group" style="display:flex;align-items:center;gap:1rem;">
+                    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+                        <input type="checkbox" id="show-charts" checked style="width:18px;height:18px;">
+                        <span>Visualisierungen im Bericht</span>
+                    </label>
+                    <select id="report-style" style="padding:0.4rem 0.8rem;border-radius:6px;background:var(--bg-input);border:1px solid var(--border);color:var(--text);">
+                        <option value="eltern">Für Eltern (mit Erklärungen)</option>
+                        <option value="fachlich">Für Fachkollegen (kompakt)</option>
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -1588,22 +1599,6 @@
             </div>
         </section>
 
-        <!-- Report -->
-        <section id="report" class="section">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title"><span class="icon">📄</span> Bericht erstellen</h2>
-                    <p class="card-subtitle">Exportieren Sie die Gutachten als Word-Dokument (.doc)</p>
-                </div>
-                <div id="report-content" style="color: var(--text-muted); text-align: center; padding: 3rem;">
-                    Führen Sie Tests durch, um einen Bericht zu erstellen.
-                </div>
-                <div class="btn-group" style="flex-wrap:wrap;">
-                    <button class="btn btn-primary" onclick="exportToWord()">📝 Als Word exportieren (.doc)</button>
-                    <button class="btn btn-secondary" onclick="window.print()">🖨️ PDF drucken (Strg+P)</button>
-                </div>
-            </div>
-        </section>
     </main>
 
     <!-- Modal für Durchführungshinweise -->
@@ -1720,7 +1715,7 @@
             }).join('')}</div>`;
         }
 
-        // Word-kompatibles Balkendiagramm (horizontale Balken als Tabelle)
+        // Word-kompatibles Balkendiagramm (horizontale Balken als Tabellenzellen)
         function wordChart(labels, values, classes, max, title) {
             const colors = {
                 normal: '#48bb78',
@@ -1737,30 +1732,39 @@
                 high: 'Überdurchschn.'
             };
 
+            // Prüfen ob Charts aktiviert sind
+            const showCharts = document.getElementById('show-charts')?.checked !== false;
+            if (!showCharts) return '';
+
             return `
                 <div class="word-chart">
                     ${title ? `<p style="font-weight:bold;margin-bottom:8pt;">${title}</p>` : ''}
-                    <table class="chart-table" style="width:100%;border-collapse:collapse;margin:12pt 0;">
+                    <table style="width:100%;border-collapse:collapse;margin:12pt 0;">
                         ${labels.map((l, i) => {
-                            const pct = Math.min(100, Math.max(5, (values[i] / max) * 100));
+                            const pct = Math.min(100, Math.max(5, Math.round((values[i] / max) * 100)));
                             const color = colors[classes[i]] || '#a0aec0';
                             const label = classLabels[classes[i]] || '';
                             return `
                                 <tr>
-                                    <td style="width:25%;padding:4pt 8pt;border:1pt solid #e2e8f0;font-size:10pt;">${l}</td>
-                                    <td style="width:50%;padding:4pt;border:1pt solid #e2e8f0;">
-                                        <div style="background:${color};width:${pct}%;height:16pt;border-radius:2pt;"></div>
+                                    <td style="width:25%;padding:6pt 8pt;border:1pt solid #cbd5e0;font-size:10pt;background:#f7fafc;">${l}</td>
+                                    <td style="width:50%;padding:0;border:1pt solid #cbd5e0;background:#fff;">
+                                        <table style="width:100%;border-collapse:collapse;height:20pt;"><tr>
+                                            <td style="width:${pct}%;background-color:${color};border:none;">&nbsp;</td>
+                                            <td style="width:${100-pct}%;background-color:#edf2f7;border:none;">&nbsp;</td>
+                                        </tr></table>
                                     </td>
-                                    <td style="width:10%;padding:4pt 8pt;border:1pt solid #e2e8f0;text-align:center;font-weight:bold;">${values[i]}</td>
-                                    <td style="width:15%;padding:4pt 8pt;border:1pt solid #e2e8f0;font-size:9pt;color:${color};">${label}</td>
+                                    <td style="width:10%;padding:6pt 8pt;border:1pt solid #cbd5e0;text-align:center;font-weight:bold;font-size:11pt;">${values[i]}</td>
+                                    <td style="width:15%;padding:6pt 8pt;border:1pt solid #cbd5e0;font-size:9pt;color:${color};font-weight:600;">${label}</td>
                                 </tr>
                             `;
                         }).join('')}
                     </table>
-                    <p style="font-size:8pt;color:#718096;margin-top:4pt;">Referenz: ${max === 160 ? 'IQ-Skala (M=100, SD=15)' : max === 100 ? 'Prozentrang (0-100)' : max === 10 ? 'Rohwert (0-10)' : `0-${max}`} |
-                    <span style="color:#48bb78;">■</span> Durchschnitt
-                    <span style="color:#ed8936;">■</span> Grenzwertig
-                    <span style="color:#f56565;">■</span> Auffällig</p>
+                    <table style="width:100%;margin-top:6pt;font-size:8pt;color:#718096;"><tr>
+                        <td style="border:none;">Legende:</td>
+                        <td style="border:none;"><span style="background-color:#48bb78;color:#fff;padding:2pt 6pt;">■</span> Durchschnitt</td>
+                        <td style="border:none;"><span style="background-color:#ed8936;color:#fff;padding:2pt 6pt;">■</span> Grenzwertig</td>
+                        <td style="border:none;"><span style="background-color:#f56565;color:#fff;padding:2pt 6pt;">■</span> Auffällig</td>
+                    </tr></table>
                 </div>
             `;
         }
@@ -2570,6 +2574,9 @@
                 <div class="results-header"><h3 class="results-title">Ergebnis SDQ</h3></div>
                 ${summary([{l:'Gesamt',v:tot,c:c.tot,s:S[c.tot]},...keys.map(k=>({l:labels[keys.indexOf(k)],v:d[k],c:c[k],s:S[c[k]]}))])}
                 ${gutachten}
+                <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
+                    <button class="btn btn-primary" onclick="exportTestToWord('sdq')">📝 Als Word exportieren (.doc)</button>
+                </div>
             `;
             document.getElementById('sdq-results').classList.add('show');
             R.sdq = {d,c,tot,r,gutachten}; updateReport();
@@ -2838,6 +2845,9 @@
                 <div class="results-header"><h3 class="results-title">Ergebnis WISC-V</h3></div>
                 ${summary(valid.map(([k,x])=>({l:k==='fsiq'?'Gesamt-IQ':WISC_NAMES[k].n.split(' ')[0],v:x.v,c:c[k].c,s:c[k].l})))}
                 ${gutachten}
+                <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
+                    <button class="btn btn-primary" onclick="exportTestToWord('wisc')">📝 Als Word exportieren (.doc)</button>
+                </div>
             `;
             document.getElementById('wisc-results').classList.add('show');
             R.wisc = {idx,c,gutachten}; updateReport();
@@ -3027,6 +3037,9 @@
             let html = `<div class="results-header"><h3 class="results-title">Ergebnis CBCL</h3></div>`;
             html += summary(validBB.map(([k,x])=>({l:bbLabels[k],v:'T '+x,c:cBB[k],s:cbclClassText(cBB[k])})));
             html += gutachten;
+            html += `<div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
+                    <button class="btn btn-primary" onclick="exportTestToWord('cbcl')">📝 Als Word exportieren (.doc)</button>
+                </div>`;
 
             document.getElementById('cbcl-results').innerHTML = html;
             document.getElementById('cbcl-results').classList.add('show');
@@ -3183,6 +3196,9 @@
                 <div class="results-header"><h3 class="results-title">Ergebnis DISYPS-III</h3></div>
                 ${summary(valid.map(([k,x])=>({l:labels[k],v:'ST '+x,c:c[k],s:S[c[k]]})))}
                 ${gutachten}
+                <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
+                    <button class="btn btn-primary" onclick="exportTestToWord('disyps')">📝 Als Word exportieren (.doc)</button>
+                </div>
             `;
             document.getElementById('disyps-results').classList.add('show');
             R.disyps = {d,c,gutachten}; updateReport();
@@ -3335,6 +3351,9 @@
                 <div class="results-header"><h3 class="results-title">Ergebnis AFS</h3></div>
                 ${summary(valid.map(([k,x])=>({l:labels[k],v:'ST '+x,c:c[k],s:S[c[k]]})))}
                 ${gutachten}
+                <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
+                    <button class="btn btn-primary" onclick="exportTestToWord('afs')">📝 Als Word exportieren (.doc)</button>
+                </div>
             `;
             document.getElementById('afs-results').classList.add('show');
             R.afs = {d,c,gutachten}; updateReport();
@@ -3498,6 +3517,9 @@
                 <div class="results-header"><h3 class="results-title">Ergebnis d2-R</h3></div>
                 ${summary(valid.map(([k,x])=>({l:labels[k],v:'PR '+x,c:c[k],s:c[k]==='normal'?'Durchschn.':c[k]==='borderline'?'Unter':'Weit unter'})))}
                 ${gutachten}
+                <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
+                    <button class="btn btn-primary" onclick="exportTestToWord('d2r')">📝 Als Word exportieren (.doc)</button>
+                </div>
             `;
             document.getElementById('d2r-results').classList.add('show');
             R.d2r = {d,c,gutachten}; updateReport();
@@ -3604,6 +3626,9 @@
                 <div class="results-header"><h3 class="results-title">Ergebnis DIKJ</h3></div>
                 ${summary([{l:'T-Wert',v:Math.round(tVal),c:c,s:cText}])}
                 ${gutachten}
+                <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
+                    <button class="btn btn-primary" onclick="exportTestToWord('dikj')">📝 Als Word exportieren (.doc)</button>
+                </div>
             `;
             document.getElementById('dikj-results').classList.add('show');
             R.dikj = {raw,t:tVal,c,gutachten}; updateReport();
@@ -3734,6 +3759,9 @@
                 <div class="results-header"><h3 class="results-title">Ergebnis Conners-3</h3></div>
                 ${summary(valid.slice(0,6).map(([k,x])=>({l:x.n.split('/')[0].substring(0,10),v:'T '+x.v,c:c[k],s:cText(x.v)})))}
                 ${gutachten}
+                <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
+                    <button class="btn btn-primary" onclick="exportTestToWord('conners')">📝 Als Word exportieren (.doc)</button>
+                </div>
             `;
             document.getElementById('conners-results').classList.add('show');
             R.conners = {scales,c,gutachten}; updateReport();
@@ -3851,6 +3879,9 @@
                     ...(sekundar.maladapt ? [{l:'Maladaptiv',v:'T '+sekundar.maladapt,c:sekundar.maladapt<=55?'normal':sekundar.maladapt<=60?'borderline':'clinical',s:cMaladaptText(sekundar.maladapt)}] : [])
                 ])}
                 ${gutachten}
+                <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
+                    <button class="btn btn-primary" onclick="exportTestToWord('feelkj')">📝 Als Word exportieren (.doc)</button>
+                </div>
             `;
             document.getElementById('feelkj-results').classList.add('show');
             R.feelkj = {adaptive,maladaptive,cAdapt,cMaladapt,gutachten}; updateReport();
@@ -3957,6 +3988,9 @@
                 <div class="results-header"><h3 class="results-title">Ergebnis CFT 20-R</h3></div>
                 ${summary([{l:'Gesamt-IQ',v:iqVal,c:c.c,s:c.l}])}
                 ${gutachten}
+                <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
+                    <button class="btn btn-primary" onclick="exportTestToWord('cft')">📝 Als Word exportieren (.doc)</button>
+                </div>
             `;
             document.getElementById('cft-results').classList.add('show');
             R.cft = {iq:iqVal,subtests,c,gutachten}; updateReport();
@@ -4179,122 +4213,197 @@
                 <div class="results-header"><h3 class="results-title">Ergebnis Vineland-3</h3></div>
                 ${summary(summaryItems)}
                 ${gutachten}
+                <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
+                    <button class="btn btn-primary" onclick="exportTestToWord('vineland')">📝 Als Word exportieren (.doc)</button>
+                </div>
             `;
             document.getElementById('vineland-results').classList.add('show');
             R.vineland = {abc:abcVal,domains:validDomains.map(([k,d])=>({k,...d,c:domainClasses[k]})),maladaptive,gutachten}; updateReport();
         }
 
         function updateReport() {
-            const tests = Object.keys(R);
-            if(!tests.length) {
-                document.getElementById('report-content').innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:3rem;">Führen Sie Tests durch, um einen Bericht zu erstellen.</p>';
+            // Diese Funktion wird aufgerufen um das R-Objekt aktuell zu halten
+            // Die Bericht-Seite wurde entfernt - Export erfolgt jetzt pro Test
+        }
+
+        // Einzeltest Word Export Funktion
+        function exportTestToWord(testKey) {
+            if(!R[testKey] || !R[testKey].gutachten) {
+                alert('Bitte führen Sie zuerst den Test durch.');
                 return;
             }
 
-            const names = {sdq:'SDQ – Strengths and Difficulties Questionnaire',wisc:'WISC-V – Wechsler Intelligence Scale',cbcl:'CBCL – Child Behavior Checklist',disyps:'DISYPS-III – ADHS/SSV Diagnostik',afs:'AFS – Angstfragebogen für Schüler',d2r:'d2-R – Aufmerksamkeits-/Konzentrationstest',dikj:'DIKJ – Depressions-Inventar',conners:'Conners-3 – ADHS-Diagnostik',feelkj:'FEEL-KJ – Emotionsregulation',cft:'CFT 20-R – Intelligenztest',vineland:'Vineland-3 – Adaptives Verhalten'};
             const pat = getPatient();
+            const testNames = {
+                sdq:'SDQ',wisc:'WISC-V',cbcl:'CBCL',disyps:'DISYPS-III',
+                afs:'AFS',d2r:'d2-R',dikj:'DIKJ',conners:'Conners-3',
+                feelkj:'FEEL-KJ',cft:'CFT 20-R',vineland:'Vineland-3'
+            };
+            const testName = testNames[testKey] || testKey.toUpperCase();
 
-            // Gesamtbericht generieren
-            let gesamtbericht = `
-                <div class="gutachten" style="margin-top:0;">
-                    <div class="gutachten-header">
-                        <div class="gutachten-title">ZUSAMMENFASSENDER BEFUNDBERICHT</div>
-                        <div class="gutachten-subtitle">Psychodiagnostische Untersuchung</div>
-                    </div>
-                    <div class="gutachten-meta">
-                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">Patient/in:</span><span class="gutachten-meta-value">${pat.name}</span></div>
-                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">Geburtsdatum:</span><span class="gutachten-meta-value">${formatDate(pat.dob)}</span></div>
-                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">Alter:</span><span class="gutachten-meta-value">${pat.age ? pat.age + ' Jahre' : '-'}</span></div>
-                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">Untersuchungsdatum:</span><span class="gutachten-meta-value">${formatDate(pat.date)}</span></div>
-                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">Untersucher/in:</span><span class="gutachten-meta-value">${pat.examiner}</span></div>
-                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">Anzahl Tests:</span><span class="gutachten-meta-value">${tests.length}</span></div>
-                    </div>
-
-                    <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">Durchgeführte Testverfahren</h4>
-                        <table class="gutachten-table">
-                            <thead><tr><th>Verfahren</th><th>Bereich</th><th>Gesamtbefund</th></tr></thead>
-                            <tbody>
-                                ${tests.map(t => {
-                                    let befund = 'Unauffällig';
-                                    let befundClass = 'normal';
-                                    if(t === 'sdq' && R.sdq.c.tot !== 'normal') { befund = S[R.sdq.c.tot]; befundClass = R.sdq.c.tot; }
-                                    if(t === 'wisc' && R.wisc.idx.fsiq?.v) { const cl = R.wisc.c.fsiq; befund = cl.l; befundClass = cl.c; }
-                                    if(t === 'cbcl' && R.cbcl.cBB.tot) { befund = cbclClassText(R.cbcl.cBB.tot); befundClass = R.cbcl.cBB.tot; }
-                                    if(t === 'disyps') { const clin = Object.values(R.disyps.c).some(c=>c==='clinical'); befund = clin?'Auffällig':'Unauffällig'; befundClass = clin?'clinical':'normal'; }
-                                    if(t === 'afs') { const clin = Object.values(R.afs.c).some(c=>c==='clinical'); befund = clin?'Auffällig':'Unauffällig'; befundClass = clin?'clinical':'normal'; }
-                                    if(t === 'd2r' && R.d2r.c.kl) { befund = R.d2r.c.kl==='normal'?'Durchschnittlich':R.d2r.c.kl==='borderline'?'Unterdurchschnittlich':'Weit unterdurchschnittlich'; befundClass = R.d2r.c.kl; }
-                                    if(t === 'dikj' && R.dikj) { befund = R.dikj.c==='clinical'?'Auffällig':R.dikj.c==='borderline'?'Grenzwertig':'Unauffällig'; befundClass = R.dikj.c; }
-                                    if(t === 'conners' && R.conners) { const clin = Object.values(R.conners.c).some(c=>c==='clinical'); befund = clin?'Auffällig':'Unauffällig'; befundClass = clin?'clinical':'normal'; }
-                                    if(t === 'feelkj' && R.feelkj) { befund = R.feelkj.cMaladapt==='clinical'?'Auffällig':R.feelkj.cAdapt==='clinical'?'Defizitär':'Unauffällig'; befundClass = R.feelkj.cMaladapt==='clinical'?'clinical':R.feelkj.cAdapt==='clinical'?'borderline':'normal'; }
-                                    if(t === 'cft' && R.cft) { befund = R.cft.c.l; befundClass = R.cft.c.c; }
-                                    if(t === 'vineland' && R.vineland) { const abc = R.vineland.abc; befund = abc < 70 ? 'Beeinträchtigt' : abc < 85 ? 'Unterdurchschnittlich' : 'Durchschnittlich'; befundClass = abc < 70 ? 'clinical' : abc < 85 ? 'borderline' : 'normal'; }
-                                    const bereich = {sdq:'Screening',wisc:'Intelligenz',cbcl:'Verhalten',disyps:'ADHS/SSV',afs:'Angst',d2r:'Aufmerksamkeit',dikj:'Depression',conners:'ADHS',feelkj:'Emotionsregulation',cft:'Intelligenz',vineland:'Adaptives Verhalten'}[t];
-                                    return `<tr><td>${names[t]}</td><td>${bereich}</td><td class="${befundClass}">${befund}</td></tr>`;
-                                }).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">Zusammenfassende Beurteilung</h4>
-                        <div class="gutachten-text">
-                            <p>Im Rahmen der psychodiagnostischen Untersuchung wurden ${tests.length} standardisierte Testverfahren durchgeführt. Die Ergebnisse werden nachfolgend zusammengefasst:</p>
-                            <ul class="gutachten-list">
-                                ${R.wisc ? `<li><strong>Kognitive Entwicklung (WISC-V):</strong> ${R.wisc.idx.fsiq?.v ? `Gesamt-IQ von ${R.wisc.idx.fsiq.v} (${R.wisc.c.fsiq.l.toLowerCase()})` : 'Teilleistungen erfasst'}</li>` : ''}
-                                ${R.sdq ? `<li><strong>Psychische Belastung (SDQ):</strong> Gesamtproblemwert ${R.sdq.tot} (${S[R.sdq.c.tot].toLowerCase()})</li>` : ''}
-                                ${R.cbcl ? `<li><strong>Verhaltensauffälligkeiten (CBCL):</strong> ${R.cbcl.bb.tot ? `Gesamtwert T=${R.cbcl.bb.tot} (${cbclClassText(R.cbcl.cBB.tot).toLowerCase()})` : 'Syndromskalen erfasst'}</li>` : ''}
-                                ${R.disyps ? `<li><strong>ADHS/Sozialverhalten (DISYPS):</strong> ${R.disyps.c.adhs ? (R.disyps.c.adhs==='clinical'?'ADHS-Symptome auffällig':'ADHS-Symptome unauffällig') : ''} ${R.disyps.c.ssv ? (R.disyps.c.ssv==='clinical'?'/ SSV auffällig':'/ SSV unauffällig') : ''}</li>` : ''}
-                                ${R.afs ? `<li><strong>Schulbezogene Ängste (AFS):</strong> ${R.afs.c.pa==='clinical'||R.afs.c.ma==='clinical'?'Erhöhte Angstwerte':'Angstwerte unauffällig'}</li>` : ''}
-                                ${R.d2r ? `<li><strong>Aufmerksamkeit (d2-R):</strong> ${R.d2r.c.kl ? `Konzentrationsleistung PR ${R.d2r.d.kl} (${R.d2r.c.kl==='normal'?'durchschnittlich':R.d2r.c.kl==='borderline'?'unterdurchschnittlich':'weit unterdurchschnittlich'})` : 'Kennwerte erfasst'}</li>` : ''}
-                                ${R.dikj ? `<li><strong>Depressive Symptomatik (DIKJ):</strong> ${R.dikj.c==='clinical'?'Klinisch auffällig':R.dikj.c==='borderline'?'Grenzwertig auffällig':'Unauffällig'}</li>` : ''}
-                                ${R.conners ? `<li><strong>ADHS-Diagnostik (Conners-3):</strong> ${Object.values(R.conners.c).some(c=>c==='clinical')?'Auffällige Werte':'Unauffällig'}</li>` : ''}
-                                ${R.feelkj ? `<li><strong>Emotionsregulation (FEEL-KJ):</strong> Adaptive Strategien ${R.feelkj.cAdapt==='normal'?'angemessen':'eingeschränkt'}, maladaptive Strategien ${R.feelkj.cMaladapt==='clinical'?'erhöht':'unauffällig'}</li>` : ''}
-                                ${R.cft ? `<li><strong>Grundintelligenz (CFT 20-R):</strong> IQ ${R.cft.iq} (${R.cft.c.l.toLowerCase()})</li>` : ''}
-                                ${R.vineland ? `<li><strong>Adaptives Verhalten (Vineland-3):</strong> ABC ${R.vineland.abc} (${R.vineland.abc < 70 ? 'beeinträchtigt' : R.vineland.abc < 85 ? 'unterdurchschnittlich' : 'durchschnittlich'})</li>` : ''}
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">Diagnostische Hypothesen</h4>
-                        <div class="gutachten-text">
-                            <p>Basierend auf der Gesamtschau der Befunde ergeben sich folgende diagnostische Hypothesen zur weiteren Abklärung:</p>
-                            <ul class="gutachten-list">
-                                ${(R.disyps?.c.adhs==='clinical' || R.d2r?.c.kl==='clinical') ? '<li><span class="icd-code">F90.x</span> Hyperkinetische Störungen (ADHS)</li>' : ''}
-                                ${(R.cbcl?.cSyn?.agg==='clinical' || R.cbcl?.cSyn?.rul==='clinical' || R.disyps?.c.ssv==='clinical') ? '<li><span class="icd-code">F91.x</span> Störungen des Sozialverhaltens</li>' : ''}
-                                ${(R.sdq?.c.em==='clinical' || R.cbcl?.cSyn?.anx==='clinical' || R.afs?.c.ma==='clinical') ? '<li><span class="icd-code">F41.x</span><span class="icd-code">F93.x</span> Angststörungen / Emotionale Störungen</li>' : ''}
-                                ${(R.cbcl?.cSyn?.wit==='clinical' || R.sdq?.c.em==='clinical') ? '<li><span class="icd-code">F32.x</span> Depressive Episode</li>' : ''}
-                                ${R.wisc?.idx.fsiq?.v < 70 ? '<li><span class="icd-code">F7x.x</span> Intelligenzminderung</li>' : ''}
-                                ${!tests.some(t => {
-                                    if(t==='sdq') return R.sdq.c.tot!=='normal';
-                                    if(t==='cbcl') return R.cbcl.cBB.tot==='clinical';
-                                    if(t==='disyps') return Object.values(R.disyps.c).some(c=>c==='clinical');
-                                    if(t==='afs') return R.afs.c.pa==='clinical'||R.afs.c.ma==='clinical';
-                                    if(t==='d2r') return R.d2r.c.kl==='clinical';
-                                    if(t==='wisc') return R.wisc.idx.fsiq?.v<70;
-                                    return false;
-                                }) ? '<li>Keine spezifischen diagnostischen Auffälligkeiten</li>' : ''}
-                            </ul>
-                        </div>
-                    </div>
-
-                    ${gutachtenFooter()}
-                </div>
+            const wordContent = `
+                <!DOCTYPE html>
+                <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                    <title>Befundbericht ${testName} - ${pat.name}</title>
+                    <!--[if gte mso 9]>
+                    <xml>
+                        <w:WordDocument>
+                            <w:View>Print</w:View>
+                            <w:Zoom>100</w:Zoom>
+                            <w:DoNotOptimizeForBrowser/>
+                        </w:WordDocument>
+                    </xml>
+                    <![endif]-->
+                    <style>
+                        @page {
+                            size: A4;
+                            margin: 2cm 2.5cm 2cm 2.5cm;
+                        }
+                        body {
+                            font-family: 'Times New Roman', Times, serif;
+                            font-size: 12pt;
+                            line-height: 1.5;
+                            color: #000;
+                            background: #fff;
+                        }
+                        h1, h2, h3, h4, h5 {
+                            font-family: 'Arial', sans-serif;
+                            color: #1a365d;
+                            margin-top: 18pt;
+                            margin-bottom: 6pt;
+                        }
+                        h4 { font-size: 13pt; border-bottom: 1pt solid #1a365d; padding-bottom: 3pt; }
+                        h5 { font-size: 12pt; color: #2c5282; }
+                        p { margin: 6pt 0; text-align: justify; }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 12pt 0;
+                            font-size: 11pt;
+                        }
+                        th, td {
+                            border: 1pt solid #666;
+                            padding: 6pt 8pt;
+                            text-align: left;
+                        }
+                        th {
+                            background-color: #e2e8f0;
+                            font-weight: bold;
+                        }
+                        .gutachten { margin-bottom: 24pt; }
+                        .gutachten-header {
+                            text-align: center;
+                            border-bottom: 2pt solid #1a365d;
+                            padding-bottom: 12pt;
+                            margin-bottom: 18pt;
+                        }
+                        .gutachten-title {
+                            font-size: 16pt;
+                            font-weight: bold;
+                            color: #1a365d;
+                        }
+                        .gutachten-subtitle { color: #4a5568; font-size: 11pt; }
+                        .gutachten-confidential {
+                            background: #fff5f5;
+                            border: 1pt solid #c53030;
+                            padding: 8pt 12pt;
+                            margin-bottom: 12pt;
+                            text-align: center;
+                            font-size: 10pt;
+                            color: #c53030;
+                        }
+                        .gutachten-meta {
+                            background: #f7fafc;
+                            padding: 12pt;
+                            margin: 12pt 0;
+                            border: 1pt solid #e2e8f0;
+                        }
+                        .gutachten-meta-item { margin: 4pt 0; }
+                        .gutachten-meta-label { color: #4a5568; }
+                        .gutachten-meta-value { font-weight: bold; }
+                        .gutachten-section { margin: 18pt 0; }
+                        .gutachten-section-title {
+                            font-size: 13pt;
+                            color: #1a365d;
+                            border-bottom: 1pt solid #cbd5e0;
+                            padding-bottom: 4pt;
+                            margin-bottom: 10pt;
+                        }
+                        .gutachten-text { text-align: justify; }
+                        .gutachten-list { margin: 8pt 0; padding-left: 24pt; }
+                        .gutachten-list li { margin: 4pt 0; }
+                        .gutachten-highlight {
+                            background: #ebf8ff;
+                            border-left: 3pt solid #3182ce;
+                            padding: 8pt 12pt;
+                            margin: 10pt 0;
+                        }
+                        .gutachten-warning {
+                            background: #fff5f5;
+                            border-left: 3pt solid #c53030;
+                            padding: 8pt 12pt;
+                            margin: 10pt 0;
+                        }
+                        .gutachten-footer {
+                            margin-top: 24pt;
+                            padding-top: 12pt;
+                            border-top: 1pt solid #cbd5e0;
+                            font-size: 10pt;
+                            color: #4a5568;
+                        }
+                        .gutachten-signature {
+                            margin-top: 36pt;
+                            display: table;
+                            width: 100%;
+                        }
+                        .gutachten-signature-box {
+                            display: table-cell;
+                            width: 45%;
+                            border-top: 1pt solid #000;
+                            padding-top: 6pt;
+                            text-align: center;
+                            font-size: 10pt;
+                        }
+                        .icd-code {
+                            background: #edf2f7;
+                            padding: 2pt 6pt;
+                            font-family: 'Courier New', monospace;
+                            font-size: 10pt;
+                            border: 1pt solid #cbd5e0;
+                        }
+                        .normal { color: #276749; }
+                        .borderline { color: #c05621; }
+                        .clinical { color: #c53030; }
+                        .vhigh { color: #2b6cb0; }
+                        .high { color: #3182ce; }
+                        .bar-chart, .chart-container { display: none; }
+                        .summary-grid, .summary-card { display: none; }
+                        .word-chart { margin: 16pt 0; page-break-inside: avoid; }
+                        .chart-table td { vertical-align: middle; }
+                    </style>
+                </head>
+                <body>
+                    ${R[testKey].gutachten}
+                </body>
+                </html>
             `;
 
-            document.getElementById('report-content').innerHTML = `
-                <div style="text-align:left;margin-bottom:2rem;">
-                    <p style="margin-bottom:1rem;color:var(--text);font-weight:600;">✓ ${tests.length} Test(s) durchgeführt</p>
-                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
-                        ${tests.map(t=>`<span style="padding:0.5rem 1rem;background:var(--bg-input);border-radius:8px;font-size:0.85rem;">${t.toUpperCase()}</span>`).join('')}
-                    </div>
-                </div>
-                ${gesamtbericht}
-            `;
+            // Als Blob erstellen und downloaden
+            const blob = new Blob(['\ufeff' + wordContent], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Befundbericht_${testName}_${pat.name.replace(/[^a-zA-Z0-9äöüÄÖÜß]/g, '_')}_${pat.date || new Date().toISOString().split('T')[0]}.doc`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
-        // Word Export Funktion
+        // Word Export Funktion (alle Tests)
         function exportToWord() {
             const tests = Object.keys(R);
             if(!tests.length) {
