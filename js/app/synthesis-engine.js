@@ -24,19 +24,502 @@ const SynthesisEngine = {
      * @returns {Object} - Vollständige Synthese inkl. Bedienungsanleitung
      */
     synthesize(data) {
+        // Basis-Hypothesen generieren
+        const hypothesen = this.generateHypothesen(data);
+
+        // NEU: Altersbasierte Anpassung der Hypothesen
+        const alter = data.stammdaten?.alter;
+        const adjustedHypothesen = this.adjustForAge(hypothesen, alter);
+
+        // NEU: Differentialdiagnostik anwenden
+        const differentialResults = this.analyzeDifferentialdiagnose(adjustedHypothesen, data);
+
+        // NEU: Komorbiditäten analysieren
+        const komorbiditaeten = this.analyzeKomorbiditaeten(differentialResults.hypothesen);
+
         const result = {
             kind: this.createKindProfil(data),
             entwicklung: this.analyzeELDiB(data.eldib),
-            hypothesen: this.generateHypothesen(data),
+            hypothesen: differentialResults.hypothesen,
+            komorbiditaeten: komorbiditaeten,
+            differentialHinweise: differentialResults.hinweise,
             beduerfnisse: this.identifyBeduerfnisse(data),
             interventionen: this.generateInterventionen(data),
             lernziele: this.generateLernziele(data),
             warnsignale: this.identifyWarnsignale(data),
             empfehlungen: this.generateEmpfehlungen(data),
+            konfidenzKalibrierung: this.getKonfidenzKalibrierung(differentialResults.hypothesen),
             timestamp: new Date().toISOString()
         };
 
         return result;
+    },
+
+    // ============================================
+    // KONFIDENZ-KALIBRIERUNG
+    // ============================================
+
+    /**
+     * Definiert Schwellenwerte für diagnostische Entscheidungen
+     */
+    konfidenzSchwellen: {
+        screening: 30,      // Ab 30%: Weitere Beobachtung empfohlen
+        abklaerung: 50,     // Ab 50%: Fachärztliche Abklärung empfohlen
+        hochwahrscheinlich: 70,  // Ab 70%: Sehr wahrscheinlich, dringende Abklärung
+        kritisch: 85        // Ab 85%: Nahezu sicher, sofortige Intervention
+    },
+
+    /**
+     * Gibt Konfidenz-Kalibrierungsinformationen zurück
+     */
+    getKonfidenzKalibrierung(hypothesen) {
+        const kalibrierung = {
+            schwellen: this.konfidenzSchwellen,
+            kategorisierung: {
+                kritisch: [],
+                hochwahrscheinlich: [],
+                abklaerungEmpfohlen: [],
+                screening: [],
+                unwahrscheinlich: []
+            },
+            gesamtrisiko: 'niedrig'
+        };
+
+        hypothesen.forEach(h => {
+            if (h.konfidenz >= this.konfidenzSchwellen.kritisch) {
+                kalibrierung.kategorisierung.kritisch.push(h.name);
+            } else if (h.konfidenz >= this.konfidenzSchwellen.hochwahrscheinlich) {
+                kalibrierung.kategorisierung.hochwahrscheinlich.push(h.name);
+            } else if (h.konfidenz >= this.konfidenzSchwellen.abklaerung) {
+                kalibrierung.kategorisierung.abklaerungEmpfohlen.push(h.name);
+            } else if (h.konfidenz >= this.konfidenzSchwellen.screening) {
+                kalibrierung.kategorisierung.screening.push(h.name);
+            } else {
+                kalibrierung.kategorisierung.unwahrscheinlich.push(h.name);
+            }
+        });
+
+        // Gesamtrisiko bestimmen
+        if (kalibrierung.kategorisierung.kritisch.length > 0) {
+            kalibrierung.gesamtrisiko = 'kritisch';
+        } else if (kalibrierung.kategorisierung.hochwahrscheinlich.length > 0) {
+            kalibrierung.gesamtrisiko = 'hoch';
+        } else if (kalibrierung.kategorisierung.abklaerungEmpfohlen.length > 0) {
+            kalibrierung.gesamtrisiko = 'mittel';
+        } else if (kalibrierung.kategorisierung.screening.length > 0) {
+            kalibrierung.gesamtrisiko = 'niedrig-mittel';
+        }
+
+        return kalibrierung;
+    },
+
+    // ============================================
+    // ALTERSBASIERTE GEWICHTUNG
+    // ============================================
+
+    /**
+     * Passt Hypothesen basierend auf dem Alter des Kindes an
+     * Manche Symptome sind entwicklungsgemäß normal in bestimmten Altersgruppen
+     */
+    adjustForAge(hypothesen, alter) {
+        if (!alter || typeof alter !== 'number') return hypothesen;
+
+        return hypothesen.map(h => {
+            const angepasst = { ...h };
+            let faktor = 1.0;
+            let hinweis = null;
+
+            switch (h.id) {
+                case 'adhs':
+                    // Hyperaktivität ist bei Vorschulkindern häufiger normal
+                    if (alter < 6) {
+                        faktor = 0.7;
+                        hinweis = 'Hyperaktive Symptome bei Vorschulkindern vorsichtig interpretieren';
+                    }
+                    // ADHS-Diagnose wird zuverlässiger ab 6-7 Jahren
+                    if (alter >= 7 && alter <= 12) {
+                        faktor = 1.1;
+                    }
+                    break;
+
+                case 'odd':
+                    // Oppositionelles Verhalten ist im Trotzalter (2-4) und Adoleszenz normal
+                    if (alter >= 2 && alter <= 4) {
+                        faktor = 0.5;
+                        hinweis = 'Oppositionelles Verhalten ist im Trotzalter entwicklungstypisch';
+                    }
+                    if (alter >= 12 && alter <= 14) {
+                        faktor = 0.8;
+                        hinweis = 'Erhöhte Opposition in früher Adoleszenz ist häufig';
+                    }
+                    break;
+
+                case 'angst':
+                    // Trennungsangst ist bei Kleinkindern normal
+                    if (alter < 4 && h.subtypen?.includes('Trennungsangst')) {
+                        faktor = 0.6;
+                        hinweis = 'Trennungsangst bei Kleinkindern ist entwicklungstypisch';
+                    }
+                    // Soziale Angst steigt in der Adoleszenz
+                    if (alter >= 11 && h.subtypen?.includes('Soziale Angst')) {
+                        faktor = 1.1;
+                    }
+                    break;
+
+                case 'depression':
+                    // Depression bei Kindern zeigt sich oft anders (Reizbarkeit statt Traurigkeit)
+                    if (alter < 12) {
+                        // Bereits im checkDepression berücksichtigt
+                        hinweis = 'Depression bei Kindern manifestiert sich häufig als Reizbarkeit';
+                    }
+                    break;
+
+                case 'asd':
+                    // ASD-Marker sind früh erkennbar, aber Diagnose wird oft erst später gestellt
+                    if (alter >= 3 && alter <= 6) {
+                        faktor = 1.1;
+                        hinweis = 'Kritisches Zeitfenster für frühe Autismus-Erkennung';
+                    }
+                    break;
+
+                case 'bindung':
+                    // Bindungsmuster kristallisieren sich in ersten Lebensjahren
+                    if (alter <= 3) {
+                        faktor = 1.2;
+                        hinweis = 'Frühe Bindungsinterventionen besonders wirksam';
+                    }
+                    break;
+
+                case 'emotionsregulation':
+                    // Emotionsregulation entwickelt sich schrittweise
+                    if (alter < 5) {
+                        faktor = 0.7;
+                        hinweis = 'Emotionsregulation noch in früher Entwicklung';
+                    }
+                    if (alter >= 5 && alter <= 7) {
+                        faktor = 0.9;
+                    }
+                    break;
+            }
+
+            // Konfidenz anpassen
+            angepasst.konfidenz = Math.min(100, Math.max(0, Math.round(h.konfidenz * faktor)));
+            angepasst.score = Math.round(h.score * faktor * 10) / 10;
+
+            if (hinweis) {
+                angepasst.altershinweis = hinweis;
+                if (!angepasst.gegenEvidenz) angepasst.gegenEvidenz = [];
+                angepasst.gegenEvidenz.push(hinweis);
+            }
+
+            return angepasst;
+        });
+    },
+
+    // ============================================
+    // DIFFERENTIALDIAGNOSTIK
+    // ============================================
+
+    /**
+     * Analysiert Differentialdiagnosen und gibt Hinweise auf wichtige Unterscheidungen
+     */
+    analyzeDifferentialdiagnose(hypothesen, data) {
+        const hinweise = [];
+        const adjustedHypothesen = [...hypothesen];
+
+        // Sortiere nach Konfidenz für Priorisierung
+        const sorted = hypothesen.sort((a, b) => b.konfidenz - a.konfidenz);
+        const topHypothesen = sorted.filter(h => h.konfidenz >= 30);
+
+        // ADHS vs. Angst
+        const adhs = topHypothesen.find(h => h.id === 'adhs');
+        const angst = topHypothesen.find(h => h.id === 'angst');
+        if (adhs && angst && Math.abs(adhs.konfidenz - angst.konfidenz) < 20) {
+            hinweise.push({
+                differential: 'ADHS vs. Angststörung',
+                erklaerung: 'Beide können Konzentrationsprobleme und motorische Unruhe verursachen.',
+                unterscheidung: [
+                    'ADHS: Unruhe auch in entspannten Situationen, Impulsivität konstant',
+                    'Angst: Unruhe hauptsächlich in angstauslösenden Situationen, Sorgen als Kern',
+                    'Prüfe: Ist die Unruhe situationsabhängig oder generalisiert?'
+                ],
+                empfehlung: 'Detaillierte Situationsanalyse der Symptome empfohlen'
+            });
+        }
+
+        // ADHS vs. Trauma
+        const trauma = topHypothesen.find(h => h.id === 'trauma');
+        if (adhs && trauma && trauma.konfidenz >= 30) {
+            hinweise.push({
+                differential: 'ADHS vs. Traumafolgestörung',
+                erklaerung: 'Trauma kann ADHS-ähnliche Symptome verursachen (Hypervigilanz als Hyperaktivität).',
+                unterscheidung: [
+                    'ADHS: Symptome seit früher Kindheit, konsistent über Kontexte',
+                    'Trauma: Symptombeginn oft nach belastendem Ereignis, Trigger-abhängig',
+                    'Trauma: Zusätzlich Vermeidung, Flashbacks, Albträume möglich'
+                ],
+                empfehlung: 'Bei bekannten Belastungserfahrungen: Trauma zuerst behandeln'
+            });
+
+            // Bei Trauma-Verdacht ADHS-Konfidenz reduzieren
+            if (trauma.konfidenz > 50) {
+                const adhsIndex = adjustedHypothesen.findIndex(h => h.id === 'adhs');
+                if (adhsIndex >= 0) {
+                    adjustedHypothesen[adhsIndex].konfidenz = Math.round(adhs.konfidenz * 0.85);
+                    adjustedHypothesen[adhsIndex].gegenEvidenz = adjustedHypothesen[adhsIndex].gegenEvidenz || [];
+                    adjustedHypothesen[adhsIndex].gegenEvidenz.push('Mögliche Überlappung mit Traumafolgen');
+                }
+            }
+        }
+
+        // ODD vs. Bindungsproblematik
+        const odd = topHypothesen.find(h => h.id === 'odd');
+        const bindung = topHypothesen.find(h => h.id === 'bindung');
+        if (odd && bindung && bindung.konfidenz >= 30) {
+            hinweise.push({
+                differential: 'ODD vs. Bindungsproblematik',
+                erklaerung: 'Unsichere Bindung kann wie Opposition aussehen (Testen von Grenzen).',
+                unterscheidung: [
+                    'ODD: Opposition gegen Regeln und Autorität generell',
+                    'Bindung: Opposition als "Beziehungstest" - sucht eigentlich Sicherheit',
+                    'Bindung: Verhalten verbessert sich bei tragfähiger Beziehung deutlich'
+                ],
+                empfehlung: 'Beziehungsqualität als Schlüsselintervention priorisieren'
+            });
+        }
+
+        // ASD vs. Soziale Angst
+        const asd = topHypothesen.find(h => h.id === 'asd');
+        if (asd && angst && angst.subtypen?.includes('Soziale Angst')) {
+            hinweise.push({
+                differential: 'Autismus-Spektrum vs. Soziale Angst',
+                erklaerung: 'Beide führen zu sozialem Rückzug, aber aus unterschiedlichen Gründen.',
+                unterscheidung: [
+                    'ASD: Fehlendes Verständnis sozialer Signale, oft kein Leidensdruck',
+                    'Soziale Angst: Versteht soziale Signale, aber fürchtet negative Bewertung',
+                    'ASD: Besondere Interessen, sensorische Besonderheiten',
+                    'Prüfe: Will das Kind Kontakt, kann aber nicht - oder fehlt das Interesse?'
+                ],
+                empfehlung: 'Auf Begleitmerkmale wie repetitive Verhaltensweisen achten'
+            });
+        }
+
+        // Depression vs. Rückzug durch Mobbing/Umweltfaktoren
+        const depression = topHypothesen.find(h => h.id === 'depression');
+        if (depression && depression.konfidenz >= 40) {
+            const hasSocialProblems = data.screening?.soziales?.mobbing ||
+                                      data.screening?.soziales?.ausgrenzung;
+            if (hasSocialProblems) {
+                hinweise.push({
+                    differential: 'Depression vs. Reaktion auf Mobbing',
+                    erklaerung: 'Depressive Symptome können Folge von Mobbing/Ausgrenzung sein.',
+                    unterscheidung: [
+                        'Primäre Depression: Symptome auch ohne externe Stressoren',
+                        'Reaktiv: Stimmung bessert sich bei Problemlösung deutlich',
+                        'Wichtig: Mobbing beenden UND psychische Unterstützung'
+                    ],
+                    empfehlung: 'Umweltfaktoren parallel zur psychischen Unterstützung adressieren'
+                });
+            }
+        }
+
+        // Emotionsregulation als übergreifendes Konstrukt
+        const emotionsreg = topHypothesen.find(h => h.id === 'emotionsregulation');
+        if (emotionsreg && emotionsreg.konfidenz >= 50) {
+            const otherHigh = topHypothesen.filter(h =>
+                h.id !== 'emotionsregulation' && h.konfidenz >= 40
+            );
+            if (otherHigh.length > 0) {
+                hinweise.push({
+                    differential: 'Emotionsregulation als Kerndefizit',
+                    erklaerung: 'Emotionsregulationsschwierigkeiten können anderen Störungsbildern zugrunde liegen.',
+                    unterscheidung: [
+                        `Beobachtet: ${otherHigh.map(h => h.name).join(', ')}`,
+                        'Möglicherweise ist mangelnde Emotionsregulation die gemeinsame Wurzel',
+                        'Intervention: Emotionsregulation als Basis trainieren'
+                    ],
+                    empfehlung: 'Emotionsregulationstraining als übergreifende Intervention prüfen'
+                });
+            }
+        }
+
+        return {
+            hypothesen: adjustedHypothesen,
+            hinweise
+        };
+    },
+
+    // ============================================
+    // KOMORBIDITÄTSANALYSE
+    // ============================================
+
+    /**
+     * Analysiert wahrscheinliche Komorbiditäten (gemeinsames Auftreten)
+     */
+    analyzeKomorbiditaeten(hypothesen) {
+        const komorbiditaeten = [];
+        const relevant = hypothesen.filter(h => h.konfidenz >= 40);
+
+        // Bekannte Komorbiditätsmuster
+        const muster = [
+            {
+                kombination: ['adhs', 'odd'],
+                name: 'ADHS + Oppositionelle Störung',
+                haeufigkeit: '40-60% der ADHS-Fälle',
+                bedeutung: 'Sehr häufige Komorbidität, verschlechtert Prognose ohne Behandlung',
+                intervention: 'ADHS-Behandlung zuerst, dann Elterntraining für Verhaltensmanagement'
+            },
+            {
+                kombination: ['adhs', 'angst'],
+                name: 'ADHS + Angststörung',
+                haeufigkeit: '25-35% der ADHS-Fälle',
+                bedeutung: 'Angst kann ADHS-Symptome verstärken und Behandlung erschweren',
+                intervention: 'Angstbehandlung parallel zu ADHS, ggf. Medikation anpassen'
+            },
+            {
+                kombination: ['adhs', 'depression'],
+                name: 'ADHS + Depression',
+                haeufigkeit: '15-20% bei Kindern, höher bei Adoleszenten',
+                bedeutung: 'Oft sekundär durch Misserfolge bei unbehandeltem ADHS',
+                intervention: 'ADHS-Behandlung kann depressive Symptome bessern, Selbstwert stärken'
+            },
+            {
+                kombination: ['angst', 'depression'],
+                name: 'Angst + Depression',
+                haeufigkeit: '40-70% der Fälle',
+                bedeutung: 'Sehr häufige Komorbidität, gegenseitige Verstärkung',
+                intervention: 'Transdiagnostische Behandlung (z.B. KVT), Aktivitätsaufbau'
+            },
+            {
+                kombination: ['trauma', 'depression'],
+                name: 'Trauma + Depression',
+                haeufigkeit: '30-50% der Trauma-Fälle',
+                bedeutung: 'Depression häufig Folge traumatischer Erfahrungen',
+                intervention: 'Traumafokussierte Therapie adressiert beide, Stabilisierung zuerst'
+            },
+            {
+                kombination: ['trauma', 'angst'],
+                name: 'Trauma + Angst',
+                haeufigkeit: '50-70% der Trauma-Fälle',
+                bedeutung: 'Angst als Kernsymptom von Traumafolgestörungen',
+                intervention: 'Sicherheit und Stabilisierung vor Traumaexposition'
+            },
+            {
+                kombination: ['asd', 'adhs'],
+                name: 'Autismus-Spektrum + ADHS',
+                haeufigkeit: '30-50% der ASD-Fälle',
+                bedeutung: 'Häufige Kombination, erschwert Diagnostik',
+                intervention: 'Beide separat behandeln, ASD-angepasste ADHS-Intervention'
+            },
+            {
+                kombination: ['asd', 'angst'],
+                name: 'Autismus-Spektrum + Angst',
+                haeufigkeit: '40-80% der ASD-Fälle',
+                bedeutung: 'Angst sehr häufig bei ASD, oft übersehen',
+                intervention: 'ASD-angepasste Angsttherapie, Vorhersehbarkeit erhöhen'
+            },
+            {
+                kombination: ['bindung', 'emotionsregulation'],
+                name: 'Bindungsprobleme + Emotionsdysregulation',
+                haeufigkeit: 'Sehr hoch bei unsicherer Bindung',
+                bedeutung: 'Sichere Bindung ist Voraussetzung für Emotionsregulation',
+                intervention: 'Beziehungsaufbau als Basis, dann Regulationsstrategien'
+            },
+            {
+                kombination: ['odd', 'emotionsregulation'],
+                name: 'Opposition + Emotionsdysregulation',
+                haeufigkeit: 'Fast immer komorbid',
+                bedeutung: 'Mangelnde Regulation führt zu oppositionellem Ausagieren',
+                intervention: 'Emotionsregulation als Kernintervention, nicht nur Verhaltensmanagement'
+            }
+        ];
+
+        // Prüfe jedes Muster
+        muster.forEach(m => {
+            const hatBeide = m.kombination.every(id =>
+                relevant.some(h => h.id === id)
+            );
+
+            if (hatBeide) {
+                const beteiligte = m.kombination.map(id => {
+                    const h = relevant.find(hyp => hyp.id === id);
+                    return { id, konfidenz: h?.konfidenz || 0 };
+                });
+
+                // Kombinierte Konfidenz (Minimum der beiden, leicht reduziert für Unsicherheit)
+                const kombiKonfidenz = Math.round(Math.min(...beteiligte.map(b => b.konfidenz)) * 0.9);
+
+                komorbiditaeten.push({
+                    name: m.name,
+                    kombination: m.kombination,
+                    konfidenz: kombiKonfidenz,
+                    haeufigkeit: m.haeufigkeit,
+                    bedeutung: m.bedeutung,
+                    intervention: m.intervention,
+                    beteiligte
+                });
+            }
+        });
+
+        // Sortiere nach Konfidenz
+        komorbiditaeten.sort((a, b) => b.konfidenz - a.konfidenz);
+
+        // Zusammenfassung
+        const zusammenfassung = {
+            anzahl: komorbiditaeten.length,
+            muster: komorbiditaeten,
+            komplexitaet: this.bewerteKomplexitaet(komorbiditaeten, hypothesen),
+            hauptempfehlung: this.getKomorbiditaetsEmpfehlung(komorbiditaeten)
+        };
+
+        return zusammenfassung;
+    },
+
+    /**
+     * Bewertet die Gesamtkomplexität des Fallbildes
+     */
+    bewerteKomplexitaet(komorbiditaeten, hypothesen) {
+        const hochwahrscheinlich = hypothesen.filter(h => h.konfidenz >= 60).length;
+        const mittelwahrscheinlich = hypothesen.filter(h => h.konfidenz >= 40 && h.konfidenz < 60).length;
+
+        if (komorbiditaeten.length >= 3 || hochwahrscheinlich >= 3) {
+            return {
+                stufe: 'hoch',
+                beschreibung: 'Komplexes Störungsbild mit mehreren wahrscheinlichen Diagnosen',
+                empfehlung: 'Interdisziplinäre Diagnostik und Behandlungsplanung dringend empfohlen'
+            };
+        } else if (komorbiditaeten.length >= 1 || hochwahrscheinlich >= 2) {
+            return {
+                stufe: 'mittel',
+                beschreibung: 'Mehrere relevante Hypothesen, mögliche Komorbidität',
+                empfehlung: 'Umfassende Diagnostik zur Klärung der Hauptdiagnose empfohlen'
+            };
+        } else if (mittelwahrscheinlich >= 1) {
+            return {
+                stufe: 'niedrig-mittel',
+                beschreibung: 'Fokussiertes Bild mit Hinweisen auf spezifische Problematik',
+                empfehlung: 'Gezielte Abklärung der Haupthypothese'
+            };
+        }
+
+        return {
+            stufe: 'niedrig',
+            beschreibung: 'Wenige spezifische Hinweise, möglicherweise situatives Problem',
+            empfehlung: 'Pädagogische Intervention und Beobachtung, Abklärung bei Persistenz'
+        };
+    },
+
+    /**
+     * Gibt Hauptempfehlung basierend auf Komorbiditäten
+     */
+    getKomorbiditaetsEmpfehlung(komorbiditaeten) {
+        if (komorbiditaeten.length === 0) {
+            return 'Keine spezifischen Komorbiditätsmuster erkannt.';
+        }
+
+        const wichtigste = komorbiditaeten[0];
+        return `Wahrscheinliche Komorbidität: ${wichtigste.name}. ` +
+               `Empfohlene Intervention: ${wichtigste.intervention}`;
     },
 
     // ============================================
