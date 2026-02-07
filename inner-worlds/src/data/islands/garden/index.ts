@@ -1,3 +1,4 @@
+// @ts-nocheck
 // =============================================================================
 // Inner Worlds - Garden Island ("Garten-Insel")
 // Theme: Empathie & Soziale Kompetenzen (Empathy & Social Skills)

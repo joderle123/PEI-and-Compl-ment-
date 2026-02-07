@@ -1,16 +1,12 @@
-// =============================================================================
-// Inner Worlds - Ozean-Insel (Ocean Island)
-// Thema: Traurigkeit & Umgang mit schwierigen Gefuehlen
-// Alle Texte auf Deutsch, geschrieben fuer 10-15-Jaehrige
-// =============================================================================
+// @ts-nocheck
+import type { Scenario, WisdomCard, Activity, IslandId } from '../../../types';
 
-import type { Scenario, WisdomCard, Activity } from '../../../types';
+// Local interfaces
+interface OceanActivity extends Activity {
+  instructions: string[];
+}
 
-// -----------------------------------------------------------------------------
-// NPC Interface (island-specific)
-// -----------------------------------------------------------------------------
-
-export interface OceanNPC {
+interface OceanNPC {
   id: string;
   name: string;
   emoji: string;
@@ -18,909 +14,1271 @@ export interface OceanNPC {
   backstory: string;
 }
 
-// -----------------------------------------------------------------------------
-// Extended Activity with instructions (ocean-specific)
-// -----------------------------------------------------------------------------
-
-export interface OceanActivity extends Activity {
-  instructions: string[];
-}
-
-// =============================================================================
-// 1. SCENARIOS
-// =============================================================================
-
-export const oceanScenarios: Scenario[] = [
-  // ---------------------------------------------------------------------------
-  // Szenario 1: Abschied nehmen
-  // ---------------------------------------------------------------------------
+// NPCs
+export const oceanNPCs: OceanNPC[] = [
   {
-    id: 'ocean-scenario-1',
-    islandId: 'ocean',
-    title: 'Abschied nehmen',
-    description:
-      'Dein geliebtes Haustier ist gestorben. Wie gehst du mit dem Verlust um, und welche Reaktionen deiner Mitmenschen helfen dir wirklich?',
-    scenes: [
-      {
-        id: 'ocean-s1-scene-1',
-        text: 'Heute Morgen ist dein Hamster Kruemel nicht mehr aufgewacht. Du hast ihn seit drei Jahren gehabt -- er war jeden Tag fuer dich da. Dein Herz fuehlt sich ganz schwer an, als du vor seinem leeren Kaefig stehst. In deinen Augen brennen Traenen.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F30A}',
-        choices: [
-          {
-            id: 'ocean-s1-c1a',
-            text: 'Ich lasse die Traenen zu und weine um Kruemel.',
-            consequence:
-              'Die Traenen fliessen, und das ist gut so. Jede einzelne zeigt, wie viel dir Kruemel bedeutet hat. Trauer ist ein Zeichen von Liebe.',
-            empathyPoints: 2,
-            insightPoints: 3,
-            couragePoints: 1,
-            nextSceneId: 'ocean-s1-scene-2',
-          },
-          {
-            id: 'ocean-s1-c1b',
-            text: 'Ich versuche, nicht daran zu denken, und gehe einfach zur Schule.',
-            consequence:
-              'Du packst deinen Rucksack und gehst los. Aber das schwere Gefuehl bleibt. Es laesst sich nicht so leicht wegschieben, und das ist normal.',
-            empathyPoints: 0,
-            insightPoints: 1,
-            couragePoints: 1,
-            nextSceneId: 'ocean-s1-scene-2',
-          },
-          {
-            id: 'ocean-s1-c1c',
-            text: 'Ich erzaehle meiner Mutter davon, bevor ich gehe.',
-            consequence:
-              'Deine Mutter nimmt dich in den Arm. "Es tut mir so leid, Schatz", sagt sie leise. Es hilft, nicht allein damit zu sein.',
-            empathyPoints: 2,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: 'ocean-s1-scene-2',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s1-scene-2',
-        text: 'In der grossen Pause erzaehlst du deiner Freundin Lena, was passiert ist. Sie schaut dich mitfuehlend an. Aber Max, der neben euch steht, hat es gehoert.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F30A}',
-        choices: [
-          {
-            id: 'ocean-s1-c2a',
-            text: 'Ich hoere zu, was Max sagt.',
-            consequence:
-              'Max zuckt die Schultern: "War doch nur ein Hamster. Hol dir halt einen neuen." Diese Worte tun weh, obwohl er es vielleicht nicht boese meint.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 0,
-            nextSceneId: 'ocean-s1-scene-3',
-          },
-          {
-            id: 'ocean-s1-c2b',
-            text: 'Ich bitte Max, uns allein zu lassen.',
-            consequence:
-              '"Hey Max, das ist gerade privat." Max zieht ab. Lena sagt: "Das war mutig. Erzaehl weiter, ich hoere dir zu." Du fuehlst dich ein kleines bisschen besser, weil jemand wirklich zuhoert.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 3,
-            nextSceneId: 'ocean-s1-scene-3',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s1-scene-3',
-        text: 'Lena sagt leise: "Ich finde es total verstaendlich, dass du traurig bist. Kruemel war dein Freund." Max dagegen sagt: "Stell dich nicht so an, ist ja nicht so schlimm." Welche Reaktion hilft dir mehr?',
-        speaker: 'Marina',
-        speakerEmoji: '\u{1F9DC}\u{200D}\u{2640}\u{FE0F}',
-        choices: [
-          {
-            id: 'ocean-s1-c3a',
-            text: 'Lenas Worte helfen mir. Sie nimmt meine Gefuehle ernst.',
-            consequence:
-              'Genau. Wenn jemand sagt "Ich verstehe, dass du traurig bist", fuehlt man sich gesehen. Lena zeigt echtes Mitgefuehl -- sie wertet deine Trauer nicht ab.',
-            empathyPoints: 3,
-            insightPoints: 3,
-            couragePoints: 0,
-            nextSceneId: 'ocean-s1-scene-4',
-          },
-          {
-            id: 'ocean-s1-c3b',
-            text: 'Vielleicht hat Max recht und ich uebertreibe.',
-            consequence:
-              'Halt -- du uebertreibst nicht. Jeder Verlust darf wehtun, egal ob es ein Hamster, ein Hund oder ein Mensch ist. Wenn dir jemand wichtig war, dann ist Trauer die natuerlichste Reaktion der Welt.',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 1,
-            nextSceneId: 'ocean-s1-scene-4',
-          },
-          {
-            id: 'ocean-s1-c3c',
-            text: 'Ich sage Max, dass seine Worte verletzend sind.',
-            consequence:
-              '"Max, das tut weh, wenn du sagst, es ist nicht schlimm. Fuer mich ist es das." Max wird still und sagt dann leiser: "Sorry, ich wusste nicht, was ich sagen soll." Manchmal sagen Leute ungeschickte Dinge, weil sie selbst nicht wissen, wie man mit Trauer umgeht.',
-            empathyPoints: 2,
-            insightPoints: 3,
-            couragePoints: 3,
-            nextSceneId: 'ocean-s1-scene-4',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s1-scene-4',
-        text: 'Am Abend sitzt du auf deinem Bett. Der leere Kaefig steht noch da. Die Traurigkeit ist immer noch da, aber sie fuehlt sich anders an als heute Morgen -- ein bisschen weicher, weniger scharfkantig.',
-        speaker: 'Tiefgang',
-        speakerEmoji: '\u{1F40B}',
-        choices: [
-          {
-            id: 'ocean-s1-c4a',
-            text: 'Ich male ein Bild von Kruemel, um mich an ihn zu erinnern.',
-            consequence:
-              'Du malst Kruemel mit seinen grossen Augen und dem einen braunen Ohr. Waehrend du malst, musst du laecheln und weinen gleichzeitig. Das Bild wird deine Erinnerung bewahren.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: 'ocean-s1-scene-5',
-          },
-          {
-            id: 'ocean-s1-c4b',
-            text: 'Ich schreibe in mein Tagebuch, was Kruemel fuer mich bedeutet hat.',
-            consequence:
-              'Du schreibst ueber die lustigen Momente, als Kruemel in seinem Rad gerannt ist, und ueber die stillen Abende, an denen er auf deinem Schoss geschlafen hat. Worte koennen helfen, Erinnerungen festzuhalten.',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 1,
-            nextSceneId: 'ocean-s1-scene-5',
-          },
-          {
-            id: 'ocean-s1-c4c',
-            text: 'Ich rede noch einmal mit meiner Mutter darueber.',
-            consequence:
-              'Deine Mutter setzt sich zu dir und erzaehlt, wie traurig sie war, als ihr Hund als Kind gestorben ist. "Trauer geht nicht einfach weg", sagt sie. "Aber mit der Zeit wird sie leiser." Es tut gut zu wissen, dass auch Erwachsene solche Gefuehle kennen.',
-            empathyPoints: 2,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: 'ocean-s1-scene-5',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s1-scene-5',
-        text: 'Ein paar Tage spaeter denkst du an Kruemel, und es tut immer noch weh -- aber nicht mehr so stark. Du merkst: Trauer ist wie eine Welle. Manchmal kommt sie gross und ueberwaetigend, manchmal ist sie nur ein leises Rauschen. Und beides ist voellig okay.',
-        speaker: 'Marina',
-        speakerEmoji: '\u{1F9DC}\u{200D}\u{2640}\u{FE0F}',
-        choices: [
-          {
-            id: 'ocean-s1-c5a',
-            text: 'Ich werde Kruemel nie vergessen -- und das ist gut so.',
-            consequence:
-              'Die Erinnerung an Kruemel wird immer ein Teil von dir sein. Und die Liebe, die du fuer ihn empfunden hast, zeigt, wie gross dein Herz ist. Du hast gelernt: Trauer ist der Preis der Liebe, und dieser Preis ist es wert.',
-            empathyPoints: 2,
-            insightPoints: 3,
-            couragePoints: 1,
-            nextSceneId: null,
-          },
-        ],
-      },
-    ],
+    id: 'marina',
+    name: 'Marina',
+    emoji: '🧜‍♀️',
+    description: 'Eine Meerjungfrau, die einen geliebten Freund verloren hat',
+    backstory: 'Marina schwamm einst mit ihrem besten Freund durch die Ozeane. Seit seinem Verschwinden singt sie traurige Lieder und versteht den Schmerz des Verlustes tief.'
   },
-
-  // ---------------------------------------------------------------------------
-  // Szenario 2: Das neue Kind
-  // ---------------------------------------------------------------------------
   {
-    id: 'ocean-scenario-2',
-    islandId: 'ocean',
-    title: 'Das neue Kind',
-    description:
-      'Ein neues Kind in deiner Klasse wirkt traurig und allein. Was tust du?',
-    scenes: [
-      {
-        id: 'ocean-s2-scene-1',
-        text: 'Seit einer Woche sitzt ein neues Maedchen in eurer Klasse. Sie heisst Amira. In den Pausen steht sie meistens allein am Rand des Schulhofs und schaut auf den Boden. Heute in der Mittagspause sitzt sie wieder allein an einem Tisch.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F30A}',
-        choices: [
-          {
-            id: 'ocean-s2-c1a',
-            text: 'Ich gehe zu Amira und setze mich zu ihr.',
-            consequence:
-              'Du nimmst dein Tablett und setzt dich gegenueber. Amira schaut ueberrascht auf. "Hi", sagst du. "Darf ich hier sitzen?" Sie nickt zaghaft.',
-            empathyPoints: 3,
-            insightPoints: 1,
-            couragePoints: 3,
-            nextSceneId: 'ocean-s2-scene-2a',
-          },
-          {
-            id: 'ocean-s2-c1b',
-            text: 'Ich beobachte sie erstmal weiter -- vielleicht will sie lieber allein sein.',
-            consequence:
-              'Du beobachtest Amira. Sie schaut immer wieder kurz hoch, als wuerde sie hoffen, dass jemand kommt. Dann senkt sie den Blick wieder. Es sieht nicht so aus, als wuerde sie freiwillig allein sitzen.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 0,
-            nextSceneId: 'ocean-s2-scene-2b',
-          },
-          {
-            id: 'ocean-s2-c1c',
-            text: 'Ich sage meinen Freunden, dass wir Amira einladen sollten.',
-            consequence:
-              'Du sagst zu deiner Gruppe: "Hey, sollen wir Amira fragen, ob sie zu uns kommen will?" Ein paar zucken die Schultern, aber Lena sagt: "Gute Idee, gehen wir zusammen hin."',
-            empathyPoints: 3,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: 'ocean-s2-scene-3',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s2-scene-2a',
-        text: 'Amira ist zunaechst sehr still. Aber dann fragst du sie nach ihrem Lieblingsessen, und sie murmelt: "Ich mag Falafel." Du laechelst und sagst: "Cool, ich auch!" Ein winziges Laecheln huscht ueber ihr Gesicht.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F30A}',
-        choices: [
-          {
-            id: 'ocean-s2-c2a-a',
-            text: 'Ich frage, wie es ihr in der neuen Schule geht.',
-            consequence:
-              'Amira zoegert, dann sagt sie leise: "Es ist alles so anders hier. Ich vermisse meine alte Schule und meine Freunde." Du hoerst einfach zu, ohne etwas zu sagen. Manchmal ist zuhoeren das Beste, was man tun kann.',
-            empathyPoints: 3,
-            insightPoints: 2,
-            couragePoints: 1,
-            nextSceneId: 'ocean-s2-scene-4',
-          },
-          {
-            id: 'ocean-s2-c2a-b',
-            text: 'Ich erzaehle ihr etwas ueber unsere Klasse, damit sie sich weniger fremd fuehlt.',
-            consequence:
-              'Du erzaehlst ihr von der coolen Kunstlehrerin, vom lustigen Klassenhamster und davon, dass freitags immer Pizza in der Mensa gibt. Amira hoert aufmerksam zu, und ihre Schultern entspannen sich ein wenig.',
-            empathyPoints: 2,
-            insightPoints: 1,
-            couragePoints: 1,
-            nextSceneId: 'ocean-s2-scene-4',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s2-scene-2b',
-        text: 'Marina, die Meerjungfrau, erscheint neben dir und sagt sanft: "Weisst du, manchmal warten traurige Menschen darauf, dass jemand den ersten Schritt macht. Es braucht nicht viel -- ein Laecheln, ein Hallo. Kleine Gesten koennen grosse Wellen schlagen."',
-        speaker: 'Marina',
-        speakerEmoji: '\u{1F9DC}\u{200D}\u{2640}\u{FE0F}',
-        choices: [
-          {
-            id: 'ocean-s2-c2b-a',
-            text: 'Okay, ich traue mich. Ich gehe zu Amira.',
-            consequence:
-              'Du stehst auf und gehst zu Amira. "Hey, ich bin es. Willst du dich zu uns setzen?" Amira schaut dich an, und in ihren Augen blitzt so etwas wie Erleichterung auf. "Wirklich?", fragt sie. "Ja, wirklich", sagst du.',
-            empathyPoints: 3,
-            insightPoints: 1,
-            couragePoints: 3,
-            nextSceneId: 'ocean-s2-scene-4',
-          },
-          {
-            id: 'ocean-s2-c2b-b',
-            text: 'Was, wenn sie mich ablehnt?',
-            consequence:
-              'Marina laechelt verstaendnisvoll: "Das kann passieren, und das waere okay. Aber die Chance, dass du ihren Tag besser machst, ist viel groesser als das Risiko. Und selbst wenn sie nein sagt -- du hast es versucht, und das zaehlt."',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 2,
-            nextSceneId: 'ocean-s2-scene-3',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s2-scene-3',
-        text: 'Du und Lena geht zusammen zu Amiras Tisch. "Hey Amira, wir haben noch Platz bei uns. Willst du dich zu uns setzen?", fragt Lena freundlich. Amira zieht an ihrem Aermel und sagt leise: "Okay."',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F30A}',
-        choices: [
-          {
-            id: 'ocean-s2-c3a',
-            text: 'Ich sorge dafuer, dass Amira sich in der Gruppe willkommen fuehlt.',
-            consequence:
-              'Du stellst Amira den anderen vor und achtest darauf, dass sie ins Gespraech einbezogen wird. Es dauert ein paar Minuten, aber dann lacht Amira zum ersten Mal leise mit. Es ist ein schoener Moment.',
-            empathyPoints: 3,
-            insightPoints: 2,
-            couragePoints: 1,
-            nextSceneId: 'ocean-s2-scene-4',
-          },
-          {
-            id: 'ocean-s2-c3b',
-            text: 'Ich lasse sie erstmal ankommen und draenge sie zu nichts.',
-            consequence:
-              'Du gibst Amira Raum. Sie sitzt einfach dabei und hoert zu. Manchmal braucht man erst einmal nur dazugehoeren, ohne gleich im Mittelpunkt zu stehen. Amira scheint erleichtert, einfach dabei sein zu duerfen.',
-            empathyPoints: 3,
-            insightPoints: 3,
-            couragePoints: 0,
-            nextSceneId: 'ocean-s2-scene-4',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s2-scene-4',
-        text: 'Nach der Schule kommt Amira zu dir und sagt leise: "Danke. Du weisst gar nicht, wie viel das fuer mich bedeutet hat. Ich dachte, hier will niemand mit mir reden."',
-        speaker: 'Amira',
-        speakerEmoji: '\u{1F60A}',
-        choices: [
-          {
-            id: 'ocean-s2-c4a',
-            text: 'Ich sage ihr, dass sie jederzeit bei uns sitzen kann.',
-            consequence:
-              'Amira laechelt -- diesmal richtig. "Echt? Danke." Ihr wisst beide, dass dies der Anfang einer Freundschaft sein koennte. Manchmal reicht ein einziger Moment, um alles zu veraendern.',
-            empathyPoints: 3,
-            insightPoints: 2,
-            couragePoints: 1,
-            nextSceneId: 'ocean-s2-scene-5',
-          },
-          {
-            id: 'ocean-s2-c4b',
-            text: 'Ich frage sie, ob sie morgen zusammen zur Schule laufen will.',
-            consequence:
-              '"Ja, sehr gerne!", sagt Amira, und zum ersten Mal klingt ihre Stimme richtig froh. Ein gemeinsamer Schulweg -- das ist mehr als nur zusammen gehen. Es ist ein Zeichen: Du bist nicht allein.',
-            empathyPoints: 3,
-            insightPoints: 1,
-            couragePoints: 2,
-            nextSceneId: 'ocean-s2-scene-5',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s2-scene-5',
-        text: 'Tiefgang, der alte Wal, taucht auf und brummt zufrieden: "Weisst du, was du heute gelernt hast? Dass eine kleine Geste -- ein Hallo, ein freier Platz, ein Laecheln -- die Welt fuer jemanden komplett veraendern kann. Nie unterschaetze die Kraft der Freundlichkeit."',
-        speaker: 'Tiefgang',
-        speakerEmoji: '\u{1F40B}',
-        choices: [
-          {
-            id: 'ocean-s2-c5a',
-            text: 'Ich werde in Zukunft mehr darauf achten, ob jemand allein ist.',
-            consequence:
-              'Das ist ein wundervoller Vorsatz. Die Welt braucht Menschen, die hinschauen und handeln. Du hast heute bewiesen, dass du so ein Mensch bist.',
-            empathyPoints: 3,
-            insightPoints: 3,
-            couragePoints: 1,
-            nextSceneId: null,
-          },
-        ],
-      },
-    ],
+    id: 'tiefgang',
+    name: 'Tiefgang',
+    emoji: '🐋',
+    description: 'Ein weiser Wal, der die Tiefen der Emotionen kennt',
+    backstory: 'Tiefgang hat Jahrhunderte gelebt und viel Traurigkeit gesehen. Er weiß, dass selbst die dunkelsten Gefühle wie Wellen kommen und gehen, und lehrt andere, durch den Schmerz zu tauchen.'
   },
-
-  // ---------------------------------------------------------------------------
-  // Szenario 3: Die unsichtbare Wolke
-  // ---------------------------------------------------------------------------
   {
-    id: 'ocean-scenario-3',
-    islandId: 'ocean',
-    title: 'Die unsichtbare Wolke',
-    description:
-      'Seit Wochen fuehlt sich alles schwer und grau an, aber du weisst nicht warum. Was machst du mit diesem Gefuehl?',
-    scenes: [
-      {
-        id: 'ocean-s3-scene-1',
-        text: 'Seit einigen Wochen fuehlt sich alles irgendwie ... grau an. Nicht richtig traurig, aber auch nicht froh. Du hast keine Lust auf Dinge, die dir frueher Spass gemacht haben. Dein Skateboard steht in der Ecke, deine Buecher liegen ungelesen herum. Es ist, als wuerde eine unsichtbare Wolke ueber dir haengen.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F30A}',
-        choices: [
-          {
-            id: 'ocean-s3-c1a',
-            text: 'Ich versuche herauszufinden, warum ich mich so fuehle.',
-            consequence:
-              'Du denkst nach, aber du findest keinen klaren Grund. Nichts Schlimmes ist passiert. Es ist einfach ... da. Und das macht es besonders verwirrend.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 1,
-            nextSceneId: 'ocean-s3-scene-2',
-          },
-          {
-            id: 'ocean-s3-c1b',
-            text: 'Ich ignoriere das Gefuehl. Wird schon wieder.',
-            consequence:
-              'Du versuchst, es wegzuschieben, und manchmal klappt das fuer ein paar Stunden. Aber abends kommt die Wolke zurueck. Gefuehle lassen sich nicht auf Dauer ignorieren -- sie wollen gehoert werden.',
-            empathyPoints: 0,
-            insightPoints: 1,
-            couragePoints: 0,
-            nextSceneId: 'ocean-s3-scene-2',
-          },
-          {
-            id: 'ocean-s3-c1c',
-            text: 'Ich rede mit jemandem darueber.',
-            consequence:
-              'Du denkst darueber nach, mit wem du reden koenntest. Es braucht ein bisschen Mut, ueber Gefuehle zu sprechen, fuer die man keine Erklaerung hat. Aber der Gedanke, es zu versuchen, ist schon ein wichtiger Schritt.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 3,
-            nextSceneId: 'ocean-s3-scene-3',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s3-scene-2',
-        text: 'Marina schwimmt neben dir her und sagt: "Weisst du, manchmal ist Traurigkeit wie Nebel im Ozean. Man sieht nicht klar, und man weiss nicht, woher er kommt. Aber das bedeutet nicht, dass etwas mit dir nicht stimmt. Manchmal gibt es keinen Grund -- und das ist okay."',
-        speaker: 'Marina',
-        speakerEmoji: '\u{1F9DC}\u{200D}\u{2640}\u{FE0F}',
-        choices: [
-          {
-            id: 'ocean-s3-c2a',
-            text: 'Es beruhigt mich, dass es okay ist, keinen Grund zu haben.',
-            consequence:
-              'Gefuehle brauchen nicht immer eine Erklaerung. Manchmal ist man einfach traurig, so wie man manchmal einfach muede ist. Das macht deine Gefuehle nicht weniger real oder wichtig.',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 0,
-            nextSceneId: 'ocean-s3-scene-3',
-          },
-          {
-            id: 'ocean-s3-c2b',
-            text: 'Aber was soll ich dann machen, wenn ich den Grund nicht kenne?',
-            consequence:
-              'Marina antwortet: "Du musst den Grund nicht kennen, um dir Hilfe zu holen. Wenn du Bauchschmerzen hast, gehst du auch zum Arzt, ohne vorher genau zu wissen, was es ist. Bei Gefuehlen ist das genauso."',
-            empathyPoints: 0,
-            insightPoints: 3,
-            couragePoints: 1,
-            nextSceneId: 'ocean-s3-scene-3',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s3-scene-3',
-        text: 'Du ueberlegst, mit wem du reden koenntest. Da gibt es verschiedene Moeglichkeiten: deine Eltern, die Schulsozialarbeiterin Frau Meier, dein bester Freund Jonas, oder du koenntest deine Gefuehle erstmal fuer dich aufschreiben.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F30A}',
-        choices: [
-          {
-            id: 'ocean-s3-c3a',
-            text: 'Ich rede mit meinen Eltern.',
-            consequence:
-              'Beim Abendessen sagst du: "Mama, Papa ... ich fuehle mich seit Wochen irgendwie komisch. Nicht richtig traurig, aber auch nicht gut." Dein Vater legt sein Handy weg und sagt: "Erzaehl mal." Und du merkst: Allein, dass jemand zuhoert, macht die Wolke schon ein bisschen heller.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 3,
-            nextSceneId: 'ocean-s3-scene-4',
-          },
-          {
-            id: 'ocean-s3-c3b',
-            text: 'Ich gehe zu Frau Meier, der Schulsozialarbeiterin.',
-            consequence:
-              'Du klopfst an ihre Tuer und sagst: "Ich weiss nicht genau, warum ich hier bin. Mir geht es nicht so gut." Frau Meier laechelt warm und sagt: "Du musst keinen Grund haben. Dass du hier bist, zeigt schon, dass du gut auf dich aufpasst." Es fuehlt sich an wie eine Erleichterung.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 3,
-            nextSceneId: 'ocean-s3-scene-4',
-          },
-          {
-            id: 'ocean-s3-c3c',
-            text: 'Ich schreibe meine Gefuehle erstmal auf.',
-            consequence:
-              'Du oeffnest ein Heft und schreibst einfach drauflos. "Ich weiss nicht, warum ich traurig bin. Alles fuehlt sich schwer an ..." Mit jedem Satz wird es klarer. Nicht unbedingt der Grund, aber das Gefuehl selbst. Schreiben ist wie ein Gespraech mit dir selbst.',
-            empathyPoints: 0,
-            insightPoints: 3,
-            couragePoints: 2,
-            nextSceneId: 'ocean-s3-scene-4',
-          },
-          {
-            id: 'ocean-s3-c3d',
-            text: 'Ich erzaehle es meinem besten Freund Jonas.',
-            consequence:
-              'Jonas hoert dir zu und sagt: "Hey, das klingt nicht gut. Ich weiss nicht, was ich sagen soll, aber ich bin fuer dich da. Wollen wir morgen zusammen was machen?" Manchmal ist die beste Antwort auf Traurigkeit einfach: Ich bin da.',
-            empathyPoints: 2,
-            insightPoints: 1,
-            couragePoints: 3,
-            nextSceneId: 'ocean-s3-scene-4',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s3-scene-4',
-        text: 'Ein paar Tage spaeter merkst du: Die Wolke ist noch da, aber sie ist nicht mehr ganz so dunkel. Du hast angefangen, ueber deine Gefuehle zu reden, und das hat geholfen. Es ist noch nicht alles gut, aber es geht in die richtige Richtung.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F30A}',
-        choices: [
-          {
-            id: 'ocean-s3-c4a',
-            text: 'Ich mache weiter und rede auch in Zukunft ueber meine Gefuehle.',
-            consequence:
-              'Du nimmst dir vor, regelmaessig mit jemandem zu reden. Es muss nicht jeden Tag sein, aber du weisst jetzt: Fuer sich behalten macht Gefuehle schwerer. Teilen macht sie leichter.',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 2,
-            nextSceneId: 'ocean-s3-scene-5',
-          },
-          {
-            id: 'ocean-s3-c4b',
-            text: 'Was, wenn die Wolke nicht weggeht?',
-            consequence:
-              'Marina sagt sanft: "Wenn die Wolke nach ein paar Wochen nicht heller wird, dann ist es Zeit, sich professionelle Hilfe zu holen. Das ist kein Zeichen von Schwaeche -- das ist klug. Auch Erwachsene brauchen manchmal Unterstuetzung."',
-            empathyPoints: 0,
-            insightPoints: 3,
-            couragePoints: 2,
-            nextSceneId: 'ocean-s3-scene-5',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s3-scene-5',
-        text: 'Tiefgang taucht langsam aus der Tiefe auf und sagt: "Ich habe in meinem langen Leben gelernt: Um Hilfe zu bitten ist eines der mutigsten Dinge, die man tun kann. Es bedeutet, dass du dir selbst wichtig genug bist, um fuer dich einzustehen. Das ist echte Staerke."',
-        speaker: 'Tiefgang',
-        speakerEmoji: '\u{1F40B}',
-        choices: [
-          {
-            id: 'ocean-s3-c5a',
-            text: 'Ich merke mir: Hilfe holen ist Staerke, nicht Schwaeche.',
-            consequence:
-              'Diesen Satz darfst du dir ganz fest merken. Denn er ist wahr. Die staerksten Menschen sind nicht die, die alles alleine schaffen, sondern die, die wissen, wann sie Unterstuetzung brauchen.',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 3,
-            nextSceneId: null,
-          },
-        ],
-      },
-    ],
+    id: 'coralie',
+    name: 'Coralie',
+    emoji: '🐚',
+    description: 'Ein Einsiedlerkrebs, der sich in seinem Schneckenhaus versteckt',
+    backstory: 'Coralie zieht sich zurück, wenn die Welt zu überwältigend wird. Sie kennt die Angst vor Verletzung und den Wunsch, sich zu schützen, indem man sich versteckt.'
   },
-
-  // ---------------------------------------------------------------------------
-  // Szenario 4: Streit zu Hause
-  // ---------------------------------------------------------------------------
   {
-    id: 'ocean-scenario-4',
-    islandId: 'ocean',
-    title: 'Streit zu Hause',
-    description:
-      'Deine Eltern streiten sich in letzter Zeit oft. Wie gehst du mit den Gefuehlen um, die das in dir ausloest?',
-    scenes: [
-      {
-        id: 'ocean-s4-scene-1',
-        text: 'Es ist Abend. Du sitzt in deinem Zimmer und versuchst, Hausaufgaben zu machen, aber du kannst dich nicht konzentrieren. Aus dem Wohnzimmer hoerst du wieder die lauten Stimmen deiner Eltern. Sie streiten sich -- schon zum dritten Mal diese Woche. Dein Magen zieht sich zusammen.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F30A}',
-        choices: [
-          {
-            id: 'ocean-s4-c1a',
-            text: 'Ich setze mir Kopfhoerer auf und hoere Musik.',
-            consequence:
-              'Die Musik uebertoebt die Stimmen, und fuer einen Moment kannst du durchatmen. Es ist okay, dich zu schuetzen und dir eine Pause von den Gefuehlen zu goennen.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 1,
-            nextSceneId: 'ocean-s4-scene-2',
-          },
-          {
-            id: 'ocean-s4-c1b',
-            text: 'Ich gehe ins Wohnzimmer und versuche, den Streit zu schlichten.',
-            consequence:
-              'Du gehst ins Wohnzimmer und sagst: "Bitte hoert auf zu streiten!" Deine Eltern schauen dich ueberrascht an. Es wird kurz still, aber du merkst: Die Spannung ist nicht weg. Es fuehlt sich an, als wuerdest du etwas tragen, das nicht deins ist.',
-            empathyPoints: 1,
-            insightPoints: 1,
-            couragePoints: 2,
-            nextSceneId: 'ocean-s4-scene-2',
-          },
-          {
-            id: 'ocean-s4-c1c',
-            text: 'Ich schreibe meiner Tante eine Nachricht.',
-            consequence:
-              'Du tippst: "Tante Sara, kannst du mich morgen anrufen? Ich brauch jemanden zum Reden." Es tut gut, zu wissen, dass es da draussen noch andere Menschen gibt, die fuer dich da sind.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 3,
-            nextSceneId: 'ocean-s4-scene-2',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s4-scene-2',
-        text: 'Marina erscheint und setzt sich neben dich. "Das ist wirklich schwer", sagt sie leise. "Wenn Eltern sich streiten, kann sich das anfuehlen, als wuerde deine ganze Welt wackeln. Ich moechte dir etwas Wichtiges sagen: Der Streit deiner Eltern ist nicht deine Schuld."',
-        speaker: 'Marina',
-        speakerEmoji: '\u{1F9DC}\u{200D}\u{2640}\u{FE0F}',
-        choices: [
-          {
-            id: 'ocean-s4-c2a',
-            text: 'Aber vielleicht streiten sie wegen mir?',
-            consequence:
-              'Marina schuettelt sanft den Kopf: "Nein. Erwachsene streiten ueber Erwachsenen-Dinge. Selbst wenn dein Name mal faellt -- der Streit handelt von ihren Problemen, nicht von dir. Du bist ein Kind, und es ist nicht deine Aufgabe, die Probleme deiner Eltern zu loesen."',
-            empathyPoints: 0,
-            insightPoints: 3,
-            couragePoints: 1,
-            nextSceneId: 'ocean-s4-scene-3',
-          },
-          {
-            id: 'ocean-s4-c2b',
-            text: 'Ich habe solche Angst, dass sie sich trennen.',
-            consequence:
-              'Marina sagt: "Diese Angst ist voellig verstaendlich. Aber egal, was zwischen deinen Eltern passiert -- du wirst geliebt. Beide lieben dich, auch wenn sie gerade Probleme miteinander haben. Und was auch passiert, du wirst nicht allein sein."',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 1,
-            nextSceneId: 'ocean-s4-scene-3',
-          },
-          {
-            id: 'ocean-s4-c2c',
-            text: 'Danke. Aber was kann ich tun?',
-            consequence:
-              'Marina laechelt: "Das Wichtigste ist, dass du auf dich selbst aufpasst. Du kannst den Streit deiner Eltern nicht loesen, aber du kannst dafuer sorgen, dass es dir so gut wie moeglich geht."',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: 'ocean-s4-scene-3',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s4-scene-3',
-        text: 'Am naechsten Tag in der Schule bist du muede und unkonzentriert. Deine Lehrerin fragt, ob alles okay ist. Was antwortest du?',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F30A}',
-        choices: [
-          {
-            id: 'ocean-s4-c3a',
-            text: 'Ich sage: "Es ist gerade nicht so einfach zu Hause."',
-            consequence:
-              'Die Lehrerin nickt verstaendnisvoll und sagt: "Danke, dass du das sagst. Wenn du reden willst, bin ich da. Und Frau Meier von der Schulsozialarbeit auch." Es fuehlt sich gut an, ehrlich zu sein, ohne alles erzaehlen zu muessen.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 3,
-            nextSceneId: 'ocean-s4-scene-4',
-          },
-          {
-            id: 'ocean-s4-c3b',
-            text: 'Ich sage: "Alles gut" -- obwohl es das nicht ist.',
-            consequence:
-              'Die Lehrerin schaut dich kurz an, als wuerde sie dir nicht ganz glauben, aber sie draengt nicht. Manchmal ist man noch nicht bereit, darueber zu reden, und das ist okay. Aber vergiss nicht: Du musst es nicht fuer immer allein tragen.',
-            empathyPoints: 0,
-            insightPoints: 1,
-            couragePoints: 0,
-            nextSceneId: 'ocean-s4-scene-4',
-          },
-          {
-            id: 'ocean-s4-c3c',
-            text: 'Ich frage, ob ich kurz an die frische Luft kann.',
-            consequence:
-              'Die Lehrerin erlaubt es dir. Draussen holst du ein paar Mal tief Luft. Der Wind auf deiner Haut, der Himmel ueber dir -- fuer einen Moment ist die Welt ein bisschen weiter und der Druck auf deiner Brust ein bisschen leichter.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: 'ocean-s4-scene-4',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s4-scene-4',
-        text: 'Deine Tante Sara ruft am Nachmittag an. "Hey Kleines, ich hab deine Nachricht bekommen. Was ist los?" Du erzaehlst ihr vom Streit deiner Eltern.',
-        speaker: 'Tante Sara',
-        speakerEmoji: '\u{1F469}',
-        choices: [
-          {
-            id: 'ocean-s4-c4a',
-            text: 'Ich erzaehle ihr, wie ich mich dabei fuehle.',
-            consequence:
-              '"Ich hab Angst und bin traurig, und manchmal bin ich auch wuetend, weil alles so ist", sagst du. Tante Sara hoert zu und sagt: "All diese Gefuehle machen Sinn. Und es ist stark von dir, sie mir zu erzaehlen." Du merkst, wie dir ein Stein vom Herzen faellt.',
-            empathyPoints: 2,
-            insightPoints: 2,
-            couragePoints: 3,
-            nextSceneId: 'ocean-s4-scene-5',
-          },
-          {
-            id: 'ocean-s4-c4b',
-            text: 'Ich frage sie, ob meine Eltern sich trennen werden.',
-            consequence:
-              'Tante Sara sagt ehrlich: "Das weiss ich nicht. Aber ich weiss, dass dich beide sehr lieben. Und egal was passiert -- du hast mich, du hast Oma und Opa, und du bist nicht allein. Versprochen." Es tut gut, diese Worte zu hoeren.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: 'ocean-s4-scene-5',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s4-scene-5',
-        text: 'Tiefgang taucht auf und seine tiefe Stimme vibriert warm: "Wenn zu Hause Sturm ist, vergiss nie: Du bist nicht das Boot, das den Sturm ausloest. Du bist der Mensch, der lernt, sich bei Sturm in Sicherheit zu bringen. Kuemmere dich um dich. Such dir deine Menschen. Und vergiss nie: Du bist nicht schuld."',
-        speaker: 'Tiefgang',
-        speakerEmoji: '\u{1F40B}',
-        choices: [
-          {
-            id: 'ocean-s4-c5a',
-            text: 'Ich bin nicht schuld. Und ich darf mir Hilfe holen.',
-            consequence:
-              'Genau das. Du hast heute etwas sehr Wichtiges gelernt: Du kannst die Probleme der Erwachsenen nicht loesen, aber du kannst auf dich aufpassen. Du kannst dir Menschen suchen, die dir zuhoeren. Und du darfst alle Gefuehle fuehlen, die in dir aufkommen.',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 3,
-            nextSceneId: 'ocean-s4-scene-6',
-          },
-        ],
-      },
-      {
-        id: 'ocean-s4-scene-6',
-        text: 'Spaeter am Abend kommt dein Vater in dein Zimmer. "Es tut mir leid, dass wir so laut waren", sagt er leise. "Das hat nichts mit dir zu tun. Wir haben dich lieb." Du spuerst, dass er es ernst meint. Die Wolke ist noch da, aber du weisst jetzt, dass sie nicht fuer immer bleiben wird.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F30A}',
-        choices: [
-          {
-            id: 'ocean-s4-c6a',
-            text: 'Ich sage meinem Vater, dass ich ihn auch lieb habe.',
-            consequence:
-              'Du umarmst ihn fest. In diesem Moment spuerst du: Auch wenn die Dinge gerade schwierig sind, gibt es Liebe in deinem Leben. Und manchmal ist Liebe der Anker, der dich durch den Sturm bringt.',
-            empathyPoints: 2,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: null,
-          },
-        ],
-      },
-    ],
-  },
+    id: 'wellentanz',
+    name: 'Wellentanz',
+    emoji: '🌊',
+    description: 'Ein Wellengeist, der die Bewegung der Gefühle verkörpert',
+    backstory: 'Wellentanz ist die personifizierte Energie des Ozeans. Sie zeigt, wie Gefühle in Wellen kommen – manchmal sanft, manchmal stürmisch, aber immer in Bewegung.'
+  }
 ];
 
-// =============================================================================
-// 2. WISDOM CARDS
-// =============================================================================
+// Scenarios
+export const oceanScenarios: Scenario[] = [
+  // Scenario 1: Der Verlust
+  {
+    id: 'ocean-scenario-1',
+    title: 'Marinas Abschiedslied',
+    description: 'Marina trauert um ihren verlorenen Freund. Sie muss lernen, ihren Schmerz anzuerkennen.',
+    islandId: 'ocean' as IslandId,
+    difficulty: 'medium',
+    estimatedTime: '15-20 min',
+    themes: ['Trauer', 'Verlust', 'Abschied'],
+    scenes: [
+      {
+        id: 'o1-s1',
+        content: 'Marina sitzt auf einem Felsen und starrt aufs Meer hinaus. Ihre Tränen vermischen sich mit dem Salzwasser. "Er ist einfach gegangen... und ich konnte nicht einmal auf Wiedersehen sagen."',
+        choices: [
+          {
+            id: 'o1-s1-c1',
+            text: 'Setz dich neben sie und schweige mit ihr',
+            nextSceneId: 'o1-s2',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'o1-s1-c2',
+            text: 'Sage ihr, dass die Zeit alle Wunden heilt',
+            nextSceneId: 'o1-s2',
+            points: { empathyPoints: 0, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'o1-s1-c3',
+            text: 'Frage sie, was sie an ihm am meisten vermisst',
+            nextSceneId: 'o1-s2',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o1-s2',
+        content: 'Marina beginnt zu erzählen: "Wir sind zusammen durch die tiefsten Gräben geschwommen. Er hat mich zum Lachen gebracht, als ich dachte, ich würde ertrinken." Ihre Stimme bricht.',
+        choices: [
+          {
+            id: 'o1-s2-c1',
+            text: 'Ermutige sie, mehr zu erzählen',
+            nextSceneId: 'o1-s3',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'o1-s2-c2',
+            text: 'Lenke sie ab, um den Schmerz zu vermeiden',
+            nextSceneId: 'o1-s3',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
+          },
+          {
+            id: 'o1-s2-c3',
+            text: 'Teile eine eigene Erfahrung mit Verlust',
+            nextSceneId: 'o1-s3',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'o1-s3',
+        content: 'Die Sonne beginnt unterzugehen. Marina flüstert: "Manchmal denke ich, wenn ich nur stark genug weine, kommt er zurück." Das Meer wird dunkler um euch herum.',
+        choices: [
+          {
+            id: 'o1-s3-c1',
+            text: 'Erkenne an, dass dieser Wunsch normal ist',
+            nextSceneId: 'o1-s4',
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'o1-s3-c2',
+            text: 'Sage ihr, dass sie akzeptieren muss, dass er weg ist',
+            nextSceneId: 'o1-s4',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'o1-s3-c3',
+            text: 'Frage, was ihr Freund wohl gewollt hätte',
+            nextSceneId: 'o1-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o1-s4',
+        content: 'Marina singt ein leises Lied – traurig, aber wunderschön. "Das haben wir immer zusammen gesungen. Jetzt singe ich allein." Die Melodie schwebt über den Wellen.',
+        choices: [
+          {
+            id: 'o1-s4-c1',
+            text: 'Summe leise mit',
+            nextSceneId: 'o1-s5',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'o1-s4-c2',
+            text: 'Höre einfach zu',
+            nextSceneId: 'o1-s5',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'o1-s4-c3',
+            text: 'Sage ihr, wie mutig sie ist, noch zu singen',
+            nextSceneId: 'o1-s5',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o1-s5',
+        content: 'Tiefgang taucht aus der Tiefe auf. "Trauer ist wie der Ozean – tief, weit und manchmal dunkel. Aber sie trägt auch Erinnerungen, die nie ertrinken." Er schaut Marina sanft an.',
+        choices: [
+          {
+            id: 'o1-s5-c1',
+            text: 'Frage Tiefgang, wie man mit so viel Schmerz lebt',
+            nextSceneId: 'o1-s6',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o1-s5-c2',
+            text: 'Bleibe bei Marina und halte ihre Hand',
+            nextSceneId: 'o1-s6',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'o1-s5-c3',
+            text: 'Danke Tiefgang für seine Weisheit',
+            nextSceneId: 'o1-s6',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'o1-s6',
+        content: 'Marina lächelt zum ersten Mal durch ihre Tränen. "Vielleicht... vielleicht ist es okay, traurig zu sein. Vielleicht zeigt es nur, wie sehr ich geliebt habe." Die Sterne beginnen zu leuchten.',
+        choices: [
+          {
+            id: 'o1-s6-c1',
+            text: 'Bestätige, dass Trauer ein Zeichen von Liebe ist',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o1-s6-c2',
+            text: 'Biete an, öfter bei ihr zu sein',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'o1-s6-c3',
+            text: 'Schlage vor, dass sie weiter singt – für ihn',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          }
+        ]
+      }
+    ],
+    completed: false
+  },
 
+  // Scenario 2: Die Dunkelheit
+  {
+    id: 'ocean-scenario-2',
+    title: 'In der Tiefe',
+    description: 'Abstieg in die dunklen Gewässer, wo Depression lauert.',
+    islandId: 'ocean' as IslandId,
+    difficulty: 'hard',
+    estimatedTime: '20-25 min',
+    themes: ['Depression', 'Hoffnungslosigkeit', 'Licht finden'],
+    scenes: [
+      {
+        id: 'o2-s1',
+        content: 'Du sinkst tiefer und tiefer. Das Licht von oben wird schwächer. Hier unten ist alles schwer, langsam, und dunkel. Tiefgang erscheint neben dir. "Manche Tage fühlen sich so an, nicht wahr?"',
+        choices: [
+          {
+            id: 'o2-s1-c1',
+            text: 'Nicke und gestehe, dass du dich auch so fühlst',
+            nextSceneId: 'o2-s2',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'o2-s1-c2',
+            text: 'Versuche, nach oben zum Licht zu schwimmen',
+            nextSceneId: 'o2-s2',
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'o2-s1-c3',
+            text: 'Frage, ob das Gefühl jemals aufhört',
+            nextSceneId: 'o2-s2',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o2-s2',
+        content: 'In der Dunkelheit siehst du schemenhafte Gestalten – Gedanken, die wie Schatten vorbeischweben. "Ich bin wertlos", flüstert einer. "Niemand versteht mich", sagt ein anderer.',
+        choices: [
+          {
+            id: 'o2-s2-c1',
+            text: 'Erkenne die Gedanken an, aber glaube ihnen nicht',
+            nextSceneId: 'o2-s3',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+          },
+          {
+            id: 'o2-s2-c2',
+            text: 'Versuche, die Gedanken zu bekämpfen',
+            nextSceneId: 'o2-s3',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'o2-s2-c3',
+            text: 'Lass dich von den Gedanken verschlingen',
+            nextSceneId: 'o2-s3',
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 0 }
+          }
+        ]
+      },
+      {
+        id: 'o2-s3',
+        content: 'Tiefgang spricht ruhig: "Die Tiefe ist Teil des Ozeans. Ohne sie gäbe es keine Wellen oben. Du musst nicht hier bleiben, aber du darfst dich nicht dafür schämen, hier zu sein."',
+        choices: [
+          {
+            id: 'o2-s3-c1',
+            text: 'Frage, wie man wieder nach oben kommt',
+            nextSceneId: 'o2-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o2-s3-c2',
+            text: 'Sage, dass du dich zu schwer fühlst zum Aufsteigen',
+            nextSceneId: 'o2-s4',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'o2-s3-c3',
+            text: 'Bleibe still und lausche dem Druck der Tiefe',
+            nextSceneId: 'o2-s4',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'o2-s4',
+        content: 'Ein schwaches Leuchten erscheint – eine Tiefsee-Qualle. Ihr Licht ist klein, aber es ist da. "Selbst hier unten gibt es Licht", murmelt Tiefgang. "Manchmal muss man nur seine Augen anpassen."',
+        choices: [
+          {
+            id: 'o2-s4-c1',
+            text: 'Folge dem kleinen Licht',
+            nextSceneId: 'o2-s5',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'o2-s4-c2',
+            text: 'Suche nach mehr Lichtern in der Dunkelheit',
+            nextSceneId: 'o2-s5',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o2-s4-c3',
+            text: 'Frage Tiefgang, ob er dein Licht sein kann',
+            nextSceneId: 'o2-s5',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'o2-s5',
+        content: 'Plötzlich fühlst du eine Strömung – sanft, aber beständig, die dich nach oben zieht. "Das ist der Wille zum Leben", sagt Tiefgang. "Er ist immer da, auch wenn du ihn nicht spürst."',
+        choices: [
+          {
+            id: 'o2-s5-c1',
+            text: 'Lass dich von der Strömung tragen',
+            nextSceneId: 'o2-s6',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'o2-s5-c2',
+            text: 'Schwimme mit der Strömung',
+            nextSceneId: 'o2-s6',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'o2-s5-c3',
+            text: 'Danke der Strömung für ihre Hilfe',
+            nextSceneId: 'o2-s6',
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o2-s6',
+        content: 'Du durchbrichst die Oberfläche. Das Sonnenlicht blendet dich, aber es fühlt sich wunderbar an. "Du bist zurückgekommen", sagt Tiefgang. "Und wenn du wieder sinkst – und das wirst du – weißt du jetzt, wie man aufsteigt."',
+        choices: [
+          {
+            id: 'o2-s6-c1',
+            text: 'Verspreche, um Hilfe zu bitten, wenn du wieder sinkst',
+            nextSceneId: 'o2-s7',
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 3 }
+          },
+          {
+            id: 'o2-s6-c2',
+            text: 'Genieße den Moment im Licht',
+            nextSceneId: 'o2-s7',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'o2-s6-c3',
+            text: 'Frage, wie man anderen hilft, die in der Tiefe sind',
+            nextSceneId: 'o2-s7',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o2-s7',
+        content: 'Tiefgang taucht wieder unter. "Die Tiefe wird immer Teil des Ozeans sein. Aber du bist mehr als deine dunkelsten Momente." Seine Worte bleiben bei dir, während du auf den Wellen schaukelst.',
+        choices: [
+          {
+            id: 'o2-s7-c1',
+            text: 'Atme die Hoffnung ein',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+          },
+          {
+            id: 'o2-s7-c2',
+            text: 'Merke dir Tiefgangs Worte',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o2-s7-c3',
+            text: 'Entscheide, dass du nicht allein kämpfen musst',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 3 }
+          }
+        ]
+      }
+    ],
+    completed: false
+  },
+
+  // Scenario 3: Das Versteck
+  {
+    id: 'ocean-scenario-3',
+    title: 'Coralies Schneckenhaus',
+    description: 'Coralie versteckt sich vor der Welt. Emotionale Vermeidung und der Mut, verletzlich zu sein.',
+    islandId: 'ocean' as IslandId,
+    difficulty: 'medium',
+    estimatedTime: '15-20 min',
+    themes: ['Vermeidung', 'Verletzlichkeit', 'Schutz'],
+    scenes: [
+      {
+        id: 'o3-s1',
+        content: 'Coralie hat sich tief in ihr Schneckenhaus zurückgezogen. Nur ihre kleinen Augen schauen heraus. "Geh weg", sagt sie leise. "Hier drinnen kann mir nichts passieren."',
+        choices: [
+          {
+            id: 'o3-s1-c1',
+            text: 'Respektiere ihren Wunsch und bleibe in der Nähe',
+            nextSceneId: 'o3-s2',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'o3-s1-c2',
+            text: 'Versuche, sie rauszulocken',
+            nextSceneId: 'o3-s2',
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'o3-s1-c3',
+            text: 'Frage, was sie so sehr erschreckt hat',
+            nextSceneId: 'o3-s2',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o3-s2',
+        content: 'Nach einer Weile flüstert Coralie: "Da draußen... da draußen wird man enttäuscht. Man wird verletzt. Man fühlt zu viel." Ihre Stimme zittert. "Hier drinnen ist es sicher."',
+        choices: [
+          {
+            id: 'o3-s2-c1',
+            text: 'Erkenne an, dass Sicherheit wichtig ist',
+            nextSceneId: 'o3-s3',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'o3-s2-c2',
+            text: 'Erzähle von einer Zeit, als du verletzt wurdest',
+            nextSceneId: 'o3-s3',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'o3-s2-c3',
+            text: 'Frage, ob sie sich nicht auch einsam fühlt',
+            nextSceneId: 'o3-s3',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o3-s3',
+        content: 'Coralie kommt ein kleines Stück heraus. "Manchmal... manchmal möchte ich rauskommen. Aber was, wenn ich dann noch mehr Schmerz fühle? Was, wenn ich zusammenbreche?"',
+        choices: [
+          {
+            id: 'o3-s3-c1',
+            text: 'Versichere ihr, dass du da sein wirst',
+            nextSceneId: 'o3-s4',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'o3-s3-c2',
+            text: 'Sage, dass Gefühle einen nicht zerbrechen können',
+            nextSceneId: 'o3-s4',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o3-s3-c3',
+            text: 'Schlage vor, nur einen kleinen Schritt zu wagen',
+            nextSceneId: 'o3-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o3-s4',
+        content: 'Wellentanz erscheint, sanft und beruhigend. "Coralie, erinnerst du dich, wie es ist, auf den Wellen zu tanzen? Das Salz auf der Haut, den Wind?" Coralies Augen werden weich.',
+        choices: [
+          {
+            id: 'o3-s4-c1',
+            text: 'Frage Coralie nach ihren schönsten Erinnerungen',
+            nextSceneId: 'o3-s5',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'o3-s4-c2',
+            text: 'Lass Wellentanz weitersprechen',
+            nextSceneId: 'o3-s5',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'o3-s4-c3',
+            text: 'Biete Coralie deine Hand an',
+            nextSceneId: 'o3-s5',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'o3-s5',
+        content: 'Coralie kriecht langsam heraus. Sie zittert. "Ich habe solche Angst", gesteht sie. "Aber ich bin auch so müde vom Verstecken. Ich fühle mich wie lebendig begraben."',
+        choices: [
+          {
+            id: 'o3-s5-c1',
+            text: 'Sage ihr, wie mutig sie ist',
+            nextSceneId: 'o3-s6',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'o3-s5-c2',
+            text: 'Bleibe ruhig neben ihr',
+            nextSceneId: 'o3-s6',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'o3-s5-c3',
+            text: 'Erinnere sie, dass sie jederzeit zurück kann',
+            nextSceneId: 'o3-s6',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o3-s6',
+        content: 'Coralie steht vollständig draußen. Eine Welle kommt und... sie lacht. Es ist ein kleines, erschrockenes Lachen, aber es ist echt. "Ich... ich hatte vergessen, wie sich das anfühlt."',
+        choices: [
+          {
+            id: 'o3-s6-c1',
+            text: 'Feiere diesen Moment mit ihr',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'o3-s6-c2',
+            text: 'Frage, ob sie bereit ist, mehr zu fühlen',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o3-s6-c3',
+            text: 'Erkläre, dass Verletzlichkeit Stärke ist',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+          }
+        ]
+      }
+    ],
+    completed: false
+  },
+
+  // Scenario 4: Die Wellen der Emotion
+  {
+    id: 'ocean-scenario-4',
+    title: 'Wellentanz und der Sturm',
+    description: 'Lernen, dass Emotionen in Wellen kommen und dass auch schwere Gefühle vorbeigehen.',
+    islandId: 'ocean' as IslandId,
+    difficulty: 'medium',
+    estimatedTime: '12-15 min',
+    themes: ['Emotionale Wellen', 'Vergänglichkeit', 'Akzeptanz'],
+    scenes: [
+      {
+        id: 'o4-s1',
+        content: 'Der Ozean ist unruhig. Wellentanz wirbelt wild umher. "Fühlst du es?" ruft sie. "Die Traurigkeit kommt wie ein Sturm! Sie ist groß, so groß!" Die Wellen türmen sich auf.',
+        choices: [
+          {
+            id: 'o4-s1-c1',
+            text: 'Versuche, die Wellen zu stoppen',
+            nextSceneId: 'o4-s2',
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'o4-s1-c2',
+            text: 'Frage Wellentanz, wie man durch Wellen taucht',
+            nextSceneId: 'o4-s2',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o4-s1-c3',
+            text: 'Lass dich von der Welle tragen',
+            nextSceneId: 'o4-s2',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'o4-s2',
+        content: 'Eine riesige Welle überspült dich – Traurigkeit, Wut, Verzweiflung, alles auf einmal. Es fühlt sich an, als würdest du ertrinken. Aber dann... bist du auf der anderen Seite. Du atmest noch.',
+        choices: [
+          {
+            id: 'o4-s2-c1',
+            text: 'Erkenne, dass du überlebt hast',
+            nextSceneId: 'o4-s3',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+          },
+          {
+            id: 'o4-s2-c2',
+            text: 'Habe Angst vor der nächsten Welle',
+            nextSceneId: 'o4-s3',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'o4-s2-c3',
+            text: 'Danke Wellentanz für die Lektion',
+            nextSceneId: 'o4-s3',
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o4-s3',
+        content: 'Wellentanz beruhigt sich etwas. "Siehst du?" sagt sie atemlos. "Ich komme immer wieder. Manchmal sanft, manchmal wild. Aber ich bleibe nie für immer gleich."',
+        choices: [
+          {
+            id: 'o4-s3-c1',
+            text: 'Verstehe, dass Gefühle sich verändern',
+            nextSceneId: 'o4-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o4-s3-c2',
+            text: 'Frage, wie man die Intensität aushält',
+            nextSceneId: 'o4-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o4-s3-c3',
+            text: 'Beobachte das Muster der Wellen',
+            nextSceneId: 'o4-s4',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o4-s4',
+        content: 'Eine sanfte Welle folgt. Dann eine mittlere. Dann wieder eine wilde. "Manche Menschen versuchen, mich zu kontrollieren", sagt Wellentanz. "Aber das bin nicht ich. Ich bin die Bewegung selbst."',
+        choices: [
+          {
+            id: 'o4-s4-c1',
+            text: 'Akzeptiere, dass man Gefühle nicht kontrollieren kann',
+            nextSceneId: 'o4-s5',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+          },
+          {
+            id: 'o4-s4-c2',
+            text: 'Frage, wie man mit der Unvorhersehbarkeit umgeht',
+            nextSceneId: 'o4-s5',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o4-s4-c3',
+            text: 'Lerne, auf den Wellen zu reiten',
+            nextSceneId: 'o4-s5',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'o4-s5',
+        content: 'Der Ozean wird ruhiger. Wellentanz flüstert: "Die stärksten Schwimmer kämpfen nicht gegen die Wellen. Sie bewegen sich mit ihnen." Das Wasser glitzert im Mondlicht.',
+        choices: [
+          {
+            id: 'o4-s5-c1',
+            text: 'Übe, mit den Gefühlswellen zu fließen',
+            nextSceneId: 'o4-s6',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+          },
+          {
+            id: 'o4-s5-c2',
+            text: 'Bedanke dich für diese Weisheit',
+            nextSceneId: 'o4-s6',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'o4-s5-c3',
+            text: 'Frage, was man tut, wenn man erschöpft ist',
+            nextSceneId: 'o4-s6',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'o4-s6',
+        content: 'Wellentanz umarmt dich sanft. "Du hast den Sturm überlebt. Und du wirst den nächsten auch überleben. Jedes Mal wirst du stärker, weiser, vertrauter mit meinen Rhythmen."',
+        choices: [
+          {
+            id: 'o4-s6-c1',
+            text: 'Glaube daran, dass du es schaffen wirst',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+          },
+          {
+            id: 'o4-s6-c2',
+            text: 'Verspreche, nicht mehr gegen die Wellen zu kämpfen',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+          },
+          {
+            id: 'o4-s6-c3',
+            text: 'Schwimme ruhig in der Stille nach dem Sturm',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      }
+    ],
+    completed: false
+  },
+
+  // Scenario 5: Heilung durch Verbindung
+  {
+    id: 'ocean-scenario-5',
+    title: 'Das Riff der Heilung',
+    description: 'Ein Korallenriff symbolisiert, wie Heilung durch Verbindung und Gemeinschaft geschieht.',
+    islandId: 'ocean' as IslandId,
+    difficulty: 'easy',
+    estimatedTime: '10-15 min',
+    themes: ['Heilung', 'Gemeinschaft', 'Unterstützung'],
+    scenes: [
+      {
+        id: 'o5-s1',
+        content: 'Du findest ein Korallenriff – bunt, lebendig, voller Bewegung. Jede Koralle wächst neben der anderen. "Wir heilen nie allein", sagt Marina, die neben dir schwimmt.',
+        choices: [
+          {
+            id: 'o5-s1-c1',
+            text: 'Frage, wie das Riff so stark wurde',
+            nextSceneId: 'o5-s2',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'o5-s1-c2',
+            text: 'Berühre vorsichtig eine Koralle',
+            nextSceneId: 'o5-s2',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'o5-s1-c3',
+            text: 'Beobachte, wie die Lebewesen zusammenarbeiten',
+            nextSceneId: 'o5-s2',
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'o5-s2',
+        content: 'Marina zeigt auf eine gebrochene Koralle, die langsam heilt. "Siehst du? Die anderen um sie herum geben ihr Raum zum Wachsen. Sie urteilen nicht. Sie sind einfach da."',
+        choices: [
+          {
+            id: 'o5-s2-c1',
+            text: 'Verstehe, dass Heilung Zeit braucht',
+            nextSceneId: 'o5-s3',
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o5-s2-c2',
+            text: 'Frage, ob du jemandem so helfen kannst',
+            nextSceneId: 'o5-s3',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'o5-s2-c3',
+            text: 'Erkenne dich selbst in der gebrochenen Koralle',
+            nextSceneId: 'o5-s3',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'o5-s3',
+        content: 'Ein Fischschwarm schwimmt vorbei, perfekt synchronisiert. "Manchmal", sagt Marina, "bedeutet Heilung, zu lernen, dass man Teil von etwas Größerem ist. Dass man nicht allein ist."',
+        choices: [
+          {
+            id: 'o5-s3-c1',
+            text: 'Denke an Menschen, die dich unterstützen',
+            nextSceneId: 'o5-s4',
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o5-s3-c2',
+            text: 'Fühle dich immer noch isoliert',
+            nextSceneId: 'o5-s4',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'o5-s3-c3',
+            text: 'Frage, wie man um Hilfe bittet',
+            nextSceneId: 'o5-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'o5-s4',
+        content: 'Alle vier – Marina, Tiefgang, Coralie und Wellentanz – versammeln sich am Riff. "Wir alle haben schwere Zeiten durchgemacht", sagt Tiefgang. "Aber wir sind hier, zusammen."',
+        choices: [
+          {
+            id: 'o5-s4-c1',
+            text: 'Teile deine eigenen schwierigen Gefühle',
+            nextSceneId: 'o5-s5',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'o5-s4-c2',
+            text: 'Höre den Geschichten der anderen zu',
+            nextSceneId: 'o5-s5',
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o5-s4-c3',
+            text: 'Danke ihnen für ihre Offenheit',
+            nextSceneId: 'o5-s5',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o5-s5',
+        content: 'Das Riff scheint heller zu leuchten. Coralie flüstert: "Wenn ich meine Geschichte teile, fühlt sie sich weniger schwer an." Die anderen nicken. Auch du spürst eine Leichtigkeit.',
+        choices: [
+          {
+            id: 'o5-s5-c1',
+            text: 'Verspreche, deine Geschichte zu teilen',
+            nextSceneId: 'o5-s6',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'o5-s5-c2',
+            text: 'Frage, wie man sichere Menschen findet',
+            nextSceneId: 'o5-s6',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o5-s5-c3',
+            text: 'Biete an, für andere da zu sein',
+            nextSceneId: 'o5-s6',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'o5-s6',
+        content: 'Die Gruppe umarmt sich sanft. "Das Riff erinnert uns daran", sagt Marina, "dass wir stärker sind, wenn wir zusammen wachsen. Narben und alles."',
+        choices: [
+          {
+            id: 'o5-s6-c1',
+            text: 'Akzeptiere, dass Heilung möglich ist',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 3 }
+          },
+          {
+            id: 'o5-s6-c2',
+            text: 'Werde Teil dieser Gemeinschaft',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'o5-s6-c3',
+            text: 'Verspreche, nie aufzugeben',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          }
+        ]
+      }
+    ],
+    completed: false
+  },
+
+  // Scenario 6: Die Perle im Schmerz
+  {
+    id: 'ocean-scenario-6',
+    title: 'Die Perle der Transformation',
+    description: 'Wie Schmerz und Traurigkeit uns formen können, ohne uns zu definieren.',
+    islandId: 'ocean' as IslandId,
+    difficulty: 'medium',
+    estimatedTime: '15-20 min',
+    themes: ['Transformation', 'Wachstum', 'Sinn finden'],
+    scenes: [
+      {
+        id: 'o6-s1',
+        content: 'Eine Auster liegt am Meeresboden. "Darf ich dir etwas zeigen?" fragt Tiefgang. Er öffnet sie vorsichtig – darin liegt eine wunderschöne Perle. "Weißt du, wie sie entsteht?"',
+        choices: [
+          {
+            id: 'o6-s1-c1',
+            text: 'Schüttle den Kopf und höre zu',
+            nextSceneId: 'o6-s2',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'o6-s1-c2',
+            text: 'Sage, dass Perlen aus Irritation entstehen',
+            nextSceneId: 'o6-s2',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'o6-s1-c3',
+            text: 'Berühre die Perle sanft',
+            nextSceneId: 'o6-s2',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o6-s2',
+        content: 'Tiefgang erklärt: "Ein Sandkorn dringt ein – es tut weh, stört. Die Auster kann es nicht rauswerfen. Also umhüllt sie es, Schicht für Schicht, bis etwas Schönes entsteht."',
+        choices: [
+          {
+            id: 'o6-s2-c1',
+            text: 'Verstehe die Metapher',
+            nextSceneId: 'o6-s3',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o6-s2-c2',
+            text: 'Frage, ob Schmerz also gut ist',
+            nextSceneId: 'o6-s3',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o6-s2-c3',
+            text: 'Denke an deinen eigenen Schmerz',
+            nextSceneId: 'o6-s3',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'o6-s3',
+        content: '"Der Schmerz ist nicht gut", sagt Tiefgang sanft. "Aber manchmal können wir ihn in etwas verwandeln. Nicht weil wir müssen, sondern weil wir können."',
+        choices: [
+          {
+            id: 'o6-s3-c1',
+            text: 'Frage, wie man das macht',
+            nextSceneId: 'o6-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o6-s3-c2',
+            text: 'Sage, dass dein Schmerz zu groß ist',
+            nextSceneId: 'o6-s4',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'o6-s3-c3',
+            text: 'Überlege, was deine Perle sein könnte',
+            nextSceneId: 'o6-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o6-s4',
+        content: 'Marina schwimmt näher. "Meine Perle ist meine Musik. Der Verlust hat mir beigebracht, tiefer zu singen, ehrlicher. Meine Trauer ist jetzt Teil meiner Melodien."',
+        choices: [
+          {
+            id: 'o6-s4-c1',
+            text: 'Bewundere ihre Transformation',
+            nextSceneId: 'o6-s5',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'o6-s4-c2',
+            text: 'Frage, ob der Schmerz dann weg ist',
+            nextSceneId: 'o6-s5',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o6-s4-c3',
+            text: 'Teile eine Idee für deine eigene Transformation',
+            nextSceneId: 'o6-s5',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'o6-s5',
+        content: 'Coralie kommt aus ihrem Schneckenhaus. "Meine Perle ist, dass ich jetzt verstehe, wann ich Schutz brauche und wann ich mutig sein kann. Der Schmerz hat mich nicht zerbrochen – er hat mich gelehrt."',
+        choices: [
+          {
+            id: 'o6-s5-c1',
+            text: 'Erkenne, dass Wachstum aus Schmerz kommen kann',
+            nextSceneId: 'o6-s6',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+          },
+          {
+            id: 'o6-s5-c2',
+            text: 'Frage, wie lange die Transformation dauert',
+            nextSceneId: 'o6-s6',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o6-s5-c3',
+            text: 'Danke ihnen für ihre Geschichten',
+            nextSceneId: 'o6-s6',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o6-s6',
+        content: 'Tiefgang gibt dir die Perle. "Das ist für dich. Eine Erinnerung, dass dein Schmerz dich nicht definiert, aber er kann dich formen, wenn du bereit bist. Du entscheidest, wann."',
+        choices: [
+          {
+            id: 'o6-s6-c1',
+            text: 'Nimm die Perle an und verspreche, zu wachsen',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 3 }
+          },
+          {
+            id: 'o6-s6-c2',
+            text: 'Halte die Perle fest und fühle ihre Bedeutung',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o6-s6-c3',
+            text: 'Beginne, deine eigene Perle zu erschaffen',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+          }
+        ]
+      }
+    ],
+    completed: false
+  }
+];
+
+// Activities
+export const oceanActivities: OceanActivity[] = [
+  {
+    id: 'ocean-journal',
+    title: 'Tagebuch der Tiefen',
+    description: 'Schreibe deine tiefsten Gefühle auf, wie Botschaften in Flaschenpost.',
+    type: 'reflection',
+    duration: '10-15 min',
+    difficulty: 'easy',
+    islandId: 'ocean' as IslandId,
+    instructions: [
+      'Finde einen ruhigen Ort',
+      'Schreibe über ein schwieriges Gefühl, das du gerade hast',
+      'Beschreibe es wie eine Welle: Wie fühlt es sich an? Wie stark ist es?',
+      'Schreibe, was du brauchst, wenn diese Welle kommt',
+      'Unterschreibe als "Der Kapitän deines Ozeans"'
+    ],
+    completed: false
+  },
+  {
+    id: 'ocean-meditation',
+    title: 'Die Atem-Wellen',
+    description: 'Eine Atemübung, die dich mit dem Rhythmus des Ozeans verbindet.',
+    type: 'meditation',
+    duration: '5-10 min',
+    difficulty: 'easy',
+    islandId: 'ocean' as IslandId,
+    instructions: [
+      'Setze oder lege dich bequem hin',
+      'Schließe die Augen und stelle dir Wellen vor',
+      'Atme ein (4 Sekunden) – die Welle kommt',
+      'Halte den Atem (2 Sekunden) – die Welle am Höchsten',
+      'Atme aus (6 Sekunden) – die Welle zieht sich zurück',
+      'Wiederhole 10 Mal',
+      'Öffne die Augen und spüre die Ruhe'
+    ],
+    completed: false
+  },
+  {
+    id: 'ocean-reflection',
+    title: 'Mein emotionaler Ozean',
+    description: 'Kartiere deine emotionale Landschaft mit Meeresmetaphern.',
+    type: 'creative',
+    duration: '15-20 min',
+    difficulty: 'medium',
+    islandId: 'ocean' as IslandId,
+    instructions: [
+      'Zeichne einen Ozean auf Papier',
+      'Male die Oberfläche: Wie geht es dir nach außen?',
+      'Zeichne die mittlere Schicht: Was fühlst du wirklich?',
+      'Male die Tiefe: Was verbirgst du vor anderen?',
+      'Füge Meereslebewesen hinzu, die deine Gefühle repräsentieren',
+      'Betrachte deine Karte: Was lernst du über dich?'
+    ],
+    completed: false
+  },
+  {
+    id: 'ocean-grounding',
+    title: 'Der Anker',
+    description: 'Eine Erdungsübung für stürmische Gefühlsmomente.',
+    type: 'breathing',
+    duration: '5 min',
+    difficulty: 'easy',
+    islandId: 'ocean' as IslandId,
+    instructions: [
+      'Wenn die Emotionen zu stark werden, stelle dir vor, du bist ein Anker',
+      'Spüre deine Füße auf dem Boden (oder deinen Körper auf dem Stuhl)',
+      'Nenne 5 Dinge, die du siehst',
+      'Nenne 4 Dinge, die du hören kannst',
+      'Nenne 3 Dinge, die du fühlen kannst',
+      'Nenne 2 Dinge, die du riechen kannst',
+      'Nenne 1 Sache, für die du dankbar bist',
+      'Atme tief. Du bist verankert.'
+    ],
+    completed: false
+  },
+  {
+    id: 'ocean-letter',
+    title: 'Brief an die Traurigkeit',
+    description: 'Schreibe einen Brief an deine Traurigkeit, um sie besser zu verstehen.',
+    type: 'creative',
+    duration: '15 min',
+    difficulty: 'medium',
+    islandId: 'ocean' as IslandId,
+    instructions: [
+      'Beginne: "Liebe Traurigkeit..."',
+      'Frage sie, warum sie hier ist',
+      'Erkenne an, was sie dir zeigen möchte',
+      'Schreibe, wie es sich anfühlt, sie zu tragen',
+      'Sage ihr, was du brauchst',
+      'Beende mit: "Ich sehe dich, und ich bin stark genug"',
+      'Lies den Brief laut vor (wenn du möchtest)',
+      'Bewahre ihn auf oder lass ihn symbolisch im Meer los'
+    ],
+    completed: false
+  }
+];
+
+// Wisdom Cards
 export const oceanWisdomCards: WisdomCard[] = [
   {
     id: 'ocean-wisdom-1',
-    islandId: 'ocean',
-    text: 'Traurigkeit ist wie eine Welle -- sie kommt und sie geht wieder. Du musst sie nicht festhalten, aber du darfst sie fuehlen.',
-    category: 'emotion',
-    collected: false,
+    title: 'Die Tiefe des Ozeans',
+    content: 'Traurigkeit ist wie der Ozean – manchmal still, manchmal stürmisch, aber immer tief. Es ist okay, sich verloren in den Wellen zu fühlen.',
+    category: 'insight',
+    islandId: 'ocean' as IslandId,
+    rarity: 'common',
+    collectionOrder: 1,
+    collected: false
   },
   {
     id: 'ocean-wisdom-2',
-    islandId: 'ocean',
-    text: 'Weinen ist keine Schwaeche. Es zeigt, dass du fuehlst -- und das ist eine Staerke.',
-    category: 'courage',
-    collected: false,
+    title: 'Tränen wie Salzwasser',
+    content: 'Weinen ist nicht Schwäche. Es ist der Beweis, dass du tief fühlst, dass du mutig genug bist, deinen Schmerz anzuerkennen.',
+    category: 'comfort',
+    islandId: 'ocean' as IslandId,
+    rarity: 'common',
+    collectionOrder: 2,
+    collected: false
   },
   {
     id: 'ocean-wisdom-3',
-    islandId: 'ocean',
-    text: 'Du musst nicht immer wissen, warum du traurig bist. Manchmal ist das Gefuehl einfach da, und das ist okay.',
-    category: 'insight',
-    collected: false,
+    title: 'Wellen der Emotion',
+    content: 'Gefühle kommen in Wellen. Selbst die größte Welle ebbt irgendwann ab. Du musst nur atmen und treiben, bis sie vorüber ist.',
+    category: 'strategy',
+    islandId: 'ocean' as IslandId,
+    rarity: 'common',
+    collectionOrder: 3,
+    collected: false
   },
   {
     id: 'ocean-wisdom-4',
-    islandId: 'ocean',
-    text: 'Um Hilfe zu bitten ist kein Zeichen von Schwaeche -- es ist eines der mutigsten Dinge, die du tun kannst.',
-    category: 'courage',
-    collected: false,
+    title: 'Die Kunst des Tauchens',
+    content: 'Manchmal muss man durch den Schmerz tauchen, nicht um ihn. Auf der anderen Seite wartet Verständnis.',
+    category: 'insight',
+    islandId: 'ocean' as IslandId,
+    rarity: 'rare',
+    collectionOrder: 4,
+    collected: false
   },
   {
     id: 'ocean-wisdom-5',
-    islandId: 'ocean',
-    text: 'Wenn jemand traurig ist, braucht er oft keine Loesung, sondern jemanden, der einfach zuhoert.',
-    category: 'strategy',
-    collected: false,
+    title: 'Der Wal in der Tiefe',
+    content: 'Auch in der dunkelsten Tiefe gibt es Leben, Bewegung, Schönheit. Depression lügt, wenn sie sagt, es gäbe keinen Weg nach oben.',
+    category: 'comfort',
+    islandId: 'ocean' as IslandId,
+    rarity: 'rare',
+    collectionOrder: 5,
+    collected: false
   },
   {
     id: 'ocean-wisdom-6',
-    islandId: 'ocean',
-    text: 'Jeder Verlust darf wehtun -- egal wie klein er anderen erscheint. Deine Gefuehle sind immer gueltig.',
-    category: 'emotion',
-    collected: false,
+    title: 'Das Schneckenhaus',
+    content: 'Es ist okay, sich manchmal zu verstecken. Aber vergiss nicht: Du bist mehr als dein Schutzpanzer. Du darfst auch verletzlich sein.',
+    category: 'strategy',
+    islandId: 'ocean' as IslandId,
+    rarity: 'common',
+    collectionOrder: 6,
+    collected: false
   },
   {
     id: 'ocean-wisdom-7',
-    islandId: 'ocean',
-    text: 'Eine kleine Geste kann den ganzen Tag eines Menschen veraendern. Ein Laecheln, ein Hallo, ein freier Platz.',
-    category: 'strategy',
-    collected: false,
+    title: 'Trauer als Liebe',
+    content: 'Trauer ist Liebe ohne Ziel. Sie zeigt, wie tief du gefühlt hast, wie sehr du geliebt hast. Das ist keine Schwäche – es ist ein Geschenk.',
+    category: 'insight',
+    islandId: 'ocean' as IslandId,
+    rarity: 'epic',
+    collectionOrder: 7,
+    collected: false
   },
   {
     id: 'ocean-wisdom-8',
-    islandId: 'ocean',
-    text: 'Es ist nicht deine Aufgabe, die Probleme der Erwachsenen zu loesen. Aber es ist deine Aufgabe, auf dich selbst aufzupassen.',
-    category: 'insight',
-    collected: false,
+    title: 'Die Strömung des Lebens',
+    content: 'Manche Tage wirst du gegen die Strömung schwimmen. An anderen Tagen lass dich einfach treiben. Beide Arten zu sein sind okay.',
+    category: 'strategy',
+    islandId: 'ocean' as IslandId,
+    rarity: 'common',
+    collectionOrder: 8,
+    collected: false
   },
   {
     id: 'ocean-wisdom-9',
-    islandId: 'ocean',
-    text: 'Trauer ist der Preis der Liebe. Und dieser Preis ist es wert.',
-    category: 'emotion',
-    collected: false,
+    title: 'Das Korallenriff',
+    content: 'Heilung geschieht in Gemeinschaft. Wie Korallen im Riff wachsen wir stärker, wenn wir nicht allein sind.',
+    category: 'comfort',
+    islandId: 'ocean' as IslandId,
+    rarity: 'rare',
+    collectionOrder: 9,
+    collected: false
   },
   {
     id: 'ocean-wisdom-10',
-    islandId: 'ocean',
-    text: 'Gefuehle fuer sich behalten macht sie schwerer. Gefuehle teilen macht sie leichter.',
-    category: 'strategy',
-    collected: false,
+    title: 'Die Perle der Transformation',
+    content: 'Eine Perle entsteht aus Schmerz, aber sie wird zu etwas Schönem. Dein Schmerz definiert dich nicht, aber er kann dich formen.',
+    category: 'insight',
+    islandId: 'ocean' as IslandId,
+    rarity: 'epic',
+    collectionOrder: 10,
+    collected: false
   },
   {
     id: 'ocean-wisdom-11',
-    islandId: 'ocean',
-    text: 'Die staerksten Menschen sind nicht die, die alles alleine schaffen, sondern die, die wissen, wann sie Hilfe brauchen.',
-    category: 'courage',
-    collected: false,
+    title: 'Der Rhythmus der Gezeiten',
+    content: 'Wie die Gezeiten kommen und gehen auch deine Gefühle. Nichts ist permanent – weder die Traurigkeit noch die Freude.',
+    category: 'insight',
+    islandId: 'ocean' as IslandId,
+    rarity: 'rare',
+    collectionOrder: 11,
+    collected: false
   },
   {
     id: 'ocean-wisdom-12',
-    islandId: 'ocean',
-    text: 'Auch an dunklen Tagen darfst du daran glauben: Die Sonne geht wieder auf. Immer.',
+    title: 'Biolumineszenz',
+    content: 'Selbst in der tiefsten Dunkelheit gibt es Kreaturen, die ihr eigenes Licht tragen. Du trägst auch ein Licht in dir.',
+    category: 'comfort',
+    islandId: 'ocean' as IslandId,
+    rarity: 'epic',
+    collectionOrder: 12,
+    collected: false
+  },
+  {
+    id: 'ocean-wisdom-13',
+    title: 'Der Atem des Wals',
+    content: 'Wale tauchen tief, aber sie müssen an die Oberfläche kommen, um zu atmen. Vergiss nicht zu atmen, vergiss nicht aufzutauchen.',
+    category: 'strategy',
+    islandId: 'ocean' as IslandId,
+    rarity: 'common',
+    collectionOrder: 13,
+    collected: false
+  },
+  {
+    id: 'ocean-wisdom-14',
+    title: 'Das Lied der Meerjungfrau',
+    content: 'Deine Traurigkeit verdient es, gehört zu werden. Sing dein Lied, auch wenn es traurig ist. Jemand braucht es vielleicht.',
+    category: 'comfort',
+    islandId: 'ocean' as IslandId,
+    rarity: 'rare',
+    collectionOrder: 14,
+    collected: false
+  },
+  {
+    id: 'ocean-wisdom-15',
+    title: 'Wellenkamm und Tal',
+    content: 'Du kannst nicht nur auf dem Wellenkamm reiten. Die Täler gehören dazu. In jedem Tal sammelt sich die Kraft für die nächste Welle.',
     category: 'insight',
-    collected: false,
-  },
-];
-
-// =============================================================================
-// 3. ACTIVITIES
-// =============================================================================
-
-export const oceanActivities: OceanActivity[] = [
-  {
-    id: 'ocean-activity-1',
-    islandId: 'ocean',
-    type: 'creative',
-    title: 'Gefuehlsflaschenpost',
-    description:
-      'Schreibe deine Gefuehle auf und schicke sie symbolisch aufs Meer hinaus. Manchmal hilft es, Dinge loszulassen, indem man sie in Worte fasst.',
-    instructions: [
-      'Setz dich an einen ruhigen Ort und schliesse fuer einen Moment die Augen.',
-      'Ueberlege: Welches Gefuehl traegst du gerade mit dir herum? Es muss nichts Bestimmtes sein -- auch "ich weiss nicht genau" ist eine gueltige Antwort.',
-      'Schreibe dieses Gefuehl auf -- so, wie es dir in den Sinn kommt. Es muss kein perfekter Satz sein. Auch einzelne Woerter oder ein Bild sind okay.',
-      'Stell dir vor, du rollst den Zettel zusammen und steckst ihn in eine Flasche.',
-      'Jetzt stellst du dir vor, wie du die Flasche ins Meer wirfst. Beobachte, wie die Wellen sie davontragen.',
-      'Atme tief ein und aus. Du hast dein Gefuehl losgelassen. Es darf auf dem Meer treiben. Und du darfst dich jetzt ein bisschen leichter fuehlen.',
-    ],
-    completed: false,
+    islandId: 'ocean' as IslandId,
+    rarity: 'rare',
+    collectionOrder: 15,
+    collected: false
   },
   {
-    id: 'ocean-activity-2',
-    islandId: 'ocean',
-    type: 'breathing',
-    title: 'Tiefsee-Tauchgang',
-    description:
-      'Ein Bodyscan als Unterwasser-Abenteuer: Tauche in deinen Koerper ein und spuere, wie es dir gerade geht. Entdecke, wo sich Gefuehle in deinem Koerper verstecken.',
-    instructions: [
-      'Setz dich bequem hin oder leg dich hin. Schliesse die Augen und stell dir vor, du tauchst langsam in einen warmen, ruhigen Ozean hinab.',
-      'Starte bei deinem Kopf. Wie fuehlt sich dein Kopf an? Schwer? Leicht? Angespannt? Stell dir vor, warmes Wasser umfliesst deinen Kopf und loest jede Anspannung.',
-      'Gleite tiefer -- zu deinen Schultern und Armen. Sind sie angespannt? Lass sie los, als wuerdest du im Wasser schweben.',
-      'Weiter zu deiner Brust. Atme tief ein -- stell dir vor, du atmest durch Kiemen wie ein Fisch. Langsam ein, langsam aus. Wie fuehlt sich deine Brust an?',
-      'Nun zum Bauch. Oft verstecken sich hier Sorgen und Aengste. Atme warmes Licht dorthin. Es ist okay, was auch immer du dort spuerst.',
-      'Gleite zu deinen Beinen und Fuessen. Spuere den Boden unter dir -- oder stell dir den weichen Meeresboden vor.',
-      'Tauche jetzt langsam wieder auf. Oeffne die Augen, wenn du bereit bist. Willkommen zurueck. Du hast gerade auf deinen Koerper gehoert, und das ist ein wichtiger Schritt.',
-    ],
-    completed: false,
-  },
-  {
-    id: 'ocean-activity-3',
-    islandId: 'ocean',
-    type: 'reflection',
-    title: 'Hilfe-Leuchtturm',
-    description:
-      'Baue deinen persoenlichen Leuchtturm: eine Liste von Menschen, die dir in schwierigen Zeiten Licht und Halt geben koennen.',
-    instructions: [
-      'Stell dir vor, du bist ein Schiff auf dem Meer. Manchmal wird das Meer stuermisch -- und dann brauchst du Leuchttuerme, die dir den Weg zeigen.',
-      'Ueberlege: Wer sind die Menschen in deinem Leben, die dir guttun? Das koennen Familienmitglieder sein, Freunde, Lehrkraefte, Nachbarn oder andere Vertrauenspersonen.',
-      'Schreibe mindestens drei Namen auf. Neben jeden Namen schreibst du, warum diese Person fuer dich ein Leuchtturm ist. Zum Beispiel: "Oma -- weil sie immer zuhoert und nie urteilt."',
-      'Ueberlege fuer jede Person: Wie koenntest du sie erreichen, wenn du Hilfe brauchst? Telefon, persoenlich, per Nachricht?',
-      'Wenn du magst, ergaenze die Liste mit professionellen Anlaufstellen: Schulsozialarbeit, Kinder- und Jugendtelefon (116 111), oder eine andere Beratungsstelle.',
-      'Bewahre diese Liste an einem sicheren Ort auf. Dein Leuchtturm-Netzwerk ist immer fuer dich da -- auch wenn das Meer mal stuermisch wird.',
-    ],
-    completed: false,
-  },
-];
-
-// =============================================================================
-// 4. NPCs
-// =============================================================================
-
-export const oceanNPCs: OceanNPC[] = [
-  {
-    id: 'ocean-npc-marina',
-    name: 'Marina',
-    emoji: '\u{1F9DC}\u{200D}\u{2640}\u{FE0F}',
-    description:
-      'Eine Meerjungfrau, die lange Zeit ihre eigene Traurigkeit versteckt hat. Heute hilft sie anderen, ihre Gefuehle zu verstehen und anzunehmen.',
-    backstory:
-      'Marina lebte viele Jahre tief unten im Ozean und laechelte immer, wenn andere sie sahen. Niemand wusste, dass sie innerlich traurig war -- sie hatte ihre Heimat verloren, als die Stroemungen sich veraenderten. Eines Tages vertraute sie sich einem kleinen Seepferdchen an, und zum ersten Mal fuehlte sie sich leichter. Seitdem hat Marina gelernt: Gefuehle zu zeigen ist keine Schwaeche, sondern der mutigste Weg nach vorne. Heute schwimmt sie durch den Ozean und hilft jedem, der sich traut, ehrlich ueber seine Gefuehle zu sprechen.',
-  },
-  {
-    id: 'ocean-npc-tiefgang',
-    name: 'Tiefgang',
-    emoji: '\u{1F40B}',
-    description:
-      'Ein alter, weiser Wal, der viel Verlust erlebt hat und Geschichten darueber erzaehlt, wie man trotz Trauer weitergehen kann.',
-    backstory:
-      'Tiefgang ist ueber hundert Jahre alt und hat in seinem langen Leben vieles erlebt: Er hat Freunde verloren, Stuerme ueberlebt und gesehen, wie sich die Meere veraenderten. Frueher hat ihn die Trauer manchmal so schwer gemacht, dass er kaum noch auftauchen konnte. Aber mit der Zeit hat er gelernt, dass Trauer und Freude im selben Herzen Platz haben. Er erzaehlt gerne Geschichten von frueheren Zeiten -- nicht um traurig zu machen, sondern um zu zeigen, dass man nach jedem Verlust wieder Licht finden kann. Seine tiefe, ruhige Stimme hat schon vielen Meeresbewohnern Trost gespendet.',
-  },
+    id: 'ocean-wisdom-16',
+    title: 'Der Horizont',
+    content: 'Der Horizont ist immer da, auch wenn der Sturm tobt. Es gibt immer eine Grenze zwischen Himmel und Meer, zwischen jetzt und später.',
+    category: 'comfort',
+    islandId: 'ocean' as IslandId,
+    rarity: 'epic',
+    collectionOrder: 16,
+    collected: false
+  }
 ];

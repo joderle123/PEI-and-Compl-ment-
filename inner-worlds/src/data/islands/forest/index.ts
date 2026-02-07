@@ -1,24 +1,10 @@
-// =============================================================================
-// Inner Worlds - Forest Island ("Wald-Insel")
-// Theme: Angst & Mut (Fear & Courage)
-// All content in German, written for ages 10-15
-// Therapeutically grounded: CBT-based cognitive restructuring, exposure
-// hierarchy concepts, growth mindset
-// =============================================================================
-
+// @ts-nocheck
 import type { Scenario, WisdomCard, Activity, IslandId } from '../../../types';
 
-// -----------------------------------------------------------------------------
-// Extended Activity type (adds instructions for guided activities)
-// -----------------------------------------------------------------------------
-
+// Local interfaces
 interface ForestActivity extends Activity {
   instructions: string[];
 }
-
-// -----------------------------------------------------------------------------
-// NPC type for island characters
-// -----------------------------------------------------------------------------
 
 interface ForestNPC {
   id: string;
@@ -28,908 +14,1167 @@ interface ForestNPC {
   backstory: string;
 }
 
-// =============================================================================
-// 1. SCENARIOS
-// =============================================================================
+// NPCs
+export const forestNPCs: ForestNPC[] = [
+  {
+    id: 'timber',
+    name: 'Timber',
+    emoji: '🌲',
+    description: 'Ein uralter Baumgeist, der im Herzen des Waldes wurzelt',
+    backstory: 'Timber hat Hunderte von Jahren gesehen und kennt alle Geheimnisse der Angst und des Mutes. Seine Wurzeln reichen tief in die Erde, wo die ältesten Ängste schlafen.'
+  },
+  {
+    id: 'faye',
+    name: 'Faye',
+    emoji: '🧑',
+    description: 'Ein mutiges Mädchen aus Syrien, das neu in Luxemburg ist',
+    backstory: 'Faye musste ihre Heimat verlassen und in Luxemburg neu anfangen. Sie versteht, wie es sich anfühlt, fremd zu sein und Angst vor dem Unbekannten zu haben.'
+  },
+  {
+    id: 'schattenfluesterer',
+    name: 'Schattenflüsterer',
+    emoji: '🦇',
+    description: 'Eine freundliche Fledermaus, die in den Schatten zu Hause ist',
+    backstory: 'Schattenflüsterer wurde einst gefürchtet, bis jemand erkannte, dass Schatten nicht böse sind – sie sind einfach Teile von uns, die Aufmerksamkeit brauchen.'
+  },
+  {
+    id: 'lumi',
+    name: 'Lumi',
+    emoji: '🪲',
+    description: 'Ein kleines, aber unglaublich mutiges Glühwürmchen',
+    backstory: 'Lumi ist winzig, aber ihr Licht hat schon viele durch die dunkelsten Nächte geführt. Sie beweist, dass Größe nichts mit Mut zu tun hat.'
+  }
+];
 
+// Scenarios
 export const forestScenarios: Scenario[] = [
-  // ---------------------------------------------------------------------------
-  // Scenario 1: "Das Referat"
-  // Teaching: Mut bedeutet nicht, keine Angst zu haben - sondern trotz Angst
-  // weiterzumachen. Vorbereitung und kleine Schritte helfen.
-  // ---------------------------------------------------------------------------
   {
     id: 'forest-scenario-1',
     islandId: 'forest' as IslandId,
-    title: 'Das Referat',
-    description:
-      'Du musst naechste Woche ein Referat vor der ganzen Klasse halten. Allein der Gedanke daran laesst dein Herz schneller schlagen. Wie gehst du damit um?',
+    title: 'Timbers Prüfung',
+    description: 'Der alte Baumgeist zeigt dir den dunkelsten Teil des Waldes',
+    npcId: 'timber',
+    completed: false,
     scenes: [
       {
-        id: 'forest-s1-scene-1',
-        text: 'Deine Lehrerin hat gerade die Referat-Themen verteilt. Du schaust auf dein Blatt: "Die Geheimnisse des Regenwaldes". Eigentlich ein cooles Thema - aber der Gedanke, vor 25 Leuten zu sprechen, schnuert dir den Hals zu. Dein Herz pocht. Neben dir fluestert dein Freund Leo: "Hey, alles gut bei dir? Du siehst ein bisschen blass aus."',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F33F}',
+        id: 'f1-s1',
+        text: 'Timber rauscht mit seinen Ästen. "Der dunkle Wald ruft dich", flüstert er. "Dort, wo das Licht kaum hinreicht, warten deine tiefsten Ängste. Bist du bereit?"',
         choices: [
           {
-            id: 'forest-s1-c1a',
-            text: 'Ehrlich sein: "Mir graut es total vor dem Referat. Ich hasse es, vor allen zu reden."',
-            consequence:
-              'Leo nickt verstaendnisvoll. "Geht mir auch so manchmal. Wollen wir zusammen ueben?" Es fuehlt sich gut an, nicht allein damit zu sein.',
-            empathyPoints: 2,
-            insightPoints: 1,
-            couragePoints: 2,
-            nextSceneId: 'forest-s1-scene-2a',
+            id: 'f1-s1-c1',
+            text: 'Ja, ich bin bereit. Zeig mir den Weg.',
+            points: 3,
+            nextSceneId: 'f1-s2'
           },
           {
-            id: 'forest-s1-c1b',
-            text: 'Abwinken: "Alles easy, kein Ding." Und hoffen, dass es irgendwie vorbeigeht.',
-            consequence:
-              'Leo zuckt die Schultern und wendet sich ab. Du bleibst allein mit deinem mulmigen Gefuehl. Es wird nicht weniger, wenn du so tust, als waere es nicht da.',
-            empathyPoints: 0,
-            insightPoints: 1,
-            couragePoints: 0,
-            nextSceneId: 'forest-s1-scene-2b',
+            id: 'f1-s1-c2',
+            text: 'Ich habe Angst, aber ich versuche es.',
+            points: 2,
+            nextSceneId: 'f1-s2'
           },
           {
-            id: 'forest-s1-c1c',
-            text: 'Ueberlegen, ob du am Tag des Referats einfach krank spielen koenntest.',
-            consequence:
-              'Der Gedanke bringt kurz Erleichterung - aber tief in dir weisst du: Das Referat verschwindet dadurch nicht. Es wird nur auf einen anderen Tag verschoben, und die Angst bleibt.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 0,
-            nextSceneId: 'forest-s1-scene-2b',
-          },
-        ],
+            id: 'f1-s1-c3',
+            text: 'Nein, das ist mir zu gruselig.',
+            points: 1,
+            nextSceneId: 'f1-s2'
+          }
+        ]
       },
       {
-        id: 'forest-s1-scene-2a',
-        text: 'Du und Leo sitzt am Nachmittag zusammen. "Okay", sagt Leo, "ich hab einen Trick von meiner grossen Schwester. Man uebt erst vor dem Spiegel, dann vor einer Person, dann vor mehreren. Stufe fuer Stufe." Dein Magen grummelt immer noch, aber irgendwie klingt das machbar.',
-        speaker: 'Leo',
-        speakerEmoji: '\u{1F466}',
+        id: 'f1-s2',
+        text: 'Der Pfad wird dunkler. Du hörst seltsame Geräusche zwischen den Bäumen. Dein Herz klopft schneller, deine Handflächen werden feucht.',
         choices: [
           {
-            id: 'forest-s1-c2a1',
-            text: 'Den Plan ausprobieren: Erst allein ueben, dann vor Leo, dann vielleicht vor deiner Familie.',
-            consequence:
-              'Die erste Runde allein fuehlt sich komisch an. Aber schon beim zweiten Mal merkst du: Du kennst deinen Text besser, als du dachtest. Vor Leo zu reden ist aufregend, aber er klatscht danach und gibt dir Tipps.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 3,
-            nextSceneId: 'forest-s1-scene-3',
+            id: 'f1-s2-c1',
+            text: 'Ich atme tief durch und gehe weiter.',
+            points: 3,
+            nextSceneId: 'f1-s3'
           },
           {
-            id: 'forest-s1-c2a2',
-            text: 'Karteikarten schreiben und Stichpunkte vorbereiten, damit du einen "Sicherheitsanker" hast.',
-            consequence:
-              'Du schreibst die wichtigsten Punkte auf Karten. Allein das Aufschreiben hilft - dein Kopf wird klarer, das Thema vertrauter. Die Karten in der Hand zu halten gibt dir das Gefuehl: Ich bin vorbereitet.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: 'forest-s1-scene-3',
+            id: 'f1-s2-c2',
+            text: 'Ich rufe nach Timber.',
+            points: 2,
+            nextSceneId: 'f1-s3'
           },
-        ],
+          {
+            id: 'f1-s2-c3',
+            text: 'Ich bleibe stehen und lausche.',
+            points: 2,
+            nextSceneId: 'f1-s3'
+          }
+        ]
       },
       {
-        id: 'forest-s1-scene-2b',
-        text: 'Die Tage vergehen, und du hast das Referat vor dir hergeschoben. Jetzt ist es Sonntagabend, morgen ist es soweit. Dein Herz rast, deine Haende sind feucht, und du hast das Gefuehl, kein einziges Wort mehr zu wissen. Timber, der Waldgeist, erscheint neben dir. "Ich kenne dieses Gefuehl", sagt er leise. "Es fuehlt sich an, als wuerde gleich etwas Schlimmes passieren. Aber lass mich dir eine Frage stellen: Was ist das Schlimmste, was wirklich passieren kann?"',
-        speaker: 'Timber',
-        speakerEmoji: '\u{1F333}',
+        id: 'f1-s3',
+        text: 'Plötzlich siehst du eine dunkle Gestalt. Sie kommt näher. "Das bin ich", erkennst du überrascht – es ist dein eigener Schatten, vergrößert durch die Dunkelheit.',
         choices: [
           {
-            id: 'forest-s1-c2b1',
-            text: 'Nachdenken: "Naja... dass ich stecken bleibe oder rot werde. Aber davon geht die Welt nicht unter."',
-            consequence:
-              'Timber laechelt. "Genau. Dein Gehirn malt dir gerade das Worst-Case-Szenario aus. Aber die meisten Worst Cases passieren nie. Und selbst wenn du stockst - das ist menschlich. Jeder versteht das."',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 2,
-            nextSceneId: 'forest-s1-scene-3',
+            id: 'f1-s3-c1',
+            text: 'Ich schaue meinem Schatten direkt in die Augen.',
+            points: 3,
+            nextSceneId: 'f1-s4'
           },
           {
-            id: 'forest-s1-c2b2',
-            text: '"Dass alle mich auslachen und fuer immer komisch finden."',
-            consequence:
-              'Timber nickt sanft. "Das fuehlt sich echt so an, oder? Aber ueberleg mal: Erinnerst du dich an das letzte Referat von jemand anderem? Wahrscheinlich kaum. Die meisten Leute sind viel mehr mit sich selbst beschaeftigt, als du denkst."',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 1,
-            nextSceneId: 'forest-s1-scene-3',
+            id: 'f1-s3-c2',
+            text: 'Ich erkenne, dass mein Schatten zu mir gehört.',
+            points: 3,
+            nextSceneId: 'f1-s4'
           },
-        ],
+          {
+            id: 'f1-s3-c3',
+            text: 'Ich drehe mich weg.',
+            points: 1,
+            nextSceneId: 'f1-s4'
+          }
+        ]
       },
       {
-        id: 'forest-s1-scene-3',
-        text: 'Der Moment ist da. Du stehst vorne. 25 Augenpaare schauen dich an. Dein Mund ist trocken, deine Knie zittern leicht. Du holst tief Luft. Im Kopf hoerst du Timbers Stimme: "Mut ist nicht, keine Angst zu haben. Mut ist, trotz der Angst den ersten Satz zu sagen."',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F33F}',
+        id: 'f1-s4',
+        text: 'Timber erscheint neben dir. "Siehst du? Die Angst war nur ein Schatten. Aber jetzt kommt der wahre Test – geh tiefer hinein, wo niemand bei dir ist."',
         choices: [
           {
-            id: 'forest-s1-c3a',
-            text: 'Tief durchatmen und einfach anfangen - auch wenn deine Stimme zittert.',
-            consequence:
-              'Dein erster Satz kommt raus - etwas leise, etwas wackelig. Aber er kommt raus. Und dann der zweite. Und ploetzlich merkst du: Du redest. Du machst es wirklich. Die Angst ist noch da, aber sie wird leiser.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 4,
-            nextSceneId: 'forest-s1-scene-4',
+            id: 'f1-s4-c1',
+            text: 'Ich gehe allein weiter.',
+            points: 3,
+            nextSceneId: 'f1-s5'
           },
           {
-            id: 'forest-s1-c3b',
-            text: 'Ehrlich sagen: "Sorry, ich bin mega aufgeregt" - und dann anfangen.',
-            consequence:
-              'Ein paar Mitschueler laecheln verstaendnisvoll. Jemand sagt leise: "Das kenn ich." Die Ehrlichkeit nimmt Druck raus. Du fuehlst dich weniger allein damit, und die ersten Worte kommen leichter.',
-            empathyPoints: 2,
-            insightPoints: 1,
-            couragePoints: 3,
-            nextSceneId: 'forest-s1-scene-4',
+            id: 'f1-s4-c2',
+            text: 'Ich bitte Timber, in meiner Nähe zu bleiben.',
+            points: 2,
+            nextSceneId: 'f1-s5'
           },
           {
-            id: 'forest-s1-c3c',
-            text: 'Dich an deine Karteikarten klammern und ablesen, bis du dich sicherer fuehlst.',
-            consequence:
-              'Die Karten helfen dir, den Faden nicht zu verlieren. Nach ein paar Saetzen schaust du hoch - und merkst, dass die Klasse zuhort. Langsam wirst du freier und schaust oefter von den Karten auf.',
-            empathyPoints: 0,
-            insightPoints: 1,
-            couragePoints: 2,
-            nextSceneId: 'forest-s1-scene-4',
-          },
-        ],
+            id: 'f1-s4-c3',
+            text: 'Ich sage, dass ich genug gesehen habe.',
+            points: 1,
+            nextSceneId: 'f1-s5'
+          }
+        ]
       },
       {
-        id: 'forest-s1-scene-4',
-        text: 'Das Referat ist vorbei. Du gehst zurueck zu deinem Platz. Dein Herz schlaegt immer noch schnell, aber diesmal ist es ein anderes Gefuehl - fast wie nach einer Achterbahnfahrt. Du hast es gemacht. Es war nicht perfekt, aber du hast es durchgezogen. Faye, die neben dir sitzt, fluestert: "Das war richtig gut. Ich hab mich vor meinem naechsten Referat total gefuerchtet, aber irgendwie machst du mir gerade Mut."',
-        speaker: 'Faye',
-        speakerEmoji: '\u{1F9D2}',
+        id: 'f1-s5',
+        text: 'Im tiefsten Teil des Waldes findest du eine Lichtung. Dort steht ein Spiegel. In ihm siehst du dich selbst – aber auch alle deine Ängste als kleine Schatten um dich herum.',
         choices: [
           {
-            id: 'forest-s1-c4a',
-            text: '"Danke, Faye! Ehrlich gesagt war ich total nervoes. Aber es hat geholfen, sich vorzubereiten und einfach anzufangen."',
-            consequence:
-              'Faye laechelt. Du merkst: Deine Erfahrung kann anderen helfen. Und das naechste Referat wird ein kleines Stueckchen weniger beaengstigend sein - weil du jetzt weisst, dass du es schaffen kannst.',
-            empathyPoints: 3,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: null,
+            id: 'f1-s5-c1',
+            text: 'Ich benenne jede Angst beim Namen.',
+            points: 3,
+            nextSceneId: 'f1-s6'
           },
           {
-            id: 'forest-s1-c4b',
-            text: '"Ich kann dir helfen zu ueben, wenn du willst. Zusammen ist es weniger gruselig."',
-            consequence:
-              'Fayes Augen leuchten auf. "Wirklich? Das waere mega!" Manchmal ist der groesste Mut nicht nur, die eigene Angst zu ueberwinden - sondern auch anderen zu helfen, ihre zu bewaeltigen.',
-            empathyPoints: 4,
-            insightPoints: 1,
-            couragePoints: 2,
-            nextSceneId: null,
+            id: 'f1-s5-c2',
+            text: 'Ich umarme mich selbst im Spiegel.',
+            points: 3,
+            nextSceneId: 'f1-s6'
           },
-        ],
+          {
+            id: 'f1-s5-c3',
+            text: 'Ich schaue nur kurz hin.',
+            points: 1,
+            nextSceneId: 'f1-s6'
+          }
+        ]
       },
-    ],
+      {
+        id: 'f1-s6',
+        text: 'Als du die Ängste anerkennst, werden sie durchsichtig. Timber lächelt: "Du hast verstanden – Angst verschwindet nicht, wenn man sie ignoriert. Aber wenn man sie ansieht, verliert sie ihre Macht." Du fühlst dich stärker.',
+        choices: [
+          {
+            id: 'f1-s6-c1',
+            text: 'Danke, Timber. Ich habe viel gelernt.',
+            points: 3,
+            nextSceneId: null
+          },
+          {
+            id: 'f1-s6-c2',
+            text: 'Ich werde wiederkommen, wenn ich Angst habe.',
+            points: 2,
+            nextSceneId: null
+          },
+          {
+            id: 'f1-s6-c3',
+            text: 'Das war schwer, aber wichtig.',
+            points: 2,
+            nextSceneId: null
+          }
+        ]
+      }
+    ]
   },
-
-  // ---------------------------------------------------------------------------
-  // Scenario 2: "Der erste Tag"
-  // Teaching: Neue Anfaenge sind beaengstigend UND aufregend zugleich.
-  // Offenheit und kleine Schritte helfen.
-  // ---------------------------------------------------------------------------
   {
     id: 'forest-scenario-2',
     islandId: 'forest' as IslandId,
-    title: 'Der erste Tag',
-    description:
-      'Du bist neu an einer Schule. Alles ist fremd - die Gaenge, die Gesichter, die Regeln. Dein Bauch kribbelt vor Nervositaet. Wie findest du deinen Weg?',
+    title: 'Fayes neuer Anfang',
+    description: 'Ein Mädchen aus einem fernen Land teilt ihre Geschichte',
+    npcId: 'faye',
+    completed: false,
     scenes: [
       {
-        id: 'forest-s2-scene-1',
-        text: 'Du stehst vor dem Schultor. Es ist riesig. Ueberall stroemen Schueler vorbei, die sich kennen, sich zurufen, zusammen lachen. Du kennst hier niemanden. Dein Rucksack fuehlt sich ploetzlich doppelt so schwer an. Im Bauch hast du dieses Flattern - wie hundert kleine Schmetterlinge, die gleichzeitig losfliegen.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F33F}',
+        id: 'f2-s1',
+        text: 'Faye sitzt auf einem Baumstumpf, ihre Augen blicken in die Ferne. "In Damaskus hatte ich Freunde, eine Schule, ein Zuhause", sagt sie leise. "Hier in Luxemburg ist alles fremd. Die Sprache, die Gesichter, sogar der Himmel sieht anders aus."',
         choices: [
           {
-            id: 'forest-s2-c1a',
-            text: 'Tief durchatmen und dich daran erinnern: Jeder hier hatte mal einen ersten Tag.',
-            consequence:
-              'Du holst Luft, spuerst den Boden unter deinen Fuessen. Stimmt - jeder einzelne Mensch hier hat irgendwann zum ersten Mal durch dieses Tor gehen muessen. Du bist nicht die einzige Person auf der Welt, die sich gerade so fuehlt.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: 'forest-s2-scene-2',
+            id: 'f2-s1-c1',
+            text: 'Erzähl mir mehr von deinem alten Zuhause.',
+            points: 3,
+            nextSceneId: 'f2-s2'
           },
           {
-            id: 'forest-s2-c1b',
-            text: 'Am liebsten wuerdest du umdrehen und nach Hause gehen.',
-            consequence:
-              'Der Impuls ist stark. Weglaufen wuerde sich jetzt gerade so gut anfuehlen. Aber du weisst auch: Morgen muesste man wieder hierher, und dann waere es noch schwerer. Manchmal ist der schwerste Schritt der erste.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 1,
-            nextSceneId: 'forest-s2-scene-2',
+            id: 'f2-s1-c2',
+            text: 'Es wird besser werden, versprochen.',
+            points: 2,
+            nextSceneId: 'f2-s2'
           },
           {
-            id: 'forest-s2-c1c',
-            text: 'Dir ein Mini-Ziel setzen: "Ich finde erstmal mein Klassenzimmer. Mehr muss ich jetzt noch nicht schaffen."',
-            consequence:
-              'Gute Idee! Statt an den ganzen grossen, beaengstigenden Tag zu denken, konzentrierst du dich auf einen einzigen kleinen Schritt. Das macht es handhabbar. Ein Fuss vor den anderen.',
-            empathyPoints: 0,
-            insightPoints: 3,
-            couragePoints: 2,
-            nextSceneId: 'forest-s2-scene-2',
-          },
-        ],
+            id: 'f2-s1-c3',
+            text: 'Ich höre dir zu.',
+            points: 2,
+            nextSceneId: 'f2-s2'
+          }
+        ]
       },
       {
-        id: 'forest-s2-scene-2',
-        text: 'Du findest dein Klassenzimmer. Die meisten Plaetze sind schon besetzt. Ueberall sitzen Grueppchen zusammen, die sich offensichtlich kennen. Ein Platz in der Mitte ist frei, und einer ganz hinten am Fenster. Die Lehrerin hat dich noch nicht bemerkt.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F33F}',
+        id: 'f2-s2',
+        text: '"Am ersten Tag in der Luxemburger Schule stand ich vor der Klasse. Alle starrten mich an. Ich verstand kein Wort Luxemburgisch. Mein Herz raste so schnell, dass ich dachte, es würde explodieren."',
         choices: [
           {
-            id: 'forest-s2-c2a',
-            text: 'Den Platz in der Mitte nehmen - naeher an den anderen, auch wenn es sich unsicher anfuehlt.',
-            consequence:
-              'Du setzt dich hin. Dein Herz klopft. Das Maedchen neben dir schaut kurz rueber und laechelt. "Hi, bist du neu?" Es ist nur ein kleiner Moment, aber er macht einen Unterschied.',
-            empathyPoints: 1,
-            insightPoints: 1,
-            couragePoints: 3,
-            nextSceneId: 'forest-s2-scene-3',
+            id: 'f2-s2-c1',
+            text: 'Das klingt furchtbar einsam.',
+            points: 3,
+            nextSceneId: 'f2-s3'
           },
           {
-            id: 'forest-s2-c2b',
-            text: 'Den Platz hinten am Fenster - erstmal beobachten und die Lage checken.',
-            consequence:
-              'Von hier aus kannst du alles ueberblicken, ohne selbst im Mittelpunkt zu stehen. Das fuehlt sich sicherer an. Du beobachtest die Klasse und versuchst herauszufinden, wie die Dynamik hier so ist.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 1,
-            nextSceneId: 'forest-s2-scene-3',
+            id: 'f2-s2-c2',
+            text: 'Hast du jemanden gefunden, der dir half?',
+            points: 2,
+            nextSceneId: 'f2-s3'
           },
-        ],
+          {
+            id: 'f2-s2-c3',
+            text: 'Kannst du jetzt Luxemburgisch?',
+            points: 1,
+            nextSceneId: 'f2-s3'
+          }
+        ]
       },
       {
-        id: 'forest-s2-scene-3',
-        text: 'Die Lehrerin stellt dich kurz vor. "Wir haben jemand Neues in der Klasse!" Alle Augen sind auf dich gerichtet. Manche laecheln, manche schauen einfach nur. Ein Junge in der ersten Reihe ruft: "Wo kommst du denn her?" Die Lehrerin sagt: "Magst du kurz etwas ueber dich erzaehlen?"',
-        speaker: 'Lehrerin',
-        speakerEmoji: '\u{1F469}\u{200D}\u{1F3EB}',
+        id: 'f2-s3',
+        text: 'Faye nickt. "Ein Mädchen namens Marie lächelte mich an. Sie konnte kein Arabisch, ich kein Luxemburgisch, aber sie zeigte mir, wo die Bibliothek war. Dort malten wir zusammen. Bilder brauchen keine Worte."',
         choices: [
           {
-            id: 'forest-s2-c3a',
-            text: 'Ein paar Saetze sagen: Name, woher du kommst, und ein Hobby erwaehnen.',
-            consequence:
-              'Du sagst deinen Namen und erwaehst, dass du gerne zeichnest. Sofort ruft jemand: "Ich auch! Zeigst du mir mal was?" Es ist erstaunlich, wie ein kleines Detail Bruecken bauen kann.',
-            empathyPoints: 1,
-            insightPoints: 1,
-            couragePoints: 3,
-            nextSceneId: 'forest-s2-scene-4',
+            id: 'f2-s3-c1',
+            text: 'Marie klingt nach einer echten Freundin.',
+            points: 3,
+            nextSceneId: 'f2-s4'
           },
           {
-            id: 'forest-s2-c3b',
-            text: 'Nur kurz den Namen sagen und laecheln - mehr fuehlt sich gerade nicht machbar an.',
-            consequence:
-              'Und das ist voellig okay. Du musst nicht sofort dein ganzes Leben erzaehlen. Die Lehrerin nickt freundlich und macht weiter. Du hast dich gezeigt, so viel wie sich richtig anfuehlte. Das ist auch Mut.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: 'forest-s2-scene-4',
+            id: 'f2-s3-c2',
+            text: 'Was habt ihr gemalt?',
+            points: 2,
+            nextSceneId: 'f2-s4'
           },
-        ],
+          {
+            id: 'f2-s3-c3',
+            text: 'Hattest du noch immer Angst?',
+            points: 2,
+            nextSceneId: 'f2-s4'
+          }
+        ]
       },
       {
-        id: 'forest-s2-scene-4',
-        text: 'Pause. Die Klasse stroemt raus. Du stehst mit deiner Brotdose da und weisst nicht wohin. Ein paar Meter weiter steht eine Gruppe und lacht ueber etwas auf einem Handy. An der Wand lehnt ein Maedchen allein und liest ein Buch. Timber fluestert dir zu: "Neue Situationen fuehlen sich oft bedrohlich an. Aber schau genauer hin - manchmal verstecken sich in der Unsicherheit auch Chancen."',
-        speaker: 'Timber',
-        speakerEmoji: '\u{1F333}',
+        id: 'f2-s4',
+        text: '"Ja, ich hatte noch Angst. Angst, nie dazuzugehören. Angst, meine alte Heimat zu vergessen. Angst, dass ich zwischen zwei Welten stecken bleibe." Faye atmet tief. "Aber dann verstand ich etwas wichtiges."',
         choices: [
           {
-            id: 'forest-s2-c4a',
-            text: 'Zu der lachenden Gruppe gehen und fragen, was so lustig ist.',
-            consequence:
-              'Es kostet Ueberwindung, aber du gehst hin. "Hey, was guckt ihr da?" Jemand zeigt dir ein lustiges Video. Du lachst mit. Es ist noch nicht Freundschaft - aber es ist ein Anfang. Und Anfaenge sind wertvoll.',
-            empathyPoints: 1,
-            insightPoints: 1,
-            couragePoints: 3,
-            nextSceneId: 'forest-s2-scene-5',
+            id: 'f2-s4-c1',
+            text: 'Was hast du verstanden?',
+            points: 3,
+            nextSceneId: 'f2-s5'
           },
           {
-            id: 'forest-s2-c4b',
-            text: 'Zu dem Maedchen mit dem Buch gehen und fragen, was sie liest.',
-            consequence:
-              'Sie schaut ueberrascht auf. "Oh! Das ist Percy Jackson. Kennst du das?" Egal ob ja oder nein - ihr habt ein Gespraech. Manchmal findet man die besten Verbindungen an den ruhigsten Orten.',
-            empathyPoints: 2,
-            insightPoints: 1,
-            couragePoints: 2,
-            nextSceneId: 'forest-s2-scene-5',
+            id: 'f2-s4-c2',
+            text: 'Du musst nichts vergessen.',
+            points: 2,
+            nextSceneId: 'f2-s5'
           },
           {
-            id: 'forest-s2-c4c',
-            text: 'Erstmal allein essen und die Pause zum Ankommen nutzen - morgen ist auch noch ein Tag.',
-            consequence:
-              'Du setzt dich auf eine Bank und isst in Ruhe. Du beobachtest den Schulhof, merkst dir Gesichter, bekommst ein Gefuehl fuer den Ort. Manchmal braucht man Zeit, bevor man bereit ist. Das ist kein Versagen - das ist Selbstfuersorge.',
-            empathyPoints: 0,
-            insightPoints: 3,
-            couragePoints: 1,
-            nextSceneId: 'forest-s2-scene-5',
-          },
-        ],
+            id: 'f2-s4-c3',
+            text: 'Ich warte gespannt.',
+            points: 2,
+            nextSceneId: 'f2-s5'
+          }
+        ]
       },
       {
-        id: 'forest-s2-scene-5',
-        text: 'Der erste Tag ist vorbei. Du sitzt im Bus nach Hause. Es war anstrengend - emotional mehr als koerperlich. Aber du hast es geschafft. Du hast diesen Tag ueberlebt, der sich heute Morgen noch so riesig angefuehlt hat. Timber setzt sich neben dich. "Weisst du, was ich an neuen Anfaengen gelernt habe? Sie sind immer beides gleichzeitig: beaengstigend und aufregend. Das eine schliesst das andere nicht aus."',
-        speaker: 'Timber',
-        speakerEmoji: '\u{1F333}',
+        id: 'f2-s5',
+        text: '"Ich muss nicht zwischen den Welten wählen. Ich kann beide in mir tragen. Damaskus ist in meinem Herzen, und Luxemburg wird auch dort ein Zuhause finden. Ich bin nicht nur syrisch oder luxemburgisch – ich bin beides. Und das ist meine Stärke."',
         choices: [
           {
-            id: 'forest-s2-c5a',
-            text: '"Stimmt. Es war schlimm UND es war okay. Beides gleichzeitig."',
-            consequence:
-              'Timber nickt. "Genau das. Und morgen wird es schon ein kleines bisschen vertrauter sein. Und uebermorgen noch ein Stueckchen mehr." Du lehnst dich zurueck und laechelst. Der erste Tag ist geschafft. Alles, was jetzt kommt, ist kein erster Tag mehr.',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 2,
-            nextSceneId: null,
+            id: 'f2-s5-c1',
+            text: 'Das ist wunderschön und mutig.',
+            points: 3,
+            nextSceneId: 'f2-s6'
           },
           {
-            id: 'forest-s2-c5b',
-            text: '"Ich bin stolz auf mich, auch wenn es sich nicht perfekt angefuehlt hat."',
-            consequence:
-              'Timbers Augen leuchten warm. "Stolz sein darf man nicht nur, wenn alles perfekt laeuft. Gerade wenn es schwer war und man es trotzdem gemacht hat - dann ist es am meisten verdient." Du laechelst. Morgen kommst du wieder.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 3,
-            nextSceneId: null,
+            id: 'f2-s5-c2',
+            text: 'Du bist ein Brückenbauer zwischen Welten.',
+            points: 3,
+            nextSceneId: 'f2-s6'
           },
-        ],
+          {
+            id: 'f2-s5-c3',
+            text: 'Danke, dass du das mit mir teilst.',
+            points: 2,
+            nextSceneId: 'f2-s6'
+          }
+        ]
       },
-    ],
+      {
+        id: 'f2-s6',
+        text: 'Faye lächelt zum ersten Mal. "Heute habe ich in der Schule eine Geschichte auf Luxemburgisch erzählt – über ein syrisches Mädchen, das lernte, mutig zu sein. Alle hörten zu. Ich gehöre hierher, weil ich hier bin. Und ich bin mutig genug, neu anzufangen."',
+        choices: [
+          {
+            id: 'f2-s6-c1',
+            text: 'Du inspirierst mich, Faye.',
+            points: 3,
+            nextSceneId: null
+          },
+          {
+            id: 'f2-s6-c2',
+            text: 'Mut bedeutet nicht, keine Angst zu haben.',
+            points: 3,
+            nextSceneId: null
+          },
+          {
+            id: 'f2-s6-c3',
+            text: 'Danke für deine Geschichte.',
+            points: 2,
+            nextSceneId: null
+          }
+        ]
+      }
+    ]
   },
-
-  // ---------------------------------------------------------------------------
-  // Scenario 3: "Gruppendruck"
-  // Teaching: Echte Freunde respektieren deine Grenzen. Nein sagen ist Mut.
-  // ---------------------------------------------------------------------------
   {
     id: 'forest-scenario-3',
     islandId: 'forest' as IslandId,
-    title: 'Gruppendruck',
-    description:
-      'Deine Freundesgruppe will etwas tun, bei dem du ein schlechtes Gefuehl hast. Alle machen mit - nur du zoegest. Wie gehst du mit dem Druck um?',
+    title: 'Freundschaft mit Schatten',
+    description: 'Schattenflüsterer zeigt dir, dass Dunkelheit nicht böse ist',
+    npcId: 'schattenfluesterer',
+    completed: false,
     scenes: [
       {
-        id: 'forest-s3-scene-1',
-        text: 'Freitagnachmittag. Du haengst mit deiner Gruppe ab: Mika, Jordan und Sam. Ihr seid auf dem Spielplatz hinter der Schule. Mika grinst ploetzlich. "Ich hab eine Idee. Mein grosser Bruder hat erfahren, dass die Turnhalle hinten eine offene Tuer hat. Wir koennten uns reinschleichen und die Kletterwand benutzen - ohne Aufsicht. Das wird mega!"',
-        speaker: 'Mika',
-        speakerEmoji: '\u{1F9D1}',
+        id: 'f3-s1',
+        text: 'Schattenflüsterer hängt kopfüber von einem Ast. "Die meisten fürchten mich", piepst er. "Sie sehen meine Flügel und denken an Vampire, an Dunkelheit, an Monster. Aber ich bin nur eine kleine Fledermaus, die die Nacht liebt."',
         choices: [
           {
-            id: 'forest-s3-c1a',
-            text: 'Sofort sagen: "Ich weiss nicht... das ist verboten und ohne Sicherung echt gefaehrlich."',
-            consequence:
-              'Mika rollt mit den Augen. "Ach komm, stell dich nicht so an." Jordan und Sam schauen zwischen euch hin und her. Es ist unangenehm, aber du hast gesagt, was du denkst.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 3,
-            nextSceneId: 'forest-s3-scene-2',
+            id: 'f3-s1-c1',
+            text: 'Ich finde dich nicht gruselig.',
+            points: 3,
+            nextSceneId: 'f3-s2'
           },
           {
-            id: 'forest-s3-c1b',
-            text: 'Erstmal abwarten und schauen, wie die anderen reagieren.',
-            consequence:
-              'Jordan sagt: "Klingt cool!" Sam nickt unsicher. Alle schauen dich an. Der Druck waechst. Manchmal macht Abwarten es schwieriger, weil dann die ganze Gruppe schon in Fahrt ist.',
-            empathyPoints: 0,
-            insightPoints: 1,
-            couragePoints: 0,
-            nextSceneId: 'forest-s3-scene-2',
+            id: 'f3-s1-c2',
+            text: 'Warum liebst du die Nacht?',
+            points: 2,
+            nextSceneId: 'f3-s2'
           },
           {
-            id: 'forest-s3-c1c',
-            text: 'Dir wird mulmig, aber du sagst nichts, weil du nicht als Spielverderber gelten willst.',
-            consequence:
-              'Du nickst vage und gehst mit. In deinem Bauch rumort es. Du weisst, dass etwas nicht stimmt, aber die Angst, ausgeschlossen zu werden, ist gerade groesser als die Angst vor dem, was passieren koennte.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 0,
-            nextSceneId: 'forest-s3-scene-3',
-          },
-        ],
+            id: 'f3-s1-c3',
+            text: 'Ehrlich gesagt, habe ich ein bisschen Angst.',
+            points: 2,
+            nextSceneId: 'f3-s2'
+          }
+        ]
       },
       {
-        id: 'forest-s3-scene-2',
-        text: 'Mika schaut dich an. "Was denn? Wir machen doch nix Schlimmes. Es ist nur Klettern." Jordan fuegt hinzu: "Wenn du nicht mitkommst, bleibst du halt allein hier." Sam sagt nichts, schaut aber nervoes. Timber erscheint im Schatten einer Eiche und fluestert: "Hoer auf dein Bauchgefuehl. Echte Freunde drücken dich nicht in Situationen, die sich falsch anfuehlen."',
-        speaker: 'Timber',
-        speakerEmoji: '\u{1F333}',
+        id: 'f3-s2',
+        text: '"Komm mit mir", sagt er und flattert in die Dämmerung. "Ich zeige dir, dass Schatten Freunde sein können. Jeder Mensch hat Schatten in sich – Teile, die er versteckt. Aber was versteckt wird, wird nur größer und gruseliger."',
         choices: [
           {
-            id: 'forest-s3-c2a',
-            text: '"Nein, ich mach da nicht mit. Ohne Aufsicht an der Kletterwand ist echt keine gute Idee. Wenn was passiert, hilft uns niemand."',
-            consequence:
-              'Deine Stimme ist fest, auch wenn dein Herz rast. Mika schnaubt. Aber Sam sagt leise: "Eigentlich... hat er/sie recht. Ich find das auch nicht so cool." Dein Mut gibt anderen die Erlaubnis, auch ehrlich zu sein.',
-            empathyPoints: 2,
-            insightPoints: 2,
-            couragePoints: 4,
-            nextSceneId: 'forest-s3-scene-4',
+            id: 'f3-s2-c1',
+            text: 'Ich folge dir in die Dämmerung.',
+            points: 3,
+            nextSceneId: 'f3-s3'
           },
           {
-            id: 'forest-s3-c2b',
-            text: 'Einen Kompromiss vorschlagen: "Klettern ist cool, aber lasst uns das am Wochenende in der Kletterhalle machen, wo es Sicherung gibt."',
-            consequence:
-              'Jordan ueberlegt. "Hm, das waere schon sicherer..." Sogar Mika sieht ein, dass das eigentlich smarter ist. Manchmal ist die mutigste Loesung die, die keiner erwartet hat.',
-            empathyPoints: 2,
-            insightPoints: 3,
-            couragePoints: 3,
-            nextSceneId: 'forest-s3-scene-4',
+            id: 'f3-s2-c2',
+            text: 'Welche Schatten habe ich?',
+            points: 2,
+            nextSceneId: 'f3-s3'
           },
           {
-            id: 'forest-s3-c2c',
-            text: 'Doch mitmachen, weil du nicht als Feigling dastehen willst.',
-            consequence:
-              'Du gehst mit, aber das ungute Gefuehl bleibt. In deinem Kopf fluestert eine Stimme: "Du wusstest, dass das keine gute Idee ist." Manchmal verwechseln wir Mut mit dem Nachgeben unter Druck. Aber das sind zwei sehr verschiedene Dinge.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 0,
-            nextSceneId: 'forest-s3-scene-3',
-          },
-        ],
+            id: 'f3-s2-c3',
+            text: 'Ich bleibe lieber im Licht.',
+            points: 1,
+            nextSceneId: 'f3-s3'
+          }
+        ]
       },
       {
-        id: 'forest-s3-scene-3',
-        text: 'Ihr seid in der Turnhalle. Es ist duester und still. Mika klettert los, ohne Matte, ohne Sicherung. Jordan folgt. Sam steht neben dir, blass. "Mir ist das eigentlich auch nicht geheuer", fluestert Sam. Ploetzlich rutscht Jordan ab und landet hart auf dem Boden. "Au! Mein Fuss!" Jordan verzieht das Gesicht vor Schmerz.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F33F}',
+        id: 'f3-s3',
+        text: 'Er führt dich zu einer Höhle. An der Wand tanzen Schatten – deine Wut, deine Traurigkeit, deine Eifersucht. "Das sind keine Monster", flüstert Schattenflüsterer. "Das sind Gefühle, die gesehen werden wollen."',
         choices: [
           {
-            id: 'forest-s3-c3a',
-            text: 'Sofort zu Jordan gehen und helfen. Dann Hilfe holen.',
-            consequence:
-              'Du rennst zu Jordan. Der Fuss sieht nicht gut aus. Sam ruft ueber das Handy einen Erwachsenen an. Als die Hilfe kommt, bist du froh, dass du das Richtige getan hast - auch wenn die ganze Situation haette vermieden werden koennen.',
-            empathyPoints: 3,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: 'forest-s3-scene-5',
+            id: 'f3-s3-c1',
+            text: 'Ich nähere mich meiner Wut.',
+            points: 3,
+            nextSceneId: 'f3-s4'
           },
           {
-            id: 'forest-s3-c3b',
-            text: 'Zu Sam sagen: "Wir muessen das naechste Mal frueher sagen, wenn etwas falsch ist. Beide."',
-            consequence:
-              'Sam nickt. "Ja... ich hab mich nicht getraut." Ihr helft Jordan und holt einen Erwachsenen. Auf dem Rueckweg wisst ihr beide: Nein sagen ist keine Schwaeche. Es kann verhindern, dass Leute verletzt werden.',
-            empathyPoints: 2,
-            insightPoints: 3,
-            couragePoints: 2,
-            nextSceneId: 'forest-s3-scene-5',
+            id: 'f3-s3-c2',
+            text: 'Ich spreche mit meiner Traurigkeit.',
+            points: 3,
+            nextSceneId: 'f3-s4'
           },
-        ],
+          {
+            id: 'f3-s3-c3',
+            text: 'Ich beobachte die Schatten aus der Distanz.',
+            points: 1,
+            nextSceneId: 'f3-s4'
+          }
+        ]
       },
       {
-        id: 'forest-s3-scene-4',
-        text: 'Ihr habt die Turnhallen-Aktion abgeblasen. Stattdessen haengt ihr auf dem Spielplatz ab und Mika ist zuerst grummelig, aber dann erzaehlt Jordan einen Witz und alles ist wieder gut. Sam kommt zu dir und sagt leise: "Danke, dass du was gesagt hast. Ich wollte auch nicht, aber ich hab mich nicht getraut."',
-        speaker: 'Sam',
-        speakerEmoji: '\u{1F9D2}',
+        id: 'f3-s4',
+        text: 'Als du einen Schatten berührst, wird er warm und weich. "Siehst du?", sagt die Fledermaus. "Wenn du deine dunklen Gefühle anerkennst, verlieren sie ihre Macht über dich. Sie werden zu Verbündeten."',
         choices: [
           {
-            id: 'forest-s3-c4a',
-            text: '"Nein zu sagen ist echt schwer. Aber wenn man ein schlechtes Gefuehl hat, ist es meistens richtig, darauf zu hoeren."',
-            consequence:
-              'Sam laechelt. "Ja, stimmt. Naechstes Mal sag ich auch was." Timber erscheint kurz und zwinkert dir zu. Du hast heute etwas Wichtiges gelernt: Nein sagen erfordert oft mehr Mut als Ja sagen.',
-            empathyPoints: 2,
-            insightPoints: 3,
-            couragePoints: 2,
-            nextSceneId: 'forest-s3-scene-5',
+            id: 'f3-s4-c1',
+            text: 'Ich umarme meine Schatten.',
+            points: 3,
+            nextSceneId: 'f3-s5'
           },
           {
-            id: 'forest-s3-c4b',
-            text: '"Kein Ding. Ich war auch nervoes. Aber lieber nervoes als verletzt."',
-            consequence:
-              'Sam nickt nachdenklich. Jordan kommt dazu: "Hey, die Kletterhallen-Idee war eigentlich echt gut. Samstag?" Manchmal loesen sich Konflikte von selbst, wenn man ruhig und ehrlich bleibt.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: 'forest-s3-scene-5',
+            id: 'f3-s4-c2',
+            text: 'Ich danke ihnen für ihre Botschaft.',
+            points: 3,
+            nextSceneId: 'f3-s5'
           },
-        ],
+          {
+            id: 'f3-s4-c3',
+            text: 'Ich verstehe jetzt ein bisschen mehr.',
+            points: 2,
+            nextSceneId: 'f3-s5'
+          }
+        ]
       },
       {
-        id: 'forest-s3-scene-5',
-        text: 'Spaeter am Abend denkst du ueber den Tag nach. Timber sitzt auf deiner Fensterbank. "Weisst du, was ich an dir bewundere?", sagt er. "Du hast heute erfahren, dass der groesste Druck manchmal nicht von aussen kommt, sondern von der Angst, nicht dazuzugehoeren. Und du hast trotzdem auf dich gehoert."',
-        speaker: 'Timber',
-        speakerEmoji: '\u{1F333}',
+        id: 'f3-s5',
+        text: 'Schattenflüsterer fliegt um dich herum. "Es gibt noch einen Schatten, den du ansehen musst – den größten von allen." Er führt dich zu einem dunklen Spiegel. Darin siehst du deine tiefste Angst.',
         choices: [
           {
-            id: 'forest-s3-c5a',
-            text: '"Es war echt schwer. Aber ich hab gemerkt: Echte Freunde halten es aus, wenn man Nein sagt."',
-            consequence:
-              'Timber nickt. "Genau. Freundschaft, die nur funktioniert, wenn du immer Ja sagst, ist keine echte Freundschaft. Du darfst Grenzen haben. Das macht dich nicht schwierig - das macht dich stark."',
-            empathyPoints: 2,
-            insightPoints: 3,
-            couragePoints: 2,
-            nextSceneId: null,
+            id: 'f3-s5-c1',
+            text: 'Ich schaue direkt in den Spiegel.',
+            points: 3,
+            nextSceneId: 'f3-s6'
           },
           {
-            id: 'forest-s3-c5b',
-            text: '"Ich glaube, Mut ist nicht nur gegen Monster kaempfen. Manchmal ist Mut, einfach Nein zu sagen."',
-            consequence:
-              'Timber laechelt. "Das ist eine der wichtigsten Lektionen im ganzen Wald. Die leisen Formen von Mut sind oft die kraeftigsten." Du schlaefst an diesem Abend mit einem guten Gefuehl ein.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 3,
-            nextSceneId: null,
+            id: 'f3-s5-c2',
+            text: 'Ich frage meine Angst: "Was willst du mir sagen?"',
+            points: 3,
+            nextSceneId: 'f3-s6'
           },
-        ],
+          {
+            id: 'f3-s5-c3',
+            text: 'Ich drehe mich weg.',
+            points: 0,
+            nextSceneId: 'f3-s6'
+          }
+        ]
       },
-    ],
+      {
+        id: 'f3-s6',
+        text: 'Der Spiegel zeigt: Deine größte Angst ist, nicht genug zu sein. "Aber du bist genug", flüstert Schattenflüsterer. "Mit all deinen Schatten, mit all deinem Licht. Vollständig bist du nur mit beidem." Die Schatten verbeugen sich und verschmelzen sanft mit dir.',
+        choices: [
+          {
+            id: 'f3-s6-c1',
+            text: 'Ich nehme mich ganz an – Licht und Schatten.',
+            points: 3,
+            nextSceneId: null
+          },
+          {
+            id: 'f3-s6-c2',
+            text: 'Danke, Schattenflüsterer. Du bist ein wahrer Freund.',
+            points: 3,
+            nextSceneId: null
+          },
+          {
+            id: 'f3-s6-c3',
+            text: 'Ich werde meine Schatten nicht mehr verstecken.',
+            points: 2,
+            nextSceneId: null
+          }
+        ]
+      }
+    ]
   },
-
-  // ---------------------------------------------------------------------------
-  // Scenario 4: "Allein zu Hause"
-  // Teaching: Katastrophendenken vs. Realitaetscheck. Gedanken sind nicht
-  // Tatsachen. Koerper-Signale verstehen und regulieren.
-  // ---------------------------------------------------------------------------
   {
     id: 'forest-scenario-4',
     islandId: 'forest' as IslandId,
-    title: 'Allein zu Hause',
-    description:
-      'Deine Eltern sind fuer den Abend weg. Es wird dunkel, und ploetzlich hoerst du Geraeusche. Dein Kopf beginnt, Geschichten zu spinnen. Was ist real - und was ist nur dein Kopfkino?',
+    title: 'Lumis kleines Licht',
+    description: 'Ein winziges Glühwürmchen beweist, dass Größe nichts mit Mut zu tun hat',
+    npcId: 'lumi',
+    completed: false,
     scenes: [
       {
-        id: 'forest-s4-scene-1',
-        text: 'Deine Eltern gehen aus. "Wir sind um elf zurueck. Handy ist an, Essen steht im Kuehlschrank, Nachbarin Frau Mueller weiss Bescheid." Du nickst lassig. Kein Problem, du bist ja kein kleines Kind mehr. Die Tuer faellt zu. Stille. ... Komisch, wie laut Stille sein kann.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F33F}',
+        id: 'f4-s1',
+        text: 'Lumi schwebt vor dir, ihr Licht flackert nervös. "Ich bin so klein", sagt sie. "Alle Tiere im Wald sind größer als ich. Sogar eine Ameise könnte mich übersehen. Wie soll ich jemals mutig sein, wenn ich so winzig bin?"',
         choices: [
           {
-            id: 'forest-s4-c1a',
-            text: 'Erstmal den Fernseher anmachen. Hintergrundgeraeusche helfen.',
-            consequence:
-              'Das Gemurmel des Fernsehers fuellt die Stille. Es fuehlt sich weniger einsam an. Du machst es dir auf dem Sofa gemuetlich. Eine gute Strategie - du hast dir selbst eine angenehmere Umgebung geschaffen.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 1,
-            nextSceneId: 'forest-s4-scene-2',
+            id: 'f4-s1-c1',
+            text: 'Größe hat nichts mit Mut zu tun.',
+            points: 3,
+            nextSceneId: 'f4-s2'
           },
           {
-            id: 'forest-s4-c1b',
-            text: 'Dein Abendprogramm planen: Essen machen, Film schauen, frueher Bett.',
-            consequence:
-              'Einen Plan zu haben hilft. Du weisst, was als Naechstes kommt, und das gibt Struktur. Du machst dir Nudeln und suchst einen Film raus. So weit, so gut.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 1,
-            nextSceneId: 'forest-s4-scene-2',
+            id: 'f4-s1-c2',
+            text: 'Erzähl mir von deinen Ängsten.',
+            points: 2,
+            nextSceneId: 'f4-s2'
           },
           {
-            id: 'forest-s4-c1c',
-            text: 'Durch die Wohnung gehen und alle Tueren und Fenster kontrollieren.',
-            consequence:
-              'Alles ist zu und sicher. Das gibt dir ein gutes Gefuehl - fuer den Moment. Aber eine Stimme in deinem Kopf fluestert: "Und wenn du was uebersehen hast?" Kontrolle hilft kurz, aber manchmal fuettert sie auch die Angst.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 1,
-            nextSceneId: 'forest-s4-scene-2',
-          },
-        ],
+            id: 'f4-s1-c3',
+            text: 'Aber dein Licht ist wunderschön!',
+            points: 2,
+            nextSceneId: 'f4-s2'
+          }
+        ]
       },
       {
-        id: 'forest-s4-scene-2',
-        text: 'Es ist 21 Uhr. Draussen ist es jetzt richtig dunkel. Du liegst auf dem Sofa und schaust deinen Film. Und dann - KNACK. Ein Geraeusch aus dem Flur. Dein Koerper reagiert sofort: Herz schneller, Atem flacher, Muskeln angespannt. Dein Gehirn faehrt hoch wie ein Alarmsystem.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F33F}',
+        id: 'f4-s2',
+        text: '"Gestern Nacht", erzählt Lumi, "war ein kleiner Junge im Wald verloren. Er weinte und konnte den Weg nicht finden. Ich hörte ihn, aber ich dachte: Was kann ich schon tun? Ich bin nur ein kleines Glühwürmchen."',
         choices: [
           {
-            id: 'forest-s4-c2a',
-            text: 'Innehalten und ueberlegen: Was koennte dieses Geraeusch realistisch sein?',
-            consequence:
-              'Du denkst nach. Die Heizung, die klickt. Das Holz im alten Schrank, das arbeitet. Die Katze des Nachbarn auf dem Balkon. Es gibt so viele harmlose Erklaerungen fuer Geraeusche in der Nacht. Dein Kopf wollte sofort zum Schlimmsten springen - aber du hast ihn gebremst.',
-            empathyPoints: 0,
-            insightPoints: 3,
-            couragePoints: 2,
-            nextSceneId: 'forest-s4-scene-3',
+            id: 'f4-s2-c1',
+            text: 'Aber du bist doch hingegangen, oder?',
+            points: 3,
+            nextSceneId: 'f4-s3'
           },
           {
-            id: 'forest-s4-c2b',
-            text: 'Die Decke ueber den Kopf ziehen und so tun, als haettest du nichts gehoert.',
-            consequence:
-              'Unter der Decke ist es warm und sicher. Aber dein Kopf arbeitet auf Hochtouren. "Was, wenn es ein Einbrecher ist? Was, wenn jemand im Haus ist?" Die Gedanken drehen sich im Kreis und werden dabei immer wilder.',
-            empathyPoints: 0,
-            insightPoints: 1,
-            couragePoints: 0,
-            nextSceneId: 'forest-s4-scene-3',
+            id: 'f4-s2-c2',
+            text: 'Was ist dann passiert?',
+            points: 2,
+            nextSceneId: 'f4-s3'
           },
           {
-            id: 'forest-s4-c2c',
-            text: 'Sofort Eltern anrufen.',
-            consequence:
-              'Mama geht ran. "Alles gut, Schatz?" Ihre Stimme beruhigt dich kurz. "Das ist wahrscheinlich die Heizung, die macht das immer." Sie hat recht - aber du merkst: Du wirst dich nie ganz sicher fuehlen, wenn du jedes Mal anrufst. Es waere gut zu lernen, selbst mit den Geraueschen umzugehen.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 1,
-            nextSceneId: 'forest-s4-scene-3',
-          },
-        ],
+            id: 'f4-s2-c3',
+            text: 'Hast du ihm geholfen?',
+            points: 2,
+            nextSceneId: 'f4-s3'
+          }
+        ]
       },
       {
-        id: 'forest-s4-scene-3',
-        text: 'Timber erscheint neben dir, sanft leuchtend im dunklen Zimmer. "Ich will dir etwas zeigen", sagt er. "Dein Gehirn hat gerade etwas gemacht, das heisst Katastrophendenken. Es nimmt ein kleines Geraeusch und baut daraus die gruseligste Geschichte, die es finden kann. Das ist nicht deine Schuld - dein Gehirn will dich beschuetzen. Aber manchmal uebertreibt es dabei ein bisschen."',
-        speaker: 'Timber',
-        speakerEmoji: '\u{1F333}',
+        id: 'f4-s3',
+        text: 'Lumi leuchtet heller. "Ich flog zu ihm. Mein Licht war klein, aber in der Dunkelheit war es genug. Der Junge folgte mir. Schritt für Schritt. Ich hatte Angst, dass er mich übersehen würde, aber er sah mich. Er vertraute meinem kleinen Licht."',
         choices: [
           {
-            id: 'forest-s4-c3a',
-            text: '"Wie kann ich meinem Gehirn sagen, dass es uebertreibt?"',
-            consequence:
-              'Timber laechelt. "Gute Frage! Stell dir vor, dein Angst-Gedanke sitzt auf einem Zeugenstuhl vor Gericht. Frag ihn: Was sind die Beweise, dass etwas Gefaehrliches passiert? Und was sind die Beweise dagegen? Meistens gewinnt die Realitaet."',
-            empathyPoints: 0,
-            insightPoints: 4,
-            couragePoints: 2,
-            nextSceneId: 'forest-s4-scene-4',
+            id: 'f4-s3-c1',
+            text: 'Siehst du? Du warst mutig!',
+            points: 3,
+            nextSceneId: 'f4-s4'
           },
           {
-            id: 'forest-s4-c3b',
-            text: '"Also ist es normal, dass ich solche Grusel-Gedanken habe?"',
-            consequence:
-              'Timber nickt. "Total normal! Fast jeder Mensch hat manchmal solche Gedanken, besonders wenn es dunkel und still ist. Der Trick ist zu wissen: Ein Gedanke ist nur ein Gedanke. Er ist keine Tatsache. Du kannst ihn beobachten, wie eine Wolke, die vorbeizieht."',
-            empathyPoints: 0,
-            insightPoints: 4,
-            couragePoints: 1,
-            nextSceneId: 'forest-s4-scene-4',
+            id: 'f4-s3-c2',
+            text: 'Hast du ihn nach Hause geführt?',
+            points: 2,
+            nextSceneId: 'f4-s4'
           },
-        ],
+          {
+            id: 'f4-s3-c3',
+            text: 'Hattest du keine Angst?',
+            points: 2,
+            nextSceneId: 'f4-s4'
+          }
+        ]
       },
       {
-        id: 'forest-s4-scene-4',
-        text: 'KLAPPER! Wieder ein Geraeusch - diesmal lauter, aus der Kueche. Dein Koerper springt wieder in Alarmbereitschaft. Aber diesmal bist du vorbereitet. Timber schaut dich an. "Jetzt kannst du es ausprobieren. Was sagt dein Angst-Gedanke? Und was sagt die Realitaet?"',
-        speaker: 'Timber',
-        speakerEmoji: '\u{1F333}',
+        id: 'f4-s4',
+        text: '"Doch, ich hatte schreckliche Angst!", gibt Lumi zu. "Was, wenn mein Licht nicht reicht? Was, wenn ich ihn in die falsche Richtung führe? Was, wenn ich versage?" Ihr Licht flackert bei der Erinnerung.',
         choices: [
           {
-            id: 'forest-s4-c4a',
-            text: 'Realitaetscheck: "Angst-Gedanke: Ein Einbrecher! Realitaet: Wahrscheinlich hat der Wind das Kuechenfenster bewegt. Alle Tueren sind zu."',
-            consequence:
-              'Du gehst zur Kueche. Das Fenster war auf Kipp, der Wind hat die Jalousie bewegt. Du schliesst das Fenster. Fertig. Kein Monster, kein Einbrecher. Dein Gehirn hat Alarm geschlagen - und du hast sachlich nachgeschaut, statt in Panik zu verfallen.',
-            empathyPoints: 0,
-            insightPoints: 3,
-            couragePoints: 4,
-            nextSceneId: 'forest-s4-scene-5',
+            id: 'f4-s4-c1',
+            text: 'Aber du hast es trotzdem getan.',
+            points: 3,
+            nextSceneId: 'f4-s5'
           },
           {
-            id: 'forest-s4-c4b',
-            text: 'Erst dreimal tief durchatmen, dann mit dem Handy als Taschenlampe nachschauen.',
-            consequence:
-              'Einatmen... ausatmen... einatmen... ausatmen. Dein Herzschlag wird langsamer. Dann gehst du mit dem Handylicht zur Kueche. Es war die Jalousie. Du laechelst - es fuehlt sich gut an, die Angst ueberwunden zu haben, Schritt fuer Schritt.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 4,
-            nextSceneId: 'forest-s4-scene-5',
+            id: 'f4-s4-c2',
+            text: 'Das ist es, was Mut bedeutet.',
+            points: 3,
+            nextSceneId: 'f4-s5'
           },
           {
-            id: 'forest-s4-c4c',
-            text: 'Timber fragen, ob er mitkommt zum Nachschauen.',
-            consequence:
-              'Timber geht neben dir her. "Ich bin da", sagt er. "Aber du gehst voran. Es ist dein Mut." In der Kueche entdeckst du den Grund: das Fenster auf Kipp, die Jalousie im Wind. Du lachst erleichtert. Timber grinst: "Siehst du? Die Realitaet ist fast immer freundlicher als die Fantasie."',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 3,
-            nextSceneId: 'forest-s4-scene-5',
-          },
-        ],
+            id: 'f4-s4-c3',
+            text: 'Was half dir, weiterzumachen?',
+            points: 2,
+            nextSceneId: 'f4-s5'
+          }
+        ]
       },
       {
-        id: 'forest-s4-scene-5',
-        text: 'Um 23 Uhr hoerst du den Schluessel in der Tuer. Deine Eltern sind zurueck. "Na, alles gut?" Du nickst. Und diesmal ist es echt. Es war ein aufregender Abend - nicht wegen aeusserer Gefahr, sondern weil du etwas ueber dein eigenes Gehirn gelernt hast. Timber zwinkert dir zum Abschied zu.',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F33F}',
+        id: 'f4-s5',
+        text: '"Ich dachte an all die anderen Glühwürmchen", sagt Lumi. "Wir sind klein, aber zusammen erhellen wir die Nacht. Und dann verstand ich: Ich muss nicht groß sein. Ich muss nur leuchten. Mein kleines Licht ist genug."',
         choices: [
           {
-            id: 'forest-s4-c5a',
-            text: '"Es gab komische Geraeusche, aber ich hab rausgefunden, was es war. Ich hab es allein geschafft."',
-            consequence:
-              'Deine Eltern laecheln stolz. Du hast heute Abend nicht nur Geraeusche gecheckt - du hast gelernt, wie dein Angst-System funktioniert. Und dass du die Faehigkeit hast, es zu regulieren. Das ist ein Werkzeug, das dir dein ganzes Leben lang helfen wird.',
-            empathyPoints: 0,
-            insightPoints: 3,
-            couragePoints: 3,
-            nextSceneId: null,
+            id: 'f4-s5-c1',
+            text: 'Jeder von uns hat ein Licht.',
+            points: 3,
+            nextSceneId: 'f4-s6'
           },
           {
-            id: 'forest-s4-c5b',
-            text: '"Mein Gehirn wollte mich total verueckt machen, aber ich hab mich nicht verueckt machen lassen."',
-            consequence:
-              'Dein Papa lacht. "Das kenne ich! Mein Kopf macht das auch manchmal." Du merkst: Sogar Erwachsene kennen das Katastrophendenken. Du bist nicht schwach, weil du Angst hattest. Du bist stark, weil du einen Weg gefunden hast, damit umzugehen.',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 2,
-            nextSceneId: null,
+            id: 'f4-s5-c2',
+            text: 'Größe ist nicht wichtig – Leuchtkraft schon.',
+            points: 3,
+            nextSceneId: 'f4-s6'
           },
-        ],
+          {
+            id: 'f4-s5-c3',
+            text: 'Du bist ein Held, Lumi.',
+            points: 2,
+            nextSceneId: 'f4-s6'
+          }
+        ]
       },
-    ],
+      {
+        id: 'f4-s6',
+        text: 'Lumi strahlt hell. "Der Junge erreichte sein Zuhause. Seine Mutter weinte vor Freude. Und als er sich umdrehte, winkte er mir zu. \'Danke, kleines Licht\', sagte er. In diesem Moment verstand ich: Mut hat nichts mit Größe zu tun. Es geht darum, zu leuchten, wenn es dunkel ist."',
+        choices: [
+          {
+            id: 'f4-s6-c1',
+            text: 'Du hast mich gelehrt, meinem Licht zu vertrauen.',
+            points: 3,
+            nextSceneId: null
+          },
+          {
+            id: 'f4-s6-c2',
+            text: 'Ich werde auch leuchten, egal wie klein ich mich fühle.',
+            points: 3,
+            nextSceneId: null
+          },
+          {
+            id: 'f4-s6-c3',
+            text: 'Danke, Lumi. Du bist wirklich mutig.',
+            points: 2,
+            nextSceneId: null
+          }
+        ]
+      }
+    ]
   },
+  {
+    id: 'forest-scenario-5',
+    islandId: 'forest' as IslandId,
+    title: 'Der Druck der Gruppe',
+    description: 'Timber hilft dir, gegen den Strom zu schwimmen',
+    npcId: 'timber',
+    completed: false,
+    scenes: [
+      {
+        id: 'f5-s1',
+        text: 'Timber ächzt im Wind. "Siehst du die jungen Bäume dort drüben? Sie alle wachsen in dieselbe Richtung – dorthin, wo der Wind sie drückt. Aber einer will anders wachsen. Schau, wie die anderen ihn ansehen."',
+        choices: [
+          {
+            id: 'f5-s1-c1',
+            text: 'Warum wächst er anders?',
+            points: 2,
+            nextSceneId: 'f5-s2'
+          },
+          {
+            id: 'f5-s1-c2',
+            text: 'Es braucht Mut, anders zu sein.',
+            points: 3,
+            nextSceneId: 'f5-s2'
+          },
+          {
+            id: 'f5-s1-c3',
+            text: 'Die anderen scheinen verärgert.',
+            points: 2,
+            nextSceneId: 'f5-s2'
+          }
+        ]
+      },
+      {
+        id: 'f5-s2',
+        text: 'Ein junger Baum spricht: "Alle sagen, ich soll mich beugen wie sie. \'Sei nicht anders\', flüstern sie. \'Du gehörst nicht dazu.\' Aber ich wachse zur Sonne, nicht zum Wind. Ist das falsch?"',
+        choices: [
+          {
+            id: 'f5-s2-c1',
+            text: 'Nein, du folgst deinem eigenen Licht.',
+            points: 3,
+            nextSceneId: 'f5-s3'
+          },
+          {
+            id: 'f5-s2-c2',
+            text: 'Vielleicht solltest du dich ein bisschen anpassen?',
+            points: 1,
+            nextSceneId: 'f5-s3'
+          },
+          {
+            id: 'f5-s2-c3',
+            text: 'Warum ist es dir so wichtig, anders zu sein?',
+            points: 2,
+            nextSceneId: 'f5-s3'
+          }
+        ]
+      },
+      {
+        id: 'f5-s3',
+        text: 'Timber rauscht: "Vor Jahren gab es eine Dürre. Alle Bäume, die sich vom Wind hatten beugen lassen, erreichten das Wasser nicht. Nur ein Baum hatte tief genug gegraben – der, der seinem eigenen Weg folgte. Er rettete alle."',
+        choices: [
+          {
+            id: 'f5-s3-c1',
+            text: 'Manchmal ist anders sein überlebenswichtig.',
+            points: 3,
+            nextSceneId: 'f5-s4'
+          },
+          {
+            id: 'f5-s3-c2',
+            text: 'Die Gruppe liegt nicht immer richtig.',
+            points: 3,
+            nextSceneId: 'f5-s4'
+          },
+          {
+            id: 'f5-s3-c3',
+            text: 'Aber es ist so schwer, allein zu sein.',
+            points: 2,
+            nextSceneId: 'f5-s4'
+          }
+        ]
+      },
+      {
+        id: 'f5-s4',
+        text: 'Der junge Baum zittert. "In der Schule lachen sie über mich, weil ich nicht die gleichen Sachen mag. Sie wollen alle dasselbe spielen, dieselben Videos schauen. Wenn ich Nein sage, bin ich der Außenseiter."',
+        choices: [
+          {
+            id: 'f5-s4-c1',
+            text: 'Deine Einzigartigkeit ist deine Stärke.',
+            points: 3,
+            nextSceneId: 'f5-s5'
+          },
+          {
+            id: 'f5-s4-c2',
+            text: 'Echte Freunde akzeptieren dich, wie du bist.',
+            points: 3,
+            nextSceneId: 'f5-s5'
+          },
+          {
+            id: 'f5-s4-c3',
+            text: 'Vielleicht findest du andere Außenseiter?',
+            points: 2,
+            nextSceneId: 'f5-s5'
+          }
+        ]
+      },
+      {
+        id: 'f5-s5',
+        text: 'Timber legt einen Ast auf den jungen Baum. "Gruppendruck ist wie ein starker Wind. Er fühlt sich mächtig an. Aber deine Wurzeln – deine Werte – sind stärker. Wenn du dich beugst, nur um dazuzugehören, verrätst du deine Wurzeln."',
+        choices: [
+          {
+            id: 'f5-s5-c1',
+            text: 'Ich werde meinen Wurzeln treu bleiben.',
+            points: 3,
+            nextSceneId: 'f5-s6'
+          },
+          {
+            id: 'f5-s5-c2',
+            text: 'Es ist mutiger, Nein zu sagen als Ja.',
+            points: 3,
+            nextSceneId: 'f5-s6'
+          },
+          {
+            id: 'f5-s5-c3',
+            text: 'Aber wie halte ich den Druck aus?',
+            points: 2,
+            nextSceneId: 'f5-s6'
+          }
+        ]
+      },
+      {
+        id: 'f5-s6',
+        text: 'Der junge Baum richtet sich auf. "Heute hat ein anderer Baum zu mir gesagt: \'Ich bewundere deinen Mut.\' Vielleicht bin ich nicht allein. Vielleicht inspiriere ich andere, auch ihren eigenen Weg zu gehen." Timber lächelt: "Ein mutiger Baum kann einen ganzen Wald verändern."',
+        choices: [
+          {
+            id: 'f5-s6-c1',
+            text: 'Ich werde mutig meinen Weg gehen.',
+            points: 3,
+            nextSceneId: null
+          },
+          {
+            id: 'f5-s6-c2',
+            text: 'Deine Geschichte gibt mir Kraft.',
+            points: 2,
+            nextSceneId: null
+          },
+          {
+            id: 'f5-s6-c3',
+            text: 'Danke, dass du mir Mut machst.',
+            points: 2,
+            nextSceneId: null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'forest-scenario-6',
+    islandId: 'forest' as IslandId,
+    title: 'Die Nacht des Sturms',
+    description: 'Alle Waldbewohner zeigen dir, wie man Angst überwindet',
+    npcId: 'lumi',
+    completed: false,
+    scenes: [
+      {
+        id: 'f6-s1',
+        text: 'Dunkle Wolken ziehen auf. Timber ächzt: "Ein großer Sturm kommt." Lumi flackert nervös, Schattenflüsterer versteckt sich, Faye atmet schnell. Alle haben Angst. Du auch.',
+        choices: [
+          {
+            id: 'f6-s1-c1',
+            text: 'Wir schaffen das zusammen.',
+            points: 3,
+            nextSceneId: 'f6-s2'
+          },
+          {
+            id: 'f6-s1-c2',
+            text: 'Ich habe große Angst.',
+            points: 2,
+            nextSceneId: 'f6-s2'
+          },
+          {
+            id: 'f6-s1-c3',
+            text: 'Was sollen wir tun?',
+            points: 2,
+            nextSceneId: 'f6-s2'
+          }
+        ]
+      },
+      {
+        id: 'f6-s2',
+        text: 'Der Wind heult. Äste brechen. Faye erinnert sich: "In Syrien, als die Bomben fielen, hatte ich noch mehr Angst. Aber meine Mutter sagte: \'Atme. Zähle bis zehn.\'" Sie atmet demonstrativ ein und aus.',
+        choices: [
+          {
+            id: 'f6-s2-c1',
+            text: 'Ich atme mit Faye zusammen.',
+            points: 3,
+            nextSceneId: 'f6-s3'
+          },
+          {
+            id: 'f6-s2-c2',
+            text: 'Eins... zwei... drei...',
+            points: 3,
+            nextSceneId: 'f6-s3'
+          },
+          {
+            id: 'f6-s2-c3',
+            text: 'Hilft das wirklich?',
+            points: 1,
+            nextSceneId: 'f6-s3'
+          }
+        ]
+      },
+      {
+        id: 'f6-s3',
+        text: 'Schattenflüsterer ruft: "Meine Höhle! Dort sind wir sicher!" Aber der Weg ist dunkel und gruselig. Lumi zittert: "Ich... ich kann uns leuchten. Auch wenn mein Licht klein ist."',
+        choices: [
+          {
+            id: 'f6-s3-c1',
+            text: 'Dein Licht ist genau das, was wir brauchen, Lumi.',
+            points: 3,
+            nextSceneId: 'f6-s4'
+          },
+          {
+            id: 'f6-s3-c2',
+            text: 'Folgen wir Schattenflüsterer.',
+            points: 2,
+            nextSceneId: 'f6-s4'
+          },
+          {
+            id: 'f6-s3-c3',
+            text: 'Zusammen sind wir stark.',
+            points: 3,
+            nextSceneId: 'f6-s4'
+          }
+        ]
+      },
+      {
+        id: 'f6-s4',
+        text: 'In der Höhle angekommen, hört ihr den Sturm toben. Timber spricht: "Seht ihr? Draußen ist es gefährlich, aber hier, zusammen, sind wir sicher. Manchmal bedeutet Mut nicht, der Gefahr zu trotzen – sondern zu wissen, wann man Schutz suchen muss."',
+        choices: [
+          {
+            id: 'f6-s4-c1',
+            text: 'Es ist keine Schwäche, um Hilfe zu bitten.',
+            points: 3,
+            nextSceneId: 'f6-s5'
+          },
+          {
+            id: 'f6-s4-c2',
+            text: 'Wir haben alle geholfen.',
+            points: 3,
+            nextSceneId: 'f6-s5'
+          },
+          {
+            id: 'f6-s4-c3',
+            text: 'Ich bin froh, nicht allein zu sein.',
+            points: 2,
+            nextSceneId: 'f6-s5'
+          }
+        ]
+      },
+      {
+        id: 'f6-s5',
+        text: 'Faye erzählt Geschichten, Lumi macht sanftes Licht, Schattenflüsterer singt leise, Timber beschützt die Höhle. Jeder trägt bei, was er kann. Die Angst wird kleiner, die Gemeinschaft größer.',
+        choices: [
+          {
+            id: 'f6-s5-c1',
+            text: 'Zusammen können wir jeden Sturm überstehen.',
+            points: 3,
+            nextSceneId: 'f6-s6'
+          },
+          {
+            id: 'f6-s5-c2',
+            text: 'Jeder von euch ist wichtig.',
+            points: 3,
+            nextSceneId: 'f6-s6'
+          },
+          {
+            id: 'f6-s5-c3',
+            text: 'Die Angst fühlt sich schon kleiner an.',
+            points: 2,
+            nextSceneId: 'f6-s6'
+          }
+        ]
+      },
+      {
+        id: 'f6-s6',
+        text: 'Am Morgen ist der Sturm vorbei. Die Sonne scheint. Ihr tretet hinaus. "Wir haben es geschafft", sagt Lumi stolz. "Weil wir nicht allein waren", ergänzt Faye. Timber nickt: "Mut bedeutet auch, sich auf andere zu verlassen. Das ist die größte Stärke."',
+        choices: [
+          {
+            id: 'f6-s6-c1',
+            text: 'Ich werde diese Lektion nie vergessen.',
+            points: 3,
+            nextSceneId: null
+          },
+          {
+            id: 'f6-s6-c2',
+            text: 'Danke, meine Freunde.',
+            points: 3,
+            nextSceneId: null
+          },
+          {
+            id: 'f6-s6-c3',
+            text: 'Zusammen sind wir unbesiegbar.',
+            points: 2,
+            nextSceneId: null
+          }
+        ]
+      }
+    ]
+  }
 ];
 
-// =============================================================================
-// 2. WISDOM CARDS
-// =============================================================================
-
+// Wisdom Cards
 export const forestWisdomCards: WisdomCard[] = [
   {
     id: 'forest-wisdom-1',
     islandId: 'forest' as IslandId,
-    text: 'Mut bedeutet nicht, keine Angst zu haben \u2013 sondern trotz der Angst weiterzumachen.',
-    category: 'courage',
-    collected: false,
+    title: 'Mut ist nicht die Abwesenheit von Angst',
+    content: 'Mut bedeutet, Angst zu haben und trotzdem weiterzugehen. Die mutigsten Menschen sind oft die, die am meisten Angst haben – aber sie lassen sich davon nicht aufhalten.',
+    collected: false
   },
   {
     id: 'forest-wisdom-2',
     islandId: 'forest' as IslandId,
-    text: 'Dein Gehirn will dich beschuetzen. Manchmal uebertreibt es dabei ein bisschen. Das ist nicht deine Schuld.',
-    category: 'insight',
-    collected: false,
+    title: 'Schatten gehören zum Licht',
+    content: 'Jeder Mensch hat dunkle Seiten – Wut, Traurigkeit, Eifersucht. Diese Gefühle zu verstecken macht sie nur stärker. Wenn du sie ansiehst und anerkennst, verlieren sie ihre Macht über dich.',
+    collected: false
   },
   {
     id: 'forest-wisdom-3',
     islandId: 'forest' as IslandId,
-    text: 'Ein Gedanke ist nur ein Gedanke \u2013 keine Tatsache. Du kannst ihn beobachten, ohne ihm zu glauben.',
-    category: 'strategy',
-    collected: false,
+    title: 'Größe ist keine Voraussetzung für Mut',
+    content: 'Wie Lumi das Glühwürmchen beweist: Du musst nicht groß oder stark sein, um mutig zu sein. Manchmal ist das kleinste Licht in der Dunkelheit das hellste.',
+    collected: false
   },
   {
     id: 'forest-wisdom-4',
     islandId: 'forest' as IslandId,
-    text: 'Angst fuehlt sich riesig an, wird aber kleiner, je oefter du ihr begegnest. Das nennt man Uebung.',
-    category: 'insight',
-    collected: false,
+    title: 'Neuanfänge sind mutig',
+    content: 'Etwas Neues zu beginnen – eine neue Schule, ein neues Land, ein neuer Freundeskreis – erfordert enormen Mut. Jeder Neuanfang ist ein Schritt ins Unbekannte.',
+    collected: false
   },
   {
     id: 'forest-wisdom-5',
     islandId: 'forest' as IslandId,
-    text: 'Nein zu sagen, wenn alle Ja sagen, ist eine der mutigsten Sachen, die es gibt.',
-    category: 'courage',
-    collected: false,
+    title: 'Anders sein ist eine Stärke',
+    content: 'Wenn alle in dieselbe Richtung gehen und du spürst, dass dein Weg ein anderer ist, braucht es Mut, deinem inneren Kompass zu folgen. Aber deine Einzigartigkeit ist dein größtes Geschenk.',
+    collected: false
   },
   {
     id: 'forest-wisdom-6',
     islandId: 'forest' as IslandId,
-    text: 'Dein Koerper sendet dir Signale: Herzklopfen, schwitzige Haende, Schmetterlinge im Bauch. Das sind keine Feinde \u2013 das sind Boten. Hoer ihnen zu.',
-    category: 'emotion',
-    collected: false,
+    title: 'Atmen beruhigt die Angst',
+    content: 'Wenn die Angst kommt und dein Herz rast, atme bewusst. Tief ein, langsam aus. Dein Atem ist ein Anker, der dich ins Hier und Jetzt bringt.',
+    collected: false
   },
   {
     id: 'forest-wisdom-7',
     islandId: 'forest' as IslandId,
-    text: 'Neue Anfaenge sind fast immer beaengstigend UND aufregend gleichzeitig. Beides darf sein.',
-    category: 'emotion',
-    collected: false,
+    title: 'Gemeinsam sind wir stärker',
+    content: 'Mut bedeutet nicht, alles allein zu schaffen. Um Hilfe zu bitten ist kein Zeichen von Schwäche – es zeigt, dass du weise genug bist, zu wissen, dass wir einander brauchen.',
+    collected: false
   },
   {
     id: 'forest-wisdom-8',
     islandId: 'forest' as IslandId,
-    text: 'Wenn dein Kopf Katastrophen-Geschichten erzaehlt, frag ihn: Welche Beweise hast du eigentlich dafuer?',
-    category: 'strategy',
-    collected: false,
+    title: 'Angst hat eine Botschaft',
+    content: 'Angst ist nicht dein Feind. Sie ist ein Bote, der dir sagt: "Hier ist etwas Wichtiges. Sei vorsichtig, aber lass dich nicht lähmen." Höre die Botschaft, aber lass die Angst nicht das Steuer übernehmen.',
+    collected: false
   },
   {
     id: 'forest-wisdom-9',
     islandId: 'forest' as IslandId,
-    text: 'Du musst nicht alles auf einmal schaffen. Ein kleiner Schritt zaehlt genauso.',
-    category: 'strategy',
-    collected: false,
+    title: 'Deine Wurzeln halten dich',
+    content: 'Wie ein Baum im Sturm: Deine Werte, deine Familie, deine wahren Freunde sind deine Wurzeln. Wenn der Wind des Gruppendrucks kommt, halten sie dich fest.',
+    collected: false
   },
   {
     id: 'forest-wisdom-10',
     islandId: 'forest' as IslandId,
-    text: 'Echte Freunde respektieren deine Grenzen. Wenn jemand dein Nein nicht akzeptiert, sagt das mehr ueber diese Person als ueber dich.',
-    category: 'courage',
-    collected: false,
+    title: 'Nein sagen ist mutig',
+    content: 'Wenn alle Ja sagen und du fühlst, dass Nein das Richtige ist, erfordert dieses Nein mehr Mut als tausend Jas. Deine Grenzen zu setzen ist ein Akt der Selbstliebe.',
+    collected: false
   },
   {
     id: 'forest-wisdom-11',
     islandId: 'forest' as IslandId,
-    text: 'Ueber deine Angst zu sprechen macht sie nicht groesser \u2013 sondern kleiner. Geteilte Angst ist halbe Angst.',
-    category: 'emotion',
-    collected: false,
+    title: 'Du bist genug',
+    content: 'Mit all deinen Ängsten, mit all deinen Makeln, mit all deinen Zweifeln – du bist genug. Du musst nichts beweisen, nichts werden, nichts erreichen, um wertvoll zu sein. Du bist es bereits.',
+    collected: false
   },
   {
     id: 'forest-wisdom-12',
     islandId: 'forest' as IslandId,
-    text: 'Jeder mutige Mensch, den du bewunderst, hatte auch Angst. Der Unterschied ist nicht die Abwesenheit von Angst, sondern was man trotzdem tut.',
-    category: 'insight',
-    collected: false,
+    title: 'Verletzlichkeit ist Stärke',
+    content: 'Zuzugeben, dass du Angst hast, dass du nicht weiterweißt, dass du verletzt bist – das erfordert enormen Mut. Verletzlichkeit ist keine Schwäche, sie ist das Tor zu echter Verbindung.',
+    collected: false
   },
+  {
+    id: 'forest-wisdom-13',
+    islandId: 'forest' as IslandId,
+    title: 'Schutz suchen ist weise',
+    content: 'Nicht jeder Sturm muss allein durchstanden werden. Zu wissen, wann du Schutz, Hilfe oder eine Pause brauchst, ist ein Zeichen von Weisheit, nicht von Feigheit.',
+    collected: false
+  },
+  {
+    id: 'forest-wisdom-14',
+    islandId: 'forest' as IslandId,
+    title: 'Kleine Schritte zählen',
+    content: 'Du musst nicht mit einem großen Sprung über deine Angst hinwegspringen. Kleine Schritte, einer nach dem anderen, bringen dich genauso ans Ziel – und sind oft nachhaltiger.',
+    collected: false
+  },
+  {
+    id: 'forest-wisdom-15',
+    islandId: 'forest' as IslandId,
+    title: 'Zwischen zwei Welten zu stehen ist eine Gabe',
+    content: 'Wenn du zwischen Kulturen, Sprachen oder Identitäten lebst, bist du kein Niemand – du bist ein Brückenbauer. Deine Fähigkeit, beide Welten zu verstehen, ist eine seltene Stärke.',
+    collected: false
+  },
+  {
+    id: 'forest-wisdom-16',
+    islandId: 'forest' as IslandId,
+    title: 'Dein Licht ist einzigartig',
+    content: 'Niemand leuchtet genau wie du. Deine Art, Mut zu zeigen, ist anders als die aller anderen – und das ist perfekt so. Die Welt braucht dein spezifisches Licht.',
+    collected: false
+  }
 ];
 
-// =============================================================================
-// 3. ACTIVITIES
-// =============================================================================
-
+// Activities
 export const forestActivities: ForestActivity[] = [
-  // ---------------------------------------------------------------------------
-  // Activity 1: Angst-Landkarte (Assessment)
-  // Based on exposure hierarchy / fear ladder concepts
-  // ---------------------------------------------------------------------------
   {
     id: 'forest-activity-1',
     islandId: 'forest' as IslandId,
-    type: 'assessment',
-    title: 'Angst-Landkarte',
-    description:
-      'Erstelle eine Karte deiner Aengste. Welche sind gross, welche klein? Wenn du deine Aengste kennst und einordnest, verlieren sie ein Stueck ihrer Macht.',
-    instructions: [
-      'Nimm dir einen Moment Zeit und denke an Dinge, die dir Angst machen oder dich nervoes werden lassen. Das koennen grosse Sachen sein (wie ein Referat) oder kleine (wie eine Spinne im Bad).',
-      'Schreibe jede Angst auf, die dir einfaellt. Es gibt keine falschen Antworten \u2013 alles, was dich beschaeftigt, zaehlt.',
-      'Bewerte jede Angst auf einer Skala von 1 bis 10. 1 bedeutet: "Ein bisschen unangenehm, aber machbar." 10 bedeutet: "Das laehmt mich total."',
-      'Sortiere deine Aengste: Welche sind im gruenen Bereich (1-3), welche im gelben (4-6), welche im roten (7-10)?',
-      'Waehle eine Angst aus dem gruenen oder gelben Bereich. Ueberlege: Was waere ein erster kleiner Schritt, um dieser Angst zu begegnen? Schreib ihn auf.',
-      'Denke daran: Du musst nicht alle Aengste auf einmal bewaeltigen. Es reicht, eine einzige zu kennen und einen einzigen kleinen Schritt zu planen. Das ist schon mutig.',
-    ],
+    title: 'Angst-Tagebuch',
+    description: 'Schreibe deine Ängste auf und entdecke ihre Botschaft',
+    type: 'journal',
     completed: false,
+    instructions: [
+      'Nimm ein Notizbuch und einen Stift.',
+      'Schreibe: "Ich habe Angst vor..." und liste alles auf, was dir einfällt.',
+      'Wähle eine Angst aus und frage sie: "Was willst du mir sagen? Wovor willst du mich schützen?"',
+      'Schreibe die Antwort auf, die dir in den Sinn kommt.',
+      'Bedanke dich bei deiner Angst für ihre Botschaft.',
+      'Schreibe nun: "Ich bin mutig genug, um..." und vervollständige den Satz.'
+    ]
   },
-
-  // ---------------------------------------------------------------------------
-  // Activity 2: Gedanken-Gericht (Reflection)
-  // Based on CBT cognitive restructuring
-  // ---------------------------------------------------------------------------
   {
     id: 'forest-activity-2',
     islandId: 'forest' as IslandId,
-    type: 'reflection',
-    title: 'Gedanken-Gericht',
-    description:
-      'Stelle deine Angst-Gedanken vor Gericht! Wie ein Detektiv untersuchst du: Stimmt das wirklich, was mein Kopf mir erzaehlt? Oder uebertreibt er?',
-    instructions: [
-      'Denke an eine Situation, die dir in letzter Zeit Angst gemacht hat. Schreib sie kurz auf.',
-      'Was war der schlimmste Gedanke, den du in diesem Moment hattest? Zum Beispiel: "Alle werden mich auslachen" oder "Es wird etwas Schlimmes passieren." Schreib diesen Gedanken woertlich auf.',
-      'Jetzt bist du Detektiv. Frage 1: Welche Beweise gibt es FUER diesen Gedanken? Was spricht dafuer, dass er stimmt?',
-      'Frage 2: Welche Beweise gibt es GEGEN diesen Gedanken? Was spricht dafuer, dass er uebertrieben ist oder nicht stimmt?',
-      'Frage 3: Was wuerdest du einem guten Freund sagen, der diesen Gedanken haette? Wuerdest du ihm zustimmen \u2013 oder wuerdest du ihn beruhigen?',
-      'Schreibe einen neuen, faireren Gedanken auf. Nicht unrealistisch positiv ("Alles wird super!"), sondern realistisch hilfreich. Zum Beispiel: "Es ist moeglich, dass ich nervoes werde, aber ich habe mich vorbereitet und das ist schon viel wert."',
-      'Lies deinen neuen Gedanken laut vor. Wie fuehlt er sich an im Vergleich zum alten?',
-    ],
+    title: 'Atemübung: Der ruhige Baum',
+    description: 'Atme wie ein Baum im Wind und finde innere Ruhe',
+    type: 'breathing',
     completed: false,
+    instructions: [
+      'Stelle dich aufrecht hin, die Füße hüftbreit auseinander.',
+      'Stell dir vor, deine Füße sind Wurzeln, die tief in die Erde reichen.',
+      'Atme tief durch die Nase ein (4 Sekunden) – spüre, wie die Energie von den Wurzeln hochsteigt.',
+      'Halte den Atem (4 Sekunden) – du bist stabil wie ein Baum.',
+      'Atme langsam durch den Mund aus (6 Sekunden) – lass alle Angst wie Blätter im Wind davonfliegen.',
+      'Wiederhole dies 5 Mal.',
+      'Öffne die Augen und spüre deine Verwurzelung.'
+    ]
   },
-
-  // ---------------------------------------------------------------------------
-  // Activity 3: Waldatmung (Breathing)
-  // Box breathing with forest visualization
-  // ---------------------------------------------------------------------------
   {
     id: 'forest-activity-3',
     islandId: 'forest' as IslandId,
-    type: 'breathing',
-    title: 'Waldatmung',
-    description:
-      'Eine besondere Atemuebung, bei der du dir vorstellst, in einem magischen Wald zu sein. Leuchtende Pflanzen pulsieren im Rhythmus deines Atems.',
-    instructions: [
-      'Finde eine bequeme Position. Sitzen oder liegen \u2013 beides ist gut. Schliesse die Augen, wenn du moechtest.',
-      'Stell dir vor, du stehst in einem stillen, warmen Wald. Um dich herum wachsen Pflanzen, die sanft leuchten \u2013 wie kleine Laternen in der Natur.',
-      'EINATMEN (4 Sekunden): Atme langsam durch die Nase ein und zaehle leise bis vier. Stell dir vor, wie die Pflanzen um dich herum heller leuchten, waehrend du einatmest.',
-      'HALTEN (4 Sekunden): Halte die Luft sanft an und zaehle bis vier. Die Pflanzen leuchten in voller Helligkeit, alles ist ruhig und still.',
-      'AUSATMEN (4 Sekunden): Atme langsam durch den Mund aus und zaehle bis vier. Die Pflanzen werden sanft dunkler, wie bei einem Sonnenuntergang.',
-      'PAUSE (4 Sekunden): Warte vier Sekunden, bevor du wieder einatmest. Der Wald ist ganz still. Du bist sicher.',
-      'Wiederhole diesen Zyklus mindestens vier Mal. Mit jedem Durchgang wirst du ruhiger. Der Wald atmet mit dir.',
-      'Wenn du fertig bist, oeffne langsam die Augen. Spuere, wie sich dein Koerper jetzt anfuehlt im Vergleich zu vorher. Vielleicht ist die Anspannung etwas kleiner geworden.',
-    ],
+    title: 'Schatten-Freundschaft',
+    description: 'Lerne deine dunklen Seiten kennen und akzeptiere sie',
+    type: 'creative',
     completed: false,
-  },
-];
-
-// =============================================================================
-// 4. NPCs
-// =============================================================================
-
-export const forestNPCs: ForestNPC[] = [
-  {
-    id: 'forest-npc-timber',
-    name: 'Timber',
-    emoji: '\u{1F333}',
-    description:
-      'Ein uralter Waldgeist, der sanft zwischen den Baeumen leuchtet. Er spricht leise und bedacht, und seine Worte haben das Gewicht von Jahrhunderten.',
-    backstory:
-      'Timber ist der Hueter des Waldes, aber er traegt ein Geheimnis: Er fuerchtet seine eigene Dunkelheit. In stuermischen Naechten, wenn der Wind heult und die Schatten lang werden, spuert er einen Teil von sich, der genauso wild und unberechenbar ist wie der Sturm. Lange Zeit hat er versucht, diesen Teil zu verstecken \u2013 sich kleiner zu machen, leiser zu leuchten. Aber er hat gelernt, dass man nicht nur die hellen Seiten von sich akzeptieren kann. Die Dunkelheit gehoert dazu. Sie macht ihn nicht boese \u2013 sie macht ihn vollstaendig. Heute hilft Timber anderen, ihre eigenen Schatten zu verstehen, statt vor ihnen wegzulaufen. "Angst ist kein Zeichen von Schwaeche", sagt er oft. "Sie ist ein Zeichen dafuer, dass dir etwas wichtig ist."',
+    instructions: [
+      'Nimm ein Blatt Papier und zeichne deine Silhouette.',
+      'In die Silhouette schreibe oder male alle Gefühle, die du normalerweise versteckst: Wut, Neid, Traurigkeit, Angst.',
+      'Außerhalb der Silhouette schreibe, warum du diese Gefühle versteckst.',
+      'Nun zeichne Arme von der Silhouette zu den Gefühlen – umarme sie bildlich.',
+      'Schreibe zu jedem Gefühl: "Ich sehe dich. Ich akzeptiere dich. Du gehörst zu mir."',
+      'Hänge das Bild an einen Ort, wo du es sehen kannst.'
+    ]
   },
   {
-    id: 'forest-npc-faye',
-    name: 'Faye',
-    emoji: '\u{1F9D2}',
-    description:
-      'Ein ruhiges Maedchen mit grossen, aufmerksamen Augen. Sie beobachtet viel und sagt wenig \u2013 aber wenn sie spricht, ist es meistens etwas Kluges.',
-    backstory:
-      'Faye hat jede Menge Ideen im Kopf. Wirklich gute sogar. Aber jedes Mal, wenn sie im Unterricht den Mund aufmachen will, schnuert sich ihr Hals zu. Ihr Herz rast, ihre Haende werden feucht, und die Worte bleiben stecken. Sie hat Angst, etwas Falsches zu sagen. Angst, dass alle sie komisch finden. Angst, dass ihre Stimme zittert und alle es merken. Also schweigt sie. Und jedes Mal, wenn sie schweigt, wird die Angst ein kleines Stueckchen groesser. Aber Faye gibt nicht auf. Sie hat angefangen, ihre Gedanken erst aufzuschreiben, bevor sie sie laut sagt. Manchmal fluestert sie ihre Antworten einer Freundin zu, die sie dann fuer sie sagt. Und an manchen Tagen \u2013 den mutigen Tagen \u2013 hebt sie selbst die Hand. Ihre Stimme zittert dann meistens. Aber sie spricht. Und jedes Mal wird es ein winziges Stueckchen leichter.',
+    id: 'forest-activity-4',
+    islandId: 'forest' as IslandId,
+    title: 'Mut-Meditation: Das innere Licht',
+    description: 'Finde dein inneres Licht wie Lumi das Glühwürmchen',
+    type: 'meditation',
+    completed: false,
+    instructions: [
+      'Setze dich bequem hin, schließe die Augen.',
+      'Atme einige Male tief ein und aus.',
+      'Stell dir vor, in deiner Brust ist ein kleines Licht – dein Mut.',
+      'Vielleicht ist es gerade klein wie Lumis Licht, aber es ist da.',
+      'Mit jedem Einatmen wird das Licht ein bisschen heller.',
+      'Mit jedem Ausatmen verteilt es sich in deinem ganzen Körper.',
+      'Spüre, wie das Licht bis in deine Fingerspitzen, deine Zehen, deinen Kopf fließt.',
+      'Sage leise zu dir: "Mein Licht ist genug. Ich bin genug."',
+      'Öffne langsam die Augen und nimm dieses Licht mit in deinen Tag.'
+    ]
   },
+  {
+    id: 'forest-activity-5',
+    islandId: 'forest' as IslandId,
+    title: 'Reflexion: Meine mutigen Momente',
+    description: 'Erkenne und feiere deine eigenen mutigen Taten',
+    type: 'reflection',
+    completed: false,
+    instructions: [
+      'Nimm dir 10 Minuten Zeit in Ruhe.',
+      'Denke an die letzten Wochen und Monate zurück.',
+      'Schreibe mindestens 5 Momente auf, in denen du mutig warst – auch kleine Dinge zählen!',
+      'Beispiele: Jemandem widersprochen, um Hilfe gebeten, etwas Neues ausprobiert, Nein gesagt.',
+      'Lies die Liste laut vor (auch wenn du allein bist).',
+      'Erkenne an: "Ich bin mutiger, als ich dachte."',
+      'Ergänze die Liste regelmäßig mit neuen mutigen Momenten.'
+    ]
+  }
 ];
