@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../stores/gameStore';
 import type { Island, IslandId } from '../../types';
@@ -6,6 +6,10 @@ import SOSButton from '../common/SOSButton';
 import CompanionWidget from '../common/CompanionWidget';
 import XPBar from '../common/XPBar';
 import SettingsPanel from '../common/SettingsPanel';
+
+// ---------------------------------------------------------------------------
+// Island positions on the map (percentage-based)
+// ---------------------------------------------------------------------------
 
 const islandPositions: Record<IslandId, { top: string; left: string }> = {
   volcano: { top: '12%', left: '15%' },
@@ -18,97 +22,266 @@ const islandPositions: Record<IslandId, { top: string; left: string }> = {
   home: { top: '60%', left: '80%' },
 };
 
-function IslandNode({ island, onClick }: { island: Island; onClick: () => void }) {
+// ---------------------------------------------------------------------------
+// Golden connection paths between islands (subtle dotted golden lines)
+// ---------------------------------------------------------------------------
+
+const connectionPaths: [IslandId, IslandId][] = [
+  ['volcano', 'ocean'],
+  ['ocean', 'forest'],
+  ['volcano', 'mountain'],
+  ['forest', 'garden'],
+  ['mountain', 'night'],
+  ['night', 'rainbow'],
+  ['rainbow', 'home'],
+  ['garden', 'home'],
+  ['ocean', 'garden'],
+  ['mountain', 'rainbow'],
+];
+
+// ---------------------------------------------------------------------------
+// Helper: parse percentage string to number
+// ---------------------------------------------------------------------------
+
+function pct(value: string): number {
+  return parseFloat(value);
+}
+
+// ---------------------------------------------------------------------------
+// IslandNode sub-component
+// ---------------------------------------------------------------------------
+
+function IslandNode({
+  island,
+  index,
+  onClick,
+}: {
+  island: Island;
+  index: number;
+  onClick: () => void;
+}) {
   const isUnlocked = island.unlocked;
+  const pos = islandPositions[island.id];
+  const circumference = 2 * Math.PI * 46; // ~289
 
   return (
     <motion.button
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: 'spring', bounce: 0.4, delay: Math.random() * 0.5 }}
-      whileHover={isUnlocked ? { scale: 1.15, y: -5 } : {}}
-      whileTap={isUnlocked ? { scale: 0.95 } : {}}
+      initial={{ opacity: 0, scale: 0, y: 30 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{
+        type: 'spring',
+        stiffness: 260,
+        damping: 20,
+        delay: 0.3 + index * 0.1,
+      }}
+      whileHover={isUnlocked ? { scale: 1.18, y: -8 } : { scale: 1.02 }}
+      whileTap={isUnlocked ? { scale: 0.92 } : {}}
       onClick={onClick}
-      className={`absolute flex flex-col items-center gap-1 group -translate-x-1/2 -translate-y-1/2 ${
+      className={`absolute flex flex-col items-center gap-1.5 group -translate-x-1/2 -translate-y-1/2 focus:outline-none ${
         isUnlocked ? 'cursor-pointer' : 'cursor-not-allowed'
       }`}
-      style={{
-        top: islandPositions[island.id].top,
-        left: islandPositions[island.id].left,
-      }}
+      style={{ top: pos.top, left: pos.left }}
+      aria-label={`${island.name}${isUnlocked ? '' : ' (gesperrt)'}`}
     >
-      {/* Island circle */}
+      {/* Outer aura glow for unlocked islands */}
+      {isUnlocked && (
+        <motion.div
+          className="absolute rounded-full animate-aura"
+          animate={{
+            boxShadow: [
+              `0 0 20px 8px ${island.colors[0]}50, 0 0 60px 20px ${island.colors[0]}20`,
+              `0 0 30px 12px ${island.colors[0]}70, 0 0 80px 30px ${island.colors[0]}30`,
+              `0 0 20px 8px ${island.colors[0]}50, 0 0 60px 20px ${island.colors[0]}20`,
+            ],
+          }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          style={{
+            width: '110px',
+            height: '110px',
+            top: '-15px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+          }}
+        />
+      )}
+
       <div className="relative">
-        {/* Completion ring */}
-        <svg className="absolute -inset-2 w-[calc(100%+16px)] h-[calc(100%+16px)]" viewBox="0 0 100 100">
+        {/* Completion ring SVG */}
+        <svg
+          className="absolute -inset-3 w-[calc(100%+24px)] h-[calc(100%+24px)]"
+          viewBox="0 0 100 100"
+        >
+          {/* Background ring track */}
           <circle
             cx="50"
             cy="50"
             r="46"
             fill="none"
-            stroke={isUnlocked ? island.colors[0] + '40' : '#ccc'}
-            strokeWidth="4"
+            stroke={isUnlocked ? `${island.colors[0]}30` : '#555555'}
+            strokeWidth="3"
           />
-          {island.completionPercent > 0 && (
-            <circle
+          {/* Completion arc */}
+          {isUnlocked && island.completionPercent > 0 && (
+            <motion.circle
               cx="50"
               cy="50"
               r="46"
               fill="none"
               stroke={island.colors[0]}
               strokeWidth="4"
-              strokeDasharray={`${island.completionPercent * 2.89} 289`}
+              strokeDasharray={`${(island.completionPercent / 100) * circumference} ${circumference}`}
               strokeLinecap="round"
               transform="rotate(-90 50 50)"
+              initial={{ strokeDashoffset: circumference }}
+              animate={{ strokeDashoffset: 0 }}
+              transition={{ duration: 1.5, delay: 0.5 + index * 0.1 }}
+              style={{
+                filter: `drop-shadow(0 0 4px ${island.colors[0]})`,
+              }}
             />
           )}
         </svg>
 
+        {/* Island circle body */}
         <div
-          className={`w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-lg transition-all ${
-            isUnlocked
-              ? 'animate-float'
-              : 'grayscale opacity-60'
+          className={`relative w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-2xl transition-all duration-300 ${
+            isUnlocked ? '' : 'grayscale opacity-40'
           }`}
           style={{
             background: isUnlocked
-              ? `linear-gradient(135deg, ${island.colors[0]}, ${island.colors[1]})`
-              : '#d1d5db',
+              ? `radial-gradient(circle at 35% 35%, ${island.colors[1]}, ${island.colors[0]}, ${island.colors[2]})`
+              : 'radial-gradient(circle at 35% 35%, #3a3a3a, #222222, #111111)',
+            boxShadow: isUnlocked
+              ? `0 4px 20px ${island.colors[0]}80, inset 0 -4px 10px ${island.colors[2]}90`
+              : '0 4px 15px rgba(0,0,0,0.6), inset 0 -4px 10px rgba(0,0,0,0.5)',
+            border: isUnlocked
+              ? `2px solid ${island.colors[0]}90`
+              : '2px solid #44444480',
           }}
         >
-          {isUnlocked ? island.emoji : '🔒'}
+          {isUnlocked ? (
+            <motion.span
+              animate={{ y: [0, -4, 0] }}
+              transition={{
+                duration: 2.5 + index * 0.3,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+              className="drop-shadow-lg"
+              style={{
+                filter: `drop-shadow(0 0 6px ${island.colors[0]})`,
+              }}
+            >
+              {island.emoji}
+            </motion.span>
+          ) : (
+            <span className="text-3xl opacity-60">&#x1F512;</span>
+          )}
         </div>
 
-        {/* Level badge */}
+        {/* Level badge for unlocked islands with progress */}
         {isUnlocked && island.completionPercent > 0 && (
-          <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-[#FFEAA7] rounded-full flex items-center justify-center text-xs font-bold text-[#2d3436] shadow border-2 border-white">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', delay: 1 + index * 0.1 }}
+            className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shadow-lg"
+            style={{
+              background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+              color: '#1a1a2e',
+              border: '2px solid #FFD70090',
+              boxShadow: '0 0 8px #FFD70060',
+            }}
+          >
             {island.level}
-          </div>
+          </motion.div>
+        )}
+
+        {/* Locked chains visual */}
+        {!isUnlocked && (
+          <>
+            <div
+              className="absolute top-1/2 -left-3 w-[calc(100%+24px)] h-0.5 -translate-y-1/2 opacity-30"
+              style={{
+                background:
+                  'repeating-linear-gradient(90deg, #888 0px, #888 4px, transparent 4px, transparent 8px)',
+              }}
+            />
+            <div
+              className="absolute left-1/2 -top-3 h-[calc(100%+24px)] w-0.5 -translate-x-1/2 opacity-30"
+              style={{
+                background:
+                  'repeating-linear-gradient(180deg, #888 0px, #888 4px, transparent 4px, transparent 8px)',
+              }}
+            />
+          </>
         )}
       </div>
 
-      {/* Island name */}
+      {/* Island name label */}
       <span
-        className={`text-sm font-bold whitespace-nowrap px-2 py-0.5 rounded-full ${
-          isUnlocked ? 'text-white bg-black/20 backdrop-blur-sm' : 'text-gray-400 bg-gray-100/80'
+        className={`text-xs font-bold whitespace-nowrap px-3 py-1 rounded-full font-title transition-all duration-300 ${
+          isUnlocked
+            ? 'text-golden bg-black/50 backdrop-blur-sm border border-amber-400/30'
+            : 'text-gray-500 bg-black/40 backdrop-blur-sm border border-gray-600/20'
         }`}
+        style={
+          isUnlocked
+            ? {
+                textShadow: '0 0 8px rgba(255,215,0,0.5)',
+              }
+            : {}
+        }
       >
         {island.name}
       </span>
 
-      {/* Tooltip for locked */}
+      {/* Tooltip on hover for locked islands */}
       {!isUnlocked && (
-        <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-xs text-gray-500 bg-white px-3 py-1 rounded-full shadow whitespace-nowrap">
-          Schließe zuerst eine andere Insel ab!
+        <span className="absolute -bottom-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs text-amber-300/80 bg-black/70 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-lg whitespace-nowrap border border-amber-400/20">
+          Schliesse zuerst eine andere Insel ab!
         </span>
       )}
     </motion.button>
   );
 }
 
+// ---------------------------------------------------------------------------
+// Main IslandMap component
+// ---------------------------------------------------------------------------
+
 export default function IslandMap() {
   const { islands, setActiveIsland, setScreen } = useGameStore();
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  // ---- Memoised random arrays for decorative elements ----
+
+  const stars = useMemo(
+    () =>
+      Array.from({ length: 50 }, (_, i) => ({
+        id: i,
+        top: `${Math.random() * 55}%`,
+        left: `${Math.random() * 100}%`,
+        size: 1 + Math.random() * 2.5,
+        delay: Math.random() * 5,
+        duration: 2 + Math.random() * 4,
+        opacity: 0.3 + Math.random() * 0.7,
+      })),
+    [],
+  );
+
+  const embers = useMemo(
+    () =>
+      Array.from({ length: 14 }, (_, i) => ({
+        id: i,
+        left: `${10 + Math.random() * 80}%`,
+        size: 2 + Math.random() * 4,
+        delay: Math.random() * 8,
+        duration: 6 + Math.random() * 8,
+        drift: -30 + Math.random() * 60,
+      })),
+    [],
+  );
 
   const handleIslandClick = (island: Island) => {
     if (island.unlocked) {
@@ -118,109 +291,447 @@ export default function IslandMap() {
   };
 
   return (
-    <div className="h-screen w-screen relative overflow-hidden">
-      {/* Ocean background */}
+    <div className="h-screen w-screen relative overflow-hidden bg-black">
+      {/* ================================================================= */}
+      {/* LAYER 0: Deep dark ocean background gradient                      */}
+      {/* ================================================================= */}
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(180deg, #74b9ff 0%, #0984e3 40%, #0652DD 100%)',
+          background:
+            'radial-gradient(ellipse at 50% 30%, #0d1b3e 0%, #0a0f2e 25%, #120a28 50%, #0a0610 75%, #000000 100%)',
         }}
       />
 
-      {/* Animated waves */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 overflow-hidden">
+      {/* Secondary gradient overlay for depth */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(180deg, transparent 0%, #06041a40 30%, #0d072880 60%, #000000cc 100%)',
+        }}
+      />
+
+      {/* ================================================================= */}
+      {/* LAYER 1: Twinkling stars                                          */}
+      {/* ================================================================= */}
+      {stars.map((star) => (
         <motion.div
-          animate={{ x: [0, -200, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-          className="absolute bottom-0 w-[200%] h-16 opacity-30"
+          key={`star-${star.id}`}
+          className="star absolute rounded-full"
+          animate={{
+            opacity: [star.opacity * 0.3, star.opacity, star.opacity * 0.3],
+            scale: [0.8, 1.2, 0.8],
+          }}
+          transition={{
+            duration: star.duration,
+            repeat: Infinity,
+            delay: star.delay,
+            ease: 'easeInOut',
+          }}
+          style={{
+            top: star.top,
+            left: star.left,
+            width: star.size,
+            height: star.size,
+            background: `radial-gradient(circle, #ffffffee, #aaccff80, transparent)`,
+            boxShadow: `0 0 ${star.size * 2}px ${star.size}px rgba(180,200,255,${star.opacity * 0.3})`,
+          }}
+        />
+      ))}
+
+      {/* ================================================================= */}
+      {/* LAYER 2: Floating embers                                          */}
+      {/* ================================================================= */}
+      {embers.map((ember) => (
+        <motion.div
+          key={`ember-${ember.id}`}
+          className="ember absolute rounded-full"
+          initial={{ y: '100vh', opacity: 0 }}
+          animate={{
+            y: [window?.innerHeight || 800, -50],
+            x: [0, ember.drift],
+            opacity: [0, 0.8, 0.9, 0.6, 0],
+          }}
+          transition={{
+            duration: ember.duration,
+            repeat: Infinity,
+            delay: ember.delay,
+            ease: 'easeOut',
+          }}
+          style={{
+            left: ember.left,
+            width: ember.size,
+            height: ember.size,
+            background: 'radial-gradient(circle, #ffaa44, #ff6600, transparent)',
+            boxShadow: `0 0 ${ember.size * 2}px ${ember.size}px rgba(255,150,50,0.4)`,
+          }}
+        />
+      ))}
+
+      {/* ================================================================= */}
+      {/* LAYER 3: Fog layers                                               */}
+      {/* ================================================================= */}
+      <motion.div
+        className="fog-layer absolute w-[200%] h-40 opacity-[0.06] pointer-events-none"
+        style={{
+          top: '20%',
+          background:
+            'linear-gradient(90deg, transparent 0%, #8888cc30 20%, #6666aa20 50%, #8888cc30 80%, transparent 100%)',
+          filter: 'blur(30px)',
+        }}
+        animate={{ x: ['-50%', '0%'] }}
+        transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+      />
+      <motion.div
+        className="fog-layer absolute w-[200%] h-48 opacity-[0.05] pointer-events-none"
+        style={{
+          top: '45%',
+          background:
+            'linear-gradient(90deg, transparent 0%, #554488 15%, transparent 40%, #443377 65%, transparent 100%)',
+          filter: 'blur(40px)',
+        }}
+        animate={{ x: ['0%', '-50%'] }}
+        transition={{ duration: 55, repeat: Infinity, ease: 'linear' }}
+      />
+      <motion.div
+        className="fog-layer absolute w-[200%] h-36 opacity-[0.04] pointer-events-none"
+        style={{
+          top: '70%',
+          background:
+            'linear-gradient(90deg, transparent, #223355 30%, #112244 60%, transparent)',
+          filter: 'blur(35px)',
+        }}
+        animate={{ x: ['-30%', '20%'] }}
+        transition={{ duration: 65, repeat: Infinity, ease: 'linear', repeatType: 'reverse' }}
+      />
+
+      {/* ================================================================= */}
+      {/* LAYER 4: Mystic drifting clouds                                   */}
+      {/* ================================================================= */}
+      {[0, 1, 2, 3, 4].map((i) => (
+        <motion.div
+          key={`cloud-${i}`}
+          className="absolute pointer-events-none"
+          animate={{ x: ['-15%', '115%'] }}
+          transition={{
+            duration: 50 + i * 15,
+            repeat: Infinity,
+            ease: 'linear',
+            delay: i * 8,
+          }}
+          style={{
+            top: `${12 + i * 12}%`,
+            width: `${120 + i * 30}px`,
+            height: `${40 + i * 10}px`,
+            background: `radial-gradient(ellipse, rgba(${80 + i * 15},${60 + i * 10},${120 + i * 10},0.08), transparent)`,
+            filter: 'blur(20px)',
+          }}
+        />
+      ))}
+
+      {/* ================================================================= */}
+      {/* LAYER 5: Ocean waves at bottom                                    */}
+      {/* ================================================================= */}
+      <div className="absolute bottom-0 left-0 right-0 h-36 pointer-events-none overflow-hidden">
+        <motion.div
+          animate={{ x: [0, -300, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute bottom-0 w-[200%] h-20 opacity-20"
           style={{
             background:
-              'repeating-linear-gradient(90deg, transparent, transparent 100px, rgba(255,255,255,0.3) 100px, rgba(255,255,255,0.3) 200px)',
+              'repeating-linear-gradient(90deg, transparent, transparent 120px, rgba(60,40,120,0.4) 120px, rgba(60,40,120,0.4) 240px)',
+            borderRadius: '60% 60% 0 0',
+          }}
+        />
+        <motion.div
+          animate={{ x: [0, 200, 0] }}
+          transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute bottom-0 w-[200%] h-14 opacity-15"
+          style={{
+            background:
+              'repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(30,20,80,0.5) 80px, rgba(30,20,80,0.5) 160px)',
             borderRadius: '50% 50% 0 0',
+          }}
+        />
+        <div
+          className="absolute bottom-0 left-0 right-0 h-24"
+          style={{
+            background:
+              'linear-gradient(180deg, transparent 0%, #06031a80 40%, #030210cc 70%, #000000 100%)',
           }}
         />
       </div>
 
-      {/* Clouds */}
-      {[1, 2, 3].map((i) => (
-        <motion.div
-          key={i}
-          animate={{ x: ['-10%', '110%'] }}
-          transition={{ duration: 30 + i * 10, repeat: Infinity, ease: 'linear' }}
-          className="absolute text-5xl opacity-20"
-          style={{ top: `${5 + i * 8}%` }}
-        >
-          ☁️
-        </motion.div>
-      ))}
+      {/* ================================================================= */}
+      {/* LAYER 6: Golden connection paths between islands                  */}
+      {/* ================================================================= */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
+        <defs>
+          <linearGradient id="golden-line" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#FFD700" stopOpacity="0.15" />
+            <stop offset="50%" stopColor="#FFA500" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#FFD700" stopOpacity="0.15" />
+          </linearGradient>
+        </defs>
+        {connectionPaths.map(([from, to], i) => {
+          const fromPos = islandPositions[from];
+          const toPos = islandPositions[to];
+          return (
+            <line
+              key={`path-${i}`}
+              x1={`${pct(fromPos.left)}%`}
+              y1={`${pct(fromPos.top)}%`}
+              x2={`${pct(toPos.left)}%`}
+              y2={`${pct(toPos.top)}%`}
+              stroke="url(#golden-line)"
+              strokeWidth="1.5"
+              strokeDasharray="6 10"
+              opacity="0.5"
+            />
+          );
+        })}
+      </svg>
 
-      {/* Title */}
+      {/* ================================================================= */}
+      {/* LAYER 7: Vignette overlay                                         */}
+      {/* ================================================================= */}
+      <div
+        className="vignette absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,0.5) 75%, rgba(0,0,0,0.85) 100%)',
+          zIndex: 2,
+        }}
+      />
+
+      {/* ================================================================= */}
+      {/* UI LAYER: Title                                                   */}
+      {/* ================================================================= */}
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="absolute top-4 left-1/2 -translate-x-1/2 z-10 text-center"
+        transition={{ duration: 1, delay: 0.2 }}
+        className="absolute top-5 left-1/2 -translate-x-1/2 text-center"
+        style={{ zIndex: 10 }}
       >
-        <h1 className="text-2xl font-extrabold text-white drop-shadow-lg">
-          🗺️ Inselarchipel der Emotionen
+        {/* Ornate decorative line above title */}
+        <div className="flex items-center justify-center gap-3 mb-1">
+          <div
+            className="w-16 h-px"
+            style={{
+              background: 'linear-gradient(90deg, transparent, #FFD700, transparent)',
+            }}
+          />
+          <div
+            className="w-2 h-2 rotate-45"
+            style={{
+              background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+              boxShadow: '0 0 6px #FFD70060',
+            }}
+          />
+          <div
+            className="w-16 h-px"
+            style={{
+              background: 'linear-gradient(90deg, transparent, #FFD700, transparent)',
+            }}
+          />
+        </div>
+
+        <h1
+          className="text-2xl md:text-3xl font-title text-golden tracking-wider animate-golden-glow"
+          style={{
+            textShadow:
+              '0 0 10px rgba(255,215,0,0.4), 0 0 30px rgba(255,165,0,0.2), 0 2px 4px rgba(0,0,0,0.8)',
+          }}
+        >
+          Inselarchipel der Emotionen
         </h1>
+
+        {/* Ornate decorative line below title */}
+        <div className="flex items-center justify-center gap-3 mt-1">
+          <div
+            className="w-12 h-px"
+            style={{
+              background: 'linear-gradient(90deg, transparent, #FFD70080, transparent)',
+            }}
+          />
+          <div
+            className="w-1.5 h-1.5 rotate-45"
+            style={{ background: '#FFD70060' }}
+          />
+          <div
+            className="w-8 h-px"
+            style={{
+              background: 'linear-gradient(90deg, transparent, #FFD70060, transparent)',
+            }}
+          />
+          <div
+            className="w-1.5 h-1.5 rotate-45"
+            style={{ background: '#FFD70060' }}
+          />
+          <div
+            className="w-12 h-px"
+            style={{
+              background: 'linear-gradient(90deg, transparent, #FFD70080, transparent)',
+            }}
+          />
+        </div>
       </motion.div>
 
-      {/* XP Bar */}
-      <div className="absolute top-14 left-1/2 -translate-x-1/2 z-10 w-80">
-        <XPBar />
-      </div>
+      {/* ================================================================= */}
+      {/* UI LAYER: XP Bar                                                  */}
+      {/* ================================================================= */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
+        className="absolute top-[5.5rem] left-1/2 -translate-x-1/2 w-72 md:w-80"
+        style={{ zIndex: 10 }}
+      >
+        <div className="glass-panel rounded-xl px-3 py-2 border border-amber-400/10">
+          <XPBar />
+        </div>
+      </motion.div>
 
-      {/* Settings button */}
+      {/* ================================================================= */}
+      {/* UI LAYER: Settings button                                         */}
+      {/* ================================================================= */}
       <motion.button
-        whileHover={{ scale: 1.1, rotate: 90 }}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.8 }}
+        whileHover={{
+          scale: 1.15,
+          rotate: 90,
+          boxShadow: '0 0 20px 6px rgba(255,215,0,0.3)',
+        }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setSettingsOpen(true)}
-        className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white text-xl hover:bg-white/30 transition-all"
+        className="absolute top-5 right-5 w-11 h-11 glass-panel rounded-full flex items-center justify-center text-amber-300/80 text-xl hover:text-amber-200 transition-colors border border-amber-400/20 hover:border-amber-400/40"
+        style={{ zIndex: 10 }}
+        aria-label="Einstellungen"
       >
-        ⚙️
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="12" cy="12" r="3" />
+          <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        </svg>
       </motion.button>
 
-      {/* Navigation buttons */}
-      <div className="absolute top-4 left-4 z-10 flex gap-2">
+      {/* ================================================================= */}
+      {/* UI LAYER: Navigation buttons (Journal, Collection)                */}
+      {/* ================================================================= */}
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+        className="absolute top-5 left-5 flex gap-2.5"
+        style={{ zIndex: 10 }}
+      >
         <motion.button
-          whileHover={{ scale: 1.05 }}
+          whileHover={{
+            scale: 1.05,
+            boxShadow: '0 0 15px 4px rgba(255,215,0,0.2)',
+          }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setScreen('journal')}
-          className="px-3 py-2 bg-white/20 backdrop-blur rounded-full text-white text-sm font-semibold hover:bg-white/30 transition-all"
+          className="glass-panel px-4 py-2.5 rounded-xl text-amber-200/90 text-sm font-title font-semibold tracking-wide border border-amber-400/20 hover:border-amber-400/40 hover:text-amber-100 transition-all duration-300 flex items-center gap-2"
         >
-          📓 Tagebuch
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            <line x1="8" y1="7" x2="16" y2="7" />
+            <line x1="8" y1="11" x2="14" y2="11" />
+          </svg>
+          Tagebuch
         </motion.button>
+
         <motion.button
-          whileHover={{ scale: 1.05 }}
+          whileHover={{
+            scale: 1.05,
+            boxShadow: '0 0 15px 4px rgba(255,215,0,0.2)',
+          }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setScreen('collection')}
-          className="px-3 py-2 bg-white/20 backdrop-blur rounded-full text-white text-sm font-semibold hover:bg-white/30 transition-all"
+          className="glass-panel px-4 py-2.5 rounded-xl text-amber-200/90 text-sm font-title font-semibold tracking-wide border border-amber-400/20 hover:border-amber-400/40 hover:text-amber-100 transition-all duration-300 flex items-center gap-2"
         >
-          🃏 Sammlung
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="2" y="3" width="20" height="18" rx="2" />
+            <path d="M2 8h20" />
+            <path d="M8 3v5" />
+            <circle cx="12" cy="15" r="3" />
+          </svg>
+          Sammlung
         </motion.button>
-      </div>
+      </motion.div>
 
-      {/* Islands */}
-      <div className="absolute inset-0">
-        {islands.map((island) => (
+      {/* ================================================================= */}
+      {/* MAP LAYER: Island nodes                                           */}
+      {/* ================================================================= */}
+      <div className="absolute inset-0" style={{ zIndex: 5 }}>
+        {islands.map((island, index) => (
           <IslandNode
             key={island.id}
             island={island}
+            index={index}
             onClick={() => handleIslandClick(island)}
           />
         ))}
       </div>
 
-      {/* Companion */}
-      <CompanionWidget />
+      {/* ================================================================= */}
+      {/* UI LAYER: Companion widget                                        */}
+      {/* ================================================================= */}
+      <div style={{ zIndex: 15 }}>
+        <CompanionWidget />
+      </div>
 
-      {/* SOS Button */}
-      <SOSButton />
+      {/* ================================================================= */}
+      {/* UI LAYER: SOS Button                                              */}
+      {/* ================================================================= */}
+      <div style={{ zIndex: 15 }}>
+        <SOSButton />
+      </div>
 
-      {/* Settings Panel */}
+      {/* ================================================================= */}
+      {/* UI LAYER: Settings panel                                          */}
+      {/* ================================================================= */}
       <AnimatePresence>
         {settingsOpen && (
-          <SettingsPanel isOpen={settingsOpen} onClose={() => setSettingsOpen(false)} />
+          <SettingsPanel
+            isOpen={settingsOpen}
+            onClose={() => setSettingsOpen(false)}
+          />
         )}
       </AnimatePresence>
     </div>
