@@ -8,20 +8,22 @@
 // -----------------------------------------------------------------------------
 
 /** Core emotions tracked throughout the game */
-export enum Mood {
-  Happy = 'happy',
-  Sad = 'sad',
-  Angry = 'angry',
-  Anxious = 'anxious',
-  Calm = 'calm',
-  Confused = 'confused',
-  Excited = 'excited',
-  Tired = 'tired',
-  Lonely = 'lonely',
-  Proud = 'proud',
-  Frustrated = 'frustrated',
-  Hopeful = 'hopeful',
-}
+export const Mood = {
+  Happy: 'happy',
+  Sad: 'sad',
+  Angry: 'angry',
+  Anxious: 'anxious',
+  Calm: 'calm',
+  Confused: 'confused',
+  Excited: 'excited',
+  Tired: 'tired',
+  Lonely: 'lonely',
+  Proud: 'proud',
+  Frustrated: 'frustrated',
+  Hopeful: 'hopeful',
+} as const;
+
+export type Mood = (typeof Mood)[keyof typeof Mood];
 
 // -----------------------------------------------------------------------------
 // Scalar Type Aliases (Unions)
