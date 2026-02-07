@@ -1228,10 +1228,15 @@ window.GameEngine = (function () {
         },
 
         resume: function () {
+            if (!scene || !clock) return; // Not initialized yet
             if (!animationId) {
                 clock.getDelta(); // reset delta
                 animate();
             }
+        },
+
+        isReady: function () {
+            return !!scene;
         },
 
         spawnCelebrationParticles: function (buildingIndex) {

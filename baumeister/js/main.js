@@ -59,7 +59,11 @@
         state.currentScreen = screenId;
 
         if (screenId === 'game-screen') {
-            GameEngine.resume();
+            if (GameEngine.isReady()) {
+                GameEngine.resume();
+                // Trigger resize to ensure canvas is properly sized
+                window.dispatchEvent(new Event('resize'));
+            }
         } else {
             GameEngine.pause();
         }
@@ -116,8 +120,8 @@
 
             // Check if we have saved progress
             if (state.totalCompleted > 0) {
-                showScreen('game-screen');
                 initGameWorld();
+                showScreen('game-screen');
                 showToast('Willkommen zurück, ' + state.playerName + '!', '\u{1F44B}');
             } else {
                 showIntro();
@@ -193,8 +197,8 @@
         btn.onclick = () => {
             state.introStep++;
             if (state.introStep >= steps.length) {
-                showScreen('game-screen');
                 initGameWorld();
+                showScreen('game-screen');
                 showToast('Viel Spa\u00DF auf deiner Baustelle!', '\u{1F3D7}');
             } else {
                 renderIntroStep();
