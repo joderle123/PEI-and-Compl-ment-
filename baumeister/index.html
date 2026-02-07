@@ -4,10 +4,1532 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BauMeister - Deine Baustelle | CDSE Luxembourg</title>
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+/* ============================================
+   BauMeister - Deine Baustelle
+   CDSE Luxembourg
+   Complete Stylesheet
+   ============================================ */
+
+/* ---- CSS Variables ---- */
+:root {
+    --color-primary: #f59e0b;
+    --color-primary-dark: #d97706;
+    --color-primary-light: #fbbf24;
+    --color-bg-dark: #1a1a2e;
+    --color-bg-medium: #16213e;
+    --color-bg-light: #0f3460;
+    --color-text: #f1f1f1;
+    --color-text-muted: #a0aec0;
+    --color-success: #10b981;
+    --color-error: #ef4444;
+    --color-warning: #f59e0b;
+
+    /* Building Colors */
+    --color-gefuehl: #f59e0b;
+    --color-freundschaft: #3b82f6;
+    --color-staerke: #10b981;
+    --color-worte: #8b5cf6;
+    --color-ruhe: #06b6d4;
+
+    --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-title: 'Georgia', 'Times New Roman', serif;
+    --border-radius: 12px;
+    --shadow: 0 8px 32px rgba(0,0,0,0.3);
+    --shadow-sm: 0 4px 12px rgba(0,0,0,0.2);
+    --transition: all 0.3s ease;
+}
+
+/* ---- Reset & Base ---- */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font-main);
+    color: var(--color-text);
+    background: var(--color-bg-dark);
+}
+
+/* ---- Screens ---- */
+.screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    z-index: 10;
+}
+
+.screen.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ---- Buttons ---- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    color: #000;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+}
+
+.btn-secondary {
+    background: rgba(255,255,255,0.1);
+    color: var(--color-text);
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.btn-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: var(--color-text);
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-close:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.btn-hud {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+    background: rgba(0,0,0,0.5);
+    color: var(--color-primary);
+    font-size: 1.3rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-hud:hover {
+    background: rgba(0,0,0,0.7);
+    border-color: var(--color-primary);
+}
+
+/* ============ START SCREEN ============ */
+#start-screen {
+    background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-medium) 50%, var(--color-bg-light) 100%);
+}
+
+.start-container {
+    text-align: center;
+    max-width: 520px;
+    padding: 40px;
+    animation: fadeInUp 0.8s ease;
+}
+
+.hard-hat-icon {
+    font-size: 4rem;
+    margin-bottom: 10px;
+    animation: bounce 2s infinite;
+    filter: drop-shadow(0 4px 8px rgba(245, 158, 11, 0.4));
+}
+
+.game-title {
+    font-family: var(--font-title);
+    font-size: 3.5rem;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+    text-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+}
+
+.game-title .highlight {
+    color: var(--color-primary);
+}
+
+.game-subtitle {
+    font-size: 1.15rem;
+    color: var(--color-text-muted);
+    margin-bottom: 40px;
+    font-style: italic;
+}
+
+.start-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.start-form label {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    text-align: left;
+}
+
+.start-form input {
+    padding: 16px 20px;
+    border-radius: var(--border-radius);
+    border: 2px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: var(--color-text);
+    font-size: 1.2rem;
+    font-family: var(--font-main);
+    transition: var(--transition);
+    text-align: center;
+}
+
+.start-form input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    background: rgba(255,255,255,0.1);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+}
+
+.start-form input::placeholder {
+    color: rgba(255,255,255,0.3);
+}
+
+.start-info {
+    background: rgba(255,255,255,0.05);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--color-primary);
+}
+
+.start-info p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+}
+
+.cdse-badge {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* ============ INTRO SCREEN ============ */
+#intro-screen {
+    background: linear-gradient(135deg, var(--color-bg-dark), var(--color-bg-medium));
+}
+
+.intro-container {
+    max-width: 600px;
+    text-align: center;
+    padding: 40px;
+}
+
+.intro-content {
+    margin-bottom: 30px;
+}
+
+.intro-content h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: var(--color-primary);
+}
+
+.intro-content p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+}
+
+.intro-buildings-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+.intro-building-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 0.9rem;
+}
+
+.intro-building-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+/* ============ GAME SCREEN ============ */
+#game-screen {
+    display: none;
+    z-index: 5;
+}
+
+#game-screen.active {
+    display: block;
+}
+
+#game-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ---- HUD ---- */
+#hud {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 20;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 100%);
+}
+
+#hud > * {
+    pointer-events: auto;
+}
+
+.hud-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.hud-player {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.hud-hat {
+    font-size: 1.4rem;
+    color: var(--color-primary);
+}
+
+.hud-progress-bar {
+    position: relative;
+    width: 200px;
+    height: 28px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 14px;
+    border: 2px solid rgba(255,255,255,0.2);
+    overflow: hidden;
+}
+
+.hud-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--color-primary-dark), var(--color-primary), var(--color-primary-light));
+    border-radius: 14px;
+    transition: width 0.5s ease;
+}
+
+.hud-progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+/* ---- Interaction Prompt ---- */
+#interaction-prompt {
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    animation: promptPulse 2s infinite;
+}
+
+.prompt-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 28px;
+    background: rgba(0,0,0,0.8);
+    border-radius: var(--border-radius);
+    border: 2px solid var(--color-primary);
+    backdrop-filter: blur(10px);
+}
+
+.prompt-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--color-primary);
+    color: #000;
+    font-weight: 900;
+    font-size: 1rem;
+}
+
+#prompt-text {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* ---- Building Info Panel ---- */
+#building-info {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.building-info-content {
+    background: linear-gradient(135deg, var(--color-bg-dark), var(--color-bg-medium));
+    border-radius: var(--border-radius);
+    padding: 36px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.1);
+    animation: scaleIn 0.3s ease;
+}
+
+.building-info-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.building-info-icon {
+    font-size: 2.5rem;
+}
+
+.building-info-header h2 {
+    flex: 1;
+    font-size: 1.5rem;
+}
+
+#building-info-desc {
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+}
+
+.building-levels {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.level-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.level-item:hover:not(.level-locked) {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+    transform: translateX(4px);
+}
+
+.level-item.level-locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.level-item.level-completed {
+    border-color: var(--color-success);
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.level-item.level-current {
+    border-color: var(--color-primary);
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.level-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.level-completed .level-number {
+    background: var(--color-success);
+    color: #fff;
+}
+
+.level-current .level-number {
+    background: var(--color-primary);
+    color: #000;
+}
+
+.level-info {
+    flex: 1;
+}
+
+.level-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+}
+
+.level-subtitle {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.level-status {
+    font-size: 1.2rem;
+}
+
+/* ---- Help Panel ---- */
+#help-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.help-content {
+    background: linear-gradient(135deg, var(--color-bg-dark), var(--color-bg-medium));
+    border-radius: var(--border-radius);
+    padding: 36px;
+    max-width: 400px;
+    width: 90%;
+    position: relative;
+    box-shadow: var(--shadow);
+    animation: scaleIn 0.3s ease;
+}
+
+.help-content h2 {
+    margin-bottom: 20px;
+    color: var(--color-primary);
+}
+
+.help-content .btn-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+}
+
+.help-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.help-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1rem;
+}
+
+.key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--color-primary);
+}
+
+/* ============ ACTIVITY SCREEN ============ */
+#activity-screen {
+    background: linear-gradient(135deg, var(--color-bg-dark), var(--color-bg-medium));
+    overflow-y: auto;
+}
+
+#activity-screen.active {
+    display: flex;
+}
+
+.activity-container {
+    max-width: 700px;
+    width: 95%;
+    margin: auto;
+    padding: 30px 20px;
+    animation: fadeInUp 0.4s ease;
+}
+
+.activity-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.activity-building-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.activity-header h2 {
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+}
+
+.activity-level-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.1);
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.activity-body {
+    min-height: 300px;
+}
+
+.activity-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ---- Activity: Scenario Cards ---- */
+.scenario-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.scenario-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    font-style: italic;
+    color: var(--color-text-muted);
+}
+
+.scenario-question {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+/* ---- Activity: Choice Options ---- */
+.choices-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+@media (max-width: 500px) {
+    .choices-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.choice-btn {
+    padding: 16px 20px;
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    color: var(--color-text);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: left;
+    line-height: 1.4;
+}
+
+.choice-btn:hover {
+    border-color: var(--color-primary);
+    background: rgba(245, 158, 11, 0.1);
+    transform: translateY(-2px);
+}
+
+.choice-btn.selected {
+    border-color: var(--color-primary);
+    background: rgba(245, 158, 11, 0.15);
+}
+
+.choice-btn.correct {
+    border-color: var(--color-success);
+    background: rgba(16, 185, 129, 0.15);
+    animation: correctPulse 0.5s ease;
+}
+
+.choice-btn.incorrect {
+    border-color: var(--color-error);
+    background: rgba(239, 68, 68, 0.15);
+    animation: shake 0.5s ease;
+}
+
+/* ---- Activity: Matching ---- */
+.match-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.match-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.match-left {
+    flex: 1;
+    padding: 14px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    font-size: 0.95rem;
+}
+
+.match-arrow {
+    color: var(--color-primary);
+    font-size: 1.2rem;
+}
+
+.match-select {
+    flex: 1;
+    padding: 14px;
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    color: var(--color-text);
+    font-size: 0.95rem;
+    font-family: var(--font-main);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23f59e0b' viewBox='0 0 16 16'%3E%3Cpath d='M8 12L2 6h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+
+.match-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.match-select option {
+    background: var(--color-bg-dark);
+    color: var(--color-text);
+}
+
+/* ---- Activity: Sorting/Categorizing ---- */
+.sort-categories {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 500px) {
+    .sort-categories {
+        grid-template-columns: 1fr;
+    }
+}
+
+.sort-category {
+    background: rgba(255,255,255,0.03);
+    border-radius: var(--border-radius);
+    padding: 16px;
+    min-height: 150px;
+    border: 2px dashed rgba(255,255,255,0.15);
+    transition: var(--transition);
+}
+
+.sort-category.drag-over {
+    border-color: var(--color-primary);
+    background: rgba(245, 158, 11, 0.05);
+}
+
+.sort-category-title {
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sort-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.sort-item {
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    cursor: grab;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    user-select: none;
+}
+
+.sort-item:hover {
+    background: rgba(255,255,255,0.12);
+    transform: translateY(-1px);
+}
+
+.sort-item.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.sort-item.placed {
+    background: rgba(255,255,255,0.05);
+    border-style: dashed;
+}
+
+/* ---- Activity: Slider/Thermometer ---- */
+.thermometer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.thermometer-scenario {
+    text-align: center;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 500px;
+}
+
+.thermometer-visual {
+    position: relative;
+    width: 60px;
+    height: 250px;
+    background: linear-gradient(to top, #3b82f6, #f59e0b, #ef4444);
+    border-radius: 30px;
+    border: 3px solid rgba(255,255,255,0.2);
+    overflow: hidden;
+}
+
+.thermometer-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.6);
+    transition: height 0.3s ease;
+}
+
+.thermometer-slider {
+    width: 100%;
+    max-width: 300px;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #3b82f6, #f59e0b, #ef4444);
+    outline: none;
+}
+
+.thermometer-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.thermometer-labels {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 300px;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.thermometer-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* ---- Activity: Transformation (I-Messages) ---- */
+.transform-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.transform-original {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 12px;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid var(--color-error);
+}
+
+.transform-arrow {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin: 8px 0;
+}
+
+.transform-input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    color: var(--color-text);
+    font-size: 1rem;
+    font-family: var(--font-main);
+    transition: var(--transition);
+}
+
+.transform-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.transform-input::placeholder {
+    color: rgba(255,255,255,0.25);
+}
+
+.transform-hint {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 8px;
+    font-style: italic;
+}
+
+/* ---- Activity: Breathing ---- */
+.breathing-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 30px 20px;
+}
+
+.breathing-circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(6, 182, 212, 0.3), rgba(6, 182, 212, 0.1));
+    border: 3px solid var(--color-ruhe);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    transition: all 4s ease;
+}
+
+.breathing-circle.inhale {
+    transform: scale(1.4);
+    background: radial-gradient(circle, rgba(6, 182, 212, 0.5), rgba(6, 182, 212, 0.2));
+}
+
+.breathing-circle.exhale {
+    transform: scale(0.8);
+    background: radial-gradient(circle, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.05));
+}
+
+.breathing-instruction {
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.breathing-counter {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--color-ruhe);
+}
+
+.breathing-progress {
+    display: flex;
+    gap: 6px;
+}
+
+.breathing-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    transition: background 0.3s;
+}
+
+.breathing-dot.done {
+    background: var(--color-ruhe);
+}
+
+/* ---- Activity: Checklist / Strengths ---- */
+.strength-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+@media (max-width: 500px) {
+    .strength-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.strength-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 2px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.95rem;
+}
+
+.strength-item:hover {
+    border-color: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.06);
+}
+
+.strength-item.selected {
+    border-color: var(--color-success);
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.strength-check {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 2px solid rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: var(--transition);
+}
+
+.strength-item.selected .strength-check {
+    background: var(--color-success);
+    border-color: var(--color-success);
+}
+
+.strength-item.selected .strength-check::after {
+    content: '\2713';
+    color: white;
+    font-weight: 700;
+}
+
+/* ---- Activity: Text Area ---- */
+.reflection-area {
+    width: 100%;
+    min-height: 120px;
+    padding: 16px;
+    border-radius: var(--border-radius);
+    border: 2px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    color: var(--color-text);
+    font-size: 1rem;
+    font-family: var(--font-main);
+    line-height: 1.6;
+    resize: vertical;
+    transition: var(--transition);
+}
+
+.reflection-area:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.reflection-area::placeholder {
+    color: rgba(255,255,255,0.25);
+}
+
+.reflection-prompt {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    color: var(--color-text-muted);
+}
+
+/* ---- Activity: Goal Pyramid ---- */
+.pyramid-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.pyramid-level {
+    text-align: center;
+}
+
+.pyramid-label {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.pyramid-input {
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    color: var(--color-text);
+    font-size: 0.95rem;
+    font-family: var(--font-main);
+    text-align: center;
+    transition: var(--transition);
+}
+
+.pyramid-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* ============ FEEDBACK OVERLAY ============ */
+#feedback-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feedback-content {
+    text-align: center;
+    padding: 40px;
+    max-width: 450px;
+    animation: scaleIn 0.3s ease;
+}
+
+.feedback-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+}
+
+.feedback-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.feedback-text {
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.feedback-btn {
+    padding: 14px 36px;
+    border-radius: var(--border-radius);
+    border: none;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.feedback-btn-success {
+    background: var(--color-success);
+    color: #fff;
+}
+
+.feedback-btn-success:hover {
+    background: #059669;
+}
+
+.feedback-btn-retry {
+    background: var(--color-primary);
+    color: #000;
+}
+
+/* ============ COMPLETION SCREEN ============ */
+#completion-screen {
+    background: linear-gradient(135deg, var(--color-bg-dark), var(--color-bg-medium), var(--color-bg-light));
+    overflow-y: auto;
+}
+
+#completion-screen.active {
+    display: flex;
+}
+
+.completion-container {
+    text-align: center;
+    max-width: 600px;
+    padding: 40px 20px;
+    animation: fadeInUp 0.8s ease;
+}
+
+.completion-container h1 {
+    font-size: 2.2rem;
+    margin-bottom: 16px;
+}
+
+.completion-text {
+    font-size: 1.15rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.completion-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 500px) {
+    .completion-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+.completion-building {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.completion-building-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.completion-building-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.completion-building-check {
+    margin-left: auto;
+    color: var(--color-success);
+    font-size: 1.2rem;
+}
+
+.completion-message {
+    background: rgba(255,255,255,0.05);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    margin-bottom: 30px;
+    border-left: 4px solid var(--color-primary);
+}
+
+.completion-message p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+/* ============ TOAST ============ */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 14px 28px;
+    border-radius: var(--border-radius);
+    background: rgba(0,0,0,0.9);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    box-shadow: var(--shadow);
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ============ ANIMATIONS ============ */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes promptPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes correctPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+}
+
+@keyframes confetti {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-200px) rotate(720deg); opacity: 0; }
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 600px) {
+    .game-title {
+        font-size: 2.5rem;
+    }
+
+    .start-container {
+        padding: 24px;
+    }
+
+    .building-info-content {
+        padding: 24px;
+    }
+
+    .activity-container {
+        padding: 20px 12px;
+    }
+
+    .hud-progress-bar {
+        width: 140px;
+    }
+
+    .completion-container h1 {
+        font-size: 1.6rem;
+    }
+}
+
+/* ============ MOBILE CONTROLS ============ */
+.mobile-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: none;
+    gap: 8px;
+}
+
+@media (max-width: 768px) {
+    .mobile-controls {
+        display: grid;
+        grid-template-columns: 60px 60px 60px;
+        grid-template-rows: 60px 60px;
+    }
+}
+
+.mobile-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.3);
+    background: rgba(0,0,0,0.6);
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-btn:active {
+    background: rgba(245, 158, 11, 0.3);
+    border-color: var(--color-primary);
+}
+
+.mobile-btn-up { grid-column: 2; grid-row: 1; }
+.mobile-btn-left { grid-column: 1; grid-row: 2; }
+.mobile-btn-down { grid-column: 2; grid-row: 2; }
+.mobile-btn-right { grid-column: 3; grid-row: 2; }
+
+/* ============ SCROLLBAR ============ */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.2);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 </head>
 <body>
+
     <!-- ============ START SCREEN ============ -->
     <div id="start-screen" class="screen active">
         <div class="start-container">
@@ -152,9 +1674,3294 @@
         <span id="toast-text"></span>
     </div>
 
-    <!-- Scripts -->
-    <script src="js/activities.js"></script>
-    <script src="js/game.js"></script>
-    <script src="js/main.js"></script>
+    <!-- Inline Scripts -->
+    <script>
+/* ============================================
+   BauMeister - Educational Activities
+   All 5 Baustellen x 3 Levels = 15 Activities
+   CDSE Luxembourg
+   ============================================ */
+
+window.ActivitiesData = {
+
+    // ====================================================
+    // BAUSTELLE 1: GEFÜHLS-WERKSTATT (Emotions Workshop)
+    // ====================================================
+    gefuehl: {
+        levels: [
+            // ---- Level 1: Gefühle erkennen ----
+            {
+                title: 'Gefühle erkennen',
+                subtitle: 'Welches Gefühl passt zur Situation?',
+                type: 'matching',
+                intro: 'Jeder Mensch hat Gefühle – und das ist gut so! Aber manchmal ist es gar nicht so einfach zu erkennen, was man gerade fühlt. In dieser Übung lernst du, Gefühle in verschiedenen Situationen zu erkennen.',
+                items: [
+                    {
+                        situation: 'Du bekommst ein Geschenk, das du dir schon lange gewünscht hast.',
+                        correctEmotion: 'Freude',
+                        options: ['Freude', 'Traurigkeit', 'Wut', 'Angst'],
+                    },
+                    {
+                        situation: 'Dein bester Freund sagt, er will nicht mehr mit dir spielen.',
+                        correctEmotion: 'Traurigkeit',
+                        options: ['Freude', 'Traurigkeit', 'Langeweile', 'Überraschung'],
+                    },
+                    {
+                        situation: 'Jemand nimmt dir ohne zu fragen dein Pausenbrot weg.',
+                        correctEmotion: 'Wut',
+                        options: ['Angst', 'Freude', 'Wut', 'Scham'],
+                    },
+                    {
+                        situation: 'Morgen schreibst du eine schwierige Klassenarbeit.',
+                        correctEmotion: 'Angst/Nervosität',
+                        options: ['Langeweile', 'Angst/Nervosität', 'Freude', 'Wut'],
+                    },
+                    {
+                        situation: 'Du hast versehentlich die Vase deiner Mutter kaputtgemacht.',
+                        correctEmotion: 'Schuld/Scham',
+                        options: ['Freude', 'Eifersucht', 'Schuld/Scham', 'Langeweile'],
+                    },
+                    {
+                        situation: 'Deine Klasse macht einen überraschenden Ausflug zum Schwimmbad!',
+                        correctEmotion: 'Überraschung/Freude',
+                        options: ['Wut', 'Traurigkeit', 'Überraschung/Freude', 'Angst'],
+                    },
+                ],
+                successMessage: 'Super gemacht! Du kannst Gefühle gut erkennen. Das ist der erste Schritt, um gut mit ihnen umzugehen.',
+                failMessage: 'Das war nicht ganz richtig, aber das ist okay! Gefühle zu erkennen braucht Übung. Versuch es nochmal!',
+            },
+
+            // ---- Level 2: Gefühle im Körper spüren ----
+            {
+                title: 'Gefühle im Körper',
+                subtitle: 'Wie stark fühlst du das?',
+                type: 'thermometer',
+                intro: 'Gefühle zeigen sich nicht nur in unseren Gedanken, sondern auch in unserem Körper. Ein Kribbeln im Bauch, ein Kloß im Hals, warme Wangen... Wo spürst du deine Gefühle?',
+                scenarios: [
+                    {
+                        text: 'Du stehst vor der ganzen Klasse und sollst ein Gedicht vortragen. Deine Hände sind feucht und dein Herz klopft schnell.',
+                        emotion: 'Aufregung/Lampenfieber',
+                        bodyHints: ['Herzklopfen', 'feuchte Hände', 'Schmetterlinge im Bauch', 'trockener Mund'],
+                    },
+                    {
+                        text: 'Du hast gerade erfahren, dass dein Haustier beim Tierarzt ist. Du weißt nicht, ob es ihm gut geht.',
+                        emotion: 'Sorge',
+                        bodyHints: ['Enge in der Brust', 'Kloß im Hals', 'Unruhe', 'Bauchschmerzen'],
+                    },
+                    {
+                        text: 'Dein Team hat gerade das Fußballturnier gewonnen! Alle jubeln und umarmen sich.',
+                        emotion: 'Begeisterung',
+                        bodyHints: ['Kribbeln', 'Energie', 'Lächeln', 'warmes Gefühl'],
+                    },
+                    {
+                        text: 'Dein Bruder hat dein Lieblingsbuch kaputt gemacht und tut so, als wäre nichts passiert.',
+                        emotion: 'Wut/Frustration',
+                        bodyHints: ['Hitze', 'geballte Fäuste', 'Anspannung', 'schnelles Atmen'],
+                    },
+                ],
+                successMessage: 'Toll! Du lernst, auf deinen Körper zu hören. Das hilft dir, Gefühle früh zu bemerken und besser damit umzugehen.',
+            },
+
+            // ---- Level 3: Gefühle regulieren ----
+            {
+                title: 'Gefühle regulieren',
+                subtitle: 'Was kannst du tun, wenn Gefühle zu stark werden?',
+                type: 'choice_scenarios',
+                intro: 'Manchmal werden Gefühle so stark, dass sie uns überrollen. Das ist normal! Aber es gibt gute Strategien, die dir helfen können, wieder ruhiger zu werden.',
+                scenarios: [
+                    {
+                        situation: 'Du bist richtig wütend, weil dein Mitschüler dich vor allen geärgert hat. Am liebsten würdest du zurückschlagen.',
+                        question: 'Was wäre die beste Strategie?',
+                        options: [
+                            { text: 'Tief durchatmen und bis 10 zählen, bevor du reagierst.', correct: true },
+                            { text: 'Sofort zurückschreien.', correct: false },
+                            { text: 'So tun, als würde es dich nicht stören (alles runterschlucken).', correct: false },
+                            { text: 'Einem Erwachsenen erzählen, wie du dich fühlst.', correct: true },
+                        ],
+                        explanation: 'Tief durchatmen gibt dir Zeit, bevor du handelst. Und es ist mutig und klug, einem Erwachsenen zu sagen, wie du dich fühlst. Gefühle runterschlucken hilft meistens nicht.',
+                    },
+                    {
+                        situation: 'Du liegst abends im Bett und kannst nicht schlafen, weil du dir Sorgen um den nächsten Schultag machst.',
+                        question: 'Was könnte dir helfen?',
+                        options: [
+                            { text: 'Stundenlang auf dein Handy schauen, um dich abzulenken.', correct: false },
+                            { text: 'Eine ruhige Atemübung machen und an einen schönen Ort denken.', correct: true },
+                            { text: 'Deine Sorgen aufschreiben oder jemandem davon erzählen.', correct: true },
+                            { text: 'Dir sagen: "Du darfst keine Angst haben!"', correct: false },
+                        ],
+                        explanation: 'Atemübungen beruhigen deinen Körper. Sorgen aufschreiben hilft, sie loszulassen. Es ist okay, Angst zu haben – aber du kannst lernen, besser damit umzugehen.',
+                    },
+                    {
+                        situation: 'Dein bester Freund hat dich bei einer Verabredung vergessen. Du bist traurig und enttäuscht.',
+                        question: 'Wie kannst du gut mit diesem Gefühl umgehen?',
+                        options: [
+                            { text: 'Ihm eine böse Nachricht schreiben und die Freundschaft beenden.', correct: false },
+                            { text: 'Ihm ruhig sagen: "Ich bin traurig, dass du mich vergessen hast."', correct: true },
+                            { text: 'Etwas tun, das dir gut tut (Musik hören, malen, spazieren gehen).', correct: true },
+                            { text: 'Es in dich reinfressen und so tun, als wäre alles okay.', correct: false },
+                        ],
+                        explanation: 'Es ist wichtig, über deine Gefühle zu sprechen – ruhig und ehrlich. Und sich selbst etwas Gutes zu tun, wenn man traurig ist, ist kein Zeichen von Schwäche, sondern von Stärke.',
+                    },
+                ],
+                successMessage: 'Fantastisch! Du hast tolle Strategien gelernt, um mit starken Gefühlen umzugehen. Je öfter du sie übst, desto leichter wird es!',
+            },
+        ],
+    },
+
+    // ====================================================
+    // BAUSTELLE 2: BRÜCKE DER FREUNDSCHAFT
+    // ====================================================
+    freundschaft: {
+        levels: [
+            // ---- Level 1: Empathie ----
+            {
+                title: 'In den Schuhen des anderen',
+                subtitle: 'Wie fühlt sich der andere?',
+                type: 'choice_scenarios',
+                intro: 'Empathie bedeutet, sich in andere Menschen hineinzuversetzen. Wenn du verstehst, was andere fühlen, kannst du bessere Freundschaften aufbauen.',
+                scenarios: [
+                    {
+                        situation: 'Lisa ist neu in der Klasse. In der Pause steht sie allein am Rand des Schulhofs und schaut den anderen beim Spielen zu.',
+                        question: 'Wie fühlt sich Lisa wahrscheinlich?',
+                        options: [
+                            { text: 'Einsam und unsicher – sie kennt noch niemanden.', correct: true },
+                            { text: 'Gelangweilt – sie hat keine Lust auf die anderen.', correct: false },
+                            { text: 'Arrogant – sie denkt, sie ist besser als die anderen.', correct: false },
+                            { text: 'Entspannt – sie genießt die Ruhe.', correct: false },
+                        ],
+                        explanation: 'Neue Situationen machen oft unsicher. Wenn jemand allein steht, ist ein freundliches "Möchtest du mitspielen?" oft genau das, was er oder sie braucht.',
+                    },
+                    {
+                        situation: 'Tom hat sein Mittagessen vergessen. Er sitzt in der Kantine und schaut auf den Tisch, während alle anderen essen.',
+                        question: 'Was wäre empathisch?',
+                        options: [
+                            { text: 'Nichts sagen – ist ja sein Problem.', correct: false },
+                            { text: 'Ihm etwas von deinem Essen anbieten.', correct: true },
+                            { text: 'Laut sagen: "Haha, du hast dein Essen vergessen!"', correct: false },
+                            { text: 'Ihn fragen, ob du ihm helfen kannst.', correct: true },
+                        ],
+                        explanation: 'Empathie bedeutet, den anderen zu sehen und zu handeln. Manchmal reicht es schon, zu fragen: "Kann ich dir helfen?"',
+                    },
+                    {
+                        situation: 'Marie hat beim Sportfest den letzten Platz gemacht. Sie versucht zu lächeln, aber ihre Augen sind feucht.',
+                        question: 'Was wäre eine gute Reaktion?',
+                        options: [
+                            { text: '"Macht nichts, beim nächsten Mal wird es besser!" – und ihr die Hand geben.', correct: true },
+                            { text: '"War ja klar, du bist halt nicht sportlich."', correct: false },
+                            { text: 'So tun, als hättest du es nicht bemerkt.', correct: false },
+                            { text: '"Hey, du hast dein Bestes gegeben – das zählt!"', correct: true },
+                        ],
+                        explanation: 'Jeder hat mal einen schlechten Tag. Ein aufmunterndes Wort kann einen riesigen Unterschied machen. Anerkennung für die Mühe ist wichtiger als das Ergebnis.',
+                    },
+                ],
+                successMessage: 'Klasse! Du hast ein gutes Gespür für die Gefühle anderer. Das ist die Grundlage für echte Freundschaft!',
+            },
+
+            // ---- Level 2: Gute Freundschaft ----
+            {
+                title: 'Was macht Freundschaft aus?',
+                subtitle: 'Sortiere: Was gehört zu guter Freundschaft?',
+                type: 'sorting',
+                intro: 'Echte Freundschaft ist wie ein Bauwerk – sie braucht ein gutes Fundament. Aber was gehört dazu und was nicht?',
+                categories: [
+                    { id: 'good', title: 'Gute Freundschaft', color: '#10b981' },
+                    { id: 'bad', title: 'Keine gute Freundschaft', color: '#ef4444' },
+                ],
+                items: [
+                    { text: 'Einander zuhören', correct: 'good' },
+                    { text: 'Geheimnisse weitererzählen', correct: 'bad' },
+                    { text: 'Ehrlich sein, auch wenn es schwierig ist', correct: 'good' },
+                    { text: 'Jemanden ausgrenzen, um dazuzugehören', correct: 'bad' },
+                    { text: 'Sich entschuldigen, wenn man Fehler macht', correct: 'good' },
+                    { text: 'Dem anderen immer recht geben', correct: 'bad' },
+                    { text: 'Den anderen so akzeptieren, wie er ist', correct: 'good' },
+                    { text: 'Helfen, wenn der andere Hilfe braucht', correct: 'good' },
+                    { text: 'Immer bestimmen wollen', correct: 'bad' },
+                    { text: 'Kompromisse finden', correct: 'good' },
+                    { text: 'Den anderen unter Druck setzen', correct: 'bad' },
+                    { text: 'Sich gegenseitig Mut machen', correct: 'good' },
+                ],
+                successMessage: 'Super! Du weißt genau, was echte Freundschaft ausmacht. Eine Brücke der Freundschaft baut man gemeinsam!',
+                failMessage: 'Schau nochmal genau hin – manche Dinge scheinen freundschaftlich, sind es aber nicht. Versuch es nochmal!',
+            },
+
+            // ---- Level 3: Konflikte lösen ----
+            {
+                title: 'Konflikte fair lösen',
+                subtitle: 'Finde die beste Lösung!',
+                type: 'choice_scenarios',
+                intro: 'Streit gehört dazu – auch unter Freunden. Wichtig ist nicht, OB man streitet, sondern WIE man Konflikte löst. Hier lernst du faire Strategien.',
+                scenarios: [
+                    {
+                        situation: 'Du und dein Freund wollt am Computer spielen, aber ihr könnt euch nicht einigen, welches Spiel.',
+                        question: 'Was wäre die fairste Lösung?',
+                        options: [
+                            { text: 'Erst sein Spiel, dann deins – abwechseln.', correct: true },
+                            { text: 'Lauter werden, bis er nachgibt.', correct: false },
+                            { text: 'Beleidigt weggehen und gar nicht mehr spielen.', correct: false },
+                            { text: 'Zusammen ein Spiel aussuchen, das beiden gefällt.', correct: true },
+                        ],
+                        explanation: 'Kompromisse und Abwechseln sind faire Lösungen. Manchmal findet man sogar etwas Neues, das beiden gefällt!',
+                    },
+                    {
+                        situation: 'Deine Freundin hat über dich gelästert. Du bist verletzt und wütend.',
+                        question: 'Wie gehst du am besten damit um?',
+                        options: [
+                            { text: 'Auch über sie lästern – Auge um Auge.', correct: false },
+                            { text: 'Ihr unter vier Augen sagen, dass dich das verletzt hat.', correct: true },
+                            { text: 'Sie komplett ignorieren und nie wieder mit ihr reden.', correct: false },
+                            { text: 'Fragen, warum sie das gesagt hat – vielleicht gibt es ein Missverständnis.', correct: true },
+                        ],
+                        explanation: 'Ein offenes Gespräch unter vier Augen ist der mutigste und beste Weg. Oft stecken Missverständnisse hinter Konflikten.',
+                    },
+                    {
+                        situation: 'In deiner Gruppe will niemand mit Mehmet arbeiten, nur weil er anders ist. Du findest das unfair.',
+                        question: 'Was kannst du tun?',
+                        options: [
+                            { text: 'Dich freiwillig mit Mehmet zusammentun.', correct: true },
+                            { text: 'Nichts sagen – du willst nicht auffallen.', correct: false },
+                            { text: 'Der Gruppe sagen, dass Ausgrenzen nicht okay ist.', correct: true },
+                            { text: 'Die Lehrerin informieren, wenn es nicht aufhört.', correct: true },
+                        ],
+                        explanation: 'Für andere einzustehen braucht Mut – aber genau das macht dich zu einem wahren Freund. Ausgrenzen ist nie okay, egal aus welchem Grund.',
+                    },
+                ],
+                successMessage: 'Stark! Du weißt, wie man Konflikte fair löst. Das macht dich zu einem wertvollen Freund und Mitschüler!',
+            },
+        ],
+    },
+
+    // ====================================================
+    // BAUSTELLE 3: TURM DER STÄRKE
+    // ====================================================
+    staerke: {
+        levels: [
+            // ---- Level 1: Stärken entdecken ----
+            {
+                title: 'Meine Stärken',
+                subtitle: 'Was macht dich besonders?',
+                type: 'strengths',
+                intro: 'Jeder Mensch hat Stärken – auch du! Manchmal sehen wir sie nur nicht, weil wir zu sehr auf das schauen, was wir NICHT können. Wähle mindestens 5 Stärken aus, die zu dir passen.',
+                strengths: [
+                    'Ich bin hilfsbereit',
+                    'Ich bin kreativ',
+                    'Ich kann gut zuhören',
+                    'Ich bin mutig',
+                    'Ich bin lustig',
+                    'Ich bin ehrlich',
+                    'Ich bin geduldig',
+                    'Ich kann gut zeichnen/malen',
+                    'Ich bin sportlich',
+                    'Ich bin neugierig',
+                    'Ich bin ein guter Freund / eine gute Freundin',
+                    'Ich bin gut in Mathe/Lesen/Schreiben',
+                    'Ich kann gut mit Tieren umgehen',
+                    'Ich bin freundlich',
+                    'Ich kann gut Probleme lösen',
+                    'Ich bin fair',
+                    'Ich bin musikalisch',
+                    'Ich lasse mich nicht so leicht aufgeben',
+                    'Ich kann gut kochen/backen',
+                    'Ich bin technisch begabt',
+                ],
+                minRequired: 5,
+                successMessage: 'Siehst du, wie viele Stärken du hast? Jede davon ist wie ein Baustein für deinen Turm der Stärke! Und es gibt bestimmt noch mehr, die du entdecken wirst.',
+            },
+
+            // ---- Level 2: Negative Gedanken umwandeln ----
+            {
+                title: 'Gedanken-Umwandler',
+                subtitle: 'Verwandle negative Gedanken in positive!',
+                type: 'transform',
+                intro: 'Manchmal haben wir negative Gedanken über uns selbst. Diese Gedanken sind oft nicht wahr! Hier lernst du, negative Gedanken in hilfreiche umzuwandeln.',
+                transforms: [
+                    {
+                        negative: 'Ich bin dumm – ich kann das nicht.',
+                        hint: 'Denke daran: Nicht können heißt nicht dumm sein. Es heißt: noch lernen.',
+                        examples: ['Ich kann das NOCH nicht, aber ich kann es lernen.', 'Ich brauche vielleicht mehr Übung, und das ist okay.'],
+                    },
+                    {
+                        negative: 'Niemand mag mich.',
+                        hint: 'Stimmt das wirklich? Denke an Menschen, die dir wichtig sind.',
+                        examples: ['Es gibt Menschen, die mich mögen – ich denke an ...', 'Nicht jeder muss mich mögen, aber ich bin liebenswert.'],
+                    },
+                    {
+                        negative: 'Ich mache immer alles falsch.',
+                        hint: 'Immer? Wirklich? Denk an Dinge, die du gut gemacht hast.',
+                        examples: ['Manchmal mache ich Fehler, und daraus lerne ich.', 'Ich habe auch vieles richtig gemacht, zum Beispiel ...'],
+                    },
+                    {
+                        negative: 'Die anderen sind alle besser als ich.',
+                        hint: 'Jeder hat andere Stärken. Vergleichen hilft selten.',
+                        examples: ['Jeder hat seine eigenen Stärken.', 'Ich bin auf meinem eigenen Weg und mache Fortschritte.'],
+                    },
+                ],
+                successMessage: 'Großartig! Du bist ein echter Gedanken-Umwandler! Wenn dir das nächste Mal ein negativer Gedanke kommt, weißt du, wie du ihn verändern kannst.',
+            },
+
+            // ---- Level 3: Ziele setzen ----
+            {
+                title: 'Mein Ziele-Bauplan',
+                subtitle: 'Setze dir Ziele – Schritt für Schritt!',
+                type: 'goals',
+                intro: 'Jedes große Bauwerk fängt mit einem Plan an. Genauso ist es mit deinen Zielen. Hier erstellst du deinen persönlichen Bauplan für die Zukunft.',
+                goalLevels: [
+                    {
+                        label: 'Mein großer Traum',
+                        placeholder: 'Was möchtest du eines Tages erreichen?',
+                        hint: 'Denke groß! Z.B.: "Ich möchte Tierärztin werden" oder "Ich möchte ein Buch schreiben"',
+                    },
+                    {
+                        label: 'Mein Ziel für dieses Jahr',
+                        placeholder: 'Was möchtest du in den nächsten Monaten schaffen?',
+                        hint: 'Z.B.: "Bessere Noten in Mathe" oder "Einen neuen Freund finden"',
+                    },
+                    {
+                        label: 'Mein Ziel für diese Woche',
+                        placeholder: 'Was kannst du JETZT tun?',
+                        hint: 'Z.B.: "Jeden Tag 10 Minuten lesen" oder "Jemandem ein Kompliment machen"',
+                    },
+                ],
+                successMessage: 'Super Bauplan! Du hast dein großes Ziel in kleine, machbare Schritte aufgeteilt. Denk daran: Jede Reise beginnt mit dem ersten Schritt!',
+            },
+        ],
+    },
+
+    // ====================================================
+    // BAUSTELLE 4: HAUS DER WORTE
+    // ====================================================
+    worte: {
+        levels: [
+            // ---- Level 1: Ich-Botschaften ----
+            {
+                title: 'Ich-Botschaften',
+                subtitle: 'Vom "Du bist..." zum "Ich fühle..."',
+                type: 'transform_messages',
+                intro: 'Wenn wir sagen "Du bist blöd!" oder "Du machst immer alles kaputt!", fühlt sich der andere angegriffen. Mit Ich-Botschaften kannst du sagen, was du fühlst, ohne den anderen zu verletzen.',
+                formula: 'Ich fühle mich [Gefühl], wenn [Situation], weil [Grund]. Ich wünsche mir [Wunsch].',
+                transforms: [
+                    {
+                        duMessage: 'Du nervst! Lass mich in Ruhe!',
+                        situation: 'Dein Bruder stört dich beim Lernen',
+                        correctParts: {
+                            gefuehl: 'genervt',
+                            situation: 'du mich beim Lernen störst',
+                            grund: 'ich mich konzentrieren muss',
+                            wunsch: 'dass du leiser bist, bis ich fertig bin',
+                        },
+                    },
+                    {
+                        duMessage: 'Du bist ein Lügner! Du hältst nie dein Versprechen!',
+                        situation: 'Dein Freund hat versprochen zu helfen, ist aber nicht gekommen',
+                        correctParts: {
+                            gefuehl: 'enttäuscht',
+                            situation: 'du nicht gekommen bist, obwohl du es versprochen hast',
+                            grund: 'ich auf dich gezählt habe',
+                            wunsch: 'dass du mir Bescheid sagst, wenn du nicht kannst',
+                        },
+                    },
+                    {
+                        duMessage: 'Du bist so gemein! Du lässt mich nie mitspielen!',
+                        situation: 'Du wurdest beim Mannschaftswählen als Letztes gewählt',
+                        correctParts: {
+                            gefuehl: 'traurig und ausgegrenzt',
+                            situation: 'ich als Letztes gewählt werde',
+                            grund: 'ich auch gerne mitspielen möchte',
+                            wunsch: 'dass ihr mich auch mal früher wählt',
+                        },
+                    },
+                ],
+                successMessage: 'Sehr gut! Mit Ich-Botschaften sagst du, was du fühlst, ohne den anderen anzugreifen. Das öffnet Türen statt sie zuzuschlagen!',
+            },
+
+            // ---- Level 2: Aktives Zuhören ----
+            {
+                title: 'Aktives Zuhören',
+                subtitle: 'Was macht einen guten Zuhörer aus?',
+                type: 'sorting',
+                intro: 'Zuhören ist mehr als nur schweigen! Aktives Zuhören bedeutet, dem anderen zu zeigen, dass du wirklich verstehst, was er sagt und fühlt.',
+                categories: [
+                    { id: 'good', title: 'Gutes Zuhören', color: '#10b981' },
+                    { id: 'bad', title: 'Schlechtes Zuhören', color: '#ef4444' },
+                ],
+                items: [
+                    { text: 'Den anderen ausreden lassen', correct: 'good' },
+                    { text: 'Auf das Handy schauen, während jemand spricht', correct: 'bad' },
+                    { text: 'Nachfragen: "Wie meinst du das?"', correct: 'good' },
+                    { text: 'Mit den Augen rollen', correct: 'bad' },
+                    { text: 'Nicken und Blickkontakt halten', correct: 'good' },
+                    { text: 'Sofort von eigenen Problemen erzählen', correct: 'bad' },
+                    { text: 'In eigenen Worten wiederholen, was der andere gesagt hat', correct: 'good' },
+                    { text: '"Das ist doch nicht schlimm" sagen', correct: 'bad' },
+                    { text: 'Unterbrechen und eigene Meinung sagen', correct: 'bad' },
+                    { text: 'Sagen: "Ich verstehe, dass dich das beschäftigt"', correct: 'good' },
+                    { text: 'Ratschläge geben, ohne gefragt zu werden', correct: 'bad' },
+                    { text: 'Offene Fragen stellen', correct: 'good' },
+                ],
+                successMessage: 'Prima! Echtes Zuhören ist ein Geschenk an den anderen. Es zeigt: "Du bist mir wichtig, und was du sagst, zählt."',
+                failMessage: 'Manche Punkte sind tricky! Denk daran: Gutes Zuhören bedeutet, den anderen zu verstehen – nicht sofort zu reagieren.',
+            },
+
+            // ---- Level 3: Hilfe holen ----
+            {
+                title: 'Hilfe holen ist stark!',
+                subtitle: 'Wann und bei wem kann ich Hilfe suchen?',
+                type: 'choice_scenarios',
+                intro: 'Hilfe zu holen ist kein Zeichen von Schwäche – es ist ein Zeichen von Stärke und Klugheit! Aber manchmal wissen wir nicht, wann und bei wem wir Hilfe suchen sollen.',
+                scenarios: [
+                    {
+                        situation: 'Du wirst seit Wochen von Mitschülern gemobbt. Sie nehmen dir Sachen weg und beleidigen dich. Du hast Angst, in die Schule zu gehen.',
+                        question: 'Bei wem solltest du Hilfe holen?',
+                        options: [
+                            { text: 'Bei einer Vertrauensperson (Eltern, Lehrer, Schulsozialarbeiter)', correct: true },
+                            { text: 'Bei niemandem – das muss ich alleine durchstehen.', correct: false },
+                            { text: 'Beim Kinder- und Jugendtelefon (116 111)', correct: true },
+                            { text: 'Nur bei Freunden – Erwachsene verstehen das nicht.', correct: false },
+                        ],
+                        explanation: 'Mobbing ist NIEMALS deine Schuld! Du hast das Recht auf Hilfe. Erwachsene können Dinge verändern, die du alleine nicht ändern kannst.',
+                    },
+                    {
+                        situation: 'Du verstehst den Unterrichtsstoff in Mathe überhaupt nicht mehr und traust dich nicht, zu fragen.',
+                        question: 'Was wäre klug?',
+                        options: [
+                            { text: 'Den Lehrer nach dem Unterricht fragen – die meisten helfen gerne.', correct: true },
+                            { text: 'Nichts sagen – ich will nicht dumm aussehen.', correct: false },
+                            { text: 'Einen Mitschüler um Erklärung bitten.', correct: true },
+                            { text: 'Nachhilfe oder zusätzliche Hilfe anfragen.', correct: true },
+                        ],
+                        explanation: 'Fragen ist klug, nicht dumm! Jeder hat mal etwas nicht verstanden. Lehrer und Mitschüler helfen meistens gerne.',
+                    },
+                    {
+                        situation: 'Ein Freund erzählt dir, dass er sich selbst verletzt. Er bittet dich, es niemandem zu sagen.',
+                        question: 'Was solltest du tun?',
+                        options: [
+                            { text: 'Das Versprechen halten und es für dich behalten.', correct: false },
+                            { text: 'Einem Erwachsenen erzählen, dem du vertraust – auch wenn dein Freund das nicht will.', correct: true },
+                            { text: 'Deinem Freund sagen, dass du dir Sorgen machst und ihm helfen willst.', correct: true },
+                            { text: 'So tun, als hättest du es nicht gehört.', correct: false },
+                        ],
+                        explanation: 'Wenn jemand in Gefahr ist, ist Hilfe holen wichtiger als ein Versprechen. Das ist echte Freundschaft – auch wenn es sich schwer anfühlt.',
+                    },
+                ],
+                successMessage: 'Toll! Du weißt, wann und wo du Hilfe holen kannst. Das ist eine der wichtigsten Stärken, die du haben kannst!',
+            },
+        ],
+    },
+
+    // ====================================================
+    // BAUSTELLE 5: GARTEN DER RUHE
+    // ====================================================
+    ruhe: {
+        levels: [
+            // ---- Level 1: Atemübungen ----
+            {
+                title: 'Atempause',
+                subtitle: 'Dein Körper kann dir helfen, ruhig zu werden',
+                type: 'breathing',
+                intro: 'Dein Atem ist ein mächtiges Werkzeug! Wenn du aufgeregt, wütend oder ängstlich bist, kann eine bewusste Atemübung dich schnell beruhigen. Probiere es aus!',
+                exercise: {
+                    name: '4-4-4 Atmung',
+                    description: 'Atme 4 Sekunden ein, halte 4 Sekunden, atme 4 Sekunden aus.',
+                    inhaleTime: 4,
+                    holdTime: 4,
+                    exhaleTime: 4,
+                    cycles: 4,
+                },
+                successMessage: 'Wunderbar! Hast du gemerkt, wie sich dein Körper beruhigt hat? Diese Übung kannst du überall machen – in der Schule, zu Hause, oder bevor du einschläfst.',
+            },
+
+            // ---- Level 2: Mein sicherer Ort ----
+            {
+                title: 'Mein sicherer Ort',
+                subtitle: 'Erschaffe deinen inneren Ruheplatz',
+                type: 'safe_place',
+                intro: 'Jeder Mensch braucht einen Ort, an dem er sich sicher fühlt. Dieser Ort kann auch in deiner Vorstellung existieren! Beschreibe deinen sicheren Ort.',
+                prompts: [
+                    {
+                        question: 'Wo ist dein sicherer Ort? (z.B. am Strand, im Wald, in deinem Zimmer, auf einer Wolke...)',
+                        placeholder: 'Mein sicherer Ort ist...',
+                    },
+                    {
+                        question: 'Was siehst du dort?',
+                        placeholder: 'Ich sehe...',
+                    },
+                    {
+                        question: 'Was hörst du dort?',
+                        placeholder: 'Ich höre...',
+                    },
+                    {
+                        question: 'Wie fühlt es sich an?',
+                        placeholder: 'Es fühlt sich an wie...',
+                    },
+                    {
+                        question: 'Wer darf an deinen sicheren Ort kommen?',
+                        placeholder: 'An meinem sicheren Ort sind...',
+                    },
+                ],
+                successMessage: 'Dein sicherer Ort ist jetzt in deiner Vorstellung! Immer wenn du dich überfordert oder unsicher fühlst, kannst du die Augen schließen und dorthin reisen.',
+            },
+
+            // ---- Level 3: Notfallkoffer ----
+            {
+                title: 'Mein Notfallkoffer',
+                subtitle: 'Dein persönliches Beruhigungs-Kit',
+                type: 'emergency_kit',
+                intro: 'Stell dir vor, du hast einen unsichtbaren Koffer voller Strategien, die dir helfen, wenn die Gefühle zu groß werden. Wähle die Strategien aus, die dir am besten helfen könnten!',
+                categories: [
+                    {
+                        name: 'Für den Körper',
+                        icon: '\u{1F3C3}',
+                        strategies: [
+                            'Tief durchatmen (4-4-4)',
+                            'Spazieren gehen',
+                            'Sport machen / dich bewegen',
+                            'Kaltes Wasser über die Hände laufen lassen',
+                            'Etwas Weiches anfassen (Kuscheltier, Kissen)',
+                            'Dich strecken und dehnen',
+                        ],
+                    },
+                    {
+                        name: 'Für den Kopf',
+                        icon: '\u{1F9E0}',
+                        strategies: [
+                            'Bis 10 zählen, bevor du reagierst',
+                            'An deinen sicheren Ort denken',
+                            'Negative Gedanken umwandeln',
+                            '5 Dinge aufzählen, die du siehst (Grounding)',
+                            'Dir sagen: "Das geht vorbei"',
+                            'Aufschreiben, was dich beschäftigt',
+                        ],
+                    },
+                    {
+                        name: 'Für die Seele',
+                        icon: '\u2764',
+                        strategies: [
+                            'Mit jemandem reden, dem du vertraust',
+                            'Musik hören, die dir gut tut',
+                            'Malen, zeichnen oder basteln',
+                            'In der Natur sein',
+                            'Etwas Lustiges anschauen',
+                            'Ein Tagebuch schreiben',
+                        ],
+                    },
+                ],
+                minPerCategory: 2,
+                successMessage: 'Dein Notfallkoffer ist gepackt! Denk daran: Du hast diese Strategien immer dabei. Wenn es dir schlecht geht, öffne deinen Koffer und probiere eine aus!',
+            },
+        ],
+    },
+};
+
+    </script>
+    <script>
+/* ============================================
+   BauMeister - 3D Game Engine
+   Three.js scene, world, buildings, player
+   ============================================ */
+
+window.GameEngine = (function () {
+    'use strict';
+
+    // ---- Config ----
+    const CONFIG = {
+        WORLD_SIZE: 80,
+        PLAYER_SPEED: 0.18,
+        PLAYER_RUN_SPEED: 0.3,
+        CAMERA_HEIGHT: 12,
+        CAMERA_DISTANCE: 18,
+        CAMERA_ANGLE: Math.PI / 6,
+        INTERACTION_DISTANCE: 7,
+        BUILDING_RADIUS: 22,
+        FOG_NEAR: 30,
+        FOG_FAR: 100,
+        GROUND_COLOR: 0x5a8f3c,
+        SKY_TOP: 0x87ceeb,
+        SKY_BOTTOM: 0xc9e8f7,
+        AMBIENT_LIGHT: 0xffffff,
+        SUN_COLOR: 0xfff5e6,
+    };
+
+    // ---- Building definitions ----
+    const BUILDING_DEFS = [
+        {
+            id: 'gefuehl',
+            name: 'Gefühls-Werkstatt',
+            icon: '\u2764',
+            color: 0xf59e0b,
+            cssColor: '#f59e0b',
+            description: 'Hier lernst du, deine Gefühle zu erkennen, zu verstehen und gut mit ihnen umzugehen.',
+            angle: 0,
+        },
+        {
+            id: 'freundschaft',
+            name: 'Brücke der Freundschaft',
+            icon: '\u{1F91D}',
+            color: 0x3b82f6,
+            cssColor: '#3b82f6',
+            description: 'Baue Brücken zu anderen Menschen und lerne, wie Freundschaft funktioniert.',
+            angle: (2 * Math.PI) / 5,
+        },
+        {
+            id: 'staerke',
+            name: 'Turm der Stärke',
+            icon: '\u{1F4AA}',
+            color: 0x10b981,
+            cssColor: '#10b981',
+            description: 'Entdecke deine Stärken und baue Selbstvertrauen auf – Stein für Stein.',
+            angle: (4 * Math.PI) / 5,
+        },
+        {
+            id: 'worte',
+            name: 'Haus der Worte',
+            icon: '\u{1F4AC}',
+            color: 0x8b5cf6,
+            cssColor: '#8b5cf6',
+            description: 'Lerne, dich klar auszudrücken und anderen wirklich zuzuhören.',
+            angle: (6 * Math.PI) / 5,
+        },
+        {
+            id: 'ruhe',
+            name: 'Garten der Ruhe',
+            icon: '\u{1F33F}',
+            color: 0x06b6d4,
+            cssColor: '#06b6d4',
+            description: 'Finde innere Ruhe und lerne Strategien, um mit Stress umzugehen.',
+            angle: (8 * Math.PI) / 5,
+        },
+    ];
+
+    // ---- State ----
+    let scene, camera, renderer, clock;
+    let player, playerMixer;
+    let buildings3D = [];
+    let decorations = [];
+    let particles = [];
+    let keys = {};
+    let mouseDown = false;
+    let mouseX = 0, prevMouseX = 0;
+    let cameraAngle = 0;
+    let nearBuilding = null;
+    let animationId = null;
+    let isRunning = false;
+    let onInteract = null;
+    let playerAngle = 0;
+
+    // ---- Initialization ----
+    function init(canvas, interactCallback) {
+        onInteract = interactCallback;
+
+        // Scene
+        scene = new THREE.Scene();
+        scene.fog = new THREE.Fog(0xc9e8f7, CONFIG.FOG_NEAR, CONFIG.FOG_FAR);
+
+        // Camera
+        camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 200);
+
+        // Renderer
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.1;
+
+        clock = new THREE.Clock();
+
+        // Build world
+        createSky();
+        createLights();
+        createGround();
+        createBuildings();
+        createDecorations();
+        createParticles();
+        createPlayer();
+
+        // Input
+        setupInput(canvas);
+
+        // Start loop
+        updateCamera();
+        animate();
+
+        // Resize
+        window.addEventListener('resize', onResize);
+    }
+
+    // ---- Sky ----
+    function createSky() {
+        const skyGeo = new THREE.SphereGeometry(90, 32, 15);
+        const skyMat = new THREE.ShaderMaterial({
+            uniforms: {
+                topColor: { value: new THREE.Color(CONFIG.SKY_TOP) },
+                bottomColor: { value: new THREE.Color(CONFIG.SKY_BOTTOM) },
+                offset: { value: 10 },
+                exponent: { value: 0.4 },
+            },
+            vertexShader: `
+                varying vec3 vWorldPosition;
+                void main() {
+                    vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+                    vWorldPosition = worldPosition.xyz;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform vec3 topColor;
+                uniform vec3 bottomColor;
+                uniform float offset;
+                uniform float exponent;
+                varying vec3 vWorldPosition;
+                void main() {
+                    float h = normalize(vWorldPosition + offset).y;
+                    gl_FragColor = vec4(mix(bottomColor, topColor, max(pow(max(h, 0.0), exponent), 0.0)), 1.0);
+                }
+            `,
+            side: THREE.BackSide,
+        });
+        scene.add(new THREE.Mesh(skyGeo, skyMat));
+
+        // Clouds
+        for (let i = 0; i < 12; i++) {
+            const cloud = createCloud();
+            cloud.position.set(
+                (Math.random() - 0.5) * 120,
+                30 + Math.random() * 15,
+                (Math.random() - 0.5) * 120
+            );
+            cloud.rotation.y = Math.random() * Math.PI;
+            cloud.userData.speed = 0.005 + Math.random() * 0.01;
+            scene.add(cloud);
+            decorations.push(cloud);
+        }
+    }
+
+    function createCloud() {
+        const group = new THREE.Group();
+        const mat = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            transparent: true,
+            opacity: 0.8,
+            roughness: 1,
+        });
+        const count = 4 + Math.floor(Math.random() * 4);
+        for (let i = 0; i < count; i++) {
+            const size = 2 + Math.random() * 3;
+            const geo = new THREE.SphereGeometry(size, 8, 6);
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.set(
+                (Math.random() - 0.5) * 6,
+                (Math.random() - 0.5) * 1.5,
+                (Math.random() - 0.5) * 4
+            );
+            mesh.scale.y = 0.6;
+            group.add(mesh);
+        }
+        return group;
+    }
+
+    // ---- Lights ----
+    function createLights() {
+        const ambient = new THREE.AmbientLight(CONFIG.AMBIENT_LIGHT, 0.5);
+        scene.add(ambient);
+
+        const sun = new THREE.DirectionalLight(CONFIG.SUN_COLOR, 1.2);
+        sun.position.set(30, 40, 20);
+        sun.castShadow = true;
+        sun.shadow.mapSize.width = 2048;
+        sun.shadow.mapSize.height = 2048;
+        sun.shadow.camera.near = 1;
+        sun.shadow.camera.far = 100;
+        sun.shadow.camera.left = -40;
+        sun.shadow.camera.right = 40;
+        sun.shadow.camera.top = 40;
+        sun.shadow.camera.bottom = -40;
+        sun.shadow.bias = -0.001;
+        scene.add(sun);
+
+        const hemisphere = new THREE.HemisphereLight(0x87ceeb, 0x5a8f3c, 0.3);
+        scene.add(hemisphere);
+    }
+
+    // ---- Ground ----
+    function createGround() {
+        // Main ground
+        const groundGeo = new THREE.CircleGeometry(CONFIG.WORLD_SIZE, 64);
+        const groundMat = new THREE.MeshStandardMaterial({
+            color: CONFIG.GROUND_COLOR,
+            roughness: 0.9,
+            metalness: 0,
+        });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // Construction site area (dirt patch in center)
+        const dirtGeo = new THREE.CircleGeometry(CONFIG.BUILDING_RADIUS + 10, 48);
+        const dirtMat = new THREE.MeshStandardMaterial({
+            color: 0xc4a56e,
+            roughness: 1,
+            metalness: 0,
+        });
+        const dirt = new THREE.Mesh(dirtGeo, dirtMat);
+        dirt.rotation.x = -Math.PI / 2;
+        dirt.position.y = 0.02;
+        dirt.receiveShadow = true;
+        scene.add(dirt);
+
+        // Center platform
+        const platGeo = new THREE.CylinderGeometry(3, 3.5, 0.5, 8);
+        const platMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.6 });
+        const platform = new THREE.Mesh(platGeo, platMat);
+        platform.position.y = 0.25;
+        platform.castShadow = true;
+        platform.receiveShadow = true;
+        scene.add(platform);
+
+        // Sign post at center
+        const signGroup = new THREE.Group();
+        const postGeo = new THREE.CylinderGeometry(0.15, 0.15, 3, 8);
+        const postMat = new THREE.MeshStandardMaterial({ color: 0x8b4513 });
+        const post = new THREE.Mesh(postGeo, postMat);
+        post.position.y = 1.5;
+        post.castShadow = true;
+        signGroup.add(post);
+
+        const boardGeo = new THREE.BoxGeometry(3, 1.2, 0.15);
+        const boardMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b });
+        const board = new THREE.Mesh(boardGeo, boardMat);
+        board.position.y = 3.2;
+        board.castShadow = true;
+        signGroup.add(board);
+
+        scene.add(signGroup);
+
+        // Paths to buildings
+        BUILDING_DEFS.forEach((def) => {
+            createPath(0, 0, Math.cos(def.angle) * CONFIG.BUILDING_RADIUS, Math.sin(def.angle) * CONFIG.BUILDING_RADIUS);
+        });
+    }
+
+    function createPath(x1, z1, x2, z2) {
+        const dx = x2 - x1;
+        const dz = z2 - z1;
+        const length = Math.sqrt(dx * dx + dz * dz);
+        const angle = Math.atan2(dz, dx);
+
+        const pathGeo = new THREE.PlaneGeometry(length, 2.5);
+        const pathMat = new THREE.MeshStandardMaterial({
+            color: 0xb8976a,
+            roughness: 1,
+        });
+        const path = new THREE.Mesh(pathGeo, pathMat);
+        path.rotation.x = -Math.PI / 2;
+        path.rotation.z = -angle;
+        path.position.set((x1 + x2) / 2, 0.03, (z1 + z2) / 2);
+        path.receiveShadow = true;
+        scene.add(path);
+    }
+
+    // ---- Buildings ----
+    function createBuildings() {
+        BUILDING_DEFS.forEach((def, index) => {
+            const x = Math.cos(def.angle) * CONFIG.BUILDING_RADIUS;
+            const z = Math.sin(def.angle) * CONFIG.BUILDING_RADIUS;
+
+            const group = new THREE.Group();
+            group.position.set(x, 0, z);
+            group.userData = { buildingIndex: index, def: def, progress: 0 };
+
+            // Platform
+            const platGeo = new THREE.CylinderGeometry(4, 4.5, 0.4, 6);
+            const platMat = new THREE.MeshStandardMaterial({ color: 0x999999, roughness: 0.7 });
+            const plat = new THREE.Mesh(platGeo, platMat);
+            plat.position.y = 0.2;
+            plat.castShadow = true;
+            plat.receiveShadow = true;
+            group.add(plat);
+
+            // Building structure (changes with progress)
+            const buildingGroup = new THREE.Group();
+            buildingGroup.name = 'structure';
+            group.add(buildingGroup);
+
+            // Scaffolding
+            createScaffolding(group, def.color);
+
+            // Sign
+            createBuildingSign(group, def);
+
+            // Glow ring
+            const ringGeo = new THREE.RingGeometry(4.5, 5, 32);
+            const ringMat = new THREE.MeshBasicMaterial({
+                color: def.color,
+                transparent: true,
+                opacity: 0.3,
+                side: THREE.DoubleSide,
+            });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = -Math.PI / 2;
+            ring.position.y = 0.05;
+            ring.name = 'glowRing';
+            group.add(ring);
+
+            scene.add(group);
+            buildings3D.push(group);
+
+            // Create initial building state
+            updateBuildingAppearance(index, 0);
+        });
+    }
+
+    function createScaffolding(group, color) {
+        const scaffMat = new THREE.MeshStandardMaterial({ color: 0xdaa520, roughness: 0.8 });
+        const positions = [
+            [-3, 0, -3], [3, 0, -3], [3, 0, 3], [-3, 0, 3]
+        ];
+
+        positions.forEach(([x, y, z]) => {
+            const pole = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.1, 0.1, 8, 6),
+                scaffMat
+            );
+            pole.position.set(x, 4, z);
+            pole.castShadow = true;
+            group.add(pole);
+        });
+
+        // Cross bars
+        for (let h = 2; h <= 6; h += 2) {
+            [
+                [[-3, h, -3], [3, h, -3]],
+                [[3, h, -3], [3, h, 3]],
+                [[3, h, 3], [-3, h, 3]],
+                [[-3, h, 3], [-3, h, -3]],
+            ].forEach(([from, to]) => {
+                const bar = createBar(from, to, 0.06, scaffMat);
+                group.add(bar);
+            });
+        }
+    }
+
+    function createBar(from, to, radius, material) {
+        const [x1, y1, z1] = from;
+        const [x2, y2, z2] = to;
+        const dx = x2 - x1, dy = y2 - y1, dz = z2 - z1;
+        const length = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        const geo = new THREE.CylinderGeometry(radius, radius, length, 6);
+        const bar = new THREE.Mesh(geo, material);
+        bar.position.set((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
+        bar.lookAt(x2, y2, z2);
+        bar.rotateX(Math.PI / 2);
+        return bar;
+    }
+
+    function createBuildingSign(group, def) {
+        const signGroup = new THREE.Group();
+
+        const postGeo = new THREE.CylinderGeometry(0.08, 0.08, 1.5, 6);
+        const postMat = new THREE.MeshStandardMaterial({ color: 0x666666 });
+        const post = new THREE.Mesh(postGeo, postMat);
+        post.position.y = 0.75;
+        signGroup.add(post);
+
+        const boardGeo = new THREE.BoxGeometry(3.5, 0.8, 0.1);
+        const boardMat = new THREE.MeshStandardMaterial({ color: def.color, roughness: 0.5 });
+        const board = new THREE.Mesh(boardGeo, boardMat);
+        board.position.y = 1.6;
+        board.castShadow = true;
+        signGroup.add(board);
+
+        signGroup.position.set(0, 0, 5);
+        signGroup.lookAt(0, signGroup.position.y, 0);
+        group.add(signGroup);
+    }
+
+    function updateBuildingAppearance(index, progress) {
+        const group = buildings3D[index];
+        const def = BUILDING_DEFS[index];
+        const structure = group.getObjectByName('structure');
+
+        // Remove old structure children
+        while (structure.children.length > 0) {
+            structure.remove(structure.children[0]);
+        }
+
+        const mat = new THREE.MeshStandardMaterial({
+            color: def.color,
+            roughness: 0.5,
+            metalness: 0.1,
+        });
+        const matLight = new THREE.MeshStandardMaterial({
+            color: def.color,
+            roughness: 0.4,
+            metalness: 0.1,
+            transparent: true,
+            opacity: 0.9,
+        });
+
+        // Build different structures based on building type and progress
+        if (index === 0) buildWorkshop(structure, mat, matLight, progress);
+        else if (index === 1) buildBridge(structure, mat, matLight, progress);
+        else if (index === 2) buildTower(structure, mat, matLight, progress);
+        else if (index === 3) buildHouse(structure, mat, matLight, progress);
+        else if (index === 4) buildGarden(structure, mat, matLight, progress);
+
+        // Update glow ring
+        const ring = group.getObjectByName('glowRing');
+        if (ring) {
+            ring.material.opacity = progress >= 3 ? 0.6 : 0.3;
+        }
+    }
+
+    function buildWorkshop(parent, mat, matLight, progress) {
+        // Gefühls-Werkstatt: circular/dome building
+        if (progress >= 1) {
+            // Foundation
+            const base = new THREE.Mesh(new THREE.CylinderGeometry(2.5, 2.8, 1.5, 8), mat);
+            base.position.y = 1.15;
+            base.castShadow = true;
+            parent.add(base);
+        }
+        if (progress >= 2) {
+            // Walls
+            const walls = new THREE.Mesh(new THREE.CylinderGeometry(2.3, 2.5, 2.5, 8), matLight);
+            walls.position.y = 3.15;
+            walls.castShadow = true;
+            parent.add(walls);
+            // Windows
+            const winMat = new THREE.MeshStandardMaterial({ color: 0xffe066, emissive: 0xffe066, emissiveIntensity: 0.3 });
+            for (let i = 0; i < 4; i++) {
+                const win = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.8, 0.1), winMat);
+                const a = (i / 4) * Math.PI * 2;
+                win.position.set(Math.cos(a) * 2.4, 3, Math.sin(a) * 2.4);
+                win.lookAt(0, 3, 0);
+                parent.add(win);
+            }
+        }
+        if (progress >= 3) {
+            // Dome roof
+            const dome = new THREE.Mesh(new THREE.SphereGeometry(2.5, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), mat);
+            dome.position.y = 4.4;
+            dome.castShadow = true;
+            parent.add(dome);
+            // Heart on top
+            const heart = new THREE.Mesh(new THREE.SphereGeometry(0.4, 8, 8), new THREE.MeshStandardMaterial({ color: 0xff4444, emissive: 0xff4444, emissiveIntensity: 0.5 }));
+            heart.position.y = 6.8;
+            parent.add(heart);
+        }
+    }
+
+    function buildBridge(parent, mat, matLight, progress) {
+        // Brücke der Freundschaft: bridge structure
+        if (progress >= 1) {
+            // Pillars
+            [-2.5, 2.5].forEach((x) => {
+                const pillar = new THREE.Mesh(new THREE.BoxGeometry(1, 3, 1.5), mat);
+                pillar.position.set(x, 1.9, 0);
+                pillar.castShadow = true;
+                parent.add(pillar);
+            });
+        }
+        if (progress >= 2) {
+            // Bridge deck
+            const deck = new THREE.Mesh(new THREE.BoxGeometry(7, 0.4, 2), matLight);
+            deck.position.y = 3.6;
+            deck.castShadow = true;
+            parent.add(deck);
+            // Railings
+            [-0.9, 0.9].forEach((z) => {
+                const rail = new THREE.Mesh(new THREE.BoxGeometry(7, 0.6, 0.1), mat);
+                rail.position.set(0, 4.1, z);
+                parent.add(rail);
+            });
+        }
+        if (progress >= 3) {
+            // Arch
+            const archGeo = new THREE.TorusGeometry(2, 0.2, 8, 16, Math.PI);
+            const arch = new THREE.Mesh(archGeo, mat);
+            arch.position.set(0, 3.8, 0);
+            arch.rotation.z = 0;
+            arch.castShadow = true;
+            parent.add(arch);
+            // Flag on top
+            const flagPole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 2, 6), new THREE.MeshStandardMaterial({ color: 0x888888 }));
+            flagPole.position.set(0, 6.8, 0);
+            parent.add(flagPole);
+            const flag = new THREE.Mesh(new THREE.PlaneGeometry(1, 0.6), new THREE.MeshStandardMaterial({ color: 0x3b82f6, side: THREE.DoubleSide }));
+            flag.position.set(0.5, 7.5, 0);
+            parent.add(flag);
+        }
+    }
+
+    function buildTower(parent, mat, matLight, progress) {
+        // Turm der Stärke: tall tower
+        if (progress >= 1) {
+            const base = new THREE.Mesh(new THREE.BoxGeometry(3, 2.5, 3), mat);
+            base.position.y = 1.65;
+            base.castShadow = true;
+            parent.add(base);
+        }
+        if (progress >= 2) {
+            const mid = new THREE.Mesh(new THREE.BoxGeometry(2.5, 2.5, 2.5), matLight);
+            mid.position.y = 4.15;
+            mid.castShadow = true;
+            parent.add(mid);
+            // Windows
+            const winMat = new THREE.MeshStandardMaterial({ color: 0xffe066, emissive: 0xffe066, emissiveIntensity: 0.3 });
+            [0, Math.PI / 2, Math.PI, Math.PI * 1.5].forEach((a) => {
+                const win = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.7, 0.1), winMat);
+                win.position.set(Math.cos(a) * 1.3, 4, Math.sin(a) * 1.3);
+                win.lookAt(0, 4, 0);
+                parent.add(win);
+            });
+        }
+        if (progress >= 3) {
+            const top = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), mat);
+            top.position.y = 6.4;
+            top.castShadow = true;
+            parent.add(top);
+            // Pyramid roof
+            const roof = new THREE.Mesh(new THREE.ConeGeometry(1.8, 2, 4), new THREE.MeshStandardMaterial({ color: 0x059669, roughness: 0.4 }));
+            roof.position.y = 8.4;
+            roof.rotation.y = Math.PI / 4;
+            roof.castShadow = true;
+            parent.add(roof);
+            // Star on top
+            const star = new THREE.Mesh(new THREE.OctahedronGeometry(0.4), new THREE.MeshStandardMaterial({ color: 0xffd700, emissive: 0xffd700, emissiveIntensity: 0.5 }));
+            star.position.y = 9.8;
+            parent.add(star);
+        }
+    }
+
+    function buildHouse(parent, mat, matLight, progress) {
+        // Haus der Worte: classic house
+        if (progress >= 1) {
+            const base = new THREE.Mesh(new THREE.BoxGeometry(4, 2, 3.5), mat);
+            base.position.y = 1.4;
+            base.castShadow = true;
+            parent.add(base);
+        }
+        if (progress >= 2) {
+            const upper = new THREE.Mesh(new THREE.BoxGeometry(4, 1.5, 3.5), matLight);
+            upper.position.y = 3.15;
+            upper.castShadow = true;
+            parent.add(upper);
+            // Door
+            const door = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.1), new THREE.MeshStandardMaterial({ color: 0x8b4513 }));
+            door.position.set(0, 1.1, 1.8);
+            parent.add(door);
+            // Windows
+            const winMat = new THREE.MeshStandardMaterial({ color: 0xffe066, emissive: 0xffe066, emissiveIntensity: 0.3 });
+            [[-1.2, 2.8, 1.8], [1.2, 2.8, 1.8]].forEach(([x, y, z]) => {
+                const win = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.6, 0.1), winMat);
+                win.position.set(x, y, z);
+                parent.add(win);
+            });
+        }
+        if (progress >= 3) {
+            // Roof
+            const roofGeo = new THREE.ConeGeometry(3.2, 2, 4);
+            const roof = new THREE.Mesh(roofGeo, new THREE.MeshStandardMaterial({ color: 0x7c3aed, roughness: 0.5 }));
+            roof.position.y = 5;
+            roof.rotation.y = Math.PI / 4;
+            roof.castShadow = true;
+            parent.add(roof);
+            // Speech bubble
+            const bubble = new THREE.Mesh(
+                new THREE.SphereGeometry(0.6, 8, 8),
+                new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.2 })
+            );
+            bubble.position.set(2.5, 5.5, 0);
+            bubble.scale.set(1.2, 0.8, 0.5);
+            parent.add(bubble);
+        }
+    }
+
+    function buildGarden(parent, mat, matLight, progress) {
+        // Garten der Ruhe: garden/greenhouse
+        if (progress >= 1) {
+            // Garden beds
+            const bedMat = new THREE.MeshStandardMaterial({ color: 0x5a3825, roughness: 1 });
+            for (let i = -1; i <= 1; i += 2) {
+                const bed = new THREE.Mesh(new THREE.BoxGeometry(4, 0.4, 1.2), bedMat);
+                bed.position.set(0, 0.6, i * 1.5);
+                bed.castShadow = true;
+                parent.add(bed);
+            }
+            // Small plants
+            const plantMat = new THREE.MeshStandardMaterial({ color: 0x22c55e });
+            for (let i = 0; i < 6; i++) {
+                const plant = new THREE.Mesh(new THREE.SphereGeometry(0.3, 6, 6), plantMat);
+                plant.position.set(-1.5 + i * 0.6, 1, (i % 2 === 0 ? 1 : -1) * 1.5);
+                parent.add(plant);
+            }
+        }
+        if (progress >= 2) {
+            // Greenhouse frame
+            const frameMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, roughness: 0.3 });
+            // Arches
+            for (let x = -1.5; x <= 1.5; x += 1.5) {
+                const arch = new THREE.Mesh(new THREE.TorusGeometry(2, 0.08, 6, 12, Math.PI), frameMat);
+                arch.position.set(x, 0.4, 0);
+                arch.rotation.y = Math.PI / 2;
+                parent.add(arch);
+            }
+            // Glass panels (transparent)
+            const glassMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, transparent: true, opacity: 0.2, side: THREE.DoubleSide });
+            const glass = new THREE.Mesh(new THREE.SphereGeometry(2, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), glassMat);
+            glass.position.y = 0.4;
+            glass.scale.set(1.5, 1, 1);
+            parent.add(glass);
+            // Trees
+            const treeMat = new THREE.MeshStandardMaterial({ color: 0x166534 });
+            [-2, 2].forEach((x) => {
+                const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 1.5, 6), new THREE.MeshStandardMaterial({ color: 0x8b4513 }));
+                trunk.position.set(x, 1.15, 0);
+                parent.add(trunk);
+                const leaves = new THREE.Mesh(new THREE.SphereGeometry(0.7, 8, 6), treeMat);
+                leaves.position.set(x, 2.2, 0);
+                parent.add(leaves);
+            });
+        }
+        if (progress >= 3) {
+            // Fountain in center
+            const fountainMat = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.4 });
+            const base = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 1, 0.6, 12), fountainMat);
+            base.position.y = 0.7;
+            parent.add(base);
+            const basin = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.3, 1, 12), fountainMat);
+            basin.position.y = 1.5;
+            parent.add(basin);
+            // Water
+            const water = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.55, 0.55, 0.1, 12),
+                new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x38bdf8, emissiveIntensity: 0.2, transparent: true, opacity: 0.8 })
+            );
+            water.position.y = 2;
+            parent.add(water);
+            // Flowers
+            const flowerColors = [0xff6b6b, 0xfbbf24, 0xa78bfa, 0xf472b6, 0x34d399];
+            for (let i = 0; i < 10; i++) {
+                const angle = (i / 10) * Math.PI * 2;
+                const r = 2.5 + Math.random() * 0.5;
+                const flower = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.2, 6, 6),
+                    new THREE.MeshStandardMaterial({ color: flowerColors[i % flowerColors.length], emissive: flowerColors[i % flowerColors.length], emissiveIntensity: 0.2 })
+                );
+                flower.position.set(Math.cos(angle) * r, 0.6, Math.sin(angle) * r);
+                parent.add(flower);
+            }
+            // Butterfly (simple)
+            const butterfly = new THREE.Group();
+            const wingMat = new THREE.MeshStandardMaterial({ color: 0xf472b6, side: THREE.DoubleSide, transparent: true, opacity: 0.8 });
+            [-1, 1].forEach((side) => {
+                const wing = new THREE.Mesh(new THREE.CircleGeometry(0.25, 6), wingMat);
+                wing.position.x = side * 0.2;
+                wing.rotation.y = side * 0.5;
+                butterfly.add(wing);
+            });
+            butterfly.position.set(1, 3.5, 1);
+            butterfly.name = 'butterfly';
+            parent.add(butterfly);
+        }
+    }
+
+    // ---- Decorations ----
+    function createDecorations() {
+        // Trees around the edge
+        for (let i = 0; i < 30; i++) {
+            const angle = (i / 30) * Math.PI * 2;
+            const r = CONFIG.BUILDING_RADIUS + 12 + Math.random() * 15;
+            const tree = createTree();
+            tree.position.set(Math.cos(angle) * r, 0, Math.sin(angle) * r);
+            tree.rotation.y = Math.random() * Math.PI * 2;
+            scene.add(tree);
+        }
+
+        // Cones / barriers
+        for (let i = 0; i < 8; i++) {
+            const angle = ((i + 0.5) / 5) * Math.PI * 2;
+            const r = CONFIG.BUILDING_RADIUS - 3;
+            const cone = createTrafficCone();
+            cone.position.set(
+                Math.cos(angle) * r + (Math.random() - 0.5) * 4,
+                0,
+                Math.sin(angle) * r + (Math.random() - 0.5) * 4
+            );
+            scene.add(cone);
+        }
+
+        // Cranes (simple)
+        for (let i = 0; i < 2; i++) {
+            const crane = createCrane();
+            const angle = Math.PI / 3 + i * Math.PI;
+            crane.position.set(
+                Math.cos(angle) * (CONFIG.BUILDING_RADIUS + 5),
+                0,
+                Math.sin(angle) * (CONFIG.BUILDING_RADIUS + 5)
+            );
+            crane.rotation.y = angle + Math.PI;
+            scene.add(crane);
+        }
+
+        // Material piles
+        for (let i = 0; i < 5; i++) {
+            const pile = createMaterialPile();
+            const angle = Math.random() * Math.PI * 2;
+            const r = 8 + Math.random() * 10;
+            pile.position.set(Math.cos(angle) * r, 0, Math.sin(angle) * r);
+            scene.add(pile);
+        }
+    }
+
+    function createTree() {
+        const group = new THREE.Group();
+        const trunkH = 2 + Math.random() * 2;
+        const trunk = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.2, 0.3, trunkH, 6),
+            new THREE.MeshStandardMaterial({ color: 0x8b4513, roughness: 0.9 })
+        );
+        trunk.position.y = trunkH / 2;
+        trunk.castShadow = true;
+        group.add(trunk);
+
+        const leavesSize = 1.2 + Math.random() * 1;
+        const leaves = new THREE.Mesh(
+            new THREE.SphereGeometry(leavesSize, 8, 6),
+            new THREE.MeshStandardMaterial({ color: 0x228B22 + Math.floor(Math.random() * 0x003300), roughness: 0.8 })
+        );
+        leaves.position.y = trunkH + leavesSize * 0.5;
+        leaves.castShadow = true;
+        group.add(leaves);
+
+        return group;
+    }
+
+    function createTrafficCone() {
+        const group = new THREE.Group();
+        const cone = new THREE.Mesh(
+            new THREE.ConeGeometry(0.25, 0.8, 8),
+            new THREE.MeshStandardMaterial({ color: 0xff6600 })
+        );
+        cone.position.y = 0.4;
+        cone.castShadow = true;
+        group.add(cone);
+
+        const stripe = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.18, 0.2, 0.12, 8),
+            new THREE.MeshStandardMaterial({ color: 0xffffff })
+        );
+        stripe.position.y = 0.45;
+        group.add(stripe);
+
+        return group;
+    }
+
+    function createCrane() {
+        const group = new THREE.Group();
+        const mat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.6 });
+        const matDark = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.6 });
+
+        // Base
+        const base = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.5, 1.5), matDark);
+        base.position.y = 0.25;
+        group.add(base);
+
+        // Tower
+        const tower = new THREE.Mesh(new THREE.BoxGeometry(0.4, 14, 0.4), mat);
+        tower.position.y = 7;
+        tower.castShadow = true;
+        group.add(tower);
+
+        // Arm
+        const arm = new THREE.Mesh(new THREE.BoxGeometry(10, 0.3, 0.3), mat);
+        arm.position.set(3, 13.5, 0);
+        arm.castShadow = true;
+        group.add(arm);
+
+        // Counter-weight
+        const cw = new THREE.Mesh(new THREE.BoxGeometry(1, 0.8, 0.8), matDark);
+        cw.position.set(-2.5, 13.5, 0);
+        group.add(cw);
+
+        // Cable
+        const cable = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.02, 0.02, 5, 4),
+            new THREE.MeshStandardMaterial({ color: 0x333333 })
+        );
+        cable.position.set(7, 11, 0);
+        group.add(cable);
+
+        // Hook block
+        const hook = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), matDark);
+        hook.position.set(7, 8.5, 0);
+        group.add(hook);
+
+        return group;
+    }
+
+    function createMaterialPile() {
+        const group = new THREE.Group();
+        const colors = [0xcc8844, 0xbb7733, 0xaa6622];
+        for (let i = 0; i < 3 + Math.floor(Math.random() * 3); i++) {
+            const box = new THREE.Mesh(
+                new THREE.BoxGeometry(0.6 + Math.random() * 0.3, 0.3, 0.6 + Math.random() * 0.3),
+                new THREE.MeshStandardMaterial({ color: colors[i % colors.length], roughness: 0.9 })
+            );
+            box.position.set((Math.random() - 0.5) * 0.8, 0.15 + i * 0.3, (Math.random() - 0.5) * 0.8);
+            box.rotation.y = Math.random() * 0.3;
+            box.castShadow = true;
+            group.add(box);
+        }
+        return group;
+    }
+
+    // ---- Particles ----
+    function createParticles() {
+        const count = 50;
+        const geo = new THREE.BufferGeometry();
+        const positions = new Float32Array(count * 3);
+        for (let i = 0; i < count; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 60;
+            positions[i * 3 + 1] = 1 + Math.random() * 15;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 60;
+        }
+        geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const mat = new THREE.PointsMaterial({
+            color: 0xffd700,
+            size: 0.15,
+            transparent: true,
+            opacity: 0.6,
+        });
+        const points = new THREE.Points(geo, mat);
+        points.name = 'dustParticles';
+        scene.add(points);
+    }
+
+    // ---- Player ----
+    function createPlayer() {
+        player = new THREE.Group();
+        player.name = 'player';
+
+        const bodyMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.7 });
+        const skinMat = new THREE.MeshStandardMaterial({ color: 0xfdbcb4, roughness: 0.8 });
+        const hatMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.5 });
+        const bootMat = new THREE.MeshStandardMaterial({ color: 0x4a3728, roughness: 0.9 });
+
+        // Legs
+        [-0.25, 0.25].forEach((x) => {
+            const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.18, 0.9, 6), bodyMat);
+            leg.position.set(x, 0.45, 0);
+            leg.castShadow = true;
+            player.add(leg);
+
+            const boot = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.2, 0.35), bootMat);
+            boot.position.set(x, 0.1, 0.05);
+            boot.castShadow = true;
+            player.add(boot);
+        });
+
+        // Body
+        const body = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.9, 0.45), bodyMat);
+        body.position.y = 1.35;
+        body.castShadow = true;
+        player.add(body);
+
+        // Vest
+        const vest = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.5, 0.47), new THREE.MeshStandardMaterial({ color: 0xf59e0b }));
+        vest.position.y = 1.5;
+        player.add(vest);
+
+        // Arms
+        [-0.5, 0.5].forEach((x) => {
+            const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, 0.7, 6), bodyMat);
+            arm.position.set(x, 1.2, 0);
+            arm.castShadow = true;
+            player.add(arm);
+
+            const hand = new THREE.Mesh(new THREE.SphereGeometry(0.1, 6, 6), skinMat);
+            hand.position.set(x, 0.82, 0);
+            player.add(hand);
+        });
+
+        // Head
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.3, 8, 8), skinMat);
+        head.position.y = 2.1;
+        head.castShadow = true;
+        player.add(head);
+
+        // Hard hat
+        const hatBrim = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.06, 12), hatMat);
+        hatBrim.position.y = 2.3;
+        hatBrim.castShadow = true;
+        player.add(hatBrim);
+
+        const hatTop = new THREE.Mesh(new THREE.SphereGeometry(0.28, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), hatMat);
+        hatTop.position.y = 2.32;
+        hatTop.castShadow = true;
+        player.add(hatTop);
+
+        // Eyes
+        const eyeMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+        [-0.1, 0.1].forEach((x) => {
+            const eye = new THREE.Mesh(new THREE.SphereGeometry(0.04, 6, 6), eyeMat);
+            eye.position.set(x, 2.15, 0.27);
+            player.add(eye);
+        });
+
+        // Smile
+        const smile = new THREE.Mesh(
+            new THREE.TorusGeometry(0.08, 0.02, 4, 8, Math.PI),
+            eyeMat
+        );
+        smile.position.set(0, 2.02, 0.27);
+        smile.rotation.x = Math.PI;
+        player.add(smile);
+
+        player.position.set(0, 0, 0);
+        player.castShadow = true;
+        scene.add(player);
+    }
+
+    // ---- Input ----
+    function setupInput(canvas) {
+        document.addEventListener('keydown', (e) => {
+            keys[e.key.toLowerCase()] = true;
+            if (e.key === 'Shift') isRunning = true;
+            if (e.key.toLowerCase() === 'e' && nearBuilding !== null) {
+                if (onInteract) onInteract(nearBuilding);
+            }
+        });
+        document.addEventListener('keyup', (e) => {
+            keys[e.key.toLowerCase()] = false;
+            if (e.key === 'Shift') isRunning = false;
+        });
+
+        // Mouse camera control
+        canvas.addEventListener('mousedown', (e) => {
+            mouseDown = true;
+            prevMouseX = e.clientX;
+        });
+        document.addEventListener('mouseup', () => { mouseDown = false; });
+        document.addEventListener('mousemove', (e) => {
+            if (mouseDown) {
+                const dx = e.clientX - prevMouseX;
+                cameraAngle -= dx * 0.005;
+                prevMouseX = e.clientX;
+            }
+        });
+
+        // Touch support
+        let touchStartX = 0;
+        canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                touchStartX = e.touches[0].clientX;
+            }
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 1) {
+                const dx = e.touches[0].clientX - touchStartX;
+                cameraAngle -= dx * 0.005;
+                touchStartX = e.touches[0].clientX;
+            }
+        });
+
+        // Double-tap/click to interact
+        canvas.addEventListener('dblclick', () => {
+            if (nearBuilding !== null && onInteract) {
+                onInteract(nearBuilding);
+            }
+        });
+    }
+
+    // ---- Mobile controls ----
+    function setupMobileControls() {
+        // Create mobile control buttons
+        const mobileDiv = document.createElement('div');
+        mobileDiv.className = 'mobile-controls';
+        mobileDiv.innerHTML = `
+            <button class="mobile-btn mobile-btn-up" data-key="w">\u2191</button>
+            <button class="mobile-btn mobile-btn-left" data-key="a">\u2190</button>
+            <button class="mobile-btn mobile-btn-down" data-key="s">\u2193</button>
+            <button class="mobile-btn mobile-btn-right" data-key="d">\u2192</button>
+        `;
+        document.getElementById('game-screen').appendChild(mobileDiv);
+
+        // Add mobile interact button
+        const interactBtn = document.createElement('button');
+        interactBtn.className = 'mobile-btn';
+        interactBtn.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:20;width:70px;height:70px;font-size:1.8rem;display:none;background:rgba(245,158,11,0.5);border-color:var(--color-primary);';
+        interactBtn.textContent = 'E';
+        interactBtn.id = 'mobile-interact';
+        document.getElementById('game-screen').appendChild(interactBtn);
+
+        interactBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (nearBuilding !== null && onInteract) onInteract(nearBuilding);
+        });
+
+        mobileDiv.querySelectorAll('.mobile-btn').forEach((btn) => {
+            const key = btn.dataset.key;
+            if (!key) return;
+            btn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                keys[key] = true;
+            });
+            btn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                keys[key] = false;
+            });
+            btn.addEventListener('touchcancel', () => { keys[key] = false; });
+        });
+    }
+
+    // ---- Camera ----
+    function updateCamera() {
+        if (!player) return;
+        const targetX = player.position.x - Math.sin(cameraAngle) * CONFIG.CAMERA_DISTANCE;
+        const targetZ = player.position.z - Math.cos(cameraAngle) * CONFIG.CAMERA_DISTANCE;
+        camera.position.lerp(
+            new THREE.Vector3(targetX, CONFIG.CAMERA_HEIGHT, targetZ),
+            0.08
+        );
+        camera.lookAt(
+            player.position.x,
+            player.position.y + 2,
+            player.position.z
+        );
+    }
+
+    // ---- Update ----
+    function update() {
+        const delta = clock.getDelta();
+        const speed = isRunning ? CONFIG.PLAYER_RUN_SPEED : CONFIG.PLAYER_SPEED;
+
+        // Player movement
+        let moveX = 0, moveZ = 0;
+        if (keys['w'] || keys['arrowup']) moveZ = 1;
+        if (keys['s'] || keys['arrowdown']) moveZ = -1;
+        if (keys['a'] || keys['arrowleft']) moveX = 1;
+        if (keys['d'] || keys['arrowright']) moveX = -1;
+
+        if (moveX !== 0 || moveZ !== 0) {
+            const angle = cameraAngle;
+            const forward = new THREE.Vector3(
+                -Math.sin(angle) * moveZ + -Math.cos(angle) * moveX,
+                0,
+                -Math.cos(angle) * moveZ + Math.sin(angle) * moveX
+            );
+            forward.normalize().multiplyScalar(speed);
+
+            const newX = player.position.x + forward.x;
+            const newZ = player.position.z + forward.z;
+
+            // World bounds
+            const dist = Math.sqrt(newX * newX + newZ * newZ);
+            if (dist < CONFIG.WORLD_SIZE - 2) {
+                player.position.x = newX;
+                player.position.z = newZ;
+            }
+
+            // Rotate player to face movement direction
+            playerAngle = Math.atan2(forward.x, forward.z);
+            player.rotation.y = playerAngle;
+
+            // Walking animation (simple bob)
+            player.position.y = Math.abs(Math.sin(Date.now() * 0.008)) * 0.15;
+        } else {
+            player.position.y = THREE.MathUtils.lerp(player.position.y, 0, 0.1);
+        }
+
+        // Check proximity to buildings
+        let closest = null;
+        let closestDist = CONFIG.INTERACTION_DISTANCE;
+
+        buildings3D.forEach((b, i) => {
+            const dx = player.position.x - b.position.x;
+            const dz = player.position.z - b.position.z;
+            const dist = Math.sqrt(dx * dx + dz * dz);
+            if (dist < closestDist) {
+                closestDist = dist;
+                closest = i;
+            }
+
+            // Animate glow rings
+            const ring = b.getObjectByName('glowRing');
+            if (ring) {
+                ring.rotation.z += 0.003;
+                const pulse = 0.3 + Math.sin(Date.now() * 0.002 + i) * 0.1;
+                ring.material.opacity = i === closest ? 0.7 : pulse;
+            }
+        });
+
+        nearBuilding = closest;
+
+        // Show/hide interaction prompt
+        const prompt = document.getElementById('interaction-prompt');
+        const mobileInteract = document.getElementById('mobile-interact');
+        if (closest !== null) {
+            prompt.classList.remove('hidden');
+            document.getElementById('prompt-text').textContent = BUILDING_DEFS[closest].name + ' betreten';
+            if (mobileInteract) mobileInteract.style.display = 'flex';
+        } else {
+            prompt.classList.add('hidden');
+            if (mobileInteract) mobileInteract.style.display = 'none';
+        }
+
+        // Animate particles
+        const dustPoints = scene.getObjectByName('dustParticles');
+        if (dustPoints) {
+            const pos = dustPoints.geometry.attributes.position;
+            for (let i = 0; i < pos.count; i++) {
+                pos.array[i * 3 + 1] += Math.sin(Date.now() * 0.001 + i) * 0.005;
+                if (pos.array[i * 3 + 1] > 16) pos.array[i * 3 + 1] = 1;
+            }
+            pos.needsUpdate = true;
+        }
+
+        // Animate clouds
+        decorations.forEach((obj) => {
+            if (obj.userData.speed) {
+                obj.position.x += obj.userData.speed;
+                if (obj.position.x > 70) obj.position.x = -70;
+            }
+        });
+
+        // Animate butterflies
+        buildings3D.forEach((b) => {
+            const butterfly = b.getObjectByName('butterfly');
+            if (butterfly) {
+                butterfly.position.y = 3.5 + Math.sin(Date.now() * 0.002) * 0.5;
+                butterfly.position.x = 1 + Math.sin(Date.now() * 0.001) * 1.5;
+                butterfly.rotation.y = Date.now() * 0.003;
+            }
+        });
+
+        updateCamera();
+    }
+
+    // ---- Animate ----
+    function animate() {
+        animationId = requestAnimationFrame(animate);
+        update();
+        renderer.render(scene, camera);
+    }
+
+    // ---- Resize ----
+    function onResize() {
+        if (!camera || !renderer) return;
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    // ---- Public API ----
+    return {
+        CONFIG: CONFIG,
+        BUILDING_DEFS: BUILDING_DEFS,
+
+        init: function (canvas, interactCallback) {
+            init(canvas, interactCallback);
+            setupMobileControls();
+        },
+
+        updateBuildingProgress: function (index, progress) {
+            if (index >= 0 && index < buildings3D.length) {
+                buildings3D[index].userData.progress = progress;
+                updateBuildingAppearance(index, progress);
+            }
+        },
+
+        getBuildingDefs: function () {
+            return BUILDING_DEFS;
+        },
+
+        pause: function () {
+            if (animationId) cancelAnimationFrame(animationId);
+            animationId = null;
+        },
+
+        resume: function () {
+            if (!scene || !clock) return; // Not initialized yet
+            if (!animationId) {
+                clock.getDelta(); // reset delta
+                animate();
+            }
+        },
+
+        isReady: function () {
+            return !!scene;
+        },
+
+        spawnCelebrationParticles: function (buildingIndex) {
+            const building = buildings3D[buildingIndex];
+            if (!building) return;
+
+            const colors = [0xf59e0b, 0x10b981, 0x3b82f6, 0x8b5cf6, 0xef4444, 0xfbbf24];
+            for (let i = 0; i < 30; i++) {
+                const geo = new THREE.SphereGeometry(0.1 + Math.random() * 0.1, 4, 4);
+                const mat = new THREE.MeshBasicMaterial({ color: colors[Math.floor(Math.random() * colors.length)] });
+                const particle = new THREE.Mesh(geo, mat);
+                particle.position.copy(building.position);
+                particle.position.y = 4 + Math.random() * 2;
+                particle.userData.velocity = new THREE.Vector3(
+                    (Math.random() - 0.5) * 0.3,
+                    0.1 + Math.random() * 0.2,
+                    (Math.random() - 0.5) * 0.3
+                );
+                particle.userData.life = 1;
+                scene.add(particle);
+
+                // Animate and remove
+                const animateParticle = () => {
+                    particle.position.add(particle.userData.velocity);
+                    particle.userData.velocity.y -= 0.005;
+                    particle.userData.life -= 0.015;
+                    particle.material.opacity = particle.userData.life;
+                    particle.material.transparent = true;
+                    if (particle.userData.life > 0) {
+                        requestAnimationFrame(animateParticle);
+                    } else {
+                        scene.remove(particle);
+                    }
+                };
+                requestAnimationFrame(animateParticle);
+            }
+        },
+
+        destroy: function () {
+            if (animationId) cancelAnimationFrame(animationId);
+            window.removeEventListener('resize', onResize);
+            if (renderer) renderer.dispose();
+        },
+    };
+})();
+
+    </script>
+    <script>
+/* ============================================
+   BauMeister - Main Game Logic
+   State management, UI control, game flow
+   CDSE Luxembourg
+   ============================================ */
+
+(function () {
+    'use strict';
+
+    // ---- Game State ----
+    const state = {
+        playerName: '',
+        currentScreen: 'start',
+        introStep: 0,
+        // Progress: { gefuehl: 0, freundschaft: 0, staerke: 0, worte: 0, ruhe: 0 }
+        // Each goes from 0 (not started) to 3 (completed)
+        progress: {},
+        currentBuilding: null,
+        currentLevel: null,
+        activityState: {},
+        totalCompleted: 0,
+    };
+
+    const buildingIds = ['gefuehl', 'freundschaft', 'staerke', 'worte', 'ruhe'];
+
+    // ---- Initialize ----
+    function initState() {
+        buildingIds.forEach((id) => { state.progress[id] = 0; });
+        state.totalCompleted = 0;
+
+        // Try to load saved progress
+        try {
+            const saved = localStorage.getItem('baumeister_save');
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.progress) {
+                    Object.assign(state.progress, data.progress);
+                    state.playerName = data.playerName || '';
+                    state.totalCompleted = Object.values(state.progress).reduce((a, b) => a + b, 0);
+                }
+            }
+        } catch (e) { /* ignore */ }
+    }
+
+    function saveState() {
+        try {
+            localStorage.setItem('baumeister_save', JSON.stringify({
+                playerName: state.playerName,
+                progress: state.progress,
+            }));
+        } catch (e) { /* ignore */ }
+    }
+
+    // ---- Screen Management ----
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach((s) => s.classList.remove('active'));
+        const screen = document.getElementById(screenId);
+        if (screen) screen.classList.add('active');
+        state.currentScreen = screenId;
+
+        if (screenId === 'game-screen') {
+            if (GameEngine.isReady()) {
+                GameEngine.resume();
+                // Trigger resize to ensure canvas is properly sized
+                window.dispatchEvent(new Event('resize'));
+            }
+        } else {
+            GameEngine.pause();
+        }
+    }
+
+    // ---- Toast Notifications ----
+    function showToast(text, icon) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-text').textContent = text;
+        document.getElementById('toast-icon').textContent = icon || '\u2139';
+        toast.classList.remove('hidden');
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.classList.add('hidden'), 400);
+        }, 3000);
+    }
+
+    // ---- HUD Update ----
+    function updateHUD() {
+        document.getElementById('hud-name').textContent = state.playerName;
+        const total = state.totalCompleted;
+        const fill = document.getElementById('hud-progress-fill');
+        const text = document.getElementById('hud-progress-text');
+        fill.style.width = ((total / 15) * 100) + '%';
+        text.textContent = total + ' / 15';
+    }
+
+    // ---- Start Screen ----
+    function setupStartScreen() {
+        const input = document.getElementById('player-name');
+        const btn = document.getElementById('btn-start');
+
+        if (state.playerName) {
+            input.value = state.playerName;
+            btn.disabled = false;
+        }
+
+        input.addEventListener('input', () => {
+            const val = input.value.trim();
+            btn.disabled = val.length < 1;
+            state.playerName = val;
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !btn.disabled) {
+                btn.click();
+            }
+        });
+
+        btn.addEventListener('click', () => {
+            state.playerName = input.value.trim();
+            if (state.playerName.length < 1) return;
+
+            // Check if we have saved progress
+            if (state.totalCompleted > 0) {
+                initGameWorld();
+                showScreen('game-screen');
+                showToast('Willkommen zurück, ' + state.playerName + '!', '\u{1F44B}');
+            } else {
+                showIntro();
+            }
+        });
+    }
+
+    // ---- Intro ----
+    function showIntro() {
+        state.introStep = 0;
+        showScreen('intro-screen');
+        renderIntroStep();
+    }
+
+    function renderIntroStep() {
+        const content = document.getElementById('intro-content');
+        const btn = document.getElementById('btn-intro-next');
+
+        const steps = [
+            {
+                html: `
+                    <h2>Hallo ${state.playerName}! \u{1F44B}</h2>
+                    <p>Willkommen auf <strong>deiner ganz pers\u00F6nlichen Baustelle</strong>!</p>
+                    <p>Hier bist du der <strong>BauMeister</strong> \u2013 und du baust an etwas ganz Besonderem: <em>an dir selbst</em>.</p>
+                    <p>Jeder Mensch hat Bereiche, an denen er arbeiten kann \u2013 genau wie bei einem Bauwerk. Und genau das machen wir hier zusammen!</p>
+                `,
+            },
+            {
+                html: `
+                    <h2>Deine 5 Baustellen</h2>
+                    <p>Auf deiner Baustelle gibt es <strong>5 Geb\u00E4ude</strong>, die darauf warten, von dir gebaut zu werden:</p>
+                    <div class="intro-buildings-preview">
+                        <div class="intro-building-card">
+                            <div class="intro-building-dot" style="background:#f59e0b"></div>
+                            <span>Gef\u00FChls-Werkstatt</span>
+                        </div>
+                        <div class="intro-building-card">
+                            <div class="intro-building-dot" style="background:#3b82f6"></div>
+                            <span>Br\u00FCcke der Freundschaft</span>
+                        </div>
+                        <div class="intro-building-card">
+                            <div class="intro-building-dot" style="background:#10b981"></div>
+                            <span>Turm der St\u00E4rke</span>
+                        </div>
+                        <div class="intro-building-card">
+                            <div class="intro-building-dot" style="background:#8b5cf6"></div>
+                            <span>Haus der Worte</span>
+                        </div>
+                        <div class="intro-building-card">
+                            <div class="intro-building-dot" style="background:#06b6d4"></div>
+                            <span>Garten der Ruhe</span>
+                        </div>
+                    </div>
+                `,
+            },
+            {
+                html: `
+                    <h2>So funktioniert's</h2>
+                    <p>Bewege dich mit <strong>W/A/S/D</strong> oder den <strong>Pfeiltasten</strong> durch die Baustelle.</p>
+                    <p>Drehe die Kamera mit der <strong>Maus</strong> (klicken + ziehen).</p>
+                    <p>Gehe zu einem Geb\u00E4ude und dr\u00FCcke <strong>E</strong>, um es zu betreten.</p>
+                    <p>Jedes Geb\u00E4ude hat <strong>3 Aufgaben</strong>. Mit jeder Aufgabe w\u00E4chst dein Geb\u00E4ude!</p>
+                    <p style="margin-top:16px;color:var(--color-primary);font-weight:700;">Bereit? Dann lass uns bauen! \u{1F3D7}</p>
+                `,
+            },
+        ];
+
+        if (state.introStep < steps.length) {
+            content.innerHTML = steps[state.introStep].html;
+            btn.textContent = state.introStep < steps.length - 1 ? 'Weiter \u2192' : 'Los geht\'s! \u{1F680}';
+        }
+
+        btn.onclick = () => {
+            state.introStep++;
+            if (state.introStep >= steps.length) {
+                initGameWorld();
+                showScreen('game-screen');
+                showToast('Viel Spa\u00DF auf deiner Baustelle!', '\u{1F3D7}');
+            } else {
+                renderIntroStep();
+            }
+        };
+    }
+
+    // ---- Game World Initialization ----
+    function initGameWorld() {
+        const canvas = document.getElementById('game-canvas');
+        if (!canvas._initialized) {
+            GameEngine.init(canvas, onBuildingInteract);
+            canvas._initialized = true;
+        }
+
+        // Apply saved progress to buildings
+        buildingIds.forEach((id, i) => {
+            GameEngine.updateBuildingProgress(i, state.progress[id]);
+        });
+
+        updateHUD();
+        saveState();
+    }
+
+    // ---- Building Interaction ----
+    function onBuildingInteract(buildingIndex) {
+        state.currentBuilding = buildingIndex;
+        const def = GameEngine.getBuildingDefs()[buildingIndex];
+        const buildingId = def.id;
+        const progress = state.progress[buildingId];
+
+        // Show building info panel
+        const panel = document.getElementById('building-info');
+        panel.classList.remove('hidden');
+
+        document.getElementById('building-info-icon').textContent = def.icon;
+        document.getElementById('building-info-title').textContent = def.name;
+        document.getElementById('building-info-desc').textContent = def.description;
+
+        const levelsContainer = document.getElementById('building-levels');
+        levelsContainer.innerHTML = '';
+
+        const activityData = ActivitiesData[buildingId];
+        if (!activityData) return;
+
+        activityData.levels.forEach((level, i) => {
+            const levelNum = i + 1;
+            const isCompleted = progress >= levelNum;
+            const isCurrent = progress === i;
+            const isLocked = progress < i;
+
+            const item = document.createElement('div');
+            item.className = 'level-item';
+            if (isCompleted) item.className += ' level-completed';
+            else if (isCurrent) item.className += ' level-current';
+            else if (isLocked) item.className += ' level-locked';
+
+            item.innerHTML = `
+                <div class="level-number">${isCompleted ? '\u2713' : levelNum}</div>
+                <div class="level-info">
+                    <div class="level-title">${level.title}</div>
+                    <div class="level-subtitle">${level.subtitle}</div>
+                </div>
+                <div class="level-status">${isCompleted ? '\u2705' : isCurrent ? '\u{1F449}' : '\u{1F512}'}</div>
+            `;
+
+            if (!isLocked) {
+                item.addEventListener('click', () => {
+                    closeBuildingInfo();
+                    startActivity(buildingId, i);
+                });
+            }
+
+            levelsContainer.appendChild(item);
+        });
+
+        GameEngine.pause();
+    }
+
+    function closeBuildingInfo() {
+        document.getElementById('building-info').classList.add('hidden');
+    }
+
+    // ---- Activity System ----
+    function startActivity(buildingId, levelIndex) {
+        state.currentBuilding = buildingIds.indexOf(buildingId);
+        state.currentLevel = levelIndex;
+        state.activityState = {};
+
+        const def = GameEngine.getBuildingDefs()[state.currentBuilding];
+        const activityData = ActivitiesData[buildingId].levels[levelIndex];
+
+        // Setup header
+        const badge = document.getElementById('activity-badge');
+        badge.textContent = def.icon + ' ' + def.name;
+        badge.style.background = def.cssColor + '22';
+        badge.style.color = def.cssColor;
+        badge.style.border = '1px solid ' + def.cssColor;
+
+        document.getElementById('activity-title').textContent = activityData.title;
+        document.getElementById('activity-level-badge').textContent = 'Level ' + (levelIndex + 1) + ' / 3';
+
+        // Render activity body
+        const body = document.getElementById('activity-body');
+        body.innerHTML = '';
+
+        // Setup buttons
+        const submitBtn = document.getElementById('btn-activity-submit');
+        const nextBtn = document.getElementById('btn-activity-next');
+        submitBtn.classList.add('hidden');
+        nextBtn.classList.add('hidden');
+
+        // Render based on type
+        switch (activityData.type) {
+            case 'matching':
+                renderMatchingActivity(body, activityData, submitBtn);
+                break;
+            case 'thermometer':
+                renderThermometerActivity(body, activityData, nextBtn);
+                break;
+            case 'choice_scenarios':
+                renderChoiceScenarios(body, activityData, nextBtn);
+                break;
+            case 'sorting':
+                renderSortingActivity(body, activityData, submitBtn);
+                break;
+            case 'strengths':
+                renderStrengthsActivity(body, activityData, submitBtn);
+                break;
+            case 'transform':
+                renderTransformActivity(body, activityData, submitBtn);
+                break;
+            case 'goals':
+                renderGoalsActivity(body, activityData, submitBtn);
+                break;
+            case 'transform_messages':
+                renderTransformMessagesActivity(body, activityData, submitBtn);
+                break;
+            case 'breathing':
+                renderBreathingActivity(body, activityData, nextBtn);
+                break;
+            case 'safe_place':
+                renderSafePlaceActivity(body, activityData, submitBtn);
+                break;
+            case 'emergency_kit':
+                renderEmergencyKitActivity(body, activityData, submitBtn);
+                break;
+        }
+
+        showScreen('activity-screen');
+    }
+
+    // ---- Activity: Matching (Emotions) ----
+    function renderMatchingActivity(container, data, submitBtn) {
+        // Intro
+        const intro = document.createElement('p');
+        intro.className = 'reflection-prompt';
+        intro.textContent = data.intro;
+        container.appendChild(intro);
+
+        const matchDiv = document.createElement('div');
+        matchDiv.className = 'match-container';
+
+        state.activityState.answers = {};
+
+        data.items.forEach((item, i) => {
+            const row = document.createElement('div');
+            row.className = 'match-row';
+
+            const left = document.createElement('div');
+            left.className = 'match-left';
+            left.textContent = item.situation;
+
+            const arrow = document.createElement('span');
+            arrow.className = 'match-arrow';
+            arrow.textContent = '\u2192';
+
+            const select = document.createElement('select');
+            select.className = 'match-select';
+            select.dataset.index = i;
+
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = '';
+            defaultOpt.textContent = 'W\u00E4hle...';
+            select.appendChild(defaultOpt);
+
+            // Shuffle options
+            const opts = [...item.options].sort(() => Math.random() - 0.5);
+            opts.forEach((opt) => {
+                const o = document.createElement('option');
+                o.value = opt;
+                o.textContent = opt;
+                select.appendChild(o);
+            });
+
+            select.addEventListener('change', () => {
+                state.activityState.answers[i] = select.value;
+                checkAllAnswered();
+            });
+
+            row.appendChild(left);
+            row.appendChild(arrow);
+            row.appendChild(select);
+            matchDiv.appendChild(row);
+        });
+
+        container.appendChild(matchDiv);
+
+        function checkAllAnswered() {
+            const allAnswered = data.items.every((_, i) => state.activityState.answers[i]);
+            submitBtn.classList.toggle('hidden', !allAnswered);
+        }
+
+        submitBtn.onclick = () => {
+            let correct = 0;
+            data.items.forEach((item, i) => {
+                if (state.activityState.answers[i] === item.correctEmotion) correct++;
+            });
+
+            // Show results on selects
+            matchDiv.querySelectorAll('select').forEach((sel) => {
+                const idx = parseInt(sel.dataset.index);
+                const isCorrect = state.activityState.answers[idx] === data.items[idx].correctEmotion;
+                sel.style.borderColor = isCorrect ? 'var(--color-success)' : 'var(--color-error)';
+                sel.style.background = isCorrect ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)';
+            });
+
+            const ratio = correct / data.items.length;
+            if (ratio >= 0.7) {
+                setTimeout(() => showActivityFeedback(true, data.successMessage), 500);
+            } else {
+                setTimeout(() => showActivityFeedback(false, data.failMessage || 'Versuch es nochmal! Du schaffst das!'), 500);
+            }
+        };
+    }
+
+    // ---- Activity: Thermometer ----
+    function renderThermometerActivity(container, data, nextBtn) {
+        const intro = document.createElement('p');
+        intro.className = 'reflection-prompt';
+        intro.textContent = data.intro;
+        container.appendChild(intro);
+
+        state.activityState.currentScenario = 0;
+        state.activityState.completed = 0;
+
+        function renderScenario(index) {
+            container.innerHTML = '';
+            const scenario = data.scenarios[index];
+
+            const thermoDiv = document.createElement('div');
+            thermoDiv.className = 'thermometer-container';
+
+            const scText = document.createElement('div');
+            scText.className = 'scenario-card';
+            scText.innerHTML = `
+                <p class="scenario-text">"${scenario.text}"</p>
+                <p style="font-weight:600;color:var(--color-primary);">Gef\u00FChl: ${scenario.emotion}</p>
+            `;
+            thermoDiv.appendChild(scText);
+
+            const question = document.createElement('p');
+            question.className = 'scenario-question';
+            question.textContent = 'Wie stark ist dieses Gef\u00FChl? (1 = kaum sp\u00FCrbar, 10 = \u00FCberw\u00E4ltigend)';
+            thermoDiv.appendChild(question);
+
+            const value = document.createElement('div');
+            value.className = 'thermometer-value';
+            value.textContent = '5';
+            thermoDiv.appendChild(value);
+
+            const slider = document.createElement('input');
+            slider.type = 'range';
+            slider.min = '1';
+            slider.max = '10';
+            slider.value = '5';
+            slider.className = 'thermometer-slider';
+            slider.addEventListener('input', () => {
+                value.textContent = slider.value;
+            });
+            thermoDiv.appendChild(slider);
+
+            const labels = document.createElement('div');
+            labels.className = 'thermometer-labels';
+            labels.innerHTML = '<span>Kaum sp\u00FCrbar</span><span>Mittel</span><span>\u00DCberw\u00E4ltigend</span>';
+            thermoDiv.appendChild(labels);
+
+            // Body hints
+            const hintsTitle = document.createElement('p');
+            hintsTitle.style.cssText = 'margin-top:20px;font-weight:600;';
+            hintsTitle.textContent = 'Wo sp\u00FCrst du das im K\u00F6rper?';
+            thermoDiv.appendChild(hintsTitle);
+
+            const hintsGrid = document.createElement('div');
+            hintsGrid.className = 'choices-grid';
+            scenario.bodyHints.forEach((hint) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.textContent = hint;
+                btn.addEventListener('click', () => btn.classList.toggle('selected'));
+                hintsGrid.appendChild(btn);
+            });
+            thermoDiv.appendChild(hintsGrid);
+
+            container.appendChild(thermoDiv);
+
+            // Progress indicator
+            const prog = document.createElement('div');
+            prog.className = 'breathing-progress';
+            prog.style.justifyContent = 'center';
+            prog.style.marginTop = '16px';
+            for (let i = 0; i < data.scenarios.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'breathing-dot' + (i < index ? ' done' : '');
+                prog.appendChild(dot);
+            }
+            container.appendChild(prog);
+
+            nextBtn.classList.remove('hidden');
+            nextBtn.textContent = index < data.scenarios.length - 1 ? 'N\u00E4chstes Szenario \u2192' : 'Abschlie\u00DFen \u2713';
+            nextBtn.onclick = () => {
+                if (index < data.scenarios.length - 1) {
+                    renderScenario(index + 1);
+                } else {
+                    showActivityFeedback(true, data.successMessage);
+                }
+            };
+        }
+
+        renderScenario(0);
+    }
+
+    // ---- Activity: Choice Scenarios ----
+    function renderChoiceScenarios(container, data, nextBtn) {
+        const intro = document.createElement('p');
+        intro.className = 'reflection-prompt';
+        intro.textContent = data.intro;
+        container.appendChild(intro);
+
+        state.activityState.currentScenario = 0;
+        state.activityState.score = 0;
+
+        function renderScenario(index) {
+            container.innerHTML = '';
+            const scenario = data.scenarios[index];
+
+            const card = document.createElement('div');
+            card.className = 'scenario-card';
+            card.innerHTML = `
+                <p class="scenario-text">"${scenario.situation}"</p>
+                <p class="scenario-question">${scenario.question}</p>
+            `;
+            container.appendChild(card);
+
+            const grid = document.createElement('div');
+            grid.className = 'choices-grid';
+
+            let answered = false;
+
+            scenario.options.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.textContent = opt.text;
+
+                btn.addEventListener('click', () => {
+                    if (answered) return;
+                    answered = true;
+
+                    // Show all results
+                    grid.querySelectorAll('.choice-btn').forEach((b, idx) => {
+                        const isCorrect = scenario.options[idx].correct;
+                        b.classList.add(isCorrect ? 'correct' : 'incorrect');
+                    });
+
+                    btn.classList.remove('incorrect');
+                    btn.classList.add(opt.correct ? 'correct' : 'incorrect');
+                    if (opt.correct) state.activityState.score++;
+
+                    // Show explanation
+                    const expl = document.createElement('div');
+                    expl.className = 'scenario-card';
+                    expl.style.marginTop = '16px';
+                    expl.style.borderLeft = '4px solid var(--color-primary)';
+                    expl.innerHTML = `<p style="color:var(--color-text-muted);line-height:1.6;">\u{1F4A1} <strong>Erklärung:</strong> ${scenario.explanation}</p>`;
+                    container.appendChild(expl);
+
+                    nextBtn.classList.remove('hidden');
+                    nextBtn.textContent = index < data.scenarios.length - 1 ? 'N\u00E4chstes Szenario \u2192' : 'Abschlie\u00DFen \u2713';
+                });
+
+                grid.appendChild(btn);
+            });
+
+            container.appendChild(grid);
+
+            // Progress dots
+            const prog = document.createElement('div');
+            prog.className = 'breathing-progress';
+            prog.style.cssText = 'justify-content:center;margin-top:16px;';
+            for (let i = 0; i < data.scenarios.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'breathing-dot' + (i < index ? ' done' : '');
+                prog.appendChild(dot);
+            }
+            container.appendChild(prog);
+
+            nextBtn.classList.add('hidden');
+            nextBtn.onclick = () => {
+                if (index < data.scenarios.length - 1) {
+                    renderScenario(index + 1);
+                } else {
+                    showActivityFeedback(true, data.successMessage);
+                }
+            };
+        }
+
+        renderScenario(0);
+    }
+
+    // ---- Activity: Sorting ----
+    function renderSortingActivity(container, data, submitBtn) {
+        const intro = document.createElement('p');
+        intro.className = 'reflection-prompt';
+        intro.textContent = data.intro;
+        container.appendChild(intro);
+
+        state.activityState.placements = {};
+
+        // Categories
+        const catDiv = document.createElement('div');
+        catDiv.className = 'sort-categories';
+
+        const categoryDropZones = {};
+
+        data.categories.forEach((cat) => {
+            const zone = document.createElement('div');
+            zone.className = 'sort-category';
+            zone.dataset.categoryId = cat.id;
+
+            const title = document.createElement('div');
+            title.className = 'sort-category-title';
+            title.style.color = cat.color;
+            title.textContent = cat.title;
+            zone.appendChild(title);
+
+            const itemsArea = document.createElement('div');
+            itemsArea.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;min-height:40px;';
+            itemsArea.dataset.categoryId = cat.id;
+            zone.appendChild(itemsArea);
+
+            // Drop handling via click (simpler than drag-and-drop for all devices)
+            zone.addEventListener('click', () => {
+                const selected = container.querySelector('.sort-item.selected-for-move');
+                if (selected) {
+                    const itemIdx = selected.dataset.index;
+                    state.activityState.placements[itemIdx] = cat.id;
+
+                    // Move visually
+                    selected.classList.remove('selected-for-move');
+                    selected.classList.add('placed');
+                    selected.style.borderColor = cat.color;
+                    itemsArea.appendChild(selected);
+
+                    checkAllPlaced();
+                }
+            });
+
+            catDiv.appendChild(zone);
+            categoryDropZones[cat.id] = zone;
+        });
+
+        container.appendChild(catDiv);
+
+        // Items to sort
+        const itemsDiv = document.createElement('div');
+        itemsDiv.className = 'sort-items';
+        itemsDiv.id = 'sort-items-pool';
+
+        const shuffled = data.items.map((item, i) => ({ ...item, origIndex: i }))
+            .sort(() => Math.random() - 0.5);
+
+        shuffled.forEach((item) => {
+            const el = document.createElement('div');
+            el.className = 'sort-item';
+            el.textContent = item.text;
+            el.dataset.index = item.origIndex;
+
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // If placed, bring back
+                if (el.classList.contains('placed')) {
+                    el.classList.remove('placed');
+                    el.style.borderColor = '';
+                    delete state.activityState.placements[item.origIndex];
+                    itemsDiv.appendChild(el);
+                    checkAllPlaced();
+                    return;
+                }
+                // Toggle selection
+                container.querySelectorAll('.sort-item.selected-for-move').forEach((s) => s.classList.remove('selected-for-move'));
+                el.classList.add('selected-for-move');
+            });
+
+            itemsDiv.appendChild(el);
+        });
+
+        container.appendChild(itemsDiv);
+
+        // Instructions
+        const hint = document.createElement('p');
+        hint.style.cssText = 'font-size:0.85rem;color:var(--color-text-muted);margin-top:12px;text-align:center;';
+        hint.textContent = 'Klicke auf ein Element, dann klicke auf die passende Kategorie.';
+        container.appendChild(hint);
+
+        function checkAllPlaced() {
+            const allPlaced = Object.keys(state.activityState.placements).length === data.items.length;
+            submitBtn.classList.toggle('hidden', !allPlaced);
+        }
+
+        submitBtn.onclick = () => {
+            let correct = 0;
+            data.items.forEach((item, i) => {
+                const placed = state.activityState.placements[i];
+                if (placed === item.correct) correct++;
+            });
+
+            // Visual feedback
+            container.querySelectorAll('.sort-item').forEach((el) => {
+                const idx = parseInt(el.dataset.index);
+                const isCorrect = state.activityState.placements[idx] === data.items[idx].correct;
+                el.style.background = isCorrect ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)';
+                el.style.borderColor = isCorrect ? 'var(--color-success)' : 'var(--color-error)';
+            });
+
+            const ratio = correct / data.items.length;
+            if (ratio >= 0.7) {
+                setTimeout(() => showActivityFeedback(true, data.successMessage), 600);
+            } else {
+                setTimeout(() => showActivityFeedback(false, data.failMessage || 'Versuch es nochmal!'), 600);
+            }
+        };
+    }
+
+    // ---- Activity: Strengths ----
+    function renderStrengthsActivity(container, data, submitBtn) {
+        const intro = document.createElement('p');
+        intro.className = 'reflection-prompt';
+        intro.textContent = data.intro;
+        container.appendChild(intro);
+
+        state.activityState.selected = new Set();
+
+        const grid = document.createElement('div');
+        grid.className = 'strength-grid';
+
+        data.strengths.forEach((str, i) => {
+            const item = document.createElement('div');
+            item.className = 'strength-item';
+            item.innerHTML = `<div class="strength-check"></div><span>${str}</span>`;
+
+            item.addEventListener('click', () => {
+                if (state.activityState.selected.has(i)) {
+                    state.activityState.selected.delete(i);
+                    item.classList.remove('selected');
+                } else {
+                    state.activityState.selected.add(i);
+                    item.classList.add('selected');
+                }
+                submitBtn.classList.toggle('hidden', state.activityState.selected.size < data.minRequired);
+            });
+
+            grid.appendChild(item);
+        });
+
+        container.appendChild(grid);
+
+        const counter = document.createElement('p');
+        counter.style.cssText = 'text-align:center;margin-top:12px;font-size:0.9rem;color:var(--color-text-muted);';
+        counter.textContent = `W\u00E4hle mindestens ${data.minRequired} St\u00E4rken aus, die zu dir passen.`;
+        container.appendChild(counter);
+
+        submitBtn.onclick = () => {
+            if (state.activityState.selected.size >= data.minRequired) {
+                showActivityFeedback(true, data.successMessage);
+            }
+        };
+    }
+
+    // ---- Activity: Transform (Negative → Positive Thoughts) ----
+    function renderTransformActivity(container, data, submitBtn) {
+        const intro = document.createElement('p');
+        intro.className = 'reflection-prompt';
+        intro.textContent = data.intro;
+        container.appendChild(intro);
+
+        state.activityState.inputs = {};
+
+        data.transforms.forEach((t, i) => {
+            const card = document.createElement('div');
+            card.className = 'transform-card';
+
+            card.innerHTML = `
+                <div class="transform-original">
+                    <span style="font-size:1.3rem;">\u{1F6AB}</span>
+                    <span>${t.negative}</span>
+                </div>
+                <div class="transform-arrow">\u2B07 Wandle um in \u2B07</div>
+            `;
+
+            const input = document.createElement('textarea');
+            input.className = 'reflection-area';
+            input.style.minHeight = '60px';
+            input.placeholder = 'Schreibe hier einen positiven Gedanken...';
+            input.addEventListener('input', () => {
+                state.activityState.inputs[i] = input.value;
+                checkAllFilled();
+            });
+            card.appendChild(input);
+
+            const hint = document.createElement('p');
+            hint.className = 'transform-hint';
+            hint.textContent = '\u{1F4A1} ' + t.hint;
+            card.appendChild(hint);
+
+            // Show examples collapsed
+            const exBtn = document.createElement('button');
+            exBtn.className = 'btn btn-secondary';
+            exBtn.style.cssText = 'margin-top:8px;padding:6px 12px;font-size:0.8rem;';
+            exBtn.textContent = 'Beispiele anzeigen';
+            exBtn.addEventListener('click', () => {
+                const exDiv = card.querySelector('.examples');
+                if (exDiv) {
+                    exDiv.remove();
+                    exBtn.textContent = 'Beispiele anzeigen';
+                } else {
+                    const div = document.createElement('div');
+                    div.className = 'examples';
+                    div.style.cssText = 'margin-top:8px;padding:10px;background:rgba(16,185,129,0.1);border-radius:8px;';
+                    t.examples.forEach((ex) => {
+                        const p = document.createElement('p');
+                        p.style.cssText = 'font-size:0.9rem;color:var(--color-success);margin:4px 0;';
+                        p.textContent = '\u2713 ' + ex;
+                        div.appendChild(p);
+                    });
+                    card.appendChild(div);
+                    exBtn.textContent = 'Beispiele ausblenden';
+                }
+            });
+            card.appendChild(exBtn);
+
+            container.appendChild(card);
+        });
+
+        function checkAllFilled() {
+            const allFilled = data.transforms.every((_, i) =>
+                state.activityState.inputs[i] && state.activityState.inputs[i].trim().length > 5
+            );
+            submitBtn.classList.toggle('hidden', !allFilled);
+        }
+
+        submitBtn.onclick = () => {
+            showActivityFeedback(true, data.successMessage);
+        };
+    }
+
+    // ---- Activity: Goals ----
+    function renderGoalsActivity(container, data, submitBtn) {
+        const intro = document.createElement('p');
+        intro.className = 'reflection-prompt';
+        intro.textContent = data.intro;
+        container.appendChild(intro);
+
+        state.activityState.goals = {};
+
+        const pyramid = document.createElement('div');
+        pyramid.className = 'pyramid-container';
+
+        data.goalLevels.forEach((level, i) => {
+            const levelDiv = document.createElement('div');
+            levelDiv.className = 'pyramid-level';
+
+            const label = document.createElement('div');
+            label.className = 'pyramid-label';
+            label.textContent = level.label;
+            levelDiv.appendChild(label);
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'pyramid-input';
+            input.placeholder = level.placeholder;
+            input.style.width = (300 - i * 40) + 'px';
+            input.addEventListener('input', () => {
+                state.activityState.goals[i] = input.value;
+                checkAllFilled();
+            });
+            levelDiv.appendChild(input);
+
+            const hint = document.createElement('p');
+            hint.style.cssText = 'font-size:0.8rem;color:var(--color-text-muted);margin-top:4px;';
+            hint.textContent = level.hint;
+            levelDiv.appendChild(hint);
+
+            pyramid.appendChild(levelDiv);
+        });
+
+        container.appendChild(pyramid);
+
+        function checkAllFilled() {
+            const allFilled = data.goalLevels.every((_, i) =>
+                state.activityState.goals[i] && state.activityState.goals[i].trim().length > 3
+            );
+            submitBtn.classList.toggle('hidden', !allFilled);
+        }
+
+        submitBtn.onclick = () => {
+            showActivityFeedback(true, data.successMessage);
+        };
+    }
+
+    // ---- Activity: Transform Messages (Ich-Botschaften) ----
+    function renderTransformMessagesActivity(container, data, submitBtn) {
+        const intro = document.createElement('p');
+        intro.className = 'reflection-prompt';
+        intro.textContent = data.intro;
+        container.appendChild(intro);
+
+        // Show formula
+        const formula = document.createElement('div');
+        formula.className = 'scenario-card';
+        formula.style.borderLeft = '4px solid var(--color-worte, #8b5cf6)';
+        formula.innerHTML = `<p style="font-weight:700;color:var(--color-primary);">\u{1F4DD} Formel f\u00FCr Ich-Botschaften:</p><p style="font-size:1.05rem;margin-top:8px;">"${data.formula}"</p>`;
+        container.appendChild(formula);
+
+        state.activityState.inputs = {};
+
+        data.transforms.forEach((t, i) => {
+            const card = document.createElement('div');
+            card.className = 'transform-card';
+
+            card.innerHTML = `
+                <div class="transform-original">
+                    <span style="font-size:1.2rem;">\u274C</span>
+                    <span><strong>Du-Botschaft:</strong> "${t.duMessage}"</span>
+                </div>
+                <p style="font-size:0.9rem;color:var(--color-text-muted);margin:8px 0;">\u{1F4CD} Situation: ${t.situation}</p>
+                <div class="transform-arrow">\u2B07 Mache eine Ich-Botschaft daraus \u2B07</div>
+            `;
+
+            const fields = ['gefuehl', 'situation', 'grund', 'wunsch'];
+            const labels = {
+                gefuehl: 'Ich f\u00FChle mich...',
+                situation: 'wenn...',
+                grund: 'weil...',
+                wunsch: 'Ich w\u00FCnsche mir...',
+            };
+
+            if (!state.activityState.inputs[i]) state.activityState.inputs[i] = {};
+
+            fields.forEach((field) => {
+                const row = document.createElement('div');
+                row.style.cssText = 'margin-bottom:8px;';
+
+                const lbl = document.createElement('label');
+                lbl.style.cssText = 'font-size:0.85rem;font-weight:600;color:var(--color-text-muted);display:block;margin-bottom:4px;';
+                lbl.textContent = labels[field];
+                row.appendChild(lbl);
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'transform-input';
+                input.placeholder = t.correctParts[field];
+                input.style.fontSize = '0.9rem';
+                input.addEventListener('input', () => {
+                    state.activityState.inputs[i][field] = input.value;
+                    checkAllFilled();
+                });
+                row.appendChild(input);
+
+                card.appendChild(row);
+            });
+
+            container.appendChild(card);
+        });
+
+        function checkAllFilled() {
+            const allFilled = data.transforms.every((_, i) => {
+                const inp = state.activityState.inputs[i];
+                return inp && inp.gefuehl && inp.gefuehl.trim().length > 1;
+            });
+            submitBtn.classList.toggle('hidden', !allFilled);
+        }
+
+        submitBtn.onclick = () => {
+            showActivityFeedback(true, data.successMessage);
+        };
+    }
+
+    // ---- Activity: Breathing ----
+    function renderBreathingActivity(container, data, nextBtn) {
+        const intro = document.createElement('p');
+        intro.className = 'reflection-prompt';
+        intro.textContent = data.intro;
+        container.appendChild(intro);
+
+        const breathDiv = document.createElement('div');
+        breathDiv.className = 'breathing-container';
+
+        const circle = document.createElement('div');
+        circle.className = 'breathing-circle';
+        circle.textContent = 'Bereit?';
+        breathDiv.appendChild(circle);
+
+        const instruction = document.createElement('div');
+        instruction.className = 'breathing-instruction';
+        instruction.textContent = data.exercise.description;
+        breathDiv.appendChild(instruction);
+
+        const counter = document.createElement('div');
+        counter.className = 'breathing-counter';
+        counter.textContent = '';
+        breathDiv.appendChild(counter);
+
+        // Progress dots
+        const progress = document.createElement('div');
+        progress.className = 'breathing-progress';
+        for (let i = 0; i < data.exercise.cycles; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'breathing-dot';
+            progress.appendChild(dot);
+        }
+        breathDiv.appendChild(progress);
+
+        const startBtn = document.createElement('button');
+        startBtn.className = 'btn btn-primary';
+        startBtn.textContent = '\u{1F32C} \u00DCbung starten';
+        breathDiv.appendChild(startBtn);
+
+        container.appendChild(breathDiv);
+
+        startBtn.addEventListener('click', () => {
+            startBtn.classList.add('hidden');
+            runBreathingExercise(
+                circle, instruction, counter, progress,
+                data.exercise, data, nextBtn
+            );
+        });
+    }
+
+    function runBreathingExercise(circle, instruction, counter, progressDiv, exercise, data, nextBtn) {
+        let cycle = 0;
+        const dots = progressDiv.querySelectorAll('.breathing-dot');
+
+        function runCycle() {
+            if (cycle >= exercise.cycles) {
+                circle.className = 'breathing-circle';
+                circle.textContent = '\u2713';
+                instruction.textContent = 'Fertig! Wie f\u00FChlst du dich jetzt?';
+                counter.textContent = '';
+                showActivityFeedback(true, data.successMessage);
+                return;
+            }
+
+            // Inhale
+            circle.className = 'breathing-circle inhale';
+            circle.textContent = 'Einatmen';
+            instruction.textContent = 'Atme langsam durch die Nase ein...';
+            countDown(exercise.inhaleTime, counter, () => {
+                // Hold
+                circle.className = 'breathing-circle';
+                circle.textContent = 'Halten';
+                circle.style.transform = 'scale(1.4)';
+                instruction.textContent = 'Halte den Atem...';
+                countDown(exercise.holdTime, counter, () => {
+                    // Exhale
+                    circle.className = 'breathing-circle exhale';
+                    circle.textContent = 'Ausatmen';
+                    instruction.textContent = 'Atme langsam durch den Mund aus...';
+                    countDown(exercise.exhaleTime, counter, () => {
+                        dots[cycle].classList.add('done');
+                        cycle++;
+                        circle.style.transform = '';
+                        setTimeout(runCycle, 500);
+                    });
+                });
+            });
+        }
+
+        runCycle();
+    }
+
+    function countDown(seconds, el, callback) {
+        let remaining = seconds;
+        el.textContent = remaining;
+        const interval = setInterval(() => {
+            remaining--;
+            el.textContent = remaining > 0 ? remaining : '';
+            if (remaining <= 0) {
+                clearInterval(interval);
+                callback();
+            }
+        }, 1000);
+    }
+
+    // ---- Activity: Safe Place ----
+    function renderSafePlaceActivity(container, data, submitBtn) {
+        const intro = document.createElement('p');
+        intro.className = 'reflection-prompt';
+        intro.textContent = data.intro;
+        container.appendChild(intro);
+
+        state.activityState.answers = {};
+
+        data.prompts.forEach((prompt, i) => {
+            const div = document.createElement('div');
+            div.style.marginBottom = '20px';
+
+            const q = document.createElement('p');
+            q.className = 'scenario-question';
+            q.textContent = prompt.question;
+            div.appendChild(q);
+
+            const input = document.createElement('textarea');
+            input.className = 'reflection-area';
+            input.style.minHeight = '60px';
+            input.placeholder = prompt.placeholder;
+            input.addEventListener('input', () => {
+                state.activityState.answers[i] = input.value;
+                checkAllFilled();
+            });
+            div.appendChild(input);
+
+            container.appendChild(div);
+        });
+
+        function checkAllFilled() {
+            const allFilled = data.prompts.every((_, i) =>
+                state.activityState.answers[i] && state.activityState.answers[i].trim().length > 3
+            );
+            submitBtn.classList.toggle('hidden', !allFilled);
+        }
+
+        submitBtn.onclick = () => {
+            showActivityFeedback(true, data.successMessage);
+        };
+    }
+
+    // ---- Activity: Emergency Kit ----
+    function renderEmergencyKitActivity(container, data, submitBtn) {
+        const intro = document.createElement('p');
+        intro.className = 'reflection-prompt';
+        intro.textContent = data.intro;
+        container.appendChild(intro);
+
+        state.activityState.selected = {};
+
+        data.categories.forEach((cat, catIdx) => {
+            const section = document.createElement('div');
+            section.style.marginBottom = '24px';
+
+            const title = document.createElement('h3');
+            title.style.cssText = 'font-size:1.1rem;margin-bottom:12px;';
+            title.textContent = cat.icon + ' ' + cat.name;
+            section.appendChild(title);
+
+            const subtitle = document.createElement('p');
+            subtitle.style.cssText = 'font-size:0.85rem;color:var(--color-text-muted);margin-bottom:10px;';
+            subtitle.textContent = `W\u00E4hle mindestens ${data.minPerCategory} Strategien:`;
+            section.appendChild(subtitle);
+
+            state.activityState.selected[catIdx] = new Set();
+
+            const grid = document.createElement('div');
+            grid.className = 'strength-grid';
+
+            cat.strategies.forEach((str, strIdx) => {
+                const item = document.createElement('div');
+                item.className = 'strength-item';
+                item.innerHTML = `<div class="strength-check"></div><span>${str}</span>`;
+
+                item.addEventListener('click', () => {
+                    const sel = state.activityState.selected[catIdx];
+                    const key = strIdx;
+                    if (sel.has(key)) {
+                        sel.delete(key);
+                        item.classList.remove('selected');
+                    } else {
+                        sel.add(key);
+                        item.classList.add('selected');
+                    }
+                    checkMinSelected();
+                });
+
+                grid.appendChild(item);
+            });
+
+            section.appendChild(grid);
+            container.appendChild(section);
+        });
+
+        function checkMinSelected() {
+            const allMet = data.categories.every((_, i) =>
+                state.activityState.selected[i].size >= data.minPerCategory
+            );
+            submitBtn.classList.toggle('hidden', !allMet);
+        }
+
+        submitBtn.onclick = () => {
+            showActivityFeedback(true, data.successMessage);
+        };
+    }
+
+    // ---- Activity Feedback & Completion ----
+    function showActivityFeedback(success, message) {
+        const overlay = document.getElementById('feedback-overlay');
+        const content = document.getElementById('feedback-content');
+
+        if (success) {
+            content.innerHTML = `
+                <div class="feedback-icon">\u{1F3C6}</div>
+                <div class="feedback-title" style="color:var(--color-success);">Geschafft!</div>
+                <div class="feedback-text">${message}</div>
+                <button class="feedback-btn feedback-btn-success" id="feedback-continue">Weiter</button>
+            `;
+        } else {
+            content.innerHTML = `
+                <div class="feedback-icon">\u{1F4AA}</div>
+                <div class="feedback-title" style="color:var(--color-warning);">Fast!</div>
+                <div class="feedback-text">${message}</div>
+                <button class="feedback-btn feedback-btn-retry" id="feedback-retry">Nochmal versuchen</button>
+            `;
+        }
+
+        overlay.classList.remove('hidden');
+
+        if (success) {
+            document.getElementById('feedback-continue').addEventListener('click', () => {
+                overlay.classList.add('hidden');
+                completeCurrentLevel();
+            });
+        } else {
+            document.getElementById('feedback-retry').addEventListener('click', () => {
+                overlay.classList.add('hidden');
+                // Restart activity
+                const buildingId = buildingIds[state.currentBuilding];
+                startActivity(buildingId, state.currentLevel);
+            });
+        }
+    }
+
+    function completeCurrentLevel() {
+        const buildingId = buildingIds[state.currentBuilding];
+        const newProgress = state.currentLevel + 1;
+
+        // Only update if progressing forward
+        if (newProgress > state.progress[buildingId]) {
+            state.progress[buildingId] = newProgress;
+            state.totalCompleted = Object.values(state.progress).reduce((a, b) => a + b, 0);
+
+            // Update 3D building
+            GameEngine.updateBuildingProgress(state.currentBuilding, newProgress);
+            GameEngine.spawnCelebrationParticles(state.currentBuilding);
+        }
+
+        saveState();
+
+        // Check if all buildings complete
+        const allComplete = buildingIds.every((id) => state.progress[id] >= 3);
+
+        if (allComplete) {
+            setTimeout(() => showCompletionScreen(), 500);
+        } else {
+            showScreen('game-screen');
+            updateHUD();
+
+            const def = GameEngine.getBuildingDefs()[state.currentBuilding];
+            if (newProgress >= 3) {
+                showToast(def.name + ' ist fertig! \u{1F3C6}', '\u{1F389}');
+            } else {
+                showToast('Level abgeschlossen! ' + def.name + ' w\u00E4chst!', '\u{1F9F1}');
+            }
+        }
+    }
+
+    // ---- Completion Screen ----
+    function showCompletionScreen() {
+        showScreen('completion-screen');
+
+        document.getElementById('completion-name').textContent = state.playerName;
+
+        const summary = document.getElementById('completion-summary');
+        summary.innerHTML = '';
+
+        GameEngine.getBuildingDefs().forEach((def) => {
+            const div = document.createElement('div');
+            div.className = 'completion-building';
+            div.innerHTML = `
+                <div class="completion-building-dot" style="background:${def.cssColor}"></div>
+                <span class="completion-building-name">${def.name}</span>
+                <span class="completion-building-check">\u2705</span>
+            `;
+            summary.appendChild(div);
+        });
+
+        // Simple confetti effect
+        createConfetti();
+    }
+
+    function createConfetti() {
+        const container = document.getElementById('completion-fireworks');
+        container.innerHTML = '';
+        container.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:hidden;';
+
+        const colors = ['#f59e0b', '#3b82f6', '#10b981', '#8b5cf6', '#06b6d4', '#ef4444', '#fbbf24', '#f472b6'];
+
+        for (let i = 0; i < 60; i++) {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position:absolute;
+                width:${6 + Math.random() * 8}px;
+                height:${6 + Math.random() * 8}px;
+                background:${colors[Math.floor(Math.random() * colors.length)]};
+                border-radius:${Math.random() > 0.5 ? '50%' : '2px'};
+                left:${Math.random() * 100}%;
+                top:${-10 - Math.random() * 20}%;
+                animation: confettiFall ${2 + Math.random() * 3}s linear ${Math.random() * 2}s infinite;
+            `;
+            container.appendChild(particle);
+        }
+
+        // Add confetti animation
+        if (!document.getElementById('confetti-style')) {
+            const style = document.createElement('style');
+            style.id = 'confetti-style';
+            style.textContent = `
+                @keyframes confettiFall {
+                    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+                    100% { transform: translateY(110vh) rotate(${360 + Math.random() * 360}deg); opacity: 0.5; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    // ---- Event Listeners ----
+    function setupEventListeners() {
+        // Building info close
+        document.getElementById('btn-close-info').addEventListener('click', () => {
+            closeBuildingInfo();
+            GameEngine.resume();
+        });
+
+        document.getElementById('btn-back-to-world').addEventListener('click', () => {
+            closeBuildingInfo();
+            showScreen('game-screen');
+        });
+
+        // Help panel
+        document.getElementById('btn-help').addEventListener('click', () => {
+            document.getElementById('help-panel').classList.remove('hidden');
+        });
+
+        document.getElementById('btn-close-help').addEventListener('click', () => {
+            document.getElementById('help-panel').classList.add('hidden');
+        });
+
+        // Activity back
+        document.getElementById('btn-activity-back').addEventListener('click', () => {
+            showScreen('game-screen');
+        });
+
+        // Restart
+        document.getElementById('btn-restart').addEventListener('click', () => {
+            localStorage.removeItem('baumeister_save');
+            buildingIds.forEach((id) => { state.progress[id] = 0; });
+            state.totalCompleted = 0;
+            buildingIds.forEach((_, i) => GameEngine.updateBuildingProgress(i, 0));
+            showScreen('game-screen');
+            updateHUD();
+            showToast('Neue Runde! Viel Spa\u00DF!', '\u{1F680}');
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (state.currentScreen === 'activity-screen') {
+                    showScreen('game-screen');
+                } else {
+                    const info = document.getElementById('building-info');
+                    if (!info.classList.contains('hidden')) {
+                        closeBuildingInfo();
+                        GameEngine.resume();
+                    }
+                    const help = document.getElementById('help-panel');
+                    if (!help.classList.contains('hidden')) {
+                        help.classList.add('hidden');
+                    }
+                    const feedback = document.getElementById('feedback-overlay');
+                    if (!feedback.classList.contains('hidden')) {
+                        feedback.classList.add('hidden');
+                    }
+                }
+            }
+        });
+    }
+
+    // ---- Boot ----
+    function boot() {
+        initState();
+        setupStartScreen();
+        setupEventListeners();
+    }
+
+    // Start when DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        boot();
+    }
+})();
+
+    </script>
 </body>
 </html>
