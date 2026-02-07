@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #6C5CE7;
+  --color-primary-light: #a29bfe;
+  --color-primary-dark: #5541d6;
+  --color-secondary: #81ECEC;
+  --color-secondary-dark: #00cec9;
+  --color-peach: #FAB1A0;
+  --color-peach-dark: #e17055;
+  --color-gold: #FFEAA7;
+  --color-gold-dark: #fdcb6e;
+  --color-volcano: #e17055;
+  --color-volcano-light: #fab1a0;
+  --color-ocean: #0984e3;
+  --color-ocean-light: #74b9ff;
+  --color-forest: #00b894;
+  --color-forest-light: #55efc4;
+  --color-mountain: #6c5ce7;
+  --color-mountain-light: #a29bfe;
+  --color-garden: #fd79a8;
+  --color-garden-light: #fda7c6;
+  --color-night: #2d3436;
+  --color-night-light: #636e72;
+  --color-rainbow: #e84393;
+  --color-rainbow-light: #fd79a8;
+  --color-home: #fdcb6e;
+  --color-home-light: #ffeaa7;
+  --color-success: #00b894;
+  --color-warning: #fdcb6e;
+  --color-danger: #d63031;
+  --color-bg: #faf3e8;
+  --color-bg-dark: #2d3436;
+  --color-text: #2d3436;
+  --color-text-light: #636e72;
+  --color-text-dark: #faf3e8;
+  --font-main: 'Nunito', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body.dyslexia-font {
+  font-family: 'OpenDyslexic', sans-serif !important;
+}
+
+body.dyslexia-font * {
+  font-family: 'OpenDyslexic', sans-serif !important;
+}
+
+body.high-contrast {
+  --color-bg: #000000;
+  --color-text: #ffffff;
+  --color-primary: #9d8cff;
+  --color-secondary: #a0ffff;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-light);
+  border-radius: 4px;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
