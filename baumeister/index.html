@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BauMeister - Deine Baustelle | CDSE Luxembourg</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+</head>
+<body>
+    <!-- ============ START SCREEN ============ -->
+    <div id="start-screen" class="screen active">
+        <div class="start-container">
+            <div class="hard-hat-icon">&#9881;</div>
+            <h1 class="game-title">BAU<span class="highlight">MEISTER</span></h1>
+            <p class="game-subtitle">Deine Baustelle &ndash; Baue an deinen St&auml;rken!</p>
+            <div class="start-form">
+                <label for="player-name">Wie hei&szlig;t du?</label>
+                <input type="text" id="player-name" placeholder="Dein Name..." maxlength="20" autocomplete="off">
+                <button id="btn-start" class="btn btn-primary" disabled>
+                    <span class="btn-icon">&#9654;</span> Baustelle betreten
+                </button>
+            </div>
+            <div class="start-info">
+                <p>Willkommen auf deiner pers&ouml;nlichen Baustelle!<br>
+                Hier kannst du an <strong>5 spannenden Projekten</strong> arbeiten und deine St&auml;rken entdecken.</p>
+            </div>
+            <div class="cdse-badge">CDSE Luxembourg</div>
+        </div>
+    </div>
+
+    <!-- ============ INTRO SCREEN ============ -->
+    <div id="intro-screen" class="screen">
+        <div class="intro-container">
+            <div class="intro-content" id="intro-content">
+                <!-- Filled dynamically -->
+            </div>
+            <button id="btn-intro-next" class="btn btn-primary">Weiter &rarr;</button>
+        </div>
+    </div>
+
+    <!-- ============ GAME SCREEN (3D World) ============ -->
+    <div id="game-screen" class="screen">
+        <canvas id="game-canvas"></canvas>
+
+        <!-- HUD -->
+        <div id="hud">
+            <div class="hud-left">
+                <div class="hud-player">
+                    <span class="hud-hat">&#9881;</span>
+                    <span id="hud-name">BauMeister</span>
+                </div>
+                <div class="hud-progress-bar">
+                    <div class="hud-progress-fill" id="hud-progress-fill"></div>
+                    <span class="hud-progress-text" id="hud-progress-text">0 / 15</span>
+                </div>
+            </div>
+            <div class="hud-right">
+                <button id="btn-help" class="btn-hud" title="Hilfe">?</button>
+            </div>
+        </div>
+
+        <!-- Interaction Prompt -->
+        <div id="interaction-prompt" class="hidden">
+            <div class="prompt-content">
+                <span class="prompt-key">E</span>
+                <span id="prompt-text">Gef&uuml;hls-Werkstatt betreten</span>
+            </div>
+        </div>
+
+        <!-- Building Info Panel -->
+        <div id="building-info" class="hidden">
+            <div class="building-info-content">
+                <div class="building-info-header">
+                    <span class="building-info-icon" id="building-info-icon"></span>
+                    <h2 id="building-info-title"></h2>
+                    <button id="btn-close-info" class="btn-close">&times;</button>
+                </div>
+                <p id="building-info-desc"></p>
+                <div class="building-levels" id="building-levels">
+                    <!-- Levels filled dynamically -->
+                </div>
+                <button id="btn-back-to-world" class="btn btn-secondary">Zur&uuml;ck zur Baustelle</button>
+            </div>
+        </div>
+
+        <!-- Help Panel -->
+        <div id="help-panel" class="hidden">
+            <div class="help-content">
+                <h2>Steuerung</h2>
+                <button id="btn-close-help" class="btn-close">&times;</button>
+                <div class="help-controls">
+                    <div class="help-item"><span class="key">W/&#8593;</span> Vorw&auml;rts</div>
+                    <div class="help-item"><span class="key">S/&#8595;</span> R&uuml;ckw&auml;rts</div>
+                    <div class="help-item"><span class="key">A/&#8592;</span> Links</div>
+                    <div class="help-item"><span class="key">D/&#8594;</span> Rechts</div>
+                    <div class="help-item"><span class="key">Maus</span> Kamera drehen</div>
+                    <div class="help-item"><span class="key">E</span> Interagieren</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ ACTIVITY SCREEN ============ -->
+    <div id="activity-screen" class="screen">
+        <div class="activity-container">
+            <div class="activity-header">
+                <div class="activity-building-badge" id="activity-badge"></div>
+                <h2 id="activity-title"></h2>
+                <div class="activity-level-badge" id="activity-level-badge"></div>
+            </div>
+            <div class="activity-body" id="activity-body">
+                <!-- Activity content filled dynamically -->
+            </div>
+            <div class="activity-footer">
+                <button id="btn-activity-back" class="btn btn-secondary">Zur&uuml;ck</button>
+                <button id="btn-activity-submit" class="btn btn-primary hidden">Pr&uuml;fen</button>
+                <button id="btn-activity-next" class="btn btn-primary hidden">Weiter &rarr;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ FEEDBACK OVERLAY ============ -->
+    <div id="feedback-overlay" class="hidden">
+        <div class="feedback-content" id="feedback-content">
+            <!-- Filled dynamically -->
+        </div>
+    </div>
+
+    <!-- ============ COMPLETION SCREEN ============ -->
+    <div id="completion-screen" class="screen">
+        <div class="completion-container">
+            <div class="completion-fireworks" id="completion-fireworks"></div>
+            <h1>&#127881; Gl&uuml;ckwunsch, <span id="completion-name">BauMeister</span>! &#127881;</h1>
+            <p class="completion-text">Du hast alle 5 Baustellen fertiggestellt!<br>
+            Du bist ein wahrer <strong>BauMeister</strong> deiner St&auml;rken.</p>
+            <div class="completion-summary" id="completion-summary">
+                <!-- Filled dynamically -->
+            </div>
+            <div class="completion-message">
+                <p>Denk immer daran: Du bist ein Bauwerk, das jeden Tag w&auml;chst.<br>
+                Jede Erfahrung ist ein neuer Stein in deinem Fundament.</p>
+            </div>
+            <button id="btn-restart" class="btn btn-primary">Nochmal spielen</button>
+            <div class="cdse-badge">CDSE Luxembourg</div>
+        </div>
+    </div>
+
+    <!-- ============ NOTIFICATION TOAST ============ -->
+    <div id="toast" class="toast hidden">
+        <span id="toast-icon"></span>
+        <span id="toast-text"></span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/activities.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
