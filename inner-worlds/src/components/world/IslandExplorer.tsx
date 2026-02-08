@@ -2576,21 +2576,26 @@ function WaterRing({ theme }: { theme: IslandTheme }) {
 // ---------------------------------------------------------------------------
 
 function AmbientParticles({ islandId }: { theme: IslandTheme; islandId: string }) {
-  const count = 30;
+  const count = 50;
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const offsets = useMemo(() => {
-    const arr: Array<{ x: number; y: number; z: number; speed: number; phase: number }> = [];
+    const arr: Array<{
+      x: number; y: number; z: number; speed: number; phase: number;
+      driftX: number; driftZ: number;
+    }> = [];
     const rng = makeRng((SEED_MAP[islandId] ?? 101) + 8888);
     for (let i = 0; i < count; i++) {
       const angle = rng() * Math.PI * 2;
       const r = 3 + rng() * (GROUND_SIZE - 6);
       arr.push({
         x: Math.cos(angle) * r,
-        y: 1 + rng() * 5,
+        y: 0.5 + rng() * 6,
         z: Math.sin(angle) * r,
         speed: 0.3 + rng() * 0.7,
         phase: rng() * Math.PI * 2,
+        driftX: (rng() - 0.5) * 2,
+        driftZ: (rng() - 0.5) * 2,
       });
     }
     return arr;
@@ -2616,9 +2621,12 @@ function AmbientParticles({ islandId }: { theme: IslandTheme; islandId: string }
     for (let i = 0; i < count; i++) {
       const o = offsets[i];
       const yOff = Math.sin(t * o.speed + o.phase) * 1.5;
-      const xOff = Math.sin(t * 0.5 + o.phase) * 0.5;
-      dummy.position.set(o.x + xOff, o.y + yOff, o.z);
-      dummy.scale.setScalar(0.04 + Math.sin(t * 2 + o.phase) * 0.02);
+      const xOff = Math.sin(t * 0.5 + o.phase) * o.driftX;
+      const zOff = Math.cos(t * 0.3 + o.phase) * o.driftZ;
+      dummy.position.set(o.x + xOff, o.y + yOff, o.z + zOff);
+      // Pulsing scale for glow-like effect
+      const pulse = 0.04 + Math.sin(t * 2.5 + o.phase) * 0.025;
+      dummy.scale.setScalar(Math.max(0.01, pulse));
       dummy.updateMatrix();
       meshRef.current.setMatrixAt(i, dummy.matrix);
     }
@@ -2628,7 +2636,14 @@ function AmbientParticles({ islandId }: { theme: IslandTheme; islandId: string }
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <sphereGeometry args={[1, 6, 4]} />
-      <meshBasicMaterial color={particleColor} transparent opacity={0.8} />
+      <meshStandardMaterial
+        color={particleColor}
+        emissive={particleColor}
+        emissiveIntensity={0.8}
+        transparent
+        opacity={0.7}
+        roughness={1}
+      />
     </instancedMesh>
   );
 }
