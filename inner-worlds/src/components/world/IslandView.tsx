@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useGameStore } from '../../stores/gameStore';
 import { getIslandData } from '../../data';
 import SOSButton from '../common/SOSButton';
@@ -17,8 +16,6 @@ export default function IslandView() {
     setScreen,
     setActiveIsland,
   } = useGameStore();
-  const [activeScenarioId, setActiveScenarioId] = useState<string | null>(null);
-  const [activeActivityId, setActiveActivityId] = useState<string | null>(null);
 
   const island = islands.find((i) => i.id === activeIsland);
   if (!island) return null;
@@ -36,15 +33,12 @@ export default function IslandView() {
   };
 
   const handleStartScenario = (scenarioId: string) => {
-    setActiveScenarioId(scenarioId);
-    // Store active scenario ID in sessionStorage for the ScenarioPlayer
     sessionStorage.setItem('activeScenarioId', scenarioId);
     sessionStorage.setItem('activeIslandId', island.id);
     setScreen('scenario');
   };
 
   const handleStartActivity = (activityId: string) => {
-    setActiveActivityId(activityId);
     sessionStorage.setItem('activeActivityId', activityId);
     sessionStorage.setItem('activeIslandId', island.id);
     setScreen('activity');

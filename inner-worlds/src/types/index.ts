@@ -8,20 +8,22 @@
 // -----------------------------------------------------------------------------
 
 /** Core emotions tracked throughout the game */
-export enum Mood {
-  Happy = 'happy',
-  Sad = 'sad',
-  Angry = 'angry',
-  Anxious = 'anxious',
-  Calm = 'calm',
-  Confused = 'confused',
-  Excited = 'excited',
-  Tired = 'tired',
-  Lonely = 'lonely',
-  Proud = 'proud',
-  Frustrated = 'frustrated',
-  Hopeful = 'hopeful',
-}
+export const Mood = {
+  Happy: 'happy',
+  Sad: 'sad',
+  Angry: 'angry',
+  Anxious: 'anxious',
+  Calm: 'calm',
+  Confused: 'confused',
+  Excited: 'excited',
+  Tired: 'tired',
+  Lonely: 'lonely',
+  Proud: 'proud',
+  Frustrated: 'frustrated',
+  Hopeful: 'hopeful',
+} as const;
+
+export type Mood = (typeof Mood)[keyof typeof Mood];
 
 // -----------------------------------------------------------------------------
 // Scalar Type Aliases (Unions)
@@ -288,6 +290,38 @@ export interface Settings {
 }
 
 // -----------------------------------------------------------------------------
+// Achievement
+// -----------------------------------------------------------------------------
+
+/** A game achievement that can be unlocked by the player */
+export interface Achievement {
+  /** Unique achievement identifier */
+  id: string;
+  /** Display name of the achievement */
+  name: string;
+  /** Description of how to unlock the achievement */
+  description: string;
+  /** Whether the achievement has been unlocked */
+  unlocked: boolean;
+  /** ISO-8601 timestamp of when the achievement was unlocked, or null */
+  unlockedAt: string | null;
+}
+
+// -----------------------------------------------------------------------------
+// Game Event (for animation triggers)
+// -----------------------------------------------------------------------------
+
+/** An event triggered for UI animations and feedback */
+export interface GameEvent {
+  /** Event type identifier (e.g. 'level-up', 'achievement-unlocked') */
+  type: string;
+  /** Arbitrary event payload */
+  data: any;
+  /** Unix timestamp (ms) of when the event was triggered */
+  timestamp: number;
+}
+
+// -----------------------------------------------------------------------------
 // Game State
 // -----------------------------------------------------------------------------
 
@@ -325,4 +359,30 @@ export interface GameState {
   completedActivities: string[];
   /** Set of island IDs the player has unlocked */
   unlockedIslands: IslandId[];
+
+  // Streak
+  /** Current consecutive scenario completion streak */
+  streak: number;
+  /** Best streak ever achieved */
+  bestStreak: number;
+
+  // Achievements
+  /** All game achievements (locked and unlocked) */
+  achievements: Achievement[];
+
+  // Skill point totals
+  /** Total empathy skill points earned across all scenarios */
+  totalEmpathyPoints: number;
+  /** Total insight skill points earned across all scenarios */
+  totalInsightPoints: number;
+  /** Total courage skill points earned across all scenarios */
+  totalCouragePoints: number;
+
+  // Combo
+  /** Current combo multiplier for consecutive good choices */
+  comboMultiplier: number;
+
+  // Events
+  /** Last game event for animation triggers */
+  lastEvent: GameEvent | null;
 }

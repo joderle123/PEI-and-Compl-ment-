@@ -20,9 +20,10 @@ import PedagogDashboard from './components/dashboard/PedagogDashboard';
 
 // Common
 import SOSButton from './components/common/SOSButton';
+import RewardPopup from './components/common/RewardPopup';
 
 function App() {
-  const { currentScreen, settings } = useGameStore();
+  const { currentScreen, settings, lastEvent, comboMultiplier } = useGameStore();
 
   // Apply accessibility settings on mount and when they change
   useEffect(() => {
@@ -61,7 +62,7 @@ function App() {
         return <PedagogDashboard />;
       case 'sos':
         return (
-          <div className="h-screen bg-[#faf3e8]">
+          <div className="h-screen bg-[#0d0d1a]">
             <SOSButton />
           </div>
         );
@@ -71,7 +72,7 @@ function App() {
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-[#faf3e8]">
+    <div className="h-screen w-screen overflow-hidden bg-[#0d0d1a]">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentScreen}
@@ -84,6 +85,9 @@ function App() {
           {renderScreen()}
         </motion.div>
       </AnimatePresence>
+
+      {/* Global reward/celebration overlay */}
+      <RewardPopup lastEvent={lastEvent} comboMultiplier={comboMultiplier} />
     </div>
   );
 }

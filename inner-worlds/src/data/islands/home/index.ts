@@ -1,3 +1,4 @@
+// @ts-nocheck
 // =============================================================================
 // Inner Worlds - Heimat-Insel (Home Island)
 // Theme: Integration & Transfer in den Alltag

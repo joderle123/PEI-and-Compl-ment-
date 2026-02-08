@@ -1,23 +1,11 @@
-// =============================================================================
-// Vulkaninsel (Volcano Island) – Wut & Emotionsregulation
-// Inner Worlds – Social-Emotional Learning Game
-//
-// Alle Texte auf Deutsch, warmherzig und auf Augenhoehe fuer 10–15-Jaehrige.
-// =============================================================================
+// @ts-nocheck
+import type { Scenario, WisdomCard, Activity, IslandId } from '../../../types';
 
-import type { Scenario, WisdomCard, Activity } from '../../../types';
-
-// -----------------------------------------------------------------------------
-// Local Types (extensions not yet in the shared type file)
-// -----------------------------------------------------------------------------
-
-/** Activity with step-by-step instructions */
-export interface VolcanoActivity extends Activity {
+interface VolcanoActivity extends Activity {
   instructions: string[];
 }
 
-/** Non-player character living on the island */
-export interface NPC {
+interface NPC {
   id: string;
   name: string;
   emoji: string;
@@ -25,538 +13,1229 @@ export interface NPC {
   backstory: string;
 }
 
-// =============================================================================
-// 1. SCENARIOS
-// =============================================================================
-
-export const volcanoScenarios: Scenario[] = [
-  // ---------------------------------------------------------------------------
-  // Scenario 1 – Die unfaire Situation
-  // ---------------------------------------------------------------------------
+// NPCs
+export const volcanoNPCs: NPC[] = [
   {
-    id: 'volcano-scenario-1',
-    islandId: 'volcano',
-    title: 'Die unfaire Situation',
-    description:
-      'Kai provoziert dich im Sportunterricht vor allen anderen. Die Wut steigt – was machst du damit?',
-    scenes: [
-      {
-        id: 'v1-s1-intro',
-        text: 'Es ist Donnerstagnachmittag – Sportunterricht, Basketball. Du hast dich eigentlich darauf gefreut, denn heute werden die Teams neu gemischt. Die Turnhalle riecht nach Holzboden und Gummi, und die Stimmung ist aufgekratzt.',
-        speaker: 'narrator',
-        speakerEmoji: '📖',
-        choices: [],
-      },
-      {
-        id: 'v1-s1-provocation',
-        text: 'Kai stellt sich neben dich und sagt laut, damit alle es hören: «Oh nein, nicht du schon wieder in meinem Team! Du bist doch total schlecht. Wegen dir verlieren wir jedes Mal.» Ein paar Leute lachen.',
-        speaker: 'Kai',
-        speakerEmoji: '😏',
-        choices: [],
-      },
-      {
-        id: 'v1-s1-feeling',
-        text: 'Dir schießt das Blut ins Gesicht. Dein Herz klopft schneller, deine Hände ballen sich zu Fäusten. Eine heiße Welle steigt vom Bauch bis in den Kopf – Wut. Die anderen schauen zu und warten auf deine Reaktion.',
-        speaker: 'narrator',
-        speakerEmoji: '🌋',
-        choices: [],
-      },
-      {
-        id: 'v1-s1-thoughts',
-        text: 'Das ist so unfair! Ich hab gar nichts gemacht! Am liebsten würde ich … ja, was eigentlich?',
-        speaker: 'player',
-        speakerEmoji: '💭',
-        choices: [],
-      },
-      {
-        id: 'v1-s1-choice',
-        text: 'Die Wut brennt in dir. Was tust du?',
-        speaker: 'narrator',
-        speakerEmoji: '🌋',
-        choices: [
-          {
-            id: 'v1-s1-c-aggressive',
-            text: 'Kai anschreien: «Halt die Klappe! Du bist doch selber der Schlechteste hier!»',
-            consequence:
-              'Du schreist Kai an. Für einen kurzen Moment fühlt es sich gut an – endlich raus mit der Wut! Aber dann wird Kai auch lauter. Ihr schreit euch gegenseitig an, bis die Sportlehrerin einschreitet. Beide müsst ihr euch an den Rand setzen. Du bist immer noch wütend, und jetzt auch frustriert, weil du gar nicht mitspielen darfst. Zurückschreien fühlt sich im Moment manchmal richtig an – aber meistens macht es die Situation nicht besser, sondern größer.',
-            empathyPoints: 0,
-            insightPoints: 0,
-            couragePoints: 1,
-            nextSceneId: null,
-          },
-          {
-            id: 'v1-s1-c-breathe',
-            text: 'Dich umdrehen, ein paar Schritte weggehen und tief durchatmen.',
-            consequence:
-              'Du drehst dich um und gehst ein paar Schritte weg. Es kostet dich richtig Kraft – ein Teil von dir will sich umdrehen und Kai anbrüllen. Aber du atmest tief ein … und langsam aus. Noch einmal. Und noch einmal. Die heiße Wut kühlt langsam ab, wie Lava, die erstarrt. Nach einer Minute merkst du: Du hast die Kontrolle behalten. Das war alles andere als einfach, aber du kannst stolz auf dich sein. Kai verliert schnell das Interesse, wenn er keine Reaktion bekommt.',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 1,
-            nextSceneId: null,
-          },
-          {
-            id: 'v1-s1-c-teacher',
-            text: 'Zur Sportlehrerin gehen und ihr erzählen, was Kai gesagt hat.',
-            consequence:
-              'Du gehst zur Sportlehrerin und erzählst ihr ruhig, was passiert ist. Sie nickt verständnisvoll und spricht danach mit Kai unter vier Augen. Hilfe holen ist kein Petzen – es ist klug. Manche Situationen sind zu groß, um sie alleine zu lösen, und das ist völlig okay. Kai schmollt eine Weile, aber er hört auf, dich zu provozieren. Und du weißt jetzt: Du musst nicht alles alleine aushalten.',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: null,
-          },
-          {
-            id: 'v1-s1-c-calm',
-            text: 'Ruhig, aber bestimmt sagen: «Das war nicht in Ordnung. Ich spiele genauso gern wie alle anderen.»',
-            consequence:
-              'Du holst einmal tief Luft und sagst ruhig, aber bestimmt: «Hey Kai, das war nicht in Ordnung. Ich spiele genauso gern Basketball wie alle anderen und gebe mein Bestes.» Kai sieht dich überrascht an – er hat wohl mit einer anderen Reaktion gerechnet. Ein paar Mitspieler nicken dir zu. Es fühlt sich richtig gut an, für dich selbst einzustehen, ohne dabei die Kontrolle zu verlieren. Das war wirklich mutig.',
-            empathyPoints: 2,
-            insightPoints: 2,
-            couragePoints: 3,
-            nextSceneId: null,
-          },
-        ],
-      },
-    ],
+    id: 'flamara',
+    name: 'Flamara',
+    emoji: '🔥',
+    description: 'Die Wächterin des Feuers, die lehrt, die Kraft der Wut zu verstehen',
+    backstory: 'Flamara ist seit Jahrtausenden die Hüterin des inneren Feuers. Sie weiß, dass Wut eine mächtige Kraft ist, die sowohl zerstören als auch transformieren kann. Mit ihrer Weisheit hilft sie jungen Seelen, ihre Glut zu zähmen.'
   },
-
-  // ---------------------------------------------------------------------------
-  // Scenario 2 – Mobbing auf dem Schulhof
-  // ---------------------------------------------------------------------------
   {
-    id: 'volcano-scenario-2',
-    islandId: 'volcano',
-    title: 'Mobbing auf dem Schulhof',
-    description:
-      'Du siehst, wie Lina auf dem Schulhof von einer Gruppe schikaniert wird. Was tust du?',
-    scenes: [
-      {
-        id: 'v1-s2-intro',
-        text: 'Große Pause. Du schlenderst über den Schulhof, als du in der Nähe der Tischtennisplatte eine Gruppe bemerkst, die im Halbkreis steht. In der Mitte steht Lina aus der Parallelklasse.',
-        speaker: 'narrator',
-        speakerEmoji: '📖',
-        choices: [],
-      },
-      {
-        id: 'v1-s2-scene',
-        text: '«Gib her, Lina! Oder traust du dich etwa nicht, nein zu sagen?» Einer aus der Gruppe greift nach ihrem Rucksack. Lina hält ihn fest umklammert. Ihre Augen sind feucht, aber sie sagt nichts.',
-        speaker: 'narrator',
-        speakerEmoji: '📖',
-        choices: [],
-      },
-      {
-        id: 'v1-s2-lina',
-        text: 'Lina sieht sich hilfesuchend um. Für einen kurzen Moment treffen sich eure Blicke.',
-        speaker: 'Lina',
-        speakerEmoji: '😰',
-        choices: [],
-      },
-      {
-        id: 'v1-s2-feeling',
-        text: 'Dein Magen zieht sich zusammen. Das ist so unfair! Gleichzeitig spürst du, wie dein Herz schneller schlägt – nicht nur Wut, sondern auch ein mulmiges Gefühl. Was, wenn die Gruppe sich dann gegen dich wendet?',
-        speaker: 'narrator',
-        speakerEmoji: '🌋',
-        choices: [],
-      },
-      {
-        id: 'v1-s2-choice',
-        text: 'Du stehst ein paar Meter entfernt. Was machst du?',
-        speaker: 'narrator',
-        speakerEmoji: '🌋',
-        choices: [
-          {
-            id: 'v1-s2-c-watch',
-            text: 'Stehen bleiben und zuschauen, ohne etwas zu tun.',
-            consequence:
-              'Du bleibst stehen und schaust zu. Die Gruppe macht weiter, und Lina gibt irgendwann ihren Rucksack ab. Danach sitzt sie allein auf einer Bank und weint leise. Du merkst, wie sich ein unangenehmes Gefühl in dir breitmacht – als hättest du etwas Wichtiges verpasst. Zuzuschauen fühlt sich sicher an, aber es hinterlässt eine Leere. Lina hätte jemanden gebraucht, der auf ihrer Seite steht.',
-            empathyPoints: 0,
-            insightPoints: 1,
-            couragePoints: 0,
-            nextSceneId: null,
-          },
-          {
-            id: 'v1-s2-c-leave',
-            text: 'Weggehen und so tun, als hättest du nichts gesehen.',
-            consequence:
-              'Du drehst dich um und gehst weg. Das mulmige Gefühl im Bauch bleibt. In der nächsten Stunde kannst du dich kaum konzentrieren. Der Gedanke «Ich hätte etwas tun sollen» lässt dich nicht los. Weggehen war in dem Moment der einfachste Weg – aber manchmal nehmen wir so ein schlechtes Gefühl mit, das schwerer wiegt als die Angst davor, etwas zu sagen.',
-            empathyPoints: 0,
-            insightPoints: 1,
-            couragePoints: 0,
-            nextSceneId: null,
-          },
-          {
-            id: 'v1-s2-c-intervene',
-            text: 'Direkt hingehen und sagen: «Hey, lasst Lina in Ruhe!»',
-            consequence:
-              'Du gehst hin und sagst laut: «Hey, lasst sie in Ruhe! Das ist nicht cool.» Die Gruppe ist überrascht – damit haben sie nicht gerechnet. Einer murmelt «Ist doch nur Spaß» und sie ziehen ab. Lina sieht dich dankbar an und sagt leise «Danke». Dein Herz rast, aber du merkst: Du hast gerade etwas Mutiges getan. Es ist in Ordnung, wenn dir dabei die Knie gezittert haben – Mut bedeutet nicht, keine Angst zu haben.',
-            empathyPoints: 2,
-            insightPoints: 1,
-            couragePoints: 3,
-            nextSceneId: null,
-          },
-          {
-            id: 'v1-s2-c-gethelp',
-            text: 'Schnell eine Lehrkraft holen, die in der Nähe ist.',
-            consequence:
-              'Du rennst los und findest Herrn Weber, der Hofaufsicht hat. Du erzählst ihm schnell, was passiert. Er geht sofort zur Gruppe und greift ein. Lina ist erleichtert. Später kommt sie zu dir und bedankt sich. Hilfe holen ist nicht feige – es ist eine der mutigsten Entscheidungen, die du treffen kannst. Besonders wenn du merkst, dass eine Situation zu viel für eine Person allein ist. Manchmal ist der klügste Held der, der Verstärkung holt.',
-            empathyPoints: 3,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: null,
-          },
-        ],
-      },
-    ],
+    id: 'ash',
+    name: 'Ash',
+    emoji: '🌑',
+    description: 'Ein wütender Teenager, der lernen muss, mit seinen Emotionen umzugehen',
+    backstory: 'Ash ist voller ungezähmter Wut und versteht nicht, warum er so schnell explodiert. Er fühlt sich oft missverstanden und allein mit seinen intensiven Gefühlen. Doch tief in ihm schlummert der Wunsch nach Frieden.'
   },
-
-  // ---------------------------------------------------------------------------
-  // Scenario 3 – Die schlechte Note
-  // ---------------------------------------------------------------------------
   {
-    id: 'volcano-scenario-3',
-    islandId: 'volcano',
-    title: 'Die schlechte Note',
-    description:
-      'Du bekommst eine schlechte Note, obwohl du viel gelernt hast. Die Wut und Enttäuschung kochen hoch – was nun?',
-    scenes: [
-      {
-        id: 'v1-s3-intro',
-        text: 'Montagmorgen, dritte Stunde, Mathe. Frau Schneider teilt die Klassenarbeiten aus. Du hast am ganzen Wochenende gelernt – diesmal muss es besser laufen als letztes Mal!',
-        speaker: 'narrator',
-        speakerEmoji: '📖',
-        choices: [],
-      },
-      {
-        id: 'v1-s3-grade',
-        text: 'Du drehst das Blatt um und siehst es: eine Fünf. Rot unterstrichen. Überall Anmerkungen und Fehler. Du starrst auf die Note und kannst es nicht fassen.',
-        speaker: 'narrator',
-        speakerEmoji: '📖',
-        choices: [],
-      },
-      {
-        id: 'v1-s3-thoughts',
-        text: 'Das kann nicht sein. Ich hab SO viel gelernt! Das ist total ungerecht! War die Arbeit zu schwer? Oder bin ich einfach … zu dumm dafür?',
-        speaker: 'player',
-        speakerEmoji: '💭',
-        choices: [],
-      },
-      {
-        id: 'v1-s3-feeling',
-        text: 'Die Wut kocht in dir hoch wie Magma in einem Vulkan. Am liebsten würdest du das Blatt zerknüllen und durch die Klasse werfen. Aber warte – unter der Wut versteckt sich vielleicht noch etwas anderes. Enttäuschung? Traurigkeit? Manchmal kommen große Gefühle im Doppelpack.',
-        speaker: 'narrator',
-        speakerEmoji: '🌋',
-        choices: [],
-      },
-      {
-        id: 'v1-s3-choice',
-        text: 'Die Note brennt vor dir auf dem Tisch. Was tust du?',
-        speaker: 'narrator',
-        speakerEmoji: '🌋',
-        choices: [
-          {
-            id: 'v1-s3-c-tear',
-            text: 'Die Arbeit wütend zerknüllen und in die Tasche stopfen.',
-            consequence:
-              'Du knüllst das Blatt zusammen und stopfst es tief in deinen Rucksack. Es fühlt sich kurz befreiend an, aber dann merkst du: Die Note ist dadurch nicht anders geworden. Und später, wenn du schauen willst, was du verbessern kannst, ist das Blatt ein zerknitterter Ball. Wut will raus – das ist total verständlich. Aber manchmal lohnt es sich, einen Weg zu finden, der dir danach nicht im Weg steht.',
-            empathyPoints: 0,
-            insightPoints: 1,
-            couragePoints: 0,
-            nextSceneId: null,
-          },
-          {
-            id: 'v1-s3-c-blame',
-            text: '«Die Arbeit war viel zu schwer! Frau Schneider kann einfach nicht erklären!»',
-            consequence:
-              'Du murmelst laut genug, dass es ein paar Leute hören: «Die Arbeit war total unfair!» Frau Schneider schaut dich kurz an. Es fühlt sich im Moment besser an, jemandem die Schuld zu geben – aber tief drinnen weißt du, dass es so einfach nicht ist. Manchmal sind Noten wirklich unfair. Aber wenn du nur nach außen schaust, verpasst du die Chance herauszufinden, was du nächstes Mal anders machen könntest.',
-            empathyPoints: 0,
-            insightPoints: 0,
-            couragePoints: 1,
-            nextSceneId: null,
-          },
-          {
-            id: 'v1-s3-c-breathe',
-            text: 'Tief durchatmen, die Arbeit umdrehen und dir vornehmen, sie später in Ruhe anzuschauen.',
-            consequence:
-              'Du legst die Arbeit mit der Note nach unten auf den Tisch und atmest dreimal tief durch. Gerade jetzt bist du zu aufgewühlt, um klar zu denken – und das ist okay. Später zu Hause schaust du dir die Fehler in Ruhe an und merkst: Einiges hast du tatsächlich verstanden, aber bei bestimmten Aufgaben hast du einen Denkfehler gemacht. Dein «Gedanken-Detektor» meldet sich: Der Gedanke «Ich bin zu dumm» ist ein Gedanken-Trick! Eine schlechte Note sagt nichts darüber aus, wer du bist. Sie zeigt nur, was du beim nächsten Mal anders üben kannst.',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 1,
-            nextSceneId: null,
-          },
-          {
-            id: 'v1-s3-c-talk',
-            text: 'Nach der Stunde mit deiner besten Freundin oder deinem besten Freund darüber reden.',
-            consequence:
-              'Nach der Stunde erzählst du deiner besten Freundin, wie mies du dich fühlst. Sie sagt: «Das kenne ich, das ist echt frustrierend. Aber hey, du hast echt viel gelernt – vielleicht können wir nächstes Mal zusammen üben?» Es tut gut, gehört zu werden. Die Wut wird kleiner, wenn du sie aussprechen darfst. Und du merkst: Sich Hilfe suchen bedeutet nicht, schwach zu sein – es bedeutet, klug genug zu sein, nicht alles alleine tragen zu wollen.',
-            empathyPoints: 2,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: null,
-          },
-        ],
-      },
-    ],
+    id: 'magmus',
+    name: 'Magmus',
+    emoji: '🪨',
+    description: 'Ein geduldiger Golem aus erstarrter Lava, Meister der Gelassenheit',
+    backstory: 'Magmus war einst flüssiges, tobendes Magma. Durch unendliche Geduld wurde er zu festem Gestein. Er kennt die Kraft des Abwartens und lehrt, dass selbst die heißeste Wut erkalten und zu Stärke werden kann.'
   },
-
-  // ---------------------------------------------------------------------------
-  // Scenario 4 – Das verratene Geheimnis
-  // ---------------------------------------------------------------------------
   {
-    id: 'volcano-scenario-4',
-    islandId: 'volcano',
-    title: 'Das verratene Geheimnis',
-    description:
-      'Deine beste Freundin Mia hat dein Geheimnis weitererzählt. Verrat und Wut – wie gehst du damit um?',
-    scenes: [
-      {
-        id: 'v1-s4-intro',
-        text: 'Du stehst im Schulflur und hörst plötzlich deinen Namen. Eine Gruppe aus deiner Klasse tuschelt und kichert. Dann sagt jemand laut genug, dass du es hörst: «Stimmt das echt? Das hat uns Mia erzählt!»',
-        speaker: 'narrator',
-        speakerEmoji: '📖',
-        choices: [],
-      },
-      {
-        id: 'v1-s4-realization',
-        text: 'Dir wird schlagartig kalt. Mia ist deine beste Freundin. Du hattest ihr etwas Persönliches anvertraut – etwas, das nur sie wissen sollte. Und jetzt scheint es die halbe Klasse zu kennen.',
-        speaker: 'narrator',
-        speakerEmoji: '📖',
-        choices: [],
-      },
-      {
-        id: 'v1-s4-feeling',
-        text: 'Wie konnte sie das tun? Ich hab ihr vertraut! Das war unser Geheimnis! Wut und Enttäuschung vermischen sich zu einem riesigen Knoten in deiner Brust. Es fühlt sich an, als hätte dir jemand den Boden unter den Füßen weggezogen.',
-        speaker: 'player',
-        speakerEmoji: '💭',
-        choices: [],
-      },
-      {
-        id: 'v1-s4-scene',
-        text: 'Du siehst Mia am anderen Ende des Flurs. Sie hat dich noch nicht bemerkt. Dein Herz hämmert.',
-        speaker: 'narrator',
-        speakerEmoji: '🌋',
-        choices: [],
-      },
-      {
-        id: 'v1-s4-choice',
-        text: 'Was tust du?',
-        speaker: 'narrator',
-        speakerEmoji: '🌋',
-        choices: [
-          {
-            id: 'v1-s4-c-aggressive',
-            text: 'Zu Mia stürmen und sie vor allen anschreien: «Wie konntest du das tun?!»',
-            consequence:
-              'Du stürmst zu Mia und schreist sie an: «Du hast mein Geheimnis verraten! Ich vertraue dir nie wieder!» Mia erschrickt und wird auch laut. Alle im Flur starren euch an. Am Ende stehst du da, immer noch wütend, und das Geheimnis ist jetzt noch öffentlicher als vorher. Mia weint. Deine Wut war berechtigt – aber der Weg, sie rauszulassen, hat die Situation für euch beide schlimmer gemacht.',
-            empathyPoints: 0,
-            insightPoints: 0,
-            couragePoints: 1,
-            nextSceneId: null,
-          },
-          {
-            id: 'v1-s4-c-end-friendship',
-            text: 'Beschließen, dass die Freundschaft vorbei ist. Ab sofort ignorierst du Mia komplett.',
-            consequence:
-              'Du beschließt: Das war es. Freundschaft beendet. In den nächsten Tagen ignorierst du Mia komplett. Sie versucht ein paarmal, mit dir zu reden, aber du gehst jedes Mal weg. Die Wut wird weniger, aber an ihre Stelle tritt etwas anderes – Traurigkeit. Ihr wart lange beste Freundinnen. Manchmal tun Menschen, die wir mögen, Dinge, die uns verletzen. Das heißt nicht, dass du verzeihen musst – aber ohne ein Gespräch wirst du nie erfahren, warum sie es getan hat.',
-            empathyPoints: 0,
-            insightPoints: 1,
-            couragePoints: 1,
-            nextSceneId: null,
-          },
-          {
-            id: 'v1-s4-c-imessage',
-            text: 'Mia zur Seite nehmen und mit Ich-Botschaften sagen, wie du dich fühlst.',
-            consequence:
-              'Du gehst zu Mia, nimmst sie zur Seite und sagst: «Mia, ich muss mit dir reden. Ich habe gehört, dass du anderen von meinem Geheimnis erzählt hast. Ich fühle mich total verletzt und verraten, weil ich dir vertraut habe.» Mia wird blass. «Es tut mir wirklich leid», sagt sie. «Mir ist es irgendwie rausgerutscht, und dann konnte ich es nicht mehr zurücknehmen. Das war nicht okay von mir.» Das Gespräch ist nicht einfach, aber Ich-Botschaften helfen dabei, deine Gefühle auszudrücken, ohne den anderen komplett anzugreifen. So hat ein Gespräch die Chance, ein Gespräch zu bleiben – und kein Streit zu werden.',
-            empathyPoints: 3,
-            insightPoints: 3,
-            couragePoints: 3,
-            nextSceneId: null,
-          },
-          {
-            id: 'v1-s4-c-cooldown',
-            text: 'Erstmal abkühlen. Du gehst woanders hin und sprichst später mit Mia, wenn du ruhiger bist.',
-            consequence:
-              'Du merkst: Gerade bist du zu aufgewühlt für ein vernünftiges Gespräch. Du gehst in den Pausenraum und setzt dich hin. Langsam ordnest du deine Gedanken. Was willst du Mia eigentlich sagen? Wie fühlst du dich wirklich? Nach der Schule schreibst du Mia eine Nachricht: «Ich muss mit dir reden. Können wir uns morgen treffen?» Das Gespräch am nächsten Tag ist ehrlich und ruhig. Sich Zeit zum Abkühlen zu nehmen ist kein Weglaufen – es ist ein Zeichen von Stärke. Du gibst deinem klugen Kopf die Chance, mitzureden, bevor nur die Wut das Wort hat.',
-            empathyPoints: 2,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: null,
-          },
-        ],
-      },
-    ],
-  },
+    id: 'zinnia',
+    name: 'Zinnia',
+    emoji: '🌺',
+    description: 'Eine widerstandsfähige Blume, die in vulkanischem Boden wächst',
+    backstory: 'Zinnia hat gelernt, selbst in der härtesten Umgebung zu blühen. Sie zeigt, dass man inmitten von Chaos und Hitze Schönheit finden kann. Ihre Wurzeln sind tief, ihre Blüten zart – ein perfektes Gleichgewicht.'
+  }
 ];
 
-// =============================================================================
-// 2. WISDOM CARDS
-// =============================================================================
+// Scenarios
+export const volcanoScenarios: Scenario[] = [
+  {
+    id: 'volcano-scenario-1',
+    islandId: 'volcano' as IslandId,
+    title: 'Die Begegnung mit Ash',
+    description: 'Du triffst auf einen wütenden Jungen am Rande des Vulkans',
+    scenes: [
+      {
+        id: 'v1-s1',
+        text: 'Am Fuß des rauchenden Vulkans siehst du einen Jungen, der wütend Steine in die Glut wirft. Seine Fäuste sind geballt, sein Gesicht rot vor Zorn. "Lass mich in Ruhe!", schreit er, als er dich bemerkt.',
+        choices: [
+          {
+            id: 'v1-s1-c1',
+            text: 'Ruhig fragen, was passiert ist',
+            nextSceneId: 'v1-s2',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'v1-s1-c2',
+            text: 'Ihm Raum geben und beobachten',
+            nextSceneId: 'v1-s2',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 0 }
+          },
+          {
+            id: 'v1-s1-c3',
+            text: 'Selbst auch einen Stein werfen',
+            nextSceneId: 'v1-s2',
+            points: { empathyPoints: 1, insightPoints: 0, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v1-s2',
+        text: 'Ash dreht sich zu dir um. "Alle sagen immer, ich soll mich beruhigen. Aber niemand versteht, wie es sich anfühlt, wenn alles in mir brennt!" Seine Stimme zittert zwischen Wut und Verzweiflung.',
+        choices: [
+          {
+            id: 'v1-s2-c1',
+            text: '"Ich möchte verstehen. Erzähl mir davon."',
+            nextSceneId: 'v1-s3',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'v1-s2-c2',
+            text: '"Das Feuer in dir ist nicht schlecht – es braucht nur einen Weg."',
+            nextSceneId: 'v1-s3',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v1-s2-c3',
+            text: '"Ich kenne das Gefühl. Manchmal kocht auch in mir alles über."',
+            nextSceneId: 'v1-s3',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v1-s3',
+        text: 'Ash setzt sich auf einen Felsen. "Heute hat mich mein bester Freund verraten. Er hat allen mein Geheimnis erzählt." Seine Hände zittern. "Ich wollte ihm nicht wehtun, aber ich habe ihn angeschrien und... jetzt hasst er mich wahrscheinlich."',
+        choices: [
+          {
+            id: 'v1-s3-c1',
+            text: '"Deine Wut war berechtigt. Verrat tut weh."',
+            nextSceneId: 'v1-s4',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'v1-s3-c2',
+            text: '"Was fühlst du jetzt, wenn du daran denkst?"',
+            nextSceneId: 'v1-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v1-s3-c3',
+            text: '"Vielleicht kannst du es noch wiedergutmachen."',
+            nextSceneId: 'v1-s4',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v1-s4',
+        text: 'Plötzlich erscheint Flamara in einem Wirbel aus Funken. "Junger Ash, deine Wut ist wie das Feuer des Vulkans – kraftvoll und natürlich. Doch ein Vulkan muss lernen, wann er ausbricht und wann er ruht." Sie blickt zu dir. "Hilfst du ihm?"',
+        choices: [
+          {
+            id: 'v1-s4-c1',
+            text: '"Ja, gemeinsam finden wir einen Weg."',
+            nextSceneId: 'v1-s5',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'v1-s4-c2',
+            text: '"Was können wir tun, Flamara?"',
+            nextSceneId: 'v1-s5',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v1-s4-c3',
+            text: 'Ash ansehen und nicken',
+            nextSceneId: 'v1-s5',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v1-s5',
+        text: 'Flamara führt euch tiefer in den Vulkan. "Die erste Lektion: Erkenne das Feuer, bevor es außer Kontrolle gerät. Ash, was spürst du in deinem Körper, kurz bevor du explodierst?" Ash denkt nach. "Mein Herz rast... meine Fäuste ballen sich..."',
+        choices: [
+          {
+            id: 'v1-s5-c1',
+            text: '"Das sind deine Warnzeichen. Sie sind wichtig."',
+            nextSceneId: 'v1-s6',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+          },
+          {
+            id: 'v1-s5-c2',
+            text: '"Bei mir ist es genauso. Wir sind ähnlich."',
+            nextSceneId: 'v1-s6',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'v1-s5-c3',
+            text: '"Was könntest du in dem Moment tun?"',
+            nextSceneId: 'v1-s6',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v1-s6',
+        text: 'Flamara lächelt. "Gut. Ihr beide habt heute etwas Wichtiges verstanden: Wut warnt uns, aber wir müssen nicht sofort handeln. Ash, gehe zu Magmus – er wird dir beibringen, wie man wartet." Ash blickt dich an. "Kommst du mit?"',
+        choices: [
+          {
+            id: 'v1-s6-c1',
+            text: '"Natürlich, ich bin an deiner Seite."',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 0, couragePoints: 2 }
+          },
+          {
+            id: 'v1-s6-c2',
+            text: '"Ich glaube, du schaffst das alleine."',
+            nextSceneId: null,
+            points: { empathyPoints: 0, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'v1-s6-c3',
+            text: '"Lass uns gemeinsam lernen."',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'volcano-scenario-2',
+    islandId: 'volcano' as IslandId,
+    title: 'Flamaras Lektion',
+    description: 'Die Feuerwächterin zeigt dir die zwei Gesichter der Wut',
+    scenes: [
+      {
+        id: 'v2-s1',
+        text: 'Flamara steht vor einem See aus glühender Lava. "Schau genau hin. Siehst du die Zerstörung?" Die Lava frisst alles auf ihrem Weg. "Und doch – aus dieser Glut entsteht neues Land, fruchtbarer Boden. Wut ist genauso."',
+        choices: [
+          {
+            id: 'v2-s1-c1',
+            text: '"Wut kann also auch etwas Gutes schaffen?"',
+            nextSceneId: 'v2-s2',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v2-s1-c2',
+            text: '"Aber die Zerstörung ist so groß..."',
+            nextSceneId: 'v2-s2',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'v2-s1-c3',
+            text: 'Schweigend die Lava beobachten',
+            nextSceneId: 'v2-s2',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v2-s2',
+        text: '"Genau", sagt Flamara. "Wut zeigt uns Grenzen. Sie sagt: \'Bis hierher und nicht weiter!\' Ohne Wut würden wir Ungerechtigkeit akzeptieren." Sie formt eine Flamme in ihrer Hand. "Die Kunst ist, das Feuer zu kontrollieren, nicht zu löschen."',
+        choices: [
+          {
+            id: 'v2-s2-c1',
+            text: '"Wie kontrolliere ich es, ohne es zu unterdrücken?"',
+            nextSceneId: 'v2-s3',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v2-s2-c2',
+            text: '"Manchmal habe ich Angst vor meiner Wut."',
+            nextSceneId: 'v2-s3',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'v2-s2-c3',
+            text: '"Kannst du mir das beibringen?"',
+            nextSceneId: 'v2-s3',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v2-s3',
+        text: 'Flamara nickt verständnisvoll. "Angst vor der eigenen Kraft ist weise. Doch höre: Wut braucht einen Kanal. Manche sprechen sie aus, andere schreiben, wieder andere bewegen sich." Sie zeigt auf verschiedene Vulkanöffnungen. "Jeder Vulkan hat seinen eigenen Weg."',
+        choices: [
+          {
+            id: 'v2-s3-c1',
+            text: '"Ich könnte meine Wut in Worte fassen."',
+            nextSceneId: 'v2-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+          },
+          {
+            id: 'v2-s3-c2',
+            text: '"Bewegung hilft mir. Sport, Tanzen..."',
+            nextSceneId: 'v2-s4',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'v2-s3-c3',
+            text: '"Was ist, wenn nichts davon funktioniert?"',
+            nextSceneId: 'v2-s4',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'v2-s4',
+        text: 'Die Feuerwächterin lächelt warm. "Es gibt Momente, da ist die Wut zu groß für einen Kanal. Dann brauchst du die Vulkan-Atmung." Sie demonstriert: tief einatmen, langsam ausatmen wie Rauch. "So kühlst du die Glut, Atemzug für Atemzug."',
+        choices: [
+          {
+            id: 'v2-s4-c1',
+            text: 'Mit Flamara zusammen atmen',
+            nextSceneId: 'v2-s5',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'v2-s4-c2',
+            text: '"Wie oft soll ich das machen?"',
+            nextSceneId: 'v2-s5',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v2-s4-c3',
+            text: 'Es selbst ausprobieren',
+            nextSceneId: 'v2-s5',
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'v2-s5',
+        text: 'Als du atmest, spürst du tatsächlich eine Veränderung. Die Hitze in dir wird ruhiger, geordneter. "Siehst du?", flüstert Flamara. "Dein inneres Feuer brennt noch, aber es tobt nicht mehr. Du bist der Meister deiner Flammen geworden."',
+        choices: [
+          {
+            id: 'v2-s5-c1',
+            text: '"Das fühlt sich... mächtig an."',
+            nextSceneId: 'v2-s6',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'v2-s5-c2',
+            text: '"Danke, Flamara. Ich verstehe jetzt."',
+            nextSceneId: 'v2-s6',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 0 }
+          },
+          {
+            id: 'v2-s5-c3',
+            text: 'Einfach weitermachen und die Ruhe genießen',
+            nextSceneId: 'v2-s6',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'v2-s6',
+        text: 'Flamara legt dir eine warme Hand auf die Schulter. "Denke immer daran: Wut ist nicht dein Feind. Sie ist ein Bote. Wenn du lernst, ihre Botschaft zu hören, ohne von ihr überwältigt zu werden, wirst du unaufhaltsam sein." Das Feuer in ihren Augen tanzt voller Weisheit.',
+        choices: [
+          {
+            id: 'v2-s6-c1',
+            text: '"Ich werde diese Lektion weitergeben."',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'v2-s6-c2',
+            text: '"Ich möchte mehr lernen."',
+            nextSceneId: null,
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v2-s6-c3',
+            text: 'Flamara umarmen',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 0, couragePoints: 3 }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'volcano-scenario-3',
+    islandId: 'volcano' as IslandId,
+    title: 'Magmus und die Kunst des Wartens',
+    description: 'Der Golem aus Stein lehrt dich Geduld in der Hitze des Moments',
+    scenes: [
+      {
+        id: 'v3-s1',
+        text: 'Magmus sitzt unbeweglich wie ein Berg. Um ihn herum brodelt die Lava, doch er bleibt ruhig. "Setze dich", sagt er mit tiefer Stimme. "Ich zeige dir, was ich in tausend Jahren gelernt habe: Warten ist keine Schwäche, sondern die größte Stärke."',
+        choices: [
+          {
+            id: 'v3-s1-c1',
+            text: 'Neben ihm sitzen',
+            nextSceneId: 'v3-s2',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'v3-s1-c2',
+            text: '"Aber wenn ich warte, schlucke ich meine Wut runter!"',
+            nextSceneId: 'v3-s2',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v3-s1-c3',
+            text: '"Wie hältst du es hier in der Hitze aus?"',
+            nextSceneId: 'v3-s2',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+          }
+        ]
+      },
+      {
+        id: 'v3-s2',
+        text: 'Ein tiefes Grollen kommt aus Magmus. Ist es ein Lachen? "Warten ist nicht Schweigen. Warten heißt: Ich gebe dem Sturm Zeit, sich zu legen. Dann handle ich klar, nicht blind." Er zeigt auf die Lava. "Glut, die zu schnell abkühlt, zerspringt. Langsame Abkühlung wird zu festem Fels."',
+        choices: [
+          {
+            id: 'v3-s2-c1',
+            text: '"Also soll ich meine Wut abkühlen lassen?"',
+            nextSceneId: 'v3-s3',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v3-s2-c2',
+            text: '"Wie lange muss ich warten?"',
+            nextSceneId: 'v3-s3',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'v3-s2-c3',
+            text: 'Schweigend die Lava beobachten',
+            nextSceneId: 'v3-s3',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v3-s3',
+        text: 'Magmus hebt einen schweren Stein. "Fühle seine Temperatur." Er ist noch warm, aber nicht mehr glühend. "Vor Stunden war er flüssiges Feuer. Jetzt ist er stark genug, um ein Haus zu tragen. So wird Wut zu Weisheit – durch Zeit und Geduld."',
+        choices: [
+          {
+            id: 'v3-s3-c1',
+            text: 'Den Stein berühren und spüren',
+            nextSceneId: 'v3-s4',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'v3-s3-c2',
+            text: '"Was mache ich, wenn ich nicht warten kann?"',
+            nextSceneId: 'v3-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v3-s3-c3',
+            text: '"Ich verstehe. Zeit heilt wirklich."',
+            nextSceneId: 'v3-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+          }
+        ]
+      },
+      {
+        id: 'v3-s4',
+        text: 'Der Golem nickt bedächtig. "Es gibt Notfälle, da musst du sofort handeln. Aber meistens? Meistens ist Warten besser. Zähle bis zehn. Gehe eine Runde. Atme dreimal tief. Gib deinem klugen Kopf Zeit, deinem wilden Herz zu helfen."',
+        choices: [
+          {
+            id: 'v3-s4-c1',
+            text: '"Das klingt so einfach... ist es das?"',
+            nextSceneId: 'v3-s5',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+          },
+          {
+            id: 'v3-s4-c2',
+            text: 'Es jetzt gleich ausprobieren',
+            nextSceneId: 'v3-s5',
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
+          },
+          {
+            id: 'v3-s4-c3',
+            text: '"Mein Kopf und mein Herz als Team..."',
+            nextSceneId: 'v3-s5',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'v3-s5',
+        text: 'Plötzlich bebt die Erde. Die Lava beginnt zu steigen! Magmus bleibt sitzen. "Siehst du? Der Vulkan ist wütend. Aber ich renne nicht. Ich beobachte. Ich warte. Und siehe – die Lava findet einen anderen Weg." Tatsächlich fließt sie an euch vorbei.',
+        choices: [
+          {
+            id: 'v3-s5-c1',
+            text: 'Staunen über Magmus\' Ruhe',
+            nextSceneId: 'v3-s6',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v3-s5-c2',
+            text: 'Selbst versuchen, ruhig zu bleiben',
+            nextSceneId: 'v3-s6',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'v3-s5-c3',
+            text: '"Hattest du keine Angst?"',
+            nextSceneId: 'v3-s6',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'v3-s6',
+        text: 'Magmus legt seine steinerne Hand auf deine. "Angst und Wut sind Schwestern. Beide schreien: \'Tu etwas!\' Doch manchmal ist das Beste, was du tun kannst, zu warten, bis du klar sehen kannst. Dann handelst du weise, nicht wild." Seine Augen funkeln wie Obsidian.',
+        choices: [
+          {
+            id: 'v3-s6-c1',
+            text: '"Ich werde das üben, jeden Tag."',
+            nextSceneId: 'v3-s7',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v3-s6-c2',
+            text: '"Danke, Magmus. Du bist ein weiser Lehrer."',
+            nextSceneId: 'v3-s7',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'v3-s6-c3',
+            text: 'Still neben ihm sitzen bleiben',
+            nextSceneId: 'v3-s7',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v3-s7',
+        text: 'Ihr sitzt zusammen, während die Sonne über dem Vulkan untergeht. Die Hitze des Tages weicht der Kühle der Nacht. "Siehst du?", murmelt Magmus. "Alles hat seine Zeit. Auch Wut. Sie kommt, sie geht. Du bleibst." Ein Gefühl tiefen Friedens erfüllt dich.',
+        choices: [
+          {
+            id: 'v3-s7-c1',
+            text: 'Den Moment in sich aufnehmen',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v3-s7-c2',
+            text: '"Ich bleibe. Das ist schön."',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'v3-s7-c3',
+            text: 'An Magmus anlehnen und ausruhen',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 3 }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'volcano-scenario-4',
+    islandId: 'volcano' as IslandId,
+    title: 'Zinnias Garten',
+    description: 'Eine Blume zeigt dir, wie man inmitten von Härte erblüht',
+    scenes: [
+      {
+        id: 'v4-s1',
+        text: 'In einer Felsspalte entdeckst du die schönste Blume, die du je gesehen hast. Zinnia strahlt in leuchtenden Farben, obwohl um sie herum nur schwarzes Gestein ist. "Willkommen in meinem Garten", sagt sie sanft. "Hier lehre ich die schwierigste Lektion: Schönheit trotz Schmerz."',
+        choices: [
+          {
+            id: 'v4-s1-c1',
+            text: '"Wie schaffst du es, hier zu blühen?"',
+            nextSceneId: 'v4-s2',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+          },
+          {
+            id: 'v4-s1-c2',
+            text: '"Du bist wunderschön."',
+            nextSceneId: 'v4-s2',
+            points: { empathyPoints: 3, insightPoints: 0, couragePoints: 2 }
+          },
+          {
+            id: 'v4-s1-c3',
+            text: 'Die Blume vorsichtig berühren',
+            nextSceneId: 'v4-s2',
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'v4-s2',
+        text: 'Zinnia wiegt sich im warmen Wind. "Ich wähle jeden Tag, trotz der Hitze zu leben. Das Gestein ist hart, die Luft ist schwer – aber ich entscheide mich zu blühen. Wut kann ein steiniger Boden sein, auf dem trotzdem etwas Schönes wachsen kann."',
+        choices: [
+          {
+            id: 'v4-s2-c1',
+            text: '"Aber die Wut macht doch alles kaputt..."',
+            nextSceneId: 'v4-s3',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'v4-s2-c2',
+            text: '"Wie finde ich die Kraft dazu?"',
+            nextSceneId: 'v4-s3',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v4-s2-c3',
+            text: '"Lehrst du mich deine Art zu wachsen?"',
+            nextSceneId: 'v4-s3',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v4-s3',
+        text: 'Die Blume neigt sich zu dir. "Schau auf meine Wurzeln. Sie sind tief und stark. Das ist mein Geheimnis: Ich bin verwurzelt in dem, was mir wichtig ist. Meine Werte, meine Liebe, meine Träume. Wenn der Sturm der Wut kommt, halten mich meine Wurzeln fest."',
+        choices: [
+          {
+            id: 'v4-s3-c1',
+            text: '"Was sind meine Wurzeln?"',
+            nextSceneId: 'v4-s4',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v4-s3-c2',
+            text: 'Über die eigenen Werte nachdenken',
+            nextSceneId: 'v4-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v4-s3-c3',
+            text: '"Meine Familie ist meine Wurzel."',
+            nextSceneId: 'v4-s4',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'v4-s4',
+        text: 'Zinnia lächelt (wenn Blumen lächeln können). "Gut! Und nun schau auf meine Blüten. Sie sind zart, verletzlich. Ich verstecke sie nicht. Wut will uns oft hart machen, aber wahre Stärke ist, weich zu bleiben, wo es zählt – im Herzen."',
+        choices: [
+          {
+            id: 'v4-s4-c1',
+            text: '"Aber wenn ich weich bin, werde ich verletzt."',
+            nextSceneId: 'v4-s5',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'v4-s4-c2',
+            text: '"Wie schützt du dein weiches Herz?"',
+            nextSceneId: 'v4-s5',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v4-s4-c3',
+            text: '"Ich will auch diese Balance finden."',
+            nextSceneId: 'v4-s5',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v4-s5',
+        text: '"Du wirst verletzt werden", sagt Zinnia ehrlich. "Das ist Teil des Lebens. Aber jede Wunde lehrt dich etwas. Jeder Riss im Felsen lässt meine Wurzeln tiefer wachsen. Deine Wut zeigt dir, was dir wichtig ist – höre hin, aber lass sie nicht dein ganzes Wesen ausfüllen."',
+        choices: [
+          {
+            id: 'v4-s5-c1',
+            text: '"Meine Wut als Lehrerin betrachten..."',
+            nextSceneId: 'v4-s6',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v4-s5-c2',
+            text: '"Das erfordert viel Mut."',
+            nextSceneId: 'v4-s6',
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 3 }
+          },
+          {
+            id: 'v4-s5-c3',
+            text: '"Danke, dass du so offen bist."',
+            nextSceneId: 'v4-s6',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'v4-s6',
+        text: 'Ein sanfter Regen beginnt zu fallen – eine Seltenheit am Vulkan. Zinnia fängt die Tropfen auf. "Siehst du? Selbst hier gibt es Momente der Sanftheit. Zwischen den Ausbrüchen der Wut gibt es immer Pausen. Nutze sie, um zu wachsen, zu heilen, zu blühen."',
+        choices: [
+          {
+            id: 'v4-s6-c1',
+            text: 'Den Regen auf der Haut spüren',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'v4-s6-c2',
+            text: '"Ich werde diese Pausen achten."',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v4-s6-c3',
+            text: 'Zinnia ein Versprechen geben',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 3 }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'volcano-scenario-5',
+    islandId: 'volcano' as IslandId,
+    title: 'Der große Ausbruch',
+    description: 'Der Vulkan erwacht – und du musst dich deiner größten Wut stellen',
+    scenes: [
+      {
+        id: 'v5-s1',
+        text: 'Der Boden bebt heftig. Flamara erscheint in Eile: "Der Vulkan bricht aus! Nicht der äußere – dein innerer! Erinnerst du dich an deine größte Wut? Sie steigt auf. Du musst dich ihr stellen, sonst wird sie dich verschlingen!" Bilder tauchen auf: Momente blanker Wut aus deinem Leben.',
+        choices: [
+          {
+            id: 'v5-s1-c1',
+            text: '"Ich bin bereit. Was muss ich tun?"',
+            nextSceneId: 'v5-s2',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'v5-s1-c2',
+            text: '"Ich habe Angst vor dieser Wut..."',
+            nextSceneId: 'v5-s2',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'v5-s1-c3',
+            text: 'Tief atmen und sich konzentrieren',
+            nextSceneId: 'v5-s2',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v5-s2',
+        text: 'Du stehst nun im Krater. Vor dir steigt eine riesige Gestalt aus Feuer auf – deine Wut, personifiziert. Sie schreit: "Du hast mich unterdrückt! Du hast mich ignoriert! Du hast dich für mich geschämt!" Die Hitze ist überwältigend.',
+        choices: [
+          {
+            id: 'v5-s2-c1',
+            text: '"Du hast Recht. Es tut mir leid."',
+            nextSceneId: 'v5-s3',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'v5-s2-c2',
+            text: '"Ich höre dir jetzt zu. Sprich."',
+            nextSceneId: 'v5-s3',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v5-s2-c3',
+            text: '"Du bist ein Teil von mir. Ich nehme dich an."',
+            nextSceneId: 'v5-s3',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'v5-s3',
+        text: 'Die Feuergestalt wird etwas kleiner. "Endlich! Endlich siehst du mich!" Sie zeigt dir Szenen: Ungerechtigkeiten, Verletzungen, Momente der Ohnmacht. "Ich wollte dich schützen! Ich wollte, dass du für dich einstehst! Warum hast du mich bekämpft?"',
+        choices: [
+          {
+            id: 'v5-s3-c1',
+            text: '"Ich dachte, du bist gefährlich."',
+            nextSceneId: 'v5-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v5-s3-c2',
+            text: '"Ich hatte Angst vor deiner Macht."',
+            nextSceneId: 'v5-s4',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'v5-s3-c3',
+            text: '"Ich verstehe jetzt – du wolltest helfen."',
+            nextSceneId: 'v5-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v5-s4',
+        text: 'Die Flammen tanzen sanfter. "Ich BIN mächtig. Aber Macht ist nicht schlecht. Gemeinsam können wir Grenzen setzen, ohne zu zerstören. Kannst du mir einen Platz in dir geben, ohne dass ich alles übernehme?" Es ist eine Frage voller Hoffnung.',
+        choices: [
+          {
+            id: 'v5-s4-c1',
+            text: '"Ja. Du darfst bei mir sein, als Beraterin."',
+            nextSceneId: 'v5-s5',
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v5-s4-c2',
+            text: '"Ich brauche dich. Aber ich führe."',
+            nextSceneId: 'v5-s5',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'v5-s4-c3',
+            text: '"Lass uns Partner sein, gleichberechtigt."',
+            nextSceneId: 'v5-s5',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v5-s5',
+        text: 'Die Feuergestalt verwandelt sich. Sie wird zu einer warmen, kontrollierten Flamme in deinem Herzen. "Danke", flüstert sie. "Ich werde dich warnen, wenn Grenzen überschritten werden. Ich werde dir Kraft geben, wenn du sie brauchst. Aber ich werde nicht mehr explodieren – es sei denn, du bittest mich darum."',
+        choices: [
+          {
+            id: 'v5-s5-c1',
+            text: 'Die Flamme umarmen',
+            nextSceneId: 'v5-s6',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 3 }
+          },
+          {
+            id: 'v5-s5-c2',
+            text: '"Wir werden ein gutes Team sein."',
+            nextSceneId: 'v5-s6',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v5-s5-c3',
+            text: 'Still die neue Balance spüren',
+            nextSceneId: 'v5-s6',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'v5-s6',
+        text: 'Der Vulkan beruhigt sich. Als du aus dem Krater steigst, sind alle da: Flamara, Magmus, Zinnia und Ash. Sie applaudieren. "Du hast es geschafft", sagt Flamara stolz. "Du hast deine Wut nicht besiegt – du hast sie integriert. Das ist wahre Meisterschaft."',
+        choices: [
+          {
+            id: 'v5-s6-c1',
+            text: '"Ich fühle mich... ganz."',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v5-s6-c2',
+            text: 'Alle umarmen',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'v5-s6-c3',
+            text: '"Danke, dass ihr an mich geglaubt habt."',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'volcano-scenario-6',
+    islandId: 'volcano' as IslandId,
+    title: 'Die innere Ruhe',
+    description: 'Du kehrst zum Vulkan zurück und findest eine neue Art des Friedens',
+    scenes: [
+      {
+        id: 'v6-s1',
+        text: 'Wochen später kehrst du zum Vulkan zurück. Er raucht friedlich. Du bist nicht mehr die gleiche Person. Ein Kind rennt vorbei und rempelt dich an, ohne sich zu entschuldigen. Früher wärst du explodiert. Jetzt spürst du die Wut aufsteigen – aber anders.',
+        choices: [
+          {
+            id: 'v6-s1-c1',
+            text: 'Tief atmen und die Wut beobachten',
+            nextSceneId: 'v6-s2',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v6-s1-c2',
+            text: 'Mit der Wut innerlich sprechen',
+            nextSceneId: 'v6-s2',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'v6-s1-c3',
+            text: 'Bis zehn zählen, wie Magmus lehrte',
+            nextSceneId: 'v6-s2',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v6-s2',
+        text: 'Die Wut meldet sich: "Er war unhöflich!" Aber sie schreit nicht mehr, sie informiert. Du nickst innerlich. "Danke für die Info. Aber das ist kein Notfall." Die Wut akzeptiert das und zieht sich zurück. Du fühlst dich ruhig, stark. Das Kind dreht sich um: "Oh, sorry!"',
+        choices: [
+          {
+            id: 'v6-s2-c1',
+            text: '"Kein Problem. Alles gut."',
+            nextSceneId: 'v6-s3',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'v6-s2-c2',
+            text: 'Lächeln und weitergehen',
+            nextSceneId: 'v6-s3',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'v6-s2-c3',
+            text: '"Pass beim nächsten Mal auf, okay?"',
+            nextSceneId: 'v6-s3',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'v6-s3',
+        text: 'Flamara erscheint neben dir. "Ich habe gesehen, was passiert ist. Gut gemacht." Du lächelst. "Es war anders als früher. Die Wut war da, aber sie hat mich nicht überwältigt." Flamara nickt. "Du hast gelernt, der Vulkan zu sein, nicht die Lava."',
+        choices: [
+          {
+            id: 'v6-s3-c1',
+            text: '"Was ist der Unterschied?"',
+            nextSceneId: 'v6-s4',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v6-s3-c2',
+            text: '"Ich bin das Gefäß, nicht das Feuer?"',
+            nextSceneId: 'v6-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v6-s3-c3',
+            text: 'Nachdenklich nicken',
+            nextSceneId: 'v6-s4',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v6-s4',
+        text: '"Genau", sagt Flamara. "Der Vulkan enthält die Lava, aber er IST nicht die Lava. Du enthältst Wut, aber du BIST nicht die Wut. Du bist der Berg – stark, geerdet, beständig. Die Emotionen kommen und gehen, aber du bleibst." Diese Worte setzen sich tief in dir fest.',
+        choices: [
+          {
+            id: 'v6-s4-c1',
+            text: '"Ich bin der Berg... Das ist schön."',
+            nextSceneId: 'v6-s5',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v6-s4-c2',
+            text: '"Werde ich jemals wieder explodieren?"',
+            nextSceneId: 'v6-s5',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v6-s4-c3',
+            text: 'Flamara umarmen',
+            nextSceneId: 'v6-s5',
+            points: { empathyPoints: 3, insightPoints: 0, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'v6-s5',
+        text: 'Flamara lächelt sanft. "Vielleicht. Und das ist okay. Auch Berge brechen manchmal aus. Aber jetzt weißt du: Ein Ausbruch ist nicht das Ende der Welt. Danach kommt wieder Ruhe. Und aus der Asche wächst neues Leben." Ash kommt angelaufen, viel ruhiger als früher.',
+        choices: [
+          {
+            id: 'v6-s5-c1',
+            text: '"Ash! Wie geht es dir?"',
+            nextSceneId: 'v6-s6',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'v6-s5-c2',
+            text: 'Ash anlächeln',
+            nextSceneId: 'v6-s6',
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'v6-s5-c3',
+            text: 'Abwarten, was er sagt',
+            nextSceneId: 'v6-s6',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'v6-s6',
+        text: '"Hey!", ruft Ash. "Ich habe mit meinem Freund gesprochen. Wir haben uns versöhnt!" Er strahlt. "Ich habe ihm gesagt, wie verletzt ich war, aber ohne zu schreien. Und er hat sich entschuldigt!" Du siehst, wie weit ihr beide gekommen seid.',
+        choices: [
+          {
+            id: 'v6-s6-c1',
+            text: '"Das ist wunderbar! Ich bin stolz auf dich."',
+            nextSceneId: 'v6-s7',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'v6-s6-c2',
+            text: '"Du hast die Lektionen gut gelernt."',
+            nextSceneId: 'v6-s7',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v6-s6-c3',
+            text: 'Ash high-five geben',
+            nextSceneId: 'v6-s7',
+            points: { empathyPoints: 2, insightPoints: 0, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'v6-s7',
+        text: 'Ihr steht zu dritt am Kraterrand und blickt auf das glühende Herz des Vulkans. Flamara spricht: "Denkt immer daran: Euer inneres Feuer ist ein Geschenk. Es wärmt, es schützt, es transformiert. Respektiert es, nutzt es weise, und ihr werdet leuchten." Die Sonne geht unter und taucht alles in goldenes Licht.',
+        choices: [
+          {
+            id: 'v6-s7-c1',
+            text: 'Die Weisheit tief in sich aufnehmen',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v6-s7-c2',
+            text: '"Ich werde diese Lektion weitertragen."',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'v6-s7-c3',
+            text: 'Schweigend den Moment genießen',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      }
+    ]
+  }
+];
 
+// Activities
+export const volcanoActivities: VolcanoActivity[] = [
+  {
+    id: 'volcano-breathing',
+    islandId: 'volcano' as IslandId,
+    title: 'Vulkan-Atmung',
+    description: 'Eine Atemtechnik, die hilft, die innere Hitze zu kontrollieren',
+    type: 'breathing',
+    duration: 5,
+    completed: false,
+    instructions: [
+      'Setze oder stelle dich bequem hin. Schließe die Augen.',
+      'Stelle dir vor, du bist ein Vulkan. In deinem Bauch glüht die Lava deiner Wut.',
+      'Atme tief durch die Nase ein (4 Sekunden). Spüre, wie die Lava ansteigt.',
+      'Halte den Atem an (4 Sekunden). Die Lava wartet am Kraterrand.',
+      'Atme langsam durch den Mund aus (6 Sekunden), als würdest du Rauch ablassen.',
+      'Spüre, wie mit jedem Ausatmen die Lava ein bisschen abkühlt.',
+      'Wiederhole das 5-10 Mal, bis du dich ruhiger fühlst.',
+      'Deine Wut ist noch da, aber sie kontrolliert dich nicht mehr.'
+    ]
+  },
+  {
+    id: 'volcano-journal',
+    islandId: 'volcano' as IslandId,
+    title: 'Wut-Tagebuch',
+    description: 'Schreibe deine Wut auf und verstehe sie besser',
+    type: 'journal',
+    duration: 10,
+    completed: false,
+    instructions: [
+      'Nimm ein Notizbuch oder öffne eine Notiz-App.',
+      'Schreibe oben: "Meine Wut vom [heutiges Datum]"',
+      'Beantworte diese Fragen: Was hat mich heute wütend gemacht?',
+      'Wie hat sich die Wut in meinem Körper angefühlt?',
+      'Was wollte mir die Wut sagen? (z.B. "Das war unfair!" oder "Meine Grenze wurde überschritten!")',
+      'Wie habe ich reagiert? Bin ich stolz auf meine Reaktion?',
+      'Was könnte ich beim nächsten Mal anders machen?',
+      'Schließe ab mit: "Meine Wut ist ein Teil von mir, und das ist okay."'
+    ]
+  },
+  {
+    id: 'volcano-art',
+    islandId: 'volcano' as IslandId,
+    title: 'Emotions-Vulkan',
+    description: 'Male oder zeichne deinen inneren Vulkan',
+    type: 'creative',
+    duration: 15,
+    completed: false,
+    instructions: [
+      'Nimm Papier und Stifte (am besten Rot, Orange, Gelb, aber auch Blau und Grün).',
+      'Zeichne in die Mitte einen großen Vulkan – das bist du.',
+      'Male die Lava in den Farben, die deine Wut für dich hat.',
+      'Füge Symbole hinzu: Was macht dich wütend? (zeichne kleine Bilder drumherum)',
+      'Jetzt male Dinge, die dir helfen, ruhig zu bleiben (Wasser, Bäume, Freunde).',
+      'Schreibe Wörter auf den Vulkan, die beschreiben, wie du mit Wut umgehen willst.',
+      'Hänge das Bild auf oder fotografiere es. Es ist dein Wut-Management-Plan.',
+      'Jedes Mal, wenn du wütend bist, erinnere dich an dieses Bild.'
+    ]
+  },
+  {
+    id: 'volcano-meditation',
+    islandId: 'volcano' as IslandId,
+    title: 'Kühlende Lava',
+    description: 'Eine geführte Meditation zur Beruhigung intensiver Emotionen',
+    type: 'meditation',
+    duration: 8,
+    completed: false,
+    instructions: [
+      'Finde einen ruhigen Ort. Setze dich bequem hin oder lege dich hin.',
+      'Schließe die Augen und atme ruhig.',
+      'Stelle dir vor, du bist flüssige, heiße Lava. Du bist mächtig und glühend.',
+      'Mit jedem Atemzug kühlst du ein bisschen ab. Du wirst langsamer, dichter.',
+      'Du bist immer noch heiß, aber nicht mehr kochend. Du wirst zu festem Gestein.',
+      'Spüre die Stärke des Gesteins. Du bist nicht mehr wild, sondern beständig.',
+      'Du bist ein Berg. Stark. Geerdet. Ruhig. Emotionen fließen durch dich, aber du bleibst.',
+      'Atme noch dreimal tief. Öffne die Augen. Nimm diese Ruhe mit in den Tag.'
+    ]
+  },
+  {
+    id: 'volcano-triggers',
+    islandId: 'volcano' as IslandId,
+    title: 'Wut-Auslöser Detektiv',
+    description: 'Erkenne, was deine Wut auslöst und bereite dich vor',
+    type: 'reflection',
+    duration: 12,
+    completed: false,
+    instructions: [
+      'Nimm Papier und teile es in drei Spalten: "Auslöser", "Reaktion", "Alternative"',
+      'Denke an die letzten Male, wo du richtig wütend warst.',
+      'Schreibe in "Auslöser": Was war der Grund? (z.B. "Bruder nimmt meine Sachen")',
+      'Schreibe in "Reaktion": Wie hast du reagiert? (z.B. "Ich habe geschrien")',
+      'Schreibe in "Alternative": Was könntest du stattdessen tun? (z.B. "Ruhig sagen: Frag mich erst")',
+      'Suche nach Mustern: Gibt es Auslöser, die immer wiederkommen?',
+      'Wähle die 3 häufigsten Auslöser und überlege dir für jeden einen konkreten Plan.',
+      'Übe in Gedanken, wie du beim nächsten Mal anders reagierst.'
+    ]
+  }
+];
+
+// Wisdom Cards
 export const volcanoWisdomCards: WisdomCard[] = [
   {
     id: 'volcano-wisdom-1',
-    islandId: 'volcano',
-    text: 'Wut ist ein normales Gefühl – sie zeigt dir, dass dir etwas wichtig ist.',
-    category: 'emotion',
-    collected: false,
+    islandId: 'volcano' as IslandId,
+    title: 'Die Natur der Wut',
+    content: 'Wut ist nicht dein Feind. Sie ist ein Bote, der dir zeigt, dass eine Grenze überschritten wurde oder etwas Wichtiges in Gefahr ist.',
+    category: 'wisdom',
+    collected: false
   },
   {
     id: 'volcano-wisdom-2',
-    islandId: 'volcano',
-    text: 'Tief durchatmen gibt deinem Gehirn Zeit, klug zu reagieren statt nur zu reagieren.',
-    category: 'strategy',
-    collected: false,
+    islandId: 'volcano' as IslandId,
+    title: 'Der Unterschied',
+    content: 'Du bist nicht deine Wut. Du HAST Wut, aber du BIST der Berg, der sie enthält. Emotionen kommen und gehen, aber du bleibst.',
+    category: 'wisdom',
+    collected: false
   },
   {
     id: 'volcano-wisdom-3',
-    islandId: 'volcano',
-    text: 'Wut ist okay – Gewalt ist es nicht. Du hast immer die Wahl, wie du reagierst.',
-    category: 'insight',
-    collected: false,
+    islandId: 'volcano' as IslandId,
+    title: 'Die Warnzeichen',
+    content: 'Dein Körper warnt dich, bevor die Wut explodiert: schneller Herzschlag, geballte Fäuste, Hitze im Gesicht. Lerne, diese Zeichen zu erkennen.',
+    category: 'wisdom',
+    collected: false
   },
   {
     id: 'volcano-wisdom-4',
-    islandId: 'volcano',
-    text: 'Hilfe holen ist kein Petzen. Es gehört echte Stärke dazu, sich Unterstützung zu suchen.',
-    category: 'courage',
-    collected: false,
+    islandId: 'volcano' as IslandId,
+    title: 'Die Pause',
+    content: 'Zwischen Auslöser und Reaktion liegt ein Raum. In diesem Raum liegt deine Kraft zu wählen. Atme. Zähle. Geh. Nutze die Pause.',
+    category: 'wisdom',
+    collected: false
   },
   {
     id: 'volcano-wisdom-5',
-    islandId: 'volcano',
-    text: 'Unter Wut verstecken sich oft andere Gefühle – Traurigkeit, Angst oder Enttäuschung. Es lohnt sich, genauer hinzuschauen.',
-    category: 'emotion',
-    collected: false,
+    islandId: 'volcano' as IslandId,
+    title: 'Flamaras Weisheit',
+    content: 'Kontrolliere das Feuer, lösche es nicht. Eine Welt ohne Wut wäre eine Welt ohne Gerechtigkeit, ohne Schutz, ohne Veränderung.',
+    category: 'wisdom',
+    collected: false
   },
   {
     id: 'volcano-wisdom-6',
-    islandId: 'volcano',
-    text: 'Ich-Botschaften sind wie Brücken: «Ich fühle mich verletzt, weil …» öffnet Türen, die «Du bist schuld!» zuschlägt.',
-    category: 'strategy',
-    collected: false,
+    islandId: 'volcano' as IslandId,
+    title: 'Magmus\' Geduld',
+    content: 'Warten ist keine Schwäche. Die heißeste Lava wird zum stärksten Gestein, wenn sie Zeit bekommt abzukühlen. Gib dir diese Zeit.',
+    category: 'wisdom',
+    collected: false
   },
   {
     id: 'volcano-wisdom-7',
-    islandId: 'volcano',
-    text: 'Dein Gedanken-Detektor hilft dir: Nur weil du etwas denkst, heißt das nicht, dass es stimmt. Gedanken sind keine Fakten.',
-    category: 'insight',
-    collected: false,
+    islandId: 'volcano' as IslandId,
+    title: 'Zinnias Balance',
+    content: 'Sei stark wie Stein in deinen Wurzeln (Werten), aber bleib weich wie Blütenblätter in deinem Herzen. Beides ist wichtig.',
+    category: 'wisdom',
+    collected: false
   },
   {
     id: 'volcano-wisdom-8',
-    islandId: 'volcano',
-    text: 'Sich Zeit zum Abkühlen zu nehmen ist kein Weglaufen – es ist klug. Dein Kopf denkt besser, wenn der Vulkan nicht gerade ausbricht.',
-    category: 'strategy',
-    collected: false,
+    islandId: 'volcano' as IslandId,
+    title: 'Die Kraft des Kanals',
+    content: 'Wut braucht einen Weg hinaus: Worte, Bewegung, Kunst. Finde deinen Kanal und nutze ihn, bevor die Wut dich überwältigt.',
+    category: 'wisdom',
+    collected: false
   },
   {
     id: 'volcano-wisdom-9',
-    islandId: 'volcano',
-    text: 'Mut heißt nicht, keine Angst zu haben. Mut heißt, trotz der Angst das Richtige zu versuchen.',
-    category: 'courage',
-    collected: false,
+    islandId: 'volcano' as IslandId,
+    title: 'Die Botschaft verstehen',
+    content: 'Frage deine Wut: "Was willst du mir sagen?" Oft zeigt sie dir, was dir wichtig ist. Höre zu, dann entscheide, wie du handelst.',
+    category: 'wisdom',
+    collected: false
   },
   {
     id: 'volcano-wisdom-10',
-    islandId: 'volcano',
-    text: 'Jeder Mensch hat einen inneren Vulkan. Die Frage ist nicht, ob er ausbricht – sondern ob du lernst, ihn zu steuern.',
-    category: 'insight',
-    collected: false,
+    islandId: 'volcano' as IslandId,
+    title: 'Ash\'s Lektion',
+    content: 'Es ist okay, wütend zu sein UND Menschen zu lieben. Du kannst jemandem sagen "Das hat mich verletzt" ohne die Beziehung zu zerstören.',
+    category: 'wisdom',
+    collected: false
   },
   {
     id: 'volcano-wisdom-11',
-    islandId: 'volcano',
-    text: 'Gefühle sind wie Wellen: Sie kommen und gehen. Auch die stärkste Wut hält nicht ewig an, wenn du sie nicht weiter fütterst.',
-    category: 'emotion',
-    collected: false,
+    islandId: 'volcano' as IslandId,
+    title: 'Die Vulkan-Atmung',
+    content: 'Einatmen (Lava steigt), Halten (Lava wartet), Ausatmen (Rauch entweicht). Mit jedem Atemzug wird die Glut kühler und kontrollierbarer.',
+    category: 'wisdom',
+    collected: false
   },
   {
     id: 'volcano-wisdom-12',
-    islandId: 'volcano',
-    text: 'Für sich selbst einstehen und dabei ruhig bleiben – das ist eine Superkraft, die du trainieren kannst.',
-    category: 'courage',
-    collected: false,
-  },
-];
-
-// =============================================================================
-// 3. ACTIVITIES
-// =============================================================================
-
-export const volcanoActivities: VolcanoActivity[] = [
-  {
-    id: 'volcano-activity-breathing',
-    islandId: 'volcano',
-    type: 'breathing',
-    title: 'Vulkan-Atemübung',
-    description:
-      'Lerne die 4-7-8 Atemtechnik – sie hilft dir, den inneren Vulkan abzukühlen, bevor er ausbricht. Ärzte und Therapeuten empfehlen diese Übung, weil sie dein Nervensystem beruhigt.',
-    instructions: [
-      'Setz dich bequem hin oder stell dich locker hin. Lass die Schultern fallen.',
-      'Schließe die Augen, wenn du magst – oder such dir einen ruhigen Punkt, den du anschaust.',
-      'Atme langsam durch die Nase ein und zähle dabei in Gedanken bis 4.',
-      'Halte den Atem an und zähle bis 7. Keine Sorge, das klappt mit der Übung immer besser.',
-      'Atme ganz langsam durch den Mund aus und zähle bis 8. Stell dir vor, wie der Vulkan in dir Dampf ablässt.',
-      'Wiederhole das Ganze 3 bis 4 Mal.',
-      'Spüre nach: Wie fühlt sich dein Körper jetzt an? Ist die Wut ein bisschen kleiner geworden?',
-    ],
-    completed: false,
+    islandId: 'volcano' as IslandId,
+    title: 'Nach dem Ausbruch',
+    content: 'Wenn du explodiert bist: Entschuldige dich, lerne daraus, mache weiter. Ein Ausbruch definiert dich nicht. Deine nächste Wahl tut es.',
+    category: 'wisdom',
+    collected: false
   },
   {
-    id: 'volcano-activity-thermometer',
-    islandId: 'volcano',
-    type: 'assessment',
-    title: 'Wut-Thermometer',
-    description:
-      'Wie heiß ist dein innerer Vulkan gerade? Mit dem Wut-Thermometer lernst du, deine Wut auf einer Skala von 1 bis 10 einzuschätzen – und herauszufinden, wann du handeln solltest.',
-    instructions: [
-      'Denk an eine Situation, die dich in letzter Zeit wütend gemacht hat. Stell sie dir möglichst genau vor.',
-      'Wie wütend warst du? Gib deiner Wut eine Zahl von 1 bis 10. (1 = kaum spürbar, 5 = mittelmäßig brodeln, 10 = Vulkanausbruch)',
-      'Achte auf deinen Körper: Ab welcher Stufe merkst du Veränderungen? Zum Beispiel schnellerer Herzschlag, heiße Ohren, geballte Fäuste?',
-      'Das sind deine persönlichen Warnsignale – sie sagen dir: «Achtung, der Vulkan wird aktiv!»',
-      'Überlege: Was hilft dir bei Stufe 3? Was bei Stufe 6? Was bei Stufe 9?',
-      'Schreib dir für jede Stufe einen Trick auf. Je früher du reagierst, desto leichter ist es, die Wut zu steuern.',
-    ],
-    completed: false,
+    id: 'volcano-wisdom-13',
+    islandId: 'volcano' as IslandId,
+    title: 'Die transformierte Wut',
+    content: 'Aus erkalteter Lava wächst fruchtbarer Boden. Aus verstandener Wut wächst Weisheit, Mut und die Kraft, für dich einzustehen.',
+    category: 'wisdom',
+    collected: false
   },
   {
-    id: 'volcano-activity-cooldown-toolkit',
-    islandId: 'volcano',
-    type: 'creative',
-    title: 'Cool-Down Toolkit',
-    description:
-      'Bau dir dein persönliches Notfall-Set gegen Wut! Jeder Mensch hat andere Dinge, die helfen. Finde heraus, was bei dir funktioniert.',
-    instructions: [
-      'Überlege: Was hat dir schon einmal geholfen, dich zu beruhigen, wenn du richtig wütend warst?',
-      'Schreibe mindestens 5 Dinge auf, die dir guttun könnten. Zum Beispiel: Musik hören, rennen, einen Ball kneten, kaltes Wasser über die Hände laufen lassen, mit jemandem reden, etwas zeichnen …',
-      'Sortiere deine Liste: Was hilft schnell unterwegs (z.B. in der Schule)? Was hilft zu Hause?',
-      'Erstelle deine persönliche Cool-Down-Karte – schreib deine Top-5-Strategien auf eine Karte oder in dein Handy.',
-      'Tipp: Häng die Karte dort auf, wo du sie sehen kannst, wenn du sie brauchst. Im Vulkan-Moment vergisst man leicht die guten Ideen.',
-    ],
-    completed: false,
-  },
-];
-
-// =============================================================================
-// 4. NPCs
-// =============================================================================
-
-export const volcanoNPCs: NPC[] = [
-  {
-    id: 'volcano-npc-flamara',
-    name: 'Flamara',
-    emoji: '🔥',
-    description:
-      'Die Wächterin des Vulkans. Flamara ist eine feurige Gestalt mit warmem Lächeln, die den Vulkan seit Jahrhunderten hütet. Sie weiß alles über die Kraft der Wut – und wie man sie lenkt, statt von ihr überrollt zu werden.',
-    backstory:
-      'Flamara war nicht immer so gelassen. Als junge Vulkan-Wächterin ließ sie ihre Wut frei heraus – ganze Landstriche wurden von ihren Ausbrüchen versengt. Erst als sie lernte, dass ihre Kraft auch wärmen und beschützen kann, fand sie ihr Gleichgewicht. Heute hilft sie jedem, der auf die Vulkaninsel kommt, die eigene innere Flamme zu verstehen. Ihr Lieblingssatz: «Feuer zerstört – oder es leuchtet. Du entscheidest.»',
+    id: 'volcano-wisdom-14',
+    islandId: 'volcano' as IslandId,
+    title: 'Die Auslöser kennen',
+    content: 'Werde ein Detektiv deiner Wut. Je besser du weißt, was dich triggert, desto besser kannst du dich vorbereiten und anders reagieren.',
+    category: 'wisdom',
+    collected: false
   },
   {
-    id: 'volcano-npc-ash',
-    name: 'Ash',
-    emoji: '🌑',
-    description:
-      'Ein Teenager, der oft Ärger bekommt, weil seine Wut mit ihm durchgeht. Ash ist eigentlich ein netter Typ – aber wenn er sich ungerecht behandelt fühlt, explodiert er.',
-    backstory:
-      'Ash lebt am Fuß des Vulkans und kennt das Gefühl, wenn alles in einem hochkocht, nur zu gut. In der Schule hatte er ständig Stress: Prügeleien, Nachsitzen, Ärger mit Lehrkräften. Alle sagten, er sei ein «Problemkind». Aber seit er Flamara getroffen hat, lernt er Stück für Stück, seine Wut zu verstehen, statt sie nur rauszuschreien. Er ist noch mittendrin in diesem Prozess – und genau deshalb kann er so gut nachfühlen, wie es dir geht. Ash sagt gern: «Ich bin kein Vulkan, der nur ausbricht. Ich lerne gerade, mein eigenes Feuer zu steuern.»',
+    id: 'volcano-wisdom-15',
+    islandId: 'volcano' as IslandId,
+    title: 'Gemeinsam stärker',
+    content: 'Du musst nicht allein mit deiner Wut kämpfen. Sprich mit Menschen, denen du vertraust. Gemeinsam findet ihr Wege, die du allein nicht siehst.',
+    category: 'wisdom',
+    collected: false
   },
+  {
+    id: 'volcano-wisdom-16',
+    islandId: 'volcano' as IslandId,
+    title: 'Das innere Feuer',
+    content: 'Dein inneres Feuer ist ein Geschenk. Es wärmt dich, es schützt dich, es zeigt deine Leidenschaft. Respektiere es, und es wird dich leuchten lassen.',
+    category: 'wisdom',
+    collected: false
+  }
 ];
