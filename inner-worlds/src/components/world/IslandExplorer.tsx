@@ -1182,6 +1182,84 @@ function PlayerCharacter({
 }
 
 // ---------------------------------------------------------------------------
+// 3D Sub-components: Player sparkle trail
+// ---------------------------------------------------------------------------
+
+function PlayerTrail({
+  playerGroupRef,
+  accentColor,
+}: {
+  playerGroupRef: { readonly current: THREE.Group | null };
+  accentColor: string;
+}) {
+  const trailCount = 12;
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const trail = useRef<Array<{ x: number; y: number; z: number; life: number }>>(
+    Array.from({ length: trailCount }, () => ({ x: 0, y: -10, z: 0, life: 0 })),
+  );
+  const prevPos = useRef(new THREE.Vector3());
+  const spawnTimer = useRef(0);
+
+  useFrame((_state, delta) => {
+    if (!meshRef.current || !playerGroupRef.current) return;
+
+    const pp = playerGroupRef.current.position;
+    const dx = pp.x - prevPos.current.x;
+    const dz = pp.z - prevPos.current.z;
+    const isMoving = Math.abs(dx) + Math.abs(dz) > 0.01;
+
+    prevPos.current.copy(pp);
+    spawnTimer.current += delta;
+
+    // Spawn a new trail particle when moving
+    if (isMoving && spawnTimer.current > 0.08) {
+      spawnTimer.current = 0;
+      // Find oldest particle
+      let oldestIdx = 0;
+      let oldestLife = Infinity;
+      for (let i = 0; i < trailCount; i++) {
+        if (trail.current[i].life < oldestLife) {
+          oldestLife = trail.current[i].life;
+          oldestIdx = i;
+        }
+      }
+      trail.current[oldestIdx] = {
+        x: pp.x + (Math.random() - 0.5) * 0.4,
+        y: 0.15 + Math.random() * 0.3,
+        z: pp.z + (Math.random() - 0.5) * 0.4,
+        life: 1.0,
+      };
+    }
+
+    // Update all particles
+    for (let i = 0; i < trailCount; i++) {
+      const p = trail.current[i];
+      p.life -= delta * 1.5;
+      p.y += delta * 0.5;
+      if (p.life <= 0) {
+        p.life = 0;
+        dummy.position.set(0, -10, 0);
+        dummy.scale.setScalar(0);
+      } else {
+        dummy.position.set(p.x, p.y, p.z);
+        dummy.scale.setScalar(p.life * 0.08);
+      }
+      dummy.updateMatrix();
+      meshRef.current.setMatrixAt(i, dummy.matrix);
+    }
+    meshRef.current.instanceMatrix.needsUpdate = true;
+  });
+
+  return (
+    <instancedMesh ref={meshRef} args={[undefined, undefined, trailCount]}>
+      <sphereGeometry args={[1, 4, 3]} />
+      <meshBasicMaterial color={accentColor} transparent opacity={0.6} />
+    </instancedMesh>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // 3D Sub-components: NPC character
 // ---------------------------------------------------------------------------
 
@@ -2991,6 +3069,9 @@ function WorldScene({
         clickTargetRef={clickTargetRef}
         groupRef={playerGroupRef}
       />
+
+      {/* Player sparkle trail */}
+      <PlayerTrail playerGroupRef={playerGroupRef} accentColor={theme.playerAccent} />
 
       {/* Camera follow */}
       <CameraController playerGroupRef={playerGroupRef} />
