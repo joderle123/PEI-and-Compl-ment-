@@ -2415,9 +2415,13 @@ function CameraController({
   useFrame(() => {
     if (!playerGroupRef.current) return;
     const target = playerGroupRef.current.position;
+    // Subtle camera breathing
+    const t = Date.now() * 0.001;
+    const breathX = Math.sin(t * 0.3) * 0.15;
+    const breathY = Math.cos(t * 0.25) * 0.1;
     _desiredCam.set(
-      target.x + CAM_OFFSET.x,
-      CAM_OFFSET.y,
+      target.x + CAM_OFFSET.x + breathX,
+      CAM_OFFSET.y + breathY,
       target.z + CAM_OFFSET.z,
     );
     camera.position.lerp(_desiredCam, CAM_LERP);
