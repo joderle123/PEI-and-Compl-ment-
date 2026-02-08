@@ -3720,6 +3720,7 @@ function WorldScene({
   onScenarioClick,
   onActivityClick,
   onMiniGameClick,
+  playerPosRef,
 }: {
   islandId: string;
   theme: IslandTheme;
@@ -3736,6 +3737,7 @@ function WorldScene({
   onScenarioClick: (id: string) => void;
   onActivityClick: (id: string) => void;
   onMiniGameClick: () => void;
+  playerPosRef: React.MutableRefObject<{ x: number; z: number }>;
 }) {
   const playerGroupRef = useMemo(() => ({ current: null as THREE.Group | null }), []);
   const clickTargetRef = useMemo(() => ({ current: null as THREE.Vector3 | null }), []);
@@ -3773,9 +3775,14 @@ function WorldScene({
     [theme.decorationCount, islandId],
   );
 
-  // Nearest NPC check (throttled in useFrame)
+  // Nearest NPC check + player pos sync (throttled in useFrame)
   useFrame(() => {
     frameCount.current++;
+    // Sync player position for mini-map
+    if (playerGroupRef.current) {
+      playerPosRef.current.x = playerGroupRef.current.position.x;
+      playerPosRef.current.z = playerGroupRef.current.position.z;
+    }
     if (frameCount.current % 15 === 0 && playerGroupRef.current) {
       let closestNPC: NPCData | null = null;
       let closestDist = INTERACT_DIST;
@@ -4021,6 +4028,173 @@ const NPC_COLORS: Record<string, string[]> = {
   home: ['#cc8844', '#eeaa66', '#aa7733', '#ddbb88'],
 };
 
+// ---------------------------------------------------------------------------
+// HUD: Mini-map (GTA-style radar overlay)
+// ---------------------------------------------------------------------------
+
+function MiniMap({
+  playerPosRef,
+  npcs,
+  scenarioMarkers,
+  activityMarkers,
+  theme,
+}: {
+  playerPosRef: React.MutableRefObject<{ x: number; z: number }>;
+  npcs: Array<{ data: NPCData; pos: Vec3; color: string }>;
+  scenarioMarkers: Array<ScenarioData & { pos: Vec3 }>;
+  activityMarkers: Array<ActivityData & { pos: Vec3 }>;
+  theme: IslandTheme;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const size = 140;
+    const half = size / 2;
+    const scale = half / GROUND_SIZE; // map world coords to canvas
+
+    let animId: number;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, size, size);
+
+      // Background circle
+      ctx.beginPath();
+      ctx.arc(half, half, half - 2, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(10, 10, 30, 0.75)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(201, 168, 76, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Island ground circle
+      ctx.beginPath();
+      ctx.arc(half, half, (GROUND_SIZE * scale), 0, Math.PI * 2);
+      ctx.fillStyle = `${theme.groundColor}30`;
+      ctx.fill();
+      ctx.strokeStyle = `${theme.groundColor}60`;
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+
+      // Player position
+      const px = playerPosRef.current.x;
+      const pz = playerPosRef.current.z;
+      const mapX = half + px * scale;
+      const mapZ = half + pz * scale;
+
+      // NPCs (blue dots)
+      for (const npc of npcs) {
+        const nx = half + npc.pos[0] * scale;
+        const nz = half + npc.pos[2] * scale;
+        ctx.beginPath();
+        ctx.arc(nx, nz, 3, 0, Math.PI * 2);
+        ctx.fillStyle = npc.color;
+        ctx.fill();
+      }
+
+      // Scenario markers (yellow diamonds)
+      for (const s of scenarioMarkers) {
+        const sx = half + s.pos[0] * scale;
+        const sz = half + s.pos[2] * scale;
+        ctx.save();
+        ctx.translate(sx, sz);
+        ctx.rotate(Math.PI / 4);
+        ctx.fillStyle = '#ffd700';
+        ctx.fillRect(-3, -3, 6, 6);
+        ctx.restore();
+      }
+
+      // Activity markers (green triangles)
+      for (const a of activityMarkers) {
+        const ax = half + a.pos[0] * scale;
+        const az = half + a.pos[2] * scale;
+        ctx.beginPath();
+        ctx.moveTo(ax, az - 4);
+        ctx.lineTo(ax + 3.5, az + 3);
+        ctx.lineTo(ax - 3.5, az + 3);
+        ctx.closePath();
+        ctx.fillStyle = '#44cc88';
+        ctx.fill();
+      }
+
+      // Dock indicator (anchor icon - west side)
+      const dockX = half + (-GROUND_SIZE + 3) * scale;
+      const dockZ = half;
+      ctx.beginPath();
+      ctx.arc(dockX, dockZ, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#6699cc';
+      ctx.fill();
+      ctx.strokeStyle = '#88bbee';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Airport indicator (plane icon - northeast)
+      const airX = half + (GROUND_SIZE - 6) * scale;
+      const airZ = half + (-GROUND_SIZE + 8) * scale;
+      ctx.beginPath();
+      ctx.arc(airX, airZ, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#cc8844';
+      ctx.fill();
+      ctx.strokeStyle = '#eebb66';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Player arrow (white triangle pointing up)
+      ctx.save();
+      ctx.translate(mapX, mapZ);
+      ctx.beginPath();
+      ctx.moveTo(0, -5);
+      ctx.lineTo(3.5, 4);
+      ctx.lineTo(-3.5, 4);
+      ctx.closePath();
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,215,0,0.6)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.restore();
+
+      // Compass directions
+      ctx.fillStyle = 'rgba(201,168,76,0.5)';
+      ctx.font = 'bold 8px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('N', half, 12);
+      ctx.fillText('S', half, size - 5);
+      ctx.fillText('W', 8, half + 3);
+      ctx.fillText('O', size - 8, half + 3);
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+    return () => cancelAnimationFrame(animId);
+  }, [playerPosRef, npcs, scenarioMarkers, activityMarkers, theme]);
+
+  return (
+    <div
+      className="fixed bottom-20 right-4 z-40"
+      style={{
+        width: 140,
+        height: 140,
+        borderRadius: '50%',
+        overflow: 'hidden',
+        boxShadow: '0 0 20px rgba(0,0,0,0.6), inset 0 0 10px rgba(201,168,76,0.1)',
+      }}
+    >
+      <canvas
+        ref={canvasRef}
+        width={140}
+        height={140}
+        style={{ width: 140, height: 140 }}
+      />
+    </div>
+  );
+}
+
 // ==========================================================================
 // Main component: IslandExplorer
 // ==========================================================================
@@ -4043,6 +4217,7 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
   // ---- Shared refs for Canvas communication ----
   const keysRef = useRef(new Set<string>());
   const mobileDirRef = useRef<string | null>(null);
+  const playerPosRef = useRef({ x: 0, z: 0 });
 
   // ---- HUD state ----
   const [nearbyNPC, setNearbyNPC] = useState<NPCData | null>(null);
@@ -4230,6 +4405,7 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
           onScenarioClick={handleScenarioStart}
           onActivityClick={handleActivityStart}
           onMiniGameClick={handleMiniGameClick}
+          playerPosRef={playerPosRef}
         />
         <EffectComposer>
           <Bloom luminanceThreshold={0.6} luminanceSmoothing={0.9} intensity={0.4} />
@@ -4319,6 +4495,15 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
           {completionPercent}%
         </span>
       </div>
+
+      {/* Mini-map (GTA-style bottom-right radar) */}
+      <MiniMap
+        playerPosRef={playerPosRef}
+        npcs={npcsWithPositions}
+        scenarioMarkers={scenarioMarkers}
+        activityMarkers={activityMarkers}
+        theme={theme}
+      />
 
       {/* Bottom: Controls hint */}
       {!isTouchDevice && (
