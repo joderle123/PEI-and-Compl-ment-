@@ -361,76 +361,112 @@ const THEMES: Record<string, IslandTheme> = {
 // ---------------------------------------------------------------------------
 
 function Ground({ theme }: { theme: IslandTheme }) {
+  // Slightly lighter variant of ground for patches
+  const patchColor = useMemo(() => {
+    const c = new THREE.Color(theme.groundColor);
+    c.offsetHSL(0.02, 0, 0.06);
+    return '#' + c.getHexString();
+  }, [theme.groundColor]);
+
   return (
     <group>
+      {/* Main ground disc */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow position={[0, -0.01, 0]}>
-        <circleGeometry args={[GROUND_SIZE, 64]} />
-        <meshStandardMaterial color={theme.groundColor} roughness={0.95} />
+        <circleGeometry args={[GROUND_SIZE, 96]} />
+        <meshStandardMaterial color={theme.groundColor} roughness={0.92} />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]}>
-        <ringGeometry args={[GROUND_SIZE - 1, GROUND_SIZE + 12, 64]} />
-        <meshStandardMaterial
-          color={theme.groundEdgeColor}
-          transparent
-          opacity={0.6}
-          roughness={0.8}
-        />
+      {/* Rim edge - beveled shoreline */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
+        <ringGeometry args={[GROUND_SIZE - 2, GROUND_SIZE, 96]} />
+        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.85} />
       </mesh>
+
       {/* Hills / terrain elevation */}
-      <mesh position={[12, 0.4, -10]} castShadow receiveShadow>
-        <sphereGeometry args={[4, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial color={theme.groundColor} roughness={0.95} />
+      <mesh position={[12, 0.5, -10]} castShadow receiveShadow>
+        <sphereGeometry args={[4.5, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={theme.groundColor} roughness={0.92} flatShading />
       </mesh>
-      <mesh position={[-15, 0.3, 8]} castShadow receiveShadow>
-        <sphereGeometry args={[3.5, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial color={theme.groundColor} roughness={0.95} />
+      <mesh position={[-15, 0.4, 8]} castShadow receiveShadow>
+        <sphereGeometry args={[4, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={patchColor} roughness={0.92} flatShading />
       </mesh>
-      <mesh position={[8, 0.25, 14]} castShadow receiveShadow>
+      <mesh position={[8, 0.35, 14]} castShadow receiveShadow>
+        <sphereGeometry args={[3.5, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.92} flatShading opacity={0.8} transparent />
+      </mesh>
+      <mesh position={[-8, 0.3, -14]} castShadow receiveShadow>
         <sphereGeometry args={[3, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.95} opacity={0.7} transparent />
+        <meshStandardMaterial color={theme.groundColor} roughness={0.92} flatShading />
       </mesh>
-      <mesh position={[-8, 0.2, -14]} castShadow receiveShadow>
+      <mesh position={[20, 0.25, 5]} castShadow receiveShadow>
+        <sphereGeometry args={[3, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={patchColor} roughness={0.92} flatShading />
+      </mesh>
+      <mesh position={[-5, 0.2, 20]} castShadow receiveShadow>
         <sphereGeometry args={[2.5, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial color={theme.groundColor} roughness={0.95} />
+        <meshStandardMaterial color={theme.groundColor} roughness={0.92} flatShading />
       </mesh>
-      {/* Subtle ground patches for visual interest */}
+
+      {/* Large ground color patches for organic look */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[6, 0.005, 4]} receiveShadow>
-        <circleGeometry args={[7, 24]} />
-        <meshStandardMaterial color={theme.groundColor} roughness={1} opacity={0.5} transparent />
+        <circleGeometry args={[8, 24]} />
+        <meshStandardMaterial color={patchColor} roughness={1} opacity={0.45} transparent />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-9, 0.005, -6]} receiveShadow>
-        <circleGeometry args={[5, 24]} />
+        <circleGeometry args={[6, 20]} />
         <meshStandardMaterial color={theme.groundEdgeColor} roughness={1} opacity={0.3} transparent />
       </mesh>
-      {/* Paths radiating from center */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]} receiveShadow>
-        <planeGeometry args={[1.4, 32]} />
-        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.9} opacity={0.35} transparent />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-14, 0.005, -2]} receiveShadow>
+        <circleGeometry args={[5, 16]} />
+        <meshStandardMaterial color={patchColor} roughness={1} opacity={0.35} transparent />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, Math.PI / 3, 0]} position={[0, 0.01, 0]} receiveShadow>
-        <planeGeometry args={[1.4, 30]} />
-        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.9} opacity={0.3} transparent />
-      </mesh>
-      <mesh rotation={[-Math.PI / 2, -Math.PI / 3, 0]} position={[0, 0.01, 0]} receiveShadow>
-        <planeGeometry args={[1.4, 28]} />
-        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.9} opacity={0.25} transparent />
-      </mesh>
-      <mesh rotation={[-Math.PI / 2, Math.PI / 6, 0]} position={[0, 0.01, 0]} receiveShadow>
-        <planeGeometry args={[1.0, 24]} />
-        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.9} opacity={0.2} transparent />
-      </mesh>
-      {/* Extra ground patches for richness */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[12, 0.006, -8]} receiveShadow>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[15, 0.005, 10]} receiveShadow>
         <circleGeometry args={[4, 16]} />
         <meshStandardMaterial color={theme.groundEdgeColor} roughness={1} opacity={0.25} transparent />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-10, 0.006, 10]} receiveShadow>
-        <circleGeometry args={[6, 16]} />
-        <meshStandardMaterial color={theme.groundColor} roughness={1} opacity={0.4} transparent />
+
+      {/* Paths radiating from center - wider and more visible */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.015, 0]} receiveShadow>
+        <planeGeometry args={[1.6, 34]} />
+        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.85} opacity={0.4} transparent />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[5, 0.006, 15]} receiveShadow>
-        <circleGeometry args={[3.5, 12]} />
-        <meshStandardMaterial color={theme.groundEdgeColor} roughness={1} opacity={0.3} transparent />
+      <mesh rotation={[-Math.PI / 2, Math.PI / 3, 0]} position={[0, 0.015, 0]} receiveShadow>
+        <planeGeometry args={[1.5, 32]} />
+        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.85} opacity={0.35} transparent />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, -Math.PI / 3, 0]} position={[0, 0.015, 0]} receiveShadow>
+        <planeGeometry args={[1.5, 30]} />
+        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.85} opacity={0.3} transparent />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, Math.PI / 6, 0]} position={[0, 0.015, 0]} receiveShadow>
+        <planeGeometry args={[1.2, 26]} />
+        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.85} opacity={0.25} transparent />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, -Math.PI / 6, 0]} position={[0, 0.015, 0]} receiveShadow>
+        <planeGeometry args={[1.0, 22]} />
+        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.85} opacity={0.2} transparent />
+      </mesh>
+
+      {/* Path border stones at center crossroads */}
+      {[0, Math.PI / 3, -Math.PI / 3, Math.PI / 6].map((angle, i) => (
+        <group key={`path-stones-${i}`}>
+          {[3, 6, 9, 12, 16, 20].map((dist, j) => (
+            <mesh
+              key={`stone-${j}`}
+              position={[Math.sin(angle) * dist + (j % 2 ? 0.8 : -0.8), 0.04, Math.cos(angle) * dist]}
+              castShadow
+            >
+              <boxGeometry args={[0.15, 0.06, 0.15]} />
+              <meshStandardMaterial color={theme.rockColor} roughness={0.9} />
+            </mesh>
+          ))}
+        </group>
+      ))}
+
+      {/* Center clearing - slightly raised platform */}
+      <mesh position={[0, 0.03, 0]} receiveShadow castShadow>
+        <cylinderGeometry args={[3.5, 4, 0.08, 24]} />
+        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.8} opacity={0.6} transparent />
       </mesh>
     </group>
   );
@@ -932,10 +968,44 @@ function PlayerCharacter({
 
   return (
     <group ref={internalRef} position={[0, 0, 0]}>
+      {/* Shadow blob on ground */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]}>
+        <circleGeometry args={[0.35, 12]} />
+        <meshBasicMaterial color="#000000" transparent opacity={0.2} />
+      </mesh>
+      {/* Shoes */}
+      <mesh position={[-0.14, 0.08, 0.05]} castShadow>
+        <boxGeometry args={[0.18, 0.12, 0.28]} />
+        <meshStandardMaterial color="#2a2a2a" roughness={0.6} />
+      </mesh>
+      <mesh position={[0.14, 0.08, 0.05]} castShadow>
+        <boxGeometry args={[0.18, 0.12, 0.28]} />
+        <meshStandardMaterial color="#2a2a2a" roughness={0.6} />
+      </mesh>
+      {/* Left leg */}
+      <mesh ref={leftLegRef} position={[-0.14, 0.3, 0]} castShadow>
+        <boxGeometry args={[0.17, 0.5, 0.2]} />
+        <meshStandardMaterial color="#3a3a5a" roughness={0.7} />
+      </mesh>
+      {/* Right leg */}
+      <mesh ref={rightLegRef} position={[0.14, 0.3, 0]} castShadow>
+        <boxGeometry args={[0.17, 0.5, 0.2]} />
+        <meshStandardMaterial color="#3a3a5a" roughness={0.7} />
+      </mesh>
+      {/* Belt */}
+      <mesh position={[0, 0.62, 0]} castShadow>
+        <boxGeometry args={[0.52, 0.06, 0.32]} />
+        <meshStandardMaterial color="#5a4020" roughness={0.8} />
+      </mesh>
       {/* Torso */}
       <mesh position={[0, 0.95, 0]} castShadow>
-        <boxGeometry args={[0.5, 0.7, 0.3]} />
+        <boxGeometry args={[0.5, 0.65, 0.3]} />
         <meshStandardMaterial color={accentColor} roughness={0.7} />
+      </mesh>
+      {/* Collar/neck area */}
+      <mesh position={[0, 1.32, 0]} castShadow>
+        <boxGeometry args={[0.25, 0.08, 0.2]} />
+        <meshStandardMaterial color="#f5d0b0" roughness={0.65} />
       </mesh>
       {/* Head */}
       <mesh position={[0, 1.6, 0]} castShadow>
@@ -944,56 +1014,106 @@ function PlayerCharacter({
       </mesh>
       {/* Eyes */}
       <mesh position={[0.1, 1.65, 0.21]}>
-        <boxGeometry args={[0.06, 0.06, 0.02]} />
+        <boxGeometry args={[0.07, 0.07, 0.02]} />
         <meshBasicMaterial color="#222222" />
       </mesh>
       <mesh position={[-0.1, 1.65, 0.21]}>
-        <boxGeometry args={[0.06, 0.06, 0.02]} />
+        <boxGeometry args={[0.07, 0.07, 0.02]} />
         <meshBasicMaterial color="#222222" />
       </mesh>
-      {/* Hair */}
-      <mesh position={[0, 1.82, 0]} castShadow>
-        <boxGeometry args={[0.44, 0.08, 0.44]} />
+      {/* Eye whites */}
+      <mesh position={[0.1, 1.65, 0.205]}>
+        <boxGeometry args={[0.09, 0.09, 0.015]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
+      <mesh position={[-0.1, 1.65, 0.205]}>
+        <boxGeometry args={[0.09, 0.09, 0.015]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
+      {/* Mouth - small smile */}
+      <mesh position={[0, 1.52, 0.21]}>
+        <boxGeometry args={[0.12, 0.03, 0.02]} />
+        <meshBasicMaterial color="#cc8877" />
+      </mesh>
+      {/* Nose */}
+      <mesh position={[0, 1.58, 0.22]}>
+        <boxGeometry args={[0.06, 0.06, 0.04]} />
+        <meshStandardMaterial color="#e8c0a0" roughness={0.7} />
+      </mesh>
+      {/* Hair - fuller style */}
+      <mesh position={[0, 1.82, -0.02]} castShadow>
+        <boxGeometry args={[0.44, 0.12, 0.46]} />
         <meshStandardMaterial color="#5a3820" roughness={0.8} />
       </mesh>
-      {/* Hat */}
-      <mesh position={[0, 1.95, 0]} castShadow>
-        <cylinderGeometry args={[0.28, 0.3, 0.15, 8]} />
+      {/* Hair bangs */}
+      <mesh position={[0, 1.78, 0.18]} castShadow>
+        <boxGeometry args={[0.38, 0.06, 0.08]} />
+        <meshStandardMaterial color="#5a3820" roughness={0.8} />
+      </mesh>
+      {/* Hat base */}
+      <mesh position={[0, 1.92, 0]} castShadow>
+        <cylinderGeometry args={[0.3, 0.32, 0.12, 8]} />
         <meshStandardMaterial color={accentColor} roughness={0.6} />
       </mesh>
-      <mesh position={[0, 2.08, 0]} castShadow>
-        <coneGeometry args={[0.22, 0.3, 8]} />
+      {/* Hat brim */}
+      <mesh position={[0, 1.87, 0]} castShadow>
+        <cylinderGeometry args={[0.38, 0.38, 0.03, 12]} />
         <meshStandardMaterial color={accentColor} roughness={0.6} />
+      </mesh>
+      {/* Hat top */}
+      <mesh position={[0, 2.05, 0]} castShadow>
+        <coneGeometry args={[0.24, 0.3, 8]} />
+        <meshStandardMaterial color={accentColor} roughness={0.6} />
+      </mesh>
+      {/* Hat badge */}
+      <mesh position={[0, 1.96, 0.28]}>
+        <boxGeometry args={[0.08, 0.08, 0.02]} />
+        <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={0.3} roughness={0.3} metalness={0.5} />
       </mesh>
       {/* Backpack */}
       <mesh position={[0, 0.9, -0.22]} castShadow>
-        <boxGeometry args={[0.3, 0.35, 0.15]} />
+        <boxGeometry args={[0.32, 0.38, 0.16]} />
         <meshStandardMaterial color="#6a5a3a" roughness={0.8} />
+      </mesh>
+      {/* Backpack flap */}
+      <mesh position={[0, 1.1, -0.3]} castShadow>
+        <boxGeometry args={[0.28, 0.08, 0.06]} />
+        <meshStandardMaterial color="#5a4a2a" roughness={0.8} />
+      </mesh>
+      {/* Backpack buckle */}
+      <mesh position={[0, 1.06, -0.31]}>
+        <boxGeometry args={[0.06, 0.06, 0.02]} />
+        <meshStandardMaterial color="#c0a040" roughness={0.4} metalness={0.3} />
       </mesh>
       {/* Left arm */}
       <mesh ref={leftArmRef} position={[-0.38, 0.9, 0]} castShadow>
         <boxGeometry args={[0.14, 0.55, 0.14]} />
         <meshStandardMaterial color={accentColor} roughness={0.7} />
       </mesh>
+      {/* Left hand */}
+      <mesh position={[-0.38, 0.58, 0]}>
+        <boxGeometry args={[0.1, 0.1, 0.1]} />
+        <meshStandardMaterial color="#f5d0b0" roughness={0.65} />
+      </mesh>
       {/* Right arm */}
       <mesh ref={rightArmRef} position={[0.38, 0.9, 0]} castShadow>
         <boxGeometry args={[0.14, 0.55, 0.14]} />
         <meshStandardMaterial color={accentColor} roughness={0.7} />
       </mesh>
-      {/* Left leg */}
-      <mesh ref={leftLegRef} position={[-0.14, 0.3, 0]} castShadow>
-        <boxGeometry args={[0.17, 0.6, 0.2]} />
-        <meshStandardMaterial color="#3a3a5a" roughness={0.7} />
-      </mesh>
-      {/* Right leg */}
-      <mesh ref={rightLegRef} position={[0.14, 0.3, 0]} castShadow>
-        <boxGeometry args={[0.17, 0.6, 0.2]} />
-        <meshStandardMaterial color="#3a3a5a" roughness={0.7} />
+      {/* Right hand */}
+      <mesh position={[0.38, 0.58, 0]}>
+        <boxGeometry args={[0.1, 0.1, 0.1]} />
+        <meshStandardMaterial color="#f5d0b0" roughness={0.65} />
       </mesh>
       {/* Player glow ring on ground */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
-        <ringGeometry args={[0.4, 0.6, 16]} />
-        <meshBasicMaterial color={accentColor} transparent opacity={0.3} />
+        <ringGeometry args={[0.4, 0.7, 16]} />
+        <meshBasicMaterial color={accentColor} transparent opacity={0.25} />
+      </mesh>
+      {/* Outer glow ring (pulsing) */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.015, 0]}>
+        <ringGeometry args={[0.7, 0.85, 16]} />
+        <meshBasicMaterial color={accentColor} transparent opacity={0.1} />
       </mesh>
     </group>
   );
