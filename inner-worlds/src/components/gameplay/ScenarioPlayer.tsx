@@ -78,10 +78,11 @@ const EmberParticles: React.FC<{ count?: number }> = ({ count = 4 }) => (
 // Helper: icon for dominant point type
 // ---------------------------------------------------------------------------
 
-function getChoiceIcon(choice: { empathyPoints?: number; insightPoints?: number; couragePoints?: number }): string {
-  const e = choice.empathyPoints || 0;
-  const ins = choice.insightPoints || 0;
-  const c = choice.couragePoints || 0;
+function getChoiceIcon(choice: any): string {
+  const pts = choice.points || choice;
+  const e = pts.empathyPoints || 0;
+  const ins = pts.insightPoints || 0;
+  const c = pts.couragePoints || 0;
   const max = Math.max(e, ins, c);
   if (max === 0) return '\u2726'; // generic sparkle
   if (max === e) return '\u{1F497}'; // empathy heart
@@ -165,9 +166,11 @@ export default function ScenarioPlayer() {
 
     setShowConsequence(true);
 
-    const empathy = choice.empathyPoints || 0;
-    const insight = choice.insightPoints || 0;
-    const courage = choice.couragePoints || 0;
+    // Handle both flat and nested point structures
+    const pts = choice.points || choice;
+    const empathy = pts.empathyPoints || 0;
+    const insight = pts.insightPoints || 0;
+    const courage = pts.couragePoints || 0;
     const points = empathy + insight + courage;
     const xp = points * 5 + 10;
     setEarnedXP((prev) => prev + xp);
@@ -181,7 +184,7 @@ export default function ScenarioPlayer() {
       (useGameStore.getState() as any).resetCombo?.();
     }
 
-    // Add skill points via optional store action
+    // Add skill points
     (useGameStore.getState() as any).addSkillPoints?.(empathy, insight, courage);
 
     // Random wisdom card chance (30%)
@@ -519,12 +522,12 @@ export default function ScenarioPlayer() {
                       }}
                     />
                     <span className="relative z-10 text-2xl">
-                      {currentScene.speakerEmoji}
+                      {currentScene.speakerEmoji || '\u{1F4DC}'}
                     </span>
                   </div>
 
                   <span className="font-title text-golden font-bold text-lg tracking-wide">
-                    {currentScene.speaker === 'narrator'
+                    {!currentScene.speaker || currentScene.speaker === 'narrator'
                       ? 'Erz\u00E4hler'
                       : currentScene.speaker === 'player'
                         ? 'Du'
@@ -586,43 +589,55 @@ export default function ScenarioPlayer() {
                       }}
                       className="glass-panel ornate-border rounded-2xl p-5 mb-4"
                     >
-                      <p className="text-[#e8e0d0] mb-3 leading-relaxed">
-                        {selectedChoice.consequence}
-                      </p>
+                      {/* Consequence text (handle missing) */}
+                      {(selectedChoice.consequence || selectedChoice.text) && (
+                        <p className="text-[#e8e0d0] mb-3 leading-relaxed">
+                          {selectedChoice.consequence || `Du hast gew\u00E4hlt: "${selectedChoice.text}"`}
+                        </p>
+                      )}
 
-                      {/* Point gains */}
-                      <div className="flex items-center gap-4 text-sm flex-wrap">
-                        {selectedChoice.empathyPoints > 0 && (
-                          <motion.span
-                            className="text-pink-400 font-semibold"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.2, ease: 'easeOut' as const, duration: 0.4 }}
-                          >
-                            &#x1F497; +{selectedChoice.empathyPoints} Empathie
-                          </motion.span>
-                        )}
-                        {selectedChoice.insightPoints > 0 && (
-                          <motion.span
-                            className="text-purple-400 font-semibold"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.35, ease: 'easeOut' as const, duration: 0.4 }}
-                          >
-                            &#x1F4A1; +{selectedChoice.insightPoints} Einsicht
-                          </motion.span>
-                        )}
-                        {selectedChoice.couragePoints > 0 && (
-                          <motion.span
-                            className="text-amber-400 font-semibold"
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.5, ease: 'easeOut' as const, duration: 0.4 }}
-                          >
-                            &#x1F981; +{selectedChoice.couragePoints} Mut
-                          </motion.span>
-                        )}
-                      </div>
+                      {/* Point gains (handle both flat and nested) */}
+                      {(() => {
+                        const pts = selectedChoice.points || selectedChoice;
+                        const emp = pts.empathyPoints || 0;
+                        const ins = pts.insightPoints || 0;
+                        const cou = pts.couragePoints || 0;
+                        if (emp + ins + cou === 0) return null;
+                        return (
+                          <div className="flex items-center gap-4 text-sm flex-wrap">
+                            {emp > 0 && (
+                              <motion.span
+                                className="text-pink-400 font-semibold"
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.2, ease: 'easeOut' as const, duration: 0.4 }}
+                              >
+                                &#x1F497; +{emp} Empathie
+                              </motion.span>
+                            )}
+                            {ins > 0 && (
+                              <motion.span
+                                className="text-purple-400 font-semibold"
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.35, ease: 'easeOut' as const, duration: 0.4 }}
+                              >
+                                &#x1F4A1; +{ins} Einsicht
+                              </motion.span>
+                            )}
+                            {cou > 0 && (
+                              <motion.span
+                                className="text-amber-400 font-semibold"
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.5, ease: 'easeOut' as const, duration: 0.4 }}
+                              >
+                                &#x1F981; +{cou} Mut
+                              </motion.span>
+                            )}
+                          </div>
+                        );
+                      })()}
 
                       {/* Combo multiplier display */}
                       {comboMultiplier > 1 && (
