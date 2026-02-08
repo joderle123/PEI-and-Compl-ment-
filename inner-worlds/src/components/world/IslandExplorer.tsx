@@ -349,13 +349,30 @@ function Ground({ theme }: { theme: IslandTheme }) {
         <meshStandardMaterial color={theme.groundColor} roughness={0.95} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]}>
-        <ringGeometry args={[GROUND_SIZE - 2, GROUND_SIZE + 10, 64]} />
+        <ringGeometry args={[GROUND_SIZE - 1, GROUND_SIZE + 12, 64]} />
         <meshStandardMaterial
           color={theme.groundEdgeColor}
           transparent
           opacity={0.6}
           roughness={0.8}
         />
+      </mesh>
+      {/* Hills / terrain elevation */}
+      <mesh position={[12, 0.4, -10]} castShadow receiveShadow>
+        <sphereGeometry args={[4, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={theme.groundColor} roughness={0.95} />
+      </mesh>
+      <mesh position={[-15, 0.3, 8]} castShadow receiveShadow>
+        <sphereGeometry args={[3.5, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={theme.groundColor} roughness={0.95} />
+      </mesh>
+      <mesh position={[8, 0.25, 14]} castShadow receiveShadow>
+        <sphereGeometry args={[3, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.95} opacity={0.7} transparent />
+      </mesh>
+      <mesh position={[-8, 0.2, -14]} castShadow receiveShadow>
+        <sphereGeometry args={[2.5, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={theme.groundColor} roughness={0.95} />
       </mesh>
       {/* Subtle ground patches for visual interest */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[6, 0.005, 4]} receiveShadow>
@@ -932,12 +949,14 @@ function NPCCharacter({
   color,
   playerGroupRef,
   onInteract,
+  npcIndex,
 }: {
   npcData: NPCData;
   position: Vec3;
   color: string;
   playerGroupRef: { readonly current: THREE.Group | null };
   onInteract: (npc: NPCData) => void;
+  npcIndex: number;
 }) {
   const [isNear, setIsNear] = useState(false);
   const prevNear = useRef(false);
@@ -946,9 +965,10 @@ function NPCCharacter({
 
   useFrame(() => {
     frameCount.current++;
-    // Idle bob animation
+    // Idle bob + gentle sway animation
     if (bodyRef.current) {
       bodyRef.current.position.y = Math.sin(Date.now() * 0.002 + position[0]) * 0.05;
+      bodyRef.current.rotation.y = Math.sin(Date.now() * 0.001 + position[2]) * 0.1;
     }
     // Proximity check (throttled)
     if (frameCount.current % 10 === 0 && playerGroupRef.current) {
@@ -962,6 +982,9 @@ function NPCCharacter({
     }
   });
 
+  // Unique accessory per NPC index
+  const accessoryType = npcIndex % 4;
+
   return (
     <group position={position}>
       <group ref={bodyRef}>
@@ -972,12 +995,59 @@ function NPCCharacter({
           legColor="#4a4a4a"
           armColor={color}
         />
+        {/* Accessory 0: Wizard hat */}
+        {accessoryType === 0 && (
+          <group>
+            <mesh position={[0, 1.85, 0]} castShadow>
+              <cylinderGeometry args={[0.25, 0.28, 0.1, 8]} />
+              <meshStandardMaterial color={color} roughness={0.6} />
+            </mesh>
+            <mesh position={[0, 2.15, 0]} castShadow>
+              <coneGeometry args={[0.2, 0.5, 8]} />
+              <meshStandardMaterial color={color} roughness={0.6} />
+            </mesh>
+          </group>
+        )}
+        {/* Accessory 1: Crown */}
+        {accessoryType === 1 && (
+          <mesh position={[0, 1.88, 0]} castShadow>
+            <cylinderGeometry args={[0.22, 0.22, 0.12, 5]} />
+            <meshStandardMaterial color="#ffd700" metalness={0.6} roughness={0.3} />
+          </mesh>
+        )}
+        {/* Accessory 2: Scarf (torus around neck) */}
+        {accessoryType === 2 && (
+          <mesh position={[0, 1.2, 0]} castShadow>
+            <torusGeometry args={[0.22, 0.05, 6, 8]} />
+            <meshStandardMaterial color={color} roughness={0.7} />
+          </mesh>
+        )}
+        {/* Accessory 3: Shoulder bag */}
+        {accessoryType === 3 && (
+          <group>
+            <mesh position={[0.3, 0.7, 0.1]} castShadow>
+              <boxGeometry args={[0.18, 0.2, 0.1]} />
+              <meshStandardMaterial color="#8a6a3a" roughness={0.8} />
+            </mesh>
+            <mesh position={[0.15, 0.95, 0.05]} rotation={[0, 0, 0.3]} castShadow>
+              <boxGeometry args={[0.35, 0.04, 0.04]} />
+              <meshStandardMaterial color="#7a5a2a" roughness={0.8} />
+            </mesh>
+          </group>
+        )}
         {/* Highlight ring when near */}
         {isNear && (
-          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]}>
-            <ringGeometry args={[0.8, 1.1, 16]} />
-            <meshBasicMaterial color="#ffd700" transparent opacity={0.5} />
-          </mesh>
+          <group>
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]}>
+              <ringGeometry args={[0.8, 1.1, 16]} />
+              <meshBasicMaterial color="#ffd700" transparent opacity={0.5} />
+            </mesh>
+            {/* Outer pulse ring */}
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+              <ringGeometry args={[1.1, 1.2, 16]} />
+              <meshBasicMaterial color="#ffd700" transparent opacity={0.2} />
+            </mesh>
+          </group>
         )}
       </group>
       {/* Clickable invisible sphere for easier click target */}
@@ -2075,7 +2145,7 @@ function WorldScene({
       <IslandDecorations islandId={islandId} positions={decoPositions} />
 
       {/* NPCs */}
-      {npcs.map((npc) => (
+      {npcs.map((npc, npcIdx) => (
         <NPCCharacter
           key={npc.data.id}
           npcData={npc.data}
@@ -2083,6 +2153,7 @@ function WorldScene({
           color={npc.color}
           playerGroupRef={playerGroupRef}
           onInteract={onNPCInteract}
+          npcIndex={npcIdx}
         />
       ))}
 
