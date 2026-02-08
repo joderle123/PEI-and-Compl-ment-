@@ -4321,7 +4321,7 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
                 </div>
               </div>
 
-              {/* NPC speech bubble */}
+              {/* NPC speech bubble - progress-aware */}
               <div
                 className="mb-5 p-4 rounded-xl text-sm leading-relaxed relative"
                 style={{
@@ -4338,7 +4338,25 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
                     borderLeft: '1px solid rgba(201,168,76,0.2)',
                   }}
                 />
-                {dialogNPC.backstory}
+                {isScenarioCompleted && isActivityCompleted ? (
+                  <span>
+                    <em>&ldquo;Du hast alles geschafft, was ich dir zeigen konnte. Ich bin stolz auf dich. Vergiss nicht, was du hier gelernt hast!&rdquo;</em>
+                    <br /><br />
+                    <span style={{ color: 'rgba(100,200,100,0.8)', fontSize: '12px' }}>
+                      {'\u2728'} Du hast alle Inhalte von {dialogNPC.name} abgeschlossen!
+                    </span>
+                  </span>
+                ) : isScenarioCompleted ? (
+                  <span>
+                    <em>&ldquo;Hey, du bist zur{'\u00FC'}ck! Unsere Geschichte war ziemlich intensiv, oder? Ich hab noch eine {'\u00DC'}bung f{'\u00FC'}r dich, wenn du bereit bist.&rdquo;</em>
+                    <br /><br />
+                    <span style={{ color: 'rgba(201,168,76,0.6)', fontSize: '12px' }}>
+                      {'\u{1F4AA}'} Geschichte abgeschlossen &middot; {'\u{1F3AF}'} Aktivit{'\u00E4'}t verf{'\u00FC'}gbar
+                    </span>
+                  </span>
+                ) : (
+                  <span>{dialogNPC.backstory}</span>
+                )}
               </div>
 
               {/* Available actions - NPC-specific */}

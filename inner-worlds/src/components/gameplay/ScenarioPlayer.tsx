@@ -91,6 +91,70 @@ function getChoiceIcon(choice: any): string {
 }
 
 // ---------------------------------------------------------------------------
+// Helper: detect NPC speaker from scenario context
+// ---------------------------------------------------------------------------
+
+function getScenarioNPC(scenarioId: string, islandId: string): { name: string; emoji: string } | null {
+  const data = getIslandData(islandId);
+  const npcs = data.npcs || [];
+  // Extract scenario number from ID (e.g., 'volcano-scenario-2' -> 2)
+  const match = scenarioId?.match(/scenario-(\d+)/);
+  if (!match) return null;
+  const num = parseInt(match[1], 10);
+  // Map scenario to NPC (1-indexed -> 0-indexed, clamp to array bounds)
+  const idx = Math.min(num - 1, npcs.length - 1);
+  if (idx >= 0 && idx < npcs.length) {
+    return { name: npcs[idx].name, emoji: npcs[idx].emoji };
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// Helper: generate meaningful consequence text based on choice points
+// ---------------------------------------------------------------------------
+
+const EMPATHY_CONSEQUENCES = [
+  'Dein Mitgef\u00FChl leuchtet auf. Du verstehst, was andere f\u00FChlen.',
+  'Du hast mit dem Herzen gehandelt \u2013 das braucht echte St\u00E4rke.',
+  'Empathie ist eine Superkraft, und du hast sie gerade eingesetzt.',
+  'Du siehst die Welt durch die Augen anderer. Das ist selten.',
+];
+const INSIGHT_CONSEQUENCES = [
+  'Kluge Entscheidung. Du siehst tiefer als die meisten.',
+  'Nachdenken vor dem Handeln \u2013 das ist echte Weisheit.',
+  'Dein Verstand schneidet durch den Nebel. Beeindruckende Einsicht.',
+  'Du hast das Offensichtliche hinterfragt. Genau richtig.',
+];
+const COURAGE_CONSEQUENCES = [
+  'Mutig! Nicht jeder h\u00E4tte sich das getraut.',
+  'Dein Mut brennt hell. Du hast dich nicht einsch\u00FCchtern lassen.',
+  'Manchmal braucht es Mut, das Richtige zu tun. Du hast ihn.',
+  'Du bist mutig vorangegangen, w\u00E4hrend andere z\u00F6gern w\u00FCrden.',
+];
+const BALANCED_CONSEQUENCES = [
+  'Eine ausgewogene Entscheidung \u2013 Kopf UND Herz arbeiten zusammen.',
+  'Du hast alle Seiten abgewogen. Das zeigt echte Reife.',
+  'Balance ist nicht Mittelma\u00DF \u2013 es ist die schwerste Kunst.',
+];
+
+function getSmartConsequence(choice: any): string {
+  if (choice.consequence) return choice.consequence;
+  const pts = choice.points || choice;
+  const emp = pts.empathyPoints || 0;
+  const ins = pts.insightPoints || 0;
+  const cou = pts.couragePoints || 0;
+  const total = emp + ins + cou;
+  if (total === 0) return `Du hast gew\u00E4hlt: \u201E${choice.text}\u201C`;
+  // Use choice id hash for deterministic selection
+  const hash = (choice.id || '').split('').reduce((a: number, c: string) => a + c.charCodeAt(0), 0);
+  const max = Math.max(emp, ins, cou);
+  if (emp === ins && ins === cou) return BALANCED_CONSEQUENCES[hash % BALANCED_CONSEQUENCES.length];
+  if (max === emp) return EMPATHY_CONSEQUENCES[hash % EMPATHY_CONSEQUENCES.length];
+  if (max === ins) return INSIGHT_CONSEQUENCES[hash % INSIGHT_CONSEQUENCES.length];
+  return COURAGE_CONSEQUENCES[hash % COURAGE_CONSEQUENCES.length];
+}
+
+// ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
@@ -109,6 +173,8 @@ export default function ScenarioPlayer() {
 
   const data = getIslandData(islandId);
   const scenario = data.scenarios.find((s: any) => s.id === scenarioId);
+  // Auto-detect NPC speaker for this scenario
+  const npcSpeaker = scenarioId ? getScenarioNPC(scenarioId, islandId) : null;
 
   const [currentSceneIndex, setCurrentSceneIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
@@ -522,16 +588,14 @@ export default function ScenarioPlayer() {
                       }}
                     />
                     <span className="relative z-10 text-2xl">
-                      {currentScene.speakerEmoji || '\u{1F4DC}'}
+                      {currentScene.speakerEmoji || npcSpeaker?.emoji || '\u{1F4DC}'}
                     </span>
                   </div>
 
                   <span className="font-title text-golden font-bold text-lg tracking-wide">
-                    {!currentScene.speaker || currentScene.speaker === 'narrator'
-                      ? 'Erz\u00E4hler'
-                      : currentScene.speaker === 'player'
-                        ? 'Du'
-                        : currentScene.speaker}
+                    {currentScene.speaker && currentScene.speaker !== 'narrator'
+                      ? (currentScene.speaker === 'player' ? 'Du' : currentScene.speaker)
+                      : (npcSpeaker?.name || 'Erz\u00E4hler')}
                   </span>
                 </div>
 
@@ -589,12 +653,10 @@ export default function ScenarioPlayer() {
                       }}
                       className="glass-panel ornate-border rounded-2xl p-5 mb-4"
                     >
-                      {/* Consequence text (handle missing) */}
-                      {(selectedChoice.consequence || selectedChoice.text) && (
-                        <p className="text-[#e8e0d0] mb-3 leading-relaxed">
-                          {selectedChoice.consequence || `Du hast gew\u00E4hlt: "${selectedChoice.text}"`}
-                        </p>
-                      )}
+                      {/* Consequence text (smart generation) */}
+                      <p className="text-[#e8e0d0] mb-3 leading-relaxed">
+                        {getSmartConsequence(selectedChoice)}
+                      </p>
 
                       {/* Point gains (handle both flat and nested) */}
                       {(() => {
