@@ -11,7 +11,32 @@ import type {
   JournalEntry,
   Settings,
   Island,
+  Achievement,
+  GameEvent,
 } from '../types';
+
+// ---------------------------------------------------------------------------
+// Combo multiplier steps
+// ---------------------------------------------------------------------------
+
+const COMBO_STEPS = [1, 1.5, 2, 2.5, 3] as const;
+
+// ---------------------------------------------------------------------------
+// Predefined achievements (German)
+// ---------------------------------------------------------------------------
+
+const PREDEFINED_ACHIEVEMENTS: Achievement[] = [
+  { id: 'first-choice', name: 'Erste Entscheidung', description: 'Schließe dein erstes Szenario ab', unlocked: false, unlockedAt: null },
+  { id: 'explorer', name: 'Entdecker', description: 'Besuche 3 verschiedene Inseln', unlocked: false, unlockedAt: null },
+  { id: 'empathy-master', name: 'Empathie-Meister', description: 'Verdiene 50+ Empathie-Punkte', unlocked: false, unlockedAt: null },
+  { id: 'courage-hero', name: 'Held des Muts', description: 'Verdiene 50+ Mut-Punkte', unlocked: false, unlockedAt: null },
+  { id: 'wisdom-collector', name: 'Weisheitssammler', description: 'Sammle 10 Weisheitskarten', unlocked: false, unlockedAt: null },
+  { id: 'streak-3', name: 'Auf einer Rolle!', description: 'Erreiche eine 3er-Serie', unlocked: false, unlockedAt: null },
+  { id: 'streak-5', name: 'Unaufhaltsam', description: 'Erreiche eine 5er-Serie', unlocked: false, unlockedAt: null },
+  { id: 'level-5', name: 'Aufsteiger', description: 'Erreiche Level 5', unlocked: false, unlockedAt: null },
+  { id: 'level-10', name: 'Legendär', description: 'Erreiche Level 10', unlocked: false, unlockedAt: null },
+  { id: 'journal-writer', name: 'Tagebuch-Autor', description: 'Schreibe 5 Tagebucheinträge', unlocked: false, unlockedAt: null },
+];
 
 // ---------------------------------------------------------------------------
 // Store interface – combines state with actions
@@ -46,6 +71,19 @@ interface GameStore extends GameState {
 
   // Islands
   setActiveIsland: (islandId: IslandId | null) => void;
+
+  // Achievements
+  unlockAchievement: (id: string) => void;
+
+  // Skill points
+  addSkillPoints: (empathy: number, insight: number, courage: number) => void;
+
+  // Combo
+  increaseCombo: () => void;
+  resetCombo: () => void;
+
+  // Events
+  triggerEvent: (type: string, data: any) => void;
 
   // Reset
   resetGame: () => void;
@@ -193,6 +231,24 @@ const initialState: GameState = {
 
   // Settings
   settings: defaultSettings,
+
+  // Streak
+  streak: 0,
+  bestStreak: 0,
+
+  // Achievements
+  achievements: PREDEFINED_ACHIEVEMENTS,
+
+  // Skill point totals
+  totalEmpathyPoints: 0,
+  totalInsightPoints: 0,
+  totalCouragePoints: 0,
+
+  // Combo
+  comboMultiplier: 1,
+
+  // Events
+  lastEvent: null,
 };
 
 // ---------------------------------------------------------------------------
@@ -222,6 +278,42 @@ const recalculateIslandCompletion = (
 
     return { ...island, completionPercent };
   });
+
+// ---------------------------------------------------------------------------
+// Helper – try to unlock a single achievement (immutable)
+// ---------------------------------------------------------------------------
+
+const tryUnlockAchievement = (
+  achievements: Achievement[],
+  id: string,
+): { achievements: Achievement[]; unlocked: boolean } => {
+  const target = achievements.find((a) => a.id === id);
+  if (!target || target.unlocked) return { achievements, unlocked: false };
+
+  return {
+    achievements: achievements.map((a) =>
+      a.id === id
+        ? { ...a, unlocked: true, unlockedAt: new Date().toISOString() }
+        : a,
+    ),
+    unlocked: true,
+  };
+};
+
+// ---------------------------------------------------------------------------
+// Helper – extract unique island IDs from scenario IDs
+// ---------------------------------------------------------------------------
+
+const getUniqueIslandCount = (scenarioIds: string[]): number => {
+  const islands = new Set<string>();
+  for (const id of scenarioIds) {
+    const dash = id.indexOf('-');
+    if (dash > 0) {
+      islands.add(id.substring(0, dash));
+    }
+  }
+  return islands.size;
+};
 
 // ---------------------------------------------------------------------------
 // Store
@@ -276,7 +368,31 @@ export const useGameStore = create<GameStore>()(
           const newXP = state.xp + amount;
           const newLevel = Math.floor(newXP / 100) + 1;
 
-          return { xp: newXP, level: newLevel };
+          let { achievements } = state;
+          let lastEvent: GameEvent | null = state.lastEvent;
+
+          // Trigger level-up event when level increases
+          if (newLevel > state.level) {
+            lastEvent = { type: 'level-up', data: { level: newLevel }, timestamp: Date.now() };
+          }
+
+          // Check level-based achievements
+          if (newLevel >= 5) {
+            const result = tryUnlockAchievement(achievements, 'level-5');
+            achievements = result.achievements;
+            if (result.unlocked) {
+              lastEvent = { type: 'achievement-unlocked', data: { id: 'level-5', name: 'Aufsteiger' }, timestamp: Date.now() };
+            }
+          }
+          if (newLevel >= 10) {
+            const result = tryUnlockAchievement(achievements, 'level-10');
+            achievements = result.achievements;
+            if (result.unlocked) {
+              lastEvent = { type: 'achievement-unlocked', data: { id: 'level-10', name: 'Legendär' }, timestamp: Date.now() };
+            }
+          }
+
+          return { xp: newXP, level: newLevel, achievements, lastEvent };
         }),
 
       completeScenario: (scenarioId: string, islandId: IslandId) =>
@@ -291,7 +407,50 @@ export const useGameStore = create<GameStore>()(
             state.completedActivities,
           );
 
-          return { completedScenarios, islands };
+          // Streak tracking
+          const streak = state.streak + 1;
+          const bestStreak = Math.max(streak, state.bestStreak);
+
+          let { achievements } = state;
+          let lastEvent: GameEvent | null = state.lastEvent;
+
+          // first-choice: complete first scenario
+          if (completedScenarios.length >= 1) {
+            const result = tryUnlockAchievement(achievements, 'first-choice');
+            achievements = result.achievements;
+            if (result.unlocked) {
+              lastEvent = { type: 'achievement-unlocked', data: { id: 'first-choice', name: 'Erste Entscheidung' }, timestamp: Date.now() };
+            }
+          }
+
+          // explorer: visit 3 different islands
+          if (getUniqueIslandCount(completedScenarios) >= 3) {
+            const result = tryUnlockAchievement(achievements, 'explorer');
+            achievements = result.achievements;
+            if (result.unlocked) {
+              lastEvent = { type: 'achievement-unlocked', data: { id: 'explorer', name: 'Entdecker' }, timestamp: Date.now() };
+            }
+          }
+
+          // streak-3: 3-scenario streak
+          if (streak >= 3) {
+            const result = tryUnlockAchievement(achievements, 'streak-3');
+            achievements = result.achievements;
+            if (result.unlocked) {
+              lastEvent = { type: 'streak-milestone', data: { streak: 3, name: 'Auf einer Rolle!' }, timestamp: Date.now() };
+            }
+          }
+
+          // streak-5: 5-scenario streak
+          if (streak >= 5) {
+            const result = tryUnlockAchievement(achievements, 'streak-5');
+            achievements = result.achievements;
+            if (result.unlocked) {
+              lastEvent = { type: 'streak-milestone', data: { streak: 5, name: 'Unaufhaltsam' }, timestamp: Date.now() };
+            }
+          }
+
+          return { completedScenarios, islands, streak, bestStreak, achievements, lastEvent };
         }),
 
       completeActivity: (activityId: string, islandId: IslandId) =>
@@ -328,7 +487,26 @@ export const useGameStore = create<GameStore>()(
       collectWisdomCard: (cardId: string) =>
         set((state) => {
           if (state.collectedWisdomCardIds.includes(cardId)) return state;
-          return { collectedWisdomCardIds: [...state.collectedWisdomCardIds, cardId] };
+
+          const collectedWisdomCardIds = [...state.collectedWisdomCardIds, cardId];
+
+          let { achievements } = state;
+          let lastEvent: GameEvent | null = {
+            type: 'wisdom-card-found',
+            data: { cardId },
+            timestamp: Date.now(),
+          };
+
+          // wisdom-collector: collect 10 wisdom cards
+          if (collectedWisdomCardIds.length >= 10) {
+            const result = tryUnlockAchievement(achievements, 'wisdom-collector');
+            achievements = result.achievements;
+            if (result.unlocked) {
+              lastEvent = { type: 'achievement-unlocked', data: { id: 'wisdom-collector', name: 'Weisheitssammler' }, timestamp: Date.now() };
+            }
+          }
+
+          return { collectedWisdomCardIds, achievements, lastEvent };
         }),
 
       // ------------------------------------------------------------------
@@ -342,7 +520,21 @@ export const useGameStore = create<GameStore>()(
             id: `journal-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
           };
 
-          return { journalEntries: [...state.journalEntries, newEntry] };
+          const journalEntries = [...state.journalEntries, newEntry];
+
+          let { achievements } = state;
+          let lastEvent: GameEvent | null = state.lastEvent;
+
+          // journal-writer: write 5 journal entries
+          if (journalEntries.length >= 5) {
+            const result = tryUnlockAchievement(achievements, 'journal-writer');
+            achievements = result.achievements;
+            if (result.unlocked) {
+              lastEvent = { type: 'achievement-unlocked', data: { id: 'journal-writer', name: 'Tagebuch-Autor' }, timestamp: Date.now() };
+            }
+          }
+
+          return { journalEntries, achievements, lastEvent };
         }),
 
       // ------------------------------------------------------------------
@@ -360,6 +552,82 @@ export const useGameStore = create<GameStore>()(
 
       setActiveIsland: (islandId: IslandId | null) =>
         set({ activeIsland: islandId }),
+
+      // ------------------------------------------------------------------
+      // Achievements
+      // ------------------------------------------------------------------
+
+      unlockAchievement: (id: string) =>
+        set((state) => {
+          const result = tryUnlockAchievement(state.achievements, id);
+          if (!result.unlocked) return state;
+
+          const achievement = result.achievements.find((a) => a.id === id);
+          const lastEvent: GameEvent = {
+            type: 'achievement-unlocked',
+            data: { id, name: achievement?.name ?? id },
+            timestamp: Date.now(),
+          };
+
+          return { achievements: result.achievements, lastEvent };
+        }),
+
+      // ------------------------------------------------------------------
+      // Skill points
+      // ------------------------------------------------------------------
+
+      addSkillPoints: (empathy: number, insight: number, courage: number) =>
+        set((state) => {
+          const totalEmpathyPoints = state.totalEmpathyPoints + empathy;
+          const totalInsightPoints = state.totalInsightPoints + insight;
+          const totalCouragePoints = state.totalCouragePoints + courage;
+
+          let { achievements } = state;
+          let lastEvent: GameEvent | null = state.lastEvent;
+
+          // empathy-master: earn 50+ total empathy points
+          if (totalEmpathyPoints >= 50) {
+            const result = tryUnlockAchievement(achievements, 'empathy-master');
+            achievements = result.achievements;
+            if (result.unlocked) {
+              lastEvent = { type: 'achievement-unlocked', data: { id: 'empathy-master', name: 'Empathie-Meister' }, timestamp: Date.now() };
+            }
+          }
+
+          // courage-hero: earn 50+ total courage points
+          if (totalCouragePoints >= 50) {
+            const result = tryUnlockAchievement(achievements, 'courage-hero');
+            achievements = result.achievements;
+            if (result.unlocked) {
+              lastEvent = { type: 'achievement-unlocked', data: { id: 'courage-hero', name: 'Held des Muts' }, timestamp: Date.now() };
+            }
+          }
+
+          return { totalEmpathyPoints, totalInsightPoints, totalCouragePoints, achievements, lastEvent };
+        }),
+
+      // ------------------------------------------------------------------
+      // Combo
+      // ------------------------------------------------------------------
+
+      increaseCombo: () =>
+        set((state) => {
+          const currentIndex = COMBO_STEPS.findIndex((s) => s === state.comboMultiplier);
+          const nextIndex = Math.min(
+            (currentIndex === -1 ? 0 : currentIndex) + 1,
+            COMBO_STEPS.length - 1,
+          );
+          return { comboMultiplier: COMBO_STEPS[nextIndex] };
+        }),
+
+      resetCombo: () => set({ comboMultiplier: 1 }),
+
+      // ------------------------------------------------------------------
+      // Events
+      // ------------------------------------------------------------------
+
+      triggerEvent: (type: string, data: any) =>
+        set({ lastEvent: { type, data, timestamp: Date.now() } }),
 
       // ------------------------------------------------------------------
       // Reset
