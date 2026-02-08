@@ -2296,7 +2296,7 @@ function GrassTufts({ theme, islandId }: { theme: IslandTheme; islandId: string 
       meshRef.current.setMatrixAt(i, dummy.matrix);
     }
     meshRef.current.instanceMatrix.needsUpdate = true;
-  }, [islandId, theme]);
+  }, [islandId]);
 
   // Skip grass for some islands
   if (islandId === 'volcano' || islandId === 'ocean' || islandId === 'night') return null;
