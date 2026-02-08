@@ -83,7 +83,7 @@ type Vec3 = [number, number, number];
 
 const MOVE_SPEED = 0.1;
 const GROUND_SIZE = 35;
-const INTERACT_DIST = 3.5;
+const INTERACT_DIST = 5;
 const CAM_OFFSET = new THREE.Vector3(14, 16, 14);
 const CAM_LERP = 0.04;
 
@@ -4057,6 +4057,74 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
         activityMarkers={activityMarkers}
         theme={theme}
       />
+
+      {/* Quest Tracker (left side) */}
+      <div
+        className="fixed top-20 left-4 z-30 flex flex-col gap-1.5 max-h-[60vh] overflow-y-auto"
+        style={{
+          width: '220px',
+          pointerEvents: 'none',
+        }}
+      >
+        <div
+          className="text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg"
+          style={{
+            color: 'rgba(201,168,76,0.8)',
+            background: 'rgba(0,0,0,0.5)',
+            backdropFilter: 'blur(4px)',
+            pointerEvents: 'auto',
+          }}
+        >
+          {'\u{1F4DC}'} Geschichten
+        </div>
+        {scenarioMarkers.map((s) => {
+          const done = completedScenarios.includes(s.id);
+          return (
+            <div
+              key={s.id}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs"
+              style={{
+                background: 'rgba(0,0,0,0.4)',
+                backdropFilter: 'blur(4px)',
+                color: done ? 'rgba(100,200,100,0.7)' : 'rgba(255,215,0,0.7)',
+                pointerEvents: 'auto',
+              }}
+            >
+              <span>{done ? '\u2705' : '\u{1F4A0}'}</span>
+              <span className="truncate">{s.title}</span>
+            </div>
+          );
+        })}
+        <div
+          className="text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg mt-1"
+          style={{
+            color: 'rgba(64,192,128,0.8)',
+            background: 'rgba(0,0,0,0.5)',
+            backdropFilter: 'blur(4px)',
+            pointerEvents: 'auto',
+          }}
+        >
+          {'\u{1F3AF}'} Aktivit{'\u00E4'}ten
+        </div>
+        {activityMarkers.map((a) => {
+          const done = completedActivities.includes(a.id);
+          return (
+            <div
+              key={a.id}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs"
+              style={{
+                background: 'rgba(0,0,0,0.4)',
+                backdropFilter: 'blur(4px)',
+                color: done ? 'rgba(100,200,100,0.7)' : 'rgba(64,192,128,0.7)',
+                pointerEvents: 'auto',
+              }}
+            >
+              <span>{done ? '\u2705' : '\u{1F4A0}'}</span>
+              <span className="truncate">{a.title}</span>
+            </div>
+          );
+        })}
+      </div>
 
       {/* Bottom: Controls hint */}
       {!isTouchDevice && (
