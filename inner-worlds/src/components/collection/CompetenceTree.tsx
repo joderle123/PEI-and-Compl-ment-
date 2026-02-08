@@ -1,13 +1,17 @@
 import { motion } from 'framer-motion';
 import { useGameStore } from '../../stores/gameStore';
 
+// ---------------------------------------------------------------------------
+// Skill definitions with dark fantasy colors
+// ---------------------------------------------------------------------------
+
 const skills = [
-  { name: 'Emotionsregulation', emoji: '🌋', color: '#e17055', angle: 0 },
-  { name: 'Empathie', emoji: '🌸', color: '#fd79a8', angle: 60 },
-  { name: 'Mut', emoji: '🌿', color: '#00b894', angle: 120 },
-  { name: 'Selbstwert', emoji: '🏔️', color: '#6c5ce7', angle: 180 },
-  { name: 'Achtsamkeit', emoji: '🌙', color: '#2d3436', angle: 240 },
-  { name: 'Soziale Kompetenz', emoji: '🌈', color: '#e84393', angle: 300 },
+  { name: 'Emotionsregulation', emoji: '\u{1F30B}', color: '#ff6b35', glowColor: 'rgba(255,107,53,0.3)', angle: 0 },
+  { name: 'Empathie', emoji: '\u{1F338}', color: '#e878a0', glowColor: 'rgba(232,120,160,0.3)', angle: 60 },
+  { name: 'Mut', emoji: '\u{1F332}', color: '#48c78e', glowColor: 'rgba(72,199,142,0.3)', angle: 120 },
+  { name: 'Selbstwert', emoji: '\u26F0\uFE0F', color: '#8b78e6', glowColor: 'rgba(139,120,230,0.3)', angle: 180 },
+  { name: 'Achtsamkeit', emoji: '\u{1F319}', color: '#6888b8', glowColor: 'rgba(104,136,184,0.3)', angle: 240 },
+  { name: 'Soziale Kompetenz', emoji: '\u{1F308}', color: '#e878d8', glowColor: 'rgba(232,120,216,0.3)', angle: 300 },
 ];
 
 export default function CompetenceTree() {
@@ -18,17 +22,27 @@ export default function CompetenceTree() {
     completedActivities,
     collectedWisdomCardIds,
     journalEntries,
+    totalEmpathyPoints,
+    totalInsightPoints,
+    totalCouragePoints,
     setScreen,
   } = useGameStore();
 
-  // Calculate skill levels based on completed content
   const getSkillLevel = (index: number): number => {
     const base = Math.floor(completedScenarios.length / 2) + Math.floor(completedActivities.length / 3);
     return Math.min(5, Math.max(1, base + (index % 3)));
   };
 
   return (
-    <div className="h-screen bg-gradient-to-b from-[#faf3e8] to-[#e8f5e9] overflow-auto">
+    <div
+      className="h-screen overflow-auto"
+      style={{
+        background: `
+          radial-gradient(ellipse 80% 60% at 50% 30%, rgba(45,27,78,0.6) 0%, transparent 70%),
+          linear-gradient(180deg, #0d0d1a 0%, #1a0a2e 50%, #0d0d1a 100%)
+        `,
+      }}
+    >
       <div className="max-w-4xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -36,46 +50,126 @@ export default function CompetenceTree() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setScreen('island-map')}
-            className="px-4 py-2 bg-white/80 backdrop-blur rounded-full shadow text-gray-700 font-semibold"
+            className="glass-panel px-4 py-2 rounded-xl text-sm font-title font-semibold cursor-pointer"
+            style={{
+              border: '1px solid rgba(201,168,76,0.3)',
+              color: '#c9a84c',
+            }}
           >
-            ← Zurück
+            {'\u2190'} Zur{'\u00FC'}ck
           </motion.button>
         </div>
 
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-[#6C5CE7] mb-2">🌳 Kompetenz-Baum</h1>
-          <p className="text-gray-600">Deine wachsenden Fähigkeiten</p>
+          <motion.h1
+            initial={{ opacity: 0, y: -15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-3xl font-title font-bold mb-2"
+            style={{
+              color: '#ffd700',
+              textShadow: '0 0 20px rgba(255,215,0,0.3)',
+            }}
+          >
+            {'\u{1F333}'} Kompetenz-Baum
+          </motion.h1>
+          <p style={{ color: 'rgba(232,213,163,0.6)' }}>
+            Deine wachsenden F{'\u00E4'}higkeiten
+          </p>
         </div>
 
         {/* Stats overview */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white/80 rounded-2xl p-4 text-center shadow">
-            <span className="text-2xl">⭐</span>
-            <p className="text-2xl font-bold text-[#6C5CE7]">{xp}</p>
-            <p className="text-xs text-gray-500">Erfahrungspunkte</p>
-          </div>
-          <div className="bg-white/80 rounded-2xl p-4 text-center shadow">
-            <span className="text-2xl">🏆</span>
-            <p className="text-2xl font-bold text-[#6C5CE7]">{level}</p>
-            <p className="text-xs text-gray-500">Level</p>
-          </div>
-          <div className="bg-white/80 rounded-2xl p-4 text-center shadow">
-            <span className="text-2xl">📖</span>
-            <p className="text-2xl font-bold text-[#6C5CE7]">{completedScenarios.length}</p>
-            <p className="text-xs text-gray-500">Geschichten</p>
-          </div>
-          <div className="bg-white/80 rounded-2xl p-4 text-center shadow">
-            <span className="text-2xl">🃏</span>
-            <p className="text-2xl font-bold text-[#6C5CE7]">{collectedWisdomCardIds.length}</p>
-            <p className="text-xs text-gray-500">Weisheitskarten</p>
-          </div>
+          {[
+            { emoji: '\u2B50', value: xp, label: 'Erfahrungspunkte' },
+            { emoji: '\u{1F3C6}', value: level, label: 'Level' },
+            { emoji: '\u{1F4D6}', value: completedScenarios.length, label: 'Geschichten' },
+            { emoji: '\u{1F4DC}', value: collectedWisdomCardIds.length, label: 'Weisheitskarten' },
+          ].map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08 }}
+              className="glass-panel rounded-2xl p-4 text-center"
+              style={{
+                border: '1px solid rgba(201,168,76,0.2)',
+              }}
+            >
+              <span className="text-2xl">{stat.emoji}</span>
+              <p
+                className="text-2xl font-bold font-title"
+                style={{ color: '#ffd700' }}
+              >
+                {stat.value}
+              </p>
+              <p
+                className="text-xs"
+                style={{ color: 'rgba(201,168,76,0.5)' }}
+              >
+                {stat.label}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Skill points summary */}
+        <div className="grid grid-cols-3 gap-3 mb-8">
+          {[
+            { label: 'Empathie', value: totalEmpathyPoints, color: '#e878a0', icon: '\u{1F497}' },
+            { label: 'Einsicht', value: totalInsightPoints, color: '#8b78e6', icon: '\u{1F4A1}' },
+            { label: 'Mut', value: totalCouragePoints, color: '#ff8c44', icon: '\u{1F981}' },
+          ].map((sp) => (
+            <div
+              key={sp.label}
+              className="glass-panel rounded-xl p-3 text-center"
+              style={{ border: `1px solid ${sp.color}40` }}
+            >
+              <span className="text-lg">{sp.icon}</span>
+              <p className="text-lg font-bold font-title" style={{ color: sp.color }}>
+                {sp.value}
+              </p>
+              <p className="text-xs" style={{ color: `${sp.color}99` }}>{sp.label}</p>
+            </div>
+          ))}
         </div>
 
         {/* Tree visualization as petal diagram */}
         <div className="relative w-80 h-80 mx-auto mb-8">
-          {/* Center */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-[#6C5CE7] rounded-full flex items-center justify-center shadow-xl z-10">
-            <span className="text-3xl">🌟</span>
+          {/* Center glow */}
+          <motion.div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={{
+              width: '100px',
+              height: '100px',
+              background: 'radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%)',
+              filter: 'blur(15px)',
+            }}
+            animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0.8, 0.5] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          />
+
+          {/* Center node */}
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full flex items-center justify-center z-10"
+            style={{
+              background: 'linear-gradient(135deg, rgba(108,92,231,0.4), rgba(45,27,78,0.6))',
+              border: '2px solid rgba(201,168,76,0.4)',
+              boxShadow: '0 0 20px rgba(201,168,76,0.2), inset 0 0 15px rgba(201,168,76,0.1)',
+            }}
+          >
+            <motion.span
+              className="text-3xl"
+              animate={{
+                filter: [
+                  'drop-shadow(0 0 4px rgba(255,215,0,0.3))',
+                  'drop-shadow(0 0 12px rgba(255,215,0,0.6))',
+                  'drop-shadow(0 0 4px rgba(255,215,0,0.3))',
+                ],
+              }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              {'\u{1F31F}'}
+            </motion.span>
           </div>
 
           {/* Skill petals */}
@@ -98,17 +192,38 @@ export default function CompetenceTree() {
                   transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
                 }}
               >
-                {/* Petal */}
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg"
-                  style={{ backgroundColor: skill.color }}
+                {/* Petal with glow */}
+                <motion.div
+                  className="w-16 h-16 rounded-full flex items-center justify-center"
+                  style={{
+                    background: `radial-gradient(circle at 35% 35%, ${skill.color}60, ${skill.color}30)`,
+                    border: `1px solid ${skill.color}80`,
+                    boxShadow: `0 0 15px ${skill.glowColor}`,
+                  }}
+                  animate={{
+                    boxShadow: [
+                      `0 0 10px ${skill.glowColor}`,
+                      `0 0 20px ${skill.glowColor}`,
+                      `0 0 10px ${skill.glowColor}`,
+                    ],
+                  }}
+                  transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: 'easeInOut' }}
                 >
                   <span className="text-2xl">{skill.emoji}</span>
-                </div>
-                <span className="text-xs font-bold text-gray-700 mt-1 whitespace-nowrap bg-white/80 px-2 py-0.5 rounded-full">
+                </motion.div>
+                <span
+                  className="text-xs font-title font-bold mt-1 whitespace-nowrap px-2 py-0.5 rounded-full"
+                  style={{
+                    color: skill.color,
+                    background: 'rgba(0,0,0,0.5)',
+                    border: `1px solid ${skill.color}30`,
+                  }}
+                >
                   {skill.name}
                 </span>
-                <span className="text-xs text-gray-500">Lv.{skillLevel}</span>
+                <span className="text-xs" style={{ color: 'rgba(201,168,76,0.5)' }}>
+                  Lv.{skillLevel}
+                </span>
               </motion.div>
             );
           })}
@@ -131,8 +246,9 @@ export default function CompetenceTree() {
                   x2={x}
                   y2={y}
                   stroke={skill.color}
-                  strokeWidth="2"
-                  strokeOpacity="0.3"
+                  strokeWidth="1.5"
+                  strokeOpacity="0.25"
+                  strokeDasharray="4 6"
                 />
               );
             })}
@@ -140,21 +256,31 @@ export default function CompetenceTree() {
         </div>
 
         {/* Activity counts */}
-        <div className="bg-white/80 rounded-2xl p-6 shadow mb-8">
-          <h3 className="font-bold text-gray-800 mb-4">Deine Reise in Zahlen</h3>
+        <div
+          className="glass-panel rounded-2xl p-6 mb-8"
+          style={{ border: '1px solid rgba(201,168,76,0.2)' }}
+        >
+          <h3
+            className="font-title font-bold mb-4"
+            style={{ color: '#e8d5a3' }}
+          >
+            Deine Reise in Zahlen
+          </h3>
           <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">🎯 Übungen absolviert</span>
-              <span className="font-bold text-[#6C5CE7]">{completedActivities.length}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">📓 Tagebucheinträge</span>
-              <span className="font-bold text-[#6C5CE7]">{journalEntries.length}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">🃏 Weisheitskarten</span>
-              <span className="font-bold text-[#6C5CE7]">{collectedWisdomCardIds.length}</span>
-            </div>
+            {[
+              { emoji: '\u{1F3AF}', label: '\u00DCbungen absolviert', value: completedActivities.length },
+              { emoji: '\u{1F4D3}', label: 'Tagebucheintr\u00E4ge', value: journalEntries.length },
+              { emoji: '\u{1F4DC}', label: 'Weisheitskarten', value: collectedWisdomCardIds.length },
+            ].map((item) => (
+              <div key={item.label} className="flex justify-between items-center">
+                <span style={{ color: 'rgba(232,213,163,0.7)' }}>
+                  {item.emoji} {item.label}
+                </span>
+                <span className="font-bold font-title" style={{ color: '#ffd700' }}>
+                  {item.value}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 

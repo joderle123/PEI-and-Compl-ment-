@@ -8,6 +8,7 @@ import type {
   Mood,
   MoodEntry,
   IslandId,
+  IslandLevel,
   JournalEntry,
   Settings,
   Island,
@@ -20,6 +21,20 @@ import type {
 // ---------------------------------------------------------------------------
 
 const COMBO_STEPS = [1, 1.5, 2, 2.5, 3] as const;
+
+// ---------------------------------------------------------------------------
+// Island unlock thresholds – total completedScenarios count → island to unlock
+// ---------------------------------------------------------------------------
+
+const ISLAND_UNLOCK_THRESHOLDS: readonly { threshold: number; islandId: IslandId }[] = [
+  { threshold: 2, islandId: 'ocean' },
+  { threshold: 4, islandId: 'forest' },
+  { threshold: 6, islandId: 'mountain' },
+  { threshold: 8, islandId: 'garden' },
+  { threshold: 10, islandId: 'night' },
+  { threshold: 12, islandId: 'rainbow' },
+  { threshold: 14, islandId: 'home' },
+] as const;
 
 // ---------------------------------------------------------------------------
 // Predefined achievements (German)
@@ -401,7 +416,21 @@ export const useGameStore = create<GameStore>()(
             }
           }
 
-          return { xp: newXP, level: newLevel, achievements, lastEvent };
+          // Update island levels based on completion percentage
+          const islands = state.islands.map((island) => {
+            let newIslandLevel: IslandLevel = 1;
+            if (island.completionPercent >= 100) newIslandLevel = 5;
+            else if (island.completionPercent >= 75) newIslandLevel = 4;
+            else if (island.completionPercent >= 50) newIslandLevel = 3;
+            else if (island.completionPercent >= 25) newIslandLevel = 2;
+
+            if (newIslandLevel !== island.level) {
+              return { ...island, level: newIslandLevel };
+            }
+            return island;
+          });
+
+          return { xp: newXP, level: newLevel, achievements, lastEvent, islands };
         }),
 
       completeScenario: (scenarioId: string, islandId: IslandId) =>
@@ -409,7 +438,7 @@ export const useGameStore = create<GameStore>()(
           if (state.completedScenarios.includes(scenarioId)) return state;
 
           const completedScenarios = [...state.completedScenarios, scenarioId];
-          const islands = recalculateIslandCompletion(
+          let islands = recalculateIslandCompletion(
             state.islands,
             islandId,
             completedScenarios,
@@ -459,7 +488,32 @@ export const useGameStore = create<GameStore>()(
             }
           }
 
-          return { completedScenarios, islands, streak, bestStreak, achievements, lastEvent };
+          // Auto-unlock islands based on total completed scenarios
+          let unlockedIslands = [...state.unlockedIslands];
+          for (const { threshold, islandId: unlockId } of ISLAND_UNLOCK_THRESHOLDS) {
+            if (
+              completedScenarios.length >= threshold &&
+              !unlockedIslands.includes(unlockId)
+            ) {
+              unlockedIslands = [...unlockedIslands, unlockId];
+              islands = islands.map((island) =>
+                island.id === unlockId
+                  ? { ...island, unlocked: true }
+                  : island,
+              );
+              const islandData = islands.find((i) => i.id === unlockId);
+              lastEvent = {
+                type: 'island-unlocked',
+                data: {
+                  islandId: unlockId,
+                  islandName: islandData?.name ?? unlockId,
+                },
+                timestamp: Date.now(),
+              };
+            }
+          }
+
+          return { completedScenarios, islands, unlockedIslands, streak, bestStreak, achievements, lastEvent };
         }),
 
       completeActivity: (activityId: string, islandId: IslandId) =>

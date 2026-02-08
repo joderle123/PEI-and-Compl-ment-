@@ -3257,6 +3257,480 @@ function AirportArea({ theme }: { theme: IslandTheme }) {
 }
 
 // ---------------------------------------------------------------------------
+// 3D Sub-components: Aurora Ribbons (Night island atmospheric ribbons)
+// ---------------------------------------------------------------------------
+
+function AuroraRibbons() {
+  const groupRef = useRef<THREE.Group>(null);
+
+  const ribbons = useMemo(() => {
+    const rng = makeRng(606 + 3333);
+    return Array.from({ length: 4 }, () => {
+      const hue = rng();
+      return {
+        x: (rng() - 0.5) * 30,
+        y: 14 + rng() * 6,
+        z: (rng() - 0.5) * 30,
+        width: 8 + rng() * 12,
+        phase: rng() * Math.PI * 2,
+        speed: 0.2 + rng() * 0.3,
+        color: new THREE.Color().setHSL(hue, 0.7, 0.5),
+        emissiveColor: new THREE.Color().setHSL(hue, 0.8, 0.4),
+      };
+    });
+  }, []);
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current) return;
+    const t = clock.getElapsedTime();
+    groupRef.current.children.forEach((ribbon, i) => {
+      if (i >= ribbons.length) return;
+      const d = ribbons[i];
+      ribbon.position.y = d.y + Math.sin(t * d.speed + d.phase) * 2;
+      ribbon.rotation.x = Math.sin(t * 0.3 + d.phase) * 0.2;
+      ribbon.rotation.z = Math.cos(t * 0.2 + d.phase) * 0.15;
+      ribbon.scale.x = 1 + Math.sin(t * 0.5 + d.phase) * 0.2;
+    });
+  });
+
+  return (
+    <group ref={groupRef}>
+      {ribbons.map((d, i) => (
+        <mesh key={i} position={[d.x, d.y, d.z]} rotation={[0.3, 0, 0]}>
+          <planeGeometry args={[d.width, 0.8, 8, 1]} />
+          <meshStandardMaterial
+            color={d.color}
+            emissive={d.emissiveColor}
+            emissiveIntensity={1.2}
+            transparent
+            opacity={0.35}
+            side={THREE.DoubleSide}
+            depthWrite={false}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 3D Sub-components: Rainbow Arcs (Rainbow island prismatic arcs)
+// ---------------------------------------------------------------------------
+
+function RainbowArcs() {
+  const groupRef = useRef<THREE.Group>(null);
+
+  const arcs = useMemo(() => {
+    const colors = ['#ff4444', '#ffaa22', '#ffee44', '#44cc44', '#4488ff'];
+    return colors.map((color, i) => ({
+      color,
+      radius: 8 + i * 1.5,
+      y: 6 + i * 0.3,
+      phase: i * 0.5,
+    }));
+  }, []);
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current) return;
+    const t = clock.getElapsedTime();
+    groupRef.current.children.forEach((arc, i) => {
+      if (i >= arcs.length) return;
+      const d = arcs[i];
+      arc.position.y = d.y + Math.sin(t * 0.3 + d.phase) * 0.5;
+      arc.rotation.y = t * 0.05;
+    });
+  });
+
+  return (
+    <group ref={groupRef}>
+      {arcs.map((d, i) => (
+        <mesh key={i} position={[0, d.y, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[d.radius, 0.12, 6, 32, Math.PI * 0.6]} />
+          <meshStandardMaterial
+            color={d.color}
+            emissive={d.color}
+            emissiveIntensity={0.5}
+            transparent
+            opacity={0.4}
+            depthWrite={false}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 3D Sub-components: WeatherSystem (dramatic per-island atmosphere)
+// Uses a single InstancedMesh with ~200 particles for performance.
+// Each island gets unique weather: ash, rain, pollen, snow, petals, etc.
+// ---------------------------------------------------------------------------
+
+function WeatherSystem({ islandId, theme }: { islandId: string; theme: IslandTheme }) {
+  const PARTICLE_COUNT = 200;
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const colorsReady = useRef(false);
+
+  // Reset instance colors when island changes
+  useEffect(() => {
+    colorsReady.current = false;
+  }, [islandId]);
+
+  // Per-particle spawn data (deterministic per island)
+  const particles = useMemo(() => {
+    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 7777);
+    const spawnR: Record<string, number> = {
+      volcano: 30, ocean: 30, forest: 25, mountain: 30,
+      garden: 28, night: 30, rainbow: 28, home: 25,
+    };
+    const hMin: Record<string, number> = {
+      volcano: 8, ocean: 6, forest: 2, mountain: 8,
+      garden: 1, night: 5, rainbow: 1, home: 0.5,
+    };
+    const hMax: Record<string, number> = {
+      volcano: 20, ocean: 18, forest: 10, mountain: 22,
+      garden: 8, night: 25, rainbow: 15, home: 6,
+    };
+    const sMin: Record<string, number> = {
+      volcano: 0.05, ocean: 0.02, forest: 0.04, mountain: 0.03,
+      garden: 0.05, night: 0.02, rainbow: 0.03, home: 0.03,
+    };
+    const sMax: Record<string, number> = {
+      volcano: 0.1, ocean: 0.05, forest: 0.08, mountain: 0.06,
+      garden: 0.1, night: 0.05, rainbow: 0.07, home: 0.06,
+    };
+    const radius = spawnR[islandId] ?? 25;
+    const yMin = hMin[islandId] ?? 2;
+    const yMax = hMax[islandId] ?? 12;
+    const szMin = sMin[islandId] ?? 0.04;
+    const szMax = sMax[islandId] ?? 0.08;
+
+    const arr: Array<{
+      x: number; y: number; z: number;
+      phase: number; speed: number;
+      driftX: number; driftZ: number;
+      size: number;
+    }> = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const angle = rng() * Math.PI * 2;
+      const r = rng() * radius;
+      arr.push({
+        x: Math.cos(angle) * r,
+        y: yMin + rng() * (yMax - yMin),
+        z: Math.sin(angle) * r,
+        phase: rng() * Math.PI * 2,
+        speed: 0.5 + rng() * 1.0,
+        driftX: (rng() - 0.5) * 2,
+        driftZ: (rng() - 0.5) * 2,
+        size: szMin + rng() * (szMax - szMin),
+      });
+    }
+    return arr;
+  }, [islandId]);
+
+  // Pre-computed per-particle colors (RGB triplets in Float32Array)
+  const pColors = useMemo(() => {
+    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 7778);
+    const arr = new Float32Array(PARTICLE_COUNT * 3);
+    const tmp = new THREE.Color();
+    const baseColors: Record<string, string> = {
+      volcano: '#555555', ocean: '#aaccee', forest: '#bbdd44',
+      mountain: '#eeeeff', garden: '#ffbbcc', night: '#8888ff',
+      rainbow: '#ffffff', home: '#ffdd88',
+    };
+    const base = new THREE.Color(baseColors[islandId] ?? '#ffffff');
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      tmp.copy(base);
+      if (islandId === 'volcano' && rng() < 0.15) {
+        tmp.setHex(0xff4400);
+        tmp.offsetHSL(0, 0, rng() * 0.15);
+      } else if (islandId === 'rainbow') {
+        tmp.setHSL(rng(), 0.8, 0.6);
+      } else if (islandId === 'night') {
+        const hues = [0.3, 0.45, 0.6, 0.75, 0.85];
+        tmp.setHSL(hues[Math.floor(rng() * hues.length)], 0.7, 0.5 + rng() * 0.3);
+      } else if (islandId === 'garden') {
+        tmp.setHSL(0.9 + rng() * 0.15, 0.5 + rng() * 0.3, 0.7 + rng() * 0.2);
+      } else {
+        tmp.offsetHSL((rng() - 0.5) * 0.05, 0, (rng() - 0.5) * 0.1);
+      }
+      arr[i * 3] = tmp.r;
+      arr[i * 3 + 1] = tmp.g;
+      arr[i * 3 + 2] = tmp.b;
+    }
+    return arr;
+  }, [islandId]);
+
+  // Material emissive config per island
+  const matConfig = useMemo(() => {
+    const cfgs: Record<string, { emissive: string; emissiveIntensity: number; opacity: number }> = {
+      volcano: { emissive: '#ff4400', emissiveIntensity: 0.3, opacity: 0.6 },
+      ocean: { emissive: '#4488cc', emissiveIntensity: 0.1, opacity: 0.4 },
+      forest: { emissive: '#88aa00', emissiveIntensity: 0.4, opacity: 0.5 },
+      mountain: { emissive: '#aabbcc', emissiveIntensity: 0.15, opacity: 0.7 },
+      garden: { emissive: '#ff6699', emissiveIntensity: 0.3, opacity: 0.6 },
+      night: { emissive: '#6644ff', emissiveIntensity: 0.8, opacity: 0.6 },
+      rainbow: { emissive: '#ffffff', emissiveIntensity: 0.5, opacity: 0.5 },
+      home: { emissive: '#ffcc44', emissiveIntensity: 0.4, opacity: 0.4 },
+    };
+    return cfgs[islandId] ?? cfgs.home;
+  }, [islandId]);
+
+  // Atmospheric point lights (use theme colors for cohesion)
+  const atmosLights = useMemo(() => {
+    const lights: Array<{ pos: Vec3; color: string; intensity: number; dist: number }> = [];
+    if (islandId === 'volcano') {
+      lights.push({ pos: [0, 8, 0], color: '#ff4400', intensity: 0.6, dist: 40 });
+      lights.push({ pos: [10, 3, 10], color: '#ff6600', intensity: 0.3, dist: 20 });
+    } else if (islandId === 'ocean') {
+      lights.push({ pos: [0, 12, 0], color: theme.ambientColor, intensity: 0.2, dist: 35 });
+    } else if (islandId === 'night') {
+      lights.push({ pos: [-8, 15, 0], color: '#44ff88', intensity: 0.4, dist: 30 });
+      lights.push({ pos: [8, 14, 5], color: '#6644ff', intensity: 0.4, dist: 30 });
+      lights.push({ pos: [0, 16, -8], color: '#ff44aa', intensity: 0.3, dist: 25 });
+    } else if (islandId === 'rainbow') {
+      lights.push({ pos: [0, 10, 0], color: '#ff88ff', intensity: 0.3, dist: 30 });
+    } else if (islandId === 'garden') {
+      lights.push({ pos: [0, 6, 0], color: '#ffdd88', intensity: 0.3, dist: 25 });
+    }
+    // Subtle ground-level fog light using theme fog color for all islands
+    lights.push({ pos: [0, 1.5, 0], color: theme.fogColor, intensity: 0.15, dist: 20 });
+    return lights;
+  }, [islandId, theme.ambientColor, theme.fogColor]);
+
+  useFrame(() => {
+    if (!meshRef.current) return;
+
+    // Apply per-instance colors on first valid frame
+    if (!colorsReady.current) {
+      const c = new THREE.Color();
+      for (let ci = 0; ci < PARTICLE_COUNT; ci++) {
+        c.setRGB(pColors[ci * 3], pColors[ci * 3 + 1], pColors[ci * 3 + 2]);
+        meshRef.current.setColorAt(ci, c);
+      }
+      if (meshRef.current.instanceColor) {
+        meshRef.current.instanceColor.needsUpdate = true;
+      }
+      colorsReady.current = true;
+    }
+
+    const t = Date.now() * 0.001;
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const p = particles[i];
+      let x = p.x;
+      let y = p.y;
+      let z = p.z;
+      let sx = p.size;
+      let sy = p.size;
+      let sz = p.size;
+
+      // ---------- VOLCANO: ash fall + ember bursts ----------
+      if (islandId === 'volcano') {
+        const cycle = 12;
+        if (i < 30) {
+          // Embers: glow and rise with flicker
+          y = 1 + ((p.y - 1 + t * 1.5 * p.speed) % cycle + cycle) % cycle;
+          const flicker = 1.5 + Math.sin(t * 8 + p.phase) * 0.8;
+          sx = sy = sz = p.size * flicker;
+          x += Math.sin(t * 2 + p.phase * 3) * 1.5;
+          z += Math.cos(t * 1.5 + p.phase * 2) * 1.0;
+        } else {
+          // Ash particles: slow fall with turbulence
+          y = 20 - ((20 - p.y + t * 0.8 * p.speed) % cycle + cycle) % cycle;
+          x += Math.sin(t * 0.5 + p.phase) * p.driftX * 2;
+          z += Math.cos(t * 0.3 + p.phase) * p.driftZ * 2;
+          x += Math.sin(t * 2 + p.phase * 3) * 0.3;
+        }
+
+      // ---------- OCEAN: rain + rolling mist ----------
+      } else if (islandId === 'ocean') {
+        const cycle = 12;
+        if (i < 40) {
+          // Mist/fog particles: large, slow, ground-hugging
+          y = 0.5 + Math.sin(t * 0.2 + p.phase) * 1.5 + Math.abs(Math.sin(p.phase)) * 2;
+          sx = sy = sz = p.size * 3;
+          x = p.x + Math.sin(t * 0.15 + p.phase) * p.driftX * 5;
+          z = p.z + Math.cos(t * 0.1 + p.phase) * p.driftZ * 5;
+        } else {
+          // Rain: fast falling elongated drops
+          y = 18 - ((18 - p.y + t * 4.0 * p.speed) % cycle + cycle) % cycle;
+          x += Math.sin(t * 0.1 + p.phase) * 0.5 + Math.sin(p.phase) * 0.3;
+          sx = p.size * 0.4;
+          sy = p.size * 4;
+          sz = p.size * 0.4;
+        }
+
+      // ---------- FOREST: pollen/spores + falling leaves + light rays ----------
+      } else if (islandId === 'forest') {
+        const cycle = 8;
+        if (i < 25) {
+          // Falling leaves: larger, slow tumble
+          y = 10 - ((10 - p.y + t * 0.4 * p.speed) % cycle + cycle) % cycle;
+          sx = sy = sz = p.size * 2.5;
+          x += Math.sin(t * 1.2 + p.phase * 3) * 2;
+          z += Math.cos(t * 0.8 + p.phase) * 2;
+        } else if (i >= 180) {
+          // Light rays through canopy: tall thin vertical columns
+          y = 8 + Math.sin(t * 0.1 + p.phase) * 0.5;
+          sx = p.size * 0.5;
+          sy = p.size * 8;
+          sz = p.size * 0.5;
+          x += Math.sin(t * 0.05 + p.phase) * 0.3;
+        } else {
+          // Pollen/spores: lazy floating spirals
+          x += Math.sin(t * 0.8 + p.phase * 2) * 1.5;
+          z += Math.cos(t * 0.6 + p.phase * 2 + 2) * 1.5;
+          y += Math.sin(t * 0.3 + p.phase) * 0.8;
+        }
+
+      // ---------- MOUNTAIN: snow + wind streaks + cold fog ----------
+      } else if (islandId === 'mountain') {
+        const cycle = 14;
+        if (i < 30) {
+          // Wind streaks: fast horizontal motion, thin shapes
+          const windX = ((p.x + t * 2.5) % 60 + 60) % 60 - 30;
+          x = windX;
+          y = 6 + Math.sin(p.phase) * 8;
+          sx = p.size * 0.3;
+          sy = p.size * 0.3;
+          sz = p.size * 3;
+        } else if (i >= 170) {
+          // Cold blue fog: ground-level, slow-rolling
+          y = 0.3 + Math.sin(t * 0.1 + p.phase) * 0.3;
+          sx = sy = sz = p.size * 4;
+          x = p.x + Math.sin(t * 0.08 + p.phase) * p.driftX * 6;
+          z = p.z + Math.cos(t * 0.06 + p.phase) * p.driftZ * 6;
+        } else {
+          // Snow: gentle fall with wind gusts
+          y = 22 - ((22 - p.y + t * 0.5 * p.speed) % cycle + cycle) % cycle;
+          const gust = Math.sin(t * 0.15 + p.phase) > 0.7 ? 3.0 : 1.0;
+          x += Math.sin(t * 0.5 + p.phase) * p.driftX * gust;
+          z += Math.cos(t * 0.4 + p.phase) * p.driftZ * 0.5;
+        }
+
+      // ---------- GARDEN: flower petals + warm golden light ----------
+      } else if (islandId === 'garden') {
+        const cycle = 7;
+        if (i >= 180) {
+          // Warm golden light motes: float and pulse
+          y = 4 + Math.sin(t * 0.4 + p.phase) * 2;
+          sx = sy = sz = p.size * (1 + Math.sin(t * 2 + p.phase) * 0.5);
+          x += Math.sin(t * 0.2 + p.phase) * 2;
+          z += Math.cos(t * 0.15 + p.phase) * 2;
+        } else {
+          // Flower petals: gentle tumbling drift downward
+          const petalY = p.y + Math.sin(t * 1.5 + p.phase) * 0.3;
+          y = 8 - ((8 - petalY + t * 0.2 * p.speed) % cycle + cycle) % cycle;
+          x += Math.sin(t * 0.6 + p.phase * 3) * 2;
+          z += Math.cos(t * 0.5 + p.phase * 2) * 2;
+        }
+
+      // ---------- NIGHT: shooting stars + moonbeams + aurora particles ----------
+      } else if (islandId === 'night') {
+        if (i < 12) {
+          // Shooting stars: fast diagonal streaks with fade
+          const starCycle = ((t * 2 + p.phase * 5) % 12);
+          if (starCycle < 0.8) {
+            x = p.x + starCycle * 18;
+            y = 22 - starCycle * 10;
+            z = p.z + starCycle * 6;
+            const fade = 1 - starCycle / 0.8;
+            sx = sy = sz = p.size * 3 * fade;
+          } else {
+            sx = sy = sz = 0;
+          }
+        } else if (i < 60) {
+          // Moonbeams: tall vertical columns of faint light
+          y = 3 + Math.sin(t * 0.15 + p.phase) * 1;
+          sx = p.size * 0.5;
+          sy = p.size * 10;
+          sz = p.size * 0.5;
+          x += Math.sin(t * 0.05 + p.phase) * 0.5;
+        } else {
+          // Aurora particles: slow undulation at high altitude
+          y = 12 + Math.sin(t * 0.3 + p.phase * 2) * 4;
+          x += Math.sin(t * 0.2 + p.phase) * 5;
+          z += Math.cos(t * 0.15 + p.phase + 1) * 3;
+          sx = sy = sz = p.size * (1.5 + Math.sin(t * 0.5 + p.phase) * 0.8);
+        }
+
+      // ---------- RAINBOW: prismatic orbiting sparkles ----------
+      } else if (islandId === 'rainbow') {
+        const orbitR = 3 + Math.sin(p.phase) * 12;
+        const orbitSpd = 0.1 + p.speed * 0.15;
+        x = Math.cos(t * orbitSpd + p.phase) * orbitR;
+        z = Math.sin(t * orbitSpd + p.phase) * orbitR;
+        y = 1 + Math.sin(t * 0.5 + p.phase * 3) * 8;
+        // Sparkle flash
+        sx = sy = sz = p.size * (0.5 + Math.abs(Math.sin(t * 3 + p.phase * 5)) * 2);
+
+      // ---------- HOME: warm rising motes + floating rune symbols ----------
+      } else if (islandId === 'home') {
+        const cycle = 5.5;
+        if (i >= 180) {
+          // Floating rune-like larger particles
+          y = 2 + Math.sin(t * 0.2 + p.phase) * 1.5;
+          sx = sy = sz = p.size * 3;
+          x = p.x + Math.sin(t * 0.1 + p.phase) * 3;
+          z = p.z + Math.cos(t * 0.08 + p.phase) * 3;
+        } else {
+          // Warm rising motes
+          y = 0.5 + ((p.y - 0.5 + t * 0.15 * p.speed) % cycle + cycle) % cycle;
+          x += Math.sin(t * 0.3 + p.phase) * 1.5;
+          z += Math.cos(t * 0.25 + p.phase + 1) * 1.5;
+          sx = sy = sz = p.size * (0.8 + Math.sin(t * 1.5 + p.phase) * 0.4);
+        }
+      }
+
+      dummy.position.set(x, Math.max(0.05, y), z);
+      dummy.scale.set(Math.max(0.001, sx), Math.max(0.001, sy), Math.max(0.001, sz));
+      dummy.updateMatrix();
+      meshRef.current!.setMatrixAt(i, dummy.matrix);
+    }
+    meshRef.current.instanceMatrix.needsUpdate = true;
+  });
+
+  return (
+    <group>
+      {/* Main weather particle system (200 instances) */}
+      <instancedMesh ref={meshRef} args={[undefined, undefined, PARTICLE_COUNT]} frustumCulled={false}>
+        <sphereGeometry args={[1, 5, 3]} />
+        <meshStandardMaterial
+          color="#ffffff"
+          emissive={matConfig.emissive}
+          emissiveIntensity={matConfig.emissiveIntensity}
+          transparent
+          opacity={matConfig.opacity}
+          roughness={1}
+          depthWrite={false}
+        />
+      </instancedMesh>
+
+      {/* Atmospheric point lights per island */}
+      {atmosLights.map((l, i) => (
+        <pointLight
+          key={`weather-light-${i}`}
+          position={l.pos}
+          color={l.color}
+          intensity={l.intensity}
+          distance={l.dist}
+          decay={2}
+        />
+      ))}
+
+      {/* Night island: aurora borealis ribbons */}
+      {islandId === 'night' && <AuroraRibbons />}
+
+      {/* Rainbow island: prismatic arcs */}
+      {islandId === 'rainbow' && <RainbowArcs />}
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // 3D: Complete world scene (assembled inside Canvas)
 // ---------------------------------------------------------------------------
 
@@ -3393,6 +3867,9 @@ function WorldScene({
 
       {/* Ambient particles */}
       <AmbientParticles theme={theme} islandId={islandId} />
+
+      {/* Dramatic per-island weather/atmosphere */}
+      <WeatherSystem islandId={islandId} theme={theme} />
 
       {/* Central landmark */}
       <CentralLandmark islandId={islandId} />

@@ -29,11 +29,11 @@ interface Particle {
 // Event type constants
 // ---------------------------------------------------------------------------
 
-const EVENT_XP_GAIN = 'xp_gain';
-const EVENT_LEVEL_UP = 'level_up';
-const EVENT_ACHIEVEMENT = 'achievement';
-const EVENT_WISDOM_CARD = 'wisdom_card';
-const EVENT_STREAK = 'streak';
+const EVENT_LEVEL_UP = 'level-up';
+const EVENT_ACHIEVEMENT = 'achievement-unlocked';
+const EVENT_WISDOM_CARD = 'wisdom-card-found';
+const EVENT_STREAK = 'streak-milestone';
+const EVENT_ISLAND_UNLOCKED = 'island-unlocked';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -64,38 +64,6 @@ const createFullScreenParticles = (count: number): Particle[] =>
 // ---------------------------------------------------------------------------
 // Sub-components
 // ---------------------------------------------------------------------------
-
-/** Golden particles that float upward and fade */
-const GoldenParticles: React.FC<{ particles: Particle[] }> = ({ particles }) => (
-  <>
-    {particles.map((p) => (
-      <motion.div
-        key={p.id}
-        className="absolute rounded-full pointer-events-none"
-        style={{
-          width: p.size,
-          height: p.size,
-          background: 'radial-gradient(circle, #ffd700, #e8a838)',
-          boxShadow: '0 0 6px 2px rgba(232,168,56,0.4)',
-          left: '50%',
-          top: '50%',
-        }}
-        initial={{ opacity: 0, x: 0, y: 0, scale: 0 }}
-        animate={{
-          opacity: [0, 1, 1, 0],
-          x: p.x,
-          y: p.y,
-          scale: [0, 1, 1, 0.5],
-        }}
-        transition={{
-          duration: p.duration,
-          delay: p.delay,
-          ease: 'easeOut' as const,
-        }}
-      />
-    ))}
-  </>
-);
 
 /** Fire-colored particles for streak events */
 const FireParticles: React.FC<{ particles: Particle[] }> = ({ particles }) => (
@@ -163,50 +131,6 @@ const LevelUpParticles: React.FC<{ particles: Particle[] }> = ({ particles }) =>
     ))}
   </>
 );
-
-// ---------------------------------------------------------------------------
-// XP Gain Popup
-// ---------------------------------------------------------------------------
-
-const XPGainPopup: React.FC<{ amount: number }> = ({ amount }) => {
-  const particles = useMemo(() => createParticles(8), []);
-
-  return (
-    <motion.div
-      className="fixed top-24 left-1/2 z-50 pointer-events-none"
-      initial={{ opacity: 0, y: 20, x: '-50%' }}
-      animate={{ opacity: 1, y: 0, x: '-50%' }}
-      exit={{ opacity: 0, y: -60, x: '-50%' }}
-      transition={{
-        type: 'spring' as const,
-        stiffness: 200,
-        damping: 20,
-      }}
-    >
-      <div className="relative">
-        <GoldenParticles particles={particles} />
-        <motion.span
-          className="font-title text-3xl font-bold text-golden whitespace-nowrap"
-          style={{
-            textShadow:
-              '0 0 20px rgba(232,168,56,0.6), 0 0 40px rgba(232,168,56,0.3)',
-          }}
-          animate={{
-            scale: [1, 1.2, 1],
-            filter: [
-              'drop-shadow(0 0 8px rgba(255,215,0,0.4))',
-              'drop-shadow(0 0 16px rgba(255,215,0,0.8))',
-              'drop-shadow(0 0 8px rgba(255,215,0,0.4))',
-            ],
-          }}
-          transition={{ duration: 0.6, ease: 'easeOut' as const }}
-        >
-          +{amount} EP
-        </motion.span>
-      </div>
-    </motion.div>
-  );
-};
 
 // ---------------------------------------------------------------------------
 // Level Up Celebration
@@ -502,6 +426,134 @@ const WisdomCardFound: React.FC<{ text: string }> = ({ text }) => (
 );
 
 // ---------------------------------------------------------------------------
+// Island Unlocked Celebration
+// ---------------------------------------------------------------------------
+
+const ISLAND_EMOJIS: Record<string, string> = {
+  volcano: '\u{1F30B}',
+  ocean: '\u{1F30A}',
+  forest: '\u{1F332}',
+  mountain: '\u26F0\uFE0F',
+  garden: '\u{1F33A}',
+  night: '\u{1F319}',
+  rainbow: '\u{1F308}',
+  home: '\u{1F3E0}',
+};
+
+const IslandUnlockedCelebration: React.FC<{
+  islandId: string;
+  islandName: string;
+}> = ({ islandId, islandName }) => {
+  const particles = useMemo(() => createFullScreenParticles(20), []);
+  const emoji = ISLAND_EMOJIS[islandId] || '\u{1F3DD}\uFE0F';
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3, ease: 'easeOut' as const }}
+    >
+      {/* Dramatic radial glow */}
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(circle at center, rgba(108,92,231,0.2) 0%, rgba(45,27,78,0.1) 40%, transparent 70%)',
+        }}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: [0, 1.5, 1.2], opacity: [0, 0.8, 0.6] }}
+        transition={{ duration: 1, ease: 'easeOut' as const }}
+      />
+
+      {/* Sparkle particles */}
+      <LevelUpParticles particles={particles} />
+
+      {/* Central content */}
+      <motion.div
+        className="relative flex flex-col items-center gap-4"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{
+          type: 'spring' as const,
+          stiffness: 150,
+          damping: 12,
+          delay: 0.15,
+        }}
+      >
+        {/* Rotating glow ring */}
+        <motion.div
+          className="absolute"
+          style={{
+            width: '160px',
+            height: '160px',
+            borderRadius: '50%',
+            border: '2px solid rgba(201,168,76,0.3)',
+            boxShadow: '0 0 30px rgba(108,92,231,0.3), inset 0 0 30px rgba(108,92,231,0.15)',
+          }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+        />
+
+        {/* Island emoji with pulsing glow */}
+        <motion.div
+          className="text-7xl"
+          animate={{
+            scale: [1, 1.15, 1],
+            filter: [
+              'drop-shadow(0 0 10px rgba(108,92,231,0.4))',
+              'drop-shadow(0 0 25px rgba(108,92,231,0.7))',
+              'drop-shadow(0 0 10px rgba(108,92,231,0.4))',
+            ],
+          }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' as const }}
+        >
+          {emoji}
+        </motion.div>
+
+        {/* Title */}
+        <motion.div
+          className="text-center mt-2"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+        >
+          <p
+            className="font-title text-xs uppercase tracking-[0.3em] mb-1"
+            style={{ color: 'rgba(201,168,76,0.7)' }}
+          >
+            Neue Insel entdeckt
+          </p>
+          <h2
+            className="font-title text-3xl font-bold"
+            style={{
+              color: '#ffd700',
+              textShadow: '0 0 20px rgba(255,215,0,0.4), 0 0 40px rgba(108,92,231,0.3)',
+            }}
+          >
+            {islandName}
+          </h2>
+        </motion.div>
+
+        {/* Glass panel with description */}
+        <motion.div
+          className="glass-panel rounded-xl px-6 py-3 border border-purple-500/30 mt-2"
+          style={{ boxShadow: '0 0 20px rgba(108,92,231,0.2)' }}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.4 }}
+        >
+          <p className="text-amber-200/80 text-sm text-center font-title">
+            Eine neue Welt wartet auf dich!
+          </p>
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+// ---------------------------------------------------------------------------
 // Streak Milestone
 // ---------------------------------------------------------------------------
 
@@ -644,11 +696,11 @@ const RewardPopup: React.FC<RewardPopupProps> = ({
 
     // Auto-dismiss durations based on event type
     const durations: Record<string, number> = {
-      [EVENT_XP_GAIN]: 2000,
-      [EVENT_LEVEL_UP]: 3000,
-      [EVENT_ACHIEVEMENT]: 4000,
+      [EVENT_LEVEL_UP]: 3500,
+      [EVENT_ACHIEVEMENT]: 4500,
       [EVENT_WISDOM_CARD]: 4000,
-      [EVENT_STREAK]: 2500,
+      [EVENT_STREAK]: 3000,
+      [EVENT_ISLAND_UNLOCKED]: 4000,
     };
 
     const duration = durations[lastEvent.type] ?? 2500;
@@ -666,14 +718,6 @@ const RewardPopup: React.FC<RewardPopupProps> = ({
   return (
     <>
       <AnimatePresence mode="wait">
-        {/* XP Gain */}
-        {activeEvent?.type === EVENT_XP_GAIN && (
-          <XPGainPopup
-            key={`xp-${activeEvent.timestamp}`}
-            amount={(eventData?.amount as number) ?? 0}
-          />
-        )}
-
         {/* Level Up */}
         {activeEvent?.type === EVENT_LEVEL_UP && (
           <LevelUpCelebration
@@ -686,9 +730,9 @@ const RewardPopup: React.FC<RewardPopupProps> = ({
         {activeEvent?.type === EVENT_ACHIEVEMENT && (
           <AchievementUnlocked
             key={`ach-${activeEvent.timestamp}`}
-            icon={(eventData?.icon as string) ?? '\u{1F3C6}'}
+            icon={'\u{1F3C6}'}
             name={(eventData?.name as string) ?? 'Erfolg'}
-            description={(eventData?.description as string) ?? ''}
+            description={(eventData?.id as string) ?? ''}
           />
         )}
 
@@ -696,7 +740,7 @@ const RewardPopup: React.FC<RewardPopupProps> = ({
         {activeEvent?.type === EVENT_WISDOM_CARD && (
           <WisdomCardFound
             key={`wisdom-${activeEvent.timestamp}`}
-            text={(eventData?.text as string) ?? ''}
+            text={(eventData?.cardId as string) ?? 'Eine neue Weisheit wurde entdeckt!'}
           />
         )}
 
@@ -704,7 +748,16 @@ const RewardPopup: React.FC<RewardPopupProps> = ({
         {activeEvent?.type === EVENT_STREAK && (
           <StreakMilestone
             key={`streak-${activeEvent.timestamp}`}
-            count={(eventData?.count as number) ?? 3}
+            count={(eventData?.streak as number) ?? 3}
+          />
+        )}
+
+        {/* Island Unlocked */}
+        {activeEvent?.type === EVENT_ISLAND_UNLOCKED && (
+          <IslandUnlockedCelebration
+            key={`island-${activeEvent.timestamp}`}
+            islandId={(eventData?.islandId as string) ?? ''}
+            islandName={(eventData?.islandName as string) ?? 'Neue Insel'}
           />
         )}
       </AnimatePresence>
