@@ -3315,6 +3315,8 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
         shadows
         camera={{ position: [15, 17, 15], fov: 50 }}
         style={{ width: '100%', height: '100%' }}
+        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
+        dpr={[1, 2]}
       >
         <WorldScene
           islandId={islandId}
