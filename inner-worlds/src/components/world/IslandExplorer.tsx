@@ -2216,7 +2216,7 @@ function WaterRing({ theme }: { theme: IslandTheme }) {
 // 3D Sub-components: Ambient particles (InstancedMesh for performance)
 // ---------------------------------------------------------------------------
 
-function AmbientParticles({ theme, islandId }: { theme: IslandTheme; islandId: string }) {
+function AmbientParticles({ islandId }: { theme: IslandTheme; islandId: string }) {
   const count = 30;
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
