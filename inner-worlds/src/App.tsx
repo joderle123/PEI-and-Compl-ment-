@@ -11,6 +11,7 @@ import SelfAssessment from './components/onboarding/SelfAssessment';
 import MoodCheckIn from './components/onboarding/MoodCheckIn';
 import IslandMap from './components/world/IslandMap';
 import IslandView from './components/world/IslandView';
+import IslandTravel from './components/world/IslandTravel';
 import ScenarioPlayer from './components/gameplay/ScenarioPlayer';
 import ActivityRouter from './components/activities/ActivityRouter';
 import JournalView from './components/collection/JournalView';
@@ -48,6 +49,8 @@ function App() {
         return <IslandMap />;
       case 'island':
         return <IslandView />;
+      case 'travel':
+        return <IslandTravel />;
       case 'scenario':
         return <ScenarioPlayer />;
       case 'activity':

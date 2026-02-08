@@ -85,6 +85,10 @@ interface GameStore extends GameState {
   // Events
   triggerEvent: (type: string, data: any) => void;
 
+  // Travel
+  startTravel: (origin: IslandId, destination: IslandId, vehicle: 'boat' | 'airplane') => void;
+  completeTravel: () => void;
+
   // Reset
   resetGame: () => void;
 }
@@ -249,6 +253,11 @@ const initialState: GameState = {
 
   // Events
   lastEvent: null,
+
+  // Travel
+  travelOrigin: null,
+  travelDestination: null,
+  travelVehicle: null,
 };
 
 // ---------------------------------------------------------------------------
@@ -628,6 +637,27 @@ export const useGameStore = create<GameStore>()(
 
       triggerEvent: (type: string, data: any) =>
         set({ lastEvent: { type, data, timestamp: Date.now() } }),
+
+      // ------------------------------------------------------------------
+      // Travel
+      // ------------------------------------------------------------------
+
+      startTravel: (origin: IslandId, destination: IslandId, vehicle: 'boat' | 'airplane') =>
+        set({
+          travelOrigin: origin,
+          travelDestination: destination,
+          travelVehicle: vehicle,
+          currentScreen: 'travel' as GameScreen,
+        }),
+
+      completeTravel: () =>
+        set((state) => ({
+          activeIsland: state.travelDestination,
+          currentScreen: 'island' as GameScreen,
+          travelOrigin: null,
+          travelDestination: null,
+          travelVehicle: null,
+        })),
 
       // ------------------------------------------------------------------
       // Reset
