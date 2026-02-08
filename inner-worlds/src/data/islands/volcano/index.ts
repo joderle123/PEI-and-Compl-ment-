@@ -19,29 +19,29 @@ export const volcanoNPCs: NPC[] = [
     id: 'flamara',
     name: 'Flamara',
     emoji: '🔥',
-    description: 'Die Wächterin des Feuers, die lehrt, die Kraft der Wut zu verstehen',
-    backstory: 'Flamara ist seit Jahrtausenden die Hüterin des inneren Feuers. Sie weiß, dass Wut eine mächtige Kraft ist, die sowohl zerstören als auch transformieren kann. Mit ihrer Weisheit hilft sie jungen Seelen, ihre Glut zu zähmen.'
+    description: 'Die sarkastische Wächterin des Vulkans, die mehr weiß als sie zugibt',
+    backstory: 'Flamara war nicht immer eine Wächterin. Vor langer Zeit war sie selbst ein Teenager, der vor Wut fast alles verloren hätte. Seitdem hütet sie den Vulkan mit einer Mischung aus trockenem Humor und tiefer Weisheit. Sie nervt gerne – aber immer mit Absicht.'
   },
   {
     id: 'ash',
     name: 'Ash',
     emoji: '🌑',
-    description: 'Ein wütender Teenager, der lernen muss, mit seinen Emotionen umzugehen',
-    backstory: 'Ash ist voller ungezähmter Wut und versteht nicht, warum er so schnell explodiert. Er fühlt sich oft missverstanden und allein mit seinen intensiven Gefühlen. Doch tief in ihm schlummert der Wunsch nach Frieden.'
+    description: 'Ein patziger Teenager, dessen Wut ein Geheimnis verbirgt',
+    backstory: 'Ash ist vor drei Monaten auf der Vulkaninsel gelandet und weigert sich seitdem, irgendjemanden an sich heranzulassen. Er ist laut, er ist wütend, und er hat für alles einen sarkastischen Kommentar. Was niemand weiß: Unter der ganzen Wut versteckt sich eine Traurigkeit, die er niemals zeigen würde.'
   },
   {
     id: 'magmus',
     name: 'Magmus',
     emoji: '🪨',
-    description: 'Ein geduldiger Golem aus erstarrter Lava, Meister der Gelassenheit',
-    backstory: 'Magmus war einst flüssiges, tobendes Magma. Durch unendliche Geduld wurde er zu festem Gestein. Er kennt die Kraft des Abwartens und lehrt, dass selbst die heißeste Wut erkalten und zu Stärke werden kann.'
+    description: 'Ein Golem aus erstarrter Lava mit extrem trockenem Humor',
+    backstory: 'Magmus spricht in kurzen Sätzen und bewegt sich wie in Zeitlupe. Manche denken, er sei langsam – aber sein Verstand ist messerscharf. Er war einst tobende Lava und hat Jahrtausende gebraucht, um fest zu werden. Diese Erfahrung hat ihn gelehrt, dass Geduld die unterschätzteste Superkraft ist.'
   },
   {
     id: 'zinnia',
     name: 'Zinnia',
     emoji: '🌺',
-    description: 'Eine widerstandsfähige Blume, die in vulkanischem Boden wächst',
-    backstory: 'Zinnia hat gelernt, selbst in der härtesten Umgebung zu blühen. Sie zeigt, dass man inmitten von Chaos und Hitze Schönheit finden kann. Ihre Wurzeln sind tief, ihre Blüten zart – ein perfektes Gleichgewicht.'
+    description: 'Eine rebellische Blume, die auf dem Vulkan einen geheimen Garten pflegt',
+    backstory: 'Zinnia ist die Überraschung der Vulkaninsel: eine leuchtende Blume, die im härtesten Boden wächst. Was sie aber wirklich besonders macht, ist ihre Vergangenheit – sie war selbst einmal voller Zorn und hat gelernt, diese Energie in etwas Schönes zu verwandeln. Sie ist kein bisschen sanft, wenn es darauf ankommt.'
   }
 ];
 
@@ -50,150 +50,150 @@ export const volcanoScenarios: Scenario[] = [
   {
     id: 'volcano-scenario-1',
     islandId: 'volcano' as IslandId,
-    title: 'Die Begegnung mit Ash',
-    description: 'Du triffst auf einen wütenden Jungen am Rande des Vulkans',
+    title: 'Ankunft auf der Vulkaninsel',
+    description: 'Du wachst an einem unbekannten Ort auf – und der Boden unter dir ist heiß',
     scenes: [
       {
         id: 'v1-s1',
-        text: 'Am Fuß des rauchenden Vulkans siehst du einen Jungen, der wütend Steine in die Glut wirft. Seine Fäuste sind geballt, sein Gesicht rot vor Zorn. "Lass mich in Ruhe!", schreit er, als er dich bemerkt.',
+        text: 'Du öffnest die Augen. Über dir ein roter Himmel, unter dir warmer Fels. Dein Kopf brummt. Wo bist du? Als du dich aufrichtest, siehst du einen rauchenden Vulkan in der Ferne. Der Boden vibriert leicht. Alles riecht nach Schwefel und Abenteuer. Und dann hörst du eine Stimme hinter dir: "Na, gut geschlafen? Oder eher – schlecht gelandet?"',
         choices: [
           {
             id: 'v1-s1-c1',
-            text: 'Ruhig fragen, was passiert ist',
+            text: 'Erschrocken herumwirbeln: "Wer bist du?!"',
             nextSceneId: 'v1-s2',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+            points: { empathyPoints: 0, insightPoints: 1, couragePoints: 3 }
           },
           {
             id: 'v1-s1-c2',
-            text: 'Ihm Raum geben und beobachten',
+            text: 'Vorsichtig umdrehen und die Stimme mustern',
             nextSceneId: 'v1-s2',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 0 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v1-s1-c3',
-            text: 'Selbst auch einen Stein werfen',
+            text: '"Wo bin ich? Was ist hier los?"',
             nextSceneId: 'v1-s2',
-            points: { empathyPoints: 1, insightPoints: 0, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v1-s2',
-        text: 'Ash dreht sich zu dir um. "Alle sagen immer, ich soll mich beruhigen. Aber niemand versteht, wie es sich anfühlt, wenn alles in mir brennt!" Seine Stimme zittert zwischen Wut und Verzweiflung.',
+        text: 'Vor dir steht eine Gestalt aus flackerndem Feuer – aber mit einem ziemlich lässigen Grinsen. "Ich bin Flamara. Wächterin dieser Insel. Und bevor du fragst: Nein, du träumst nicht. Ja, der Vulkan ist echt. Und ja, es wird noch weirder." Sie verschränkt die Arme. "Willkommen in den Inneren Welten. Du bist auf der Vulkaninsel gelandet. Hier dreht sich alles um..." Sie tippt dir an die Brust. "...das Feuer da drin."',
         choices: [
           {
             id: 'v1-s2-c1',
-            text: '"Ich möchte verstehen. Erzähl mir davon."',
+            text: '"Feuer? Meinst du... Wut?"',
             nextSceneId: 'v1-s3',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v1-s2-c2',
-            text: '"Das Feuer in dir ist nicht schlecht – es braucht nur einen Weg."',
+            text: '"Ich will hier weg! Sofort!"',
             nextSceneId: 'v1-s3',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 0, insightPoints: 1, couragePoints: 3 }
           },
           {
             id: 'v1-s2-c3',
-            text: '"Ich kenne das Gefühl. Manchmal kocht auch in mir alles über."',
+            text: '"Innere Welten? Klingt nach einem Videospiel."',
             nextSceneId: 'v1-s3',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v1-s3',
-        text: 'Ash setzt sich auf einen Felsen. "Heute hat mich mein bester Freund verraten. Er hat allen mein Geheimnis erzählt." Seine Hände zittern. "Ich wollte ihm nicht wehtun, aber ich habe ihn angeschrien und... jetzt hasst er mich wahrscheinlich."',
+        text: 'Flamara lacht – ein Geräusch wie knisterndes Holz. "Clever. Ja, Wut. Jeder, der hier ankommt, hat irgendwas mit Wut zu klären. Nicht weil Wut schlecht ist – sondern weil die meisten nicht wissen, was sie damit sollen." Sie zeigt auf den Vulkan. "Siehst du den Rauch? Der reagiert auf DICH. Auf deine Emotionen." Tatsächlich – als du genauer hinschaust, pulsiert der Rauch im Rhythmus deines Herzschlags.',
         choices: [
           {
             id: 'v1-s3-c1',
-            text: '"Deine Wut war berechtigt. Verrat tut weh."',
+            text: '"Das ist... unheimlich. Aber irgendwie cool."',
             nextSceneId: 'v1-s4',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'v1-s3-c2',
-            text: '"Was fühlst du jetzt, wenn du daran denkst?"',
+            text: '"Heißt das, der Vulkan spürt meine Gefühle?"',
             nextSceneId: 'v1-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
           },
           {
             id: 'v1-s3-c3',
-            text: '"Vielleicht kannst du es noch wiedergutmachen."',
+            text: 'Absichtlich an etwas Ärgerliches denken, um zu testen, ob es stimmt',
             nextSceneId: 'v1-s4',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 0, insightPoints: 2, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'v1-s4',
-        text: 'Plötzlich erscheint Flamara in einem Wirbel aus Funken. "Junger Ash, deine Wut ist wie das Feuer des Vulkans – kraftvoll und natürlich. Doch ein Vulkan muss lernen, wann er ausbricht und wann er ruht." Sie blickt zu dir. "Hilfst du ihm?"',
+        text: 'WUMM! Ein kleines Feuertierchen – halb Eidechse, halb Flamme – rennt direkt in dein Bein und stolpert weiter, ohne sich auch nur umzudrehen. Es tut weh! Dein Schienbein brennt. Der Vulkan spuckt sofort eine kleine Rauchwolke aus. Flamara beobachtet dich mit hochgezogener Augenbraue. "Und? Was machst du jetzt?"',
         choices: [
           {
             id: 'v1-s4-c1',
-            text: '"Ja, gemeinsam finden wir einen Weg."',
+            text: '"HEY! Pass doch auf, du...!" – dem Tierchen hinterherrufen',
             nextSceneId: 'v1-s5',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+            points: { empathyPoints: 0, insightPoints: 1, couragePoints: 3 }
           },
           {
             id: 'v1-s4-c2',
-            text: '"Was können wir tun, Flamara?"',
+            text: 'Tief durchatmen und das Bein reiben – es war wahrscheinlich keine Absicht',
             nextSceneId: 'v1-s5',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 0 }
           },
           {
             id: 'v1-s4-c3',
-            text: 'Ash ansehen und nicken',
+            text: 'Die Wut spüren, aber erst mal beobachten, was passiert',
             nextSceneId: 'v1-s5',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v1-s5',
-        text: 'Flamara führt euch tiefer in den Vulkan. "Die erste Lektion: Erkenne das Feuer, bevor es außer Kontrolle gerät. Ash, was spürst du in deinem Körper, kurz bevor du explodierst?" Ash denkt nach. "Mein Herz rast... meine Fäuste ballen sich..."',
+        text: 'Flamara nickt langsam. "Interessant. Schau mal zum Vulkan." Der Rauch hat sich verändert – je nachdem, wie du reagiert hast. "Siehst du den Zusammenhang? Deine Reaktion steuert die Flammen. Nicht die Situation – DEINE Antwort darauf." Sie grinst. "Kleine Übung: Denk an etwas, das dich richtig nervt. Siehst du den Rauch steigen? Gut. Jetzt: Atme ein... zwei... drei... und lass los." Der Rauch wird langsamer, dünner.',
         choices: [
           {
             id: 'v1-s5-c1',
-            text: '"Das sind deine Warnzeichen. Sie sind wichtig."',
+            text: 'Mitmachen und spüren, wie die Wut nachlässt – krass!',
+            nextSceneId: 'v1-s6',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v1-s5-c2',
+            text: '"Okay, das funktioniert echt. Aber ist das im echten Leben genauso einfach?"',
             nextSceneId: 'v1-s6',
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
           },
           {
-            id: 'v1-s5-c2',
-            text: '"Bei mir ist es genauso. Wir sind ähnlich."',
+            id: 'v1-s5-c3',
+            text: '"Was, wenn die Wut zu stark ist zum Loslassen?"',
             nextSceneId: 'v1-s6',
             points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
-          },
-          {
-            id: 'v1-s5-c3',
-            text: '"Was könntest du in dem Moment tun?"',
-            nextSceneId: 'v1-s6',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'v1-s6',
-        text: 'Flamara lächelt. "Gut. Ihr beide habt heute etwas Wichtiges verstanden: Wut warnt uns, aber wir müssen nicht sofort handeln. Ash, gehe zu Magmus – er wird dir beibringen, wie man wartet." Ash blickt dich an. "Kommst du mit?"',
+        text: 'Flamara legt dir kurz die Hand auf die Schulter – ihre Berührung ist warm, nicht heiß. "Gute Fragen. Und genau deshalb bist du hier." Sie schaut zum Vulkan, und ihr Grinsen verschwindet für einen Moment. "Morgen triffst du Ash. Er lebt hier seit drei Monaten und ist eine... wandelnde Zeitbombe. Alle anderen haben aufgegeben, ihm zu helfen." Sie sieht dich an. "Vielleicht schaffst du es. Oder er verscheucht dich in fünf Minuten. Mal sehen." Sie zwinkert und löst sich in Funken auf.',
         choices: [
           {
             id: 'v1-s6-c1',
-            text: '"Natürlich, ich bin an deiner Seite."',
+            text: '"Warte – wer ist Ash? Flamara?!" Aber sie ist schon weg.',
             nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 0, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'v1-s6-c2',
-            text: '"Ich glaube, du schaffst das alleine."',
+            text: 'Neugierig sein. Jemand, dem noch niemand helfen konnte? Challenge accepted.',
             nextSceneId: null,
-            points: { empathyPoints: 0, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
           },
           {
             id: 'v1-s6-c3',
-            text: '"Lass uns gemeinsam lernen."',
+            text: 'Ein mulmiges Gefühl haben, aber auch Mitgefühl – dieser Ash klingt einsam.',
             nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           }
         ]
       }
@@ -202,150 +202,150 @@ export const volcanoScenarios: Scenario[] = [
   {
     id: 'volcano-scenario-2',
     islandId: 'volcano' as IslandId,
-    title: 'Flamaras Lektion',
-    description: 'Die Feuerwächterin zeigt dir die zwei Gesichter der Wut',
+    title: 'Ashs Herausforderung',
+    description: 'Ein wütender Junge, der kein Mitleid will – aber vielleicht etwas anderes braucht',
     scenes: [
       {
         id: 'v2-s1',
-        text: 'Flamara steht vor einem See aus glühender Lava. "Schau genau hin. Siehst du die Zerstörung?" Die Lava frisst alles auf ihrem Weg. "Und doch – aus dieser Glut entsteht neues Land, fruchtbarer Boden. Wut ist genauso."',
+        text: 'Du findest Ash an einer Felswand. Er wirft Steine gegen das Gestein – WHAM, WHAM, WHAM – als hätte der Fels ihm etwas getan. Als er dich bemerkt, verdreht er die Augen. "Oh nein. Lass mich raten: Flamara hat dich geschickt, um mich zu \'retten\'." Er macht Anführungszeichen mit den Fingern. "Spar dir die Mühe. Die letzte Person, die das versucht hat, ist heulend weggerannt."',
         choices: [
           {
             id: 'v2-s1-c1',
-            text: '"Wut kann also auch etwas Gutes schaffen?"',
+            text: '"Ich bin nicht hier, um dich zu retten. Ich bin einfach hier."',
             nextSceneId: 'v2-s2',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
           },
           {
             id: 'v2-s1-c2',
-            text: '"Aber die Zerstörung ist so groß..."',
+            text: '"Heulend? Was hast du gemacht?" – neugierig, nicht eingeschüchtert',
             nextSceneId: 'v2-s2',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'v2-s1-c3',
-            text: 'Schweigend die Lava beobachten',
+            text: 'Wortlos einen Stein aufheben und neben ihm gegen die Wand werfen',
             nextSceneId: 'v2-s2',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'v2-s2',
-        text: '"Genau", sagt Flamara. "Wut zeigt uns Grenzen. Sie sagt: \'Bis hierher und nicht weiter!\' Ohne Wut würden wir Ungerechtigkeit akzeptieren." Sie formt eine Flamme in ihrer Hand. "Die Kunst ist, das Feuer zu kontrollieren, nicht zu löschen."',
+        text: 'Ash mustert dich überrascht. So hat noch niemand reagiert. Er wirft noch einen Stein, aber weniger aggressiv. "Du bist komisch, weißt du das?" Stille. Dann: "Alle sagen immer \'Ash, beruhig dich\' oder \'Ash, warum bist du so wütend?\'. Als ob ICH das Problem wäre." Er tritt gegen einen Stein. "Du denkst, du weißt, warum ich wütend bin?"',
         choices: [
           {
             id: 'v2-s2-c1',
-            text: '"Wie kontrolliere ich es, ohne es zu unterdrücken?"',
+            text: '"Nee, keine Ahnung. Erzähl mal – wenn du willst."',
             nextSceneId: 'v2-s3',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           },
           {
             id: 'v2-s2-c2',
-            text: '"Manchmal habe ich Angst vor meiner Wut."',
+            text: '"Ich glaube, du weißt es selbst nicht so genau."',
             nextSceneId: 'v2-s3',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'v2-s2-c3',
-            text: '"Kannst du mir das beibringen?"',
+            text: '"Ich weiß nur, dass Wut meistens einen Grund hat."',
             nextSceneId: 'v2-s3',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
           }
         ]
       },
       {
         id: 'v2-s3',
-        text: 'Flamara nickt verständnisvoll. "Angst vor der eigenen Kraft ist weise. Doch höre: Wut braucht einen Kanal. Manche sprechen sie aus, andere schreiben, wieder andere bewegen sich." Sie zeigt auf verschiedene Vulkanöffnungen. "Jeder Vulkan hat seinen eigenen Weg."',
+        text: 'Ash öffnet den Mund, schließt ihn wieder. Öffnet ihn nochmal. "Ich bin wütend, weil..." Er stockt. Sein Blick wandert zum Vulkan, als suche er dort die Antwort. Plötzlich sagt er ganz leise etwas Seltsames: "Zu Hause war\'s leiser." Dann ballt er sofort die Fäuste, als hätte er zu viel gesagt. Der Vulkan spuckt eine Rauchwolke. Flamara erscheint kurz als Feuerfunke neben deinem Ohr und flüstert: "Achte auf das, was er NICHT sagt."',
         choices: [
           {
             id: 'v2-s3-c1',
-            text: '"Ich könnte meine Wut in Worte fassen."',
+            text: 'Nichts sagen. Einfach dasitzen. Ihm Zeit geben.',
             nextSceneId: 'v2-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
           },
           {
             id: 'v2-s3-c2',
-            text: '"Bewegung hilft mir. Sport, Tanzen..."',
+            text: '"Zu Hause? Vermisst du es?"',
             nextSceneId: 'v2-s4',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'v2-s3-c3',
-            text: '"Was ist, wenn nichts davon funktioniert?"',
+            text: '"Ash... bist du vielleicht nicht nur wütend?"',
             nextSceneId: 'v2-s4',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'v2-s4',
-        text: 'Die Feuerwächterin lächelt warm. "Es gibt Momente, da ist die Wut zu groß für einen Kanal. Dann brauchst du die Vulkan-Atmung." Sie demonstriert: tief einatmen, langsam ausatmen wie Rauch. "So kühlst du die Glut, Atemzug für Atemzug."',
+        text: 'Ash dreht sich weg. Seine Schultern zittern. "Hör auf damit." Seine Stimme klingt anders – nicht wütend, sondern... brüchig. "Ich bin WÜTEND, okay? Nur wütend. Das ist alles." Aber du siehst es: Für einen winzigen Moment glänzen seine Augen verdächtig. Er wischt sich schnell übers Gesicht. "Verdammter Rauch hier." Es gibt keinen Rauch in der Nähe.',
         choices: [
           {
             id: 'v2-s4-c1',
-            text: 'Mit Flamara zusammen atmen',
+            text: '"Ash, es ist okay, traurig zu sein. Das ist kein Zeichen von Schwäche."',
             nextSceneId: 'v2-s5',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'v2-s4-c2',
-            text: '"Wie oft soll ich das machen?"',
+            text: '"Ich kenne das. Manchmal bin ich auch wütend, weil ich nicht traurig sein will."',
             nextSceneId: 'v2-s5',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v2-s4-c3',
-            text: 'Es selbst ausprobieren',
+            text: 'Ihm eine Hand auf die Schulter legen – vorsichtig',
             nextSceneId: 'v2-s5',
-            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 0, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'v2-s5',
-        text: 'Als du atmest, spürst du tatsächlich eine Veränderung. Die Hitze in dir wird ruhiger, geordneter. "Siehst du?", flüstert Flamara. "Dein inneres Feuer brennt noch, aber es tobt nicht mehr. Du bist der Meister deiner Flammen geworden."',
+        text: 'Ash erstarrt. Dann bricht es aus ihm heraus: "Wenn ich wütend bin, muss ich nicht traurig sein! Verstehst du das?! Wut ist STARK! Traurigkeit ist..." Er sucht nach Worten. "...das Schlimmste." Seine Stimme ist jetzt kaum mehr als ein Flüstern. "Wenn ich aufhöre wütend zu sein, dann spüre ich alles andere. Und das..." Er schluckt. "...das halte ich nicht aus." Der Vulkan wird ganz still. Kein Rauch. Kein Grollen. Als würde er zuhören.',
         choices: [
           {
             id: 'v2-s5-c1',
-            text: '"Das fühlt sich... mächtig an."',
+            text: '"Du musst es nicht alleine aushalten. Dafür sind Leute da."',
             nextSceneId: 'v2-s6',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
           },
           {
             id: 'v2-s5-c2',
-            text: '"Danke, Flamara. Ich verstehe jetzt."',
+            text: '"Wut als Schutzschild... Das ist eigentlich ziemlich schlau. Aber es funktioniert nicht ewig."',
             nextSceneId: 'v2-s6',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 0 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'v2-s5-c3',
-            text: 'Einfach weitermachen und die Ruhe genießen',
+            text: '"Du hältst gerade viel mehr aus als du denkst. Du redest mit mir. DAS ist mutig."',
             nextSceneId: 'v2-s6',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'v2-s6',
-        text: 'Flamara legt dir eine warme Hand auf die Schulter. "Denke immer daran: Wut ist nicht dein Feind. Sie ist ein Bote. Wenn du lernst, ihre Botschaft zu hören, ohne von ihr überwältigt zu werden, wirst du unaufhaltsam sein." Das Feuer in ihren Augen tanzt voller Weisheit.',
+        text: 'Ash schweigt lange. Dann – zum ersten Mal – lächelt er. Ganz kurz, kaum sichtbar. "Du bist... okay, schätze ich. Nicht so nervig wie die anderen." Für Ash ist das quasi eine Liebeserklärung. Er steht auf und klopft sich den Staub ab. "Kommst du morgen wieder? Ich meine... mir egal. Mach was du willst." Aber er sieht dich dabei an, als wäre es ihm ganz und gar nicht egal.',
         choices: [
           {
             id: 'v2-s6-c1',
-            text: '"Ich werde diese Lektion weitergeben."',
+            text: '"Klar. Gleiche Zeit, gleicher Fels?"',
             nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           },
           {
             id: 'v2-s6-c2',
-            text: '"Ich möchte mehr lernen."',
+            text: '"Ich bin da. Und Ash? Du bist stärker als du denkst."',
             nextSceneId: null,
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'v2-s6-c3',
-            text: 'Flamara umarmen',
+            text: 'Einfach nicken und gehen – mit einem guten Gefühl',
             nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 0, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
           }
         ]
       }
@@ -354,52 +354,52 @@ export const volcanoScenarios: Scenario[] = [
   {
     id: 'volcano-scenario-3',
     islandId: 'volcano' as IslandId,
-    title: 'Magmus und die Kunst des Wartens',
-    description: 'Der Golem aus Stein lehrt dich Geduld in der Hitze des Moments',
+    title: 'Das Magma-Labyrinth',
+    description: 'Ein Labyrinth, in dem deine Wut die Lava steigen lässt – bleib cool. Buchstäblich.',
     scenes: [
       {
         id: 'v3-s1',
-        text: 'Magmus sitzt unbeweglich wie ein Berg. Um ihn herum brodelt die Lava, doch er bleibt ruhig. "Setze dich", sagt er mit tiefer Stimme. "Ich zeige dir, was ich in tausend Jahren gelernt habe: Warten ist keine Schwäche, sondern die größte Stärke."',
+        text: 'Magmus steht vor einem dunklen Höhleneingang. Er ist riesig, aus grauem Gestein, und bewegt sich in Zeitlupe. "Du." Er zeigt auf den Eingang. "Da rein." Du wartest auf mehr Erklärung. Er blinzelt. Langsam. "Dort drin steigt die Lava, wenn du wütend wirst. Dein Zorn ist dort... echt." Er macht eine Pause, die gefühlt drei Minuten dauert. "Bleib cool." Noch eine Pause. "Buchstäblich."',
         choices: [
           {
             id: 'v3-s1-c1',
-            text: 'Neben ihm sitzen',
+            text: '"Und wenn ich es nicht schaffe, cool zu bleiben?"',
             nextSceneId: 'v3-s2',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v3-s1-c2',
-            text: '"Aber wenn ich warte, schlucke ich meine Wut runter!"',
+            text: '"Du bist nicht gerade ein Mann vieler Worte, oder?" – reingehen',
             nextSceneId: 'v3-s2',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
           },
           {
             id: 'v3-s1-c3',
-            text: '"Wie hältst du es hier in der Hitze aus?"',
+            text: '"Kommst du wenigstens mit?"',
             nextSceneId: 'v3-s2',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v3-s2',
-        text: 'Ein tiefes Grollen kommt aus Magmus. Ist es ein Lachen? "Warten ist nicht Schweigen. Warten heißt: Ich gebe dem Sturm Zeit, sich zu legen. Dann handle ich klar, nicht blind." Er zeigt auf die Lava. "Glut, die zu schnell abkühlt, zerspringt. Langsame Abkühlung wird zu festem Fels."',
+        text: 'Im Innern der Höhle glühen die Wände orange. Es ist heiß, aber auszuhalten. Du folgst einem schmalen Pfad. Plötzlich – KNALL – ein Fels fällt von der Decke und blockiert den Weg direkt vor dir. Du springst zurück. Dein Herz rast. Und du siehst es: Die Lava an den Wänden steigt ein paar Zentimeter. Magmus\' Stimme dröhnt von irgendwo: "Das war ein Test. Du bist wärmer geworden. Nicht gut."',
         choices: [
           {
             id: 'v3-s2-c1',
-            text: '"Also soll ich meine Wut abkühlen lassen?"',
+            text: 'Tief durchatmen – die Vulkan-Atmung von Flamara! Ein, zwei, drei... aus.',
             nextSceneId: 'v3-s3',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'v3-s2-c2',
-            text: '"Wie lange muss ich warten?"',
+            text: '"Echt jetzt?! WARNUNG wäre nett gewesen!" – frustriert sein',
             nextSceneId: 'v3-s3',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 0, insightPoints: 1, couragePoints: 3 }
           },
           {
             id: 'v3-s2-c3',
-            text: 'Schweigend die Lava beobachten',
+            text: 'Einen Moment stillstehen, die Angst anerkennen, dann weitergehen',
             nextSceneId: 'v3-s3',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
           }
@@ -407,71 +407,71 @@ export const volcanoScenarios: Scenario[] = [
       },
       {
         id: 'v3-s3',
-        text: 'Magmus hebt einen schweren Stein. "Fühle seine Temperatur." Er ist noch warm, aber nicht mehr glühend. "Vor Stunden war er flüssiges Feuer. Jetzt ist er stark genug, um ein Haus zu tragen. So wird Wut zu Weisheit – durch Zeit und Geduld."',
+        text: 'Du kommst an eine Gabelung. Rechts: ein breiter, gut beleuchteter Gang. Links: ein enger, dunkler Spalt, aber du hörst Wasser – Kühlung! Die Lava ist jetzt auf Kniehöhe. Du musst dich entscheiden, und zwar schnell. Magmus: "Wut sagt: schnell handeln. Weisheit sagt: denk erstmal nach. Wer gewinnt?"',
         choices: [
           {
             id: 'v3-s3-c1',
-            text: 'Den Stein berühren und spüren',
+            text: 'Den breiten Weg nehmen – sieht sicherer aus',
             nextSceneId: 'v3-s4',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'v3-s3-c2',
-            text: '"Was mache ich, wenn ich nicht warten kann?"',
+            text: 'Zum Wasser! Den engen Spalt nehmen – Instinkt folgen',
             nextSceneId: 'v3-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 0, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'v3-s3-c3',
-            text: '"Ich verstehe. Zeit heilt wirklich."',
+            text: 'Drei Sekunden anhalten. Denken. Dann entscheiden.',
             nextSceneId: 'v3-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'v3-s4',
-        text: 'Der Golem nickt bedächtig. "Es gibt Notfälle, da musst du sofort handeln. Aber meistens? Meistens ist Warten besser. Zähle bis zehn. Gehe eine Runde. Atme dreimal tief. Gib deinem klugen Kopf Zeit, deinem wilden Herz zu helfen."',
+        text: 'Egal welchen Weg du gewählt hast – du landest in einer großen Höhle. Die Lava brodelt unter dir auf einer Glasplattform. Und dann passiert etwas Fieses: Aus dem Nichts erscheint eine Stimme, die klingt wie jemand, der dich ärgert. "Du schaffst das eh nicht. Du bist zu schwach. Gib auf!" Die Lava schießt hoch! Das ist eine Illusion – aber sie FÜHLT sich echt an.',
         choices: [
           {
             id: 'v3-s4-c1',
-            text: '"Das klingt so einfach... ist es das?"',
+            text: '"Das ist nicht echt! Das sind nur meine eigenen Zweifel!" – dagegen ankämpfen',
             nextSceneId: 'v3-s5',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+            points: { empathyPoints: 0, insightPoints: 3, couragePoints: 3 }
           },
           {
             id: 'v3-s4-c2',
-            text: 'Es jetzt gleich ausprobieren',
+            text: 'Die Augen schließen. Atmen. An Ashs Worte denken: Wut ist manchmal nur Angst.',
             nextSceneId: 'v3-s5',
-            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
           },
           {
             id: 'v3-s4-c3',
-            text: '"Mein Kopf und mein Herz als Team..."',
+            text: 'Sich selbst laut Mut zusprechen: "Ich bin stärker als das!"',
             nextSceneId: 'v3-s5',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'v3-s5',
-        text: 'Plötzlich bebt die Erde. Die Lava beginnt zu steigen! Magmus bleibt sitzen. "Siehst du? Der Vulkan ist wütend. Aber ich renne nicht. Ich beobachte. Ich warte. Und siehe – die Lava findet einen anderen Weg." Tatsächlich fließt sie an euch vorbei.',
+        text: 'Die Stimme wird leiser. Die Lava sinkt. Du hast es geschafft – fast. Der letzte Gang führt nach draußen, du kannst den Himmel sehen! Aber... Sackgasse. Eine Wand versperrt den Ausgang. Du drückst dagegen – sie bewegt sich nicht. Die Lava steigt wieder. Magmus\' Stimme, ganz ruhig: "Stärke ist nicht, alles allein zu schaffen."',
         choices: [
           {
             id: 'v3-s5-c1',
-            text: 'Staunen über Magmus\' Ruhe',
+            text: '"Magmus! Ich brauche Hilfe!" – um Hilfe rufen',
             nextSceneId: 'v3-s6',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'v3-s5-c2',
-            text: 'Selbst versuchen, ruhig zu bleiben',
+            text: 'Nachdenken: Was würde Magmus tun? Warten. Beobachten. Die Wand genauer anschauen.',
             nextSceneId: 'v3-s6',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'v3-s5-c3',
-            text: '"Hattest du keine Angst?"',
+            text: 'Akzeptieren, dass du Hilfe brauchst – das ist keine Schwäche',
             nextSceneId: 'v3-s6',
             points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
           }
@@ -479,49 +479,49 @@ export const volcanoScenarios: Scenario[] = [
       },
       {
         id: 'v3-s6',
-        text: 'Magmus legt seine steinerne Hand auf deine. "Angst und Wut sind Schwestern. Beide schreien: \'Tu etwas!\' Doch manchmal ist das Beste, was du tun kannst, zu warten, bis du klar sehen kannst. Dann handelst du weise, nicht wild." Seine Augen funkeln wie Obsidian.',
+        text: 'Magmus schiebt sich langsam – seeehr langsam – durch die Höhlenwand. Buchstäblich. Er IST Stein. "Du hast gerufen." Er legt seine riesige Hand auf die blockierende Wand und schiebt sie weg wie eine Tür. Frische Luft strömt rein. Die Lava zieht sich sofort zurück. Draußen wartet die Sonne.',
         choices: [
           {
             id: 'v3-s6-c1',
-            text: '"Ich werde das üben, jeden Tag."',
-            nextSceneId: 'v3-s7',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
-          },
-          {
-            id: 'v3-s6-c2',
-            text: '"Danke, Magmus. Du bist ein weiser Lehrer."',
+            text: '"Das war... intensiv. Danke, Magmus."',
             nextSceneId: 'v3-s7',
             points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           },
           {
-            id: 'v3-s6-c3',
-            text: 'Still neben ihm sitzen bleiben',
+            id: 'v3-s6-c2',
+            text: '"Hättest du das nicht etwas SCHNELLER machen können?!" – lachen',
             nextSceneId: 'v3-s7',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
+          },
+          {
+            id: 'v3-s6-c3',
+            text: '"Warum hast du mich nicht einfach getragen?"',
+            nextSceneId: 'v3-s7',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v3-s7',
-        text: 'Ihr sitzt zusammen, während die Sonne über dem Vulkan untergeht. Die Hitze des Tages weicht der Kühle der Nacht. "Siehst du?", murmelt Magmus. "Alles hat seine Zeit. Auch Wut. Sie kommt, sie geht. Du bleibst." Ein Gefühl tiefen Friedens erfüllt dich.',
+        text: 'Magmus sieht dich an – und du schwörst, ein winziges Lächeln huscht über sein Steingesicht. "Nicht schlecht. Du hast den heißesten Teil ohne Explosion überstanden." Pause. "Ich bin beeindruckt." Noch eine Pause. "Das sage ich nicht oft." Die längste Pause der Welt. "Eigentlich nie." Er dreht sich um und bewegt sich langsam davon. Über die Schulter sagt er: "Morgen triffst du Zinnia. Sie ist... anders. Und du wirst überrascht sein." Du bleibst stehen, verschwitzt aber stolz.',
         choices: [
           {
             id: 'v3-s7-c1',
-            text: 'Den Moment in sich aufnehmen',
+            text: 'Stolz auf sich selbst sein – das war WIRKLICH schwer',
             nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'v3-s7-c2',
-            text: '"Ich bleibe. Das ist schön."',
+            text: 'Darüber nachdenken, was man gelernt hat: Hilfe holen ist nicht schwach',
             nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v3-s7-c3',
-            text: 'An Magmus anlehnen und ausruhen',
+            text: '"Magmus!" Er dreht sich um. "Danke. Echt jetzt."',
             nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
           }
         ]
       }
@@ -530,150 +530,150 @@ export const volcanoScenarios: Scenario[] = [
   {
     id: 'volcano-scenario-4',
     islandId: 'volcano' as IslandId,
-    title: 'Zinnias Garten',
-    description: 'Eine Blume zeigt dir, wie man inmitten von Härte erblüht',
+    title: 'Zinnias Geheimnis',
+    description: 'Ein Garten auf einem Vulkan? Zinnia zeigt dir, dass Wut Dinge erschaffen kann',
     scenes: [
       {
         id: 'v4-s1',
-        text: 'In einer Felsspalte entdeckst du die schönste Blume, die du je gesehen hast. Zinnia strahlt in leuchtenden Farben, obwohl um sie herum nur schwarzes Gestein ist. "Willkommen in meinem Garten", sagt sie sanft. "Hier lehre ich die schwierigste Lektion: Schönheit trotz Schmerz."',
+        text: 'Das ergibt keinen Sinn. Mitten auf dem schwarzen Vulkangestein liegt ein Garten voller leuchtender Blumen – rot, orange, violett. Und mittendrin steht Zinnia, eine Blume so groß wie du, die dir direkt in die Augen schaut. "Überrascht?" Sie lacht. "Alle sind überrascht. Eine Blume auf einem Vulkan. Unmöglich, oder?" Sie streckt ein Blatt aus wie eine Hand. "Und doch bin ich hier. Die Frage ist: Wie?"',
         choices: [
           {
             id: 'v4-s1-c1',
-            text: '"Wie schaffst du es, hier zu blühen?"',
+            text: '"Der vulkanische Boden ist nährstoffreich – nach Ausbrüchen wächst alles besser!"',
             nextSceneId: 'v4-s2',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+            points: { empathyPoints: 0, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v4-s1-c2',
-            text: '"Du bist wunderschön."',
+            text: '"Ehrlich? Keine Ahnung. Aber es ist wunderschön."',
             nextSceneId: 'v4-s2',
-            points: { empathyPoints: 3, insightPoints: 0, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           },
           {
             id: 'v4-s1-c3',
-            text: 'Die Blume vorsichtig berühren',
+            text: '"Wie überlebst du die Hitze und die Ausbrüche?"',
             nextSceneId: 'v4-s2',
-            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v4-s2',
-        text: 'Zinnia wiegt sich im warmen Wind. "Ich wähle jeden Tag, trotz der Hitze zu leben. Das Gestein ist hart, die Luft ist schwer – aber ich entscheide mich zu blühen. Wut kann ein steiniger Boden sein, auf dem trotzdem etwas Schönes wachsen kann."',
+        text: '"Kluge Antwort!" Zinnia wiegt sich zufrieden. "Weißt du, was nach einem Vulkanausbruch passiert? ALLES wächst. Besser, schneller, stärker als vorher. Die Asche wird zu Dünger. Die Zerstörung wird zum Nährboden." Sie beugt sich vor, als würde sie ein Geheimnis verraten. "Und genau so funktioniert das mit Wut. Die gleiche Energie, die zerstören kann, kann auch erschaffen. Du wählst."',
         choices: [
           {
             id: 'v4-s2-c1',
-            text: '"Aber die Wut macht doch alles kaputt..."',
+            text: '"Wut als Energie zum Erschaffen? Das hat mir noch nie jemand gesagt."',
             nextSceneId: 'v4-s3',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v4-s2-c2',
-            text: '"Wie finde ich die Kraft dazu?"',
+            text: '"Aber wenn ich wütend bin, will ich Dinge KAPUTTMACHEN, nicht aufbauen!"',
             nextSceneId: 'v4-s3',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
           },
           {
             id: 'v4-s2-c3',
-            text: '"Lehrst du mich deine Art zu wachsen?"',
+            text: '"Zeig mir, wie das geht!"',
             nextSceneId: 'v4-s3',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'v4-s3',
-        text: 'Die Blume neigt sich zu dir. "Schau auf meine Wurzeln. Sie sind tief und stark. Das ist mein Geheimnis: Ich bin verwurzelt in dem, was mir wichtig ist. Meine Werte, meine Liebe, meine Träume. Wenn der Sturm der Wut kommt, halten mich meine Wurzeln fest."',
+        text: 'Zinnia zeigt auf ein leeres Stück Vulkanboden. "Probier es aus. Denk an etwas, das dich richtig wütend macht." Du denkst nach – und spürst die Hitze in dir steigen. "Gut. Spürst du die Energie? Jetzt: Was willst du damit MACHEN? Nicht zerstören – stell dir vor, du drückst diese Kraft in den Boden, wie ein Samenkorn." Du konzentrierst dich – und aus dem schwarzen Boden sprießt ein winziger, leuchtender Trieb!',
         choices: [
           {
             id: 'v4-s3-c1',
-            text: '"Was sind meine Wurzeln?"',
+            text: '"WHOA! Das hab ICH gemacht?!"',
             nextSceneId: 'v4-s4',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
           },
           {
             id: 'v4-s3-c2',
-            text: 'Über die eigenen Werte nachdenken',
+            text: '"Das ist... die gleiche Wut. Aber sie fühlt sich ganz anders an."',
             nextSceneId: 'v4-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v4-s3-c3',
-            text: '"Meine Familie ist meine Wurzel."',
+            text: '"Kann man das mit allen Gefühlen machen?"',
             nextSceneId: 'v4-s4',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
           }
         ]
       },
       {
         id: 'v4-s4',
-        text: 'Zinnia lächelt (wenn Blumen lächeln können). "Gut! Und nun schau auf meine Blüten. Sie sind zart, verletzlich. Ich verstecke sie nicht. Wut will uns oft hart machen, aber wahre Stärke ist, weich zu bleiben, wo es zählt – im Herzen."',
+        text: 'Zinnia strahlt. Dann wird sie plötzlich ernst und zeigt auf eine Ecke des Gartens, die du vorher nicht bemerkt hast. Verwelkte Blumen, vertrocknete Stängel, graue Erde. "Siehst du das? Das sind meine Fehler. Die Momente, wo ich meine Wut nicht genutzt, sondern verschluckt habe." Sie schüttelt die Blätter. "Verschluckte Wut vergiftet den Boden. Sie wird zu Bitterkeit. Und auf bitterem Boden wächst nichts."',
         choices: [
           {
             id: 'v4-s4-c1',
-            text: '"Aber wenn ich weich bin, werde ich verletzt."',
+            text: '"Warte – DU warst auch mal wütend? Richtig wütend?"',
             nextSceneId: 'v4-s5',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
           },
           {
             id: 'v4-s4-c2',
-            text: '"Wie schützt du dein weiches Herz?"',
+            text: '"Also ist Wut runterschlucken genauso schlecht wie explodieren?"',
             nextSceneId: 'v4-s5',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v4-s4-c3',
-            text: '"Ich will auch diese Balance finden."',
+            text: 'Die verwelkten Blumen vorsichtig berühren – sie tun dir leid',
             nextSceneId: 'v4-s5',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
-          }
-        ]
-      },
-      {
-        id: 'v4-s5',
-        text: '"Du wirst verletzt werden", sagt Zinnia ehrlich. "Das ist Teil des Lebens. Aber jede Wunde lehrt dich etwas. Jeder Riss im Felsen lässt meine Wurzeln tiefer wachsen. Deine Wut zeigt dir, was dir wichtig ist – höre hin, aber lass sie nicht dein ganzes Wesen ausfüllen."',
-        choices: [
-          {
-            id: 'v4-s5-c1',
-            text: '"Meine Wut als Lehrerin betrachten..."',
-            nextSceneId: 'v4-s6',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
-          },
-          {
-            id: 'v4-s5-c2',
-            text: '"Das erfordert viel Mut."',
-            nextSceneId: 'v4-s6',
-            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 3 }
-          },
-          {
-            id: 'v4-s5-c3',
-            text: '"Danke, dass du so offen bist."',
-            nextSceneId: 'v4-s6',
             points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           }
         ]
       },
       {
+        id: 'v4-s5',
+        text: 'Zinnia nickt. "Ich war wie Ash, damals. Voller Zorn. Aber dann hat mir jemand gezeigt, was ich dir zeige. Und langsam – ganz langsam – habe ich gelernt, die Feuerenergie umzuleiten." Sie sieht dich lange an. "Du hast dich verändert seit du hier bist, weißt du das? Am Anfang wärst du bei Magmus\' Labyrinth wahrscheinlich durchgedreht. Aber du hast durchgehalten."',
+        choices: [
+          {
+            id: 'v4-s5-c1',
+            text: '"Ich hab einfach gelernt, dass Wut nicht mein Feind ist."',
+            nextSceneId: 'v4-s6',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v4-s5-c2',
+            text: '"Na ja, ICH hätte das ohne Flamara, Ash und Magmus nicht geschafft."',
+            nextSceneId: 'v4-s6',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'v4-s5-c3',
+            text: '"Und was kommt jetzt? Ich bin bereit für mehr."',
+            nextSceneId: 'v4-s6',
+            points: { empathyPoints: 0, insightPoints: 2, couragePoints: 3 }
+          }
+        ]
+      },
+      {
         id: 'v4-s6',
-        text: 'Ein sanfter Regen beginnt zu fallen – eine Seltenheit am Vulkan. Zinnia fängt die Tropfen auf. "Siehst du? Selbst hier gibt es Momente der Sanftheit. Zwischen den Ausbrüchen der Wut gibt es immer Pausen. Nutze sie, um zu wachsen, zu heilen, zu blühen."',
+        text: 'Zinnia wird still. Ihre Blüten zittern leicht. "Was jetzt kommt, ist... schwierig. Ich sage dir etwas, das du vielleicht nicht hören willst." Stille. "Flamara, Magmus, Ash und ich – wir streiten. Richtig. Und es wird hässlich." Ihr Blick ist sorgenvoll. "Jemand muss das klären. Und ich glaube..." Sie sieht dich an. "...das bist du." Der Vulkan grummelt, als würde er zustimmen.',
         choices: [
           {
             id: 'v4-s6-c1',
-            text: 'Den Regen auf der Haut spüren',
+            text: '"Ihr streitet? Aber ihr seid doch ein Team!"',
             nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           },
           {
             id: 'v4-s6-c2',
-            text: '"Ich werde diese Pausen achten."',
+            text: '"Warum ich? Ich bin doch erst seit ein paar Tagen hier!"',
             nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v4-s6-c3',
-            text: 'Zinnia ein Versprechen geben',
+            text: '"Okay. Sag mir, worum es geht."',
             nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
           }
         ]
       }
@@ -682,124 +682,124 @@ export const volcanoScenarios: Scenario[] = [
   {
     id: 'volcano-scenario-5',
     islandId: 'volcano' as IslandId,
-    title: 'Der große Ausbruch',
-    description: 'Der Vulkan erwacht – und du musst dich deiner größten Wut stellen',
+    title: 'Der Streit der Wächter',
+    description: 'Alle streiten, der Vulkan bebt, und du bist der Einzige, der das lösen kann',
     scenes: [
       {
         id: 'v5-s1',
-        text: 'Der Boden bebt heftig. Flamara erscheint in Eile: "Der Vulkan bricht aus! Nicht der äußere – dein innerer! Erinnerst du dich an deine größte Wut? Sie steigt auf. Du musst dich ihr stellen, sonst wird sie dich verschlingen!" Bilder tauchen auf: Momente blanker Wut aus deinem Leben.',
+        text: 'Du hörst sie schon von weitem. Flamara brüllt: "DU mit deiner ewigen Geduld! Während DU gewartet hast, wäre fast alles explodiert!" Magmus, untypisch laut: "Besser warten als blind drauflosrennen wie DU!" Ash steht am Rand und schreit: "Ihr seid BEIDE schuld!" Zinnia versucht zu schlichten, aber niemand hört ihr zu. Der Vulkan bebt so stark, dass Steine fallen. Das ist ernst.',
         choices: [
           {
             id: 'v5-s1-c1',
-            text: '"Ich bin bereit. Was muss ich tun?"',
+            text: '"HEY! ALLE MAL STOPP!" – laut und bestimmt',
             nextSceneId: 'v5-s2',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 0, insightPoints: 1, couragePoints: 3 }
           },
           {
             id: 'v5-s1-c2',
-            text: '"Ich habe Angst vor dieser Wut..."',
+            text: 'Erst beobachten: Was ist passiert? Warum streiten sie?',
             nextSceneId: 'v5-s2',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v5-s1-c3',
-            text: 'Tief atmen und sich konzentrieren',
+            text: 'Zu Ash gehen – er sieht am aufgewühltesten aus',
             nextSceneId: 'v5-s2',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v5-s2',
-        text: 'Du stehst nun im Krater. Vor dir steigt eine riesige Gestalt aus Feuer auf – deine Wut, personifiziert. Sie schreit: "Du hast mich unterdrückt! Du hast mich ignoriert! Du hast dich für mich geschämt!" Die Hitze ist überwältigend.',
+        text: 'Stück für Stück bekommst du die Geschichte zusammen. Es gab eine Erdspalte, die sich gefährlich öffnete. Flamara wollte sofort handeln – Magmus wollte warten und beobachten. Flamara handelte, Magmus griff nicht ein. Die Spalte schloss sich, aber ein Teil von Zinnias Garten wurde zerstört. Jeder gibt dem anderen die Schuld. Flamara: "Er hätte mir helfen müssen!" Magmus: "Sie hätte nicht blindlings losrennen dürfen!" Zinnia leise: "Mein Garten..."',
         choices: [
           {
             id: 'v5-s2-c1',
-            text: '"Du hast Recht. Es tut mir leid."',
+            text: '"Flamara – du wolltest helfen. Magmus – du wolltest vorsichtig sein. Ihr hattet BEIDE recht."',
             nextSceneId: 'v5-s3',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v5-s2-c2',
-            text: '"Ich höre dir jetzt zu. Sprich."',
+            text: '"Wartet. Ich will JEDEN einzeln hören. Flamara zuerst."',
             nextSceneId: 'v5-s3',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'v5-s2-c3',
-            text: '"Du bist ein Teil von mir. Ich nehme dich an."',
+            text: '"Zinnia, wie geht es dir? Dein Garten..." – sich um die kümmern, die am meisten verletzt ist',
             nextSceneId: 'v5-s3',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v5-s3',
-        text: 'Die Feuergestalt wird etwas kleiner. "Endlich! Endlich siehst du mich!" Sie zeigt dir Szenen: Ungerechtigkeiten, Verletzungen, Momente der Ohnmacht. "Ich wollte dich schützen! Ich wollte, dass du für dich einstehst! Warum hast du mich bekämpft?"',
+        text: 'Flamara mit verschränkten Armen: "Er denkt, mein Temperament ist das Problem!" Magmus, Arme vor der Brust: "Sie denkt, meine Geduld ist Schwäche." Ash platzt raus: "Und ICH finde, ihr seid beide Idioten!" Stille. Ash wird rot. "Sorry. Alte Gewohnheit." Er sieht dich an: "Was soll ich machen? Wie du es mir gezeigt hast?" Du erinnerst dich: Ash hat von dir gelernt.',
         choices: [
           {
             id: 'v5-s3-c1',
-            text: '"Ich dachte, du bist gefährlich."',
+            text: '"Ash, atme erstmal. Und dann: Sag ihnen, was du WIRKLICH fühlst."',
             nextSceneId: 'v5-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'v5-s3-c2',
-            text: '"Ich hatte Angst vor deiner Macht."',
+            text: '"Flamara, Magmus – Ash hat \'sorry\' gesagt. Könnt ihr das auch?"',
             nextSceneId: 'v5-s4',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'v5-s3-c3',
-            text: '"Ich verstehe jetzt – du wolltest helfen."',
+            text: '"Wisst ihr, was ICH sehe? Vier Leute, denen dieser Ort am Herzen liegt. Ihr streitet nicht, weil ihr euch hasst – sondern weil es euch wichtig ist."',
             nextSceneId: 'v5-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v5-s4',
-        text: 'Die Flammen tanzen sanfter. "Ich BIN mächtig. Aber Macht ist nicht schlecht. Gemeinsam können wir Grenzen setzen, ohne zu zerstören. Kannst du mir einen Platz in dir geben, ohne dass ich alles übernehme?" Es ist eine Frage voller Hoffnung.',
+        text: 'Flamara und Magmus schauen sich an. Die Wut flackert noch. "Ich war nicht wütend auf dich," sagt Flamara plötzlich. Alle starren sie an. "Ich war... ich hatte ANGST. Als die Spalte sich öffnete, dachte ich, wir verlieren alles. Und als du nicht sofort reagiert hast, Magmus, dachte ich..." Ihre Stimme bricht. "...du hast aufgegeben." Magmus blinzelt. Langsam. "Ich hatte auch Angst. Deshalb habe ich gewartet. Angst und Warten sind bei mir dasselbe."',
         choices: [
           {
             id: 'v5-s4-c1',
-            text: '"Ja. Du darfst bei mir sein, als Beraterin."',
+            text: '"Seht ihr? Ihr hattet beide Angst! Die Wut war nur die Verpackung!"',
             nextSceneId: 'v5-s5',
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v5-s4-c2',
-            text: '"Ich brauche dich. Aber ich führe."',
+            text: '"Flamara drückt Angst als Aktion aus. Magmus drückt Angst als Stillstand aus. Beides ist okay."',
             nextSceneId: 'v5-s5',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'v5-s4-c3',
-            text: '"Lass uns Partner sein, gleichberechtigt."',
+            text: 'Leise zu Ash: "Siehst du? Auch die Großen haben Angst."',
             nextSceneId: 'v5-s5',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v5-s5',
-        text: 'Die Feuergestalt verwandelt sich. Sie wird zu einer warmen, kontrollierten Flamme in deinem Herzen. "Danke", flüstert sie. "Ich werde dich warnen, wenn Grenzen überschritten werden. Ich werde dir Kraft geben, wenn du sie brauchst. Aber ich werde nicht mehr explodieren – es sei denn, du bittest mich darum."',
+        text: 'Magmus bewegt sich. Langsam, wie immer – aber er geht auf Flamara zu. "Dein Feuer ist keine Bedrohung. Es ist... Leidenschaft." Flamara schluckt. "Und deine Geduld ist keine Schwäche. Sie ist... Stärke." Sie sehen sich an. Zinnia flüstert: "Endlich!" Ash wischt sich verstohlen eine Träne ab und murmelt: "Bin nicht am Heulen. Ist der Rauch."',
         choices: [
           {
             id: 'v5-s5-c1',
-            text: 'Die Flamme umarmen',
+            text: 'Ash ansehen und leise lächeln – ihr wisst beide, dass es kein Rauch ist',
             nextSceneId: 'v5-s6',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           },
           {
             id: 'v5-s5-c2',
-            text: '"Wir werden ein gutes Team sein."',
+            text: '"Und Zinnias Garten? Den bauen wir gemeinsam wieder auf."',
             nextSceneId: 'v5-s6',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'v5-s5-c3',
-            text: 'Still die neue Balance spüren',
+            text: 'Nichts sagen. Diesen Moment einfach wirken lassen.',
             nextSceneId: 'v5-s6',
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
           }
@@ -807,25 +807,49 @@ export const volcanoScenarios: Scenario[] = [
       },
       {
         id: 'v5-s6',
-        text: 'Der Vulkan beruhigt sich. Als du aus dem Krater steigst, sind alle da: Flamara, Magmus, Zinnia und Ash. Sie applaudieren. "Du hast es geschafft", sagt Flamara stolz. "Du hast deine Wut nicht besiegt – du hast sie integriert. Das ist wahre Meisterschaft."',
+        text: 'Sie schauen dich alle an. Flamara schüttelt ungläubig den Kopf. "Wie hast du das gemacht? Wir streiten seit TAGEN, und du kommst und..." Magmus: "Du hast zugehört." Pause. "Das tut fast niemand." Zinnia lächelt. "Du hast jeden von uns ernst genommen. Und du hast uns gezeigt, was unter der Wut steckt." Ash grinst: "Und das, obwohl du erst seit ein paar Tagen hier bist."',
         choices: [
           {
             id: 'v5-s6-c1',
-            text: '"Ich fühle mich... ganz."',
-            nextSceneId: null,
+            text: '"Ich hab von euch ALLEN gelernt. Flamara: Feuer spüren. Ash: Ehrlich sein. Magmus: Geduld haben. Zinnia: Umwandeln."',
+            nextSceneId: 'v5-s7',
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'v5-s6-c2',
-            text: 'Alle umarmen',
-            nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+            text: '"Ich hab nichts Besonderes gemacht. Ich hab euch nur zugehört."',
+            nextSceneId: 'v5-s7',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
           },
           {
             id: 'v5-s6-c3',
-            text: '"Danke, dass ihr an mich geglaubt habt."',
+            text: '"Nächstes Mal streitet euch nicht TAGELANG, bevor ihr redet, okay?"',
+            nextSceneId: 'v5-s7',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'v5-s7',
+        text: 'Alle lachen. Der Vulkan beruhigt sich. Dann wird Flamara ernst. "Es gibt etwas, das du wissen musst. Der Vulkan... er reagiert auf UNS ALLE. Unsere Wut, unsere Angst, unsere Konflikte. Und gerade war er kurz davor..." Sie zögert. Magmus beendet den Satz: "...auszubrechen." Stille. Zinnia: "Und das wird er. Bald. Wenn wir nicht bereit sind." Alle Augen ruhen auf dir.',
+        choices: [
+          {
+            id: 'v5-s7-c1',
+            text: '"Dann müssen wir bereit sein. Zusammen."',
             nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'v5-s7-c2',
+            text: 'Ein mulmiges Gefühl, aber auch Entschlossenheit. Du bist nicht mehr allein.',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v5-s7-c3',
+            text: '"Was passiert, wenn der Vulkan ausbricht?"',
+            nextSceneId: null,
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           }
         ]
       }
@@ -834,28 +858,28 @@ export const volcanoScenarios: Scenario[] = [
   {
     id: 'volcano-scenario-6',
     islandId: 'volcano' as IslandId,
-    title: 'Die innere Ruhe',
-    description: 'Du kehrst zum Vulkan zurück und findest eine neue Art des Friedens',
+    title: 'Der große Ausbruch',
+    description: 'Der Vulkan bricht aus – und nur alles, was du gelernt hast, kann die Insel retten',
     scenes: [
       {
         id: 'v6-s1',
-        text: 'Wochen später kehrst du zum Vulkan zurück. Er raucht friedlich. Du bist nicht mehr die gleiche Person. Ein Kind rennt vorbei und rempelt dich an, ohne sich zu entschuldigen. Früher wärst du explodiert. Jetzt spürst du die Wut aufsteigen – aber anders.',
+        text: 'Es ist mitten in der Nacht, als der Boden so heftig bebt, dass du aus dem Schlaf gerissen wirst. Der Vulkan GLÜHT. Rot, orange, weiß. Flamara steht vor dir, und zum ersten Mal sieht sie aus, als hätte sie Angst. "Es ist soweit. Der Vulkan bricht aus. Und diesmal meine ich nicht den in deinem Kopf – den ECHTEN." Lava strömt bereits den Berg hinunter. "Alles, was du gelernt hast, wird jetzt gebraucht."',
         choices: [
           {
             id: 'v6-s1-c1',
-            text: 'Tief atmen und die Wut beobachten',
+            text: 'Tief atmen. Die Angst spüren. Aber nicht weglaufen. "Was muss ich tun?"',
             nextSceneId: 'v6-s2',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'v6-s1-c2',
-            text: 'Mit der Wut innerlich sprechen',
+            text: '"Wo sind die anderen? Wir schaffen das nur zusammen!"',
             nextSceneId: 'v6-s2',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
           },
           {
             id: 'v6-s1-c3',
-            text: 'Bis zehn zählen, wie Magmus lehrte',
+            text: 'Kurz die Augen schließen. Flamaras Lektion: Wut und Angst sind Boten, keine Feinde.',
             nextSceneId: 'v6-s2',
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
           }
@@ -863,145 +887,145 @@ export const volcanoScenarios: Scenario[] = [
       },
       {
         id: 'v6-s2',
-        text: 'Die Wut meldet sich: "Er war unhöflich!" Aber sie schreit nicht mehr, sie informiert. Du nickst innerlich. "Danke für die Info. Aber das ist kein Notfall." Die Wut akzeptiert das und zieht sich zurück. Du fühlst dich ruhig, stark. Das Kind dreht sich um: "Oh, sorry!"',
+        text: 'Ihr rennt durch die Nacht. Ash kommt euch entgegen – seine Augen sind weit aufgerissen. "Die Lava! Sie kommt auf Zinnias Garten zu! Und Magmus – er steht einfach DA und RÜHRT SICH NICHT!" Du siehst es: Magmus steht mitten im Lavastrom, reglos. Ash schreit: "ER GIBT AUF! Warum tut er NICHTS?!" Ashs alte Wut flammt auf – seine Fäuste ballen sich.',
         choices: [
           {
             id: 'v6-s2-c1',
-            text: '"Kein Problem. Alles gut."',
+            text: '"Ash, erinnerst du dich? Wut ist manchmal Angst. Magmus hat Angst. Wie DU damals."',
             nextSceneId: 'v6-s3',
             points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
           },
           {
             id: 'v6-s2-c2',
-            text: 'Lächeln und weitergehen',
+            text: '"Ash! Atmen! Jetzt! Wir brauchen dich klar, nicht wütend!"',
             nextSceneId: 'v6-s3',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'v6-s2-c3',
-            text: '"Pass beim nächsten Mal auf, okay?"',
+            text: '"Er gibt nicht auf – er ist eingefroren vor Angst. Wir müssen zu ihm."',
             nextSceneId: 'v6-s3',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'v6-s3',
-        text: 'Flamara erscheint neben dir. "Ich habe gesehen, was passiert ist. Gut gemacht." Du lächelst. "Es war anders als früher. Die Wut war da, aber sie hat mich nicht überwältigt." Flamara nickt. "Du hast gelernt, der Vulkan zu sein, nicht die Lava."',
+        text: 'Ash schließt die Augen. Atmet. Öffnet sie wieder. "Okay. Ich bin klar." Ein winziges Lächeln: "Danke." Zusammen lauft ihr zu Magmus. Die Lava umspült ihn bereits, aber sein Steinleib hält stand. Flamara ruft: "MAGMUS! Wir brauchen dich!" Nichts. Er ist wie versteinert – buchstäblich und im übertragenen Sinn. Zinnia erscheint neben euch: "Er hat Angst, etwas falsch zu machen. Wie beim letzten Mal."',
         choices: [
           {
             id: 'v6-s3-c1',
-            text: '"Was ist der Unterschied?"',
+            text: '"Magmus! Du musst nicht perfekt sein! Du musst nur DA sein!"',
             nextSceneId: 'v6-s4',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'v6-s3-c2',
-            text: '"Ich bin das Gefäß, nicht das Feuer?"',
+            text: '"Magmus, du hast MIR beigebracht, dass Hilfe holen keine Schwäche ist. Lass UNS DIR helfen!"',
             nextSceneId: 'v6-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'v6-s3-c3',
-            text: 'Nachdenklich nicken',
+            text: 'Durch die Lava waten und Magmus\' steinerne Hand nehmen, egal wie heiß es ist',
             nextSceneId: 'v6-s4',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
-          }
-        ]
-      },
-      {
-        id: 'v6-s4',
-        text: '"Genau", sagt Flamara. "Der Vulkan enthält die Lava, aber er IST nicht die Lava. Du enthältst Wut, aber du BIST nicht die Wut. Du bist der Berg – stark, geerdet, beständig. Die Emotionen kommen und gehen, aber du bleibst." Diese Worte setzen sich tief in dir fest.',
-        choices: [
-          {
-            id: 'v6-s4-c1',
-            text: '"Ich bin der Berg... Das ist schön."',
-            nextSceneId: 'v6-s5',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
-          },
-          {
-            id: 'v6-s4-c2',
-            text: '"Werde ich jemals wieder explodieren?"',
-            nextSceneId: 'v6-s5',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
-          },
-          {
-            id: 'v6-s4-c3',
-            text: 'Flamara umarmen',
-            nextSceneId: 'v6-s5',
-            points: { empathyPoints: 3, insightPoints: 0, couragePoints: 3 }
-          }
-        ]
-      },
-      {
-        id: 'v6-s5',
-        text: 'Flamara lächelt sanft. "Vielleicht. Und das ist okay. Auch Berge brechen manchmal aus. Aber jetzt weißt du: Ein Ausbruch ist nicht das Ende der Welt. Danach kommt wieder Ruhe. Und aus der Asche wächst neues Leben." Ash kommt angelaufen, viel ruhiger als früher.',
-        choices: [
-          {
-            id: 'v6-s5-c1',
-            text: '"Ash! Wie geht es dir?"',
-            nextSceneId: 'v6-s6',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
-          },
-          {
-            id: 'v6-s5-c2',
-            text: 'Ash anlächeln',
-            nextSceneId: 'v6-s6',
-            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
-          },
-          {
-            id: 'v6-s5-c3',
-            text: 'Abwarten, was er sagt',
-            nextSceneId: 'v6-s6',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
-          }
-        ]
-      },
-      {
-        id: 'v6-s6',
-        text: '"Hey!", ruft Ash. "Ich habe mit meinem Freund gesprochen. Wir haben uns versöhnt!" Er strahlt. "Ich habe ihm gesagt, wie verletzt ich war, aber ohne zu schreien. Und er hat sich entschuldigt!" Du siehst, wie weit ihr beide gekommen seid.',
-        choices: [
-          {
-            id: 'v6-s6-c1',
-            text: '"Das ist wunderbar! Ich bin stolz auf dich."',
-            nextSceneId: 'v6-s7',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
-          },
-          {
-            id: 'v6-s6-c2',
-            text: '"Du hast die Lektionen gut gelernt."',
-            nextSceneId: 'v6-s7',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
-          },
-          {
-            id: 'v6-s6-c3',
-            text: 'Ash high-five geben',
-            nextSceneId: 'v6-s7',
             points: { empathyPoints: 2, insightPoints: 0, couragePoints: 3 }
           }
         ]
       },
       {
-        id: 'v6-s7',
-        text: 'Ihr steht zu dritt am Kraterrand und blickt auf das glühende Herz des Vulkans. Flamara spricht: "Denkt immer daran: Euer inneres Feuer ist ein Geschenk. Es wärmt, es schützt, es transformiert. Respektiert es, nutzt es weise, und ihr werdet leuchten." Die Sonne geht unter und taucht alles in goldenes Licht.',
+        id: 'v6-s4',
+        text: 'Magmus bewegt sich. Langsam. Dann schneller. "Du hast... recht." Seine Stimme bebt. "Danke." Er steht auf – und plötzlich wird klar, wie RIESIG er ist. Er stellt sich vor den Lavastrom und lenkt ihn mit seinem Körper um. Flamara schießt Feuerstöße in die Luft, um die Druckwellen umzuleiten. Ash schleppt Steine. Zinnia breitet ihre Wurzeln aus, um den Boden zu festigen. Aber die Lava kommt immer schneller. Flamara dreht sich zu dir: "Du musst zum Krater! Der Vulkan... er ist WÜTEND. Wie ein Lebewesen. Und du bist der Einzige, der ihn beruhigen kann."',
         choices: [
           {
-            id: 'v6-s7-c1',
-            text: 'Die Weisheit tief in sich aufnehmen',
-            nextSceneId: null,
+            id: 'v6-s4-c1',
+            text: '"Den Vulkan BERUHIGEN? Wie beruhigt man einen VULKAN?!"',
+            nextSceneId: 'v6-s5',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v6-s4-c2',
+            text: '"Genauso, wie ich Ash beruhigt habe. Und euch alle. Zuhören."',
+            nextSceneId: 'v6-s5',
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           },
           {
-            id: 'v6-s7-c2',
-            text: '"Ich werde diese Lektion weitertragen."',
-            nextSceneId: null,
+            id: 'v6-s4-c3',
+            text: 'Ohne zu zögern losrennen – Richtung Krater',
+            nextSceneId: 'v6-s5',
+            points: { empathyPoints: 0, insightPoints: 1, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'v6-s5',
+        text: 'Du stehst am Kraterrand. Die Hitze ist unerträglich. Unter dir kocht das Magma wie ein wütendes Meer. Und dann SPÜRST du es – der Vulkan hat Gefühle. Uralte, tiefe, brodelnde Wut. Seit Jahrtausenden aufgestaut. Niemand hat je zugehört. Du schließt die Augen. Alles, was du gelernt hast, sammelt sich in dir: Flamaras Feuer verstehen. Ashs Schutzschild durchschauen. Magmus\' Geduld. Zinnias Verwandlung.',
+        choices: [
+          {
+            id: 'v6-s5-c1',
+            text: '"Ich höre dich. Du bist wütend. Du bist seit so langer Zeit wütend. Und niemand hat hingehört."',
+            nextSceneId: 'v6-s6',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'v6-s5-c2',
+            text: '"Deine Wut ist berechtigt. Aber du musst nicht alles zerstören, um gehört zu werden."',
+            nextSceneId: 'v6-s6',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v6-s5-c3',
+            text: 'Nicht sprechen. Einfach FÜHLEN. Die Wut des Vulkans anerkennen. Da sein.',
+            nextSceneId: 'v6-s6',
             points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+          }
+        ]
+      },
+      {
+        id: 'v6-s6',
+        text: 'Der Vulkan... hört auf. Nicht sofort – langsam. Das Magma beruhigt sich. Die Erde hört auf zu beben. Der Krater dampft noch, aber das Feuer wird zu warmem Glühen. Du spürst es: Der Vulkan ist nicht weniger wütend. Er ist... VERSTANDEN. Zum ersten Mal seit Tausenden von Jahren. Und das reicht. Du sinkst auf die Knie, völlig erschöpft aber mit einem Gefühl, das du nicht beschreiben kannst.',
+        choices: [
+          {
+            id: 'v6-s6-c1',
+            text: 'Tränen laufen dir über die Wangen. Nicht aus Trauer – aus Erleichterung.',
+            nextSceneId: 'v6-s7',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'v6-s6-c2',
+            text: '"Ich hab\'s geschafft..." Ungläubig flüstern.',
+            nextSceneId: 'v6-s7',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'v6-s6-c3',
+            text: 'Dem Vulkan leise danken – für die Lektion, für das Vertrauen',
+            nextSceneId: 'v6-s7',
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'v6-s7',
+        text: 'Als du den Krater hinuntersteigst, stehen sie alle da. Flamara, Ash, Magmus, Zinnia. Flamara hat Tränen in den Augen – flüssige Lava, die golden leuchtet. "Du bist nicht mehr die Person, die hier angekommen ist." Ash grinst und boxt dir leicht gegen die Schulter: "Nicht schlecht. Für einen Neuling." Magmus legt dir seine schwere Hand auf den Kopf. "Gut." Pause. "Sehr gut." Zinnia lässt eine Blume aus dem Boden sprießen – direkt neben deinem Fuß. Hinter euch liegt die Insel im ersten Licht der Morgensonne. Dort, wo die Lava geflossen ist, glitzert neues, fruchtbares Land. Flamara lächelt. "Die nächste Insel wartet auf dich. Aber vergiss nie, was du hier gelernt hast: Wut ist eine Sprache. Und du sprichst sie jetzt fließend."',
+        choices: [
+          {
+            id: 'v6-s7-c1',
+            text: '"Ich werde euch nie vergessen. Jeden Einzelnen von euch."',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'v6-s7-c2',
+            text: '"Ash – pass auf die anderen auf, ja?" Ash rollt die Augen, aber lächelt.',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'v6-s7-c3',
-            text: 'Schweigend den Moment genießen',
+            text: 'Einmal zurückschauen. Dann vorwärts. Die nächste Insel wartet.',
             nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 3 }
           }
         ]
       }
@@ -1162,7 +1186,7 @@ export const volcanoWisdomCards: WisdomCard[] = [
     id: 'volcano-wisdom-7',
     islandId: 'volcano' as IslandId,
     title: 'Zinnias Balance',
-    content: 'Sei stark wie Stein in deinen Wurzeln (Werten), aber bleib weich wie Blütenblätter in deinem Herzen. Beides ist wichtig.',
+    content: 'Die gleiche Energie, die zerstören kann, kann auch etwas Wunderschönes erschaffen. Wut ist Treibstoff – du wählst die Richtung.',
     category: 'wisdom',
     collected: false
   },
@@ -1185,8 +1209,8 @@ export const volcanoWisdomCards: WisdomCard[] = [
   {
     id: 'volcano-wisdom-10',
     islandId: 'volcano' as IslandId,
-    title: 'Ash\'s Lektion',
-    content: 'Es ist okay, wütend zu sein UND Menschen zu lieben. Du kannst jemandem sagen "Das hat mich verletzt" ohne die Beziehung zu zerstören.',
+    title: 'Ashs Lektion',
+    content: 'Wut ist oft ein Schutzschild. Darunter verstecken sich Traurigkeit, Angst oder Einsamkeit. Wer das versteht, versteht sich selbst.',
     category: 'wisdom',
     collected: false
   },

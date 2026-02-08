@@ -20,63 +20,63 @@ export const oceanNPCs: OceanNPC[] = [
     id: 'marina',
     name: 'Marina',
     emoji: '🧜‍♀️',
-    description: 'Eine Meerjungfrau, die einen geliebten Freund verloren hat',
-    backstory: 'Marina schwamm einst mit ihrem besten Freund durch die Ozeane. Seit seinem Verschwinden singt sie traurige Lieder und versteht den Schmerz des Verlustes tief.'
+    description: 'Eine Meerjungfrau, die als Hüterin der stillen Bucht über die Trauernden wacht',
+    backstory: 'Marina verlor ihren kleinen Bruder an die tiefen Strömungen. Seitdem bewacht sie die stille Bucht und empfängt alle, die mit Trauer ankommen. Sie singt leise Lieder, die den Schmerz nicht wegnehmen, aber ihn erträglicher machen. Sie weiß: Wer trauert, braucht zuerst jemanden, der einfach da ist.'
   },
   {
     id: 'tiefgang',
     name: 'Tiefgang',
     emoji: '🐋',
-    description: 'Ein weiser Wal, der die Tiefen der Emotionen kennt',
-    backstory: 'Tiefgang hat Jahrhunderte gelebt und viel Traurigkeit gesehen. Er weiß, dass selbst die dunkelsten Gefühle wie Wellen kommen und gehen, und lehrt andere, durch den Schmerz zu tauchen.'
+    description: 'Ein uralter Wal, der die Tiefen der Gefühle kennt wie kein anderer',
+    backstory: 'Tiefgang hat in seinen vierhundert Jahren so viel Verlust erlebt, dass sein Gesang die tiefsten Gräben des Ozeans füllt. Er hat gelernt, dass man durch den Schmerz hindurchtauchen muss – nicht drum herum. Seine Weisheit ist ruhig, geduldig und manchmal überraschend humorvoll. Er sagt gern: "Ich bin alt genug, um zu wissen, dass Tränen salzig sind – genau wie mein Zuhause."'
   },
   {
     id: 'coralie',
     name: 'Coralie',
     emoji: '🐚',
-    description: 'Ein Einsiedlerkrebs, der sich in seinem Schneckenhaus versteckt',
-    backstory: 'Coralie zieht sich zurück, wenn die Welt zu überwältigend wird. Sie kennt die Angst vor Verletzung und den Wunsch, sich zu schützen, indem man sich versteckt.'
+    description: 'Ein Einsiedlerkrebs, der sich nach dem Verlust ihrer Zwillingsschwester versteckt',
+    backstory: 'Coralie und ihre Schwester Perla waren unzertrennlich – bis Perla eines Tages einfach nicht mehr da war. Seitdem trägt Coralie ein viel zu großes Schneckenhaus, in dem eigentlich Platz für zwei wäre. Sie versteckt sich vor der Welt, weil alles draußen sie an das erinnert, was fehlt. Tief in ihrem Herzen weiß sie, dass Verstecken nicht heilt – aber es fühlt sich sicherer an als Fühlen.'
   },
   {
     id: 'wellentanz',
     name: 'Wellentanz',
     emoji: '🌊',
-    description: 'Ein Wellengeist, der die Bewegung der Gefühle verkörpert',
-    backstory: 'Wellentanz ist die personifizierte Energie des Ozeans. Sie zeigt, wie Gefühle in Wellen kommen – manchmal sanft, manchmal stürmisch, aber immer in Bewegung.'
+    description: 'Ein Wellengeist, der die ungezähmte Kraft der Gefühle verkörpert',
+    backstory: 'Wellentanz ist weder gut noch böse – sie ist die reine Bewegung der Emotionen. Sie kann sanft wiegen oder gewaltig toben. Sie hat selbst nie jemanden verloren, aber sie trägt die Trauer aller Meeresbewohner in ihren Strömungen. Sie lehrt, dass Gefühle wie Wellen sind: Man kann sie nicht aufhalten, aber man kann lernen, auf ihnen zu reiten.'
   }
 ];
 
 // Scenarios
 export const oceanScenarios: Scenario[] = [
-  // Scenario 1: Der Verlust
+  // Scenario 1: Die stille Bucht
   {
     id: 'ocean-scenario-1',
-    title: 'Marinas Abschiedslied',
-    description: 'Marina trauert um ihren verlorenen Freund. Sie muss lernen, ihren Schmerz anzuerkennen.',
+    title: 'Die stille Bucht',
+    description: 'Du erreichst die Ozeaninsel – ein Ort der Stille nach dem Vulkan. Marina empfängt dich und zeigt dir, dass Traurigkeit zum Ozean gehört.',
     islandId: 'ocean' as IslandId,
-    difficulty: 'medium',
-    estimatedTime: '15-20 min',
-    themes: ['Trauer', 'Verlust', 'Abschied'],
+    difficulty: 'easy',
+    estimatedTime: '12-15 min',
+    themes: ['Trauer erkennen', 'Stille aushalten', 'Ankommen'],
     scenes: [
       {
         id: 'o1-s1',
-        content: 'Marina sitzt auf einem Felsen und starrt aufs Meer hinaus. Ihre Tränen vermischen sich mit dem Salzwasser. "Er ist einfach gegangen... und ich konnte nicht einmal auf Wiedersehen sagen."',
+        content: 'Nach der Hitze der Vulkaninsel erreichst du einen stillen Strand. Kein Wind. Keine Wellen. Das Meer liegt da wie ein riesiger Spiegel. Es ist fast unheimlich ruhig. Auf der Vulkaninsel hast du gelernt, Wut zu verstehen – aber dieses Gefühl hier ist anders. Schwerer. Stiller. Etwas in dir fühlt sich leer an.',
         choices: [
           {
             id: 'o1-s1-c1',
-            text: 'Setz dich neben sie und schweige mit ihr',
+            text: 'Setze dich an den Strand und lass die Stille auf dich wirken',
             nextSceneId: 'o1-s2',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'o1-s1-c2',
-            text: 'Sage ihr, dass die Zeit alle Wunden heilt',
+            text: 'Rufe laut über das Wasser – irgendjemand muss doch hier sein',
             nextSceneId: 'o1-s2',
-            points: { empathyPoints: 0, insightPoints: 1, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
           },
           {
             id: 'o1-s1-c3',
-            text: 'Frage sie, was sie an ihm am meisten vermisst',
+            text: 'Gehe vorsichtig zum Wasser und berühre die Oberfläche',
             nextSceneId: 'o1-s2',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
           }
@@ -84,121 +84,121 @@ export const oceanScenarios: Scenario[] = [
       },
       {
         id: 'o1-s2',
-        content: 'Marina beginnt zu erzählen: "Wir sind zusammen durch die tiefsten Gräben geschwommen. Er hat mich zum Lachen gebracht, als ich dachte, ich würde ertrinken." Ihre Stimme bricht.',
+        content: 'Das Wasser kräuselt sich, und ein Kopf taucht auf – Marina, eine Meerjungfrau mit Augen so tief wie der Ozean selbst. "Du bist also hier", sagt sie leise. "Die meisten kommen hierher, wenn sie etwas verloren haben. Oder jemanden." Sie mustert dich. "Was bringt dich zur stillen Bucht?"',
         choices: [
           {
             id: 'o1-s2-c1',
-            text: 'Ermutige sie, mehr zu erzählen',
+            text: '"Ich weiß nicht genau. Ich fühle mich einfach... leer."',
             nextSceneId: 'o1-s3',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o1-s2-c2',
-            text: 'Lenke sie ab, um den Schmerz zu vermeiden',
+            text: '"Ich habe jemanden verloren und weiß nicht, wohin mit dem Gefühl."',
             nextSceneId: 'o1-s3',
-            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'o1-s2-c3',
-            text: 'Teile eine eigene Erfahrung mit Verlust',
+            text: '"Ich wollte eigentlich stark sein. Aber hier fühle ich mich klein."',
             nextSceneId: 'o1-s3',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'o1-s3',
-        content: 'Die Sonne beginnt unterzugehen. Marina flüstert: "Manchmal denke ich, wenn ich nur stark genug weine, kommt er zurück." Das Meer wird dunkler um euch herum.',
+        content: 'Marina nickt langsam. "Weißt du, warum die Bucht so still ist? Weil Traurigkeit leise ist. Wut schreit und tobt – das hast du auf dem Vulkan gelernt. Aber Trauer... Trauer flüstert. Und manchmal schweigt sie ganz." Sie zeigt auf den Horizont. "Unter der Oberfläche ist ein ganzer Ozean voller Gefühle. Die Frage ist: Traust du dich hinzuschauen?"',
         choices: [
           {
             id: 'o1-s3-c1',
-            text: 'Erkenne an, dass dieser Wunsch normal ist',
+            text: '"Ich habe ein bisschen Angst davor, aber ja."',
             nextSceneId: 'o1-s4',
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'o1-s3-c2',
-            text: 'Sage ihr, dass sie akzeptieren muss, dass er weg ist',
+            text: '"Was passiert, wenn ich hinschaue und es zu viel wird?"',
             nextSceneId: 'o1-s4',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o1-s3-c3',
-            text: 'Frage, was ihr Freund wohl gewollt hätte',
+            text: '"Auf dem Vulkan habe ich gelernt, dass Weglaufen nichts bringt. Also ja."',
             nextSceneId: 'o1-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'o1-s4',
-        content: 'Marina singt ein leises Lied – traurig, aber wunderschön. "Das haben wir immer zusammen gesungen. Jetzt singe ich allein." Die Melodie schwebt über den Wellen.',
+        content: 'Marina lächelt sanft. "Mutig. Das mag ich." Sie taucht kurz unter und kommt mit einer kleinen, leuchtenden Muschel zurück. "Hier. Halte sie ans Ohr." Du hörst leise Stimmen – wie ferne Erinnerungen. Lachen. Weinen. Flüstern. "Das ist der Klang der Trauer", sagt Marina. "Sie klingt nicht nur traurig. Sie klingt nach allem, was einmal war."',
         choices: [
           {
             id: 'o1-s4-c1',
-            text: 'Summe leise mit',
+            text: 'Höre genau hin und versuche, die Stimmen zu verstehen',
             nextSceneId: 'o1-s5',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'o1-s4-c2',
-            text: 'Höre einfach zu',
+            text: 'Halte die Muschel fest – sie fühlt sich wichtig an',
             nextSceneId: 'o1-s5',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'o1-s4-c3',
-            text: 'Sage ihr, wie mutig sie ist, noch zu singen',
+            text: '"Warum tut Erinnern so weh, Marina?"',
             nextSceneId: 'o1-s5',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'o1-s5',
-        content: 'Tiefgang taucht aus der Tiefe auf. "Trauer ist wie der Ozean – tief, weit und manchmal dunkel. Aber sie trägt auch Erinnerungen, die nie ertrinken." Er schaut Marina sanft an.',
+        content: '"Erinnern tut weh, weil das, woran du dich erinnerst, dir wichtig war", sagt Marina. Ihre Stimme wird leiser. "Ich hatte einen kleinen Bruder. Er ist in die tiefen Strömungen geraten und... nie zurückgekommen." Sie dreht sich zum Meer. "Am Anfang wollte ich nie wieder ins Wasser. Aber dann habe ich verstanden: Die Trauer gehört zum Ozean. Und der Ozean gehört zu mir."',
         choices: [
           {
             id: 'o1-s5-c1',
-            text: 'Frage Tiefgang, wie man mit so viel Schmerz lebt',
+            text: '"Es tut mir leid. Danke, dass du mir das erzählst."',
             nextSceneId: 'o1-s6',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'o1-s5-c2',
-            text: 'Bleibe bei Marina und halte ihre Hand',
+            text: '"Vermisst du ihn immer noch?"',
             nextSceneId: 'o1-s6',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'o1-s5-c3',
-            text: 'Danke Tiefgang für seine Weisheit',
+            text: '"Wie hast du es geschafft, trotzdem weiterzumachen?"',
             nextSceneId: 'o1-s6',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'o1-s6',
-        content: 'Marina lächelt zum ersten Mal durch ihre Tränen. "Vielleicht... vielleicht ist es okay, traurig zu sein. Vielleicht zeigt es nur, wie sehr ich geliebt habe." Die Sterne beginnen zu leuchten.',
+        content: '"Jeden Tag", antwortet Marina. "Aber weißt du was? Das ist okay. Traurigkeit ist kein Feind. Sie ist wie das Meer – sie zeigt dir, wie tief du lieben kannst." Die ersten Wellen rollen sanft an den Strand. Die Stille bricht. "Willkommen auf der Ozeaninsel", sagt Marina und reicht dir die Hand. "Hier lernst du, dass man nicht immer stark sein muss. Manchmal ist das Mutigste, was du tun kannst, einfach zu fühlen."',
         choices: [
           {
             id: 'o1-s6-c1',
-            text: 'Bestätige, dass Trauer ein Zeichen von Liebe ist',
+            text: 'Nimm ihre Hand und lass die erste Träne zu',
             nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'o1-s6-c2',
-            text: 'Biete an, öfter bei ihr zu sein',
+            text: '"Ich bin bereit, den Ozean kennenzulernen."',
             nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           },
           {
             id: 'o1-s6-c3',
-            text: 'Schlage vor, dass sie weiter singt – für ihn',
+            text: 'Nicke still und schau aufs Meer – zum ersten Mal ohne Angst',
             nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
           }
         ]
       }
@@ -206,181 +206,181 @@ export const oceanScenarios: Scenario[] = [
     completed: false
   },
 
-  // Scenario 2: Die Dunkelheit
+  // Scenario 2: Tiefgangs Tauchgang
   {
     id: 'ocean-scenario-2',
-    title: 'In der Tiefe',
-    description: 'Abstieg in die dunklen Gewässer, wo Depression lauert.',
+    title: 'Tiefgangs Tauchgang',
+    description: 'Der weise Wal Tiefgang lädt dich ein, in die Tiefe zu tauchen. Dort, wo es dunkel wird, warten wichtige Erkenntnisse über Traurigkeit und Stärke.',
     islandId: 'ocean' as IslandId,
-    difficulty: 'hard',
-    estimatedTime: '20-25 min',
-    themes: ['Depression', 'Hoffnungslosigkeit', 'Licht finden'],
+    difficulty: 'medium',
+    estimatedTime: '18-22 min',
+    themes: ['Traurigkeit zulassen', 'Tiefe Gefühle', 'Stärke durch Verletzlichkeit'],
     scenes: [
       {
         id: 'o2-s1',
-        content: 'Du sinkst tiefer und tiefer. Das Licht von oben wird schwächer. Hier unten ist alles schwer, langsam, und dunkel. Tiefgang erscheint neben dir. "Manche Tage fühlen sich so an, nicht wahr?"',
+        content: 'Am nächsten Morgen vibriert das Wasser. Ein gewaltiger Schatten gleitet unter der Oberfläche. Dann taucht er auf – Tiefgang, ein Wal so groß wie ein Haus, mit Augen voller Jahrhunderte. "Na, Vulkankind", brummt er. "Marina sagt, du willst den Ozean verstehen. Dann musst du tauchen. Tief tauchen." Er zwinkert. "Keine Sorge, ich bin alt genug, um auf dich aufzupassen."',
         choices: [
           {
             id: 'o2-s1-c1',
-            text: 'Nicke und gestehe, dass du dich auch so fühlst',
+            text: '"Wie tief müssen wir denn tauchen?"',
+            nextSceneId: 'o2-s2',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o2-s1-c2',
+            text: '"Ich habe noch nie so tief getaucht. Aber ich vertraue dir."',
             nextSceneId: 'o2-s2',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
           },
           {
-            id: 'o2-s1-c2',
-            text: 'Versuche, nach oben zum Licht zu schwimmen',
-            nextSceneId: 'o2-s2',
-            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 2 }
-          },
-          {
             id: 'o2-s1-c3',
-            text: 'Frage, ob das Gefühl jemals aufhört',
+            text: '"Was ist da unten in der Tiefe?"',
             nextSceneId: 'o2-s2',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'o2-s2',
-        content: 'In der Dunkelheit siehst du schemenhafte Gestalten – Gedanken, die wie Schatten vorbeischweben. "Ich bin wertlos", flüstert einer. "Niemand versteht mich", sagt ein anderer.',
+        content: 'Tiefgang taucht mit dir ab. Die Sonne wird schwächer. Die Farben verschwinden – erst Rot, dann Orange, dann Gelb. "Merkst du, wie sich das anfühlt?" fragt er. "So fühlt sich Traurigkeit an. Sie nimmt dir langsam die Farben weg. Nicht auf einmal. Schleichend." Die Welt um euch wird blaugrau.',
         choices: [
           {
             id: 'o2-s2-c1',
-            text: 'Erkenne die Gedanken an, aber glaube ihnen nicht',
+            text: '"Ja... so fühlt es sich manchmal an. Als würde alles grau werden."',
             nextSceneId: 'o2-s3',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o2-s2-c2',
-            text: 'Versuche, die Gedanken zu bekämpfen',
+            text: '"Können wir die Farben zurückholen?"',
             nextSceneId: 'o2-s3',
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'o2-s2-c3',
-            text: 'Lass dich von den Gedanken verschlingen',
+            text: 'Schweige und spüre, was die Dunkelheit mit dir macht',
             nextSceneId: 'o2-s3',
-            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 0 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'o2-s3',
-        content: 'Tiefgang spricht ruhig: "Die Tiefe ist Teil des Ozeans. Ohne sie gäbe es keine Wellen oben. Du musst nicht hier bleiben, aber du darfst dich nicht dafür schämen, hier zu sein."',
+        content: '"Die Farben kommen zurück", sagt Tiefgang ruhig. "Aber erst musst du durch die Dunkelheit. Das ist der Teil, den die meisten nicht aushalten." Schattenhafte Formen schweben um euch – Gedanken, die wie Quallen im Dunkeln treiben. "Ich hätte etwas tun müssen", flüstert einer. "Es ist meine Schuld", seufzt ein anderer. "Ich bin allein."',
         choices: [
           {
             id: 'o2-s3-c1',
-            text: 'Frage, wie man wieder nach oben kommt',
+            text: '"Sind das... meine Gedanken?"',
             nextSceneId: 'o2-s4',
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o2-s3-c2',
-            text: 'Sage, dass du dich zu schwer fühlst zum Aufsteigen',
+            text: 'Höre ihnen zu, ohne sie zu glauben',
             nextSceneId: 'o2-s4',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           },
           {
             id: 'o2-s3-c3',
-            text: 'Bleibe still und lausche dem Druck der Tiefe',
+            text: '"Tiefgang, ich habe Angst. Es wird so dunkel hier."',
             nextSceneId: 'o2-s4',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'o2-s4',
-        content: 'Ein schwaches Leuchten erscheint – eine Tiefsee-Qualle. Ihr Licht ist klein, aber es ist da. "Selbst hier unten gibt es Licht", murmelt Tiefgang. "Manchmal muss man nur seine Augen anpassen."',
+        content: '"Angst ist erlaubt", sagt Tiefgang warm. "Ich bin vierhundert Jahre alt, und weißt du was? Ich habe immer noch Angst vor der Dunkelheit. Der Unterschied ist: Ich weiß jetzt, dass sie mich nicht frisst." Er leuchtet schwach – Biolumineszenz. "Siehst du? Selbst hier unten gibt es Licht. Du musst es nur in dir finden." Ein kleiner Tiefsee-Fisch schwimmt neugierig zu euch, leuchtend wie ein winziger Stern.',
         choices: [
           {
             id: 'o2-s4-c1',
-            text: 'Folge dem kleinen Licht',
+            text: 'Lächle den kleinen Fisch an – er erinnert dich daran, dass es Schönes gibt',
             nextSceneId: 'o2-s5',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'o2-s4-c2',
-            text: 'Suche nach mehr Lichtern in der Dunkelheit',
+            text: '"Also ist Traurigsein nicht schwach sein?"',
             nextSceneId: 'o2-s5',
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o2-s4-c3',
-            text: 'Frage Tiefgang, ob er dein Licht sein kann',
+            text: '"Wie finde ich mein eigenes Licht?"',
             nextSceneId: 'o2-s5',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'o2-s5',
-        content: 'Plötzlich fühlst du eine Strömung – sanft, aber beständig, die dich nach oben zieht. "Das ist der Wille zum Leben", sagt Tiefgang. "Er ist immer da, auch wenn du ihn nicht spürst."',
+        content: 'Tiefgang lacht – ein tiefes, donnerndes Lachen, das den ganzen Ozean vibrieren lässt. "Schwach? Kind, Traurigkeit zulassen ist das Stärkste, was man tun kann! Jeder kann so tun, als wäre alles okay. Aber hinschauen, wo es wehtut? Dafür braucht man echten Mut." Er schaut dich an. "Auf dem Vulkan hast du gelernt, dass Wut nicht dein Feind ist. Hier lernst du dasselbe über Trauer."',
         choices: [
           {
             id: 'o2-s5-c1',
-            text: 'Lass dich von der Strömung tragen',
+            text: '"Also soll ich die Traurigkeit nicht bekämpfen, sondern... annehmen?"',
             nextSceneId: 'o2-s6',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o2-s5-c2',
-            text: 'Schwimme mit der Strömung',
+            text: '"Aber es tut so weh. Wie halte ich das aus?"',
             nextSceneId: 'o2-s6',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'o2-s5-c3',
-            text: 'Danke der Strömung für ihre Hilfe',
+            text: '"Danke, Tiefgang. Ich glaube, ich verstehe langsam."',
             nextSceneId: 'o2-s6',
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'o2-s6',
-        content: 'Du durchbrichst die Oberfläche. Das Sonnenlicht blendet dich, aber es fühlt sich wunderbar an. "Du bist zurückgekommen", sagt Tiefgang. "Und wenn du wieder sinkst – und das wirst du – weißt du jetzt, wie man aufsteigt."',
+        content: '"Du hältst es aus, indem du nicht allein bist", sagt er sanft. "Und indem du dir erlaubst, Pausen zu machen. Sogar Wale müssen zum Atmen auftauchen." Eine warme Strömung erfasst euch und beginnt, euch langsam nach oben zu tragen. Das Licht wird stärker. Die Farben kehren zurück – erst Blau, dann Grün, dann Gold.',
         choices: [
           {
             id: 'o2-s6-c1',
-            text: 'Verspreche, um Hilfe zu bitten, wenn du wieder sinkst',
+            text: 'Genieße das Auftauchen und atme tief ein',
             nextSceneId: 'o2-s7',
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'o2-s6-c2',
-            text: 'Genieße den Moment im Licht',
+            text: '"Die Farben... sie kommen wirklich zurück!"',
             nextSceneId: 'o2-s7',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o2-s6-c3',
-            text: 'Frage, wie man anderen hilft, die in der Tiefe sind',
+            text: 'Drücke dich dankbar an Tiefgangs Seite',
             nextSceneId: 'o2-s7',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'o2-s7',
-        content: 'Tiefgang taucht wieder unter. "Die Tiefe wird immer Teil des Ozeans sein. Aber du bist mehr als deine dunkelsten Momente." Seine Worte bleiben bei dir, während du auf den Wellen schaukelst.',
+        content: 'Ihr durchbrecht die Oberfläche. Die Sonne blendet wunderbar. Tiefgang bläst eine Fontäne in die Luft, die im Sonnenlicht einen Regenbogen erzeugt. "Siehst du? Durch die Dunkelheit hindurch, nicht drum herum. Und wenn du wieder sinkst – und das wirst du, das ist normal – dann weißt du jetzt: Da unten ist es dunkel, aber nicht für immer."',
         choices: [
           {
             id: 'o2-s7-c1',
-            text: 'Atme die Hoffnung ein',
+            text: '"Und wenn ich wieder sinke, weiß ich, dass ich auftauchen kann."',
             nextSceneId: null,
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           },
           {
             id: 'o2-s7-c2',
-            text: 'Merke dir Tiefgangs Worte',
+            text: '"Darf ich wiederkommen, wenn es zu dunkel wird?"',
             nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'o2-s7-c3',
-            text: 'Entscheide, dass du nicht allein kämpfen musst',
+            text: 'Schaue den Regenbogen an und spüre, dass Hoffnung kein leeres Wort ist',
             nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
           }
         ]
       }
@@ -388,157 +388,157 @@ export const oceanScenarios: Scenario[] = [
     completed: false
   },
 
-  // Scenario 3: Das Versteck
+  // Scenario 3: Coralies Versteck
   {
     id: 'ocean-scenario-3',
-    title: 'Coralies Schneckenhaus',
-    description: 'Coralie versteckt sich vor der Welt. Emotionale Vermeidung und der Mut, verletzlich zu sein.',
+    title: 'Coralies Versteck',
+    description: 'Coralie, der Einsiedlerkrebs, versteckt sich vor der Welt. Um ihr zu helfen, musst du entdecken, dass Verletzlichkeit keine Schwäche ist – und dass sie ihren eigenen Verlust trägt.',
     islandId: 'ocean' as IslandId,
     difficulty: 'medium',
     estimatedTime: '15-20 min',
-    themes: ['Vermeidung', 'Verletzlichkeit', 'Schutz'],
+    themes: ['Vermeidung', 'Verletzlichkeit', 'Geteilte Trauer'],
     scenes: [
       {
         id: 'o3-s1',
-        content: 'Coralie hat sich tief in ihr Schneckenhaus zurückgezogen. Nur ihre kleinen Augen schauen heraus. "Geh weg", sagt sie leise. "Hier drinnen kann mir nichts passieren."',
+        content: 'Marina führt dich zu einem Felsvorsprung unter Wasser. "Hier lebt Coralie", flüstert sie. "Aber sie kommt seit Wochen nicht mehr raus." Du siehst ein großes Schneckenhaus, das leicht zittert. Von drinnen hörst du ein leises: "Geht weg. Ich will niemanden sehen. Nie wieder."',
         choices: [
           {
             id: 'o3-s1-c1',
-            text: 'Respektiere ihren Wunsch und bleibe in der Nähe',
+            text: 'Setze dich neben das Schneckenhaus und warte geduldig',
             nextSceneId: 'o3-s2',
             points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
           },
           {
             id: 'o3-s1-c2',
-            text: 'Versuche, sie rauszulocken',
+            text: '"Hey Coralie. Ich gehe nicht weg. Ich setze mich einfach hierhin, okay?"',
             nextSceneId: 'o3-s2',
-            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
           },
           {
             id: 'o3-s1-c3',
-            text: 'Frage, was sie so sehr erschreckt hat',
+            text: 'Frage Marina leise, warum Coralie sich versteckt',
             nextSceneId: 'o3-s2',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'o3-s2',
-        content: 'Nach einer Weile flüstert Coralie: "Da draußen... da draußen wird man enttäuscht. Man wird verletzt. Man fühlt zu viel." Ihre Stimme zittert. "Hier drinnen ist es sicher."',
+        content: 'Stille. Dann, ganz leise: "Warum bist du noch da? Alle gehen irgendwann." Zwei kleine Augen schauen aus dem Schneckenhaus. "Alle gehen. So ist das. Man gewöhnt sich an jemanden, und dann... puff." Coralies Stimme ist dünn wie eine Haarqualle.',
         choices: [
           {
             id: 'o3-s2-c1',
-            text: 'Erkenne an, dass Sicherheit wichtig ist',
+            text: '"Ich bin noch da. Und ich gehe erst, wenn du es möchtest."',
             nextSceneId: 'o3-s3',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'o3-s2-c2',
-            text: 'Erzähle von einer Zeit, als du verletzt wurdest',
+            text: '"Hast du jemanden verloren, Coralie?"',
             nextSceneId: 'o3-s3',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           },
           {
             id: 'o3-s2-c3',
-            text: 'Frage, ob sie sich nicht auch einsam fühlt',
+            text: '"Ich verstehe, warum du Angst hast. Ich habe auch Angst."',
             nextSceneId: 'o3-s3',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'o3-s3',
-        content: 'Coralie kommt ein kleines Stück heraus. "Manchmal... manchmal möchte ich rauskommen. Aber was, wenn ich dann noch mehr Schmerz fühle? Was, wenn ich zusammenbreche?"',
+        content: 'Coralie kommt ein winziges Stück heraus. Ihre Scheren zittern. "Meine Schwester. Perla. Wir waren Zwillinge. Wir haben alles zusammen gemacht – zusammen gesucht, zusammen gelacht, zusammen geschlafen. Dieses Schneckenhaus..." Sie klopft leise dagegen. "Das war für uns beide. Jetzt bin ich allein darin, und es ist viel zu groß und viel zu leer."',
         choices: [
           {
             id: 'o3-s3-c1',
-            text: 'Versichere ihr, dass du da sein wirst',
+            text: '"Das klingt unglaublich schwer. Ein Zuhause, das sich leer anfühlt."',
             nextSceneId: 'o3-s4',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'o3-s3-c2',
-            text: 'Sage, dass Gefühle einen nicht zerbrechen können',
+            text: '"Was würde Perla sagen, wenn sie dich jetzt sehen könnte?"',
             nextSceneId: 'o3-s4',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           },
           {
             id: 'o3-s3-c3',
-            text: 'Schlage vor, nur einen kleinen Schritt zu wagen',
+            text: 'Setze dich näher zu ihr, damit das Schneckenhaus sich weniger leer anfühlt',
             nextSceneId: 'o3-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'o3-s4',
-        content: 'Wellentanz erscheint, sanft und beruhigend. "Coralie, erinnerst du dich, wie es ist, auf den Wellen zu tanzen? Das Salz auf der Haut, den Wind?" Coralies Augen werden weich.',
+        content: 'Coralies Augen werden feucht. "Perla würde sagen: \'Coralie, du Blödkrabbe, komm raus da!\'" Sie lacht kurz durch die Tränen. "Sie war immer die Mutigere. Sie hat mich immer aus dem Schneckenhaus gezerrt. Und jetzt..." Sie verstummt. "Jetzt ist die mutige Hälfte von mir weg."',
         choices: [
           {
             id: 'o3-s4-c1',
-            text: 'Frage Coralie nach ihren schönsten Erinnerungen',
+            text: '"Vielleicht hat Perla dir mehr Mut dagelassen, als du denkst."',
             nextSceneId: 'o3-s5',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o3-s4-c2',
-            text: 'Lass Wellentanz weitersprechen',
+            text: '"Du bist gerade mutig. Du erzählst mir von ihr. Das ist riesig."',
             nextSceneId: 'o3-s5',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'o3-s4-c3',
-            text: 'Biete Coralie deine Hand an',
+            text: '"Du musst es nicht allein schaffen. Andere können auch mutig für dich sein."',
             nextSceneId: 'o3-s5',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'o3-s5',
-        content: 'Coralie kriecht langsam heraus. Sie zittert. "Ich habe solche Angst", gesteht sie. "Aber ich bin auch so müde vom Verstecken. Ich fühle mich wie lebendig begraben."',
+        content: 'Coralie kriecht langsam aus dem Schneckenhaus. Ganz langsam. Ihr kleiner Körper zittert im offenen Wasser. "Alles tut weh da draußen", flüstert sie. "Der Ozean erinnert mich an sie. Das Licht erinnert mich an sie. Sogar die Stille." Sie schaut dich an. "Aber das Verstecken... das tut auch weh. Nur anders."',
         choices: [
           {
             id: 'o3-s5-c1',
-            text: 'Sage ihr, wie mutig sie ist',
+            text: '"Vielleicht ist der Schmerz des Erinnerns besser als der Schmerz des Versteckens."',
             nextSceneId: 'o3-s6',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           },
           {
             id: 'o3-s5-c2',
-            text: 'Bleibe ruhig neben ihr',
+            text: '"Du darfst reingehen, wenn es zu viel wird. Aber probiere das Draußen."',
             nextSceneId: 'o3-s6',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'o3-s5-c3',
-            text: 'Erinnere sie, dass sie jederzeit zurück kann',
+            text: 'Nimm vorsichtig ihre kleine Schere und halte sie fest',
             nextSceneId: 'o3-s6',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'o3-s6',
-        content: 'Coralie steht vollständig draußen. Eine Welle kommt und... sie lacht. Es ist ein kleines, erschrockenes Lachen, aber es ist echt. "Ich... ich hatte vergessen, wie sich das anfühlt."',
+        content: 'Eine sanfte Strömung bringt einen kleinen, glitzernden Stein vorbei. Coralie fängt ihn auf. "Perla hat immer glitzernde Steine gesammelt", sagt sie leise. Und dann passiert es: Sie lacht und weint gleichzeitig. "Weißt du was? Ich glaube... ich glaube, sie wollte nicht, dass ich mich für immer verstecke. Sie wollte, dass ich lebe. Für uns beide." Coralie steckt den Stein in ihr Schneckenhaus. "Ich gehe nicht ganz raus. Noch nicht. Aber ich lasse die Tür offen."',
         choices: [
           {
             id: 'o3-s6-c1',
-            text: 'Feiere diesen Moment mit ihr',
+            text: '"Das ist mehr als genug, Coralie. Eine offene Tür ist ein Anfang."',
             nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o3-s6-c2',
-            text: 'Frage, ob sie bereit ist, mehr zu fühlen',
+            text: '"Perla wäre stolz auf dich. Und ich bin es auch."',
             nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'o3-s6-c3',
-            text: 'Erkläre, dass Verletzlichkeit Stärke ist',
+            text: '"Ich besuche dich wieder. Versprochen."',
             nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           }
         ]
       }
@@ -546,155 +546,179 @@ export const oceanScenarios: Scenario[] = [
     completed: false
   },
 
-  // Scenario 4: Die Wellen der Emotion
+  // Scenario 4: Der Sturm
   {
     id: 'ocean-scenario-4',
-    title: 'Wellentanz und der Sturm',
-    description: 'Lernen, dass Emotionen in Wellen kommen und dass auch schwere Gefühle vorbeigehen.',
+    title: 'Der Sturm',
+    description: 'Ein gewaltiger emotionaler Sturm trifft die Ozeaninsel. Du musst lernen, die Wellen zu reiten, statt gegen sie zu kämpfen – und verstehen, wie sich Trauer von Wut unterscheidet.',
     islandId: 'ocean' as IslandId,
-    difficulty: 'medium',
-    estimatedTime: '12-15 min',
-    themes: ['Emotionale Wellen', 'Vergänglichkeit', 'Akzeptanz'],
+    difficulty: 'hard',
+    estimatedTime: '20-25 min',
+    themes: ['Emotionale Überwältigung', 'Loslassen', 'Resilienz'],
     scenes: [
       {
         id: 'o4-s1',
-        content: 'Der Ozean ist unruhig. Wellentanz wirbelt wild umher. "Fühlst du es?" ruft sie. "Die Traurigkeit kommt wie ein Sturm! Sie ist groß, so groß!" Die Wellen türmen sich auf.',
+        content: 'Der Himmel verdunkelt sich. Wellentanz rast über das Wasser, aufgeregt und besorgt zugleich. "Er kommt! Der große Sturm!" Die Wellen werden höher. Marina, Tiefgang und Coralie versammeln sich. "Das passiert, wenn zu viel Trauer auf einmal aufbricht", erklärt Tiefgang. "Der Ozean kann es nicht mehr halten."',
         choices: [
           {
             id: 'o4-s1-c1',
-            text: 'Versuche, die Wellen zu stoppen',
+            text: '"Was müssen wir tun?"',
             nextSceneId: 'o4-s2',
-            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
           },
           {
             id: 'o4-s1-c2',
-            text: 'Frage Wellentanz, wie man durch Wellen taucht',
+            text: '"Können wir den Sturm aufhalten?"',
             nextSceneId: 'o4-s2',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'o4-s1-c3',
-            text: 'Lass dich von der Welle tragen',
+            text: '"Ich kenne Stürme. Auf dem Vulkan gab es auch welche – aus Feuer."',
             nextSceneId: 'o4-s2',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'o4-s2',
-        content: 'Eine riesige Welle überspült dich – Traurigkeit, Wut, Verzweiflung, alles auf einmal. Es fühlt sich an, als würdest du ertrinken. Aber dann... bist du auf der anderen Seite. Du atmest noch.',
+        content: 'Wellentanz wirbelt um dich herum. "Aufhalten? Nein! Genauso wenig wie du deine Gefühle aufhalten kannst!" Eine riesige Welle baut sich auf. Tiefgang brummt: "Erinnerst du dich an den Vulkan? Wut lässt Lava steigen. Traurigkeit macht Wellen. Beides ist Energie, die raus will." Die Welle kracht über euch zusammen.',
         choices: [
           {
             id: 'o4-s2-c1',
-            text: 'Erkenne, dass du überlebt hast',
+            text: 'Versuche, gegen die Welle anzukämpfen',
             nextSceneId: 'o4-s3',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'o4-s2-c2',
-            text: 'Habe Angst vor der nächsten Welle',
+            text: 'Tauche unter die Welle hindurch',
             nextSceneId: 'o4-s3',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
-          },
-          {
-            id: 'o4-s2-c3',
-            text: 'Danke Wellentanz für die Lektion',
-            nextSceneId: 'o4-s3',
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
-          }
-        ]
-      },
-      {
-        id: 'o4-s3',
-        content: 'Wellentanz beruhigt sich etwas. "Siehst du?" sagt sie atemlos. "Ich komme immer wieder. Manchmal sanft, manchmal wild. Aber ich bleibe nie für immer gleich."',
-        choices: [
-          {
-            id: 'o4-s3-c1',
-            text: 'Verstehe, dass Gefühle sich verändern',
-            nextSceneId: 'o4-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
-          },
-          {
-            id: 'o4-s3-c2',
-            text: 'Frage, wie man die Intensität aushält',
-            nextSceneId: 'o4-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
-          },
-          {
-            id: 'o4-s3-c3',
-            text: 'Beobachte das Muster der Wellen',
-            nextSceneId: 'o4-s4',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
-          }
-        ]
-      },
-      {
-        id: 'o4-s4',
-        content: 'Eine sanfte Welle folgt. Dann eine mittlere. Dann wieder eine wilde. "Manche Menschen versuchen, mich zu kontrollieren", sagt Wellentanz. "Aber das bin nicht ich. Ich bin die Bewegung selbst."',
-        choices: [
-          {
-            id: 'o4-s4-c1',
-            text: 'Akzeptiere, dass man Gefühle nicht kontrollieren kann',
-            nextSceneId: 'o4-s5',
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           },
           {
-            id: 'o4-s4-c2',
-            text: 'Frage, wie man mit der Unvorhersehbarkeit umgeht',
-            nextSceneId: 'o4-s5',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
-          },
-          {
-            id: 'o4-s4-c3',
-            text: 'Lerne, auf den Wellen zu reiten',
-            nextSceneId: 'o4-s5',
+            id: 'o4-s2-c3',
+            text: 'Lass dich von der Welle tragen, so wie Wellentanz es tut',
+            nextSceneId: 'o4-s3',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
           }
         ]
       },
       {
+        id: 'o4-s3',
+        content: 'Du tauchst auf, prustend und keuchend. Die nächste Welle kommt schon. Und die nächste. Es hört nicht auf. Marina ruft dir zu: "Nicht kämpfen! Bewegung, nicht Widerstand!" Wellentanz zeigt dir, wie sie sich mit den Wellen bewegt – nicht gegen sie, sondern durch sie hindurch, auf und ab, wie ein Tanz.',
+        choices: [
+          {
+            id: 'o4-s3-c1',
+            text: 'Versuche, Wellentanz nachzumachen – Bewegung statt Widerstand',
+            nextSceneId: 'o4-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+          },
+          {
+            id: 'o4-s3-c2',
+            text: '"Ich kann nicht! Es ist zu viel!"',
+            nextSceneId: 'o4-s4',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'o4-s3-c3',
+            text: 'Klammere dich an Tiefgang fest',
+            nextSceneId: 'o4-s4',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o4-s4',
+        content: 'Coralie – ausgerechnet Coralie! – krabbelt aus ihrem Schneckenhaus und hält sich an dir fest. "Zusammen!", piepst sie. "Perla hat immer gesagt: Stürme übersteht man zusammen!" Marina singt, und ihr Lied beruhigt die Wellen um euch herum ein kleines bisschen. Tiefgang bildet einen Wellenbrecher mit seinem riesigen Körper.',
+        choices: [
+          {
+            id: 'o4-s4-c1',
+            text: 'Halte Coralie fest und konzentriere dich auf Marinas Lied',
+            nextSceneId: 'o4-s5',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'o4-s4-c2',
+            text: '"Wenn Coralie mutig genug ist, bin ich es auch!"',
+            nextSceneId: 'o4-s5',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'o4-s4-c3',
+            text: 'Achte darauf, dass alle in Sicherheit sind, nicht nur du',
+            nextSceneId: 'o4-s5',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+          }
+        ]
+      },
+      {
         id: 'o4-s5',
-        content: 'Der Ozean wird ruhiger. Wellentanz flüstert: "Die stärksten Schwimmer kämpfen nicht gegen die Wellen. Sie bewegen sich mit ihnen." Das Wasser glitzert im Mondlicht.',
+        content: 'Plötzlich bist du mitten im Auge des Sturms. Absolute Stille. Über dir: ein perfekter Kreis blauer Himmel, umrahmt von tobenden Wolken. "Das ist der Moment der Wahrheit", sagt Wellentanz sanft. "Im Zentrum jedes Sturms ist Ruhe. In dir auch. Egal wie wild es draußen tobt."',
         choices: [
           {
             id: 'o4-s5-c1',
-            text: 'Übe, mit den Gefühlswellen zu fließen',
+            text: 'Atme tief durch und finde die Ruhe in dir',
             nextSceneId: 'o4-s6',
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           },
           {
             id: 'o4-s5-c2',
-            text: 'Bedanke dich für diese Weisheit',
+            text: '"Ich spüre es. Auch wenn alles stürmt, gibt es einen ruhigen Ort in mir."',
             nextSceneId: 'o4-s6',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o4-s5-c3',
-            text: 'Frage, was man tut, wenn man erschöpft ist',
+            text: 'Schaue nach oben zum blauen Himmel und erinnere dich, dass der Sturm enden wird',
             nextSceneId: 'o4-s6',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'o4-s6',
-        content: 'Wellentanz umarmt dich sanft. "Du hast den Sturm überlebt. Und du wirst den nächsten auch überleben. Jedes Mal wirst du stärker, weiser, vertrauter mit meinen Rhythmen."',
+        content: 'Der Sturm legt sich. Langsam. Die Wellen werden kleiner. Die Wolken ziehen ab. Überall schwimmen Trümmer im Wasser – aber auch Dinge, die der Sturm aus der Tiefe an die Oberfläche gebracht hat: bunte Muscheln, vergessene Schätze, alte Erinnerungen. Marina flüstert: "Stürme zerstören nicht nur. Sie bringen auch Verborgenes ans Licht."',
         choices: [
           {
             id: 'o4-s6-c1',
-            text: 'Glaube daran, dass du es schaffen wirst',
-            nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+            text: 'Sammle eine der Muscheln auf – eine Erinnerung, die du verdrängt hattest',
+            nextSceneId: 'o4-s7',
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o4-s6-c2',
-            text: 'Verspreche, nicht mehr gegen die Wellen zu kämpfen',
+            text: '"Ich habe den Sturm überlebt. Wir alle haben."',
+            nextSceneId: 'o4-s7',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'o4-s6-c3',
+            text: 'Schaue deine Freunde an – zusammen habt ihr es geschafft',
+            nextSceneId: 'o4-s7',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o4-s7',
+        content: 'Wellentanz legt sich erschöpft um eure Gruppe wie eine warme Decke aus Wasser. "Ihr wart großartig", murmelt sie. "Der nächste Sturm wird kommen. Aber jetzt wisst ihr: Reitet die Wellen. Haltet euch aneinander fest. Und vergesst nie – im Zentrum jedes Sturms ist Ruhe." Coralie nickt tapfer. Marina singt leise. Tiefgang atmet tief. Und du weißt: Du bist stärker, als du dachtest.',
+        choices: [
+          {
+            id: 'o4-s7-c1',
+            text: '"Danke, dass ihr bei mir wart. Allein hätte ich das nicht geschafft."',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'o4-s7-c2',
+            text: '"Ich habe keine Angst mehr vor Stürmen. Nicht weil sie harmlos sind – sondern weil ich weiß, was ich tun kann."',
             nextSceneId: null,
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           },
           {
-            id: 'o4-s6-c3',
-            text: 'Schwimme ruhig in der Stille nach dem Sturm',
+            id: 'o4-s7-c3',
+            text: 'Umarme die Gruppe und genieße die Stille nach dem Sturm',
             nextSceneId: null,
             points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           }
@@ -704,131 +728,131 @@ export const oceanScenarios: Scenario[] = [
     completed: false
   },
 
-  // Scenario 5: Heilung durch Verbindung
+  // Scenario 5: Das Korallenriff der Erinnerungen
   {
     id: 'ocean-scenario-5',
-    title: 'Das Riff der Heilung',
-    description: 'Ein Korallenriff symbolisiert, wie Heilung durch Verbindung und Gemeinschaft geschieht.',
+    title: 'Das Korallenriff der Erinnerungen',
+    description: 'Tief im Ozean liegt ein magisches Riff, in dem Erinnerungen an verlorene Liebste als leuchtende Korallen weiterleben. Ein Ort der Heilung und des Erinnerns.',
     islandId: 'ocean' as IslandId,
-    difficulty: 'easy',
-    estimatedTime: '10-15 min',
-    themes: ['Heilung', 'Gemeinschaft', 'Unterstützung'],
+    difficulty: 'medium',
+    estimatedTime: '15-20 min',
+    themes: ['Erinnerung', 'Heilung', 'Weiterleben der Liebe'],
     scenes: [
       {
         id: 'o5-s1',
-        content: 'Du findest ein Korallenriff – bunt, lebendig, voller Bewegung. Jede Koralle wächst neben der anderen. "Wir heilen nie allein", sagt Marina, die neben dir schwimmt.',
+        content: 'Marina nimmt dich bei der Hand. "Ich möchte dir etwas Besonderes zeigen. Etwas, das mir geholfen hat, als ich dachte, ich überlebe die Trauer nicht." Ihr taucht zusammen ab – aber diesmal ist es nicht dunkel. Ein warmes, goldenes Leuchten kommt von unten. "Das ist das Korallenriff der Erinnerungen", flüstert Marina. "Hier lebt alles weiter, was wir geliebt haben."',
         choices: [
           {
             id: 'o5-s1-c1',
-            text: 'Frage, wie das Riff so stark wurde',
-            nextSceneId: 'o5-s2',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
-          },
-          {
-            id: 'o5-s1-c2',
-            text: 'Berühre vorsichtig eine Koralle',
+            text: 'Schwimme staunend näher – das Leuchten fühlt sich warm an',
             nextSceneId: 'o5-s2',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
           },
           {
-            id: 'o5-s1-c3',
-            text: 'Beobachte, wie die Lebewesen zusammenarbeiten',
+            id: 'o5-s1-c2',
+            text: '"Was meinst du mit – hier lebt es weiter?"',
             nextSceneId: 'o5-s2',
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'o5-s1-c3',
+            text: '"Ist dein Bruder auch hier?"',
+            nextSceneId: 'o5-s2',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'o5-s2',
-        content: 'Marina zeigt auf eine gebrochene Koralle, die langsam heilt. "Siehst du? Die anderen um sie herum geben ihr Raum zum Wachsen. Sie urteilen nicht. Sie sind einfach da."',
+        content: 'Marina schwimmt zu einer hellblauen Koralle, die sanft pulsiert. "Das ist seine", sagt sie leise. "Mein Bruder. Jede Koralle hier ist eine Erinnerung an jemanden, der vermisst wird." Sie berührt die Koralle, und für einen Moment siehst du ein Bild: zwei kleine Meerjungfrauen, die lachend durch Seetang schwimmen. "Er hat immer gelacht", sagt Marina mit feuchten Augen und einem halben Lächeln.',
         choices: [
           {
             id: 'o5-s2-c1',
-            text: 'Verstehe, dass Heilung Zeit braucht',
-            nextSceneId: 'o5-s3',
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
-          },
-          {
-            id: 'o5-s2-c2',
-            text: 'Frage, ob du jemandem so helfen kannst',
+            text: '"Das ist wunderschön, Marina. Er sieht aus wie du."',
             nextSceneId: 'o5-s3',
             points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           },
           {
-            id: 'o5-s2-c3',
-            text: 'Erkenne dich selbst in der gebrochenen Koralle',
+            id: 'o5-s2-c2',
+            text: '"Tut es weh, hierher zu kommen?"',
             nextSceneId: 'o5-s3',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'o5-s2-c3',
+            text: 'Berühre auch die Koralle und teile den Moment mit Marina',
+            nextSceneId: 'o5-s3',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'o5-s3',
-        content: 'Ein Fischschwarm schwimmt vorbei, perfekt synchronisiert. "Manchmal", sagt Marina, "bedeutet Heilung, zu lernen, dass man Teil von etwas Größerem ist. Dass man nicht allein ist."',
+        content: '"Manchmal tut es weh", gibt Marina zu. "Aber es ist ein guter Schmerz. Wie wenn man einen Muskel trainiert." Weiter hinten im Riff leuchtet eine kleine rosafarbene Koralle – Coralies. Sie schwimmt darauf zu und berührt sie. Zwei identische kleine Krabben tauchen auf, die miteinander spielen. "Perla", flüstert Coralie. "Meine Schwester war die mit dem rosa Panzer."',
         choices: [
           {
             id: 'o5-s3-c1',
-            text: 'Denke an Menschen, die dich unterstützen',
+            text: 'Lege Coralie sanft die Hand auf den Panzer',
             nextSceneId: 'o5-s4',
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
           },
           {
             id: 'o5-s3-c2',
-            text: 'Fühle dich immer noch isoliert',
+            text: '"Sie sieht fröhlich aus. Ihr wart ein gutes Team."',
             nextSceneId: 'o5-s4',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'o5-s3-c3',
-            text: 'Frage, wie man um Hilfe bittet',
+            text: '"Die Erinnerungen hier sind voller Liebe, nicht nur voller Schmerz."',
             nextSceneId: 'o5-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'o5-s4',
-        content: 'Alle vier – Marina, Tiefgang, Coralie und Wellentanz – versammeln sich am Riff. "Wir alle haben schwere Zeiten durchgemacht", sagt Tiefgang. "Aber wir sind hier, zusammen."',
+        content: 'Tiefgang schwebt herbei und zeigt auf eine ganze Reihe alter, mächtiger Korallen. "Vierhundert Jahre Erinnerungen", sagt er ruhig. "Freunde. Familie. Ganze Walherden." Er ist nicht traurig dabei – er strahlt eine tiefe Ruhe aus. "Weißt du, was das Schönste ist? Die Korallen wachsen. Jedes Mal, wenn ich mich erinnere, wachsen sie ein Stück. Erinnerung ist keine Last. Sie ist Nahrung."',
         choices: [
           {
             id: 'o5-s4-c1',
-            text: 'Teile deine eigenen schwierigen Gefühle',
+            text: '"Also sterben Erinnerungen nie, solange wir uns erinnern?"',
             nextSceneId: 'o5-s5',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o5-s4-c2',
-            text: 'Höre den Geschichten der anderen zu',
+            text: '"Das ist... das Tröstlichste, was ich je gehört habe."',
             nextSceneId: 'o5-s5',
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'o5-s4-c3',
-            text: 'Danke ihnen für ihre Offenheit',
+            text: '"Darf ich auch eine Koralle hier pflanzen? Für jemanden, den ich vermisse?"',
             nextSceneId: 'o5-s5',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'o5-s5',
-        content: 'Das Riff scheint heller zu leuchten. Coralie flüstert: "Wenn ich meine Geschichte teile, fühlt sie sich weniger schwer an." Die anderen nicken. Auch du spürst eine Leichtigkeit.',
+        content: 'Marina, Coralie und Tiefgang schauen dich an. "Natürlich darfst du", sagt Marina. "Denke an die Person. An einen Moment, der dir wichtig ist. An ein Gefühl." Du schließt die Augen. Eine Erinnerung steigt auf – warm, lebendig, ein bisschen schmerzhaft, aber auch schön. Unter deinen Händen beginnt etwas zu wachsen. Langsam. Leuchtend.',
         choices: [
           {
             id: 'o5-s5-c1',
-            text: 'Verspreche, deine Geschichte zu teilen',
+            text: 'Lass die Erinnerung fließen – die schönen und die traurigen Teile',
             nextSceneId: 'o5-s6',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o5-s5-c2',
-            text: 'Frage, wie man sichere Menschen findet',
+            text: 'Konzentriere dich auf das, was diese Person dir beigebracht hat',
             nextSceneId: 'o5-s6',
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o5-s5-c3',
-            text: 'Biete an, für andere da zu sein',
+            text: 'Lächle durch die Tränen – weil Erinnern beides sein darf',
             nextSceneId: 'o5-s6',
             points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
           }
@@ -836,25 +860,25 @@ export const oceanScenarios: Scenario[] = [
       },
       {
         id: 'o5-s6',
-        content: 'Die Gruppe umarmt sich sanft. "Das Riff erinnert uns daran", sagt Marina, "dass wir stärker sind, wenn wir zusammen wachsen. Narben und alles."',
+        content: 'Deine Koralle leuchtet in deiner Lieblingsfarbe. Sie ist klein, aber sie ist da – und sie wird wachsen, jedes Mal, wenn du dich erinnerst. Das ganze Riff erstrahlt für einen Moment heller, als hätte es deine Koralle willkommen geheißen. "Siehst du?", sagt Tiefgang. "Was wir lieben, verschwindet nicht. Es verändert seine Form. Von einer Person wird eine Erinnerung. Von einer Erinnerung wird ein Teil von dir." Marina singt, und ihr Lied klingt zum ersten Mal nicht nur traurig – es klingt dankbar.',
         choices: [
           {
             id: 'o5-s6-c1',
-            text: 'Akzeptiere, dass Heilung möglich ist',
+            text: '"Danke. Diesen Ort werde ich nie vergessen."',
             nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o5-s6-c2',
-            text: 'Werde Teil dieser Gemeinschaft',
+            text: '"Ich werde wiederkommen und meine Koralle besuchen."',
             nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'o5-s6-c3',
-            text: 'Verspreche, nie aufzugeben',
+            text: '"Trauer ist nicht das Ende. Sie ist eine Brücke zu dem, was bleibt."',
             nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           }
         ]
       }
@@ -862,155 +886,179 @@ export const oceanScenarios: Scenario[] = [
     completed: false
   },
 
-  // Scenario 6: Die Perle im Schmerz
+  // Scenario 6: Die Perle
   {
     id: 'ocean-scenario-6',
-    title: 'Die Perle der Transformation',
-    description: 'Wie Schmerz und Traurigkeit uns formen können, ohne uns zu definieren.',
+    title: 'Die Perle',
+    description: 'Das große Finale: Du entdeckst, dass Schmerz – wie Sand in einer Auster – zu etwas Wertvollem werden kann. Aber dafür musst du allen Ozean-Freunden helfen, ihre Trauer anzunehmen.',
     islandId: 'ocean' as IslandId,
-    difficulty: 'medium',
-    estimatedTime: '15-20 min',
-    themes: ['Transformation', 'Wachstum', 'Sinn finden'],
+    difficulty: 'hard',
+    estimatedTime: '22-28 min',
+    themes: ['Transformation', 'Akzeptanz', 'Hoffnung', 'Gemeinschaft'],
     scenes: [
       {
         id: 'o6-s1',
-        content: 'Eine Auster liegt am Meeresboden. "Darf ich dir etwas zeigen?" fragt Tiefgang. Er öffnet sie vorsichtig – darin liegt eine wunderschöne Perle. "Weißt du, wie sie entsteht?"',
+        content: 'Tiefgang ruft alle zusammen. Am tiefsten Punkt des Ozeans liegt eine riesige Auster – uralt, verwittert, voller Narben. "In ihr liegt die Perle des Ozeans", sagt Tiefgang feierlich. "Aber sie öffnet sich nur, wenn alle bereit sind, ihre Trauer wirklich anzunehmen. Nicht vergessen. Nicht verdrängen. Annehmen." Marina, Coralie und Wellentanz schauen einander unsicher an.',
         choices: [
           {
             id: 'o6-s1-c1',
-            text: 'Schüttle den Kopf und höre zu',
+            text: '"Was passiert, wenn die Auster sich öffnet?"',
             nextSceneId: 'o6-s2',
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'o6-s1-c2',
-            text: 'Sage, dass Perlen aus Irritation entstehen',
+            text: '"Ich helfe euch. Wir machen das zusammen."',
             nextSceneId: 'o6-s2',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 3 }
           },
           {
             id: 'o6-s1-c3',
-            text: 'Berühre die Perle sanft',
+            text: '"Annehmen... das klingt einfacher, als es ist."',
             nextSceneId: 'o6-s2',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'o6-s2',
-        content: 'Tiefgang erklärt: "Ein Sandkorn dringt ein – es tut weh, stört. Die Auster kann es nicht rauswerfen. Also umhüllt sie es, Schicht für Schicht, bis etwas Schönes entsteht."',
+        content: 'Marina schwimmt als Erste vor. "Ich fange an", sagt sie mit zitternder Stimme. "Mein Bruder ist tot. Und ich... ich habe ihm nie gesagt, wie wichtig er mir war. Ich habe immer gedacht, wir haben noch Zeit." Tränen mischen sich mit dem Salzwasser. "Ich habe so lange sein Lied gesungen, damit ich ihn nicht loslassen muss. Aber... vielleicht muss ich nicht loslassen. Vielleicht muss ich nur akzeptieren, dass er in meinem Herzen lebt, nicht im Meer."',
         choices: [
           {
             id: 'o6-s2-c1',
-            text: 'Verstehe die Metapher',
+            text: '"Du hast es ihm gezeigt, Marina. Jeden Tag, mit jedem Lied."',
             nextSceneId: 'o6-s3',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o6-s2-c2',
-            text: 'Frage, ob Schmerz also gut ist',
+            text: 'Nimm sie in den Arm und lass sie weinen',
             nextSceneId: 'o6-s3',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'o6-s2-c3',
-            text: 'Denke an deinen eigenen Schmerz',
+            text: '"Loslassen heißt nicht vergessen. Es heißt, weitertragen statt festhalten."',
             nextSceneId: 'o6-s3',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'o6-s3',
-        content: '"Der Schmerz ist nicht gut", sagt Tiefgang sanft. "Aber manchmal können wir ihn in etwas verwandeln. Nicht weil wir müssen, sondern weil wir können."',
+        content: 'Die Auster öffnet sich einen Spalt. Coralie ist als Nächste dran. Sie zittert am ganzen Körper. "Ich... ich habe mich versteckt, weil ich Angst hatte, noch jemanden zu verlieren. Wenn ich niemanden an mich ranlasse, kann mich nichts mehr verletzen." Pause. "Aber Perla... Perla hätte gesagt, dass ein Leben im Schneckenhaus kein Leben ist." Coralie kriecht ganz aus ihrem Haus. Zum ersten Mal. Komplett. "Das hier ist für dich, Perla."',
         choices: [
           {
             id: 'o6-s3-c1',
-            text: 'Frage, wie man das macht',
-            nextSceneId: 'o6-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
-          },
-          {
-            id: 'o6-s3-c2',
-            text: 'Sage, dass dein Schmerz zu groß ist',
+            text: '"Coralie, du bist der mutigste Krebs, den ich je getroffen habe."',
             nextSceneId: 'o6-s4',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
           },
           {
-            id: 'o6-s3-c3',
-            text: 'Überlege, was deine Perle sein könnte',
+            id: 'o6-s3-c2',
+            text: 'Stelle dich schützend neben sie – sie soll wissen, dass sie nicht allein ist',
             nextSceneId: 'o6-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'o6-s3-c3',
+            text: '"Du lässt nicht Perla los. Du lässt die Angst los. Das ist ein Unterschied."',
+            nextSceneId: 'o6-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'o6-s4',
-        content: 'Marina schwimmt näher. "Meine Perle ist meine Musik. Der Verlust hat mir beigebracht, tiefer zu singen, ehrlicher. Meine Trauer ist jetzt Teil meiner Melodien."',
+        content: 'Die Auster öffnet sich weiter. Wellentanz kommt heran, ungewöhnlich ruhig. "Alle denken, ich fühle nichts, weil ich immer in Bewegung bin", sagt sie. "Aber ich trage die Trauer von allen. Jede Träne, die ins Meer fällt, wird Teil von mir." Sie wird ganz still – zum ersten Mal. "Manchmal wünsche ich mir, ich könnte aufhören zu fühlen. Aber dann... wäre ich kein Ozean mehr. Ich wäre nur Wasser."',
         choices: [
           {
             id: 'o6-s4-c1',
-            text: 'Bewundere ihre Transformation',
+            text: '"Dein Fühlen macht dich lebendig, Wellentanz. Das ist deine Stärke."',
+            nextSceneId: 'o6-s5',
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'o6-s4-c2',
+            text: '"Du musst nicht alles allein tragen. Wir können dir helfen."',
             nextSceneId: 'o6-s5',
             points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
           },
           {
-            id: 'o6-s4-c2',
-            text: 'Frage, ob der Schmerz dann weg ist',
+            id: 'o6-s4-c3',
+            text: '"Du bist so viel mehr als nur Wasser. Du bist der Tanz. Die Bewegung. Das Leben."',
             nextSceneId: 'o6-s5',
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
-          },
-          {
-            id: 'o6-s4-c3',
-            text: 'Teile eine Idee für deine eigene Transformation',
-            nextSceneId: 'o6-s5',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'o6-s5',
-        content: 'Coralie kommt aus ihrem Schneckenhaus. "Meine Perle ist, dass ich jetzt verstehe, wann ich Schutz brauche und wann ich mutig sein kann. Der Schmerz hat mich nicht zerbrochen – er hat mich gelehrt."',
+        content: 'Tiefgang schaut dich an. "Jetzt du", sagt er. "Was trägst du mit dir? Was hast du verloren?" Alle vier schauen dich an – nicht fordernd, nicht ungeduldig. Einfach da. Bereit zuzuhören. Der Moment ist gekommen, in dem du nicht nur anderen hilfst, sondern dir selbst erlaubst, verletzlich zu sein.',
         choices: [
           {
             id: 'o6-s5-c1',
-            text: 'Erkenne, dass Wachstum aus Schmerz kommen kann',
+            text: 'Erzähle von deinem Verlust – zum ersten Mal ohne Angst',
+            nextSceneId: 'o6-s6',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'o6-s5-c2',
+            text: '"Ich habe gelernt, dass Trauer zeigt, wie tief ich lieben kann."',
             nextSceneId: 'o6-s6',
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           },
           {
-            id: 'o6-s5-c2',
-            text: 'Frage, wie lange die Transformation dauert',
-            nextSceneId: 'o6-s6',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
-          },
-          {
             id: 'o6-s5-c3',
-            text: 'Danke ihnen für ihre Geschichten',
+            text: 'Weine einfach – manchmal brauchen Gefühle keine Worte',
             nextSceneId: 'o6-s6',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'o6-s6',
-        content: 'Tiefgang gibt dir die Perle. "Das ist für dich. Eine Erinnerung, dass dein Schmerz dich nicht definiert, aber er kann dich formen, wenn du bereit bist. Du entscheidest, wann."',
+        content: 'Die Auster öffnet sich ganz. Darin liegt eine Perle – nicht perfekt rund, nicht makellos. Sie hat Unebenheiten und Rillen. Aber sie leuchtet wärmer als alles, was du je gesehen hast. Tiefgang hebt sie vorsichtig heraus. "Wisst ihr, wie eine Perle entsteht? Ein Sandkorn dringt in die Auster ein. Es tut weh. Es stört. Aber die Auster kämpft nicht dagegen. Sie umhüllt es, Schicht für Schicht, mit allem, was sie hat. Und aus dem Schmerz wird... das hier."',
         choices: [
           {
             id: 'o6-s6-c1',
-            text: 'Nimm die Perle an und verspreche, zu wachsen',
-            nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 3 }
+            text: '"Unser Schmerz definiert uns nicht – aber er kann uns formen."',
+            nextSceneId: 'o6-s7',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           },
           {
             id: 'o6-s6-c2',
-            text: 'Halte die Perle fest und fühle ihre Bedeutung',
-            nextSceneId: null,
+            text: '"Die Perle ist nicht perfekt. Und das macht sie erst richtig schön."',
+            nextSceneId: 'o6-s7',
             points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'o6-s6-c3',
-            text: 'Beginne, deine eigene Perle zu erschaffen',
+            text: 'Berühre die Perle und spüre ihre Wärme – die Wärme von verarbeiteter Trauer',
+            nextSceneId: 'o6-s7',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'o6-s7',
+        content: 'Die Perle beginnt zu leuchten und teilt sich in fünf kleine Perlen – eine für jeden von euch. Marina hält ihre an die Brust und summt. Coralie steckt ihre neben Perlas glitzernden Stein. Wellentanz lässt ihre zwischen ihren Wellen tanzen. Tiefgang schluckt seine mit einem Lächeln. "Und deine?" fragt er. Die letzte Perle schwebt vor dir – warm, leuchtend, imperfekt und wunderschön. Wie alles, was du auf dieser Insel gelernt hast.',
+        choices: [
+          {
+            id: 'o6-s7-c1',
+            text: 'Halte sie ans Herz. "Ich werde traurig sein, und das ist okay. Weil ich auch lieben kann."',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 3 }
+          },
+          {
+            id: 'o6-s7-c2',
+            text: '"Danke, Ozean. Danke, Marina, Tiefgang, Coralie, Wellentanz. Ihr habt mir gezeigt, dass Trauer kein Ende ist – sondern ein Anfang."',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'o6-s7-c3',
+            text: 'Stecke die Perle ein und schwimme nach oben – zurück ins Licht, mit allem, was du gelernt hast',
             nextSceneId: null,
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 3 }
           }

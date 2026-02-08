@@ -21,28 +21,28 @@ export const forestNPCs: ForestNPC[] = [
     name: 'Timber',
     emoji: '🌲',
     description: 'Ein uralter Baumgeist, der im Herzen des Waldes wurzelt',
-    backstory: 'Timber hat Hunderte von Jahren gesehen und kennt alle Geheimnisse der Angst und des Mutes. Seine Wurzeln reichen tief in die Erde, wo die ältesten Ängste schlafen.'
+    backstory: 'Timber steht seit tausend Jahren an der Schwelle des dunklen Waldes. Er hat unzählige Wanderer kommen und gehen sehen – manche voller Mut, manche voller Angst. Er weiß: Nur wer die Dunkelheit betritt, kann das Licht wirklich schätzen.'
   },
   {
     id: 'faye',
     name: 'Faye',
     emoji: '🧑',
-    description: 'Ein mutiges Mädchen aus Syrien, das neu in Luxemburg ist',
-    backstory: 'Faye musste ihre Heimat verlassen und in Luxemburg neu anfangen. Sie versteht, wie es sich anfühlt, fremd zu sein und Angst vor dem Unbekannten zu haben.'
+    description: 'Ein mutiges Mädchen aus Syrien, das zwischen zwei Welten lebt',
+    backstory: 'Faye floh mit ihrer Familie aus Damaskus nach Luxemburg. Sie spricht Arabisch, lernt Luxemburgisch und träumt auf Französisch. Zwischen zwei Kulturen zu leben hat sie gelehrt, dass Angst vor dem Fremden nur Angst vor einem Teil von sich selbst ist.'
   },
   {
     id: 'schattenfluesterer',
     name: 'Schattenflüsterer',
     emoji: '🦇',
-    description: 'Eine freundliche Fledermaus, die in den Schatten zu Hause ist',
-    backstory: 'Schattenflüsterer wurde einst gefürchtet, bis jemand erkannte, dass Schatten nicht böse sind – sie sind einfach Teile von uns, die Aufmerksamkeit brauchen.'
+    description: 'Eine geheimnisvolle Fledermaus, die in den Schatten zu Hause ist',
+    backstory: 'Schattenflüsterer lebt dort, wo sich Licht und Dunkelheit treffen. Er kennt jede Angst, jeden Zweifel, jedes verborgene Gefühl – denn all das lebt in den Schatten. Seine Weisheit: Was du fürchtest, ist oft nur ein verzerrtes Bild von dir selbst.'
   },
   {
     id: 'lumi',
     name: 'Lumi',
     emoji: '🪲',
     description: 'Ein kleines, aber unglaublich mutiges Glühwürmchen',
-    backstory: 'Lumi ist winzig, aber ihr Licht hat schon viele durch die dunkelsten Nächte geführt. Sie beweist, dass Größe nichts mit Mut zu tun hat.'
+    backstory: 'Lumi ist das kleinste Wesen im ganzen Wald, aber sie trägt ein Licht in sich, das selbst die tiefste Dunkelheit durchbrechen kann. Alle sagen ihr, sie sei zu klein für große Aufgaben – aber Lumi weiß, dass Mut keine Frage der Größe ist.'
   }
 ];
 
@@ -51,78 +51,78 @@ export const forestScenarios: Scenario[] = [
   {
     id: 'forest-scenario-1',
     islandId: 'forest' as IslandId,
-    title: 'Timbers Prüfung',
-    description: 'Der alte Baumgeist zeigt dir den dunkelsten Teil des Waldes',
+    title: 'Der dunkle Eingang',
+    description: 'Der Wald ist dunkel und unheimlich. Timber spürt deine Angst.',
     npcId: 'timber',
     completed: false,
     scenes: [
       {
         id: 'f1-s1',
-        text: 'Timber rauscht mit seinen Ästen. "Der dunkle Wald ruft dich", flüstert er. "Dort, wo das Licht kaum hinreicht, warten deine tiefsten Ängste. Bist du bereit?"',
+        text: 'Du stehst am Rand eines dunklen Waldes. Die Bäume ragen wie schwarze Finger in den grauen Himmel. Kein Vogel singt. Kein Wind weht. Nur Stille – und das Pochen deines eigenen Herzens. Dann bewegt sich etwas. Ein uralter Baum öffnet seine Augen. "Ich bin Timber", knarrt er. "Und ich rieche deine Angst."',
         choices: [
           {
             id: 'f1-s1-c1',
-            text: 'Ja, ich bin bereit. Zeig mir den Weg.',
+            text: 'Ja, ich habe Angst. Aber ich bin trotzdem hier.',
             points: 3,
             nextSceneId: 'f1-s2'
           },
           {
             id: 'f1-s1-c2',
-            text: 'Ich habe Angst, aber ich versuche es.',
-            points: 2,
+            text: 'Ich habe keine Angst! (Deine Stimme zittert.)',
+            points: 1,
             nextSceneId: 'f1-s2'
           },
           {
             id: 'f1-s1-c3',
-            text: 'Nein, das ist mir zu gruselig.',
-            points: 1,
+            text: 'Was ist dieser Ort?',
+            points: 2,
             nextSceneId: 'f1-s2'
           }
         ]
       },
       {
         id: 'f1-s2',
-        text: 'Der Pfad wird dunkler. Du hörst seltsame Geräusche zwischen den Bäumen. Dein Herz klopft schneller, deine Handflächen werden feucht.',
+        text: 'Timber lacht leise – ein Geräusch wie raschelndes Laub. "Dieser Wald ist der Wald der Angst. Jeder, der hierher kommt, bringt seine eigene Dunkelheit mit. Auf dem Vulkan hast du die Wut kennengelernt. Im Ozean die Trauer. Hier wartet etwas anderes: die Angst." Seine Augen leuchten sanft. "Bereit für den ersten Schritt?"',
         choices: [
           {
             id: 'f1-s2-c1',
-            text: 'Ich atme tief durch und gehe weiter.',
+            text: 'Ich gehe hinein. Ein Schritt nach dem anderen.',
             points: 3,
             nextSceneId: 'f1-s3'
           },
           {
             id: 'f1-s2-c2',
-            text: 'Ich rufe nach Timber.',
+            text: 'Kannst du mir sagen, was mich erwartet?',
             points: 2,
             nextSceneId: 'f1-s3'
           },
           {
             id: 'f1-s2-c3',
-            text: 'Ich bleibe stehen und lausche.',
-            points: 2,
+            text: 'Ich bleibe lieber hier am Rand.',
+            points: 1,
             nextSceneId: 'f1-s3'
           }
         ]
       },
       {
         id: 'f1-s3',
-        text: 'Plötzlich siehst du eine dunkle Gestalt. Sie kommt näher. "Das bin ich", erkennst du überrascht – es ist dein eigener Schatten, vergrößert durch die Dunkelheit.',
+        text: 'Du betrittst den Wald. Sofort verschluckt die Dunkelheit das Licht hinter dir. Dein Herz hämmert. Deine Hände werden feucht. Ein Ast knackt – du zuckst zusammen. Dein Körper schreit: Lauf weg! Aber Timber flüstert aus dem Boden: "Das ist nur dein Körper, der dich beschützen will. Angst ist ein Alarm – kein Befehl."',
         choices: [
           {
             id: 'f1-s3-c1',
-            text: 'Ich schaue meinem Schatten direkt in die Augen.',
+            text: 'Ich atme tief ein und höre auf meinen Verstand, nicht auf den Alarm.',
             points: 3,
             nextSceneId: 'f1-s4'
           },
           {
             id: 'f1-s3-c2',
-            text: 'Ich erkenne, dass mein Schatten zu mir gehört.',
-            points: 3,
+            text: 'Mein Herz rast, aber ich bleibe stehen.',
+            points: 2,
             nextSceneId: 'f1-s4'
           },
           {
             id: 'f1-s3-c3',
-            text: 'Ich drehe mich weg.',
+            text: 'Ich gehe einen Schritt zurück, bevor ich weitergehe.',
             points: 1,
             nextSceneId: 'f1-s4'
           }
@@ -130,23 +130,23 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f1-s4',
-        text: 'Timber erscheint neben dir. "Siehst du? Die Angst war nur ein Schatten. Aber jetzt kommt der wahre Test – geh tiefer hinein, wo niemand bei dir ist."',
+        text: 'Zwischen den Bäumen tauchen seltsame Formen auf – Gesichter in der Rinde, Hände aus Moos, flüsternde Stimmen. "Dreh um... du schaffst das nicht... du bist zu schwach..." Timber sagt: "Die Stimmen der Angst lügen. Sie klingen real, aber sie sind nur Echos alter Zweifel."',
         choices: [
           {
             id: 'f1-s4-c1',
-            text: 'Ich gehe allein weiter.',
+            text: 'Ich sage laut: "Ihr seid nur Echos. Ihr seid nicht die Wahrheit."',
             points: 3,
             nextSceneId: 'f1-s5'
           },
           {
             id: 'f1-s4-c2',
-            text: 'Ich bitte Timber, in meiner Nähe zu bleiben.',
+            text: 'Ich ignoriere die Stimmen und gehe weiter.',
             points: 2,
             nextSceneId: 'f1-s5'
           },
           {
             id: 'f1-s4-c3',
-            text: 'Ich sage, dass ich genug gesehen habe.',
+            text: 'Ich halte mir die Ohren zu.',
             points: 1,
             nextSceneId: 'f1-s5'
           }
@@ -154,47 +154,47 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f1-s5',
-        text: 'Im tiefsten Teil des Waldes findest du eine Lichtung. Dort steht ein Spiegel. In ihm siehst du dich selbst – aber auch alle deine Ängste als kleine Schatten um dich herum.',
+        text: 'Der Pfad führt zu einer Stelle, wo die Dunkelheit am dichtesten ist. Du kannst deine eigene Hand nicht sehen. Timber sagt: "Hier ist deine erste Prüfung. Geh zehn Schritte in die absolute Dunkelheit. Allein. Ohne Licht. Vertrau darauf, dass der Boden dich trägt."',
         choices: [
           {
             id: 'f1-s5-c1',
-            text: 'Ich benenne jede Angst beim Namen.',
+            text: 'Ich zähle laut und gehe: Eins... zwei... drei...',
             points: 3,
             nextSceneId: 'f1-s6'
           },
           {
             id: 'f1-s5-c2',
-            text: 'Ich umarme mich selbst im Spiegel.',
-            points: 3,
+            text: 'Ich taste mich vorsichtig vorwärts, Schritt für Schritt.',
+            points: 2,
             nextSceneId: 'f1-s6'
           },
           {
             id: 'f1-s5-c3',
-            text: 'Ich schaue nur kurz hin.',
-            points: 1,
+            text: 'Zehn Schritte... das ist doch nicht so viel. Ich versuche es.',
+            points: 2,
             nextSceneId: 'f1-s6'
           }
         ]
       },
       {
         id: 'f1-s6',
-        text: 'Als du die Ängste anerkennst, werden sie durchsichtig. Timber lächelt: "Du hast verstanden – Angst verschwindet nicht, wenn man sie ignoriert. Aber wenn man sie ansieht, verliert sie ihre Macht." Du fühlst dich stärker.',
+        text: 'Beim zehnten Schritt bricht Mondlicht durch die Baumkronen. Du stehst auf einer kleinen Lichtung. Die Angst ist noch da – aber sie hat dich nicht aufgehalten. Timber erscheint neben dir und neigt seine Krone. "Du hast den ersten Schritt getan. Nicht ohne Angst – sondern mit ihr. Das ist der Unterschied zwischen Feigheit und Mut. Willkommen im Wald der Angst."',
         choices: [
           {
             id: 'f1-s6-c1',
-            text: 'Danke, Timber. Ich habe viel gelernt.',
+            text: 'Ich habe gelernt: Angst ist kein Stopp-Schild, sondern ein Wegbegleiter.',
             points: 3,
             nextSceneId: null
           },
           {
             id: 'f1-s6-c2',
-            text: 'Ich werde wiederkommen, wenn ich Angst habe.',
+            text: 'Danke, Timber. Ich bin bereit für das, was kommt.',
             points: 2,
             nextSceneId: null
           },
           {
             id: 'f1-s6-c3',
-            text: 'Das war schwer, aber wichtig.',
+            text: 'Das war das Schwerste, was ich je gemacht habe – aber ich habe es geschafft.',
             points: 2,
             nextSceneId: null
           }
@@ -205,30 +205,30 @@ export const forestScenarios: Scenario[] = [
   {
     id: 'forest-scenario-2',
     islandId: 'forest' as IslandId,
-    title: 'Fayes neuer Anfang',
-    description: 'Ein Mädchen aus einem fernen Land teilt ihre Geschichte',
+    title: 'Fayes zwei Welten',
+    description: 'Faye lebt zwischen Syrien und Luxemburg – und du entdeckst deine eigene Angst vor dem Anderssein',
     npcId: 'faye',
     completed: false,
     scenes: [
       {
         id: 'f2-s1',
-        text: 'Faye sitzt auf einem Baumstumpf, ihre Augen blicken in die Ferne. "In Damaskus hatte ich Freunde, eine Schule, ein Zuhause", sagt sie leise. "Hier in Luxemburg ist alles fremd. Die Sprache, die Gesichter, sogar der Himmel sieht anders aus."',
+        text: 'Auf der Lichtung sitzt ein Mädchen zwischen zwei Wegen. Der eine ist mit Jasmin bewachsen und riecht nach Damaskus. Der andere ist mit Moos bedeckt und führt in einen Luxemburger Wald. "Ich bin Faye", sagt sie leise. "Und jeden Tag muss ich wählen, welchen Weg ich gehe. Aber egal welchen ich wähle – ich habe Angst, den anderen zu verlieren."',
         choices: [
           {
             id: 'f2-s1-c1',
-            text: 'Erzähl mir mehr von deinem alten Zuhause.',
+            text: 'Du musst dich nicht entscheiden. Erzähl mir von beiden Wegen.',
             points: 3,
             nextSceneId: 'f2-s2'
           },
           {
             id: 'f2-s1-c2',
-            text: 'Es wird besser werden, versprochen.',
-            points: 2,
+            text: 'Wovor hast du mehr Angst – zu vergessen oder nicht dazuzugehören?',
+            points: 3,
             nextSceneId: 'f2-s2'
           },
           {
             id: 'f2-s1-c3',
-            text: 'Ich höre dir zu.',
+            text: 'Das klingt sehr schwer.',
             points: 2,
             nextSceneId: 'f2-s2'
           }
@@ -236,71 +236,71 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f2-s2',
-        text: '"Am ersten Tag in der Luxemburger Schule stand ich vor der Klasse. Alle starrten mich an. Ich verstand kein Wort Luxemburgisch. Mein Herz raste so schnell, dass ich dachte, es würde explodieren."',
+        text: 'Fayes Augen werden feucht. "In der Schule sage ich, dass ich Luxemburgerin bin. Zu Hause bin ich Syrerin. Beim Mittagessen esse ich Kniddelen, abends kocht Mama Kibbeh. Meine Freundinnen fragen: \'Was bist du eigentlich?\' Und ich denke: Wenn ich die Wahrheit sage – dass ich beides bin – gehöre ich nirgendwo dazu."',
         choices: [
           {
             id: 'f2-s2-c1',
-            text: 'Das klingt furchtbar einsam.',
+            text: 'Beides zu sein ist keine Schwäche – es ist eine Superkraft.',
             points: 3,
             nextSceneId: 'f2-s3'
           },
           {
             id: 'f2-s2-c2',
-            text: 'Hast du jemanden gefunden, der dir half?',
-            points: 2,
+            text: 'Ich kenne das Gefühl, nicht ganz hineinzupassen.',
+            points: 3,
             nextSceneId: 'f2-s3'
           },
           {
             id: 'f2-s2-c3',
-            text: 'Kannst du jetzt Luxemburgisch?',
-            points: 1,
+            text: 'Was sagen deine Freundinnen, wenn du ehrlich bist?',
+            points: 2,
             nextSceneId: 'f2-s3'
           }
         ]
       },
       {
         id: 'f2-s3',
-        text: 'Faye nickt. "Ein Mädchen namens Marie lächelte mich an. Sie konnte kein Arabisch, ich kein Luxemburgisch, aber sie zeigte mir, wo die Bibliothek war. Dort malten wir zusammen. Bilder brauchen keine Worte."',
+        text: 'Faye steht auf. "Letzte Woche sollte ich in der Schule über meine Kultur erzählen. Mein Herz raste. Was, wenn sie lachen? Was, wenn sie Syrien nur mit Krieg verbinden? Ich habe fast abgesagt." Sie schaut dich an. "Hast du auch manchmal Angst, etwas von dir zu zeigen, das anders ist?"',
         choices: [
           {
             id: 'f2-s3-c1',
-            text: 'Marie klingt nach einer echten Freundin.',
+            text: 'Ja. Ich habe Angst, dass andere mich nicht verstehen, wenn ich zeige, wer ich wirklich bin.',
             points: 3,
             nextSceneId: 'f2-s4'
           },
           {
             id: 'f2-s3-c2',
-            text: 'Was habt ihr gemalt?',
-            points: 2,
+            text: 'Manchmal verstecke ich Teile von mir, um dazuzugehören.',
+            points: 3,
             nextSceneId: 'f2-s4'
           },
           {
             id: 'f2-s3-c3',
-            text: 'Hattest du noch immer Angst?',
-            points: 2,
+            text: 'Ich bin nicht sicher. Vielleicht.',
+            points: 1,
             nextSceneId: 'f2-s4'
           }
         ]
       },
       {
         id: 'f2-s4',
-        text: '"Ja, ich hatte noch Angst. Angst, nie dazuzugehören. Angst, meine alte Heimat zu vergessen. Angst, dass ich zwischen zwei Welten stecken bleibe." Faye atmet tief. "Aber dann verstand ich etwas wichtiges."',
+        text: '"Ich habe den Vortrag dann doch gehalten", sagt Faye und ihre Stimme wird fester. "Ich habe von Damaskus erzählt. Vom Jasmin, der über die Mauern wächst. Von meiner Oma, die die besten Geschichten kannte. Und weißt du was? Sie haben nicht gelacht. Marie hat sogar geweint. Und Tim hat gesagt: \'Das ist viel cooler als mein langweiliges Esch.\'"',
         choices: [
           {
             id: 'f2-s4-c1',
-            text: 'Was hast du verstanden?',
+            text: 'Siehst du? Deine Geschichte hat andere berührt. Dein Anderssein ist ein Geschenk.',
             points: 3,
             nextSceneId: 'f2-s5'
           },
           {
             id: 'f2-s4-c2',
-            text: 'Du musst nichts vergessen.',
-            points: 2,
+            text: 'Die Angst hat dich fast davon abgehalten, etwas Schönes zu teilen.',
+            points: 3,
             nextSceneId: 'f2-s5'
           },
           {
             id: 'f2-s4-c3',
-            text: 'Ich warte gespannt.',
+            text: 'Das war sehr mutig von dir.',
             points: 2,
             nextSceneId: 'f2-s5'
           }
@@ -308,23 +308,23 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f2-s5',
-        text: '"Ich muss nicht zwischen den Welten wählen. Ich kann beide in mir tragen. Damaskus ist in meinem Herzen, und Luxemburg wird auch dort ein Zuhause finden. Ich bin nicht nur syrisch oder luxemburgisch – ich bin beides. Und das ist meine Stärke."',
+        text: 'Faye sieht die zwei Wege an. Plötzlich wachsen sie zusammen – Jasmin und Moos verschmelzen zu einem einzigen Pfad. "Ich muss nicht wählen", flüstert sie staunend. "Ich bin kein halbes Mädchen aus zwei Hälften. Ich bin ein ganzes Mädchen aus zwei Welten." Sie dreht sich zu dir. "Und du? Welchen Teil von dir versteckst du aus Angst?"',
         choices: [
           {
             id: 'f2-s5-c1',
-            text: 'Das ist wunderschön und mutig.',
+            text: 'Ich verstecke Dinge, die mich anders machen. Aber vielleicht sollte ich sie zeigen.',
             points: 3,
             nextSceneId: 'f2-s6'
           },
           {
             id: 'f2-s5-c2',
-            text: 'Du bist ein Brückenbauer zwischen Welten.',
+            text: 'Du hast recht – Angst vor dem Anderssein nimmt uns einen Teil von uns selbst.',
             points: 3,
             nextSceneId: 'f2-s6'
           },
           {
             id: 'f2-s5-c3',
-            text: 'Danke, dass du das mit mir teilst.',
+            text: 'Ich muss darüber nachdenken.',
             points: 2,
             nextSceneId: 'f2-s6'
           }
@@ -332,23 +332,23 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f2-s6',
-        text: 'Faye lächelt zum ersten Mal. "Heute habe ich in der Schule eine Geschichte auf Luxemburgisch erzählt – über ein syrisches Mädchen, das lernte, mutig zu sein. Alle hörten zu. Ich gehöre hierher, weil ich hier bin. Und ich bin mutig genug, neu anzufangen."',
+        text: 'Faye nimmt deine Hand. "Weißt du, was mir am meisten geholfen hat? Zu verstehen, dass die Angst vor dem Anderssein eigentlich Angst vor Ablehnung ist. Aber die Menschen, die dich für das ablehnen, was du wirklich bist, sind nicht die Menschen, bei denen du sein sollst." Der Jasmin-Moos-Pfad leuchtet golden. "Geh deinen eigenen Weg. Ganz."',
         choices: [
           {
             id: 'f2-s6-c1',
-            text: 'Du inspirierst mich, Faye.',
+            text: 'Danke, Faye. Ich werde aufhören, Teile von mir zu verstecken.',
             points: 3,
             nextSceneId: null
           },
           {
             id: 'f2-s6-c2',
-            text: 'Mut bedeutet nicht, keine Angst zu haben.',
+            text: 'Du bist eine Brückenbauerin – zwischen Welten und zwischen Herzen.',
             points: 3,
             nextSceneId: null
           },
           {
             id: 'f2-s6-c3',
-            text: 'Danke für deine Geschichte.',
+            text: 'Deine Geschichte hat mir Mut gemacht, mich selbst zu zeigen.',
             points: 2,
             nextSceneId: null
           }
@@ -359,54 +359,54 @@ export const forestScenarios: Scenario[] = [
   {
     id: 'forest-scenario-3',
     islandId: 'forest' as IslandId,
-    title: 'Freundschaft mit Schatten',
-    description: 'Schattenflüsterer zeigt dir, dass Dunkelheit nicht böse ist',
+    title: 'Der Schattenflüsterer',
+    description: 'Eine geheimnisvolle Fledermaus lehrt dich, dass Ängste nur Schatten sind',
     npcId: 'schattenfluesterer',
     completed: false,
     scenes: [
       {
         id: 'f3-s1',
-        text: 'Schattenflüsterer hängt kopfüber von einem Ast. "Die meisten fürchten mich", piepst er. "Sie sehen meine Flügel und denken an Vampire, an Dunkelheit, an Monster. Aber ich bin nur eine kleine Fledermaus, die die Nacht liebt."',
+        text: 'Tiefer im Wald wird es kälter. Du bemerkst, dass dein Schatten sich seltsam verhält – er bewegt sich anders als du. Plötzlich löst er sich vom Boden und steht dir gegenüber. Bevor du schreien kannst, flattert eine Fledermaus herab. "Keine Panik", piepst sie. "Ich bin der Schattenflüsterer. Und das dort – das ist dein Schatten-Ich. Der Teil von dir, den du nicht sehen willst."',
         choices: [
           {
             id: 'f3-s1-c1',
-            text: 'Ich finde dich nicht gruselig.',
-            points: 3,
+            text: 'Mein Schatten-Ich? Was bedeutet das?',
+            points: 2,
             nextSceneId: 'f3-s2'
           },
           {
             id: 'f3-s1-c2',
-            text: 'Warum liebst du die Nacht?',
-            points: 2,
+            text: 'Ich habe Angst davor. Es sieht... dunkel aus.',
+            points: 3,
             nextSceneId: 'f3-s2'
           },
           {
             id: 'f3-s1-c3',
-            text: 'Ehrlich gesagt, habe ich ein bisschen Angst.',
-            points: 2,
+            text: 'Bring es weg!',
+            points: 1,
             nextSceneId: 'f3-s2'
           }
         ]
       },
       {
         id: 'f3-s2',
-        text: '"Komm mit mir", sagt er und flattert in die Dämmerung. "Ich zeige dir, dass Schatten Freunde sein können. Jeder Mensch hat Schatten in sich – Teile, die er versteckt. Aber was versteckt wird, wird nur größer und gruseliger."',
+        text: 'Schattenflüsterer fliegt um deinen Schatten. "Jeder Mensch hat ein Schatten-Ich. Es besteht aus allem, was du fürchtest, versteckst, verleugnest. Deine Unsicherheit. Deine Eifersucht. Deine heimliche Wut. Die Dinge, für die du dich schämst." Dein Schatten wird größer. "Je mehr du ihn ignorierst, desto mächtiger wird er."',
         choices: [
           {
             id: 'f3-s2-c1',
-            text: 'Ich folge dir in die Dämmerung.',
+            text: 'Dann will ich ihn kennenlernen, bevor er noch größer wird.',
             points: 3,
             nextSceneId: 'f3-s3'
           },
           {
             id: 'f3-s2-c2',
-            text: 'Welche Schatten habe ich?',
-            points: 2,
+            text: 'Warum habe ich Angst vor einem Teil von mir selbst?',
+            points: 3,
             nextSceneId: 'f3-s3'
           },
           {
             id: 'f3-s2-c3',
-            text: 'Ich bleibe lieber im Licht.',
+            text: 'Vielleicht sollte ich einfach nicht hinsehen.',
             points: 1,
             nextSceneId: 'f3-s3'
           }
@@ -414,47 +414,47 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f3-s3',
-        text: 'Er führt dich zu einer Höhle. An der Wand tanzen Schatten – deine Wut, deine Traurigkeit, deine Eifersucht. "Das sind keine Monster", flüstert Schattenflüsterer. "Das sind Gefühle, die gesehen werden wollen."',
+        text: 'Schattenflüsterer führt dich in eine Höhle aus Wurzeln. An den Wänden flackern Bilder – Szenen aus deinem Leben. Du siehst dich selbst, wie du jemanden angelogen hast, um dazuzugehören. Wie du neidisch auf jemanden warst. Wie du vor etwas weggelaufen bist. "Das sind keine Monster", sagt die Fledermaus sanft. "Das sind Momente, die du vergessen willst. Aber sie brauchen deine Aufmerksamkeit."',
         choices: [
           {
             id: 'f3-s3-c1',
-            text: 'Ich nähere mich meiner Wut.',
+            text: 'Ich sehe hin. Es tut weh, aber ich sehe hin.',
             points: 3,
             nextSceneId: 'f3-s4'
           },
           {
             id: 'f3-s3-c2',
-            text: 'Ich spreche mit meiner Traurigkeit.',
+            text: 'Ich spreche zu den Bildern: "Ich erkenne euch an."',
             points: 3,
             nextSceneId: 'f3-s4'
           },
           {
             id: 'f3-s3-c3',
-            text: 'Ich beobachte die Schatten aus der Distanz.',
-            points: 1,
+            text: 'Es ist schwer, diese Dinge anzusehen.',
+            points: 2,
             nextSceneId: 'f3-s4'
           }
         ]
       },
       {
         id: 'f3-s4',
-        text: 'Als du einen Schatten berührst, wird er warm und weich. "Siehst du?", sagt die Fledermaus. "Wenn du deine dunklen Gefühle anerkennst, verlieren sie ihre Macht über dich. Sie werden zu Verbündeten."',
+        text: 'Dein Schatten-Ich tritt vor dich. Es sieht aus wie du, aber seine Augen sind traurig. Es öffnet den Mund: "Warum hast du mich weggesperrt? Ich bin deine Angst, nicht genug zu sein. Ich bin dein Zweifel. Ich bin das Gefühl, dass alle anderen besser sind. Ich wollte dich nur beschützen – aber du hast mich zum Monster gemacht."',
         choices: [
           {
             id: 'f3-s4-c1',
-            text: 'Ich umarme meine Schatten.',
+            text: 'Es tut mir leid. Ich hätte dich nicht wegstoßen sollen.',
             points: 3,
             nextSceneId: 'f3-s5'
           },
           {
             id: 'f3-s4-c2',
-            text: 'Ich danke ihnen für ihre Botschaft.',
+            text: 'Du bist kein Monster. Du bist ein Teil von mir, den ich nicht verstanden habe.',
             points: 3,
             nextSceneId: 'f3-s5'
           },
           {
             id: 'f3-s4-c3',
-            text: 'Ich verstehe jetzt ein bisschen mehr.',
+            text: 'Was brauchst du von mir?',
             points: 2,
             nextSceneId: 'f3-s5'
           }
@@ -462,47 +462,71 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f3-s5',
-        text: 'Schattenflüsterer fliegt um dich herum. "Es gibt noch einen Schatten, den du ansehen musst – den größten von allen." Er führt dich zu einem dunklen Spiegel. Darin siehst du deine tiefste Angst.',
+        text: 'Das Schatten-Ich streckt dir die Hand entgegen. Schattenflüsterer flüstert: "Das ist der schwierigste Moment. Die meisten Menschen rennen jetzt weg. Aber wenn du dein Schatten-Ich an die Hand nimmst – dann vereinst du Licht und Dunkelheit in dir. Dann kann keine Angst der Welt dich mehr zerbrechen."',
         choices: [
           {
             id: 'f3-s5-c1',
-            text: 'Ich schaue direkt in den Spiegel.',
+            text: 'Ich nehme die Hand meines Schattens. Wir gehören zusammen.',
             points: 3,
             nextSceneId: 'f3-s6'
           },
           {
             id: 'f3-s5-c2',
-            text: 'Ich frage meine Angst: "Was willst du mir sagen?"',
+            text: 'Ich umarme mein Schatten-Ich. Du bist willkommen.',
             points: 3,
             nextSceneId: 'f3-s6'
           },
           {
             id: 'f3-s5-c3',
-            text: 'Ich drehe mich weg.',
-            points: 0,
+            text: 'Ich zögere... aber dann greife ich zu.',
+            points: 2,
             nextSceneId: 'f3-s6'
           }
         ]
       },
       {
         id: 'f3-s6',
-        text: 'Der Spiegel zeigt: Deine größte Angst ist, nicht genug zu sein. "Aber du bist genug", flüstert Schattenflüsterer. "Mit all deinen Schatten, mit all deinem Licht. Vollständig bist du nur mit beidem." Die Schatten verbeugen sich und verschmelzen sanft mit dir.',
+        text: 'Als du deinen Schatten berührst, durchströmt dich Wärme. Er verschmilzt mit dir – nicht weg, sondern hinein. Du fühlst dich... vollständiger. Stärker. Schattenflüsterer lächelt mit seinen kleinen Zähnen. "Siehst du? Du bist nicht trotz deiner Schatten wertvoll. Du bist wegen ihnen ganz. Wer seinen Schatten umarmt, den kann die Dunkelheit nicht mehr schrecken."',
         choices: [
           {
             id: 'f3-s6-c1',
-            text: 'Ich nehme mich ganz an – Licht und Schatten.',
+            text: 'Ich bin nicht perfekt – und genau das macht mich vollständig.',
             points: 3,
-            nextSceneId: null
+            nextSceneId: 'f3-s7'
           },
           {
             id: 'f3-s6-c2',
-            text: 'Danke, Schattenflüsterer. Du bist ein wahrer Freund.',
+            text: 'Meine Ängste sind keine Feinde mehr. Sie sind Lehrer.',
+            points: 3,
+            nextSceneId: 'f3-s7'
+          },
+          {
+            id: 'f3-s6-c3',
+            text: 'Danke, Schattenflüsterer. Das werde ich nie vergessen.',
+            points: 2,
+            nextSceneId: 'f3-s7'
+          }
+        ]
+      },
+      {
+        id: 'f3-s7',
+        text: 'Schattenflüsterer fliegt auf deine Schulter. "Eine letzte Sache", piepst er. "Die anderen im Wald brauchen dich. Timber, Faye, Lumi – sie kämpfen auch mit ihren Schatten. Was du heute gelernt hast, wirst du bald brauchen. Für sie. Und für den Wald selbst." Seine Worte klingen wie eine Warnung – und ein Versprechen.',
+        choices: [
+          {
+            id: 'f3-s7-c1',
+            text: 'Ich bin bereit, anderen zu helfen, ihre Schatten zu umarmen.',
             points: 3,
             nextSceneId: null
           },
           {
-            id: 'f3-s6-c3',
-            text: 'Ich werde meine Schatten nicht mehr verstecken.',
+            id: 'f3-s7-c2',
+            text: 'Was kommt auf den Wald zu? Was meinst du?',
+            points: 2,
+            nextSceneId: null
+          },
+          {
+            id: 'f3-s7-c3',
+            text: 'Ich werde da sein, wenn ich gebraucht werde.',
             points: 2,
             nextSceneId: null
           }
@@ -513,30 +537,30 @@ export const forestScenarios: Scenario[] = [
   {
     id: 'forest-scenario-4',
     islandId: 'forest' as IslandId,
-    title: 'Lumis kleines Licht',
-    description: 'Ein winziges Glühwürmchen beweist, dass Größe nichts mit Mut zu tun hat',
+    title: 'Lumis Mission',
+    description: 'Ein winziges Glühwürmchen muss Licht durch den dunkelsten Teil des Waldes tragen – gegen alle Stimmen, die sagen: unmöglich',
     npcId: 'lumi',
     completed: false,
     scenes: [
       {
         id: 'f4-s1',
-        text: 'Lumi schwebt vor dir, ihr Licht flackert nervös. "Ich bin so klein", sagt sie. "Alle Tiere im Wald sind größer als ich. Sogar eine Ameise könnte mich übersehen. Wie soll ich jemals mutig sein, wenn ich so winzig bin?"',
+        text: 'Ein winziges Leuchten nähert sich dir – es ist Lumi, das Glühwürmchen. Sie flackert aufgeregt. "Du musst mir helfen! Am Ende des Waldes liegt die Schattenschlucht. Dort ist ein junger Baum, der ohne Licht stirbt. Timber hat mich gebeten, ihm mein Licht zu bringen. Aber..." Sie flackert ängstlich. "Es ist der dunkelste Ort im ganzen Wald."',
         choices: [
           {
             id: 'f4-s1-c1',
-            text: 'Größe hat nichts mit Mut zu tun.',
+            text: 'Ich komme mit dir. Zusammen schaffen wir das.',
             points: 3,
             nextSceneId: 'f4-s2'
           },
           {
             id: 'f4-s1-c2',
-            text: 'Erzähl mir von deinen Ängsten.',
+            text: 'Warum hat Timber ausgerechnet dich gefragt?',
             points: 2,
             nextSceneId: 'f4-s2'
           },
           {
             id: 'f4-s1-c3',
-            text: 'Aber dein Licht ist wunderschön!',
+            text: 'Die Schattenschlucht? Das klingt gefährlich.',
             points: 2,
             nextSceneId: 'f4-s2'
           }
@@ -544,47 +568,47 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f4-s2',
-        text: '"Gestern Nacht", erzählt Lumi, "war ein kleiner Junge im Wald verloren. Er weinte und konnte den Weg nicht finden. Ich hörte ihn, aber ich dachte: Was kann ich schon tun? Ich bin nur ein kleines Glühwürmchen."',
+        text: 'Auf dem Weg trefft ihr eine Gruppe Waldtiere – Eichhörnchen, Käfer, ein Reh. Als sie hören, wohin ihr wollt, schütteln sie die Köpfe. "Unmöglich!", ruft das Eichhörnchen. "Kein Licht überlebt die Schattenschlucht!" Das Reh flüstert: "Andere haben es versucht. Alle sind gescheitert." Der Käfer lacht. "Du? Du bist doch viel zu klein, Lumi!"',
         choices: [
           {
             id: 'f4-s2-c1',
-            text: 'Aber du bist doch hingegangen, oder?',
+            text: 'Hört nicht auf sie, Lumi. Größe bestimmt nicht, was du kannst.',
             points: 3,
             nextSceneId: 'f4-s3'
           },
           {
             id: 'f4-s2-c2',
-            text: 'Was ist dann passiert?',
-            points: 2,
+            text: 'Vielleicht haben sie recht... es klingt wirklich gefährlich.',
+            points: 1,
             nextSceneId: 'f4-s3'
           },
           {
             id: 'f4-s2-c3',
-            text: 'Hast du ihm geholfen?',
-            points: 2,
+            text: 'Warum versucht ihr es nicht selbst, statt andere kleinzumachen?',
+            points: 3,
             nextSceneId: 'f4-s3'
           }
         ]
       },
       {
         id: 'f4-s3',
-        text: 'Lumi leuchtet heller. "Ich flog zu ihm. Mein Licht war klein, aber in der Dunkelheit war es genug. Der Junge folgte mir. Schritt für Schritt. Ich hatte Angst, dass er mich übersehen würde, aber er sah mich. Er vertraute meinem kleinen Licht."',
+        text: 'Lumis Licht wird schwächer. Die Worte der anderen verletzen sie. "Vielleicht haben sie recht", piepst sie. "Ich bin nur ein Glühwürmchen. Was kann mein kleines Licht schon gegen die Dunkelheit ausrichten?" Noch mehr Tiere versammeln sich. "Gib auf, Lumi! Das ist nichts für dich!"',
         choices: [
           {
             id: 'f4-s3-c1',
-            text: 'Siehst du? Du warst mutig!',
+            text: 'Lumi, erinnerst du dich? Timber hat DICH gewählt. Nicht das Reh, nicht das Eichhörnchen. DICH.',
             points: 3,
             nextSceneId: 'f4-s4'
           },
           {
             id: 'f4-s3-c2',
-            text: 'Hast du ihn nach Hause geführt?',
-            points: 2,
+            text: 'In der dunkelsten Nacht ist das kleinste Licht am wichtigsten.',
+            points: 3,
             nextSceneId: 'f4-s4'
           },
           {
             id: 'f4-s3-c3',
-            text: 'Hattest du keine Angst?',
+            text: 'Willst du wirklich aufgeben, weil andere es sagen?',
             points: 2,
             nextSceneId: 'f4-s4'
           }
@@ -592,23 +616,23 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f4-s4',
-        text: '"Doch, ich hatte schreckliche Angst!", gibt Lumi zu. "Was, wenn mein Licht nicht reicht? Was, wenn ich ihn in die falsche Richtung führe? Was, wenn ich versage?" Ihr Licht flackert bei der Erinnerung.',
+        text: 'Lumi leuchtet wieder heller. Ihr betretet die Schattenschlucht. Die Dunkelheit ist erdrückend – dicker als Nebel, kälter als Eis. Lumis Licht ist nur ein winziger Punkt in der Schwärze. Die Schatten flüstern: "Du wirst versagen... dein Licht erlischt gleich... du bist zu schwach..." Lumi zittert, aber fliegt weiter.',
         choices: [
           {
             id: 'f4-s4-c1',
-            text: 'Aber du hast es trotzdem getan.',
+            text: 'Ich gehe dicht neben Lumi und sage: "Ich bin hier. Du bist nicht allein."',
             points: 3,
             nextSceneId: 'f4-s5'
           },
           {
             id: 'f4-s4-c2',
-            text: 'Das ist es, was Mut bedeutet.',
+            text: 'Die Schatten lügen, Lumi! Dein Licht brennt noch!',
             points: 3,
             nextSceneId: 'f4-s5'
           },
           {
             id: 'f4-s4-c3',
-            text: 'Was half dir, weiterzumachen?',
+            text: 'Weiter, Lumi. Schritt für Schritt. Flügelschlag für Flügelschlag.',
             points: 2,
             nextSceneId: 'f4-s5'
           }
@@ -616,23 +640,23 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f4-s5',
-        text: '"Ich dachte an all die anderen Glühwürmchen", sagt Lumi. "Wir sind klein, aber zusammen erhellen wir die Nacht. Und dann verstand ich: Ich muss nicht groß sein. Ich muss nur leuchten. Mein kleines Licht ist genug."',
+        text: 'Am tiefsten Punkt der Schlucht erlischt Lumis Licht fast. Sie fällt. "Ich kann nicht mehr", weint sie. "Alle hatten recht. Ich bin zu klein. Zu schwach." Um euch herum lauert die totale Dunkelheit. Das ist der Moment der Wahrheit.',
         choices: [
           {
             id: 'f4-s5-c1',
-            text: 'Jeder von uns hat ein Licht.',
+            text: 'Ich fange Lumi auf und halte sie an mein Herz. "Dein Licht kommt von innen. Niemand kann es löschen."',
             points: 3,
             nextSceneId: 'f4-s6'
           },
           {
             id: 'f4-s5-c2',
-            text: 'Größe ist nicht wichtig – Leuchtkraft schon.',
+            text: 'Lumi, der junge Baum braucht dich. Du bist seine einzige Hoffnung.',
             points: 3,
             nextSceneId: 'f4-s6'
           },
           {
             id: 'f4-s5-c3',
-            text: 'Du bist ein Held, Lumi.',
+            text: 'Atme, Lumi. Erinnerst du dich an Timbers Worte? Angst ist ein Alarm, kein Befehl.',
             points: 2,
             nextSceneId: 'f4-s6'
           }
@@ -640,23 +664,23 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f4-s6',
-        text: 'Lumi strahlt hell. "Der Junge erreichte sein Zuhause. Seine Mutter weinte vor Freude. Und als er sich umdrehte, winkte er mir zu. \'Danke, kleines Licht\', sagte er. In diesem Moment verstand ich: Mut hat nichts mit Größe zu tun. Es geht darum, zu leuchten, wenn es dunkel ist."',
+        text: 'Lumi atmet tief ein – und ihr Licht explodiert. Heller als je zuvor strahlt sie und durchbricht die Schattenschlucht. Vor euch steht der junge Baum, seine Blätter bereits welk. Lumi berührt ihn – und er blüht auf, golden und strahlend. Als ihr zurückkehrt, schweigen die Waldtiere staunend. Lumi sagt leise: "Sie sagten, es sei unmöglich. Aber \'unmöglich\' ist nur die Angst der anderen, verkleidet als Ratschlag."',
         choices: [
           {
             id: 'f4-s6-c1',
-            text: 'Du hast mich gelehrt, meinem Licht zu vertrauen.',
+            text: 'Lass nie zu, dass die Angst anderer bestimmt, was du kannst.',
             points: 3,
             nextSceneId: null
           },
           {
             id: 'f4-s6-c2',
-            text: 'Ich werde auch leuchten, egal wie klein ich mich fühle.',
+            text: 'Dein Licht war nie zu klein. Die anderen hatten nur zu viel Angst, es zu sehen.',
             points: 3,
             nextSceneId: null
           },
           {
             id: 'f4-s6-c3',
-            text: 'Danke, Lumi. Du bist wirklich mutig.',
+            text: 'Du hast bewiesen, dass Mut stärker ist als Gruppendruck.',
             points: 2,
             nextSceneId: null
           }
@@ -667,78 +691,78 @@ export const forestScenarios: Scenario[] = [
   {
     id: 'forest-scenario-5',
     islandId: 'forest' as IslandId,
-    title: 'Der Druck der Gruppe',
-    description: 'Timber hilft dir, gegen den Strom zu schwimmen',
+    title: 'Die Nacht der Prüfung',
+    description: 'Du bist allein im Wald. Keine Hilfe. Nur du und deine Angst.',
     npcId: 'timber',
     completed: false,
     scenes: [
       {
         id: 'f5-s1',
-        text: 'Timber ächzt im Wind. "Siehst du die jungen Bäume dort drüben? Sie alle wachsen in dieselbe Richtung – dorthin, wo der Wind sie drückt. Aber einer will anders wachsen. Schau, wie die anderen ihn ansehen."',
+        text: 'Die Sonne sinkt. Timber ruft dich zu sich. "Heute Nacht ist deine Prüfung", sagt er ernst. "Du wirst allein durch den Wald gehen. Ohne Lumi. Ohne Schattenflüsterer. Ohne Faye. Ohne mich." Er schaut dich lange an. "Du hast auf dem Vulkan Wut besiegt, im Ozean Trauer umarmt – jetzt ist die Angst dran. Aber diesmal bist du auf dich allein gestellt."',
         choices: [
           {
             id: 'f5-s1-c1',
-            text: 'Warum wächst er anders?',
-            points: 2,
-            nextSceneId: 'f5-s2'
-          },
-          {
-            id: 'f5-s1-c2',
-            text: 'Es braucht Mut, anders zu sein.',
+            text: 'Ich bin bereit. Alles, was ich gelernt habe, trage ich in mir.',
             points: 3,
             nextSceneId: 'f5-s2'
           },
           {
-            id: 'f5-s1-c3',
-            text: 'Die anderen scheinen verärgert.',
+            id: 'f5-s1-c2',
+            text: 'Allein? Warum kann niemand mitkommen?',
             points: 2,
+            nextSceneId: 'f5-s2'
+          },
+          {
+            id: 'f5-s1-c3',
+            text: 'Ich habe Angst. Aber ich weiß, dass Angst kein Stopp-Schild ist.',
+            points: 3,
             nextSceneId: 'f5-s2'
           }
         ]
       },
       {
         id: 'f5-s2',
-        text: 'Ein junger Baum spricht: "Alle sagen, ich soll mich beugen wie sie. \'Sei nicht anders\', flüstern sie. \'Du gehörst nicht dazu.\' Aber ich wachse zur Sonne, nicht zum Wind. Ist das falsch?"',
+        text: 'Die Nacht bricht herein. Du bist allein. Der Wald knarzt, ächzt, flüstert. Jeder Schatten könnte ein Monster sein. Dein Herzschlag dröhnt in deinen Ohren. Plötzlich hörst du Schritte hinter dir – aber als du dich umdrehst, ist niemand da. Dein Körper will rennen. Jede Faser schreit: FLIEH!',
         choices: [
           {
             id: 'f5-s2-c1',
-            text: 'Nein, du folgst deinem eigenen Licht.',
+            text: 'Ich bleibe stehen. Ich atme. Vier Sekunden ein, vier halten, sechs aus. Wie Timber es gelehrt hat.',
             points: 3,
             nextSceneId: 'f5-s3'
           },
           {
             id: 'f5-s2-c2',
-            text: 'Vielleicht solltest du dich ein bisschen anpassen?',
-            points: 1,
+            text: 'Ich sage laut zu mir selbst: "Angst ist ein Alarm, kein Befehl."',
+            points: 3,
             nextSceneId: 'f5-s3'
           },
           {
             id: 'f5-s2-c3',
-            text: 'Warum ist es dir so wichtig, anders zu sein?',
-            points: 2,
+            text: 'Ich renne ein paar Schritte, halte dann an und sammle mich.',
+            points: 1,
             nextSceneId: 'f5-s3'
           }
         ]
       },
       {
         id: 'f5-s3',
-        text: 'Timber rauscht: "Vor Jahren gab es eine Dürre. Alle Bäume, die sich vom Wind hatten beugen lassen, erreichten das Wasser nicht. Nur ein Baum hatte tief genug gegraben – der, der seinem eigenen Weg folgte. Er rettete alle."',
+        text: 'Der Wald zeigt dir Bilder. Du siehst dich selbst auf dem Vulkan – wie die Lava der Wut in dir brannte und du gelernt hast, sie nicht zu unterdrücken, sondern zu lenken. Die Erinnerung wärmt dich. Dann eine Stimme aus der Dunkelheit: "Du bist schwach. Du konntest deine Wut kaum kontrollieren. Was lässt dich glauben, du könntest die Angst besiegen?"',
         choices: [
           {
             id: 'f5-s3-c1',
-            text: 'Manchmal ist anders sein überlebenswichtig.',
+            text: 'Ich habe auf dem Vulkan gelernt, dass Wut eine Kraft ist, wenn ich sie verstehe. Das gilt auch für die Angst.',
             points: 3,
             nextSceneId: 'f5-s4'
           },
           {
             id: 'f5-s3-c2',
-            text: 'Die Gruppe liegt nicht immer richtig.',
+            text: 'Ich will die Angst nicht besiegen. Ich will sie verstehen.',
             points: 3,
             nextSceneId: 'f5-s4'
           },
           {
             id: 'f5-s3-c3',
-            text: 'Aber es ist so schwer, allein zu sein.',
+            text: 'Sei still. Du bist nur ein Echo.',
             points: 2,
             nextSceneId: 'f5-s4'
           }
@@ -746,23 +770,23 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f5-s4',
-        text: 'Der junge Baum zittert. "In der Schule lachen sie über mich, weil ich nicht die gleichen Sachen mag. Sie wollen alle dasselbe spielen, dieselben Videos schauen. Wenn ich Nein sage, bin ich der Außenseiter."',
+        text: 'Neue Bilder: Du bist im Ozean. Du erinnerst dich an die Trauer, die Wellen, die dich verschlingen wollten. Du hast gelernt, nicht gegen sie anzukämpfen, sondern mit ihnen zu schwimmen. Die Dunkelheit flüstert wieder: "Aber hier gibt es kein Wasser. Hier gibt es nur Schwärze und Kälte. Hier bist du wirklich allein."',
         choices: [
           {
             id: 'f5-s4-c1',
-            text: 'Deine Einzigartigkeit ist deine Stärke.',
+            text: 'Im Ozean habe ich gelernt: Mitgefühl heilt. Auch Mitgefühl mit mir selbst – gerade jetzt.',
             points: 3,
             nextSceneId: 'f5-s5'
           },
           {
             id: 'f5-s4-c2',
-            text: 'Echte Freunde akzeptieren dich, wie du bist.',
+            text: 'Ich bin nicht allein. Ich trage Faye, Lumi, Timber und Schattenflüsterer in meinem Herzen.',
             points: 3,
             nextSceneId: 'f5-s5'
           },
           {
             id: 'f5-s4-c3',
-            text: 'Vielleicht findest du andere Außenseiter?',
+            text: 'Trauer hat mich gelehrt, verletzlich zu sein. Das hilft mir auch jetzt.',
             points: 2,
             nextSceneId: 'f5-s5'
           }
@@ -770,23 +794,23 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f5-s5',
-        text: 'Timber legt einen Ast auf den jungen Baum. "Gruppendruck ist wie ein starker Wind. Er fühlt sich mächtig an. Aber deine Wurzeln – deine Werte – sind stärker. Wenn du dich beugst, nur um dazuzugehören, verrätst du deine Wurzeln."',
+        text: 'Die Dunkelheit verdichtet sich zu einer Gestalt – deiner größten Angst. Sie ist riesig und hat dein Gesicht. "Du wirst versagen", sagt sie mit deiner Stimme. "Du wirst immer Angst haben. Du wirst nie genug sein. Du wirst allein bleiben." Sie steht zwischen dir und dem Ausgang des Waldes. Der einzige Weg raus – ist durch sie hindurch.',
         choices: [
           {
             id: 'f5-s5-c1',
-            text: 'Ich werde meinen Wurzeln treu bleiben.',
+            text: 'Ich gehe auf sie zu. "Du bist meine Angst. Und ich nehme dich an. Aber du bestimmst nicht meinen Weg."',
             points: 3,
             nextSceneId: 'f5-s6'
           },
           {
             id: 'f5-s5-c2',
-            text: 'Es ist mutiger, Nein zu sagen als Ja.',
+            text: 'Ich erinnere mich an den Schattenflüsterer: Mein Schatten gehört zu mir. Ich strecke die Hand aus.',
             points: 3,
             nextSceneId: 'f5-s6'
           },
           {
             id: 'f5-s5-c3',
-            text: 'Aber wie halte ich den Druck aus?',
+            text: 'Ich schließe die Augen und gehe geradeaus. Durch die Angst hindurch.',
             points: 2,
             nextSceneId: 'f5-s6'
           }
@@ -794,23 +818,47 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f5-s6',
-        text: 'Der junge Baum richtet sich auf. "Heute hat ein anderer Baum zu mir gesagt: \'Ich bewundere deinen Mut.\' Vielleicht bin ich nicht allein. Vielleicht inspiriere ich andere, auch ihren eigenen Weg zu gehen." Timber lächelt: "Ein mutiger Baum kann einen ganzen Wald verändern."',
+        text: 'Du gehst durch die Gestalt hindurch. Sie löst sich auf wie Nebel. Dahinter – die Morgendämmerung. Rosa und Gold am Horizont. Du hast die Nacht überlebt. Nicht weil du keine Angst hattest, sondern weil du sie angenommen hast. Du fällst auf die Knie. Tränen laufen. Aber es sind Tränen der Erleichterung, nicht der Angst.',
         choices: [
           {
             id: 'f5-s6-c1',
-            text: 'Ich werde mutig meinen Weg gehen.',
+            text: 'Ich habe die dunkelste Nacht allein durchgestanden. Ich bin stärker, als ich dachte.',
+            points: 3,
+            nextSceneId: 'f5-s7'
+          },
+          {
+            id: 'f5-s6-c2',
+            text: 'Wut, Trauer, Angst – ich habe alle drei kennengelernt. Sie sind Teile von mir.',
+            points: 3,
+            nextSceneId: 'f5-s7'
+          },
+          {
+            id: 'f5-s6-c3',
+            text: 'Nie mehr werde ich meine Angst zum Feind machen.',
+            points: 2,
+            nextSceneId: 'f5-s7'
+          }
+        ]
+      },
+      {
+        id: 'f5-s7',
+        text: 'Timber steht am Waldrand und wartet. Seine alten Augen glänzen. "Du bist zurück", sagt er leise. "Nicht unversehrt – denn die Nacht hinterlässt immer Spuren. Aber ganz. Wer die Nacht der Prüfung besteht, den kann nichts mehr brechen." Er neigt seine Krone tief. "Aber ruh dich nicht zu lange aus. Der Wald braucht dich. Etwas Dunkles zieht auf."',
+        choices: [
+          {
+            id: 'f5-s7-c1',
+            text: 'Was auch kommt – ich bin bereit.',
             points: 3,
             nextSceneId: null
           },
           {
-            id: 'f5-s6-c2',
-            text: 'Deine Geschichte gibt mir Kraft.',
+            id: 'f5-s7-c2',
+            text: 'Diese Nacht hat mich verändert. Ich fürchte die Dunkelheit nicht mehr.',
             points: 2,
             nextSceneId: null
           },
           {
-            id: 'f5-s6-c3',
-            text: 'Danke, dass du mir Mut machst.',
+            id: 'f5-s7-c3',
+            text: 'Danke, Timber. Was auch immer auf den Wald zukommt – ich werde kämpfen.',
             points: 2,
             nextSceneId: null
           }
@@ -821,102 +869,102 @@ export const forestScenarios: Scenario[] = [
   {
     id: 'forest-scenario-6',
     islandId: 'forest' as IslandId,
-    title: 'Die Nacht des Sturms',
-    description: 'Alle Waldbewohner zeigen dir, wie man Angst überwindet',
-    npcId: 'lumi',
+    title: 'Der Wald erwacht',
+    description: 'Ein dunkler Fluch liegt über dem Wald. Nur gemeinsam – mit Mut, Mitgefühl und Beherrschung – könnt ihr ihn retten.',
+    npcId: 'timber',
     completed: false,
     scenes: [
       {
         id: 'f6-s1',
-        text: 'Dunkle Wolken ziehen auf. Timber ächzt: "Ein großer Sturm kommt." Lumi flackert nervös, Schattenflüsterer versteckt sich, Faye atmet schnell. Alle haben Angst. Du auch.',
+        text: 'Ein schwarzer Nebel kriecht durch den Wald. Die Bäume erstarren, die Vögel verstummen, die Blumen welken. Timber ächzt vor Schmerz – schwarze Adern ziehen sich durch seine Rinde. "Der Schattenfluch", stöhnt er. "Jemand hat so viel Angst angesammelt, dass sie den ganzen Wald vergiftet. Wenn wir nichts tun, stirbt der Wald – und mit ihm alles, was du hier gelernt hast."',
         choices: [
           {
             id: 'f6-s1-c1',
-            text: 'Wir schaffen das zusammen.',
+            text: 'Wie brechen wir den Fluch? Was muss ich tun?',
             points: 3,
             nextSceneId: 'f6-s2'
           },
           {
             id: 'f6-s1-c2',
-            text: 'Ich habe große Angst.',
-            points: 2,
+            text: 'Ich habe die Nacht der Prüfung bestanden. Ich kann auch das schaffen.',
+            points: 3,
             nextSceneId: 'f6-s2'
           },
           {
             id: 'f6-s1-c3',
-            text: 'Was sollen wir tun?',
-            points: 2,
+            text: 'Der ganze Wald? Das ist... das ist zu viel für eine Person.',
+            points: 1,
             nextSceneId: 'f6-s2'
           }
         ]
       },
       {
         id: 'f6-s2',
-        text: 'Der Wind heult. Äste brechen. Faye erinnert sich: "In Syrien, als die Bomben fielen, hatte ich noch mehr Angst. Aber meine Mutter sagte: \'Atme. Zähle bis zehn.\'" Sie atmet demonstrativ ein und aus.',
+        text: 'Timber keuchst: "Du brauchst alle. Finde Faye, Schattenflüsterer und Lumi. Aber der Fluch hat sie getroffen – sie sind in ihren tiefsten Ängsten gefangen. Du musst sie befreien." Du rennst los. Als erstes findest du Faye – sie kauert auf dem Boden und weint. "Niemand will mich hier!", schluchzt sie. "Ich gehöre nirgendwohin! Ich sollte nie hergekommen sein!"',
         choices: [
           {
             id: 'f6-s2-c1',
-            text: 'Ich atme mit Faye zusammen.',
+            text: 'Faye, du gehörst zu BEIDEN Welten! Erinnerst du dich? Jasmin und Moos, vereint auf DEINEM Weg!',
             points: 3,
             nextSceneId: 'f6-s3'
           },
           {
             id: 'f6-s2-c2',
-            text: 'Eins... zwei... drei...',
+            text: 'Das ist der Fluch, der spricht, nicht die Wahrheit! Du bist eine Brückenbauerin, Faye!',
             points: 3,
             nextSceneId: 'f6-s3'
           },
           {
             id: 'f6-s2-c3',
-            text: 'Hilft das wirklich?',
-            points: 1,
+            text: 'Ich nehme Fayes Hand und sage: "Ich bin hier. Du bist nicht allein."',
+            points: 2,
             nextSceneId: 'f6-s3'
           }
         ]
       },
       {
         id: 'f6-s3',
-        text: 'Schattenflüsterer ruft: "Meine Höhle! Dort sind wir sicher!" Aber der Weg ist dunkel und gruselig. Lumi zittert: "Ich... ich kann uns leuchten. Auch wenn mein Licht klein ist."',
+        text: 'Faye erhebt sich, Tränen auf den Wangen, aber fest. "Danke. Der Fluch hat meine alte Angst benutzt." Zusammen findet ihr Schattenflüsterer – er ist in seiner eigenen Höhle eingesperrt, zitternd. "Meine Schatten! Sie sind echt geworden! Sie wollen mich verschlingen!" Sein Schatten-Ich tobt als Monster durch die Höhle. Hier brauchst du, was du auf dem Vulkan gelernt hast.',
         choices: [
           {
             id: 'f6-s3-c1',
-            text: 'Dein Licht ist genau das, was wir brauchen, Lumi.',
+            text: 'Ich stelle mich dem Schatten-Monster ruhig entgegen. Wut kontrollieren – nicht kämpfen, nicht fliehen, sondern verstehen.',
             points: 3,
             nextSceneId: 'f6-s4'
           },
           {
             id: 'f6-s3-c2',
-            text: 'Folgen wir Schattenflüsterer.',
-            points: 2,
+            text: 'Schattenflüsterer! Dein Schatten ist kein Feind! Umarme ihn, so wie du es MIR beigebracht hast!',
+            points: 3,
             nextSceneId: 'f6-s4'
           },
           {
             id: 'f6-s3-c3',
-            text: 'Zusammen sind wir stark.',
-            points: 3,
+            text: 'Ich atme tief durch und erinnere mich an die Vulkan-Lektion: Starke Gefühle nicht unterdrücken, sondern lenken.',
+            points: 2,
             nextSceneId: 'f6-s4'
           }
         ]
       },
       {
         id: 'f6-s4',
-        text: 'In der Höhle angekommen, hört ihr den Sturm toben. Timber spricht: "Seht ihr? Draußen ist es gefährlich, aber hier, zusammen, sind wir sicher. Manchmal bedeutet Mut nicht, der Gefahr zu trotzen – sondern zu wissen, wann man Schutz suchen muss."',
+        text: 'Das Schatten-Monster schrumpft und wird wieder zu Schattenflüsterers sanftem Schatten-Ich. "Du hast meine eigene Lektion gegen den Fluch benutzt", staunt die Fledermaus. Zu dritt findet ihr Lumi – aber ihr Licht ist aus. Komplett. Sie liegt auf dem Boden, klein und dunkel. "Es hat keinen Sinn", piepst sie kaum hörbar. "Ich bin zu klein. Zu unwichtig. Mein Licht macht keinen Unterschied." Hier brauchst du, was du im Ozean gelernt hast.',
         choices: [
           {
             id: 'f6-s4-c1',
-            text: 'Es ist keine Schwäche, um Hilfe zu bitten.',
+            text: 'Ich nehme Lumi vorsichtig in meine Hände und sage mit Mitgefühl: "Ich sehe dich. Dein Schmerz ist real. Aber er ist nicht die ganze Wahrheit."',
             points: 3,
             nextSceneId: 'f6-s5'
           },
           {
             id: 'f6-s4-c2',
-            text: 'Wir haben alle geholfen.',
+            text: 'Im Ozean habe ich gelernt: Trauer braucht Empathie, nicht Lösungen. Ich halte Lumi einfach fest und weine mit ihr.',
             points: 3,
             nextSceneId: 'f6-s5'
           },
           {
             id: 'f6-s4-c3',
-            text: 'Ich bin froh, nicht allein zu sein.',
+            text: 'Lumi, erinnerst du dich an die Schattenschlucht? Du hast den jungen Baum gerettet! Dein Licht macht einen Unterschied!',
             points: 2,
             nextSceneId: 'f6-s5'
           }
@@ -924,23 +972,23 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f6-s5',
-        text: 'Faye erzählt Geschichten, Lumi macht sanftes Licht, Schattenflüsterer singt leise, Timber beschützt die Höhle. Jeder trägt bei, was er kann. Die Angst wird kleiner, die Gemeinschaft größer.',
+        text: 'Lumis Licht flackert – erst schwach, dann stärker. Sie fliegt auf. "Danke", flüstert sie. Ihr seid zu viert. Aber der schwarze Nebel wird dichter, der Fluch stärker. Timber steht im Zentrum des Waldes, fast vollständig von schwarzen Adern überzogen. "Ihr seid gekommen", ächzt er. "Aber der Fluch speist sich aus der Angst aller Wesen im Wald. Um ihn zu brechen, müsst ihr zeigen, dass Angst nicht das Letzte Wort hat. Zusammen."',
         choices: [
           {
             id: 'f6-s5-c1',
-            text: 'Zusammen können wir jeden Sturm überstehen.',
+            text: 'Jeder von uns bringt etwas mit. Mut, Mitgefühl, Selbstkenntnis, Licht. Gemeinsam sind wir stärker als jeder Fluch.',
             points: 3,
             nextSceneId: 'f6-s6'
           },
           {
             id: 'f6-s5-c2',
-            text: 'Jeder von euch ist wichtig.',
+            text: 'Faye – zeig dem Wald, dass man aus zwei Welten Brücken bauen kann. Lumi – leuchte! Schattenflüsterer – umarme die Schatten!',
             points: 3,
             nextSceneId: 'f6-s6'
           },
           {
             id: 'f6-s5-c3',
-            text: 'Die Angst fühlt sich schon kleiner an.',
+            text: 'Wir haben alle unsere Prüfungen bestanden. Das hier ist die letzte.',
             points: 2,
             nextSceneId: 'f6-s6'
           }
@@ -948,24 +996,48 @@ export const forestScenarios: Scenario[] = [
       },
       {
         id: 'f6-s6',
-        text: 'Am Morgen ist der Sturm vorbei. Die Sonne scheint. Ihr tretet hinaus. "Wir haben es geschafft", sagt Lumi stolz. "Weil wir nicht allein waren", ergänzt Faye. Timber nickt: "Mut bedeutet auch, sich auf andere zu verlassen. Das ist die größte Stärke."',
+        text: 'Faye singt ein syrisches Lied – ihre Stimme durchbricht die Stille. Schattenflüsterer breitet seine Flügel aus und umarmt die Schatten des Waldes. Lumi strahlt mit aller Kraft und ihr Licht breitet sich aus wie eine goldene Welle. Du stehst in der Mitte und hältst alles zusammen – deine Wut nutzt du als Feuer gegen die Kälte, dein Mitgefühl als Heilung gegen den Schmerz, deinen Mut als Schild gegen die Angst. Der schwarze Nebel beginnt zu zerfallen.',
         choices: [
           {
             id: 'f6-s6-c1',
-            text: 'Ich werde diese Lektion nie vergessen.',
+            text: 'Ich rufe in den Wald: "Angst ist nicht euer Feind! Sie gehört zu euch – aber sie bestimmt nicht, wer ihr seid!"',
             points: 3,
-            nextSceneId: null
+            nextSceneId: 'f6-s7'
           },
           {
             id: 'f6-s6-c2',
-            text: 'Danke, meine Freunde.',
+            text: 'Ich halte Lumis Licht, Fayes Stimme und Schattenflüsterers Umarmung in meinem Herzen – und lasse es leuchten.',
+            points: 3,
+            nextSceneId: 'f6-s7'
+          },
+          {
+            id: 'f6-s6-c3',
+            text: 'Wut, Trauer, Angst – alle drei vereint, alle drei verwandelt in Stärke!',
+            points: 3,
+            nextSceneId: 'f6-s7'
+          }
+        ]
+      },
+      {
+        id: 'f6-s7',
+        text: 'Der Fluch zerbricht. Der schwarze Nebel löst sich auf. Farbe kehrt in den Wald zurück – Grün, Gold, Silber, alle Farben der Natur. Die Bäume richten sich auf. Vögel singen. Blumen blühen. Timber öffnet seine Augen, frei von schwarzen Adern. "Du hast es geschafft", sagt er. "Nicht allein – aber du hast alle zusammengebracht. Wut gelenkt, Trauer in Mitgefühl verwandelt, Angst in Mut. Das ist die größte Lektion des Waldes: Du bist nicht deine Angst. Du bist der Mensch, der trotz der Angst handelt." Lumi strahlt, Faye lächelt, Schattenflüsterer verbeugt sich. Der Wald ist erwacht.',
+        choices: [
+          {
+            id: 'f6-s7-c1',
+            text: 'Dieser Wald hat mich für immer verändert. Ich trage euch alle in mir – Timber, Faye, Lumi, Schattenflüsterer.',
             points: 3,
             nextSceneId: null
           },
           {
-            id: 'f6-s6-c3',
-            text: 'Zusammen sind wir unbesiegbar.',
-            points: 2,
+            id: 'f6-s7-c2',
+            text: 'Wut, Trauer, Angst – keine dieser Emotionen ist mein Feind. Sie sind Teile meiner Stärke.',
+            points: 3,
+            nextSceneId: null
+          },
+          {
+            id: 'f6-s7-c3',
+            text: 'Danke, ihr alle. Ich bin nicht furchtlos – aber ich bin mutig. Und das ist genug.',
+            points: 3,
             nextSceneId: null
           }
         ]
@@ -979,113 +1051,113 @@ export const forestWisdomCards: WisdomCard[] = [
   {
     id: 'forest-wisdom-1',
     islandId: 'forest' as IslandId,
-    title: 'Mut ist nicht die Abwesenheit von Angst',
-    content: 'Mut bedeutet, Angst zu haben und trotzdem weiterzugehen. Die mutigsten Menschen sind oft die, die am meisten Angst haben – aber sie lassen sich davon nicht aufhalten.',
+    title: 'Angst ist ein Alarm, kein Befehl',
+    content: 'Dein Körper schlägt Alarm, wenn er Gefahr vermutet – rasendes Herz, feuchte Hände, flacher Atem. Aber ein Alarm ist ein Hinweis, keine Anweisung. Du entscheidest, ob du rennst oder bleibst.',
     collected: false
   },
   {
     id: 'forest-wisdom-2',
     islandId: 'forest' as IslandId,
-    title: 'Schatten gehören zum Licht',
-    content: 'Jeder Mensch hat dunkle Seiten – Wut, Traurigkeit, Eifersucht. Diese Gefühle zu verstecken macht sie nur stärker. Wenn du sie ansiehst und anerkennst, verlieren sie ihre Macht über dich.',
+    title: 'Mut ist nicht die Abwesenheit von Angst',
+    content: 'Mut bedeutet nicht, keine Angst zu haben. Mut bedeutet, Angst zu spüren – und trotzdem den nächsten Schritt zu machen. Die mutigsten Menschen sind oft die, die am meisten zittern.',
     collected: false
   },
   {
     id: 'forest-wisdom-3',
     islandId: 'forest' as IslandId,
-    title: 'Größe ist keine Voraussetzung für Mut',
-    content: 'Wie Lumi das Glühwürmchen beweist: Du musst nicht groß oder stark sein, um mutig zu sein. Manchmal ist das kleinste Licht in der Dunkelheit das hellste.',
+    title: 'Zwei Welten machen dich ganz',
+    content: 'Wenn du zwischen Kulturen, Sprachen oder Identitäten lebst, bist du kein halber Mensch. Du bist ein ganzer Mensch mit doppelter Perspektive. Deine Brücke zwischen den Welten ist deine größte Stärke.',
     collected: false
   },
   {
     id: 'forest-wisdom-4',
     islandId: 'forest' as IslandId,
-    title: 'Neuanfänge sind mutig',
-    content: 'Etwas Neues zu beginnen – eine neue Schule, ein neues Land, ein neuer Freundeskreis – erfordert enormen Mut. Jeder Neuanfang ist ein Schritt ins Unbekannte.',
+    title: 'Die Angst vor dem Anderssein ist Angst vor Ablehnung',
+    content: 'Wenn du Teile von dir versteckst, um dazuzugehören, verlierst du genau das, was dich einzigartig macht. Die Menschen, die dich für dein wahres Ich ablehnen, sind nicht deine Menschen.',
     collected: false
   },
   {
     id: 'forest-wisdom-5',
     islandId: 'forest' as IslandId,
-    title: 'Anders sein ist eine Stärke',
-    content: 'Wenn alle in dieselbe Richtung gehen und du spürst, dass dein Weg ein anderer ist, braucht es Mut, deinem inneren Kompass zu folgen. Aber deine Einzigartigkeit ist dein größtes Geschenk.',
+    title: 'Dein Schatten-Ich braucht eine Umarmung',
+    content: 'Jeder Mensch hat Seiten, die er versteckt – Unsicherheit, Neid, Zweifel. Je mehr du sie wegsperrst, desto mächtiger werden sie. Umarme dein Schatten-Ich, und es wird vom Monster zum Verbündeten.',
     collected: false
   },
   {
     id: 'forest-wisdom-6',
     islandId: 'forest' as IslandId,
-    title: 'Atmen beruhigt die Angst',
-    content: 'Wenn die Angst kommt und dein Herz rast, atme bewusst. Tief ein, langsam aus. Dein Atem ist ein Anker, der dich ins Hier und Jetzt bringt.',
+    title: 'Ängste werden kleiner, wenn du sie anschaust',
+    content: 'Eine Angst, die du vermeidest, wächst. Eine Angst, die du ansiehst, schrumpft. Nicht sofort – aber mit jedem Blick verliert sie ein Stück ihrer Macht über dich.',
     collected: false
   },
   {
     id: 'forest-wisdom-7',
     islandId: 'forest' as IslandId,
-    title: 'Gemeinsam sind wir stärker',
-    content: 'Mut bedeutet nicht, alles allein zu schaffen. Um Hilfe zu bitten ist kein Zeichen von Schwäche – es zeigt, dass du weise genug bist, zu wissen, dass wir einander brauchen.',
+    title: 'Das kleinste Licht besiegt die tiefste Dunkelheit',
+    content: 'Du musst nicht groß, stark oder laut sein, um etwas zu bewirken. Wie Lumi beweist: In der dunkelsten Nacht ist das kleinste Licht das Wichtigste. Dein Beitrag zählt – egal wie klein er dir erscheint.',
     collected: false
   },
   {
     id: 'forest-wisdom-8',
     islandId: 'forest' as IslandId,
-    title: 'Angst hat eine Botschaft',
-    content: 'Angst ist nicht dein Feind. Sie ist ein Bote, der dir sagt: "Hier ist etwas Wichtiges. Sei vorsichtig, aber lass dich nicht lähmen." Höre die Botschaft, aber lass die Angst nicht das Steuer übernehmen.',
+    title: '"Unmöglich" ist die Angst anderer, verkleidet als Ratschlag',
+    content: 'Wenn andere dir sagen, du kannst etwas nicht schaffen, sprechen oft ihre eigenen Ängste. Höre auf Ratschläge – aber lass nicht zu, dass die Angst anderer deine Grenzen setzt.',
     collected: false
   },
   {
     id: 'forest-wisdom-9',
     islandId: 'forest' as IslandId,
-    title: 'Deine Wurzeln halten dich',
-    content: 'Wie ein Baum im Sturm: Deine Werte, deine Familie, deine wahren Freunde sind deine Wurzeln. Wenn der Wind des Gruppendrucks kommt, halten sie dich fest.',
+    title: 'Gruppendruck ist ein Wind, keine Wahrheit',
+    content: 'Wenn alle in eine Richtung drängen und du spürst, dass dein Weg ein anderer ist, dann folge deinen Wurzeln. Der Wind ändert sich – deine Werte bleiben.',
     collected: false
   },
   {
     id: 'forest-wisdom-10',
     islandId: 'forest' as IslandId,
-    title: 'Nein sagen ist mutig',
-    content: 'Wenn alle Ja sagen und du fühlst, dass Nein das Richtige ist, erfordert dieses Nein mehr Mut als tausend Jas. Deine Grenzen zu setzen ist ein Akt der Selbstliebe.',
+    title: 'Allein sein ist nicht dasselbe wie einsam sein',
+    content: 'In der Nacht der Prüfung lernst du: Du kannst allein sein und trotzdem die Stimmen aller in dir tragen, die dich je ermutigt haben. Einsamkeit ist ein Gefühl – allein sein kann eine Stärke sein.',
     collected: false
   },
   {
     id: 'forest-wisdom-11',
     islandId: 'forest' as IslandId,
-    title: 'Du bist genug',
-    content: 'Mit all deinen Ängsten, mit all deinen Makeln, mit all deinen Zweifeln – du bist genug. Du musst nichts beweisen, nichts werden, nichts erreichen, um wertvoll zu sein. Du bist es bereits.',
+    title: 'Wut, Trauer und Angst sind Geschwister',
+    content: 'Auf dem Vulkan hast du Wut kennengelernt, im Ozean Trauer, im Wald Angst. Sie sind nicht getrennt – sie sind drei Seiten desselben Diamanten. Wer alle drei versteht, versteht sich selbst.',
     collected: false
   },
   {
     id: 'forest-wisdom-12',
     islandId: 'forest' as IslandId,
-    title: 'Verletzlichkeit ist Stärke',
-    content: 'Zuzugeben, dass du Angst hast, dass du nicht weiterweißt, dass du verletzt bist – das erfordert enormen Mut. Verletzlichkeit ist keine Schwäche, sie ist das Tor zu echter Verbindung.',
+    title: 'Verletzlichkeit ist die mutigste Form der Stärke',
+    content: 'Zuzugeben, dass du Angst hast, ist mutiger als so zu tun, als hättest du keine. Verletzlichkeit öffnet Türen, die Härte verschlossen hält.',
     collected: false
   },
   {
     id: 'forest-wisdom-13',
     islandId: 'forest' as IslandId,
-    title: 'Schutz suchen ist weise',
-    content: 'Nicht jeder Sturm muss allein durchstanden werden. Zu wissen, wann du Schutz, Hilfe oder eine Pause brauchst, ist ein Zeichen von Weisheit, nicht von Feigheit.',
+    title: 'Atme, wenn die Angst kommt',
+    content: 'Vier Sekunden einatmen, vier Sekunden halten, sechs Sekunden ausatmen. Dein Atem ist der Anker, der dich im Sturm festhält. Die Angst kann nicht bleiben, wenn der Atem ruhig fließt.',
     collected: false
   },
   {
     id: 'forest-wisdom-14',
     islandId: 'forest' as IslandId,
-    title: 'Kleine Schritte zählen',
-    content: 'Du musst nicht mit einem großen Sprung über deine Angst hinwegspringen. Kleine Schritte, einer nach dem anderen, bringen dich genauso ans Ziel – und sind oft nachhaltiger.',
+    title: 'Du bist nicht deine Angst',
+    content: 'Angst ist etwas, das du FÜHLST – nicht etwas, das du BIST. Du bist der Mensch, der die Angst spürt und trotzdem handelt. Dieser Unterschied ist alles.',
     collected: false
   },
   {
     id: 'forest-wisdom-15',
     islandId: 'forest' as IslandId,
-    title: 'Zwischen zwei Welten zu stehen ist eine Gabe',
-    content: 'Wenn du zwischen Kulturen, Sprachen oder Identitäten lebst, bist du kein Niemand – du bist ein Brückenbauer. Deine Fähigkeit, beide Welten zu verstehen, ist eine seltene Stärke.',
+    title: 'Zusammen bricht kein Fluch',
+    content: 'Allein kannst du vieles schaffen. Aber manche Dunkelheit braucht viele Lichter. Hilfe zu suchen ist kein Zeichen von Schwäche – es ist die Weisheit, die Grenzen der eigenen Kraft zu kennen.',
     collected: false
   },
   {
     id: 'forest-wisdom-16',
     islandId: 'forest' as IslandId,
-    title: 'Dein Licht ist einzigartig',
-    content: 'Niemand leuchtet genau wie du. Deine Art, Mut zu zeigen, ist anders als die aller anderen – und das ist perfekt so. Die Welt braucht dein spezifisches Licht.',
+    title: 'Der Wald erwacht in dir',
+    content: 'Am Ende der Reise merkst du: Der dunkle Wald war nie ein Ort – er war ein Teil von dir. Und jetzt ist er nicht mehr dunkel. Er ist lebendig, bunt und stark. So wie du.',
     collected: false
   }
 ];
@@ -1095,86 +1167,88 @@ export const forestActivities: ForestActivity[] = [
   {
     id: 'forest-activity-1',
     islandId: 'forest' as IslandId,
-    title: 'Angst-Tagebuch',
-    description: 'Schreibe deine Ängste auf und entdecke ihre Botschaft',
+    title: 'Angst-Tagebuch: Brief an meine Angst',
+    description: 'Schreibe einen Brief an deine größte Angst – und lass sie antworten',
     type: 'journal',
     completed: false,
     instructions: [
-      'Nimm ein Notizbuch und einen Stift.',
-      'Schreibe: "Ich habe Angst vor..." und liste alles auf, was dir einfällt.',
-      'Wähle eine Angst aus und frage sie: "Was willst du mir sagen? Wovor willst du mich schützen?"',
-      'Schreibe die Antwort auf, die dir in den Sinn kommt.',
-      'Bedanke dich bei deiner Angst für ihre Botschaft.',
-      'Schreibe nun: "Ich bin mutig genug, um..." und vervollständige den Satz.'
+      'Nimm ein Blatt Papier und einen Stift.',
+      'Schreibe oben: "Liebe Angst, ich muss dir etwas sagen..."',
+      'Schreibe deiner Angst einen ehrlichen Brief. Was macht sie mit dir? Wie fühlt sie sich an? Was hat sie dir genommen?',
+      'Drehe das Blatt um. Jetzt antwortet deine Angst: "Lieber Mensch, ich bin hier, weil..."',
+      'Schreibe, was deine Angst dir sagen würde, wenn sie sprechen könnte. Warum ist sie da? Was will sie beschützen?',
+      'Lies beide Seiten laut vor. Spüre nach: Hat sich etwas verändert?',
+      'Schreibe zum Schluss einen Satz, der beginnt mit: "Ich höre dich, Angst, aber ich entscheide..."'
     ]
   },
   {
     id: 'forest-activity-2',
     islandId: 'forest' as IslandId,
-    title: 'Atemübung: Der ruhige Baum',
-    description: 'Atme wie ein Baum im Wind und finde innere Ruhe',
+    title: 'Atemübung: Timbers Wurzeln',
+    description: 'Verwurzle dich wie ein alter Baum und finde Ruhe im Sturm',
     type: 'breathing',
     completed: false,
     instructions: [
-      'Stelle dich aufrecht hin, die Füße hüftbreit auseinander.',
-      'Stell dir vor, deine Füße sind Wurzeln, die tief in die Erde reichen.',
-      'Atme tief durch die Nase ein (4 Sekunden) – spüre, wie die Energie von den Wurzeln hochsteigt.',
-      'Halte den Atem (4 Sekunden) – du bist stabil wie ein Baum.',
-      'Atme langsam durch den Mund aus (6 Sekunden) – lass alle Angst wie Blätter im Wind davonfliegen.',
-      'Wiederhole dies 5 Mal.',
-      'Öffne die Augen und spüre deine Verwurzelung.'
+      'Stelle dich aufrecht hin, die Füße fest auf dem Boden, hüftbreit auseinander.',
+      'Stell dir vor, aus deinen Fußsohlen wachsen Wurzeln tief in die Erde – wie Timbers Wurzeln.',
+      'Atme 4 Sekunden durch die Nase ein – spüre, wie Kraft aus der Erde durch die Wurzeln in dich aufsteigt.',
+      'Halte den Atem 4 Sekunden – du bist fest verwurzelt, nichts kann dich umwerfen.',
+      'Atme 6 Sekunden langsam durch den Mund aus – lass alle Angst wie trockene Blätter von dir fallen.',
+      'Wiederhole 5 Runden. Bei jeder Runde werden deine Wurzeln tiefer und dein Stamm fester.',
+      'Öffne die Augen und sage leise: "Ich stehe fest. Die Angst ist nur Wind."'
     ]
   },
   {
     id: 'forest-activity-3',
     islandId: 'forest' as IslandId,
-    title: 'Schatten-Freundschaft',
-    description: 'Lerne deine dunklen Seiten kennen und akzeptiere sie',
+    title: 'Schatten-Porträt: Mein ganzes Ich',
+    description: 'Male dein Licht-Ich und dein Schatten-Ich und bringe sie zusammen',
     type: 'creative',
     completed: false,
     instructions: [
-      'Nimm ein Blatt Papier und zeichne deine Silhouette.',
-      'In die Silhouette schreibe oder male alle Gefühle, die du normalerweise versteckst: Wut, Neid, Traurigkeit, Angst.',
-      'Außerhalb der Silhouette schreibe, warum du diese Gefühle versteckst.',
-      'Nun zeichne Arme von der Silhouette zu den Gefühlen – umarme sie bildlich.',
-      'Schreibe zu jedem Gefühl: "Ich sehe dich. Ich akzeptiere dich. Du gehörst zu mir."',
-      'Hänge das Bild an einen Ort, wo du es sehen kannst.'
+      'Nimm ein großes Blatt Papier und falte es in der Mitte.',
+      'Auf die linke Seite male oder schreibe dein "Licht-Ich": Dinge, die du an dir magst, Stärken, gute Eigenschaften, Dinge, die du gern zeigst.',
+      'Auf die rechte Seite male oder schreibe dein "Schatten-Ich": Ängste, Unsicherheiten, Dinge, die du versteckst, Eigenschaften, für die du dich schämst.',
+      'Schaue beide Seiten an. Erkenne: Beides bist du. Beides gehört zusammen.',
+      'Öffne das Blatt und male in die Mitte – auf die Falte – ein großes Herz. In das Herz schreibe: "Ich bin ganz."',
+      'Male Linien vom Licht-Ich UND vom Schatten-Ich zum Herzen. Alles ist verbunden.',
+      'Hänge das Bild an einen Ort, wo du es täglich sehen kannst.'
     ]
   },
   {
     id: 'forest-activity-4',
     islandId: 'forest' as IslandId,
-    title: 'Mut-Meditation: Das innere Licht',
-    description: 'Finde dein inneres Licht wie Lumi das Glühwürmchen',
+    title: 'Lumis Licht-Meditation',
+    description: 'Finde dein inneres Licht und lass es strahlen – auch wenn du dich klein fühlst',
     type: 'meditation',
     completed: false,
     instructions: [
-      'Setze dich bequem hin, schließe die Augen.',
-      'Atme einige Male tief ein und aus.',
-      'Stell dir vor, in deiner Brust ist ein kleines Licht – dein Mut.',
-      'Vielleicht ist es gerade klein wie Lumis Licht, aber es ist da.',
-      'Mit jedem Einatmen wird das Licht ein bisschen heller.',
-      'Mit jedem Ausatmen verteilt es sich in deinem ganzen Körper.',
-      'Spüre, wie das Licht bis in deine Fingerspitzen, deine Zehen, deinen Kopf fließt.',
-      'Sage leise zu dir: "Mein Licht ist genug. Ich bin genug."',
-      'Öffne langsam die Augen und nimm dieses Licht mit in deinen Tag.'
+      'Setze dich bequem hin und schließe die Augen. Atme dreimal tief ein und aus.',
+      'Stell dir vor, du bist in der Schattenschlucht. Es ist komplett dunkel. Du kannst nichts sehen.',
+      'Jetzt spüre ein winziges Licht in deiner Brust – wie Lumis Leuchten. Es ist klein, aber es ist DA.',
+      'Mit jedem Einatmen wird das Licht ein bisschen heller. Mit jedem Ausatmen breitet es sich ein Stück weiter aus.',
+      'Spüre, wie das Licht deine Arme, deine Beine, deinen Kopf erreicht. Du leuchtest.',
+      'Höre die Stimmen, die sagen: "Du bist zu klein. Es reicht nicht." Und antworte: "Mein Licht ist genug."',
+      'Spüre, wie dein Licht die Dunkelheit um dich herum erhellt. Du machst einen Unterschied.',
+      'Öffne die Augen und nimm dieses Gefühl mit: Du bist nie zu klein, um zu leuchten.'
     ]
   },
   {
     id: 'forest-activity-5',
     islandId: 'forest' as IslandId,
-    title: 'Reflexion: Meine mutigen Momente',
-    description: 'Erkenne und feiere deine eigenen mutigen Taten',
+    title: 'Reflexion: Meine drei Inseln',
+    description: 'Verbinde die Lektionen von Vulkan, Ozean und Wald zu deiner persönlichen Stärke',
     type: 'reflection',
     completed: false,
     instructions: [
-      'Nimm dir 10 Minuten Zeit in Ruhe.',
-      'Denke an die letzten Wochen und Monate zurück.',
-      'Schreibe mindestens 5 Momente auf, in denen du mutig warst – auch kleine Dinge zählen!',
-      'Beispiele: Jemandem widersprochen, um Hilfe gebeten, etwas Neues ausprobiert, Nein gesagt.',
-      'Lies die Liste laut vor (auch wenn du allein bist).',
-      'Erkenne an: "Ich bin mutiger, als ich dachte."',
-      'Ergänze die Liste regelmäßig mit neuen mutigen Momenten.'
+      'Nimm dir 15 Minuten in Ruhe. Du brauchst Papier und Stifte.',
+      'Zeichne drei Inseln: einen Vulkan, einen Ozean und einen Wald.',
+      'Auf den Vulkan schreibe: "Was ich über Wut gelernt habe..." und vervollständige den Satz.',
+      'In den Ozean schreibe: "Was ich über Trauer gelernt habe..." und vervollständige den Satz.',
+      'In den Wald schreibe: "Was ich über Angst gelernt habe..." und vervollständige den Satz.',
+      'Zeichne Brücken zwischen den drei Inseln. Auf jede Brücke schreibe, wie die Lektionen zusammenhängen.',
+      'In die Mitte – zwischen alle drei Inseln – zeichne DICH. Schreibe darunter: "Ich bin stärker als meine Wut, tiefer als meine Trauer und mutiger als meine Angst."',
+      'Lies alles laut vor. Spüre, wie weit du gekommen bist.'
     ]
   }
 ];
