@@ -508,6 +508,11 @@ function Tree({
 
   return (
     <group ref={groupRef} position={position} scale={scale}>
+      {/* Tree shadow on ground */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]}>
+        <circleGeometry args={[0.8, 8]} />
+        <meshBasicMaterial color="#000000" transparent opacity={0.12} />
+      </mesh>
       {/* Dead tree: charred trunk + spiky dark cones + branch stubs */}
       {variant === 'dead' && (
         <>
@@ -2506,24 +2511,49 @@ function AmbientParticles({ islandId }: { theme: IslandTheme; islandId: string }
 // ---------------------------------------------------------------------------
 
 function GrassTufts({ theme, islandId }: { theme: IslandTheme; islandId: string }) {
-  const count = 120;
+  const count = 180;
   const meshRef = useRef<THREE.InstancedMesh>(null);
-
-  useEffect(() => {
-    if (!meshRef.current) return;
-    const dummy = new THREE.Object3D();
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const grassData = useMemo(() => {
     const rng = makeRng((SEED_MAP[islandId] ?? 101) + 6666);
+    const arr: Array<{
+      x: number; z: number; scaleX: number; scaleY: number; scaleZ: number;
+      baseRotY: number; phase: number;
+    }> = [];
     for (let i = 0; i < count; i++) {
       const angle = rng() * Math.PI * 2;
       const r = 2 + rng() * (GROUND_SIZE - 4);
-      dummy.position.set(Math.cos(angle) * r, 0.08, Math.sin(angle) * r);
-      dummy.scale.set(0.08 + rng() * 0.06, 0.15 + rng() * 0.2, 0.08 + rng() * 0.06);
-      dummy.rotation.y = rng() * Math.PI;
+      arr.push({
+        x: Math.cos(angle) * r,
+        z: Math.sin(angle) * r,
+        scaleX: 0.08 + rng() * 0.06,
+        scaleY: 0.15 + rng() * 0.25,
+        scaleZ: 0.08 + rng() * 0.06,
+        baseRotY: rng() * Math.PI,
+        phase: rng() * Math.PI * 2,
+      });
+    }
+    return arr;
+  }, [islandId]);
+
+  useFrame(() => {
+    if (!meshRef.current) return;
+    const t = Date.now() * 0.001;
+    for (let i = 0; i < count; i++) {
+      const g = grassData[i];
+      dummy.position.set(g.x, 0.08, g.z);
+      dummy.scale.set(g.scaleX, g.scaleY, g.scaleZ);
+      // Wind sway
+      dummy.rotation.set(
+        Math.sin(t * 1.2 + g.phase) * 0.15,
+        g.baseRotY,
+        Math.cos(t * 0.9 + g.phase + 1) * 0.1,
+      );
       dummy.updateMatrix();
       meshRef.current.setMatrixAt(i, dummy.matrix);
     }
     meshRef.current.instanceMatrix.needsUpdate = true;
-  }, [islandId]);
+  });
 
   // Skip grass for some islands
   if (islandId === 'volcano' || islandId === 'ocean' || islandId === 'night') return null;
