@@ -177,9 +177,9 @@ const THEMES: Record<string, IslandTheme> = {
     foliageSecondary: '#222222',
     rockColor: '#4a3020',
     playerAccent: '#ff6b35',
-    treeCount: 10,
-    rockCount: 14,
-    decorationCount: 8,
+    treeCount: 12,
+    rockCount: 16,
+    decorationCount: 16,
   },
   ocean: {
     groundColor: '#d4b896',
@@ -199,9 +199,9 @@ const THEMES: Record<string, IslandTheme> = {
     foliageSecondary: '#3aaa3a',
     rockColor: '#b0a090',
     playerAccent: '#4a90d9',
-    treeCount: 7,
-    rockCount: 10,
-    decorationCount: 10,
+    treeCount: 10,
+    rockCount: 12,
+    decorationCount: 18,
   },
   forest: {
     groundColor: '#2d5a1e',
@@ -221,9 +221,9 @@ const THEMES: Record<string, IslandTheme> = {
     foliageSecondary: '#2a8a2a',
     rockColor: '#555a50',
     playerAccent: '#4caf50',
-    treeCount: 22,
-    rockCount: 12,
-    decorationCount: 12,
+    treeCount: 24,
+    rockCount: 14,
+    decorationCount: 18,
   },
   mountain: {
     groundColor: '#7a6a5a',
@@ -243,9 +243,9 @@ const THEMES: Record<string, IslandTheme> = {
     foliageSecondary: '#4a7a40',
     rockColor: '#6a6060',
     playerAccent: '#8d6e63',
-    treeCount: 6,
-    rockCount: 18,
-    decorationCount: 6,
+    treeCount: 8,
+    rockCount: 20,
+    decorationCount: 14,
   },
   garden: {
     groundColor: '#4a8a3a',
@@ -265,9 +265,9 @@ const THEMES: Record<string, IslandTheme> = {
     foliageSecondary: '#ff99b0',
     rockColor: '#a0a0a0',
     playerAccent: '#ec407a',
-    treeCount: 10,
-    rockCount: 6,
-    decorationCount: 14,
+    treeCount: 12,
+    rockCount: 8,
+    decorationCount: 20,
   },
   night: {
     groundColor: '#1a1030',
@@ -287,9 +287,9 @@ const THEMES: Record<string, IslandTheme> = {
     foliageSecondary: '#7040a0',
     rockColor: '#2a2040',
     playerAccent: '#7e57c2',
-    treeCount: 12,
-    rockCount: 8,
-    decorationCount: 10,
+    treeCount: 14,
+    rockCount: 10,
+    decorationCount: 16,
   },
   rainbow: {
     groundColor: '#e8e0f0',
@@ -309,9 +309,9 @@ const THEMES: Record<string, IslandTheme> = {
     foliageSecondary: '#60c0ff',
     rockColor: '#d0b0e0',
     playerAccent: '#ff7043',
-    treeCount: 10,
-    rockCount: 10,
-    decorationCount: 8,
+    treeCount: 12,
+    rockCount: 12,
+    decorationCount: 14,
   },
   home: {
     groundColor: '#6a8a4a',
@@ -331,9 +331,9 @@ const THEMES: Record<string, IslandTheme> = {
     foliageSecondary: '#3aaa3a',
     rockColor: '#8a7a6a',
     playerAccent: '#ffb74d',
-    treeCount: 12,
-    rockCount: 8,
-    decorationCount: 10,
+    treeCount: 14,
+    rockCount: 10,
+    decorationCount: 18,
   },
 };
 
@@ -436,60 +436,99 @@ function Tree({
 
   return (
     <group ref={groupRef} position={position} scale={scale}>
-      {/* Dead tree: charred trunk + spiky dark cone */}
+      {/* Dead tree: charred trunk + spiky dark cones + branch stubs */}
       {variant === 'dead' && (
         <>
           <mesh position={[0, 1.2, 0]} castShadow>
-            <cylinderGeometry args={[0.12, 0.2, 2.4, 6]} />
+            <cylinderGeometry args={[0.12, 0.22, 2.4, 6]} />
             <meshStandardMaterial color={trunkColor} roughness={0.95} />
           </mesh>
           <mesh position={[0, 2.6, 0]} castShadow>
-            <coneGeometry args={[0.5, 1.2, 5]} />
+            <coneGeometry args={[0.55, 1.4, 5]} />
             <meshStandardMaterial color={foliageColor} roughness={0.9} />
+          </mesh>
+          <mesh position={[0, 3.4, 0]} castShadow>
+            <coneGeometry args={[0.3, 0.8, 5]} />
+            <meshStandardMaterial color={foliageSecondary} roughness={0.9} />
           </mesh>
           {/* Branch stubs */}
           <mesh position={[0.3, 1.8, 0]} rotation={[0, 0, 0.8]} castShadow>
-            <cylinderGeometry args={[0.04, 0.06, 0.6, 4]} />
+            <cylinderGeometry args={[0.04, 0.06, 0.7, 4]} />
+            <meshStandardMaterial color={trunkColor} roughness={0.95} />
+          </mesh>
+          <mesh position={[-0.25, 1.4, 0.15]} rotation={[0.3, 0, -0.7]} castShadow>
+            <cylinderGeometry args={[0.03, 0.05, 0.5, 4]} />
             <meshStandardMaterial color={trunkColor} roughness={0.95} />
           </mesh>
         </>
       )}
 
-      {/* Palm tree: curved trunk + green sphere clusters */}
+      {/* Palm tree: curved trunk + coconuts + lush green sphere clusters */}
       {variant === 'palm' && (
         <>
           <mesh position={[0.2, 1.5, 0]} rotation={[0, 0, 0.15]} castShadow>
-            <cylinderGeometry args={[0.1, 0.18, 3, 8]} />
+            <cylinderGeometry args={[0.1, 0.2, 3, 8]} />
             <meshStandardMaterial color={trunkColor} roughness={0.85} />
           </mesh>
+          {/* Trunk rings for detail */}
+          <mesh position={[0.15, 0.8, 0]} rotation={[0, 0, 0.15]} castShadow>
+            <torusGeometry args={[0.16, 0.02, 4, 8]} />
+            <meshStandardMaterial color={trunkColor} roughness={0.9} />
+          </mesh>
           <mesh position={[0.4, 3.2, 0]} castShadow>
-            <sphereGeometry args={[0.7, 8, 6]} />
+            <sphereGeometry args={[0.75, 8, 6]} />
             <meshStandardMaterial color={foliageColor} roughness={0.7} />
           </mesh>
-          <mesh position={[0.1, 3.4, 0.3]} castShadow>
-            <sphereGeometry args={[0.5, 8, 6]} />
+          <mesh position={[0.1, 3.4, 0.4]} castShadow>
+            <sphereGeometry args={[0.55, 8, 6]} />
             <meshStandardMaterial color={foliageSecondary} roughness={0.7} />
+          </mesh>
+          <mesh position={[0.6, 3.1, -0.2]} castShadow>
+            <sphereGeometry args={[0.45, 8, 6]} />
+            <meshStandardMaterial color={foliageColor} roughness={0.7} />
+          </mesh>
+          {/* Coconuts */}
+          <mesh position={[0.3, 2.9, 0.15]} castShadow>
+            <sphereGeometry args={[0.08, 6, 4]} />
+            <meshStandardMaterial color="#8a6a3a" roughness={0.7} />
+          </mesh>
+          <mesh position={[0.45, 2.85, -0.05]} castShadow>
+            <sphereGeometry args={[0.07, 6, 4]} />
+            <meshStandardMaterial color="#7a5a2a" roughness={0.7} />
           </mesh>
         </>
       )}
 
-      {/* Pine tree: stacked green cones */}
+      {/* Pine tree: stacked green cones (5 layers) */}
       {variant === 'pine' && (
         <>
           <mesh position={[0, 1.0, 0]} castShadow>
-            <cylinderGeometry args={[0.1, 0.15, 2, 6]} />
+            <cylinderGeometry args={[0.1, 0.16, 2, 6]} />
             <meshStandardMaterial color={trunkColor} roughness={0.85} />
           </mesh>
-          <mesh position={[0, 2.4, 0]} castShadow>
-            <coneGeometry args={[0.9, 1.4, 6]} />
+          {/* Exposed roots */}
+          <mesh position={[0.12, 0.05, 0.08]} rotation={[0.3, 0, 0.4]} castShadow>
+            <cylinderGeometry args={[0.03, 0.04, 0.3, 4]} />
+            <meshStandardMaterial color={trunkColor} roughness={0.9} />
+          </mesh>
+          <mesh position={[0, 2.2, 0]} castShadow>
+            <coneGeometry args={[1.0, 1.4, 7]} />
             <meshStandardMaterial color={foliageColor} roughness={0.75} />
           </mesh>
-          <mesh position={[0, 3.2, 0]} castShadow>
-            <coneGeometry args={[0.65, 1.1, 6]} />
+          <mesh position={[0, 2.9, 0]} castShadow>
+            <coneGeometry args={[0.8, 1.2, 7]} />
             <meshStandardMaterial color={foliageSecondary} roughness={0.75} />
           </mesh>
-          <mesh position={[0, 3.8, 0]} castShadow>
+          <mesh position={[0, 3.5, 0]} castShadow>
+            <coneGeometry args={[0.6, 1.0, 7]} />
+            <meshStandardMaterial color={foliageColor} roughness={0.75} />
+          </mesh>
+          <mesh position={[0, 4.0, 0]} castShadow>
             <coneGeometry args={[0.4, 0.8, 6]} />
+            <meshStandardMaterial color={foliageSecondary} roughness={0.75} />
+          </mesh>
+          <mesh position={[0, 4.4, 0]} castShadow>
+            <coneGeometry args={[0.2, 0.5, 6]} />
             <meshStandardMaterial color={foliageColor} roughness={0.75} />
           </mesh>
         </>
@@ -1119,267 +1158,513 @@ function IslandDecorations({
 }) {
   return (
     <group>
+      {/* ============ VOLCANO ============ */}
       {islandId === 'volcano' &&
         positions.map((pos, i) => (
           <group key={i} position={pos}>
-            {/* Lava pools */}
-            {i % 2 === 0 ? (
-              <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]}>
-                <circleGeometry args={[0.6 + (i % 3) * 0.3, 8]} />
-                <meshStandardMaterial
-                  color="#ff4400"
-                  emissive="#ff2200"
-                  emissiveIntensity={0.6}
-                  roughness={0.3}
-                />
-              </mesh>
+            {i % 4 === 0 ? (
+              /* Large lava pool with glow */
+              <group>
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]}>
+                  <circleGeometry args={[0.8 + (i % 3) * 0.4, 10]} />
+                  <meshStandardMaterial color="#ff4400" emissive="#ff2200" emissiveIntensity={0.7} roughness={0.2} />
+                </mesh>
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.035, 0]}>
+                  <ringGeometry args={[0.7 + (i % 3) * 0.4, 0.9 + (i % 3) * 0.4, 10]} />
+                  <meshStandardMaterial color="#ff6600" emissive="#ff4400" emissiveIntensity={0.4} roughness={0.3} />
+                </mesh>
+                <pointLight position={[0, 0.5, 0]} color="#ff4400" intensity={0.8} distance={5} />
+              </group>
+            ) : i % 4 === 1 ? (
+              /* Volcanic boulder stack */
+              <group>
+                <mesh position={[0, 0.25, 0]} castShadow>
+                  <dodecahedronGeometry args={[0.35, 0]} />
+                  <meshStandardMaterial color="#2a1a10" roughness={0.95} />
+                </mesh>
+                <mesh position={[0.15, 0.55, 0.1]} castShadow>
+                  <dodecahedronGeometry args={[0.2, 0]} />
+                  <meshStandardMaterial color="#3a2a1a" roughness={0.95} />
+                </mesh>
+              </group>
+            ) : i % 4 === 2 ? (
+              /* Smoke column - stacked transparent spheres */
+              <group>
+                <mesh position={[0, 0.5, 0]}>
+                  <sphereGeometry args={[0.2, 6, 4]} />
+                  <meshStandardMaterial color="#555555" transparent opacity={0.3} roughness={1} />
+                </mesh>
+                <mesh position={[0.05, 1.0, 0]}>
+                  <sphereGeometry args={[0.25, 6, 4]} />
+                  <meshStandardMaterial color="#666666" transparent opacity={0.2} roughness={1} />
+                </mesh>
+                <mesh position={[-0.05, 1.5, 0.05]}>
+                  <sphereGeometry args={[0.3, 6, 4]} />
+                  <meshStandardMaterial color="#777777" transparent opacity={0.12} roughness={1} />
+                </mesh>
+              </group>
             ) : (
-              /* Volcanic boulders */
-              <mesh position={[0, 0.3, 0]} castShadow>
-                <dodecahedronGeometry args={[0.3 + (i % 3) * 0.15, 0]} />
-                <meshStandardMaterial color="#2a1a10" roughness={0.95} />
-              </mesh>
-            )}
-            {i % 3 === 0 && (
-              <pointLight position={[0, 0.3, 0]} color="#ff4400" intensity={0.4} distance={3} />
+              /* Cracked ground with lava glow */
+              <group>
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+                  <planeGeometry args={[1.5, 0.06]} />
+                  <meshStandardMaterial color="#ff3300" emissive="#ff2200" emissiveIntensity={0.5} />
+                </mesh>
+                <mesh rotation={[-Math.PI / 2, 0.7, 0]} position={[0, 0.02, 0]}>
+                  <planeGeometry args={[1.0, 0.05]} />
+                  <meshStandardMaterial color="#ff3300" emissive="#ff2200" emissiveIntensity={0.4} />
+                </mesh>
+              </group>
             )}
           </group>
         ))}
 
+      {/* ============ OCEAN ============ */}
       {islandId === 'ocean' &&
         positions.map((pos, i) => (
           <group key={i} position={pos}>
-            {i % 3 === 0 ? (
-              /* Seashells */
-              <mesh position={[0, 0.05, 0]} rotation={[0, i * 0.7, 0]} castShadow>
-                <coneGeometry args={[0.15, 0.2, 6]} />
-                <meshStandardMaterial color="#f0e0c0" roughness={0.6} />
-              </mesh>
-            ) : i % 3 === 1 ? (
-              /* Coral */
+            {i % 5 === 0 ? (
+              /* Beach umbrella */
               <group>
-                <mesh position={[0, 0.3, 0]} castShadow>
-                  <cylinderGeometry args={[0.05, 0.1, 0.6, 5]} />
-                  <meshStandardMaterial color="#ff6080" roughness={0.7} />
+                <mesh position={[0, 0.8, 0]} castShadow>
+                  <cylinderGeometry args={[0.03, 0.04, 1.6, 6]} />
+                  <meshStandardMaterial color="#8B6914" roughness={0.8} />
                 </mesh>
-                <mesh position={[0.15, 0.35, 0.1]} castShadow>
-                  <cylinderGeometry args={[0.04, 0.08, 0.5, 5]} />
-                  <meshStandardMaterial color="#ff8060" roughness={0.7} />
+                <mesh position={[0, 1.65, 0]} castShadow>
+                  <coneGeometry args={[0.6, 0.3, 8]} />
+                  <meshStandardMaterial color={['#ff4444', '#4488ff', '#ffaa00', '#44cc44'][i % 4]} roughness={0.6} />
                 </mesh>
               </group>
+            ) : i % 5 === 1 ? (
+              /* Coral reef cluster */
+              <group>
+                <mesh position={[0, 0.35, 0]} castShadow>
+                  <cylinderGeometry args={[0.06, 0.12, 0.7, 5]} />
+                  <meshStandardMaterial color="#ff6080" roughness={0.7} />
+                </mesh>
+                <mesh position={[0.2, 0.3, 0.15]} castShadow>
+                  <cylinderGeometry args={[0.05, 0.1, 0.6, 5]} />
+                  <meshStandardMaterial color="#ff8060" roughness={0.7} />
+                </mesh>
+                <mesh position={[-0.15, 0.25, 0.1]} castShadow>
+                  <cylinderGeometry args={[0.04, 0.08, 0.5, 5]} />
+                  <meshStandardMaterial color="#ffaa80" roughness={0.7} />
+                </mesh>
+                <mesh position={[0.1, 0.2, -0.1]} castShadow>
+                  <sphereGeometry args={[0.12, 6, 4]} />
+                  <meshStandardMaterial color="#ff9988" roughness={0.5} />
+                </mesh>
+              </group>
+            ) : i % 5 === 2 ? (
+              /* Seashell */
+              <mesh position={[0, 0.06, 0]} rotation={[0.2, i * 0.7, 0]} castShadow>
+                <coneGeometry args={[0.18, 0.25, 7]} />
+                <meshStandardMaterial color="#f0e0c0" roughness={0.5} metalness={0.15} />
+              </mesh>
+            ) : i % 5 === 3 ? (
+              /* Driftwood */
+              <mesh position={[0, 0.08, 0]} rotation={[0, i * 0.4, Math.PI / 2]} castShadow>
+                <cylinderGeometry args={[0.06, 0.08, 1.0, 5]} />
+                <meshStandardMaterial color="#a09070" roughness={0.95} />
+              </mesh>
             ) : (
               /* Starfish */
-              <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, i * 1.2]}>
-                <circleGeometry args={[0.2, 5]} />
-                <meshStandardMaterial color="#ff9060" roughness={0.6} />
+              <mesh position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, i * 1.2]}>
+                <circleGeometry args={[0.22, 5]} />
+                <meshStandardMaterial color="#ff7050" roughness={0.6} />
               </mesh>
             )}
           </group>
         ))}
 
+      {/* ============ FOREST ============ */}
       {islandId === 'forest' &&
         positions.map((pos, i) => (
           <group key={i} position={pos}>
-            {i % 3 === 0 ? (
-              /* Mushrooms */
+            {i % 5 === 0 ? (
+              /* Mushroom cluster */
               <group>
-                <mesh position={[0, 0.12, 0]} castShadow>
-                  <cylinderGeometry args={[0.04, 0.05, 0.24, 6]} />
+                <mesh position={[0, 0.15, 0]} castShadow>
+                  <cylinderGeometry args={[0.04, 0.06, 0.3, 6]} />
                   <meshStandardMaterial color="#e8e0d0" roughness={0.7} />
                 </mesh>
-                <mesh position={[0, 0.28, 0]} castShadow>
-                  <sphereGeometry args={[0.12, 8, 4, 0, Math.PI * 2, 0, Math.PI / 2]} />
+                <mesh position={[0, 0.33, 0]} castShadow>
+                  <sphereGeometry args={[0.14, 8, 4, 0, Math.PI * 2, 0, Math.PI / 2]} />
                   <meshStandardMaterial color="#cc3333" roughness={0.6} />
                 </mesh>
+                <mesh position={[0.2, 0.1, 0.1]} castShadow>
+                  <cylinderGeometry args={[0.03, 0.04, 0.2, 6]} />
+                  <meshStandardMaterial color="#e8e0d0" roughness={0.7} />
+                </mesh>
+                <mesh position={[0.2, 0.22, 0.1]} castShadow>
+                  <sphereGeometry args={[0.09, 6, 4, 0, Math.PI * 2, 0, Math.PI / 2]} />
+                  <meshStandardMaterial color="#dd5555" roughness={0.6} />
+                </mesh>
               </group>
-            ) : i % 3 === 1 ? (
-              /* Fallen log */
-              <mesh position={[0, 0.1, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
-                <cylinderGeometry args={[0.1, 0.12, 1.2, 6]} />
-                <meshStandardMaterial color="#5c3a1e" roughness={0.9} />
-              </mesh>
+            ) : i % 5 === 1 ? (
+              /* Fallen log with moss */
+              <group>
+                <mesh position={[0, 0.12, 0]} rotation={[0, i * 0.3, Math.PI / 2]} castShadow>
+                  <cylinderGeometry args={[0.12, 0.15, 1.5, 6]} />
+                  <meshStandardMaterial color="#5c3a1e" roughness={0.9} />
+                </mesh>
+                <mesh position={[0.2, 0.22, 0]} castShadow>
+                  <sphereGeometry args={[0.15, 6, 4]} />
+                  <meshStandardMaterial color="#2a6a20" roughness={0.9} />
+                </mesh>
+              </group>
+            ) : i % 5 === 2 ? (
+              /* Large bush */
+              <group>
+                <mesh position={[0, 0.3, 0]} castShadow>
+                  <sphereGeometry args={[0.35, 8, 6]} />
+                  <meshStandardMaterial color="#2a6a20" roughness={0.8} />
+                </mesh>
+                <mesh position={[0.2, 0.25, 0.15]} castShadow>
+                  <sphereGeometry args={[0.25, 6, 6]} />
+                  <meshStandardMaterial color="#3a7a30" roughness={0.8} />
+                </mesh>
+              </group>
+            ) : i % 5 === 3 ? (
+              /* Fairy ring of small mushrooms */
+              <group>
+                {[0, 1, 2, 3, 4, 5].map((j) => (
+                  <mesh key={j} position={[Math.cos(j * 1.05) * 0.4, 0.06, Math.sin(j * 1.05) * 0.4]} castShadow>
+                    <cylinderGeometry args={[0.02, 0.03, 0.12, 4]} />
+                    <meshStandardMaterial color="#f0e8d0" roughness={0.7} />
+                  </mesh>
+                ))}
+              </group>
             ) : (
-              /* Bush */
-              <mesh position={[0, 0.25, 0]} castShadow>
-                <sphereGeometry args={[0.3, 8, 6]} />
-                <meshStandardMaterial color="#2a6a20" roughness={0.8} />
-              </mesh>
+              /* Fern */
+              <group>
+                {[0, 1, 2].map((j) => (
+                  <mesh key={j} position={[0, 0.15, 0]} rotation={[0.3, j * 2.1, 0]} castShadow>
+                    <planeGeometry args={[0.5, 0.3]} />
+                    <meshStandardMaterial color="#2a7a20" roughness={0.8} side={THREE.DoubleSide} />
+                  </mesh>
+                ))}
+              </group>
             )}
           </group>
         ))}
 
+      {/* ============ MOUNTAIN ============ */}
       {islandId === 'mountain' &&
         positions.map((pos, i) => (
           <group key={i} position={pos}>
-            {i % 2 === 0 ? (
-              /* Crystal formations */
+            {i % 4 === 0 ? (
+              /* Crystal cluster */
               <group>
-                <mesh position={[0, 0.4, 0]} rotation={[0.1, i * 0.5, 0.05]} castShadow>
-                  <coneGeometry args={[0.15, 0.8, 4]} />
-                  <meshStandardMaterial color="#a0d0ff" metalness={0.5} roughness={0.3} />
+                <mesh position={[0, 0.5, 0]} rotation={[0.1, i * 0.5, 0.05]} castShadow>
+                  <coneGeometry args={[0.15, 1.0, 4]} />
+                  <meshStandardMaterial color="#a0d0ff" metalness={0.6} roughness={0.2} />
                 </mesh>
-                <mesh position={[0.15, 0.3, 0.1]} rotation={[-0.1, 0, 0.2]} castShadow>
-                  <coneGeometry args={[0.1, 0.5, 4]} />
-                  <meshStandardMaterial color="#c0e0ff" metalness={0.5} roughness={0.3} />
+                <mesh position={[0.2, 0.35, 0.1]} rotation={[-0.15, 0, 0.25]} castShadow>
+                  <coneGeometry args={[0.1, 0.7, 4]} />
+                  <meshStandardMaterial color="#c0e0ff" metalness={0.6} roughness={0.2} />
+                </mesh>
+                <mesh position={[-0.1, 0.25, 0.15]} rotation={[0.1, 0.3, -0.15]} castShadow>
+                  <coneGeometry args={[0.08, 0.5, 4]} />
+                  <meshStandardMaterial color="#b0d8ff" metalness={0.5} roughness={0.25} />
+                </mesh>
+                <pointLight position={[0, 0.6, 0]} color="#a0d0ff" intensity={0.3} distance={3} />
+              </group>
+            ) : i % 4 === 1 ? (
+              /* Stone cairn */
+              <group>
+                <mesh position={[0, 0.15, 0]} castShadow>
+                  <dodecahedronGeometry args={[0.25, 0]} />
+                  <meshStandardMaterial color="#7a7a7a" roughness={0.9} />
+                </mesh>
+                <mesh position={[0, 0.4, 0]} castShadow>
+                  <dodecahedronGeometry args={[0.18, 0]} />
+                  <meshStandardMaterial color="#8a8a8a" roughness={0.9} />
+                </mesh>
+                <mesh position={[0, 0.6, 0]} castShadow>
+                  <dodecahedronGeometry args={[0.12, 0]} />
+                  <meshStandardMaterial color="#9a9a9a" roughness={0.9} />
                 </mesh>
               </group>
-            ) : (
+            ) : i % 4 === 2 ? (
               /* Snow patch */
               <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
-                <circleGeometry args={[0.4 + (i % 3) * 0.2, 8]} />
-                <meshStandardMaterial color="#e8e8f0" roughness={0.5} />
+                <circleGeometry args={[0.5 + (i % 3) * 0.3, 10]} />
+                <meshStandardMaterial color="#e8e8f4" roughness={0.4} metalness={0.05} />
               </mesh>
+            ) : (
+              /* Small flag */
+              <group>
+                <mesh position={[0, 0.6, 0]} castShadow>
+                  <cylinderGeometry args={[0.02, 0.03, 1.2, 4]} />
+                  <meshStandardMaterial color="#6a5a4a" roughness={0.8} />
+                </mesh>
+                <mesh position={[0.12, 1.1, 0]} castShadow>
+                  <planeGeometry args={[0.24, 0.15]} />
+                  <meshStandardMaterial color={['#ff4444', '#44aaff', '#ffcc00'][i % 3]} side={THREE.DoubleSide} roughness={0.6} />
+                </mesh>
+              </group>
             )}
           </group>
         ))}
 
+      {/* ============ GARDEN ============ */}
       {islandId === 'garden' &&
         positions.map((pos, i) => (
           <group key={i} position={pos}>
-            {/* Flowers on thin stems */}
-            <mesh position={[0, 0.2, 0]} castShadow>
-              <cylinderGeometry args={[0.02, 0.02, 0.4, 4]} />
-              <meshStandardMaterial color="#3a8a2a" roughness={0.7} />
-            </mesh>
-            <mesh position={[0, 0.42, 0]} castShadow>
-              <coneGeometry args={[0.08, 0.1, 6]} />
-              <meshStandardMaterial
-                color={
-                  ['#ff6080', '#ffaa40', '#ff80ff', '#8080ff', '#ff4040'][i % 5]
-                }
-                roughness={0.5}
-              />
-            </mesh>
-            {i % 4 === 0 && (
-              /* Butterfly - simplified as small colored sphere */
-              <mesh position={[0.3, 0.8 + Math.sin(i) * 0.3, 0.2]}>
-                <sphereGeometry args={[0.05, 4, 4]} />
-                <meshStandardMaterial
-                  color="#ff80ff"
-                  emissive="#ff80ff"
-                  emissiveIntensity={0.3}
-                />
+            {i % 5 === 0 ? (
+              /* Flower cluster on stems */
+              <group>
+                {[0, 1, 2].map((j) => (
+                  <group key={j} position={[(j - 1) * 0.15, 0, (j % 2) * 0.1]}>
+                    <mesh position={[0, 0.2 + j * 0.05, 0]} castShadow>
+                      <cylinderGeometry args={[0.015, 0.02, 0.4 + j * 0.1, 4]} />
+                      <meshStandardMaterial color="#3a8a2a" roughness={0.7} />
+                    </mesh>
+                    <mesh position={[0, 0.42 + j * 0.1, 0]} castShadow>
+                      <coneGeometry args={[0.1, 0.12, 6]} />
+                      <meshStandardMaterial color={['#ff6080', '#ffaa40', '#ff80ff', '#8080ff', '#ff4040'][(i + j) % 5]} roughness={0.5} />
+                    </mesh>
+                  </group>
+                ))}
+              </group>
+            ) : i % 5 === 1 ? (
+              /* Garden bench */
+              <group>
+                <mesh position={[0, 0.2, 0]} castShadow>
+                  <boxGeometry args={[0.8, 0.06, 0.3]} />
+                  <meshStandardMaterial color="#8a6a3a" roughness={0.8} />
+                </mesh>
+                <mesh position={[-0.35, 0.1, 0]} castShadow>
+                  <boxGeometry args={[0.06, 0.2, 0.25]} />
+                  <meshStandardMaterial color="#7a5a2a" roughness={0.8} />
+                </mesh>
+                <mesh position={[0.35, 0.1, 0]} castShadow>
+                  <boxGeometry args={[0.06, 0.2, 0.25]} />
+                  <meshStandardMaterial color="#7a5a2a" roughness={0.8} />
+                </mesh>
+              </group>
+            ) : i % 5 === 2 ? (
+              /* Stepping stone */
+              <mesh rotation={[-Math.PI / 2, 0, i * 0.5]} position={[0, 0.03, 0]} receiveShadow>
+                <circleGeometry args={[0.25, 8]} />
+                <meshStandardMaterial color="#b0a898" roughness={0.9} />
               </mesh>
+            ) : i % 5 === 3 ? (
+              /* Butterfly pair */
+              <group>
+                <mesh position={[0.1, 0.7 + Math.sin(i) * 0.3, 0]}>
+                  <sphereGeometry args={[0.05, 4, 4]} />
+                  <meshStandardMaterial color="#ff80ff" emissive="#ff80ff" emissiveIntensity={0.3} />
+                </mesh>
+                <mesh position={[-0.2, 0.9 + Math.sin(i + 1) * 0.2, 0.15]}>
+                  <sphereGeometry args={[0.04, 4, 4]} />
+                  <meshStandardMaterial color="#88ccff" emissive="#88ccff" emissiveIntensity={0.3} />
+                </mesh>
+              </group>
+            ) : (
+              /* Small fountain */
+              <group>
+                <mesh position={[0, 0.15, 0]} castShadow>
+                  <cylinderGeometry args={[0.3, 0.35, 0.3, 8]} />
+                  <meshStandardMaterial color="#a0a0a0" roughness={0.7} />
+                </mesh>
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.3, 0]}>
+                  <circleGeometry args={[0.25, 8]} />
+                  <meshStandardMaterial color="#4488cc" roughness={0.2} metalness={0.1} />
+                </mesh>
+              </group>
             )}
           </group>
         ))}
 
+      {/* ============ NIGHT ============ */}
       {islandId === 'night' &&
         positions.map((pos, i) => (
           <group key={i} position={pos}>
-            {i % 2 === 0 ? (
+            {i % 4 === 0 ? (
               /* Floating lantern */
               <group position={[0, 1.5 + (i % 3) * 0.5, 0]}>
                 <mesh castShadow>
-                  <boxGeometry args={[0.25, 0.3, 0.25]} />
-                  <meshStandardMaterial
-                    color="#ffcc44"
-                    emissive="#ffaa22"
-                    emissiveIntensity={0.6}
-                    transparent
-                    opacity={0.9}
-                  />
+                  <boxGeometry args={[0.28, 0.35, 0.28]} />
+                  <meshStandardMaterial color="#ffcc44" emissive="#ffaa22" emissiveIntensity={0.7} transparent opacity={0.85} />
                 </mesh>
-                <pointLight color="#ffaa22" intensity={0.6} distance={5} />
+                <mesh position={[0, 0.25, 0]}>
+                  <coneGeometry args={[0.18, 0.15, 4]} />
+                  <meshStandardMaterial color="#cc8822" roughness={0.7} />
+                </mesh>
+                <pointLight color="#ffaa22" intensity={0.8} distance={6} />
+              </group>
+            ) : i % 4 === 1 ? (
+              /* Glowing crystal */
+              <group>
+                <mesh position={[0, 0.3, 0]} castShadow>
+                  <octahedronGeometry args={[0.25]} />
+                  <meshStandardMaterial color="#8060c0" emissive="#6040a0" emissiveIntensity={0.6} metalness={0.5} roughness={0.2} />
+                </mesh>
+                <pointLight position={[0, 0.3, 0]} color="#8060c0" intensity={0.4} distance={3} />
+              </group>
+            ) : i % 4 === 2 ? (
+              /* Moon stone (large glowing rock) */
+              <group>
+                <mesh position={[0, 0.2, 0]} castShadow>
+                  <dodecahedronGeometry args={[0.3, 0]} />
+                  <meshStandardMaterial color="#c0b8d8" emissive="#9090c0" emissiveIntensity={0.2} roughness={0.5} />
+                </mesh>
               </group>
             ) : (
-              /* Glowing ground crystal */
-              <mesh position={[0, 0.2, 0]} castShadow>
-                <octahedronGeometry args={[0.2]} />
-                <meshStandardMaterial
-                  color="#8060c0"
-                  emissive="#6040a0"
-                  emissiveIntensity={0.5}
-                  metalness={0.4}
-                  roughness={0.3}
-                />
-              </mesh>
+              /* Firefly jar */
+              <group>
+                <mesh position={[0, 0.2, 0]} castShadow>
+                  <cylinderGeometry args={[0.1, 0.12, 0.3, 8]} />
+                  <meshStandardMaterial color="#c0d0e0" transparent opacity={0.4} roughness={0.1} />
+                </mesh>
+                <pointLight position={[0, 0.2, 0]} color="#aaff66" intensity={0.3} distance={2} />
+              </group>
             )}
           </group>
         ))}
 
+      {/* ============ RAINBOW ============ */}
       {islandId === 'rainbow' &&
         positions.map((pos, i) => (
           <group key={i} position={pos}>
-            {/* Colored crystal prisms */}
-            <mesh
-              position={[0, 0.5, 0]}
-              rotation={[0.2 * i, 0.3 * i, 0.1 * i]}
-              castShadow
-            >
-              <tetrahedronGeometry args={[0.3 + (i % 3) * 0.1]} />
-              <meshStandardMaterial
-                color={
-                  ['#ff4040', '#ff8800', '#ffdd00', '#44cc44', '#4488ff', '#8844ff'][i % 6]
-                }
-                metalness={0.6}
-                roughness={0.2}
-                emissive={
-                  ['#ff4040', '#ff8800', '#ffdd00', '#44cc44', '#4488ff', '#8844ff'][i % 6]
-                }
-                emissiveIntensity={0.15}
-              />
-            </mesh>
+            {i % 4 === 0 ? (
+              /* Crystal prism cluster */
+              <group>
+                <mesh position={[0, 0.5, 0]} rotation={[0.2 * i, 0.3 * i, 0.1 * i]} castShadow>
+                  <tetrahedronGeometry args={[0.35]} />
+                  <meshStandardMaterial color={['#ff4040', '#ff8800', '#ffdd00', '#44cc44', '#4488ff', '#8844ff'][i % 6]} metalness={0.7} roughness={0.15} emissive={['#ff4040', '#ff8800', '#ffdd00', '#44cc44', '#4488ff', '#8844ff'][i % 6]} emissiveIntensity={0.2} />
+                </mesh>
+                <mesh position={[0.2, 0.3, 0.15]} rotation={[0.1, 0.5, 0.2]} castShadow>
+                  <tetrahedronGeometry args={[0.2]} />
+                  <meshStandardMaterial color={['#ff8800', '#ffdd00', '#44cc44', '#4488ff', '#8844ff', '#ff4040'][(i + 1) % 6]} metalness={0.7} roughness={0.15} />
+                </mesh>
+              </group>
+            ) : i % 4 === 1 ? (
+              /* Color fountain (stacked rings) */
+              <group>
+                {[0, 1, 2].map((j) => (
+                  <mesh key={j} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.1 + j * 0.25, 0]}>
+                    <ringGeometry args={[0.15 + j * 0.1, 0.2 + j * 0.1, 12]} />
+                    <meshStandardMaterial color={['#ff4040', '#44cc44', '#4488ff'][j]} emissive={['#ff4040', '#44cc44', '#4488ff'][j]} emissiveIntensity={0.3} transparent opacity={0.7} />
+                  </mesh>
+                ))}
+              </group>
+            ) : i % 4 === 2 ? (
+              /* Mirror shard */
+              <mesh position={[0, 0.3, 0]} rotation={[0.3, i * 0.8, 0.1]} castShadow>
+                <planeGeometry args={[0.4, 0.5]} />
+                <meshStandardMaterial color="#e0e8f8" metalness={0.9} roughness={0.05} side={THREE.DoubleSide} />
+              </mesh>
+            ) : (
+              /* Rainbow ground ring */
+              <group>
+                {[0, 1, 2, 3, 4, 5].map((j) => (
+                  <mesh key={j} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02 + j * 0.003, 0]}>
+                    <ringGeometry args={[0.3 + j * 0.08, 0.35 + j * 0.08, 16]} />
+                    <meshStandardMaterial color={['#ff0000', '#ff8800', '#ffff00', '#00cc00', '#0066ff', '#8800ff'][j]} transparent opacity={0.5} />
+                  </mesh>
+                ))}
+              </group>
+            )}
           </group>
         ))}
 
+      {/* ============ HOME ============ */}
       {islandId === 'home' &&
         positions.map((pos, i) => (
           <group key={i} position={pos}>
-            {i % 3 === 0 ? (
-              /* Small house */
+            {i % 5 === 0 ? (
+              /* Cozy house with chimney */
               <group>
-                <mesh position={[0, 0.4, 0]} castShadow>
-                  <boxGeometry args={[0.8, 0.8, 0.6]} />
+                <mesh position={[0, 0.45, 0]} castShadow>
+                  <boxGeometry args={[1.0, 0.9, 0.7]} />
                   <meshStandardMaterial color="#e8d0b0" roughness={0.8} />
                 </mesh>
-                <mesh position={[0, 0.95, 0]} castShadow>
-                  <coneGeometry args={[0.6, 0.5, 4]} />
+                <mesh position={[0, 1.05, 0]} castShadow>
+                  <coneGeometry args={[0.65, 0.6, 4]} />
                   <meshStandardMaterial color="#cc4444" roughness={0.7} />
                 </mesh>
                 {/* Door */}
-                <mesh position={[0, 0.25, 0.31]}>
-                  <planeGeometry args={[0.2, 0.4]} />
+                <mesh position={[0, 0.25, 0.36]}>
+                  <planeGeometry args={[0.25, 0.45]} />
                   <meshStandardMaterial color="#5c3a20" />
                 </mesh>
+                {/* Windows */}
+                <mesh position={[0.25, 0.5, 0.36]}>
+                  <planeGeometry args={[0.18, 0.18]} />
+                  <meshStandardMaterial color="#aaccff" emissive="#8899bb" emissiveIntensity={0.3} />
+                </mesh>
+                <mesh position={[-0.25, 0.5, 0.36]}>
+                  <planeGeometry args={[0.18, 0.18]} />
+                  <meshStandardMaterial color="#aaccff" emissive="#8899bb" emissiveIntensity={0.3} />
+                </mesh>
+                {/* Chimney */}
+                <mesh position={[0.3, 1.15, -0.15]} castShadow>
+                  <boxGeometry args={[0.15, 0.4, 0.15]} />
+                  <meshStandardMaterial color="#8a6a5a" roughness={0.9} />
+                </mesh>
+                <pointLight position={[0, 0.5, 0.5]} color="#ffcc88" intensity={0.4} distance={4} />
               </group>
-            ) : i % 3 === 1 ? (
-              /* Fence post */
+            ) : i % 5 === 1 ? (
+              /* Picket fence section */
               <group>
-                <mesh position={[0, 0.25, 0]} castShadow>
-                  <boxGeometry args={[0.08, 0.5, 0.08]} />
-                  <meshStandardMaterial color="#8a7a5a" roughness={0.85} />
+                {[0, 1, 2, 3].map((j) => (
+                  <mesh key={j} position={[j * 0.2 - 0.3, 0.2, 0]} castShadow>
+                    <boxGeometry args={[0.05, 0.4, 0.05]} />
+                    <meshStandardMaterial color="#e8e0d0" roughness={0.8} />
+                  </mesh>
+                ))}
+                <mesh position={[0, 0.3, 0]} castShadow>
+                  <boxGeometry args={[0.7, 0.04, 0.04]} />
+                  <meshStandardMaterial color="#e8e0d0" roughness={0.8} />
                 </mesh>
-                <mesh position={[0.4, 0.25, 0]} castShadow>
-                  <boxGeometry args={[0.08, 0.5, 0.08]} />
-                  <meshStandardMaterial color="#8a7a5a" roughness={0.85} />
+                <mesh position={[0, 0.15, 0]} castShadow>
+                  <boxGeometry args={[0.7, 0.04, 0.04]} />
+                  <meshStandardMaterial color="#e8e0d0" roughness={0.8} />
                 </mesh>
-                <mesh position={[0.2, 0.35, 0]} castShadow>
-                  <boxGeometry args={[0.5, 0.06, 0.06]} />
-                  <meshStandardMaterial color="#8a7a5a" roughness={0.85} />
+              </group>
+            ) : i % 5 === 2 ? (
+              /* Lamppost with warm glow */
+              <group>
+                <mesh position={[0, 0.9, 0]} castShadow>
+                  <cylinderGeometry args={[0.04, 0.06, 1.8, 6]} />
+                  <meshStandardMaterial color="#4a4a4a" metalness={0.5} roughness={0.4} />
+                </mesh>
+                <mesh position={[0, 1.85, 0]}>
+                  <sphereGeometry args={[0.14, 8, 6]} />
+                  <meshStandardMaterial color="#ffffaa" emissive="#ffcc44" emissiveIntensity={0.7} />
+                </mesh>
+                <pointLight position={[0, 1.9, 0]} color="#ffcc44" intensity={0.7} distance={6} />
+              </group>
+            ) : i % 5 === 3 ? (
+              /* Mailbox */
+              <group>
+                <mesh position={[0, 0.45, 0]} castShadow>
+                  <cylinderGeometry args={[0.03, 0.04, 0.9, 4]} />
+                  <meshStandardMaterial color="#5a5a5a" roughness={0.7} />
+                </mesh>
+                <mesh position={[0, 0.95, 0.05]} castShadow>
+                  <boxGeometry args={[0.2, 0.15, 0.12]} />
+                  <meshStandardMaterial color="#4466cc" roughness={0.6} />
                 </mesh>
               </group>
             ) : (
-              /* Lamppost */
+              /* Garden gnome (simple) */
               <group>
-                <mesh position={[0, 0.8, 0]} castShadow>
-                  <cylinderGeometry args={[0.04, 0.06, 1.6, 6]} />
-                  <meshStandardMaterial color="#4a4a4a" metalness={0.5} roughness={0.4} />
+                <mesh position={[0, 0.12, 0]} castShadow>
+                  <cylinderGeometry args={[0.08, 0.1, 0.24, 6]} />
+                  <meshStandardMaterial color="#4488ff" roughness={0.7} />
                 </mesh>
-                <mesh position={[0, 1.65, 0]}>
-                  <sphereGeometry args={[0.12, 8, 6]} />
-                  <meshStandardMaterial
-                    color="#ffffaa"
-                    emissive="#ffcc44"
-                    emissiveIntensity={0.6}
-                  />
+                <mesh position={[0, 0.3, 0]} castShadow>
+                  <sphereGeometry args={[0.08, 6, 4]} />
+                  <meshStandardMaterial color="#f5d0b0" roughness={0.65} />
                 </mesh>
-                <pointLight
-                  position={[0, 1.7, 0]}
-                  color="#ffcc44"
-                  intensity={0.5}
-                  distance={5}
-                />
+                <mesh position={[0, 0.42, 0]} castShadow>
+                  <coneGeometry args={[0.08, 0.15, 6]} />
+                  <meshStandardMaterial color="#ff3333" roughness={0.6} />
+                </mesh>
               </group>
             )}
           </group>
