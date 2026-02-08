@@ -2882,6 +2882,565 @@ function CloudLayer({ theme }: { theme: IslandTheme }) {
 }
 
 // ---------------------------------------------------------------------------
+// 3D: Treasure Chests (hidden collectibles around the island)
+// ---------------------------------------------------------------------------
+
+function TreasureChests({
+  islandId,
+  playerGroupRef,
+}: {
+  islandId: string;
+  playerGroupRef: { current: THREE.Group | null };
+}) {
+  const chestsRef = useRef<THREE.Group>(null);
+  const lidRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const glowRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const openState = useRef<boolean[]>([]);
+
+  const chestPositions = useMemo(() => {
+    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 9999);
+    const count = 5;
+    const positions: Vec3[] = [];
+    for (let i = 0; i < count; i++) {
+      const angle = rng() * Math.PI * 2;
+      const r = 10 + rng() * (GROUND_SIZE - 14);
+      positions.push([Math.cos(angle) * r, 0, Math.sin(angle) * r]);
+    }
+    openState.current = new Array(count).fill(false);
+    return positions;
+  }, [islandId]);
+
+  useFrame(() => {
+    if (!playerGroupRef.current) return;
+    const pp = playerGroupRef.current.position;
+    chestPositions.forEach((pos, i) => {
+      const dx = pp.x - pos[0];
+      const dz = pp.z - pos[2];
+      const dist = Math.sqrt(dx * dx + dz * dz);
+      const isNear = dist < 3;
+
+      // Animate lid opening
+      const lid = lidRefs.current[i];
+      if (lid) {
+        const targetRot = isNear ? -Math.PI / 3 : 0;
+        lid.rotation.x += (targetRot - lid.rotation.x) * 0.08;
+      }
+
+      // Animate glow
+      const glow = glowRefs.current[i];
+      if (glow) {
+        const targetScale = isNear ? 2 : 0.5;
+        const targetOpacity = isNear ? 0.6 : 0.15;
+        glow.scale.setScalar(glow.scale.x + (targetScale - glow.scale.x) * 0.05);
+        (glow.material as THREE.MeshStandardMaterial).opacity +=
+          (targetOpacity - (glow.material as THREE.MeshStandardMaterial).opacity) * 0.05;
+      }
+    });
+  });
+
+  return (
+    <group ref={chestsRef}>
+      {chestPositions.map((pos, i) => (
+        <group key={`chest-${i}`} position={pos}>
+          {/* Chest base */}
+          <mesh position={[0, 0.2, 0]} castShadow>
+            <boxGeometry args={[0.7, 0.35, 0.5]} />
+            <meshStandardMaterial color="#6b4423" roughness={0.8} />
+          </mesh>
+          {/* Metal bands */}
+          <mesh position={[0, 0.2, 0.251]}>
+            <boxGeometry args={[0.72, 0.08, 0.01]} />
+            <meshStandardMaterial color="#aa8833" metalness={0.6} roughness={0.4} />
+          </mesh>
+          <mesh position={[0, 0.2, -0.251]}>
+            <boxGeometry args={[0.72, 0.08, 0.01]} />
+            <meshStandardMaterial color="#aa8833" metalness={0.6} roughness={0.4} />
+          </mesh>
+          {/* Lid (animated) */}
+          <group position={[0, 0.38, -0.25]}>
+            <mesh
+              ref={(el) => { lidRefs.current[i] = el; }}
+              position={[0, 0.08, 0.25]}
+            >
+              <boxGeometry args={[0.72, 0.15, 0.52]} />
+              <meshStandardMaterial color="#7a5030" roughness={0.7} />
+            </mesh>
+          </group>
+          {/* Lock */}
+          <mesh position={[0, 0.3, 0.26]}>
+            <boxGeometry args={[0.1, 0.1, 0.04]} />
+            <meshStandardMaterial color="#FFD700" metalness={0.7} roughness={0.3} />
+          </mesh>
+          {/* Inner glow */}
+          <mesh
+            ref={(el) => { glowRefs.current[i] = el; }}
+            position={[0, 0.5, 0]}
+          >
+            <sphereGeometry args={[0.3, 8, 8]} />
+            <meshStandardMaterial
+              color="#FFD700"
+              emissive="#FFD700"
+              emissiveIntensity={0.8}
+              transparent
+              opacity={0.15}
+            />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 3D: Ambient Wildlife (butterflies, fireflies based on island)
+// ---------------------------------------------------------------------------
+
+function AmbientWildlife({ islandId, theme }: { islandId: string; theme: IslandTheme }) {
+  const groupRef = useRef<THREE.Group>(null);
+
+  const creatures = useMemo(() => {
+    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 8888);
+    const count = 8;
+    return Array.from({ length: count }, (_, i) => ({
+      id: i,
+      x: -GROUND_SIZE / 2 + rng() * GROUND_SIZE,
+      y: 1 + rng() * 3,
+      z: -GROUND_SIZE / 2 + rng() * GROUND_SIZE,
+      speed: 0.5 + rng() * 1.5,
+      radius: 2 + rng() * 4,
+      phase: rng() * Math.PI * 2,
+      wingSpeed: 5 + rng() * 8,
+      color: theme.foliageColor,
+    }));
+  }, [islandId, theme.foliageColor]);
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current) return;
+    const t = clock.getElapsedTime();
+    groupRef.current.children.forEach((creature, i) => {
+      if (i >= creatures.length) return;
+      const c = creatures[i];
+      creature.position.x = c.x + Math.sin(t * c.speed + c.phase) * c.radius;
+      creature.position.y = c.y + Math.sin(t * c.speed * 1.3 + c.phase) * 0.5;
+      creature.position.z = c.z + Math.cos(t * c.speed * 0.7 + c.phase) * c.radius;
+      // Wing flap for butterflies
+      if (creature.children.length >= 2) {
+        const wingAngle = Math.sin(t * c.wingSpeed) * 0.6;
+        creature.children[0].rotation.z = wingAngle;
+        creature.children[1].rotation.z = -wingAngle;
+      }
+    });
+  });
+
+  const isNight = islandId === 'night';
+  const isOcean = islandId === 'ocean';
+
+  return (
+    <group ref={groupRef}>
+      {creatures.map((c) => (
+        <group key={c.id} position={[c.x, c.y, c.z]}>
+          {isNight ? (
+            // Fireflies for night island
+            <mesh>
+              <sphereGeometry args={[0.06, 6, 6]} />
+              <meshStandardMaterial
+                color="#aaff44"
+                emissive="#aaff44"
+                emissiveIntensity={1.5}
+                transparent
+                opacity={0.8}
+              />
+            </mesh>
+          ) : isOcean ? (
+            // Fish for ocean island
+            <>
+              <mesh>
+                <capsuleGeometry args={[0.06, 0.15, 4, 8]} />
+                <meshStandardMaterial color="#88ccee" roughness={0.3} />
+              </mesh>
+              <mesh position={[0, 0, 0.12]} rotation={[0, 0.3, 0]}>
+                <boxGeometry args={[0.01, 0.08, 0.06]} />
+                <meshStandardMaterial color="#66aacc" />
+              </mesh>
+            </>
+          ) : (
+            // Butterflies for other islands
+            <>
+              {/* Left wing */}
+              <mesh position={[-0.06, 0, 0]} rotation={[0, 0, 0.3]}>
+                <planeGeometry args={[0.15, 0.1]} />
+                <meshStandardMaterial
+                  color={c.color}
+                  emissive={c.color}
+                  emissiveIntensity={0.3}
+                  side={THREE.DoubleSide}
+                  transparent
+                  opacity={0.8}
+                />
+              </mesh>
+              {/* Right wing */}
+              <mesh position={[0.06, 0, 0]} rotation={[0, 0, -0.3]}>
+                <planeGeometry args={[0.15, 0.1]} />
+                <meshStandardMaterial
+                  color={c.color}
+                  emissive={c.color}
+                  emissiveIntensity={0.3}
+                  side={THREE.DoubleSide}
+                  transparent
+                  opacity={0.8}
+                />
+              </mesh>
+              {/* Body */}
+              <mesh>
+                <capsuleGeometry args={[0.015, 0.06, 4, 6]} />
+                <meshStandardMaterial color="#333" />
+              </mesh>
+            </>
+          )}
+        </group>
+      ))}
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 3D: Campfire / Rest Area (discoverable atmospheric spot)
+// ---------------------------------------------------------------------------
+
+function CampfireArea({ islandId }: { islandId: string }) {
+  const fireRef = useRef<THREE.PointLight>(null);
+
+  const position = useMemo((): Vec3 => {
+    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 6666);
+    const angle = rng() * Math.PI * 2;
+    const r = 14 + rng() * 6;
+    return [Math.cos(angle) * r, 0, Math.sin(angle) * r];
+  }, [islandId]);
+
+  useFrame(({ clock }) => {
+    if (fireRef.current) {
+      const t = clock.getElapsedTime();
+      fireRef.current.intensity = 1.5 + Math.sin(t * 8) * 0.4 + Math.sin(t * 12) * 0.2;
+    }
+  });
+
+  return (
+    <group position={position}>
+      {/* Fire pit ring */}
+      {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
+        const angle = (i / 8) * Math.PI * 2;
+        return (
+          <mesh
+            key={`stone-${i}`}
+            position={[Math.cos(angle) * 0.6, 0.1, Math.sin(angle) * 0.6]}
+            castShadow
+          >
+            <dodecahedronGeometry args={[0.15, 0]} />
+            <meshStandardMaterial color="#555" roughness={0.95} />
+          </mesh>
+        );
+      })}
+      {/* Fire logs */}
+      <mesh position={[0, 0.1, 0]} rotation={[0, 0.3, Math.PI / 2]}>
+        <cylinderGeometry args={[0.06, 0.08, 0.8, 6]} />
+        <meshStandardMaterial color="#3a2010" roughness={0.9} />
+      </mesh>
+      <mesh position={[0, 0.15, 0]} rotation={[0, -0.5, Math.PI / 2]}>
+        <cylinderGeometry args={[0.05, 0.07, 0.7, 6]} />
+        <meshStandardMaterial color="#4a2a14" roughness={0.9} />
+      </mesh>
+      {/* Fire glow core */}
+      <mesh position={[0, 0.35, 0]}>
+        <coneGeometry args={[0.2, 0.6, 6]} />
+        <meshStandardMaterial
+          color="#ff6600"
+          emissive="#ff4400"
+          emissiveIntensity={1.2}
+          transparent
+          opacity={0.6}
+        />
+      </mesh>
+      <mesh position={[0.05, 0.5, 0.03]}>
+        <coneGeometry args={[0.12, 0.4, 5]} />
+        <meshStandardMaterial
+          color="#ffaa00"
+          emissive="#ff6600"
+          emissiveIntensity={0.8}
+          transparent
+          opacity={0.5}
+        />
+      </mesh>
+      {/* Fire light */}
+      <pointLight
+        ref={fireRef}
+        position={[0, 0.8, 0]}
+        color="#ff6622"
+        intensity={1.5}
+        distance={8}
+        decay={2}
+      />
+      {/* Log seats around fire */}
+      {[0, 1, 2].map((i) => {
+        const angle = (i / 3) * Math.PI * 2 + 0.5;
+        return (
+          <mesh
+            key={`seat-${i}`}
+            position={[Math.cos(angle) * 1.5, 0.2, Math.sin(angle) * 1.5]}
+            rotation={[0, -angle + Math.PI, 0]}
+            castShadow
+          >
+            <cylinderGeometry args={[0.12, 0.15, 0.8, 6]} />
+            <meshStandardMaterial color="#5c3a1e" roughness={0.85} />
+          </mesh>
+        );
+      })}
+      {/* Hanging lantern on a stick */}
+      <group position={[1.2, 0, 0.5]}>
+        <mesh position={[0, 0.8, 0]}>
+          <cylinderGeometry args={[0.03, 0.04, 1.6, 6]} />
+          <meshStandardMaterial color="#4a2e16" roughness={0.9} />
+        </mesh>
+        <mesh position={[0.3, 1.4, 0]}>
+          <cylinderGeometry args={[0.02, 0.02, 0.6, 4]} />
+          <meshStandardMaterial color="#4a2e16" roughness={0.9} />
+        </mesh>
+        <mesh position={[0.6, 1.2, 0]}>
+          <boxGeometry args={[0.15, 0.2, 0.15]} />
+          <meshStandardMaterial
+            color="#ffdd88"
+            emissive="#ffcc44"
+            emissiveIntensity={0.5}
+            transparent
+            opacity={0.7}
+          />
+        </mesh>
+      </group>
+      {/* Sign: "Rastplatz" */}
+      <Html
+        position={[0, 2, 0]}
+        center
+        distanceFactor={14}
+        style={{ pointerEvents: 'none' }}
+      >
+        <div
+          style={{
+            background: 'rgba(30,20,60,0.85)',
+            border: '1px solid rgba(255,150,50,0.4)',
+            borderRadius: '6px',
+            padding: '3px 8px',
+            color: '#ffaa44',
+            fontSize: '10px',
+            fontWeight: 'bold',
+            whiteSpace: 'nowrap',
+            textShadow: '0 0 6px rgba(255,150,50,0.3)',
+          }}
+        >
+          {'\u{1F525}'} Rastplatz
+        </div>
+      </Html>
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 3D: Ruins / Secret Area (discoverable exploration spot)
+// ---------------------------------------------------------------------------
+
+function SecretRuins({ islandId, theme }: { islandId: string; theme: IslandTheme }) {
+  const glowRef = useRef<THREE.Mesh>(null);
+
+  const position = useMemo((): Vec3 => {
+    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 5555);
+    const angle = rng() * Math.PI * 2;
+    const r = 16 + rng() * 8;
+    return [Math.cos(angle) * r, 0, Math.sin(angle) * r];
+  }, [islandId]);
+
+  useFrame(({ clock }) => {
+    if (glowRef.current) {
+      const t = clock.getElapsedTime();
+      (glowRef.current.material as THREE.MeshStandardMaterial).opacity =
+        0.15 + Math.sin(t * 1.5) * 0.1;
+      glowRef.current.rotation.y = t * 0.2;
+    }
+  });
+
+  return (
+    <group position={position}>
+      {/* Broken stone columns */}
+      {[0, 1, 2, 3].map((i) => {
+        const angle = (i / 4) * Math.PI * 2;
+        const r = 2;
+        const height = 1 + (i % 3) * 0.8;
+        return (
+          <group key={`column-${i}`} position={[Math.cos(angle) * r, 0, Math.sin(angle) * r]}>
+            <mesh position={[0, height / 2, 0]} castShadow>
+              <cylinderGeometry args={[0.25, 0.3, height, 8]} />
+              <meshStandardMaterial color="#8a8a7a" roughness={0.9} />
+            </mesh>
+            {/* Column cap (only on taller ones) */}
+            {height > 1.5 && (
+              <mesh position={[0, height + 0.1, 0]} castShadow>
+                <boxGeometry args={[0.6, 0.15, 0.6]} />
+                <meshStandardMaterial color="#9a9a8a" roughness={0.85} />
+              </mesh>
+            )}
+          </group>
+        );
+      })}
+      {/* Stone floor platform */}
+      <mesh rotation={[-Math.PI / 2, 0, Math.PI / 4]} position={[0, 0.05, 0]}>
+        <planeGeometry args={[5, 5]} />
+        <meshStandardMaterial
+          color="#7a7a6a"
+          roughness={0.95}
+        />
+      </mesh>
+      {/* Central pedestal */}
+      <mesh position={[0, 0.4, 0]} castShadow>
+        <cylinderGeometry args={[0.4, 0.5, 0.8, 8]} />
+        <meshStandardMaterial color="#6a6a5a" roughness={0.8} />
+      </mesh>
+      {/* Mystical orb on pedestal */}
+      <mesh ref={glowRef} position={[0, 1.2, 0]}>
+        <sphereGeometry args={[0.3, 16, 16]} />
+        <meshStandardMaterial
+          color={theme.playerAccent}
+          emissive={theme.playerAccent}
+          emissiveIntensity={0.8}
+          transparent
+          opacity={0.3}
+        />
+      </mesh>
+      {/* Inner bright core */}
+      <mesh position={[0, 1.2, 0]}>
+        <sphereGeometry args={[0.12, 12, 12]} />
+        <meshStandardMaterial
+          color="white"
+          emissive={theme.playerAccent}
+          emissiveIntensity={1.2}
+          transparent
+          opacity={0.6}
+        />
+      </mesh>
+      {/* Glow rings around orb */}
+      <mesh position={[0, 1.2, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[0.4, 0.5, 16]} />
+        <meshStandardMaterial
+          color={theme.playerAccent}
+          emissive={theme.playerAccent}
+          emissiveIntensity={0.5}
+          transparent
+          opacity={0.2}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      {/* Fallen column pieces */}
+      <mesh position={[3, 0.15, 1]} rotation={[0, 0.8, Math.PI / 2]} castShadow>
+        <cylinderGeometry args={[0.2, 0.25, 1.5, 8]} />
+        <meshStandardMaterial color="#7a7a6a" roughness={0.9} />
+      </mesh>
+      {/* Vine/plant growing on ruins */}
+      <mesh position={[-2, 0.5, 0.5]} castShadow>
+        <sphereGeometry args={[0.3, 6, 6]} />
+        <meshStandardMaterial color={theme.foliageColor} roughness={0.8} />
+      </mesh>
+      <mesh position={[-2, 0.9, 0.3]} castShadow>
+        <sphereGeometry args={[0.2, 6, 6]} />
+        <meshStandardMaterial color={theme.foliageSecondary} roughness={0.8} />
+      </mesh>
+      {/* Label */}
+      <Html
+        position={[0, 2.5, 0]}
+        center
+        distanceFactor={14}
+        style={{ pointerEvents: 'none' }}
+      >
+        <div
+          style={{
+            background: 'rgba(30,20,60,0.85)',
+            border: '1px solid rgba(180,140,255,0.4)',
+            borderRadius: '6px',
+            padding: '3px 8px',
+            color: '#bb99ff',
+            fontSize: '10px',
+            fontWeight: 'bold',
+            whiteSpace: 'nowrap',
+            textShadow: '0 0 6px rgba(180,140,255,0.3)',
+          }}
+        >
+          {'\u{1F3DB}\u{FE0F}'} Alte Ruinen
+        </div>
+      </Html>
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 3D: Signpost (directional signs pointing to other islands)
+// ---------------------------------------------------------------------------
+
+function Signpost({ islandId }: { islandId: string }) {
+  const position = useMemo((): Vec3 => {
+    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 4444);
+    const angle = rng() * Math.PI * 2;
+    const r = 5 + rng() * 3;
+    return [Math.cos(angle) * r, 0, Math.sin(angle) * r];
+  }, [islandId]);
+
+  // Get neighboring islands for sign arrows
+  const neighbors = useMemo(() => {
+    return TRAVEL_CONNECTIONS
+      .filter(([a, b]) => a === islandId || b === islandId)
+      .map(([a, b]) => (a === islandId ? b : a))
+      .slice(0, 3);
+  }, [islandId]);
+
+  return (
+    <group position={position}>
+      {/* Main post */}
+      <mesh position={[0, 1, 0]} castShadow>
+        <cylinderGeometry args={[0.06, 0.08, 2, 6]} />
+        <meshStandardMaterial color="#5c3a1e" roughness={0.9} />
+      </mesh>
+      {/* Sign planks pointing to different islands */}
+      {neighbors.map((destId, i) => {
+        const info = TRAVEL_ISLAND_INFO[destId];
+        if (!info) return null;
+        const yOff = 1.6 - i * 0.4;
+        const rot = -0.3 + i * 0.3;
+        return (
+          <group key={destId} position={[0, yOff, 0]} rotation={[0, rot, 0]}>
+            <mesh position={[0.5, 0, 0]} castShadow>
+              <boxGeometry args={[1, 0.2, 0.06]} />
+              <meshStandardMaterial color="#7a5030" roughness={0.8} />
+            </mesh>
+            <Html
+              position={[0.5, 0, 0.04]}
+              center
+              distanceFactor={10}
+              style={{ pointerEvents: 'none' }}
+            >
+              <div
+                style={{
+                  color: '#ffd700',
+                  fontSize: '8px',
+                  fontWeight: 'bold',
+                  whiteSpace: 'nowrap',
+                  textShadow: '0 0 4px rgba(0,0,0,0.8)',
+                }}
+              >
+                {info.emoji} {info.name}
+              </div>
+            </Html>
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // 3D: Dock & Airport (departure points for inter-island travel)
 // ---------------------------------------------------------------------------
 
@@ -3353,6 +3912,21 @@ function WorldScene({
         playerGroupRef={playerGroupRef}
         onClick={onMiniGameClick}
       />
+
+      {/* Hidden treasure chests */}
+      <TreasureChests islandId={islandId} playerGroupRef={playerGroupRef} />
+
+      {/* Ambient wildlife (butterflies, fireflies, fish) */}
+      <AmbientWildlife islandId={islandId} theme={theme} />
+
+      {/* Campfire rest area */}
+      <CampfireArea islandId={islandId} />
+
+      {/* Ancient ruins / secret area */}
+      <SecretRuins islandId={islandId} theme={theme} />
+
+      {/* Directional signpost to other islands */}
+      <Signpost islandId={islandId} />
 
       {/* Dock area (harbor for boat travel) */}
       <DockArea theme={theme} />
