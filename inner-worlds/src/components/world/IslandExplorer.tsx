@@ -2882,6 +2882,266 @@ function CloudLayer({ theme }: { theme: IslandTheme }) {
 }
 
 // ---------------------------------------------------------------------------
+// 3D: Dock & Airport (departure points for inter-island travel)
+// ---------------------------------------------------------------------------
+
+function DockArea({ theme }: { theme: IslandTheme }) {
+  const dockRef = useRef<THREE.Group>(null);
+  const glowRef = useRef<THREE.Mesh>(null);
+
+  useFrame(({ clock }) => {
+    if (glowRef.current) {
+      const t = clock.getElapsedTime();
+      glowRef.current.scale.setScalar(1 + Math.sin(t * 2) * 0.15);
+      (glowRef.current.material as THREE.MeshStandardMaterial).opacity = 0.3 + Math.sin(t * 1.5) * 0.15;
+    }
+  });
+
+  return (
+    <group ref={dockRef} position={[-GROUND_SIZE + 3, 0, 0]}>
+      {/* Wooden pier planks */}
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <mesh key={`plank-${i}`} position={[-i * 1.8, 0.15, 0]}>
+          <boxGeometry args={[1.5, 0.15, 3]} />
+          <meshStandardMaterial color="#6b4423" roughness={0.9} />
+        </mesh>
+      ))}
+      {/* Pier posts */}
+      {[0, 2, 4].map((i) => (
+        <group key={`post-pair-${i}`}>
+          <mesh position={[-i * 1.8, -0.3, 1.3]}>
+            <cylinderGeometry args={[0.08, 0.1, 1, 6]} />
+            <meshStandardMaterial color="#4a2e16" roughness={0.9} />
+          </mesh>
+          <mesh position={[-i * 1.8, -0.3, -1.3]}>
+            <cylinderGeometry args={[0.08, 0.1, 1, 6]} />
+            <meshStandardMaterial color="#4a2e16" roughness={0.9} />
+          </mesh>
+        </group>
+      ))}
+      {/* Bollards at end */}
+      <mesh position={[-9.5, 0.5, 1]}>
+        <cylinderGeometry args={[0.15, 0.15, 0.5, 8]} />
+        <meshStandardMaterial color="#888" metalness={0.4} roughness={0.5} />
+      </mesh>
+      <mesh position={[-9.5, 0.5, -1]}>
+        <cylinderGeometry args={[0.15, 0.15, 0.5, 8]} />
+        <meshStandardMaterial color="#888" metalness={0.4} roughness={0.5} />
+      </mesh>
+      {/* Lantern on dock */}
+      <mesh position={[-4, 1.5, 1.5]}>
+        <cylinderGeometry args={[0.05, 0.06, 2, 6]} />
+        <meshStandardMaterial color="#4a4a4a" />
+      </mesh>
+      <mesh position={[-4, 2.6, 1.5]}>
+        <sphereGeometry args={[0.2, 8, 8]} />
+        <meshStandardMaterial
+          color="#FFD700"
+          emissive="#FFD700"
+          emissiveIntensity={0.8}
+          transparent
+          opacity={0.8}
+        />
+      </mesh>
+      {/* Glow beacon at end */}
+      <mesh ref={glowRef} position={[-9.5, 1.5, 0]}>
+        <sphereGeometry args={[0.5, 12, 12]} />
+        <meshStandardMaterial
+          color={theme.waterColor}
+          emissive={theme.waterColor}
+          emissiveIntensity={0.6}
+          transparent
+          opacity={0.3}
+        />
+      </mesh>
+      {/* Boat moored at dock */}
+      <group position={[-10, -0.1, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <mesh>
+          <boxGeometry args={[1.2, 0.5, 3]} />
+          <meshStandardMaterial color="#5c3a1e" roughness={0.8} />
+        </mesh>
+        <mesh position={[0, 0.3, 0]}>
+          <boxGeometry args={[1, 0.08, 2.5]} />
+          <meshStandardMaterial color="#8B6914" roughness={0.7} />
+        </mesh>
+        <mesh position={[0, 1.2, -0.2]}>
+          <cylinderGeometry args={[0.04, 0.06, 2, 6]} />
+          <meshStandardMaterial color="#3e2710" roughness={0.9} />
+        </mesh>
+        <mesh position={[0.3, 1.3, -0.2]} rotation={[0, 0.1, 0]}>
+          <planeGeometry args={[1, 1.2]} />
+          <meshStandardMaterial
+            color={theme.waterColor}
+            side={THREE.DoubleSide}
+            transparent
+            opacity={0.85}
+          />
+        </mesh>
+      </group>
+      {/* Sign post */}
+      <group position={[0.5, 0, 2]}>
+        <mesh position={[0, 0.8, 0]}>
+          <cylinderGeometry args={[0.05, 0.06, 1.6, 6]} />
+          <meshStandardMaterial color="#4a2e16" roughness={0.9} />
+        </mesh>
+        <Html
+          position={[0, 1.7, 0]}
+          center
+          distanceFactor={12}
+          style={{ pointerEvents: 'none' }}
+        >
+          <div
+            style={{
+              background: 'rgba(30,20,60,0.9)',
+              border: '1px solid rgba(201,168,76,0.4)',
+              borderRadius: '6px',
+              padding: '4px 10px',
+              color: '#ffd700',
+              fontSize: '11px',
+              fontWeight: 'bold',
+              whiteSpace: 'nowrap',
+              textShadow: '0 0 6px rgba(255,215,0,0.3)',
+            }}
+          >
+            {'\u26F5'} Hafen
+          </div>
+        </Html>
+      </group>
+    </group>
+  );
+}
+
+function AirportArea({ theme }: { theme: IslandTheme }) {
+  const beaconRef = useRef<THREE.Mesh>(null);
+
+  useFrame(({ clock }) => {
+    if (beaconRef.current) {
+      const t = clock.getElapsedTime();
+      (beaconRef.current.material as THREE.MeshStandardMaterial).opacity = 0.4 + Math.sin(t * 3) * 0.3;
+    }
+  });
+
+  return (
+    <group position={[GROUND_SIZE - 6, 0.02, -GROUND_SIZE + 8]} rotation={[0, -Math.PI / 4, 0]}>
+      {/* Runway */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[3, 16]} />
+        <meshStandardMaterial color="#333" roughness={0.9} />
+      </mesh>
+      {/* Runway center line */}
+      {[-6, -4, -2, 0, 2, 4, 6].map((z) => (
+        <mesh key={`line-${z}`} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, z]}>
+          <planeGeometry args={[0.15, 1]} />
+          <meshStandardMaterial color="#ddd" roughness={0.8} />
+        </mesh>
+      ))}
+      {/* Runway edge lights */}
+      {[-7, -5, -3, -1, 1, 3, 5, 7].map((z, i) => (
+        <group key={`rlight-${i}`}>
+          <mesh position={[1.5, 0.15, z]}>
+            <sphereGeometry args={[0.08, 6, 6]} />
+            <meshStandardMaterial
+              color={z < 0 ? '#00ff44' : '#ff4400'}
+              emissive={z < 0 ? '#00ff44' : '#ff4400'}
+              emissiveIntensity={0.8}
+            />
+          </mesh>
+          <mesh position={[-1.5, 0.15, z]}>
+            <sphereGeometry args={[0.08, 6, 6]} />
+            <meshStandardMaterial
+              color={z < 0 ? '#00ff44' : '#ff4400'}
+              emissive={z < 0 ? '#00ff44' : '#ff4400'}
+              emissiveIntensity={0.8}
+            />
+          </mesh>
+        </group>
+      ))}
+      {/* Control tower */}
+      <group position={[4, 0, 2]}>
+        <mesh position={[0, 1.5, 0]}>
+          <boxGeometry args={[1.5, 3, 1.5]} />
+          <meshStandardMaterial color="#555" roughness={0.7} />
+        </mesh>
+        <mesh position={[0, 3.3, 0]}>
+          <boxGeometry args={[2, 0.8, 2]} />
+          <meshStandardMaterial color="#444" roughness={0.6} metalness={0.2} />
+        </mesh>
+        {/* Tower windows */}
+        {[0, Math.PI / 2, Math.PI, -Math.PI / 2].map((rot, i) => (
+          <mesh
+            key={`towerwin-${i}`}
+            position={[
+              Math.sin(rot) * 0.95,
+              3.3,
+              Math.cos(rot) * 0.95,
+            ]}
+            rotation={[0, rot, 0]}
+          >
+            <planeGeometry args={[1.2, 0.5]} />
+            <meshStandardMaterial
+              color="#88ccff"
+              emissive="#88ccff"
+              emissiveIntensity={0.4}
+              transparent
+              opacity={0.7}
+            />
+          </mesh>
+        ))}
+        {/* Beacon light */}
+        <mesh ref={beaconRef} position={[0, 3.9, 0]}>
+          <sphereGeometry args={[0.25, 8, 8]} />
+          <meshStandardMaterial
+            color="#ff3300"
+            emissive="#ff3300"
+            emissiveIntensity={1}
+            transparent
+            opacity={0.6}
+          />
+        </mesh>
+      </group>
+      {/* Small parked airplane */}
+      <group position={[-3.5, 0.3, -3]} rotation={[0, Math.PI / 6, 0]} scale={0.5}>
+        <mesh>
+          <capsuleGeometry args={[0.4, 3, 6, 12]} />
+          <meshStandardMaterial color="white" roughness={0.3} />
+        </mesh>
+        <mesh position={[0, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <boxGeometry args={[0.08, 5, 1]} />
+          <meshStandardMaterial color="#ddd" roughness={0.4} />
+        </mesh>
+        <mesh position={[0, 0.5, 2]}>
+          <boxGeometry args={[0.06, 1.2, 0.6]} />
+          <meshStandardMaterial color={theme.waterColor} />
+        </mesh>
+      </group>
+      {/* Sign */}
+      <Html
+        position={[0, 2, -8.5]}
+        center
+        distanceFactor={12}
+        style={{ pointerEvents: 'none' }}
+      >
+        <div
+          style={{
+            background: 'rgba(30,20,60,0.9)',
+            border: '1px solid rgba(201,168,76,0.4)',
+            borderRadius: '6px',
+            padding: '4px 10px',
+            color: '#ffd700',
+            fontSize: '11px',
+            fontWeight: 'bold',
+            whiteSpace: 'nowrap',
+            textShadow: '0 0 6px rgba(255,215,0,0.3)',
+          }}
+        >
+          {'\u2708\uFE0F'} Flughafen
+        </div>
+      </Html>
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // 3D: Complete world scene (assembled inside Canvas)
 // ---------------------------------------------------------------------------
 
@@ -3094,6 +3354,12 @@ function WorldScene({
         onClick={onMiniGameClick}
       />
 
+      {/* Dock area (harbor for boat travel) */}
+      <DockArea theme={theme} />
+
+      {/* Airport area (for airplane travel) */}
+      <AirportArea theme={theme} />
+
       {/* Player character */}
       <PlayerCharacter
         accentColor={theme.playerAccent}
@@ -3136,6 +3402,40 @@ function injectKeyframes3D() {
 // NPC colors per island
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Island travel data (for departure menu)
+// ---------------------------------------------------------------------------
+
+const TRAVEL_ISLAND_INFO: Record<string, { name: string; emoji: string }> = {
+  volcano: { name: 'Vulkaninsel', emoji: '\u{1F30B}' },
+  ocean: { name: 'Ozean-Insel', emoji: '\u{1F30A}' },
+  forest: { name: 'Wald-Insel', emoji: '\u{1F33F}' },
+  mountain: { name: 'Berg-Insel', emoji: '\u{1F3D4}\u{FE0F}' },
+  garden: { name: 'Garten-Insel', emoji: '\u{1F338}' },
+  night: { name: 'Nacht-Insel', emoji: '\u{1F319}' },
+  rainbow: { name: 'Regenbogen-Insel', emoji: '\u{1F308}' },
+  home: { name: 'Heimat-Insel', emoji: '\u{1F3E0}' },
+};
+
+const TRAVEL_CONNECTIONS: [string, string][] = [
+  ['volcano', 'ocean'],
+  ['ocean', 'forest'],
+  ['volcano', 'mountain'],
+  ['forest', 'garden'],
+  ['mountain', 'night'],
+  ['night', 'rainbow'],
+  ['rainbow', 'home'],
+  ['garden', 'home'],
+  ['ocean', 'garden'],
+  ['mountain', 'rainbow'],
+];
+
+function isAdjacentIsland(from: string, to: string): boolean {
+  return TRAVEL_CONNECTIONS.some(
+    ([a, b]) => (a === from && b === to) || (b === from && a === to),
+  );
+}
+
 const NPC_COLORS: Record<string, string[]> = {
   volcano: ['#ff4444', '#ff8800', '#cc6622', '#993311'],
   ocean: ['#4488cc', '#66aaee', '#3377aa', '#5599dd'],
@@ -3158,6 +3458,8 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
   const completedScenarios = useGameStore((s) => s.completedScenarios);
   const completedActivities = useGameStore((s) => s.completedActivities);
   const setScreen = useGameStore((s) => s.setScreen);
+  const unlockedIslands = useGameStore((s) => s.unlockedIslands);
+  const startTravel = useGameStore((s) => s.startTravel);
 
   const islandId = activeIsland ?? ('volcano' as IslandId);
   const islandMeta = islands.find((i) => i.id === islandId);
@@ -3171,6 +3473,7 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
   // ---- HUD state ----
   const [nearbyNPC, setNearbyNPC] = useState<NPCData | null>(null);
   const [dialogNPC, setDialogNPC] = useState<NPCData | null>(null);
+  const [showTravelMenu, setShowTravelMenu] = useState(false);
   const nearbyNPCRef = useRef<NPCData | null>(null);
 
   // Keep ref in sync
@@ -3377,6 +3680,21 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
         {'\u2190'} Zur Karte
       </button>
 
+      {/* Top-left: Travel button */}
+      <button
+        className="fixed top-4 left-36 z-40 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all hover:scale-105 cursor-pointer"
+        style={{
+          background: 'linear-gradient(135deg, rgba(30,20,60,0.9), rgba(13,13,26,0.95))',
+          border: '1px solid rgba(100,180,255,0.4)',
+          color: '#66bbff',
+          backdropFilter: 'blur(8px)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.5)',
+        }}
+        onClick={() => setShowTravelMenu(true)}
+      >
+        {'\u{1F6A2}'} Reisen
+      </button>
+
       {/* Top-center: Island name */}
       <div
         className="fixed top-4 left-1/2 z-40 flex items-center gap-2 px-5 py-2 rounded-xl"
@@ -3556,6 +3874,89 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
         >
           E
         </button>
+      )}
+
+      {/* ---- Travel Menu Modal ---- */}
+      {showTravelMenu && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}
+          onClick={() => setShowTravelMenu(false)}
+          role="presentation"
+        >
+          <div
+            className="relative max-w-md w-full rounded-xl p-6"
+            style={{
+              background: 'linear-gradient(135deg, rgba(30,20,60,0.95), rgba(13,13,26,0.98))',
+              border: '1px solid rgba(100,180,255,0.3)',
+              boxShadow: '0 0 40px rgba(100,180,255,0.15), inset 0 1px 0 rgba(255,255,255,0.05)',
+            }}
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-label="Reiseziel wählen"
+          >
+            <h3
+              className="text-xl font-bold mb-1"
+              style={{ color: '#ffd700', textShadow: '0 0 8px rgba(255,215,0,0.3)' }}
+            >
+              {'\u{1F30D}'} Reiseziel w{'\u00E4'}hlen
+            </h3>
+            <p className="text-xs mb-4" style={{ color: 'rgba(200,200,220,0.6)' }}>
+              {'\u26F5'} Boot (benachbarte Inseln) oder {'\u2708\uFE0F'} Flugzeug (entfernte Inseln)
+            </p>
+
+            <div className="flex flex-col gap-2 max-h-72 overflow-y-auto">
+              {unlockedIslands
+                .filter((id) => id !== islandId)
+                .map((destId) => {
+                  const info = TRAVEL_ISLAND_INFO[destId];
+                  const adjacent = isAdjacentIsland(islandId, destId);
+                  if (!info) return null;
+                  return (
+                    <button
+                      key={destId}
+                      className="w-full py-3 px-4 rounded-lg text-sm font-bold transition-all hover:scale-[1.02] cursor-pointer flex items-center gap-3"
+                      style={{
+                        background: adjacent
+                          ? 'linear-gradient(135deg, rgba(100,180,255,0.15), rgba(100,180,255,0.05))'
+                          : 'linear-gradient(135deg, rgba(255,180,100,0.15), rgba(255,180,100,0.05))',
+                        border: adjacent
+                          ? '1px solid rgba(100,180,255,0.3)'
+                          : '1px solid rgba(255,180,100,0.3)',
+                        color: adjacent ? '#88ccff' : '#ffcc88',
+                      }}
+                      onClick={() => {
+                        setShowTravelMenu(false);
+                        startTravel(
+                          islandId,
+                          destId as IslandId,
+                          adjacent ? 'boat' : 'airplane',
+                        );
+                      }}
+                    >
+                      <span className="text-xl">{info.emoji}</span>
+                      <span className="flex-1 text-left">{info.name}</span>
+                      <span className="text-lg">
+                        {adjacent ? '\u26F5' : '\u2708\uFE0F'}
+                      </span>
+                    </button>
+                  );
+                })}
+            </div>
+
+            <button
+              className="w-full mt-3 py-2 px-4 rounded-lg text-sm transition-all hover:scale-[1.02] cursor-pointer"
+              style={{
+                backgroundColor: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: 'rgba(200,200,200,0.7)',
+              }}
+              onClick={() => setShowTravelMenu(false)}
+            >
+              Abbrechen
+            </button>
+          </div>
+        </div>
       )}
 
       {/* ---- NPC Dialog Modal ---- */}

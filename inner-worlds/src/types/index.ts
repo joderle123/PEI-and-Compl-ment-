@@ -68,6 +68,7 @@ export type GameScreen =
   | 'world-map'
   | 'island-map'
   | 'island'
+  | 'travel'
   | 'scenario'
   | 'activity'
   | 'journal'
@@ -385,4 +386,12 @@ export interface GameState {
   // Events
   /** Last game event for animation triggers */
   lastEvent: GameEvent | null;
+
+  // Travel
+  /** Origin island when traveling between islands */
+  travelOrigin: IslandId | null;
+  /** Destination island when traveling between islands */
+  travelDestination: IslandId | null;
+  /** Travel vehicle: 'boat' for adjacent islands, 'airplane' for distant ones */
+  travelVehicle: 'boat' | 'airplane' | null;
 }

@@ -251,7 +251,7 @@ function IslandNode({
 // ---------------------------------------------------------------------------
 
 export default function IslandMap() {
-  const { islands, setActiveIsland, setScreen } = useGameStore();
+  const { islands, activeIsland, setActiveIsland, setScreen, startTravel } = useGameStore();
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   // ---- Memoised random arrays for decorative elements ----
@@ -284,7 +284,18 @@ export default function IslandMap() {
   );
 
   const handleIslandClick = (island: Island) => {
-    if (island.unlocked) {
+    if (!island.unlocked) return;
+
+    // If already on an island, travel with animation
+    if (activeIsland && activeIsland !== island.id) {
+      const adjacent = connectionPaths.some(
+        ([a, b]) =>
+          (a === activeIsland && b === island.id) ||
+          (b === activeIsland && a === island.id),
+      );
+      startTravel(activeIsland, island.id, adjacent ? 'boat' : 'airplane');
+    } else {
+      // First visit or same island - direct navigation
       setActiveIsland(island.id);
       setScreen('island');
     }
