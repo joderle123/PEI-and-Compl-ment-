@@ -3308,12 +3308,27 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
     mobileDirRef.current = null;
   }, []);
 
+  // ---- Fade-in on load ----
+  const [fadeIn, setFadeIn] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setFadeIn(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
   // ==========================================================================
   // RENDER
   // ==========================================================================
 
   return (
     <div className="fixed inset-0" style={{ backgroundColor: theme.skyColor }}>
+      {/* Fade-in overlay */}
+      <div
+        className="fixed inset-0 z-[60] pointer-events-none transition-opacity duration-1000"
+        style={{
+          backgroundColor: '#0a0a0a',
+          opacity: fadeIn ? 1 : 0,
+        }}
+      />
       {/* ---- 3D Canvas ---- */}
       <Canvas
         shadows
