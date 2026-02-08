@@ -7,6 +7,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
+import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { useGameStore } from '../../stores/gameStore';
 import { getIslandData } from '../../data';
@@ -66,6 +67,8 @@ interface IslandTheme {
   foliageColor: string;
   foliageSecondary: string;
   rockColor: string;
+  waterColor: string;
+  waterOpacity: number;
   playerAccent: string;
   treeCount: number;
   rockCount: number;
@@ -176,6 +179,8 @@ const THEMES: Record<string, IslandTheme> = {
     foliageColor: '#333333',
     foliageSecondary: '#222222',
     rockColor: '#4a3020',
+    waterColor: '#cc3300',
+    waterOpacity: 0.85,
     playerAccent: '#ff6b35',
     treeCount: 12,
     rockCount: 16,
@@ -198,6 +203,8 @@ const THEMES: Record<string, IslandTheme> = {
     foliageColor: '#2d8e2d',
     foliageSecondary: '#3aaa3a',
     rockColor: '#b0a090',
+    waterColor: '#1a6aaa',
+    waterOpacity: 0.75,
     playerAccent: '#4a90d9',
     treeCount: 10,
     rockCount: 12,
@@ -220,6 +227,8 @@ const THEMES: Record<string, IslandTheme> = {
     foliageColor: '#1e6e1e',
     foliageSecondary: '#2a8a2a',
     rockColor: '#555a50',
+    waterColor: '#2a5a3a',
+    waterOpacity: 0.8,
     playerAccent: '#4caf50',
     treeCount: 24,
     rockCount: 14,
@@ -242,6 +251,8 @@ const THEMES: Record<string, IslandTheme> = {
     foliageColor: '#3a6a30',
     foliageSecondary: '#4a7a40',
     rockColor: '#6a6060',
+    waterColor: '#5577aa',
+    waterOpacity: 0.7,
     playerAccent: '#8d6e63',
     treeCount: 8,
     rockCount: 20,
@@ -264,6 +275,8 @@ const THEMES: Record<string, IslandTheme> = {
     foliageColor: '#ffb7c5',
     foliageSecondary: '#ff99b0',
     rockColor: '#a0a0a0',
+    waterColor: '#4a99bb',
+    waterOpacity: 0.65,
     playerAccent: '#ec407a',
     treeCount: 12,
     rockCount: 8,
@@ -286,6 +299,8 @@ const THEMES: Record<string, IslandTheme> = {
     foliageColor: '#9060c0',
     foliageSecondary: '#7040a0',
     rockColor: '#2a2040',
+    waterColor: '#1a1040',
+    waterOpacity: 0.85,
     playerAccent: '#7e57c2',
     treeCount: 14,
     rockCount: 10,
@@ -308,6 +323,8 @@ const THEMES: Record<string, IslandTheme> = {
     foliageColor: '#ff60ff',
     foliageSecondary: '#60c0ff',
     rockColor: '#d0b0e0',
+    waterColor: '#aa88dd',
+    waterOpacity: 0.6,
     playerAccent: '#ff7043',
     treeCount: 12,
     rockCount: 12,
@@ -330,6 +347,8 @@ const THEMES: Record<string, IslandTheme> = {
     foliageColor: '#2d8e2d',
     foliageSecondary: '#3aaa3a',
     rockColor: '#8a7a6a',
+    waterColor: '#3388aa',
+    waterOpacity: 0.7,
     playerAccent: '#ffb74d',
     treeCount: 14,
     rockCount: 10,
@@ -2175,6 +2194,7 @@ function WaterRing({ theme }: { theme: IslandTheme }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const geoRef = useRef<THREE.RingGeometry | null>(null);
   const origY = useRef<Float32Array | null>(null);
+  const matRef = useRef<THREE.MeshStandardMaterial>(null);
 
   useEffect(() => {
     if (!meshRef.current) return;
@@ -2193,22 +2213,52 @@ function WaterRing({ theme }: { theme: IslandTheme }) {
     for (let i = 0; i < pos.count; i++) {
       const x = pos.getX(i);
       const z = pos.getZ(i);
-      pos.setY(i, origY.current[i] + Math.sin(t * 1.5 + x * 0.3 + z * 0.3) * 0.15);
+      // Multiple wave frequencies for realistic water
+      const wave1 = Math.sin(t * 1.5 + x * 0.3 + z * 0.3) * 0.15;
+      const wave2 = Math.sin(t * 2.1 + x * 0.5 - z * 0.2) * 0.08;
+      const wave3 = Math.cos(t * 0.8 + x * 0.15 + z * 0.4) * 0.1;
+      pos.setY(i, origY.current[i] + wave1 + wave2 + wave3);
     }
     pos.needsUpdate = true;
+    geoRef.current.computeVertexNormals();
+    // Subtle emissive pulse for water glow
+    if (matRef.current) {
+      matRef.current.emissiveIntensity = 0.05 + Math.sin(t * 0.5) * 0.03;
+    }
   });
 
   return (
-    <mesh ref={meshRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.15, 0]}>
-      <ringGeometry args={[GROUND_SIZE - 1, GROUND_SIZE + 12, 64, 4]} />
-      <meshStandardMaterial
-        color={theme.groundEdgeColor}
-        transparent
-        opacity={0.7}
-        roughness={0.2}
-        metalness={0.1}
-      />
-    </mesh>
+    <group>
+      {/* Main water surface */}
+      <mesh ref={meshRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.15, 0]}>
+        <ringGeometry args={[GROUND_SIZE - 1, GROUND_SIZE + 18, 96, 8]} />
+        <meshStandardMaterial
+          ref={matRef}
+          color={theme.waterColor}
+          emissive={theme.waterColor}
+          emissiveIntensity={0.05}
+          transparent
+          opacity={theme.waterOpacity}
+          roughness={0.15}
+          metalness={0.3}
+        />
+      </mesh>
+      {/* Shallow water transition near shore */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]}>
+        <ringGeometry args={[GROUND_SIZE - 2, GROUND_SIZE + 1, 64]} />
+        <meshStandardMaterial
+          color={theme.waterColor}
+          transparent
+          opacity={theme.waterOpacity * 0.4}
+          roughness={0.3}
+        />
+      </mesh>
+      {/* Foam line at shore edge */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
+        <ringGeometry args={[GROUND_SIZE - 0.5, GROUND_SIZE + 0.3, 64]} />
+        <meshStandardMaterial color="#ffffff" transparent opacity={0.25} roughness={0.9} />
+      </mesh>
+    </group>
   );
 }
 
@@ -2356,6 +2406,99 @@ function SceneLighting({ theme }: { theme: IslandTheme }) {
 }
 
 // ---------------------------------------------------------------------------
+// 3D Sub-components: Animated clouds
+// ---------------------------------------------------------------------------
+
+function CloudLayer({ theme }: { theme: IslandTheme }) {
+  const groupRef = useRef<THREE.Group>(null);
+  const cloudCount = 8;
+
+  const clouds = useMemo(() => {
+    const arr: Array<{
+      x: number;
+      z: number;
+      y: number;
+      scaleX: number;
+      scaleZ: number;
+      speed: number;
+      phase: number;
+    }> = [];
+    const rng = makeRng(12345);
+    for (let i = 0; i < cloudCount; i++) {
+      const angle = (i / cloudCount) * Math.PI * 2 + rng() * 0.5;
+      const r = 20 + rng() * 30;
+      arr.push({
+        x: Math.cos(angle) * r,
+        z: Math.sin(angle) * r,
+        y: 18 + rng() * 10,
+        scaleX: 3 + rng() * 5,
+        scaleZ: 2 + rng() * 3,
+        speed: 0.3 + rng() * 0.5,
+        phase: rng() * Math.PI * 2,
+      });
+    }
+    return arr;
+  }, []);
+
+  useFrame(() => {
+    if (!groupRef.current) return;
+    const t = Date.now() * 0.0001;
+    groupRef.current.children.forEach((child, i) => {
+      const cloud = clouds[i];
+      if (!cloud) return;
+      child.position.x = cloud.x + Math.sin(t * cloud.speed + cloud.phase) * 8;
+      child.position.z = cloud.z + Math.cos(t * cloud.speed * 0.7 + cloud.phase) * 5;
+    });
+  });
+
+  // Pick a cloud color based on theme sky
+  const cloudColor = useMemo(() => {
+    const sky = new THREE.Color(theme.skyColor);
+    return new THREE.Color().lerpColors(sky, new THREE.Color('#ffffff'), 0.6).getHexString();
+  }, [theme.skyColor]);
+
+  return (
+    <group ref={groupRef}>
+      {clouds.map((c, i) => (
+        <group key={i} position={[c.x, c.y, c.z]}>
+          {/* Cloud puffs - 3 overlapping spheres */}
+          <mesh>
+            <sphereGeometry args={[c.scaleX * 0.5, 8, 6]} />
+            <meshStandardMaterial
+              color={`#${cloudColor}`}
+              transparent
+              opacity={0.5}
+              roughness={1}
+              flatShading
+            />
+          </mesh>
+          <mesh position={[c.scaleX * 0.3, -0.3, 0.5]}>
+            <sphereGeometry args={[c.scaleX * 0.4, 8, 6]} />
+            <meshStandardMaterial
+              color={`#${cloudColor}`}
+              transparent
+              opacity={0.45}
+              roughness={1}
+              flatShading
+            />
+          </mesh>
+          <mesh position={[-c.scaleX * 0.25, 0.2, -0.3]}>
+            <sphereGeometry args={[c.scaleZ * 0.45, 8, 6]} />
+            <meshStandardMaterial
+              color={`#${cloudColor}`}
+              transparent
+              opacity={0.4}
+              roughness={1}
+              flatShading
+            />
+          </mesh>
+        </group>
+      ))}
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // 3D: Complete world scene (assembled inside Canvas)
 // ---------------------------------------------------------------------------
 
@@ -2468,6 +2611,9 @@ function WorldScene({
 
       {/* Lighting */}
       <SceneLighting theme={theme} />
+
+      {/* Animated clouds */}
+      <CloudLayer theme={theme} />
 
       {/* Water ring around island */}
       <WaterRing theme={theme} />
@@ -2805,6 +2951,10 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
           onActivityClick={handleActivityStart}
           onMiniGameClick={handleMiniGameClick}
         />
+        <EffectComposer>
+          <Bloom luminanceThreshold={0.6} luminanceSmoothing={0.9} intensity={0.4} />
+          <Vignette eskil={false} offset={0.1} darkness={0.5} />
+        </EffectComposer>
       </Canvas>
 
       {/* ---- HUD Overlay ---- */}
