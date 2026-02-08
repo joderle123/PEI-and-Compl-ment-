@@ -831,35 +831,92 @@ function LowPolyBody({
 }) {
   return (
     <group>
+      {/* Shoes */}
+      <mesh position={[-0.14, 0.06, 0.04]} castShadow>
+        <boxGeometry args={[0.17, 0.1, 0.24]} />
+        <meshStandardMaterial color="#2a2a2a" roughness={0.6} />
+      </mesh>
+      <mesh position={[0.14, 0.06, 0.04]} castShadow>
+        <boxGeometry args={[0.17, 0.1, 0.24]} />
+        <meshStandardMaterial color="#2a2a2a" roughness={0.6} />
+      </mesh>
+      {/* Left leg */}
+      <mesh position={[-0.14, 0.3, 0]} castShadow>
+        <boxGeometry args={[0.17, 0.5, 0.2]} />
+        <meshStandardMaterial color={legColor} roughness={0.7} />
+      </mesh>
+      {/* Right leg */}
+      <mesh position={[0.14, 0.3, 0]} castShadow>
+        <boxGeometry args={[0.17, 0.5, 0.2]} />
+        <meshStandardMaterial color={legColor} roughness={0.7} />
+      </mesh>
+      {/* Belt */}
+      <mesh position={[0, 0.58, 0]} castShadow>
+        <boxGeometry args={[0.52, 0.05, 0.32]} />
+        <meshStandardMaterial color="#4a3a1a" roughness={0.8} />
+      </mesh>
       {/* Torso */}
       <mesh position={[0, 0.95, 0]} castShadow>
-        <boxGeometry args={[0.5, 0.7, 0.3]} />
+        <boxGeometry args={[0.5, 0.65, 0.3]} />
         <meshStandardMaterial color={bodyColor} roughness={0.7} />
+      </mesh>
+      {/* Collar */}
+      <mesh position={[0, 1.3, 0]} castShadow>
+        <boxGeometry args={[0.22, 0.06, 0.18]} />
+        <meshStandardMaterial color={skinColor} roughness={0.65} />
       </mesh>
       {/* Head */}
       <mesh position={[0, 1.6, 0]} castShadow>
         <boxGeometry args={[0.4, 0.4, 0.4]} />
         <meshStandardMaterial color={skinColor} roughness={0.65} />
       </mesh>
+      {/* Eyes */}
+      <mesh position={[0.1, 1.65, 0.21]}>
+        <boxGeometry args={[0.07, 0.07, 0.02]} />
+        <meshBasicMaterial color="#222222" />
+      </mesh>
+      <mesh position={[-0.1, 1.65, 0.21]}>
+        <boxGeometry args={[0.07, 0.07, 0.02]} />
+        <meshBasicMaterial color="#222222" />
+      </mesh>
+      {/* Eye whites */}
+      <mesh position={[0.1, 1.65, 0.205]}>
+        <boxGeometry args={[0.09, 0.09, 0.015]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
+      <mesh position={[-0.1, 1.65, 0.205]}>
+        <boxGeometry args={[0.09, 0.09, 0.015]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
+      {/* Mouth */}
+      <mesh position={[0, 1.52, 0.21]}>
+        <boxGeometry args={[0.1, 0.025, 0.02]} />
+        <meshBasicMaterial color="#cc8877" />
+      </mesh>
       {/* Left arm */}
       <mesh position={[-0.38, 0.9, 0]} castShadow>
         <boxGeometry args={[0.14, 0.55, 0.14]} />
         <meshStandardMaterial color={armColor} roughness={0.7} />
+      </mesh>
+      {/* Left hand */}
+      <mesh position={[-0.38, 0.58, 0]}>
+        <boxGeometry args={[0.09, 0.09, 0.09]} />
+        <meshStandardMaterial color={skinColor} roughness={0.65} />
       </mesh>
       {/* Right arm */}
       <mesh position={[0.38, 0.9, 0]} castShadow>
         <boxGeometry args={[0.14, 0.55, 0.14]} />
         <meshStandardMaterial color={armColor} roughness={0.7} />
       </mesh>
-      {/* Left leg */}
-      <mesh position={[-0.14, 0.3, 0]} castShadow>
-        <boxGeometry args={[0.17, 0.6, 0.2]} />
-        <meshStandardMaterial color={legColor} roughness={0.7} />
+      {/* Right hand */}
+      <mesh position={[0.38, 0.58, 0]}>
+        <boxGeometry args={[0.09, 0.09, 0.09]} />
+        <meshStandardMaterial color={skinColor} roughness={0.65} />
       </mesh>
-      {/* Right leg */}
-      <mesh position={[0.14, 0.3, 0]} castShadow>
-        <boxGeometry args={[0.17, 0.6, 0.2]} />
-        <meshStandardMaterial color={legColor} roughness={0.7} />
+      {/* Shadow blob */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]}>
+        <circleGeometry args={[0.3, 10]} />
+        <meshBasicMaterial color="#000000" transparent opacity={0.15} />
       </mesh>
     </group>
   );
@@ -2490,11 +2547,12 @@ function SceneLighting({ theme }: { theme: IslandTheme }) {
     if (lightRef.current) {
       lightRef.current.shadow.mapSize.width = 2048;
       lightRef.current.shadow.mapSize.height = 2048;
-      lightRef.current.shadow.camera.left = -35;
-      lightRef.current.shadow.camera.right = 35;
-      lightRef.current.shadow.camera.top = 35;
-      lightRef.current.shadow.camera.bottom = -35;
-      lightRef.current.shadow.bias = -0.001;
+      lightRef.current.shadow.camera.left = -40;
+      lightRef.current.shadow.camera.right = 40;
+      lightRef.current.shadow.camera.top = 40;
+      lightRef.current.shadow.camera.bottom = -40;
+      lightRef.current.shadow.bias = -0.0008;
+      lightRef.current.shadow.normalBias = 0.02;
       lightRef.current.shadow.camera.updateProjectionMatrix();
     }
   }, []);
@@ -2502,6 +2560,7 @@ function SceneLighting({ theme }: { theme: IslandTheme }) {
   return (
     <>
       <ambientLight intensity={theme.ambientIntensity} color={theme.ambientColor} />
+      {/* Main sun/key light */}
       <directionalLight
         ref={lightRef}
         position={theme.sunPosition}
@@ -2509,17 +2568,31 @@ function SceneLighting({ theme }: { theme: IslandTheme }) {
         color={theme.sunColor}
         castShadow
       />
-      {/* Rim light from opposite side */}
+      {/* Rim/back light from opposite side */}
       <directionalLight
         position={[-theme.sunPosition[0], theme.sunPosition[1] * 0.5, -theme.sunPosition[2]]}
-        intensity={theme.sunIntensity * 0.15}
+        intensity={theme.sunIntensity * 0.18}
         color={theme.ambientColor}
       />
-      {/* Hemisphere light for softer bottom fill */}
+      {/* Fill light from the side for softer shadows */}
+      <directionalLight
+        position={[theme.sunPosition[2], theme.sunPosition[1] * 0.3, -theme.sunPosition[0]]}
+        intensity={theme.sunIntensity * 0.1}
+        color={theme.sunColor}
+      />
+      {/* Hemisphere light for natural sky/ground bounce */}
       <hemisphereLight
         color={theme.sunColor}
         groundColor={theme.groundColor}
-        intensity={0.25}
+        intensity={0.3}
+      />
+      {/* Center point light for warm glow near landmarks */}
+      <pointLight
+        position={[0, 3, 0]}
+        color={theme.ambientColor}
+        intensity={0.4}
+        distance={15}
+        decay={2}
       />
     </>
   );
