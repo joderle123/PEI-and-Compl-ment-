@@ -2339,8 +2339,14 @@ function CameraController({
 // 3D Sub-components: Sky Dome (gradient sphere)
 // ---------------------------------------------------------------------------
 
-function SkyDome({ theme }: { theme: IslandTheme }) {
+function SkyDome({ theme, islandId }: { theme: IslandTheme; islandId: string }) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const starsRef = useRef<THREE.InstancedMesh>(null);
+  const starDummy = useMemo(() => new THREE.Object3D(), []);
+
+  // Is this a dark/night sky island?
+  const isDarkSky = islandId === 'night' || islandId === 'volcano';
+  const starCount = isDarkSky ? 80 : 0;
 
   useEffect(() => {
     if (!meshRef.current) return;
@@ -2360,11 +2366,54 @@ function SkyDome({ theme }: { theme: IslandTheme }) {
     geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   }, [theme.skyColor, theme.fogColor]);
 
+  // Place stars in upper hemisphere
+  useEffect(() => {
+    if (!starsRef.current || starCount === 0) return;
+    const rng = makeRng(99999);
+    for (let i = 0; i < starCount; i++) {
+      const theta = rng() * Math.PI * 0.4 + 0.1; // upper portion
+      const phi = rng() * Math.PI * 2;
+      const r = 70;
+      starDummy.position.set(
+        r * Math.sin(theta) * Math.cos(phi),
+        r * Math.cos(theta),
+        r * Math.sin(theta) * Math.sin(phi),
+      );
+      starDummy.scale.setScalar(0.1 + rng() * 0.2);
+      starDummy.updateMatrix();
+      starsRef.current.setMatrixAt(i, starDummy.matrix);
+    }
+    starsRef.current.instanceMatrix.needsUpdate = true;
+  }, [starCount, starDummy]);
+
+  // Twinkle stars
+  useFrame(() => {
+    if (!starsRef.current || starCount === 0) return;
+    const t = Date.now() * 0.001;
+    for (let i = 0; i < starCount; i++) {
+      starsRef.current.getMatrixAt(i, starDummy.matrix);
+      starDummy.matrix.decompose(starDummy.position, starDummy.quaternion, starDummy.scale);
+      const twinkle = 0.1 + Math.abs(Math.sin(t * 2 + i * 1.7)) * 0.2;
+      starDummy.scale.setScalar(twinkle);
+      starDummy.updateMatrix();
+      starsRef.current.setMatrixAt(i, starDummy.matrix);
+    }
+    starsRef.current.instanceMatrix.needsUpdate = true;
+  });
+
   return (
-    <mesh ref={meshRef} scale={[-1, 1, 1]}>
-      <sphereGeometry args={[80, 32, 16]} />
-      <meshBasicMaterial vertexColors side={THREE.BackSide} />
-    </mesh>
+    <group>
+      <mesh ref={meshRef} scale={[-1, 1, 1]}>
+        <sphereGeometry args={[80, 32, 16]} />
+        <meshBasicMaterial vertexColors side={THREE.BackSide} />
+      </mesh>
+      {starCount > 0 && (
+        <instancedMesh ref={starsRef} args={[undefined, undefined, starCount]}>
+          <sphereGeometry args={[1, 4, 3]} />
+          <meshBasicMaterial color="#ffffff" />
+        </instancedMesh>
+      )}
+    </group>
   );
 }
 
@@ -2830,7 +2879,7 @@ function WorldScene({
       <fog attach="fog" args={[theme.fogColor, theme.fogNear, theme.fogFar]} />
 
       {/* Sky dome */}
-      <SkyDome theme={theme} />
+      <SkyDome theme={theme} islandId={islandId} />
 
       {/* Lighting */}
       <SceneLighting theme={theme} />
