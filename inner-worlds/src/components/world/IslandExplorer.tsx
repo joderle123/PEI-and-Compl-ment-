@@ -1834,6 +1834,20 @@ function InteractiveMarker({
         <ringGeometry args={[0.5, 0.7, 12]} />
         <meshBasicMaterial color={color} transparent opacity={isNear ? 0.5 : 0.2} />
       </mesh>
+      {/* Light beam pillar */}
+      {!completed && (
+        <mesh position={[0, 2, 0]}>
+          <cylinderGeometry args={[0.02, 0.15, 4, 6]} />
+          <meshStandardMaterial
+            color={color}
+            emissive={color}
+            emissiveIntensity={0.4}
+            transparent
+            opacity={0.15}
+            roughness={1}
+          />
+        </mesh>
+      )}
       {/* Label when near */}
       {isNear && (
         <Html position={[0, 2.2, 0]} center>
