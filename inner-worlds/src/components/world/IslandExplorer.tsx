@@ -5216,210 +5216,148 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
         </div>
       )}
 
-      {/* ---- NPC Dialog Modal ---- */}
+      {/* ---- NPC Dialog - conversational bottom sheet ---- */}
       {dialogNPC && (() => {
         const npcIdx = npcsWithPositions.findIndex((n) => n.data.id === dialogNPC.id);
         const npcScenario = scenarioMarkers[npcIdx];
         const npcActivity = activityMarkers[npcIdx];
         const isScenarioCompleted = npcScenario && completedScenarios.includes(npcScenario.id);
         const isActivityCompleted = npcActivity && completedActivities.includes(npcActivity.id);
+        const allDone = isScenarioCompleted && isActivityCompleted;
         return (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}
+            className="fixed inset-0 z-50 flex flex-col justify-end"
             onClick={() => setDialogNPC(null)}
             role="presentation"
           >
+            {/* Dimmed backdrop - lighter than before */}
+            <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} />
+
+            {/* Bottom sheet */}
             <div
-              className="relative max-w-md w-full rounded-2xl p-6 max-h-[85vh] overflow-y-auto"
+              className="relative max-w-lg mx-auto w-full rounded-t-2xl p-5 pb-6 max-h-[70vh] overflow-y-auto"
               style={{
-                background: 'linear-gradient(135deg, rgba(30,20,60,0.97), rgba(13,13,26,0.99))',
-                border: '1px solid rgba(201,168,76,0.35)',
-                boxShadow: '0 0 50px rgba(201,168,76,0.12), inset 0 1px 0 rgba(255,255,255,0.05)',
+                background: 'linear-gradient(180deg, rgba(30,20,60,0.98), rgba(13,13,26,0.99))',
+                borderTop: '1px solid rgba(201,168,76,0.25)',
+                boxShadow: '0 -10px 40px rgba(0,0,0,0.5)',
               }}
               onClick={(e) => e.stopPropagation()}
               role="dialog"
               aria-label={`Dialog mit ${dialogNPC.name}`}
             >
-              {/* NPC header with accent color */}
-              <div className="flex items-center gap-4 mb-4">
+              {/* Drag handle */}
+              <div className="flex justify-center mb-4">
+                <div className="w-10 h-1 rounded-full" style={{ backgroundColor: 'rgba(201,168,76,0.2)' }} />
+              </div>
+
+              {/* NPC speech - conversational */}
+              <div className="flex items-start gap-3 mb-5">
                 <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center text-3xl shrink-0"
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-2xl shrink-0"
                   style={{
-                    backgroundColor: 'rgba(201,168,76,0.1)',
-                    border: '2px solid rgba(201,168,76,0.4)',
-                    boxShadow: '0 0 15px rgba(201,168,76,0.15)',
+                    background: 'rgba(201,168,76,0.1)',
+                    border: '1.5px solid rgba(201,168,76,0.3)',
                   }}
                 >
                   {dialogNPC.emoji}
                 </div>
-                <div className="min-w-0">
-                  <h3
-                    className="text-xl font-bold truncate"
-                    style={{ color: '#ffd700', textShadow: '0 0 8px rgba(255,215,0,0.3)' }}
-                  >
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold mb-1" style={{ color: '#ffd700', opacity: 0.8 }}>
                     {dialogNPC.name}
-                  </h3>
-                  <p className="text-sm" style={{ color: 'rgba(201,168,76,0.7)' }}>
-                    {dialogNPC.description}
                   </p>
+                  <div
+                    className="rounded-2xl rounded-tl-md px-4 py-3 text-sm leading-relaxed"
+                    style={{
+                      backgroundColor: 'rgba(201,168,76,0.06)',
+                      border: '1px solid rgba(201,168,76,0.12)',
+                      color: 'rgba(230,215,180,0.95)',
+                    }}
+                  >
+                    {allDone ? (
+                      <em>&ldquo;Du hast alles geschafft, was ich dir zeigen konnte. Ich bin stolz auf dich!&rdquo;</em>
+                    ) : isScenarioCompleted ? (
+                      <em>&ldquo;Hey, du bist zur{'\u00FC'}ck! Ich hab noch eine {'\u00DC'}bung f{'\u00FC'}r dich, wenn du bereit bist.&rdquo;</em>
+                    ) : (
+                      <span>{dialogNPC.backstory}</span>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              {/* NPC speech bubble - progress-aware */}
-              <div
-                className="mb-5 p-4 rounded-xl text-sm leading-relaxed relative"
-                style={{
-                  backgroundColor: 'rgba(201,168,76,0.06)',
-                  border: '1px solid rgba(201,168,76,0.2)',
-                  color: 'rgba(230,215,180,0.95)',
-                }}
-              >
-                <div
-                  className="absolute -top-2 left-8 w-4 h-4 rotate-45"
-                  style={{
-                    backgroundColor: 'rgba(201,168,76,0.06)',
-                    borderTop: '1px solid rgba(201,168,76,0.2)',
-                    borderLeft: '1px solid rgba(201,168,76,0.2)',
-                  }}
-                />
-                {isScenarioCompleted && isActivityCompleted ? (
-                  <span>
-                    <em>&ldquo;Du hast alles geschafft, was ich dir zeigen konnte. Ich bin stolz auf dich. Vergiss nicht, was du hier gelernt hast!&rdquo;</em>
-                    <br /><br />
-                    <span style={{ color: 'rgba(100,200,100,0.8)', fontSize: '12px' }}>
-                      {'\u2728'} Du hast alle Inhalte von {dialogNPC.name} abgeschlossen!
-                    </span>
-                  </span>
-                ) : isScenarioCompleted ? (
-                  <span>
-                    <em>&ldquo;Hey, du bist zur{'\u00FC'}ck! Unsere Geschichte war ziemlich intensiv, oder? Ich hab noch eine {'\u00DC'}bung f{'\u00FC'}r dich, wenn du bereit bist.&rdquo;</em>
-                    <br /><br />
-                    <span style={{ color: 'rgba(201,168,76,0.6)', fontSize: '12px' }}>
-                      {'\u{1F4AA}'} Geschichte abgeschlossen &middot; {'\u{1F3AF}'} Aktivit{'\u00E4'}t verf{'\u00FC'}gbar
-                    </span>
-                  </span>
-                ) : (
-                  <span>{dialogNPC.backstory}</span>
-                )}
-              </div>
-
-              {/* Available actions - NPC-specific */}
-              <div className="flex flex-col gap-2.5">
-                <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'rgba(201,168,76,0.5)' }}>
-                  {dialogNPC.name} bietet an:
-                </p>
-
-                {/* This NPC's specific scenario */}
+              {/* Response options - styled like player choices */}
+              <div className="space-y-2 pl-15">
                 {npcScenario && (
                   <button
-                    className="w-full py-3 px-4 rounded-xl font-bold text-sm transition-all hover:scale-[1.02] cursor-pointer text-left flex items-center gap-3"
+                    className="w-full text-left px-4 py-3 rounded-xl text-sm transition-all hover:scale-[1.01] cursor-pointer"
                     style={{
-                      background: isScenarioCompleted
-                        ? 'linear-gradient(135deg, rgba(100,200,100,0.1), rgba(100,200,100,0.05))'
-                        : 'linear-gradient(135deg, rgba(255,215,0,0.15), rgba(201,168,76,0.08))',
-                      border: isScenarioCompleted
-                        ? '1px solid rgba(100,200,100,0.3)'
-                        : '1px solid rgba(255,215,0,0.35)',
-                      color: isScenarioCompleted ? '#88cc88' : '#ffd700',
+                      backgroundColor: isScenarioCompleted ? 'rgba(100,200,100,0.06)' : 'rgba(255,215,0,0.06)',
+                      border: isScenarioCompleted ? '1px solid rgba(100,200,100,0.2)' : '1px solid rgba(255,215,0,0.2)',
+                      color: isScenarioCompleted ? 'rgba(150,220,150,0.9)' : '#e8d5a3',
                     }}
                     onClick={() => handleDialogScenario(npcIdx)}
                   >
-                    <span className="text-xl">{isScenarioCompleted ? '\u2705' : '\u{1F4DC}'}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-bold">{npcScenario.title}</div>
-                      <div className="text-xs opacity-60 mt-0.5">
-                        {isScenarioCompleted ? 'Abgeschlossen - nochmal spielen?' : 'Geschichte erleben & Punkte sammeln'}
-                      </div>
-                    </div>
-                    <span className="text-lg opacity-60">{'\u2192'}</span>
+                    <span className="font-semibold">{isScenarioCompleted ? '\u2705 ' : ''}{npcScenario.title}</span>
+                    {isScenarioCompleted && (
+                      <span className="block text-xs mt-0.5 opacity-50">Nochmal erleben</span>
+                    )}
                   </button>
                 )}
 
-                {/* This NPC's specific activity */}
                 {npcActivity && (
                   <button
-                    className="w-full py-3 px-4 rounded-xl font-bold text-sm transition-all hover:scale-[1.02] cursor-pointer text-left flex items-center gap-3"
+                    className="w-full text-left px-4 py-3 rounded-xl text-sm transition-all hover:scale-[1.01] cursor-pointer"
                     style={{
-                      background: isActivityCompleted
-                        ? 'linear-gradient(135deg, rgba(100,200,100,0.1), rgba(100,200,100,0.05))'
-                        : 'linear-gradient(135deg, rgba(64,192,128,0.12), rgba(64,192,128,0.05))',
-                      border: isActivityCompleted
-                        ? '1px solid rgba(100,200,100,0.3)'
-                        : '1px solid rgba(64,192,128,0.35)',
-                      color: isActivityCompleted ? '#88cc88' : '#40c080',
+                      backgroundColor: isActivityCompleted ? 'rgba(100,200,100,0.06)' : 'rgba(64,192,128,0.06)',
+                      border: isActivityCompleted ? '1px solid rgba(100,200,100,0.2)' : '1px solid rgba(64,192,128,0.2)',
+                      color: isActivityCompleted ? 'rgba(150,220,150,0.9)' : 'rgba(100,230,160,0.9)',
                     }}
                     onClick={() => handleDialogActivity(npcIdx)}
                   >
-                    <span className="text-xl">{isActivityCompleted ? '\u2705' : '\u{1F3AF}'}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-bold">{npcActivity.title}</div>
-                      <div className="text-xs opacity-60 mt-0.5">
-                        {isActivityCompleted ? 'Abgeschlossen - nochmal machen?' : 'Interaktive \u00DCbung'}
-                      </div>
-                    </div>
-                    <span className="text-lg opacity-60">{'\u2192'}</span>
+                    <span className="font-semibold">{isActivityCompleted ? '\u2705 ' : ''}{npcActivity.title}</span>
+                    {isActivityCompleted && (
+                      <span className="block text-xs mt-0.5 opacity-50">Nochmal machen</span>
+                    )}
                   </button>
                 )}
 
-                {/* Mini-game option */}
                 <button
-                  className="w-full py-3 px-4 rounded-xl font-bold text-sm transition-all hover:scale-[1.02] cursor-pointer text-left flex items-center gap-3"
+                  className="w-full text-left px-4 py-3 rounded-xl text-sm transition-all hover:scale-[1.01] cursor-pointer"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(176,96,255,0.12), rgba(176,96,255,0.05))',
-                    border: '1px solid rgba(176,96,255,0.3)',
-                    color: '#b060ff',
+                    backgroundColor: 'rgba(176,96,255,0.06)',
+                    border: '1px solid rgba(176,96,255,0.2)',
+                    color: 'rgba(200,160,255,0.9)',
                   }}
                   onClick={handleDialogMiniGame}
                 >
-                  <span className="text-xl">{'\u{1F3AE}'}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-bold">Minispiel</div>
-                    <div className="text-xs opacity-60 mt-0.5">Spiele ein Emotions-Minispiel</div>
-                  </div>
-                  <span className="text-lg opacity-60">{'\u2192'}</span>
+                  <span className="font-semibold">{'\u{1F3AE}'} Minispiel spielen</span>
                 </button>
 
-                {/* Show other available scenarios too */}
-                {scenarioMarkers.length > 1 && (
-                  <>
-                    <div className="my-1 border-t" style={{ borderColor: 'rgba(201,168,76,0.1)' }} />
-                    <p className="text-xs opacity-40" style={{ color: 'rgba(201,168,76,0.5)' }}>
-                      Weitere Geschichten auf dieser Insel:
-                    </p>
-                    {scenarioMarkers.map((s, i) => {
-                      if (i === npcIdx) return null;
-                      const done = completedScenarios.includes(s.id);
-                      return (
-                        <button
-                          key={s.id}
-                          className="w-full py-2 px-4 rounded-lg text-xs transition-all hover:scale-[1.01] cursor-pointer text-left flex items-center gap-2"
-                          style={{
-                            backgroundColor: 'rgba(255,255,255,0.03)',
-                            border: '1px solid rgba(255,255,255,0.08)',
-                            color: done ? 'rgba(150,200,150,0.7)' : 'rgba(200,190,170,0.6)',
-                          }}
-                          onClick={() => handleDialogScenario(i)}
-                        >
-                          <span>{done ? '\u2705' : '\u{1F4DC}'}</span>
-                          <span>{s.title}</span>
-                        </button>
-                      );
-                    })}
-                  </>
-                )}
+                {/* Other scenarios (collapsed) */}
+                {scenarioMarkers.length > 1 && scenarioMarkers.map((s, i) => {
+                  if (i === npcIdx) return null;
+                  const done = completedScenarios.includes(s.id);
+                  return (
+                    <button
+                      key={s.id}
+                      className="w-full text-left px-4 py-2 rounded-lg text-xs transition-all hover:scale-[1.01] cursor-pointer"
+                      style={{
+                        backgroundColor: 'rgba(255,255,255,0.02)',
+                        border: '1px solid rgba(255,255,255,0.06)',
+                        color: done ? 'rgba(150,200,150,0.6)' : 'rgba(200,190,170,0.5)',
+                      }}
+                      onClick={() => handleDialogScenario(i)}
+                    >
+                      {done ? '\u2705 ' : '\u{1F4DC} '}{s.title}
+                    </button>
+                  );
+                })}
 
-                <div className="my-1 border-t" style={{ borderColor: 'rgba(201,168,76,0.1)' }} />
                 <button
-                  className="w-full py-2 px-4 rounded-lg text-sm transition-all hover:scale-[1.02] cursor-pointer"
-                  style={{
-                    backgroundColor: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    color: 'rgba(200,200,200,0.6)',
-                  }}
+                  className="w-full text-center py-2 rounded-lg text-sm cursor-pointer"
+                  style={{ color: 'rgba(200,200,200,0.4)' }}
                   onClick={() => setDialogNPC(null)}
                 >
-                  Tsch{'\u00FC'}ss, {dialogNPC.name}!
+                  Tsch{'\u00FC'}ss {'\u{1F44B}'}
                 </button>
               </div>
             </div>
