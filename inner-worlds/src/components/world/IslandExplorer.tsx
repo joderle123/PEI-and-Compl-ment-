@@ -8,7 +8,8 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
-import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, Vignette, N8AO, HueSaturation, BrightnessContrast, ChromaticAberration, TiltShift2 } from '@react-three/postprocessing';
+import { BlendFunction } from 'postprocessing';
 import * as THREE from 'three';
 import { useGameStore } from '../../stores/gameStore';
 import { getIslandData } from '../../data';
@@ -172,8 +173,8 @@ const THEMES: Record<string, IslandTheme> = {
     sunIntensity: 0.8,
     sunPosition: [10, 20, 5],
     fogColor: '#1a0800',
-    fogNear: 30,
-    fogFar: 70,
+    fogNear: 35,
+    fogFar: 85,
     skyColor: '#330800',
     treeVariant: 'dead',
     trunkColor: '#1a1a1a',
@@ -183,9 +184,9 @@ const THEMES: Record<string, IslandTheme> = {
     waterColor: '#cc3300',
     waterOpacity: 0.85,
     playerAccent: '#ff6b35',
-    treeCount: 12,
-    rockCount: 16,
-    decorationCount: 16,
+    treeCount: 16,
+    rockCount: 20,
+    decorationCount: 20,
   },
   ocean: {
     groundColor: '#d4b896',
@@ -207,9 +208,9 @@ const THEMES: Record<string, IslandTheme> = {
     waterColor: '#1a6aaa',
     waterOpacity: 0.75,
     playerAccent: '#4a90d9',
-    treeCount: 10,
-    rockCount: 12,
-    decorationCount: 18,
+    treeCount: 14,
+    rockCount: 16,
+    decorationCount: 22,
   },
   forest: {
     groundColor: '#2d5a1e',
@@ -231,9 +232,9 @@ const THEMES: Record<string, IslandTheme> = {
     waterColor: '#2a5a3a',
     waterOpacity: 0.8,
     playerAccent: '#4caf50',
-    treeCount: 24,
-    rockCount: 14,
-    decorationCount: 18,
+    treeCount: 30,
+    rockCount: 18,
+    decorationCount: 22,
   },
   mountain: {
     groundColor: '#7a6a5a',
@@ -279,9 +280,9 @@ const THEMES: Record<string, IslandTheme> = {
     waterColor: '#4a99bb',
     waterOpacity: 0.65,
     playerAccent: '#ec407a',
-    treeCount: 12,
-    rockCount: 8,
-    decorationCount: 20,
+    treeCount: 16,
+    rockCount: 10,
+    decorationCount: 24,
   },
   night: {
     groundColor: '#1a1030',
@@ -351,9 +352,9 @@ const THEMES: Record<string, IslandTheme> = {
     waterColor: '#3388aa',
     waterOpacity: 0.7,
     playerAccent: '#ffb74d',
-    treeCount: 14,
-    rockCount: 10,
-    decorationCount: 18,
+    treeCount: 18,
+    rockCount: 14,
+    decorationCount: 22,
   },
 };
 
@@ -362,10 +363,20 @@ const THEMES: Record<string, IslandTheme> = {
 // ---------------------------------------------------------------------------
 
 function Ground({ theme }: { theme: IslandTheme }) {
-  // Slightly lighter variant of ground for patches
+  // Color variants for organic terrain
   const patchColor = useMemo(() => {
     const c = new THREE.Color(theme.groundColor);
     c.offsetHSL(0.02, 0, 0.06);
+    return '#' + c.getHexString();
+  }, [theme.groundColor]);
+  const darkPatch = useMemo(() => {
+    const c = new THREE.Color(theme.groundColor);
+    c.offsetHSL(-0.01, 0.05, -0.06);
+    return '#' + c.getHexString();
+  }, [theme.groundColor]);
+  const warmPatch = useMemo(() => {
+    const c = new THREE.Color(theme.groundColor);
+    c.offsetHSL(0.04, 0.08, 0.03);
     return '#' + c.getHexString();
   }, [theme.groundColor]);
 
@@ -373,101 +384,145 @@ function Ground({ theme }: { theme: IslandTheme }) {
     <group>
       {/* Main ground disc */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow position={[0, -0.01, 0]}>
-        <circleGeometry args={[GROUND_SIZE, 96]} />
+        <circleGeometry args={[GROUND_SIZE, 128]} />
         <meshStandardMaterial color={theme.groundColor} roughness={0.92} />
       </mesh>
       {/* Rim edge - beveled shoreline */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
-        <ringGeometry args={[GROUND_SIZE - 2, GROUND_SIZE, 96]} />
+        <ringGeometry args={[GROUND_SIZE - 2, GROUND_SIZE, 128]} />
         <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.85} />
       </mesh>
+      {/* Extra shoreline blend ring */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.015, 0]}>
+        <ringGeometry args={[GROUND_SIZE - 4, GROUND_SIZE - 1.5, 96]} />
+        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.9} opacity={0.35} transparent />
+      </mesh>
 
-      {/* Hills / terrain elevation */}
-      <mesh position={[12, 0.5, -10]} castShadow receiveShadow>
-        <sphereGeometry args={[4.5, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2]} />
+      {/* Hills / terrain elevation - more and varied */}
+      <mesh position={[12, 0.6, -10]} castShadow receiveShadow>
+        <sphereGeometry args={[5, 16, 10, 0, Math.PI * 2, 0, Math.PI / 2]} />
         <meshStandardMaterial color={theme.groundColor} roughness={0.92} flatShading />
       </mesh>
-      <mesh position={[-15, 0.4, 8]} castShadow receiveShadow>
-        <sphereGeometry args={[4, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2]} />
+      <mesh position={[-15, 0.5, 8]} castShadow receiveShadow>
+        <sphereGeometry args={[4.5, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2]} />
         <meshStandardMaterial color={patchColor} roughness={0.92} flatShading />
       </mesh>
-      <mesh position={[8, 0.35, 14]} castShadow receiveShadow>
-        <sphereGeometry args={[3.5, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.92} flatShading opacity={0.8} transparent />
+      <mesh position={[8, 0.4, 14]} castShadow receiveShadow>
+        <sphereGeometry args={[4, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={darkPatch} roughness={0.92} flatShading />
       </mesh>
-      <mesh position={[-8, 0.3, -14]} castShadow receiveShadow>
-        <sphereGeometry args={[3, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
+      <mesh position={[-8, 0.35, -14]} castShadow receiveShadow>
+        <sphereGeometry args={[3.5, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
         <meshStandardMaterial color={theme.groundColor} roughness={0.92} flatShading />
       </mesh>
-      <mesh position={[20, 0.25, 5]} castShadow receiveShadow>
-        <sphereGeometry args={[3, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
+      <mesh position={[20, 0.35, 5]} castShadow receiveShadow>
+        <sphereGeometry args={[3.5, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
         <meshStandardMaterial color={patchColor} roughness={0.92} flatShading />
       </mesh>
-      <mesh position={[-5, 0.2, 20]} castShadow receiveShadow>
+      <mesh position={[-5, 0.25, 20]} castShadow receiveShadow>
+        <sphereGeometry args={[3, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={theme.groundColor} roughness={0.92} flatShading />
+      </mesh>
+      {/* Additional hills for denser terrain */}
+      <mesh position={[-22, 0.3, -5]} castShadow receiveShadow>
+        <sphereGeometry args={[3.5, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={warmPatch} roughness={0.92} flatShading />
+      </mesh>
+      <mesh position={[18, 0.4, -18]} castShadow receiveShadow>
+        <sphereGeometry args={[4, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={darkPatch} roughness={0.92} flatShading />
+      </mesh>
+      <mesh position={[0, 0.2, 24]} castShadow receiveShadow>
+        <sphereGeometry args={[3, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={patchColor} roughness={0.92} flatShading />
+      </mesh>
+      <mesh position={[-18, 0.3, -18]} castShadow receiveShadow>
         <sphereGeometry args={[2.5, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2]} />
         <meshStandardMaterial color={theme.groundColor} roughness={0.92} flatShading />
       </mesh>
+      <mesh position={[25, 0.2, -8]} castShadow receiveShadow>
+        <sphereGeometry args={[2.8, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={warmPatch} roughness={0.92} flatShading />
+      </mesh>
 
-      {/* Large ground color patches for organic look */}
+      {/* Large ground color patches for organic terrain blending */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[6, 0.005, 4]} receiveShadow>
-        <circleGeometry args={[8, 24]} />
-        <meshStandardMaterial color={patchColor} roughness={1} opacity={0.45} transparent />
+        <circleGeometry args={[9, 24]} />
+        <meshStandardMaterial color={patchColor} roughness={1} opacity={0.5} transparent />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-9, 0.005, -6]} receiveShadow>
-        <circleGeometry args={[6, 20]} />
-        <meshStandardMaterial color={theme.groundEdgeColor} roughness={1} opacity={0.3} transparent />
+        <circleGeometry args={[7, 20]} />
+        <meshStandardMaterial color={theme.groundEdgeColor} roughness={1} opacity={0.35} transparent />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-14, 0.005, -2]} receiveShadow>
-        <circleGeometry args={[5, 16]} />
-        <meshStandardMaterial color={patchColor} roughness={1} opacity={0.35} transparent />
+        <circleGeometry args={[5.5, 16]} />
+        <meshStandardMaterial color={patchColor} roughness={1} opacity={0.4} transparent />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[15, 0.005, 10]} receiveShadow>
-        <circleGeometry args={[4, 16]} />
-        <meshStandardMaterial color={theme.groundEdgeColor} roughness={1} opacity={0.25} transparent />
+        <circleGeometry args={[5, 16]} />
+        <meshStandardMaterial color={theme.groundEdgeColor} roughness={1} opacity={0.3} transparent />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-20, 0.005, 14]} receiveShadow>
+        <circleGeometry args={[6, 18]} />
+        <meshStandardMaterial color={darkPatch} roughness={1} opacity={0.3} transparent />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[22, 0.005, -12]} receiveShadow>
+        <circleGeometry args={[5, 14]} />
+        <meshStandardMaterial color={warmPatch} roughness={1} opacity={0.35} transparent />
       </mesh>
 
-      {/* Paths radiating from center - wider and more visible */}
+      {/* Paths radiating from center */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.015, 0]} receiveShadow>
+        <planeGeometry args={[1.8, 36]} />
+        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.85} opacity={0.45} transparent />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, Math.PI / 3, 0]} position={[0, 0.015, 0]} receiveShadow>
         <planeGeometry args={[1.6, 34]} />
         <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.85} opacity={0.4} transparent />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, Math.PI / 3, 0]} position={[0, 0.015, 0]} receiveShadow>
+      <mesh rotation={[-Math.PI / 2, -Math.PI / 3, 0]} position={[0, 0.015, 0]} receiveShadow>
         <planeGeometry args={[1.5, 32]} />
         <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.85} opacity={0.35} transparent />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, -Math.PI / 3, 0]} position={[0, 0.015, 0]} receiveShadow>
-        <planeGeometry args={[1.5, 30]} />
+      <mesh rotation={[-Math.PI / 2, Math.PI / 6, 0]} position={[0, 0.015, 0]} receiveShadow>
+        <planeGeometry args={[1.3, 28]} />
         <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.85} opacity={0.3} transparent />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, Math.PI / 6, 0]} position={[0, 0.015, 0]} receiveShadow>
-        <planeGeometry args={[1.2, 26]} />
+      <mesh rotation={[-Math.PI / 2, -Math.PI / 6, 0]} position={[0, 0.015, 0]} receiveShadow>
+        <planeGeometry args={[1.1, 24]} />
         <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.85} opacity={0.25} transparent />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, -Math.PI / 6, 0]} position={[0, 0.015, 0]} receiveShadow>
-        <planeGeometry args={[1.0, 22]} />
+      {/* Cobblestone-like path edges */}
+      <mesh rotation={[-Math.PI / 2, Math.PI / 2, 0]} position={[0, 0.015, 0]} receiveShadow>
+        <planeGeometry args={[1.0, 20]} />
         <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.85} opacity={0.2} transparent />
       </mesh>
 
       {/* Path border stones at center crossroads */}
-      {[0, Math.PI / 3, -Math.PI / 3, Math.PI / 6].map((angle, i) => (
+      {[0, Math.PI / 3, -Math.PI / 3, Math.PI / 6, -Math.PI / 6].map((angle, i) => (
         <group key={`path-stones-${i}`}>
-          {[3, 6, 9, 12, 16, 20].map((dist, j) => (
+          {[3, 5, 7, 10, 13, 16, 20, 25].map((dist, j) => (
             <mesh
               key={`stone-${j}`}
-              position={[Math.sin(angle) * dist + (j % 2 ? 0.8 : -0.8), 0.04, Math.cos(angle) * dist]}
+              position={[Math.sin(angle) * dist + (j % 2 ? 0.9 : -0.9), 0.05, Math.cos(angle) * dist]}
               castShadow
             >
-              <boxGeometry args={[0.15, 0.06, 0.15]} />
+              <boxGeometry args={[0.18, 0.07, 0.18]} />
               <meshStandardMaterial color={theme.rockColor} roughness={0.9} />
             </mesh>
           ))}
         </group>
       ))}
 
-      {/* Center clearing - slightly raised platform */}
-      <mesh position={[0, 0.03, 0]} receiveShadow castShadow>
-        <cylinderGeometry args={[3.5, 4, 0.08, 24]} />
-        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.8} opacity={0.6} transparent />
+      {/* Center clearing - raised stone platform */}
+      <mesh position={[0, 0.04, 0]} receiveShadow castShadow>
+        <cylinderGeometry args={[3.5, 4, 0.1, 32]} />
+        <meshStandardMaterial color={theme.groundEdgeColor} roughness={0.75} opacity={0.7} transparent />
+      </mesh>
+      {/* Inner circle marking */}
+      <mesh position={[0, 0.06, 0]} receiveShadow castShadow>
+        <cylinderGeometry args={[2, 2.5, 0.04, 24]} />
+        <meshStandardMaterial color={theme.rockColor} roughness={0.8} opacity={0.4} transparent />
       </mesh>
     </group>
   );
@@ -577,69 +632,122 @@ function Tree({
         </>
       )}
 
-      {/* Pine tree: stacked green cones (5 layers) */}
+      {/* Pine tree: stacked green cones (7 layers) */}
       {variant === 'pine' && (
         <>
           <mesh position={[0, 1.0, 0]} castShadow>
-            <cylinderGeometry args={[0.1, 0.16, 2, 6]} />
+            <cylinderGeometry args={[0.1, 0.18, 2, 6]} />
             <meshStandardMaterial color={trunkColor} roughness={0.85} />
           </mesh>
           {/* Exposed roots */}
           <mesh position={[0.12, 0.05, 0.08]} rotation={[0.3, 0, 0.4]} castShadow>
-            <cylinderGeometry args={[0.03, 0.04, 0.3, 4]} />
+            <cylinderGeometry args={[0.03, 0.05, 0.4, 4]} />
             <meshStandardMaterial color={trunkColor} roughness={0.9} />
           </mesh>
-          <mesh position={[0, 2.2, 0]} castShadow>
-            <coneGeometry args={[1.0, 1.4, 7]} />
-            <meshStandardMaterial color={foliageColor} roughness={0.75} />
+          <mesh position={[-0.1, 0.04, -0.1]} rotation={[-0.3, 0.8, -0.35]} castShadow>
+            <cylinderGeometry args={[0.025, 0.04, 0.35, 4]} />
+            <meshStandardMaterial color={trunkColor} roughness={0.9} />
+          </mesh>
+          {/* Lower branch stubs */}
+          <mesh position={[0.2, 1.3, 0.1]} rotation={[0, 0, 0.6]} castShadow>
+            <cylinderGeometry args={[0.02, 0.03, 0.3, 4]} />
+            <meshStandardMaterial color={trunkColor} roughness={0.9} />
+          </mesh>
+          {/* Bottom widest cone */}
+          <mesh position={[0, 1.8, 0]} castShadow>
+            <coneGeometry args={[1.2, 1.2, 7]} />
+            <meshStandardMaterial color={foliageColor} roughness={0.75} flatShading />
+          </mesh>
+          <mesh position={[0, 2.3, 0]} castShadow>
+            <coneGeometry args={[1.05, 1.3, 7]} />
+            <meshStandardMaterial color={foliageSecondary} roughness={0.75} flatShading />
           </mesh>
           <mesh position={[0, 2.9, 0]} castShadow>
-            <coneGeometry args={[0.8, 1.2, 7]} />
-            <meshStandardMaterial color={foliageSecondary} roughness={0.75} />
+            <coneGeometry args={[0.85, 1.2, 7]} />
+            <meshStandardMaterial color={foliageColor} roughness={0.75} flatShading />
           </mesh>
           <mesh position={[0, 3.5, 0]} castShadow>
-            <coneGeometry args={[0.6, 1.0, 7]} />
-            <meshStandardMaterial color={foliageColor} roughness={0.75} />
+            <coneGeometry args={[0.65, 1.0, 7]} />
+            <meshStandardMaterial color={foliageSecondary} roughness={0.75} flatShading />
           </mesh>
           <mesh position={[0, 4.0, 0]} castShadow>
-            <coneGeometry args={[0.4, 0.8, 6]} />
-            <meshStandardMaterial color={foliageSecondary} roughness={0.75} />
+            <coneGeometry args={[0.45, 0.8, 6]} />
+            <meshStandardMaterial color={foliageColor} roughness={0.75} flatShading />
           </mesh>
           <mesh position={[0, 4.4, 0]} castShadow>
-            <coneGeometry args={[0.2, 0.5, 6]} />
-            <meshStandardMaterial color={foliageColor} roughness={0.75} />
+            <coneGeometry args={[0.3, 0.6, 6]} />
+            <meshStandardMaterial color={foliageSecondary} roughness={0.75} flatShading />
+          </mesh>
+          <mesh position={[0, 4.8, 0]} castShadow>
+            <coneGeometry args={[0.15, 0.4, 5]} />
+            <meshStandardMaterial color={foliageColor} roughness={0.75} flatShading />
           </mesh>
         </>
       )}
 
-      {/* Short tree: thick trunk + small round canopy */}
+      {/* Short tree: thick trunk + multi-sphere canopy */}
       {variant === 'short' && (
         <>
           <mesh position={[0, 0.5, 0]} castShadow>
-            <cylinderGeometry args={[0.15, 0.2, 1.0, 6]} />
+            <cylinderGeometry args={[0.15, 0.22, 1.0, 6]} />
             <meshStandardMaterial color={trunkColor} roughness={0.85} />
           </mesh>
+          {/* Branches */}
+          <mesh position={[0.18, 0.7, 0.08]} rotation={[0, 0, 0.5]} castShadow>
+            <cylinderGeometry args={[0.025, 0.035, 0.35, 4]} />
+            <meshStandardMaterial color={trunkColor} roughness={0.9} />
+          </mesh>
           <mesh position={[0, 1.3, 0]} castShadow>
-            <sphereGeometry args={[0.55, 8, 6]} />
-            <meshStandardMaterial color={foliageColor} roughness={0.8} />
+            <sphereGeometry args={[0.6, 8, 6]} />
+            <meshStandardMaterial color={foliageColor} roughness={0.8} flatShading />
+          </mesh>
+          <mesh position={[0.3, 1.2, 0.2]} castShadow>
+            <sphereGeometry args={[0.35, 6, 5]} />
+            <meshStandardMaterial color={foliageSecondary} roughness={0.8} flatShading />
+          </mesh>
+          <mesh position={[-0.2, 1.1, -0.15]} castShadow>
+            <sphereGeometry args={[0.3, 6, 5]} />
+            <meshStandardMaterial color={foliageColor} roughness={0.8} flatShading />
           </mesh>
         </>
       )}
 
-      {/* Cherry blossom: brown trunk + pink sphere */}
+      {/* Cherry blossom: brown trunk + lush pink multi-sphere canopy */}
       {variant === 'cherry' && (
         <>
           <mesh position={[0, 1.0, 0]} castShadow>
-            <cylinderGeometry args={[0.1, 0.16, 2, 6]} />
+            <cylinderGeometry args={[0.1, 0.18, 2, 6]} />
             <meshStandardMaterial color={trunkColor} roughness={0.85} />
           </mesh>
-          <mesh position={[0, 2.4, 0]} castShadow>
-            <sphereGeometry args={[0.9, 10, 8]} />
-            <meshStandardMaterial color={foliageColor} roughness={0.6} />
+          {/* Branches */}
+          <mesh position={[0.25, 1.5, 0.1]} rotation={[0.1, 0, 0.5]} castShadow>
+            <cylinderGeometry args={[0.03, 0.05, 0.6, 4]} />
+            <meshStandardMaterial color={trunkColor} roughness={0.9} />
           </mesh>
-          <mesh position={[0.5, 2.2, 0.3]} castShadow>
+          <mesh position={[-0.2, 1.4, -0.1]} rotation={[-0.1, 0.5, -0.4]} castShadow>
+            <cylinderGeometry args={[0.025, 0.04, 0.5, 4]} />
+            <meshStandardMaterial color={trunkColor} roughness={0.9} />
+          </mesh>
+          {/* Main canopy - multiple overlapping spheres */}
+          <mesh position={[0, 2.4, 0]} castShadow>
+            <sphereGeometry args={[1.0, 10, 8]} />
+            <meshStandardMaterial color={foliageColor} roughness={0.6} flatShading />
+          </mesh>
+          <mesh position={[0.6, 2.2, 0.3]} castShadow>
+            <sphereGeometry args={[0.6, 8, 6]} />
+            <meshStandardMaterial color={foliageSecondary} roughness={0.6} flatShading />
+          </mesh>
+          <mesh position={[-0.4, 2.3, -0.3]} castShadow>
+            <sphereGeometry args={[0.55, 8, 6]} />
+            <meshStandardMaterial color={foliageColor} roughness={0.6} flatShading />
+          </mesh>
+          <mesh position={[0.2, 2.7, -0.2]} castShadow>
             <sphereGeometry args={[0.5, 8, 6]} />
-            <meshStandardMaterial color={foliageSecondary} roughness={0.6} />
+            <meshStandardMaterial color={foliageSecondary} roughness={0.6} flatShading />
+          </mesh>
+          <mesh position={[-0.3, 2.0, 0.4]} castShadow>
+            <sphereGeometry args={[0.4, 6, 5]} />
+            <meshStandardMaterial color={foliageColor} roughness={0.6} flatShading />
           </mesh>
         </>
       )}
@@ -724,33 +832,59 @@ function Tree({
         </>
       )}
 
-      {/* Fruit tree: green canopy + small red fruit spheres */}
+      {/* Fruit tree: lush green canopy + small red fruit spheres */}
       {variant === 'fruit' && (
         <>
           <mesh position={[0, 1.0, 0]} castShadow>
-            <cylinderGeometry args={[0.12, 0.18, 2, 6]} />
+            <cylinderGeometry args={[0.12, 0.2, 2, 6]} />
             <meshStandardMaterial color={trunkColor} roughness={0.85} />
           </mesh>
+          {/* Branches */}
+          <mesh position={[0.2, 1.5, 0.12]} rotation={[0.1, 0, 0.5]} castShadow>
+            <cylinderGeometry args={[0.025, 0.04, 0.5, 4]} />
+            <meshStandardMaterial color={trunkColor} roughness={0.9} />
+          </mesh>
+          <mesh position={[-0.18, 1.3, -0.1]} rotation={[-0.2, 0.5, -0.45]} castShadow>
+            <cylinderGeometry args={[0.025, 0.035, 0.4, 4]} />
+            <meshStandardMaterial color={trunkColor} roughness={0.9} />
+          </mesh>
+          {/* Fuller canopy */}
           <mesh position={[0, 2.4, 0]} castShadow>
-            <sphereGeometry args={[0.85, 10, 8]} />
-            <meshStandardMaterial color={foliageColor} roughness={0.7} />
+            <sphereGeometry args={[0.95, 10, 8]} />
+            <meshStandardMaterial color={foliageColor} roughness={0.7} flatShading />
           </mesh>
-          <mesh position={[0.5, 2.6, 0.3]} castShadow>
+          <mesh position={[0.5, 2.5, 0.3]} castShadow>
+            <sphereGeometry args={[0.55, 8, 6]} />
+            <meshStandardMaterial color={foliageSecondary} roughness={0.7} flatShading />
+          </mesh>
+          <mesh position={[-0.4, 2.3, -0.25]} castShadow>
             <sphereGeometry args={[0.5, 8, 6]} />
-            <meshStandardMaterial color={foliageSecondary} roughness={0.7} />
+            <meshStandardMaterial color={foliageColor} roughness={0.7} flatShading />
           </mesh>
-          {/* Fruits */}
-          <mesh position={[0.4, 2.0, 0.4]}>
+          <mesh position={[0.15, 2.8, -0.15]} castShadow>
+            <sphereGeometry args={[0.4, 6, 5]} />
+            <meshStandardMaterial color={foliageSecondary} roughness={0.7} flatShading />
+          </mesh>
+          {/* Fruits - more and brighter */}
+          <mesh position={[0.45, 2.0, 0.45]}>
             <sphereGeometry args={[0.1, 6, 4]} />
-            <meshStandardMaterial color="#ff3333" roughness={0.6} />
+            <meshStandardMaterial color="#ff3333" roughness={0.5} />
           </mesh>
-          <mesh position={[-0.3, 2.1, -0.3]}>
+          <mesh position={[-0.35, 2.1, -0.35]}>
             <sphereGeometry args={[0.1, 6, 4]} />
-            <meshStandardMaterial color="#ff4444" roughness={0.6} />
+            <meshStandardMaterial color="#ff4444" roughness={0.5} />
           </mesh>
-          <mesh position={[0.1, 1.9, -0.5]}>
+          <mesh position={[0.1, 1.9, -0.55]}>
+            <sphereGeometry args={[0.09, 6, 4]} />
+            <meshStandardMaterial color="#ff2222" roughness={0.5} />
+          </mesh>
+          <mesh position={[-0.5, 2.3, 0.2]}>
             <sphereGeometry args={[0.08, 6, 4]} />
-            <meshStandardMaterial color="#ff2222" roughness={0.6} />
+            <meshStandardMaterial color="#ff5555" roughness={0.5} />
+          </mesh>
+          <mesh position={[0.35, 2.6, -0.1]}>
+            <sphereGeometry args={[0.09, 6, 4]} />
+            <meshStandardMaterial color="#ff3333" roughness={0.5} />
           </mesh>
         </>
       )}
@@ -2572,19 +2706,36 @@ function WaterRing({ theme }: { theme: IslandTheme }) {
         />
       </mesh>
       {/* Shallow water transition near shore */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]}>
-        <ringGeometry args={[GROUND_SIZE - 2, GROUND_SIZE + 1, 64]} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.08, 0]}>
+        <ringGeometry args={[GROUND_SIZE - 2, GROUND_SIZE + 2, 96]} />
         <meshStandardMaterial
           color={theme.waterColor}
           transparent
-          opacity={theme.waterOpacity * 0.4}
-          roughness={0.3}
+          opacity={theme.waterOpacity * 0.5}
+          roughness={0.2}
+          metalness={0.15}
         />
       </mesh>
-      {/* Foam line at shore edge */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
-        <ringGeometry args={[GROUND_SIZE - 0.5, GROUND_SIZE + 0.3, 64]} />
-        <meshStandardMaterial color="#ffffff" transparent opacity={0.25} roughness={0.9} />
+      {/* Deep water layer */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.25, 0]}>
+        <ringGeometry args={[GROUND_SIZE + 15, GROUND_SIZE + 30, 64]} />
+        <meshStandardMaterial
+          color={theme.waterColor}
+          transparent
+          opacity={theme.waterOpacity * 0.9}
+          roughness={0.1}
+          metalness={0.4}
+        />
+      </mesh>
+      {/* Foam line at shore edge - thicker */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
+        <ringGeometry args={[GROUND_SIZE - 0.8, GROUND_SIZE + 0.5, 96]} />
+        <meshStandardMaterial color="#ffffff" transparent opacity={0.3} roughness={0.9} />
+      </mesh>
+      {/* Second foam line - inner */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.005, 0]}>
+        <ringGeometry args={[GROUND_SIZE - 1.5, GROUND_SIZE - 0.7, 64]} />
+        <meshStandardMaterial color="#ffffff" transparent opacity={0.15} roughness={0.9} />
       </mesh>
     </group>
   );
@@ -2672,8 +2823,9 @@ function AmbientParticles({ islandId }: { theme: IslandTheme; islandId: string }
 // ---------------------------------------------------------------------------
 
 function GrassTufts({ theme, islandId }: { theme: IslandTheme; islandId: string }) {
-  const count = 180;
+  const count = 350;
   const meshRef = useRef<THREE.InstancedMesh>(null);
+  const mesh2Ref = useRef<THREE.InstancedMesh>(null);
   const dummy = useMemo(() => new THREE.Object3D(), []);
   const grassData = useMemo(() => {
     const rng = makeRng((SEED_MAP[islandId] ?? 101) + 6666);
@@ -2687,15 +2839,22 @@ function GrassTufts({ theme, islandId }: { theme: IslandTheme; islandId: string 
       arr.push({
         x: Math.cos(angle) * r,
         z: Math.sin(angle) * r,
-        scaleX: 0.08 + rng() * 0.06,
-        scaleY: 0.15 + rng() * 0.25,
-        scaleZ: 0.08 + rng() * 0.06,
+        scaleX: 0.08 + rng() * 0.08,
+        scaleY: 0.18 + rng() * 0.35,
+        scaleZ: 0.08 + rng() * 0.08,
         baseRotY: rng() * Math.PI,
         phase: rng() * Math.PI * 2,
       });
     }
     return arr;
   }, [islandId]);
+
+  // Secondary grass color
+  const grassColor2 = useMemo(() => {
+    const c = new THREE.Color(theme.foliageColor);
+    c.offsetHSL(0.03, 0.05, 0.08);
+    return '#' + c.getHexString();
+  }, [theme.foliageColor]);
 
   useFrame(() => {
     if (!meshRef.current) return;
@@ -2706,23 +2865,234 @@ function GrassTufts({ theme, islandId }: { theme: IslandTheme; islandId: string 
       dummy.scale.set(g.scaleX, g.scaleY, g.scaleZ);
       // Wind sway
       dummy.rotation.set(
-        Math.sin(t * 1.2 + g.phase) * 0.15,
+        Math.sin(t * 1.2 + g.phase) * 0.18,
         g.baseRotY,
-        Math.cos(t * 0.9 + g.phase + 1) * 0.1,
+        Math.cos(t * 0.9 + g.phase + 1) * 0.12,
       );
       dummy.updateMatrix();
       meshRef.current.setMatrixAt(i, dummy.matrix);
     }
     meshRef.current.instanceMatrix.needsUpdate = true;
+
+    // Second layer of grass with offset
+    if (mesh2Ref.current) {
+      for (let i = 0; i < count; i++) {
+        const g = grassData[i];
+        dummy.position.set(g.x + 0.05, 0.06, g.z + 0.05);
+        dummy.scale.set(g.scaleX * 0.7, g.scaleY * 0.6, g.scaleZ * 0.7);
+        dummy.rotation.set(
+          Math.sin(t * 1.0 + g.phase + 1) * 0.2,
+          g.baseRotY + 0.5,
+          Math.cos(t * 0.7 + g.phase) * 0.15,
+        );
+        dummy.updateMatrix();
+        mesh2Ref.current.setMatrixAt(i, dummy.matrix);
+      }
+      mesh2Ref.current.instanceMatrix.needsUpdate = true;
+    }
   });
 
   // Skip grass for some islands
   if (islandId === 'volcano' || islandId === 'ocean' || islandId === 'night') return null;
 
   return (
-    <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
-      <coneGeometry args={[1, 1, 4]} />
-      <meshStandardMaterial color={theme.foliageColor} roughness={0.9} />
+    <group>
+      <instancedMesh ref={meshRef} args={[undefined, undefined, count]} castShadow>
+        <coneGeometry args={[1, 1, 4]} />
+        <meshStandardMaterial color={theme.foliageColor} roughness={0.85} />
+      </instancedMesh>
+      <instancedMesh ref={mesh2Ref} args={[undefined, undefined, count]}>
+        <coneGeometry args={[1, 1, 3]} />
+        <meshStandardMaterial color={grassColor2} roughness={0.9} />
+      </instancedMesh>
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 3D Sub-components: Dense ground bushes (InstancedMesh)
+// ---------------------------------------------------------------------------
+
+function GroundBushes({ theme, islandId }: { theme: IslandTheme; islandId: string }) {
+  const count = 80;
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const bushData = useMemo(() => {
+    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 4444);
+    const arr: Array<{
+      x: number; z: number; scale: number; phase: number;
+    }> = [];
+    for (let i = 0; i < count; i++) {
+      const angle = rng() * Math.PI * 2;
+      const r = 4 + rng() * (GROUND_SIZE - 8);
+      arr.push({
+        x: Math.cos(angle) * r,
+        z: Math.sin(angle) * r,
+        scale: 0.3 + rng() * 0.5,
+        phase: rng() * Math.PI * 2,
+      });
+    }
+    return arr;
+  }, [islandId]);
+
+  const bushColor = useMemo(() => {
+    const c = new THREE.Color(theme.foliageColor);
+    c.offsetHSL(-0.02, 0.1, -0.05);
+    return '#' + c.getHexString();
+  }, [theme.foliageColor]);
+
+  useFrame(() => {
+    if (!meshRef.current) return;
+    const t = Date.now() * 0.001;
+    for (let i = 0; i < count; i++) {
+      const b = bushData[i];
+      dummy.position.set(b.x, b.scale * 0.35, b.z);
+      const breathe = 1 + Math.sin(t * 0.5 + b.phase) * 0.04;
+      dummy.scale.set(b.scale * breathe, b.scale * 0.7 * breathe, b.scale * breathe);
+      dummy.rotation.set(0, b.phase, 0);
+      dummy.updateMatrix();
+      meshRef.current.setMatrixAt(i, dummy.matrix);
+    }
+    meshRef.current.instanceMatrix.needsUpdate = true;
+  });
+
+  // Skip for some islands
+  if (islandId === 'volcano' || islandId === 'ocean') return null;
+
+  return (
+    <instancedMesh ref={meshRef} args={[undefined, undefined, count]} castShadow>
+      <sphereGeometry args={[1, 8, 6]} />
+      <meshStandardMaterial color={bushColor} roughness={0.85} flatShading />
+    </instancedMesh>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 3D Sub-components: Ground flowers scattered (InstancedMesh)
+// ---------------------------------------------------------------------------
+
+function GroundFlowers({ theme, islandId }: { theme: IslandTheme; islandId: string }) {
+  const count = 60;
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const stemRef = useRef<THREE.InstancedMesh>(null);
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const flowerData = useMemo(() => {
+    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 3333);
+    const arr: Array<{
+      x: number; z: number; height: number; phase: number;
+    }> = [];
+    for (let i = 0; i < count; i++) {
+      const angle = rng() * Math.PI * 2;
+      const r = 3 + rng() * (GROUND_SIZE - 6);
+      arr.push({
+        x: Math.cos(angle) * r,
+        z: Math.sin(angle) * r,
+        height: 0.2 + rng() * 0.3,
+        phase: rng() * Math.PI * 2,
+      });
+    }
+    return arr;
+  }, [islandId]);
+
+  const colorsReady = useRef(false);
+  useEffect(() => { colorsReady.current = false; }, [islandId]);
+
+  useFrame(() => {
+    if (!meshRef.current || !stemRef.current) return;
+
+    // Set per-instance flower colors on first frame
+    if (!colorsReady.current) {
+      const rng = makeRng((SEED_MAP[islandId] ?? 101) + 3334);
+      const flowerColors = ['#ff6080', '#ffaa40', '#ff80ff', '#ff4040', '#ffdd44', '#88ccff', '#ff99bb'];
+      const c = new THREE.Color();
+      for (let i = 0; i < count; i++) {
+        c.set(flowerColors[Math.floor(rng() * flowerColors.length)]);
+        meshRef.current.setColorAt(i, c);
+      }
+      if (meshRef.current.instanceColor) meshRef.current.instanceColor.needsUpdate = true;
+      colorsReady.current = true;
+    }
+
+    const t = Date.now() * 0.001;
+    for (let i = 0; i < count; i++) {
+      const f = flowerData[i];
+      // Flower head
+      dummy.position.set(f.x, f.height + 0.06, f.z);
+      const sway = Math.sin(t * 1.5 + f.phase) * 0.1;
+      dummy.scale.setScalar(0.06 + Math.sin(f.phase) * 0.02);
+      dummy.rotation.set(sway, f.phase, 0);
+      dummy.updateMatrix();
+      meshRef.current.setMatrixAt(i, dummy.matrix);
+
+      // Stem
+      dummy.position.set(f.x, f.height * 0.5, f.z);
+      dummy.scale.set(0.015, f.height, 0.015);
+      dummy.rotation.set(sway * 0.5, 0, 0);
+      dummy.updateMatrix();
+      stemRef.current.setMatrixAt(i, dummy.matrix);
+    }
+    meshRef.current.instanceMatrix.needsUpdate = true;
+    stemRef.current.instanceMatrix.needsUpdate = true;
+  });
+
+  // Only show on garden, forest, home, rainbow
+  if (islandId === 'volcano' || islandId === 'ocean' || islandId === 'mountain' || islandId === 'night') return null;
+
+  return (
+    <group>
+      <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
+        <coneGeometry args={[1, 0.8, 6]} />
+        <meshStandardMaterial color="#ff6080" roughness={0.5} />
+      </instancedMesh>
+      <instancedMesh ref={stemRef} args={[undefined, undefined, count]}>
+        <cylinderGeometry args={[1, 1, 1, 4]} />
+        <meshStandardMaterial color="#3a8a2a" roughness={0.7} />
+      </instancedMesh>
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 3D Sub-components: Small pebbles / ground scatter (InstancedMesh)
+// ---------------------------------------------------------------------------
+
+function GroundPebbles({ theme, islandId }: { theme: IslandTheme; islandId: string }) {
+  const count = 120;
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const pebbleData = useMemo(() => {
+    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 2222);
+    const arr: Array<{ x: number; z: number; scale: number; rotY: number }> = [];
+    for (let i = 0; i < count; i++) {
+      const angle = rng() * Math.PI * 2;
+      const r = 1 + rng() * (GROUND_SIZE - 3);
+      arr.push({
+        x: Math.cos(angle) * r,
+        z: Math.sin(angle) * r,
+        scale: 0.03 + rng() * 0.08,
+        rotY: rng() * Math.PI * 2,
+      });
+    }
+    return arr;
+  }, [islandId]);
+
+  useEffect(() => {
+    if (!meshRef.current) return;
+    for (let i = 0; i < count; i++) {
+      const p = pebbleData[i];
+      dummy.position.set(p.x, p.scale * 0.4, p.z);
+      dummy.scale.set(p.scale, p.scale * 0.5, p.scale);
+      dummy.rotation.set(0, p.rotY, 0);
+      dummy.updateMatrix();
+      meshRef.current.setMatrixAt(i, dummy.matrix);
+    }
+    meshRef.current.instanceMatrix.needsUpdate = true;
+  }, [pebbleData, dummy, count]);
+
+  return (
+    <instancedMesh ref={meshRef} args={[undefined, undefined, count]} castShadow receiveShadow>
+      <dodecahedronGeometry args={[1, 0]} />
+      <meshStandardMaterial color={theme.rockColor} roughness={0.92} flatShading />
     </instancedMesh>
   );
 }
@@ -2736,53 +3106,68 @@ function SceneLighting({ theme }: { theme: IslandTheme }) {
 
   useEffect(() => {
     if (lightRef.current) {
-      lightRef.current.shadow.mapSize.width = 2048;
-      lightRef.current.shadow.mapSize.height = 2048;
-      lightRef.current.shadow.camera.left = -40;
-      lightRef.current.shadow.camera.right = 40;
-      lightRef.current.shadow.camera.top = 40;
-      lightRef.current.shadow.camera.bottom = -40;
-      lightRef.current.shadow.bias = -0.0008;
+      lightRef.current.shadow.mapSize.width = 4096;
+      lightRef.current.shadow.mapSize.height = 4096;
+      lightRef.current.shadow.camera.left = -45;
+      lightRef.current.shadow.camera.right = 45;
+      lightRef.current.shadow.camera.top = 45;
+      lightRef.current.shadow.camera.bottom = -45;
+      lightRef.current.shadow.bias = -0.0005;
       lightRef.current.shadow.normalBias = 0.02;
+      lightRef.current.shadow.radius = 2;
       lightRef.current.shadow.camera.updateProjectionMatrix();
     }
   }, []);
 
   return (
     <>
-      <ambientLight intensity={theme.ambientIntensity} color={theme.ambientColor} />
-      {/* Main sun/key light */}
+      <ambientLight intensity={theme.ambientIntensity * 1.15} color={theme.ambientColor} />
+      {/* Main sun/key light - stronger for more contrast */}
       <directionalLight
         ref={lightRef}
         position={theme.sunPosition}
-        intensity={theme.sunIntensity}
+        intensity={theme.sunIntensity * 1.2}
         color={theme.sunColor}
         castShadow
       />
-      {/* Rim/back light from opposite side */}
+      {/* Rim/back light from opposite side - warmer */}
       <directionalLight
-        position={[-theme.sunPosition[0], theme.sunPosition[1] * 0.5, -theme.sunPosition[2]]}
-        intensity={theme.sunIntensity * 0.18}
+        position={[-theme.sunPosition[0], theme.sunPosition[1] * 0.6, -theme.sunPosition[2]]}
+        intensity={theme.sunIntensity * 0.25}
         color={theme.ambientColor}
       />
       {/* Fill light from the side for softer shadows */}
       <directionalLight
-        position={[theme.sunPosition[2], theme.sunPosition[1] * 0.3, -theme.sunPosition[0]]}
-        intensity={theme.sunIntensity * 0.1}
+        position={[theme.sunPosition[2], theme.sunPosition[1] * 0.4, -theme.sunPosition[0]]}
+        intensity={theme.sunIntensity * 0.15}
         color={theme.sunColor}
       />
-      {/* Hemisphere light for natural sky/ground bounce */}
+      {/* Secondary fill from opposite side */}
+      <directionalLight
+        position={[-theme.sunPosition[2], theme.sunPosition[1] * 0.3, theme.sunPosition[0]]}
+        intensity={theme.sunIntensity * 0.08}
+        color={theme.fogColor}
+      />
+      {/* Hemisphere light for natural sky/ground bounce - stronger */}
       <hemisphereLight
         color={theme.sunColor}
         groundColor={theme.groundColor}
-        intensity={0.3}
+        intensity={0.45}
       />
       {/* Center point light for warm glow near landmarks */}
       <pointLight
         position={[0, 3, 0]}
         color={theme.ambientColor}
-        intensity={0.4}
-        distance={15}
+        intensity={0.5}
+        distance={18}
+        decay={2}
+      />
+      {/* Elevated atmospheric rim light */}
+      <pointLight
+        position={[0, 12, 0]}
+        color={theme.sunColor}
+        intensity={0.2}
+        distance={50}
         decay={2}
       />
     </>
@@ -3863,8 +4248,17 @@ function WorldScene({
         <Ground theme={theme} />
       </group>
 
-      {/* Grass tufts */}
+      {/* Grass tufts (double layer) */}
       <GrassTufts theme={theme} islandId={islandId} />
+
+      {/* Dense ground bushes */}
+      <GroundBushes theme={theme} islandId={islandId} />
+
+      {/* Ground flowers */}
+      <GroundFlowers theme={theme} islandId={islandId} />
+
+      {/* Ground pebbles scatter */}
+      <GroundPebbles theme={theme} islandId={islandId} />
 
       {/* Ambient particles */}
       <AmbientParticles theme={theme} islandId={islandId} />
@@ -4417,7 +4811,7 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
         shadows
         camera={{ position: [15, 17, 15], fov: 50 }}
         style={{ width: '100%', height: '100%' }}
-        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
+        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.35 }}
         dpr={[1, 2]}
       >
         <WorldScene
@@ -4438,9 +4832,14 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
           onMiniGameClick={handleMiniGameClick}
           playerPosRef={playerPosRef}
         />
-        <EffectComposer>
-          <Bloom luminanceThreshold={0.6} luminanceSmoothing={0.9} intensity={0.4} />
-          <Vignette eskil={false} offset={0.1} darkness={0.5} />
+        <EffectComposer multisampling={0}>
+          <N8AO aoRadius={0.5} intensity={2.5} aoSamples={6} denoiseSamples={4} distanceFalloff={1} halfRes />
+          <Bloom luminanceThreshold={0.45} luminanceSmoothing={0.9} intensity={0.6} mipmapBlur />
+          <HueSaturation saturation={0.18} />
+          <BrightnessContrast brightness={0.03} contrast={0.1} />
+          <ChromaticAberration offset={[0.0004, 0.0004]} blendFunction={BlendFunction.NORMAL} />
+          <TiltShift2 blur={0.08} />
+          <Vignette eskil={false} offset={0.1} darkness={0.55} />
         </EffectComposer>
       </Canvas>
 
