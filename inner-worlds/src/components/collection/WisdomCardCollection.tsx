@@ -3,18 +3,38 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../stores/gameStore';
 import { getAllWisdomCards } from '../../data';
 
-const categoryColors: Record<string, string> = {
-  emotion: 'from-pink-400 to-rose-500',
-  strategy: 'from-blue-400 to-cyan-500',
-  insight: 'from-purple-400 to-violet-500',
-  courage: 'from-orange-400 to-amber-500',
+// ---------------------------------------------------------------------------
+// Category styling for dark fantasy theme
+// ---------------------------------------------------------------------------
+
+const categoryColors: Record<string, { bg: string; border: string; glow: string }> = {
+  emotion: {
+    bg: 'linear-gradient(135deg, rgba(219,112,147,0.2), rgba(199,21,133,0.1))',
+    border: 'rgba(219,112,147,0.5)',
+    glow: 'rgba(219,112,147,0.3)',
+  },
+  strategy: {
+    bg: 'linear-gradient(135deg, rgba(65,105,225,0.2), rgba(30,144,255,0.1))',
+    border: 'rgba(65,105,225,0.5)',
+    glow: 'rgba(65,105,225,0.3)',
+  },
+  insight: {
+    bg: 'linear-gradient(135deg, rgba(138,43,226,0.2), rgba(108,92,231,0.1))',
+    border: 'rgba(138,43,226,0.5)',
+    glow: 'rgba(138,43,226,0.3)',
+  },
+  courage: {
+    bg: 'linear-gradient(135deg, rgba(255,140,0,0.2), rgba(201,168,76,0.1))',
+    border: 'rgba(255,140,0,0.5)',
+    glow: 'rgba(255,140,0,0.3)',
+  },
 };
 
 const categoryLabels: Record<string, string> = {
-  emotion: '💗 Gefühl',
-  strategy: '🛡️ Strategie',
-  insight: '💡 Einsicht',
-  courage: '🦁 Mut',
+  emotion: '\u{1F497} Gef\u00FChl',
+  strategy: '\u{1F6E1}\uFE0F Strategie',
+  insight: '\u{1F4A1} Einsicht',
+  courage: '\u{1F981} Mut',
 };
 
 export default function WisdomCardCollection() {
@@ -23,11 +43,21 @@ export default function WisdomCardCollection() {
 
   const allCards = getAllWisdomCards();
   const collectedCount = allCards.filter((c: any) =>
-    collectedWisdomCardIds.includes(c.id)
+    collectedWisdomCardIds.includes(c.id),
   ).length;
 
+  const progressPct = allCards.length > 0 ? (collectedCount / allCards.length) * 100 : 0;
+
   return (
-    <div className="h-screen bg-gradient-to-b from-[#faf3e8] to-[#f0e6d8] overflow-auto">
+    <div
+      className="h-screen overflow-auto"
+      style={{
+        background: `
+          radial-gradient(ellipse 80% 60% at 50% 20%, rgba(45,27,78,0.5) 0%, transparent 70%),
+          linear-gradient(180deg, #0d0d1a 0%, #1a0a2e 50%, #0d0d1a 100%)
+        `,
+      }}
+    >
       <div className="max-w-4xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -35,41 +65,71 @@ export default function WisdomCardCollection() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setScreen('island-map')}
-            className="px-4 py-2 bg-white/80 backdrop-blur rounded-full shadow text-gray-700 font-semibold"
+            className="glass-panel px-4 py-2 rounded-xl text-sm font-title font-semibold cursor-pointer"
+            style={{
+              border: '1px solid rgba(201,168,76,0.3)',
+              color: '#c9a84c',
+            }}
           >
-            ← Zurück
+            {'\u2190'} Zur{'\u00FC'}ck
           </motion.button>
         </div>
 
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-[#6C5CE7] mb-2">🃏 Weisheitskarten</h1>
-          <p className="text-gray-600">
+          <motion.h1
+            initial={{ opacity: 0, y: -15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-3xl font-title font-bold mb-2"
+            style={{
+              color: '#ffd700',
+              textShadow: '0 0 20px rgba(255,215,0,0.3)',
+            }}
+          >
+            {'\u{1F4DC}'} Weisheitskarten
+          </motion.h1>
+          <p style={{ color: 'rgba(232,213,163,0.7)' }}>
             {collectedCount} von {allCards.length} gesammelt
           </p>
-          <div className="w-48 h-3 bg-gray-200 rounded-full mx-auto mt-2 overflow-hidden">
+
+          {/* Progress bar */}
+          <div
+            className="w-48 h-2 rounded-full mx-auto mt-3 overflow-hidden"
+            style={{ backgroundColor: 'rgba(201,168,76,0.15)' }}
+          >
             <motion.div
               initial={{ width: 0 }}
-              animate={{ width: allCards.length > 0 ? `${(collectedCount / allCards.length) * 100}%` : '0%' }}
-              className="h-full bg-gradient-to-r from-[#6C5CE7] to-[#81ECEC] rounded-full"
+              animate={{ width: `${progressPct}%` }}
+              transition={{ duration: 1, ease: 'easeOut' }}
+              className="h-full rounded-full"
+              style={{
+                background: 'linear-gradient(90deg, #c9a84c, #ffd700)',
+                boxShadow: '0 0 8px rgba(255,215,0,0.4)',
+              }}
             />
           </div>
         </div>
 
         {/* Cards grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {allCards.map((card: any) => {
+          {allCards.map((card: any, i: number) => {
             const isCollected = collectedWisdomCardIds.includes(card.id);
             const isFlipped = flippedCard === card.id;
-            const gradient = categoryColors[card.category] || categoryColors.insight;
+            const colors = categoryColors[card.category] || categoryColors.insight;
 
             return (
               <motion.div
                 key={card.id}
-                whileHover={isCollected ? { y: -5 } : {}}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.04 }}
+                whileHover={isCollected ? { y: -5, scale: 1.02 } : {}}
                 onClick={() => isCollected && setFlippedCard(isFlipped ? null : card.id)}
-                className={`relative h-48 rounded-2xl shadow-lg cursor-pointer perspective-1000 ${
-                  !isCollected ? 'opacity-50' : ''
+                className={`relative h-48 rounded-2xl cursor-pointer ${
+                  !isCollected ? 'opacity-40' : ''
                 }`}
+                style={{
+                  perspective: '1000px',
+                }}
               >
                 <AnimatePresence mode="wait">
                   {isCollected && isFlipped ? (
@@ -78,12 +138,24 @@ export default function WisdomCardCollection() {
                       initial={{ rotateY: 90 }}
                       animate={{ rotateY: 0 }}
                       exit={{ rotateY: 90 }}
-                      className={`absolute inset-0 bg-gradient-to-br ${gradient} rounded-2xl p-4 flex flex-col justify-center items-center text-center`}
+                      className="absolute inset-0 rounded-2xl p-4 flex flex-col justify-center items-center text-center"
+                      style={{
+                        background: colors.bg,
+                        border: `1px solid ${colors.border}`,
+                        boxShadow: `0 0 20px ${colors.glow}`,
+                        backfaceVisibility: 'hidden',
+                      }}
                     >
-                      <p className="text-white text-sm font-semibold leading-relaxed">
+                      <p
+                        className="text-sm font-semibold leading-relaxed"
+                        style={{ color: '#e8e0d0' }}
+                      >
                         {card.text}
                       </p>
-                      <span className="mt-3 text-white/70 text-xs">
+                      <span
+                        className="mt-3 text-xs"
+                        style={{ color: 'rgba(201,168,76,0.7)' }}
+                      >
                         {categoryLabels[card.category]}
                       </span>
                     </motion.div>
@@ -93,26 +165,55 @@ export default function WisdomCardCollection() {
                       initial={{ rotateY: -90 }}
                       animate={{ rotateY: 0 }}
                       exit={{ rotateY: -90 }}
-                      className={`absolute inset-0 rounded-2xl p-4 flex flex-col justify-center items-center ${
-                        isCollected
-                          ? `bg-gradient-to-br ${gradient}`
-                          : 'bg-gray-300'
-                      }`}
+                      className="absolute inset-0 rounded-2xl p-4 flex flex-col justify-center items-center"
+                      style={{
+                        background: isCollected
+                          ? colors.bg
+                          : 'linear-gradient(135deg, rgba(40,30,60,0.6), rgba(20,15,35,0.8))',
+                        border: isCollected
+                          ? `1px solid ${colors.border}`
+                          : '1px solid rgba(100,80,120,0.3)',
+                        boxShadow: isCollected ? `0 0 15px ${colors.glow}` : 'none',
+                        backfaceVisibility: 'hidden',
+                      }}
                     >
                       {isCollected ? (
                         <>
-                          <span className="text-4xl mb-2">✨</span>
-                          <span className="text-white/80 text-xs font-semibold">
+                          <motion.span
+                            className="text-4xl mb-2"
+                            animate={{
+                              filter: [
+                                'drop-shadow(0 0 4px rgba(255,215,0,0.3))',
+                                'drop-shadow(0 0 10px rgba(255,215,0,0.6))',
+                                'drop-shadow(0 0 4px rgba(255,215,0,0.3))',
+                              ],
+                            }}
+                            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                          >
+                            {'\u2728'}
+                          </motion.span>
+                          <span
+                            className="text-xs font-title font-semibold"
+                            style={{ color: 'rgba(232,213,163,0.8)' }}
+                          >
                             {categoryLabels[card.category]}
                           </span>
-                          <span className="text-white/60 text-xs mt-1">
+                          <span
+                            className="text-xs mt-1"
+                            style={{ color: 'rgba(201,168,76,0.5)' }}
+                          >
                             Tippe zum Lesen
                           </span>
                         </>
                       ) : (
                         <>
-                          <span className="text-4xl mb-2">❓</span>
-                          <span className="text-gray-500 text-xs">Noch nicht entdeckt</span>
+                          <span className="text-4xl mb-2 opacity-40">{'\u2753'}</span>
+                          <span
+                            className="text-xs"
+                            style={{ color: 'rgba(150,130,170,0.6)' }}
+                          >
+                            Noch nicht entdeckt
+                          </span>
                         </>
                       )}
                     </motion.div>
@@ -124,9 +225,11 @@ export default function WisdomCardCollection() {
         </div>
 
         {allCards.length === 0 && (
-          <div className="text-center text-gray-500 mt-12">
-            <span className="text-4xl block mb-4">🃏</span>
-            <p>Spiele Geschichten, um Weisheitskarten zu sammeln!</p>
+          <div className="text-center mt-12">
+            <span className="text-4xl block mb-4">{'\u{1F4DC}'}</span>
+            <p style={{ color: 'rgba(232,213,163,0.6)' }}>
+              Spiele Geschichten, um Weisheitskarten zu sammeln!
+            </p>
           </div>
         )}
 

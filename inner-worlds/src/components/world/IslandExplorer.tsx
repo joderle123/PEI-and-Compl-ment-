@@ -83,7 +83,7 @@ type Vec3 = [number, number, number];
 
 const MOVE_SPEED = 0.1;
 const GROUND_SIZE = 35;
-const INTERACT_DIST = 3.5;
+const INTERACT_DIST = 5;
 const CAM_OFFSET = new THREE.Vector3(14, 16, 14);
 const CAM_LERP = 0.04;
 
@@ -2882,116 +2882,6 @@ function CloudLayer({ theme }: { theme: IslandTheme }) {
 }
 
 // ---------------------------------------------------------------------------
-// 3D: Treasure Chests (hidden collectibles around the island)
-// ---------------------------------------------------------------------------
-
-function TreasureChests({
-  islandId,
-  playerGroupRef,
-}: {
-  islandId: string;
-  playerGroupRef: { current: THREE.Group | null };
-}) {
-  const chestsRef = useRef<THREE.Group>(null);
-  const lidRefs = useRef<(THREE.Mesh | null)[]>([]);
-  const glowRefs = useRef<(THREE.Mesh | null)[]>([]);
-  const openState = useRef<boolean[]>([]);
-
-  const chestPositions = useMemo(() => {
-    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 9999);
-    const count = 5;
-    const positions: Vec3[] = [];
-    for (let i = 0; i < count; i++) {
-      const angle = rng() * Math.PI * 2;
-      const r = 10 + rng() * (GROUND_SIZE - 14);
-      positions.push([Math.cos(angle) * r, 0, Math.sin(angle) * r]);
-    }
-    openState.current = new Array(count).fill(false);
-    return positions;
-  }, [islandId]);
-
-  useFrame(() => {
-    if (!playerGroupRef.current) return;
-    const pp = playerGroupRef.current.position;
-    chestPositions.forEach((pos, i) => {
-      const dx = pp.x - pos[0];
-      const dz = pp.z - pos[2];
-      const dist = Math.sqrt(dx * dx + dz * dz);
-      const isNear = dist < 3;
-
-      // Animate lid opening
-      const lid = lidRefs.current[i];
-      if (lid) {
-        const targetRot = isNear ? -Math.PI / 3 : 0;
-        lid.rotation.x += (targetRot - lid.rotation.x) * 0.08;
-      }
-
-      // Animate glow
-      const glow = glowRefs.current[i];
-      if (glow) {
-        const targetScale = isNear ? 2 : 0.5;
-        const targetOpacity = isNear ? 0.6 : 0.15;
-        glow.scale.setScalar(glow.scale.x + (targetScale - glow.scale.x) * 0.05);
-        (glow.material as THREE.MeshStandardMaterial).opacity +=
-          (targetOpacity - (glow.material as THREE.MeshStandardMaterial).opacity) * 0.05;
-      }
-    });
-  });
-
-  return (
-    <group ref={chestsRef}>
-      {chestPositions.map((pos, i) => (
-        <group key={`chest-${i}`} position={pos}>
-          {/* Chest base */}
-          <mesh position={[0, 0.2, 0]} castShadow>
-            <boxGeometry args={[0.7, 0.35, 0.5]} />
-            <meshStandardMaterial color="#6b4423" roughness={0.8} />
-          </mesh>
-          {/* Metal bands */}
-          <mesh position={[0, 0.2, 0.251]}>
-            <boxGeometry args={[0.72, 0.08, 0.01]} />
-            <meshStandardMaterial color="#aa8833" metalness={0.6} roughness={0.4} />
-          </mesh>
-          <mesh position={[0, 0.2, -0.251]}>
-            <boxGeometry args={[0.72, 0.08, 0.01]} />
-            <meshStandardMaterial color="#aa8833" metalness={0.6} roughness={0.4} />
-          </mesh>
-          {/* Lid (animated) */}
-          <group position={[0, 0.38, -0.25]}>
-            <mesh
-              ref={(el) => { lidRefs.current[i] = el; }}
-              position={[0, 0.08, 0.25]}
-            >
-              <boxGeometry args={[0.72, 0.15, 0.52]} />
-              <meshStandardMaterial color="#7a5030" roughness={0.7} />
-            </mesh>
-          </group>
-          {/* Lock */}
-          <mesh position={[0, 0.3, 0.26]}>
-            <boxGeometry args={[0.1, 0.1, 0.04]} />
-            <meshStandardMaterial color="#FFD700" metalness={0.7} roughness={0.3} />
-          </mesh>
-          {/* Inner glow */}
-          <mesh
-            ref={(el) => { glowRefs.current[i] = el; }}
-            position={[0, 0.5, 0]}
-          >
-            <sphereGeometry args={[0.3, 8, 8]} />
-            <meshStandardMaterial
-              color="#FFD700"
-              emissive="#FFD700"
-              emissiveIntensity={0.8}
-              transparent
-              opacity={0.15}
-            />
-          </mesh>
-        </group>
-      ))}
-    </group>
-  );
-}
-
-// ---------------------------------------------------------------------------
 // 3D: Ambient Wildlife (butterflies, fireflies based on island)
 // ---------------------------------------------------------------------------
 
@@ -3103,342 +2993,8 @@ function AmbientWildlife({ islandId, theme }: { islandId: string; theme: IslandT
   );
 }
 
-// ---------------------------------------------------------------------------
-// 3D: Campfire / Rest Area (discoverable atmospheric spot)
-// ---------------------------------------------------------------------------
 
-function CampfireArea({ islandId }: { islandId: string }) {
-  const fireRef = useRef<THREE.PointLight>(null);
 
-  const position = useMemo((): Vec3 => {
-    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 6666);
-    const angle = rng() * Math.PI * 2;
-    const r = 14 + rng() * 6;
-    return [Math.cos(angle) * r, 0, Math.sin(angle) * r];
-  }, [islandId]);
-
-  useFrame(({ clock }) => {
-    if (fireRef.current) {
-      const t = clock.getElapsedTime();
-      fireRef.current.intensity = 1.5 + Math.sin(t * 8) * 0.4 + Math.sin(t * 12) * 0.2;
-    }
-  });
-
-  return (
-    <group position={position}>
-      {/* Fire pit ring */}
-      {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
-        const angle = (i / 8) * Math.PI * 2;
-        return (
-          <mesh
-            key={`stone-${i}`}
-            position={[Math.cos(angle) * 0.6, 0.1, Math.sin(angle) * 0.6]}
-            castShadow
-          >
-            <dodecahedronGeometry args={[0.15, 0]} />
-            <meshStandardMaterial color="#555" roughness={0.95} />
-          </mesh>
-        );
-      })}
-      {/* Fire logs */}
-      <mesh position={[0, 0.1, 0]} rotation={[0, 0.3, Math.PI / 2]}>
-        <cylinderGeometry args={[0.06, 0.08, 0.8, 6]} />
-        <meshStandardMaterial color="#3a2010" roughness={0.9} />
-      </mesh>
-      <mesh position={[0, 0.15, 0]} rotation={[0, -0.5, Math.PI / 2]}>
-        <cylinderGeometry args={[0.05, 0.07, 0.7, 6]} />
-        <meshStandardMaterial color="#4a2a14" roughness={0.9} />
-      </mesh>
-      {/* Fire glow core */}
-      <mesh position={[0, 0.35, 0]}>
-        <coneGeometry args={[0.2, 0.6, 6]} />
-        <meshStandardMaterial
-          color="#ff6600"
-          emissive="#ff4400"
-          emissiveIntensity={1.2}
-          transparent
-          opacity={0.6}
-        />
-      </mesh>
-      <mesh position={[0.05, 0.5, 0.03]}>
-        <coneGeometry args={[0.12, 0.4, 5]} />
-        <meshStandardMaterial
-          color="#ffaa00"
-          emissive="#ff6600"
-          emissiveIntensity={0.8}
-          transparent
-          opacity={0.5}
-        />
-      </mesh>
-      {/* Fire light */}
-      <pointLight
-        ref={fireRef}
-        position={[0, 0.8, 0]}
-        color="#ff6622"
-        intensity={1.5}
-        distance={8}
-        decay={2}
-      />
-      {/* Log seats around fire */}
-      {[0, 1, 2].map((i) => {
-        const angle = (i / 3) * Math.PI * 2 + 0.5;
-        return (
-          <mesh
-            key={`seat-${i}`}
-            position={[Math.cos(angle) * 1.5, 0.2, Math.sin(angle) * 1.5]}
-            rotation={[0, -angle + Math.PI, 0]}
-            castShadow
-          >
-            <cylinderGeometry args={[0.12, 0.15, 0.8, 6]} />
-            <meshStandardMaterial color="#5c3a1e" roughness={0.85} />
-          </mesh>
-        );
-      })}
-      {/* Hanging lantern on a stick */}
-      <group position={[1.2, 0, 0.5]}>
-        <mesh position={[0, 0.8, 0]}>
-          <cylinderGeometry args={[0.03, 0.04, 1.6, 6]} />
-          <meshStandardMaterial color="#4a2e16" roughness={0.9} />
-        </mesh>
-        <mesh position={[0.3, 1.4, 0]}>
-          <cylinderGeometry args={[0.02, 0.02, 0.6, 4]} />
-          <meshStandardMaterial color="#4a2e16" roughness={0.9} />
-        </mesh>
-        <mesh position={[0.6, 1.2, 0]}>
-          <boxGeometry args={[0.15, 0.2, 0.15]} />
-          <meshStandardMaterial
-            color="#ffdd88"
-            emissive="#ffcc44"
-            emissiveIntensity={0.5}
-            transparent
-            opacity={0.7}
-          />
-        </mesh>
-      </group>
-      {/* Sign: "Rastplatz" */}
-      <Html
-        position={[0, 2, 0]}
-        center
-        distanceFactor={14}
-        style={{ pointerEvents: 'none' }}
-      >
-        <div
-          style={{
-            background: 'rgba(30,20,60,0.85)',
-            border: '1px solid rgba(255,150,50,0.4)',
-            borderRadius: '6px',
-            padding: '3px 8px',
-            color: '#ffaa44',
-            fontSize: '10px',
-            fontWeight: 'bold',
-            whiteSpace: 'nowrap',
-            textShadow: '0 0 6px rgba(255,150,50,0.3)',
-          }}
-        >
-          {'\u{1F525}'} Rastplatz
-        </div>
-      </Html>
-    </group>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// 3D: Ruins / Secret Area (discoverable exploration spot)
-// ---------------------------------------------------------------------------
-
-function SecretRuins({ islandId, theme }: { islandId: string; theme: IslandTheme }) {
-  const glowRef = useRef<THREE.Mesh>(null);
-
-  const position = useMemo((): Vec3 => {
-    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 5555);
-    const angle = rng() * Math.PI * 2;
-    const r = 16 + rng() * 8;
-    return [Math.cos(angle) * r, 0, Math.sin(angle) * r];
-  }, [islandId]);
-
-  useFrame(({ clock }) => {
-    if (glowRef.current) {
-      const t = clock.getElapsedTime();
-      (glowRef.current.material as THREE.MeshStandardMaterial).opacity =
-        0.15 + Math.sin(t * 1.5) * 0.1;
-      glowRef.current.rotation.y = t * 0.2;
-    }
-  });
-
-  return (
-    <group position={position}>
-      {/* Broken stone columns */}
-      {[0, 1, 2, 3].map((i) => {
-        const angle = (i / 4) * Math.PI * 2;
-        const r = 2;
-        const height = 1 + (i % 3) * 0.8;
-        return (
-          <group key={`column-${i}`} position={[Math.cos(angle) * r, 0, Math.sin(angle) * r]}>
-            <mesh position={[0, height / 2, 0]} castShadow>
-              <cylinderGeometry args={[0.25, 0.3, height, 8]} />
-              <meshStandardMaterial color="#8a8a7a" roughness={0.9} />
-            </mesh>
-            {/* Column cap (only on taller ones) */}
-            {height > 1.5 && (
-              <mesh position={[0, height + 0.1, 0]} castShadow>
-                <boxGeometry args={[0.6, 0.15, 0.6]} />
-                <meshStandardMaterial color="#9a9a8a" roughness={0.85} />
-              </mesh>
-            )}
-          </group>
-        );
-      })}
-      {/* Stone floor platform */}
-      <mesh rotation={[-Math.PI / 2, 0, Math.PI / 4]} position={[0, 0.05, 0]}>
-        <planeGeometry args={[5, 5]} />
-        <meshStandardMaterial
-          color="#7a7a6a"
-          roughness={0.95}
-        />
-      </mesh>
-      {/* Central pedestal */}
-      <mesh position={[0, 0.4, 0]} castShadow>
-        <cylinderGeometry args={[0.4, 0.5, 0.8, 8]} />
-        <meshStandardMaterial color="#6a6a5a" roughness={0.8} />
-      </mesh>
-      {/* Mystical orb on pedestal */}
-      <mesh ref={glowRef} position={[0, 1.2, 0]}>
-        <sphereGeometry args={[0.3, 16, 16]} />
-        <meshStandardMaterial
-          color={theme.playerAccent}
-          emissive={theme.playerAccent}
-          emissiveIntensity={0.8}
-          transparent
-          opacity={0.3}
-        />
-      </mesh>
-      {/* Inner bright core */}
-      <mesh position={[0, 1.2, 0]}>
-        <sphereGeometry args={[0.12, 12, 12]} />
-        <meshStandardMaterial
-          color="white"
-          emissive={theme.playerAccent}
-          emissiveIntensity={1.2}
-          transparent
-          opacity={0.6}
-        />
-      </mesh>
-      {/* Glow rings around orb */}
-      <mesh position={[0, 1.2, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[0.4, 0.5, 16]} />
-        <meshStandardMaterial
-          color={theme.playerAccent}
-          emissive={theme.playerAccent}
-          emissiveIntensity={0.5}
-          transparent
-          opacity={0.2}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-      {/* Fallen column pieces */}
-      <mesh position={[3, 0.15, 1]} rotation={[0, 0.8, Math.PI / 2]} castShadow>
-        <cylinderGeometry args={[0.2, 0.25, 1.5, 8]} />
-        <meshStandardMaterial color="#7a7a6a" roughness={0.9} />
-      </mesh>
-      {/* Vine/plant growing on ruins */}
-      <mesh position={[-2, 0.5, 0.5]} castShadow>
-        <sphereGeometry args={[0.3, 6, 6]} />
-        <meshStandardMaterial color={theme.foliageColor} roughness={0.8} />
-      </mesh>
-      <mesh position={[-2, 0.9, 0.3]} castShadow>
-        <sphereGeometry args={[0.2, 6, 6]} />
-        <meshStandardMaterial color={theme.foliageSecondary} roughness={0.8} />
-      </mesh>
-      {/* Label */}
-      <Html
-        position={[0, 2.5, 0]}
-        center
-        distanceFactor={14}
-        style={{ pointerEvents: 'none' }}
-      >
-        <div
-          style={{
-            background: 'rgba(30,20,60,0.85)',
-            border: '1px solid rgba(180,140,255,0.4)',
-            borderRadius: '6px',
-            padding: '3px 8px',
-            color: '#bb99ff',
-            fontSize: '10px',
-            fontWeight: 'bold',
-            whiteSpace: 'nowrap',
-            textShadow: '0 0 6px rgba(180,140,255,0.3)',
-          }}
-        >
-          {'\u{1F3DB}\u{FE0F}'} Alte Ruinen
-        </div>
-      </Html>
-    </group>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// 3D: Signpost (directional signs pointing to other islands)
-// ---------------------------------------------------------------------------
-
-function Signpost({ islandId }: { islandId: string }) {
-  const position = useMemo((): Vec3 => {
-    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 4444);
-    const angle = rng() * Math.PI * 2;
-    const r = 5 + rng() * 3;
-    return [Math.cos(angle) * r, 0, Math.sin(angle) * r];
-  }, [islandId]);
-
-  // Get neighboring islands for sign arrows
-  const neighbors = useMemo(() => {
-    return TRAVEL_CONNECTIONS
-      .filter(([a, b]) => a === islandId || b === islandId)
-      .map(([a, b]) => (a === islandId ? b : a))
-      .slice(0, 3);
-  }, [islandId]);
-
-  return (
-    <group position={position}>
-      {/* Main post */}
-      <mesh position={[0, 1, 0]} castShadow>
-        <cylinderGeometry args={[0.06, 0.08, 2, 6]} />
-        <meshStandardMaterial color="#5c3a1e" roughness={0.9} />
-      </mesh>
-      {/* Sign planks pointing to different islands */}
-      {neighbors.map((destId, i) => {
-        const info = TRAVEL_ISLAND_INFO[destId];
-        if (!info) return null;
-        const yOff = 1.6 - i * 0.4;
-        const rot = -0.3 + i * 0.3;
-        return (
-          <group key={destId} position={[0, yOff, 0]} rotation={[0, rot, 0]}>
-            <mesh position={[0.5, 0, 0]} castShadow>
-              <boxGeometry args={[1, 0.2, 0.06]} />
-              <meshStandardMaterial color="#7a5030" roughness={0.8} />
-            </mesh>
-            <Html
-              position={[0.5, 0, 0.04]}
-              center
-              distanceFactor={10}
-              style={{ pointerEvents: 'none' }}
-            >
-              <div
-                style={{
-                  color: '#ffd700',
-                  fontSize: '8px',
-                  fontWeight: 'bold',
-                  whiteSpace: 'nowrap',
-                  textShadow: '0 0 4px rgba(0,0,0,0.8)',
-                }}
-              >
-                {info.emoji} {info.name}
-              </div>
-            </Html>
-          </group>
-        );
-      })}
-    </group>
-  );
-}
 
 // ---------------------------------------------------------------------------
 // 3D: Dock & Airport (departure points for inter-island travel)
@@ -3701,6 +3257,480 @@ function AirportArea({ theme }: { theme: IslandTheme }) {
 }
 
 // ---------------------------------------------------------------------------
+// 3D Sub-components: Aurora Ribbons (Night island atmospheric ribbons)
+// ---------------------------------------------------------------------------
+
+function AuroraRibbons() {
+  const groupRef = useRef<THREE.Group>(null);
+
+  const ribbons = useMemo(() => {
+    const rng = makeRng(606 + 3333);
+    return Array.from({ length: 4 }, () => {
+      const hue = rng();
+      return {
+        x: (rng() - 0.5) * 30,
+        y: 14 + rng() * 6,
+        z: (rng() - 0.5) * 30,
+        width: 8 + rng() * 12,
+        phase: rng() * Math.PI * 2,
+        speed: 0.2 + rng() * 0.3,
+        color: new THREE.Color().setHSL(hue, 0.7, 0.5),
+        emissiveColor: new THREE.Color().setHSL(hue, 0.8, 0.4),
+      };
+    });
+  }, []);
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current) return;
+    const t = clock.getElapsedTime();
+    groupRef.current.children.forEach((ribbon, i) => {
+      if (i >= ribbons.length) return;
+      const d = ribbons[i];
+      ribbon.position.y = d.y + Math.sin(t * d.speed + d.phase) * 2;
+      ribbon.rotation.x = Math.sin(t * 0.3 + d.phase) * 0.2;
+      ribbon.rotation.z = Math.cos(t * 0.2 + d.phase) * 0.15;
+      ribbon.scale.x = 1 + Math.sin(t * 0.5 + d.phase) * 0.2;
+    });
+  });
+
+  return (
+    <group ref={groupRef}>
+      {ribbons.map((d, i) => (
+        <mesh key={i} position={[d.x, d.y, d.z]} rotation={[0.3, 0, 0]}>
+          <planeGeometry args={[d.width, 0.8, 8, 1]} />
+          <meshStandardMaterial
+            color={d.color}
+            emissive={d.emissiveColor}
+            emissiveIntensity={1.2}
+            transparent
+            opacity={0.35}
+            side={THREE.DoubleSide}
+            depthWrite={false}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 3D Sub-components: Rainbow Arcs (Rainbow island prismatic arcs)
+// ---------------------------------------------------------------------------
+
+function RainbowArcs() {
+  const groupRef = useRef<THREE.Group>(null);
+
+  const arcs = useMemo(() => {
+    const colors = ['#ff4444', '#ffaa22', '#ffee44', '#44cc44', '#4488ff'];
+    return colors.map((color, i) => ({
+      color,
+      radius: 8 + i * 1.5,
+      y: 6 + i * 0.3,
+      phase: i * 0.5,
+    }));
+  }, []);
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current) return;
+    const t = clock.getElapsedTime();
+    groupRef.current.children.forEach((arc, i) => {
+      if (i >= arcs.length) return;
+      const d = arcs[i];
+      arc.position.y = d.y + Math.sin(t * 0.3 + d.phase) * 0.5;
+      arc.rotation.y = t * 0.05;
+    });
+  });
+
+  return (
+    <group ref={groupRef}>
+      {arcs.map((d, i) => (
+        <mesh key={i} position={[0, d.y, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[d.radius, 0.12, 6, 32, Math.PI * 0.6]} />
+          <meshStandardMaterial
+            color={d.color}
+            emissive={d.color}
+            emissiveIntensity={0.5}
+            transparent
+            opacity={0.4}
+            depthWrite={false}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 3D Sub-components: WeatherSystem (dramatic per-island atmosphere)
+// Uses a single InstancedMesh with ~200 particles for performance.
+// Each island gets unique weather: ash, rain, pollen, snow, petals, etc.
+// ---------------------------------------------------------------------------
+
+function WeatherSystem({ islandId, theme }: { islandId: string; theme: IslandTheme }) {
+  const PARTICLE_COUNT = 200;
+  const meshRef = useRef<THREE.InstancedMesh>(null);
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const colorsReady = useRef(false);
+
+  // Reset instance colors when island changes
+  useEffect(() => {
+    colorsReady.current = false;
+  }, [islandId]);
+
+  // Per-particle spawn data (deterministic per island)
+  const particles = useMemo(() => {
+    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 7777);
+    const spawnR: Record<string, number> = {
+      volcano: 30, ocean: 30, forest: 25, mountain: 30,
+      garden: 28, night: 30, rainbow: 28, home: 25,
+    };
+    const hMin: Record<string, number> = {
+      volcano: 8, ocean: 6, forest: 2, mountain: 8,
+      garden: 1, night: 5, rainbow: 1, home: 0.5,
+    };
+    const hMax: Record<string, number> = {
+      volcano: 20, ocean: 18, forest: 10, mountain: 22,
+      garden: 8, night: 25, rainbow: 15, home: 6,
+    };
+    const sMin: Record<string, number> = {
+      volcano: 0.05, ocean: 0.02, forest: 0.04, mountain: 0.03,
+      garden: 0.05, night: 0.02, rainbow: 0.03, home: 0.03,
+    };
+    const sMax: Record<string, number> = {
+      volcano: 0.1, ocean: 0.05, forest: 0.08, mountain: 0.06,
+      garden: 0.1, night: 0.05, rainbow: 0.07, home: 0.06,
+    };
+    const radius = spawnR[islandId] ?? 25;
+    const yMin = hMin[islandId] ?? 2;
+    const yMax = hMax[islandId] ?? 12;
+    const szMin = sMin[islandId] ?? 0.04;
+    const szMax = sMax[islandId] ?? 0.08;
+
+    const arr: Array<{
+      x: number; y: number; z: number;
+      phase: number; speed: number;
+      driftX: number; driftZ: number;
+      size: number;
+    }> = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const angle = rng() * Math.PI * 2;
+      const r = rng() * radius;
+      arr.push({
+        x: Math.cos(angle) * r,
+        y: yMin + rng() * (yMax - yMin),
+        z: Math.sin(angle) * r,
+        phase: rng() * Math.PI * 2,
+        speed: 0.5 + rng() * 1.0,
+        driftX: (rng() - 0.5) * 2,
+        driftZ: (rng() - 0.5) * 2,
+        size: szMin + rng() * (szMax - szMin),
+      });
+    }
+    return arr;
+  }, [islandId]);
+
+  // Pre-computed per-particle colors (RGB triplets in Float32Array)
+  const pColors = useMemo(() => {
+    const rng = makeRng((SEED_MAP[islandId] ?? 101) + 7778);
+    const arr = new Float32Array(PARTICLE_COUNT * 3);
+    const tmp = new THREE.Color();
+    const baseColors: Record<string, string> = {
+      volcano: '#555555', ocean: '#aaccee', forest: '#bbdd44',
+      mountain: '#eeeeff', garden: '#ffbbcc', night: '#8888ff',
+      rainbow: '#ffffff', home: '#ffdd88',
+    };
+    const base = new THREE.Color(baseColors[islandId] ?? '#ffffff');
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      tmp.copy(base);
+      if (islandId === 'volcano' && rng() < 0.15) {
+        tmp.setHex(0xff4400);
+        tmp.offsetHSL(0, 0, rng() * 0.15);
+      } else if (islandId === 'rainbow') {
+        tmp.setHSL(rng(), 0.8, 0.6);
+      } else if (islandId === 'night') {
+        const hues = [0.3, 0.45, 0.6, 0.75, 0.85];
+        tmp.setHSL(hues[Math.floor(rng() * hues.length)], 0.7, 0.5 + rng() * 0.3);
+      } else if (islandId === 'garden') {
+        tmp.setHSL(0.9 + rng() * 0.15, 0.5 + rng() * 0.3, 0.7 + rng() * 0.2);
+      } else {
+        tmp.offsetHSL((rng() - 0.5) * 0.05, 0, (rng() - 0.5) * 0.1);
+      }
+      arr[i * 3] = tmp.r;
+      arr[i * 3 + 1] = tmp.g;
+      arr[i * 3 + 2] = tmp.b;
+    }
+    return arr;
+  }, [islandId]);
+
+  // Material emissive config per island
+  const matConfig = useMemo(() => {
+    const cfgs: Record<string, { emissive: string; emissiveIntensity: number; opacity: number }> = {
+      volcano: { emissive: '#ff4400', emissiveIntensity: 0.3, opacity: 0.6 },
+      ocean: { emissive: '#4488cc', emissiveIntensity: 0.1, opacity: 0.4 },
+      forest: { emissive: '#88aa00', emissiveIntensity: 0.4, opacity: 0.5 },
+      mountain: { emissive: '#aabbcc', emissiveIntensity: 0.15, opacity: 0.7 },
+      garden: { emissive: '#ff6699', emissiveIntensity: 0.3, opacity: 0.6 },
+      night: { emissive: '#6644ff', emissiveIntensity: 0.8, opacity: 0.6 },
+      rainbow: { emissive: '#ffffff', emissiveIntensity: 0.5, opacity: 0.5 },
+      home: { emissive: '#ffcc44', emissiveIntensity: 0.4, opacity: 0.4 },
+    };
+    return cfgs[islandId] ?? cfgs.home;
+  }, [islandId]);
+
+  // Atmospheric point lights (use theme colors for cohesion)
+  const atmosLights = useMemo(() => {
+    const lights: Array<{ pos: Vec3; color: string; intensity: number; dist: number }> = [];
+    if (islandId === 'volcano') {
+      lights.push({ pos: [0, 8, 0], color: '#ff4400', intensity: 0.6, dist: 40 });
+      lights.push({ pos: [10, 3, 10], color: '#ff6600', intensity: 0.3, dist: 20 });
+    } else if (islandId === 'ocean') {
+      lights.push({ pos: [0, 12, 0], color: theme.ambientColor, intensity: 0.2, dist: 35 });
+    } else if (islandId === 'night') {
+      lights.push({ pos: [-8, 15, 0], color: '#44ff88', intensity: 0.4, dist: 30 });
+      lights.push({ pos: [8, 14, 5], color: '#6644ff', intensity: 0.4, dist: 30 });
+      lights.push({ pos: [0, 16, -8], color: '#ff44aa', intensity: 0.3, dist: 25 });
+    } else if (islandId === 'rainbow') {
+      lights.push({ pos: [0, 10, 0], color: '#ff88ff', intensity: 0.3, dist: 30 });
+    } else if (islandId === 'garden') {
+      lights.push({ pos: [0, 6, 0], color: '#ffdd88', intensity: 0.3, dist: 25 });
+    }
+    // Subtle ground-level fog light using theme fog color for all islands
+    lights.push({ pos: [0, 1.5, 0], color: theme.fogColor, intensity: 0.15, dist: 20 });
+    return lights;
+  }, [islandId, theme.ambientColor, theme.fogColor]);
+
+  useFrame(() => {
+    if (!meshRef.current) return;
+
+    // Apply per-instance colors on first valid frame
+    if (!colorsReady.current) {
+      const c = new THREE.Color();
+      for (let ci = 0; ci < PARTICLE_COUNT; ci++) {
+        c.setRGB(pColors[ci * 3], pColors[ci * 3 + 1], pColors[ci * 3 + 2]);
+        meshRef.current.setColorAt(ci, c);
+      }
+      if (meshRef.current.instanceColor) {
+        meshRef.current.instanceColor.needsUpdate = true;
+      }
+      colorsReady.current = true;
+    }
+
+    const t = Date.now() * 0.001;
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const p = particles[i];
+      let x = p.x;
+      let y = p.y;
+      let z = p.z;
+      let sx = p.size;
+      let sy = p.size;
+      let sz = p.size;
+
+      // ---------- VOLCANO: ash fall + ember bursts ----------
+      if (islandId === 'volcano') {
+        const cycle = 12;
+        if (i < 30) {
+          // Embers: glow and rise with flicker
+          y = 1 + ((p.y - 1 + t * 1.5 * p.speed) % cycle + cycle) % cycle;
+          const flicker = 1.5 + Math.sin(t * 8 + p.phase) * 0.8;
+          sx = sy = sz = p.size * flicker;
+          x += Math.sin(t * 2 + p.phase * 3) * 1.5;
+          z += Math.cos(t * 1.5 + p.phase * 2) * 1.0;
+        } else {
+          // Ash particles: slow fall with turbulence
+          y = 20 - ((20 - p.y + t * 0.8 * p.speed) % cycle + cycle) % cycle;
+          x += Math.sin(t * 0.5 + p.phase) * p.driftX * 2;
+          z += Math.cos(t * 0.3 + p.phase) * p.driftZ * 2;
+          x += Math.sin(t * 2 + p.phase * 3) * 0.3;
+        }
+
+      // ---------- OCEAN: rain + rolling mist ----------
+      } else if (islandId === 'ocean') {
+        const cycle = 12;
+        if (i < 40) {
+          // Mist/fog particles: large, slow, ground-hugging
+          y = 0.5 + Math.sin(t * 0.2 + p.phase) * 1.5 + Math.abs(Math.sin(p.phase)) * 2;
+          sx = sy = sz = p.size * 3;
+          x = p.x + Math.sin(t * 0.15 + p.phase) * p.driftX * 5;
+          z = p.z + Math.cos(t * 0.1 + p.phase) * p.driftZ * 5;
+        } else {
+          // Rain: fast falling elongated drops
+          y = 18 - ((18 - p.y + t * 4.0 * p.speed) % cycle + cycle) % cycle;
+          x += Math.sin(t * 0.1 + p.phase) * 0.5 + Math.sin(p.phase) * 0.3;
+          sx = p.size * 0.4;
+          sy = p.size * 4;
+          sz = p.size * 0.4;
+        }
+
+      // ---------- FOREST: pollen/spores + falling leaves + light rays ----------
+      } else if (islandId === 'forest') {
+        const cycle = 8;
+        if (i < 25) {
+          // Falling leaves: larger, slow tumble
+          y = 10 - ((10 - p.y + t * 0.4 * p.speed) % cycle + cycle) % cycle;
+          sx = sy = sz = p.size * 2.5;
+          x += Math.sin(t * 1.2 + p.phase * 3) * 2;
+          z += Math.cos(t * 0.8 + p.phase) * 2;
+        } else if (i >= 180) {
+          // Light rays through canopy: tall thin vertical columns
+          y = 8 + Math.sin(t * 0.1 + p.phase) * 0.5;
+          sx = p.size * 0.5;
+          sy = p.size * 8;
+          sz = p.size * 0.5;
+          x += Math.sin(t * 0.05 + p.phase) * 0.3;
+        } else {
+          // Pollen/spores: lazy floating spirals
+          x += Math.sin(t * 0.8 + p.phase * 2) * 1.5;
+          z += Math.cos(t * 0.6 + p.phase * 2 + 2) * 1.5;
+          y += Math.sin(t * 0.3 + p.phase) * 0.8;
+        }
+
+      // ---------- MOUNTAIN: snow + wind streaks + cold fog ----------
+      } else if (islandId === 'mountain') {
+        const cycle = 14;
+        if (i < 30) {
+          // Wind streaks: fast horizontal motion, thin shapes
+          const windX = ((p.x + t * 2.5) % 60 + 60) % 60 - 30;
+          x = windX;
+          y = 6 + Math.sin(p.phase) * 8;
+          sx = p.size * 0.3;
+          sy = p.size * 0.3;
+          sz = p.size * 3;
+        } else if (i >= 170) {
+          // Cold blue fog: ground-level, slow-rolling
+          y = 0.3 + Math.sin(t * 0.1 + p.phase) * 0.3;
+          sx = sy = sz = p.size * 4;
+          x = p.x + Math.sin(t * 0.08 + p.phase) * p.driftX * 6;
+          z = p.z + Math.cos(t * 0.06 + p.phase) * p.driftZ * 6;
+        } else {
+          // Snow: gentle fall with wind gusts
+          y = 22 - ((22 - p.y + t * 0.5 * p.speed) % cycle + cycle) % cycle;
+          const gust = Math.sin(t * 0.15 + p.phase) > 0.7 ? 3.0 : 1.0;
+          x += Math.sin(t * 0.5 + p.phase) * p.driftX * gust;
+          z += Math.cos(t * 0.4 + p.phase) * p.driftZ * 0.5;
+        }
+
+      // ---------- GARDEN: flower petals + warm golden light ----------
+      } else if (islandId === 'garden') {
+        const cycle = 7;
+        if (i >= 180) {
+          // Warm golden light motes: float and pulse
+          y = 4 + Math.sin(t * 0.4 + p.phase) * 2;
+          sx = sy = sz = p.size * (1 + Math.sin(t * 2 + p.phase) * 0.5);
+          x += Math.sin(t * 0.2 + p.phase) * 2;
+          z += Math.cos(t * 0.15 + p.phase) * 2;
+        } else {
+          // Flower petals: gentle tumbling drift downward
+          const petalY = p.y + Math.sin(t * 1.5 + p.phase) * 0.3;
+          y = 8 - ((8 - petalY + t * 0.2 * p.speed) % cycle + cycle) % cycle;
+          x += Math.sin(t * 0.6 + p.phase * 3) * 2;
+          z += Math.cos(t * 0.5 + p.phase * 2) * 2;
+        }
+
+      // ---------- NIGHT: shooting stars + moonbeams + aurora particles ----------
+      } else if (islandId === 'night') {
+        if (i < 12) {
+          // Shooting stars: fast diagonal streaks with fade
+          const starCycle = ((t * 2 + p.phase * 5) % 12);
+          if (starCycle < 0.8) {
+            x = p.x + starCycle * 18;
+            y = 22 - starCycle * 10;
+            z = p.z + starCycle * 6;
+            const fade = 1 - starCycle / 0.8;
+            sx = sy = sz = p.size * 3 * fade;
+          } else {
+            sx = sy = sz = 0;
+          }
+        } else if (i < 60) {
+          // Moonbeams: tall vertical columns of faint light
+          y = 3 + Math.sin(t * 0.15 + p.phase) * 1;
+          sx = p.size * 0.5;
+          sy = p.size * 10;
+          sz = p.size * 0.5;
+          x += Math.sin(t * 0.05 + p.phase) * 0.5;
+        } else {
+          // Aurora particles: slow undulation at high altitude
+          y = 12 + Math.sin(t * 0.3 + p.phase * 2) * 4;
+          x += Math.sin(t * 0.2 + p.phase) * 5;
+          z += Math.cos(t * 0.15 + p.phase + 1) * 3;
+          sx = sy = sz = p.size * (1.5 + Math.sin(t * 0.5 + p.phase) * 0.8);
+        }
+
+      // ---------- RAINBOW: prismatic orbiting sparkles ----------
+      } else if (islandId === 'rainbow') {
+        const orbitR = 3 + Math.sin(p.phase) * 12;
+        const orbitSpd = 0.1 + p.speed * 0.15;
+        x = Math.cos(t * orbitSpd + p.phase) * orbitR;
+        z = Math.sin(t * orbitSpd + p.phase) * orbitR;
+        y = 1 + Math.sin(t * 0.5 + p.phase * 3) * 8;
+        // Sparkle flash
+        sx = sy = sz = p.size * (0.5 + Math.abs(Math.sin(t * 3 + p.phase * 5)) * 2);
+
+      // ---------- HOME: warm rising motes + floating rune symbols ----------
+      } else if (islandId === 'home') {
+        const cycle = 5.5;
+        if (i >= 180) {
+          // Floating rune-like larger particles
+          y = 2 + Math.sin(t * 0.2 + p.phase) * 1.5;
+          sx = sy = sz = p.size * 3;
+          x = p.x + Math.sin(t * 0.1 + p.phase) * 3;
+          z = p.z + Math.cos(t * 0.08 + p.phase) * 3;
+        } else {
+          // Warm rising motes
+          y = 0.5 + ((p.y - 0.5 + t * 0.15 * p.speed) % cycle + cycle) % cycle;
+          x += Math.sin(t * 0.3 + p.phase) * 1.5;
+          z += Math.cos(t * 0.25 + p.phase + 1) * 1.5;
+          sx = sy = sz = p.size * (0.8 + Math.sin(t * 1.5 + p.phase) * 0.4);
+        }
+      }
+
+      dummy.position.set(x, Math.max(0.05, y), z);
+      dummy.scale.set(Math.max(0.001, sx), Math.max(0.001, sy), Math.max(0.001, sz));
+      dummy.updateMatrix();
+      meshRef.current!.setMatrixAt(i, dummy.matrix);
+    }
+    meshRef.current.instanceMatrix.needsUpdate = true;
+  });
+
+  return (
+    <group>
+      {/* Main weather particle system (200 instances) */}
+      <instancedMesh ref={meshRef} args={[undefined, undefined, PARTICLE_COUNT]} frustumCulled={false}>
+        <sphereGeometry args={[1, 5, 3]} />
+        <meshStandardMaterial
+          color="#ffffff"
+          emissive={matConfig.emissive}
+          emissiveIntensity={matConfig.emissiveIntensity}
+          transparent
+          opacity={matConfig.opacity}
+          roughness={1}
+          depthWrite={false}
+        />
+      </instancedMesh>
+
+      {/* Atmospheric point lights per island */}
+      {atmosLights.map((l, i) => (
+        <pointLight
+          key={`weather-light-${i}`}
+          position={l.pos}
+          color={l.color}
+          intensity={l.intensity}
+          distance={l.dist}
+          decay={2}
+        />
+      ))}
+
+      {/* Night island: aurora borealis ribbons */}
+      {islandId === 'night' && <AuroraRibbons />}
+
+      {/* Rainbow island: prismatic arcs */}
+      {islandId === 'rainbow' && <RainbowArcs />}
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // 3D: Complete world scene (assembled inside Canvas)
 // ---------------------------------------------------------------------------
 
@@ -3838,6 +3868,9 @@ function WorldScene({
       {/* Ambient particles */}
       <AmbientParticles theme={theme} islandId={islandId} />
 
+      {/* Dramatic per-island weather/atmosphere */}
+      <WeatherSystem islandId={islandId} theme={theme} />
+
       {/* Central landmark */}
       <CentralLandmark islandId={islandId} />
 
@@ -3920,20 +3953,8 @@ function WorldScene({
         onClick={onMiniGameClick}
       />
 
-      {/* Hidden treasure chests */}
-      <TreasureChests islandId={islandId} playerGroupRef={playerGroupRef} />
-
       {/* Ambient wildlife (butterflies, fireflies, fish) */}
       <AmbientWildlife islandId={islandId} theme={theme} />
-
-      {/* Campfire rest area */}
-      <CampfireArea islandId={islandId} />
-
-      {/* Ancient ruins / secret area */}
-      <SecretRuins islandId={islandId} theme={theme} />
-
-      {/* Directional signpost to other islands */}
-      <Signpost islandId={islandId} />
 
       {/* Dock area (harbor for boat travel) */}
       <DockArea theme={theme} />
@@ -4334,17 +4355,26 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
     onStartMiniGame(islandId);
   }, [onStartMiniGame, islandId]);
 
-  const handleDialogScenario = useCallback(() => {
-    const s = scenarioMarkers[0];
+  // Map NPC to their specific scenario/activity by index
+  const getNPCContentIndex = useCallback(() => {
+    if (!dialogNPC) return 0;
+    const idx = npcsWithPositions.findIndex((n) => n.data.id === dialogNPC.id);
+    return idx >= 0 ? idx : 0;
+  }, [dialogNPC, npcsWithPositions]);
+
+  const handleDialogScenario = useCallback((scenarioIndex?: number) => {
+    const idx = scenarioIndex ?? getNPCContentIndex();
+    const s = scenarioMarkers[idx] ?? scenarioMarkers[0];
     if (s) handleScenarioStart(s.id);
     setDialogNPC(null);
-  }, [scenarioMarkers, handleScenarioStart]);
+  }, [scenarioMarkers, handleScenarioStart, getNPCContentIndex]);
 
-  const handleDialogActivity = useCallback(() => {
-    const a = activityMarkers[0];
+  const handleDialogActivity = useCallback((activityIndex?: number) => {
+    const idx = activityIndex ?? getNPCContentIndex();
+    const a = activityMarkers[idx] ?? activityMarkers[0];
     if (a) handleActivityStart(a.id);
     setDialogNPC(null);
-  }, [activityMarkers, handleActivityStart]);
+  }, [activityMarkers, handleActivityStart, getNPCContentIndex]);
 
   const handleDialogMiniGame = useCallback(() => {
     handleMiniGameClick();
@@ -4505,6 +4535,74 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
         theme={theme}
       />
 
+      {/* Quest Tracker (left side) */}
+      <div
+        className="fixed top-20 left-4 z-30 flex flex-col gap-1.5 max-h-[60vh] overflow-y-auto"
+        style={{
+          width: '220px',
+          pointerEvents: 'none',
+        }}
+      >
+        <div
+          className="text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg"
+          style={{
+            color: 'rgba(201,168,76,0.8)',
+            background: 'rgba(0,0,0,0.5)',
+            backdropFilter: 'blur(4px)',
+            pointerEvents: 'auto',
+          }}
+        >
+          {'\u{1F4DC}'} Geschichten
+        </div>
+        {scenarioMarkers.map((s) => {
+          const done = completedScenarios.includes(s.id);
+          return (
+            <div
+              key={s.id}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs"
+              style={{
+                background: 'rgba(0,0,0,0.4)',
+                backdropFilter: 'blur(4px)',
+                color: done ? 'rgba(100,200,100,0.7)' : 'rgba(255,215,0,0.7)',
+                pointerEvents: 'auto',
+              }}
+            >
+              <span>{done ? '\u2705' : '\u{1F4A0}'}</span>
+              <span className="truncate">{s.title}</span>
+            </div>
+          );
+        })}
+        <div
+          className="text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg mt-1"
+          style={{
+            color: 'rgba(64,192,128,0.8)',
+            background: 'rgba(0,0,0,0.5)',
+            backdropFilter: 'blur(4px)',
+            pointerEvents: 'auto',
+          }}
+        >
+          {'\u{1F3AF}'} Aktivit{'\u00E4'}ten
+        </div>
+        {activityMarkers.map((a) => {
+          const done = completedActivities.includes(a.id);
+          return (
+            <div
+              key={a.id}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs"
+              style={{
+                background: 'rgba(0,0,0,0.4)',
+                backdropFilter: 'blur(4px)',
+                color: done ? 'rgba(100,200,100,0.7)' : 'rgba(64,192,128,0.7)',
+                pointerEvents: 'auto',
+              }}
+            >
+              <span>{done ? '\u2705' : '\u{1F4A0}'}</span>
+              <span className="truncate">{a.title}</span>
+            </div>
+          );
+        })}
+      </div>
+
       {/* Bottom: Controls hint */}
       {!isTouchDevice && (
         <div
@@ -4517,7 +4615,7 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
             border: '1px solid rgba(201,168,76,0.15)',
           }}
         >
-          WASD / Pfeiltasten = Bewegen &bull; E = Interagieren &bull; Klick = Laufen
+          WASD = Bewegen &bull; Laufe zu NPCs & leuchtenden Markern &bull; E / Klick = Interagieren
         </div>
       )}
 
@@ -4719,115 +4817,215 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
       )}
 
       {/* ---- NPC Dialog Modal ---- */}
-      {dialogNPC && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ backgroundColor: 'rgba(0,0,0,0.7)' }}
-          onClick={() => setDialogNPC(null)}
-          role="presentation"
-        >
+      {dialogNPC && (() => {
+        const npcIdx = npcsWithPositions.findIndex((n) => n.data.id === dialogNPC.id);
+        const npcScenario = scenarioMarkers[npcIdx];
+        const npcActivity = activityMarkers[npcIdx];
+        const isScenarioCompleted = npcScenario && completedScenarios.includes(npcScenario.id);
+        const isActivityCompleted = npcActivity && completedActivities.includes(npcActivity.id);
+        return (
           <div
-            className="relative max-w-md w-full rounded-xl p-6"
-            style={{
-              background: 'linear-gradient(135deg, rgba(30,20,60,0.95), rgba(13,13,26,0.98))',
-              border: '1px solid rgba(201,168,76,0.3)',
-              boxShadow: '0 0 40px rgba(201,168,76,0.15), inset 0 1px 0 rgba(255,255,255,0.05)',
-            }}
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-label={`Dialog mit ${dialogNPC.name}`}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}
+            onClick={() => setDialogNPC(null)}
+            role="presentation"
           >
-            {/* NPC header */}
-            <div className="flex items-center gap-4 mb-4">
-              <div
-                className="w-16 h-16 rounded-full flex items-center justify-center text-3xl"
-                style={{
-                  backgroundColor: 'rgba(201,168,76,0.1)',
-                  border: '2px solid rgba(201,168,76,0.4)',
-                }}
-              >
-                {dialogNPC.emoji}
-              </div>
-              <div>
-                <h3
-                  className="text-xl font-bold"
-                  style={{ color: '#ffd700', textShadow: '0 0 8px rgba(255,215,0,0.3)' }}
-                >
-                  {dialogNPC.name}
-                </h3>
-                <p className="text-sm" style={{ color: 'rgba(201,168,76,0.7)' }}>
-                  {dialogNPC.description}
-                </p>
-              </div>
-            </div>
-
-            {/* Backstory */}
             <div
-              className="mb-5 p-3 rounded-lg text-sm leading-relaxed"
+              className="relative max-w-md w-full rounded-2xl p-6 max-h-[85vh] overflow-y-auto"
               style={{
-                backgroundColor: 'rgba(201,168,76,0.05)',
-                border: '1px solid rgba(201,168,76,0.15)',
-                color: 'rgba(220,200,160,0.9)',
+                background: 'linear-gradient(135deg, rgba(30,20,60,0.97), rgba(13,13,26,0.99))',
+                border: '1px solid rgba(201,168,76,0.35)',
+                boxShadow: '0 0 50px rgba(201,168,76,0.12), inset 0 1px 0 rgba(255,255,255,0.05)',
               }}
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-label={`Dialog mit ${dialogNPC.name}`}
             >
-              {dialogNPC.backstory}
-            </div>
+              {/* NPC header with accent color */}
+              <div className="flex items-center gap-4 mb-4">
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center text-3xl shrink-0"
+                  style={{
+                    backgroundColor: 'rgba(201,168,76,0.1)',
+                    border: '2px solid rgba(201,168,76,0.4)',
+                    boxShadow: '0 0 15px rgba(201,168,76,0.15)',
+                  }}
+                >
+                  {dialogNPC.emoji}
+                </div>
+                <div className="min-w-0">
+                  <h3
+                    className="text-xl font-bold truncate"
+                    style={{ color: '#ffd700', textShadow: '0 0 8px rgba(255,215,0,0.3)' }}
+                  >
+                    {dialogNPC.name}
+                  </h3>
+                  <p className="text-sm" style={{ color: 'rgba(201,168,76,0.7)' }}>
+                    {dialogNPC.description}
+                  </p>
+                </div>
+              </div>
 
-            {/* Action buttons */}
-            <div className="flex flex-col gap-2">
-              {scenarioMarkers.length > 0 && (
-                <button
-                  className="w-full py-2.5 px-4 rounded-lg font-bold text-sm transition-all hover:scale-[1.02] cursor-pointer"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(255,215,0,0.2), rgba(201,168,76,0.1))',
-                    border: '1px solid rgba(255,215,0,0.4)',
-                    color: '#ffd700',
-                  }}
-                  onClick={handleDialogScenario}
-                >
-                  {'\u{1F4DC}'} Geschichte starten
-                </button>
-              )}
-              {activityMarkers.length > 0 && (
-                <button
-                  className="w-full py-2.5 px-4 rounded-lg font-bold text-sm transition-all hover:scale-[1.02] cursor-pointer"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(64,192,128,0.2), rgba(64,192,128,0.1))',
-                    border: '1px solid rgba(64,192,128,0.4)',
-                    color: '#40c080',
-                  }}
-                  onClick={handleDialogActivity}
-                >
-                  {'\u{1F3AF}'} {'\u00DC'}bung starten
-                </button>
-              )}
-              <button
-                className="w-full py-2.5 px-4 rounded-lg font-bold text-sm transition-all hover:scale-[1.02] cursor-pointer"
+              {/* NPC speech bubble - progress-aware */}
+              <div
+                className="mb-5 p-4 rounded-xl text-sm leading-relaxed relative"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(176,96,255,0.2), rgba(176,96,255,0.1))',
-                  border: '1px solid rgba(176,96,255,0.4)',
-                  color: '#b060ff',
+                  backgroundColor: 'rgba(201,168,76,0.06)',
+                  border: '1px solid rgba(201,168,76,0.2)',
+                  color: 'rgba(230,215,180,0.95)',
                 }}
-                onClick={handleDialogMiniGame}
               >
-                {'\u{1F3AE}'} Minispiel
-              </button>
-              <div className="my-1 border-t" style={{ borderColor: 'rgba(201,168,76,0.15)' }} />
-              <button
-                className="w-full py-2 px-4 rounded-lg text-sm transition-all hover:scale-[1.02] cursor-pointer"
-                style={{
-                  backgroundColor: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  color: 'rgba(200,200,200,0.7)',
-                }}
-                onClick={() => setDialogNPC(null)}
-              >
-                Schlie{'\u00DF'}en
-              </button>
+                <div
+                  className="absolute -top-2 left-8 w-4 h-4 rotate-45"
+                  style={{
+                    backgroundColor: 'rgba(201,168,76,0.06)',
+                    borderTop: '1px solid rgba(201,168,76,0.2)',
+                    borderLeft: '1px solid rgba(201,168,76,0.2)',
+                  }}
+                />
+                {isScenarioCompleted && isActivityCompleted ? (
+                  <span>
+                    <em>&ldquo;Du hast alles geschafft, was ich dir zeigen konnte. Ich bin stolz auf dich. Vergiss nicht, was du hier gelernt hast!&rdquo;</em>
+                    <br /><br />
+                    <span style={{ color: 'rgba(100,200,100,0.8)', fontSize: '12px' }}>
+                      {'\u2728'} Du hast alle Inhalte von {dialogNPC.name} abgeschlossen!
+                    </span>
+                  </span>
+                ) : isScenarioCompleted ? (
+                  <span>
+                    <em>&ldquo;Hey, du bist zur{'\u00FC'}ck! Unsere Geschichte war ziemlich intensiv, oder? Ich hab noch eine {'\u00DC'}bung f{'\u00FC'}r dich, wenn du bereit bist.&rdquo;</em>
+                    <br /><br />
+                    <span style={{ color: 'rgba(201,168,76,0.6)', fontSize: '12px' }}>
+                      {'\u{1F4AA}'} Geschichte abgeschlossen &middot; {'\u{1F3AF}'} Aktivit{'\u00E4'}t verf{'\u00FC'}gbar
+                    </span>
+                  </span>
+                ) : (
+                  <span>{dialogNPC.backstory}</span>
+                )}
+              </div>
+
+              {/* Available actions - NPC-specific */}
+              <div className="flex flex-col gap-2.5">
+                <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'rgba(201,168,76,0.5)' }}>
+                  {dialogNPC.name} bietet an:
+                </p>
+
+                {/* This NPC's specific scenario */}
+                {npcScenario && (
+                  <button
+                    className="w-full py-3 px-4 rounded-xl font-bold text-sm transition-all hover:scale-[1.02] cursor-pointer text-left flex items-center gap-3"
+                    style={{
+                      background: isScenarioCompleted
+                        ? 'linear-gradient(135deg, rgba(100,200,100,0.1), rgba(100,200,100,0.05))'
+                        : 'linear-gradient(135deg, rgba(255,215,0,0.15), rgba(201,168,76,0.08))',
+                      border: isScenarioCompleted
+                        ? '1px solid rgba(100,200,100,0.3)'
+                        : '1px solid rgba(255,215,0,0.35)',
+                      color: isScenarioCompleted ? '#88cc88' : '#ffd700',
+                    }}
+                    onClick={() => handleDialogScenario(npcIdx)}
+                  >
+                    <span className="text-xl">{isScenarioCompleted ? '\u2705' : '\u{1F4DC}'}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold">{npcScenario.title}</div>
+                      <div className="text-xs opacity-60 mt-0.5">
+                        {isScenarioCompleted ? 'Abgeschlossen - nochmal spielen?' : 'Geschichte erleben & Punkte sammeln'}
+                      </div>
+                    </div>
+                    <span className="text-lg opacity-60">{'\u2192'}</span>
+                  </button>
+                )}
+
+                {/* This NPC's specific activity */}
+                {npcActivity && (
+                  <button
+                    className="w-full py-3 px-4 rounded-xl font-bold text-sm transition-all hover:scale-[1.02] cursor-pointer text-left flex items-center gap-3"
+                    style={{
+                      background: isActivityCompleted
+                        ? 'linear-gradient(135deg, rgba(100,200,100,0.1), rgba(100,200,100,0.05))'
+                        : 'linear-gradient(135deg, rgba(64,192,128,0.12), rgba(64,192,128,0.05))',
+                      border: isActivityCompleted
+                        ? '1px solid rgba(100,200,100,0.3)'
+                        : '1px solid rgba(64,192,128,0.35)',
+                      color: isActivityCompleted ? '#88cc88' : '#40c080',
+                    }}
+                    onClick={() => handleDialogActivity(npcIdx)}
+                  >
+                    <span className="text-xl">{isActivityCompleted ? '\u2705' : '\u{1F3AF}'}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-bold">{npcActivity.title}</div>
+                      <div className="text-xs opacity-60 mt-0.5">
+                        {isActivityCompleted ? 'Abgeschlossen - nochmal machen?' : 'Interaktive \u00DCbung'}
+                      </div>
+                    </div>
+                    <span className="text-lg opacity-60">{'\u2192'}</span>
+                  </button>
+                )}
+
+                {/* Mini-game option */}
+                <button
+                  className="w-full py-3 px-4 rounded-xl font-bold text-sm transition-all hover:scale-[1.02] cursor-pointer text-left flex items-center gap-3"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(176,96,255,0.12), rgba(176,96,255,0.05))',
+                    border: '1px solid rgba(176,96,255,0.3)',
+                    color: '#b060ff',
+                  }}
+                  onClick={handleDialogMiniGame}
+                >
+                  <span className="text-xl">{'\u{1F3AE}'}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold">Minispiel</div>
+                    <div className="text-xs opacity-60 mt-0.5">Spiele ein Emotions-Minispiel</div>
+                  </div>
+                  <span className="text-lg opacity-60">{'\u2192'}</span>
+                </button>
+
+                {/* Show other available scenarios too */}
+                {scenarioMarkers.length > 1 && (
+                  <>
+                    <div className="my-1 border-t" style={{ borderColor: 'rgba(201,168,76,0.1)' }} />
+                    <p className="text-xs opacity-40" style={{ color: 'rgba(201,168,76,0.5)' }}>
+                      Weitere Geschichten auf dieser Insel:
+                    </p>
+                    {scenarioMarkers.map((s, i) => {
+                      if (i === npcIdx) return null;
+                      const done = completedScenarios.includes(s.id);
+                      return (
+                        <button
+                          key={s.id}
+                          className="w-full py-2 px-4 rounded-lg text-xs transition-all hover:scale-[1.01] cursor-pointer text-left flex items-center gap-2"
+                          style={{
+                            backgroundColor: 'rgba(255,255,255,0.03)',
+                            border: '1px solid rgba(255,255,255,0.08)',
+                            color: done ? 'rgba(150,200,150,0.7)' : 'rgba(200,190,170,0.6)',
+                          }}
+                          onClick={() => handleDialogScenario(i)}
+                        >
+                          <span>{done ? '\u2705' : '\u{1F4DC}'}</span>
+                          <span>{s.title}</span>
+                        </button>
+                      );
+                    })}
+                  </>
+                )}
+
+                <div className="my-1 border-t" style={{ borderColor: 'rgba(201,168,76,0.1)' }} />
+                <button
+                  className="w-full py-2 px-4 rounded-lg text-sm transition-all hover:scale-[1.02] cursor-pointer"
+                  style={{
+                    backgroundColor: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    color: 'rgba(200,200,200,0.6)',
+                  }}
+                  onClick={() => setDialogNPC(null)}
+                >
+                  Tsch{'\u00FC'}ss, {dialogNPC.name}!
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

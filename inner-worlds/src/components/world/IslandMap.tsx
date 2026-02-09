@@ -442,6 +442,49 @@ export default function IslandMap() {
       ))}
 
       {/* ================================================================= */}
+      {/* LAYER 4.5: Nebula glow patches                                    */}
+      {/* ================================================================= */}
+      <motion.div
+        className="absolute pointer-events-none"
+        style={{
+          top: '15%',
+          left: '20%',
+          width: '300px',
+          height: '300px',
+          background: 'radial-gradient(circle, rgba(108,92,231,0.06) 0%, transparent 70%)',
+          filter: 'blur(50px)',
+        }}
+        animate={{ opacity: [0.3, 0.7, 0.3], scale: [1, 1.1, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute pointer-events-none"
+        style={{
+          top: '50%',
+          right: '15%',
+          width: '250px',
+          height: '250px',
+          background: 'radial-gradient(circle, rgba(201,168,76,0.04) 0%, transparent 70%)',
+          filter: 'blur(40px)',
+        }}
+        animate={{ opacity: [0.2, 0.5, 0.2], scale: [1, 1.15, 1] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+      />
+      <motion.div
+        className="absolute pointer-events-none"
+        style={{
+          bottom: '25%',
+          left: '40%',
+          width: '200px',
+          height: '200px',
+          background: 'radial-gradient(circle, rgba(76,150,201,0.05) 0%, transparent 70%)',
+          filter: 'blur(35px)',
+        }}
+        animate={{ opacity: [0.25, 0.6, 0.25] }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 5 }}
+      />
+
+      {/* ================================================================= */}
       {/* LAYER 5: Ocean waves at bottom                                    */}
       {/* ================================================================= */}
       <div className="absolute bottom-0 left-0 right-0 h-36 pointer-events-none overflow-hidden">
@@ -484,22 +527,56 @@ export default function IslandMap() {
             <stop offset="50%" stopColor="#FFA500" stopOpacity="0.3" />
             <stop offset="100%" stopColor="#FFD700" stopOpacity="0.15" />
           </linearGradient>
+          <filter id="glow-filter">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
         {connectionPaths.map(([from, to], i) => {
           const fromPos = islandPositions[from];
           const toPos = islandPositions[to];
+          const bothUnlocked =
+            islands.find((isl) => isl.id === from)?.unlocked &&
+            islands.find((isl) => isl.id === to)?.unlocked;
           return (
-            <line
-              key={`path-${i}`}
-              x1={`${pct(fromPos.left)}%`}
-              y1={`${pct(fromPos.top)}%`}
-              x2={`${pct(toPos.left)}%`}
-              y2={`${pct(toPos.top)}%`}
-              stroke="url(#golden-line)"
-              strokeWidth="1.5"
-              strokeDasharray="6 10"
-              opacity="0.5"
-            />
+            <g key={`path-${i}`}>
+              {/* Base dotted line */}
+              <line
+                x1={`${pct(fromPos.left)}%`}
+                y1={`${pct(fromPos.top)}%`}
+                x2={`${pct(toPos.left)}%`}
+                y2={`${pct(toPos.top)}%`}
+                stroke="url(#golden-line)"
+                strokeWidth="1.5"
+                strokeDasharray="6 10"
+                opacity={bothUnlocked ? '0.6' : '0.2'}
+              />
+              {/* Glowing overlay for unlocked connections */}
+              {bothUnlocked && (
+                <line
+                  x1={`${pct(fromPos.left)}%`}
+                  y1={`${pct(fromPos.top)}%`}
+                  x2={`${pct(toPos.left)}%`}
+                  y2={`${pct(toPos.top)}%`}
+                  stroke="#FFD700"
+                  strokeWidth="2"
+                  strokeDasharray="4 16"
+                  opacity="0.4"
+                  filter="url(#glow-filter)"
+                >
+                  <animate
+                    attributeName="stroke-dashoffset"
+                    from="0"
+                    to="-20"
+                    dur={`${2 + i * 0.3}s`}
+                    repeatCount="indefinite"
+                  />
+                </line>
+              )}
+            </g>
           );
         })}
       </svg>
@@ -719,6 +796,47 @@ export default function IslandMap() {
           />
         ))}
       </div>
+
+      {/* ================================================================= */}
+      {/* DECORATION: Compass Rose                                          */}
+      {/* ================================================================= */}
+      <motion.div
+        className="absolute pointer-events-none select-none"
+        style={{
+          bottom: '2.5rem',
+          left: '2rem',
+          zIndex: 4,
+          opacity: 0.15,
+        }}
+        initial={{ opacity: 0, rotate: -30, scale: 0.5 }}
+        animate={{ opacity: 0.15, rotate: 0, scale: 1 }}
+        transition={{ duration: 1.5, delay: 1.2, ease: 'easeOut' }}
+      >
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          {/* Compass ring */}
+          <circle cx="40" cy="40" r="35" fill="none" stroke="#c9a84c" strokeWidth="1" opacity="0.6" />
+          <circle cx="40" cy="40" r="30" fill="none" stroke="#c9a84c" strokeWidth="0.5" opacity="0.3" />
+          {/* N-S line */}
+          <line x1="40" y1="8" x2="40" y2="72" stroke="#c9a84c" strokeWidth="0.5" opacity="0.4" />
+          {/* E-W line */}
+          <line x1="8" y1="40" x2="72" y2="40" stroke="#c9a84c" strokeWidth="0.5" opacity="0.4" />
+          {/* North arrow */}
+          <polygon points="40,10 36,28 40,24 44,28" fill="#ffd700" opacity="0.8" />
+          {/* South arrow */}
+          <polygon points="40,70 36,52 40,56 44,52" fill="#c9a84c" opacity="0.4" />
+          {/* East arrow */}
+          <polygon points="70,40 52,36 56,40 52,44" fill="#c9a84c" opacity="0.4" />
+          {/* West arrow */}
+          <polygon points="10,40 28,36 24,40 28,44" fill="#c9a84c" opacity="0.4" />
+          {/* Center dot */}
+          <circle cx="40" cy="40" r="2" fill="#ffd700" opacity="0.6" />
+          {/* Cardinal labels */}
+          <text x="40" y="7" textAnchor="middle" fontSize="6" fill="#ffd700" fontWeight="bold" opacity="0.8">N</text>
+          <text x="40" y="79" textAnchor="middle" fontSize="5" fill="#c9a84c" opacity="0.5">S</text>
+          <text x="77" y="42" textAnchor="middle" fontSize="5" fill="#c9a84c" opacity="0.5">O</text>
+          <text x="3" y="42" textAnchor="middle" fontSize="5" fill="#c9a84c" opacity="0.5">W</text>
+        </svg>
+      </motion.div>
 
       {/* ================================================================= */}
       {/* UI LAYER: Companion widget                                        */}

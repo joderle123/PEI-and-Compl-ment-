@@ -343,15 +343,16 @@ const WelcomeScreen = () => {
             fontSize: 'clamp(0.9rem, 2.5vw, 1.05rem)',
             color: '#e8e0d0',
             lineHeight: 1.75,
-            maxWidth: '380px',
+            maxWidth: '400px',
             textShadow: '0 1px 4px rgba(0,0,0,0.5)',
           }}
         >
-          Eine Reise zu deinen inneren St&auml;rken.
+          Du bist ein <strong style={{ color: '#f0c674' }}>Seelentaucher</strong> &ndash;
+          jemand, der in die inneren Welten anderer eintauchen kann.
           <br />
-          Entdecke 8 magische Inseln und lerne deine
           <br />
-          verborgenen Superkr&auml;fte kennen.
+          Erkunde 8 magische Inseln, triff einzigartige Charaktere
+          und entdecke, was sich unter der Oberfl&auml;che verbirgt.
         </motion.p>
 
         {/* ── Buttons ── */}
