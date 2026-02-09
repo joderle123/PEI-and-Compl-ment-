@@ -290,22 +290,6 @@ function getChoiceColor(choice: any): string {
   return 'rgba(162,155,254,0.7)';
 }
 
-// ---------------------------------------------------------------------------
-// Helper: detect NPC speaker from scenario context
-// ---------------------------------------------------------------------------
-
-function getScenarioNPC(scenarioId: string, islandId: string): { name: string; emoji: string } | null {
-  const data = getIslandData(islandId);
-  const npcs = data.npcs || [];
-  const match = scenarioId?.match(/scenario-(\d+)/);
-  if (!match) return null;
-  const num = parseInt(match[1], 10);
-  const idx = Math.min(num - 1, npcs.length - 1);
-  if (idx >= 0 && idx < npcs.length) {
-    return { name: npcs[idx].name, emoji: npcs[idx].emoji };
-  }
-  return null;
-}
 
 // ---------------------------------------------------------------------------
 // Helper: smart consequence text generation
@@ -475,7 +459,6 @@ export default function ScenarioPlayer() {
 
   const data = getIslandData(islandId);
   const scenario = data.scenarios.find((s: any) => s.id === scenarioId);
-  const npcSpeaker = scenarioId ? getScenarioNPC(scenarioId, islandId) : null;
 
   const [currentSceneIndex, setCurrentSceneIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
@@ -974,7 +957,7 @@ export default function ScenarioPlayer() {
                       animate={{ scale: [1, 1.05, 1] }}
                       transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                     >
-                      {currentScene.speakerEmoji || npcSpeaker?.emoji || '\u{1F4DC}'}
+                      {currentScene.speakerEmoji || '\u{1F4DC}'}
                     </motion.span>
                   </div>
 
@@ -982,7 +965,7 @@ export default function ScenarioPlayer() {
                     <span className="font-title text-golden font-bold text-lg tracking-wide block">
                       {currentScene.speaker && currentScene.speaker !== 'narrator'
                         ? (currentScene.speaker === 'player' ? 'Du' : currentScene.speaker)
-                        : (npcSpeaker?.name || 'Erz\u00E4hler')}
+                        : 'Erz\u00E4hler'}
                     </span>
                     <div className="flex gap-1 mt-1">
                       {scenario.scenes.map((_: any, i: number) => (

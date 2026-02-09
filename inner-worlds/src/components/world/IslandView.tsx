@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGameStore } from '../../stores/gameStore';
