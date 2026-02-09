@@ -1,1254 +1,813 @@
 // @ts-nocheck
 import type { Scenario, WisdomCard, Activity, IslandId } from '../../../types';
 
-// Local interfaces
+// =============================================================================
+// Forest Island - Angst & Mut (Fear & Courage)
+// Therapeutic educational content for CDSE Luxembourg, ages 10-15
+// ALL content in German
+// =============================================================================
+
+// NPCs - empty array as specified
+export const forestNPCs: any[] = [];
+
+// -----------------------------------------------------------------------------
+// Therapeutic Framework:
+//
+// Chapter 1 - "Schatten zwischen den Bäumen"
+//   Teaches: Biology of fear (fight/flight/freeze), physical symptoms, normalizing
+//   Key: "Angst ist dein Körper, der dich beschützen will. Sie ist nicht dein Feind."
+//
+// Chapter 2 - "Das Dunkel spricht"
+//   Teaches: Anxiety spirals, avoidance behavior, how avoidance grows fear
+//   Key: "Je mehr wir Angst vermeiden, desto größer wird sie."
+//
+// Chapter 3 - "Der Pfad der Mutproben"
+//   Teaches: Gradual exposure, positive self-talk, breathing, progressive muscle
+//            relaxation, "Was ist das Schlimmste?" technique
+//   Key: "Mut ist nicht, keine Angst zu haben. Mut ist, trotz Angst das Richtige zu tun."
+//
+// Chapter 4 - "Der Wald gehört uns"
+//   Teaches: Social courage, standing up for others, bystander effect,
+//            fear as information not instruction
+//   Key: "Jedes Mal, wenn du etwas trotz Angst tust, wirst du ein bisschen mutiger."
+// -----------------------------------------------------------------------------
+
+// =============================================================================
+// Activities
+// =============================================================================
+
 interface ForestActivity extends Activity {
   instructions: string[];
 }
 
-interface ForestNPC {
-  id: string;
-  name: string;
-  emoji: string;
-  description: string;
-  backstory: string;
-}
-
-// NPCs
-export const forestNPCs: ForestNPC[] = [
-  {
-    id: 'timber',
-    name: 'Timber',
-    emoji: '🌲',
-    description: 'Ein uralter Baumgeist, der im Herzen des Waldes wurzelt',
-    backstory: 'Timber steht seit tausend Jahren an der Schwelle des dunklen Waldes. Er hat unzählige Wanderer kommen und gehen sehen – manche voller Mut, manche voller Angst. Er weiß: Nur wer die Dunkelheit betritt, kann das Licht wirklich schätzen.'
-  },
-  {
-    id: 'faye',
-    name: 'Faye',
-    emoji: '🧑',
-    description: 'Ein mutiges Mädchen aus Syrien, das zwischen zwei Welten lebt',
-    backstory: 'Faye floh mit ihrer Familie aus Damaskus nach Luxemburg. Sie spricht Arabisch, lernt Luxemburgisch und träumt auf Französisch. Zwischen zwei Kulturen zu leben hat sie gelehrt, dass Angst vor dem Fremden nur Angst vor einem Teil von sich selbst ist.'
-  },
-  {
-    id: 'schattenfluesterer',
-    name: 'Schattenflüsterer',
-    emoji: '🦇',
-    description: 'Eine geheimnisvolle Fledermaus, die in den Schatten zu Hause ist',
-    backstory: 'Schattenflüsterer lebt dort, wo sich Licht und Dunkelheit treffen. Er kennt jede Angst, jeden Zweifel, jedes verborgene Gefühl – denn all das lebt in den Schatten. Seine Weisheit: Was du fürchtest, ist oft nur ein verzerrtes Bild von dir selbst.'
-  },
-  {
-    id: 'lumi',
-    name: 'Lumi',
-    emoji: '🪲',
-    description: 'Ein kleines, aber unglaublich mutiges Glühwürmchen',
-    backstory: 'Lumi ist das kleinste Wesen im ganzen Wald, aber sie trägt ein Licht in sich, das selbst die tiefste Dunkelheit durchbrechen kann. Alle sagen ihr, sie sei zu klein für große Aufgaben – aber Lumi weiß, dass Mut keine Frage der Größe ist.'
-  }
-];
-
-// Scenarios
-export const forestScenarios: Scenario[] = [
-  {
-    id: 'forest-scenario-1',
-    islandId: 'forest' as IslandId,
-    title: 'Der dunkle Eingang',
-    description: 'Der Wald ist dunkel und unheimlich. Timber spürt deine Angst.',
-    npcId: 'timber',
-    completed: false,
-    scenes: [
-      {
-        id: 'f1-s1',
-        text: 'Du stehst am Rand eines dunklen Waldes. Die Bäume ragen wie schwarze Finger in den grauen Himmel. Kein Vogel singt. Kein Wind weht. Nur Stille – und das Pochen deines eigenen Herzens. Dann bewegt sich etwas. Ein uralter Baum öffnet seine Augen. "Ich bin Timber", knarrt er. "Und ich rieche deine Angst."',
-        choices: [
-          {
-            id: 'f1-s1-c1',
-            text: 'Ja, ich habe Angst. Aber ich bin trotzdem hier.',
-            points: 3,
-            nextSceneId: 'f1-s2'
-          },
-          {
-            id: 'f1-s1-c2',
-            text: 'Ich habe keine Angst! (Deine Stimme zittert.)',
-            points: 1,
-            nextSceneId: 'f1-s2'
-          },
-          {
-            id: 'f1-s1-c3',
-            text: 'Was ist dieser Ort?',
-            points: 2,
-            nextSceneId: 'f1-s2'
-          }
-        ]
-      },
-      {
-        id: 'f1-s2',
-        text: 'Timber lacht leise – ein Geräusch wie raschelndes Laub. "Dieser Wald ist der Wald der Angst. Jeder, der hierher kommt, bringt seine eigene Dunkelheit mit. Auf dem Vulkan hast du die Wut kennengelernt. Im Ozean die Trauer. Hier wartet etwas anderes: die Angst." Seine Augen leuchten sanft. "Bereit für den ersten Schritt?"',
-        choices: [
-          {
-            id: 'f1-s2-c1',
-            text: 'Ich gehe hinein. Ein Schritt nach dem anderen.',
-            points: 3,
-            nextSceneId: 'f1-s3'
-          },
-          {
-            id: 'f1-s2-c2',
-            text: 'Kannst du mir sagen, was mich erwartet?',
-            points: 2,
-            nextSceneId: 'f1-s3'
-          },
-          {
-            id: 'f1-s2-c3',
-            text: 'Ich bleibe lieber hier am Rand.',
-            points: 1,
-            nextSceneId: 'f1-s3'
-          }
-        ]
-      },
-      {
-        id: 'f1-s3',
-        text: 'Du betrittst den Wald. Sofort verschluckt die Dunkelheit das Licht hinter dir. Dein Herz hämmert. Deine Hände werden feucht. Ein Ast knackt – du zuckst zusammen. Dein Körper schreit: Lauf weg! Aber Timber flüstert aus dem Boden: "Das ist nur dein Körper, der dich beschützen will. Angst ist ein Alarm – kein Befehl."',
-        choices: [
-          {
-            id: 'f1-s3-c1',
-            text: 'Ich atme tief ein und höre auf meinen Verstand, nicht auf den Alarm.',
-            points: 3,
-            nextSceneId: 'f1-s4'
-          },
-          {
-            id: 'f1-s3-c2',
-            text: 'Mein Herz rast, aber ich bleibe stehen.',
-            points: 2,
-            nextSceneId: 'f1-s4'
-          },
-          {
-            id: 'f1-s3-c3',
-            text: 'Ich gehe einen Schritt zurück, bevor ich weitergehe.',
-            points: 1,
-            nextSceneId: 'f1-s4'
-          }
-        ]
-      },
-      {
-        id: 'f1-s4',
-        text: 'Zwischen den Bäumen tauchen seltsame Formen auf – Gesichter in der Rinde, Hände aus Moos, flüsternde Stimmen. "Dreh um... du schaffst das nicht... du bist zu schwach..." Timber sagt: "Die Stimmen der Angst lügen. Sie klingen real, aber sie sind nur Echos alter Zweifel."',
-        choices: [
-          {
-            id: 'f1-s4-c1',
-            text: 'Ich sage laut: "Ihr seid nur Echos. Ihr seid nicht die Wahrheit."',
-            points: 3,
-            nextSceneId: 'f1-s5'
-          },
-          {
-            id: 'f1-s4-c2',
-            text: 'Ich ignoriere die Stimmen und gehe weiter.',
-            points: 2,
-            nextSceneId: 'f1-s5'
-          },
-          {
-            id: 'f1-s4-c3',
-            text: 'Ich halte mir die Ohren zu.',
-            points: 1,
-            nextSceneId: 'f1-s5'
-          }
-        ]
-      },
-      {
-        id: 'f1-s5',
-        text: 'Der Pfad führt zu einer Stelle, wo die Dunkelheit am dichtesten ist. Du kannst deine eigene Hand nicht sehen. Timber sagt: "Hier ist deine erste Prüfung. Geh zehn Schritte in die absolute Dunkelheit. Allein. Ohne Licht. Vertrau darauf, dass der Boden dich trägt."',
-        choices: [
-          {
-            id: 'f1-s5-c1',
-            text: 'Ich zähle laut und gehe: Eins... zwei... drei...',
-            points: 3,
-            nextSceneId: 'f1-s6'
-          },
-          {
-            id: 'f1-s5-c2',
-            text: 'Ich taste mich vorsichtig vorwärts, Schritt für Schritt.',
-            points: 2,
-            nextSceneId: 'f1-s6'
-          },
-          {
-            id: 'f1-s5-c3',
-            text: 'Zehn Schritte... das ist doch nicht so viel. Ich versuche es.',
-            points: 2,
-            nextSceneId: 'f1-s6'
-          }
-        ]
-      },
-      {
-        id: 'f1-s6',
-        text: 'Beim zehnten Schritt bricht Mondlicht durch die Baumkronen. Du stehst auf einer kleinen Lichtung. Die Angst ist noch da – aber sie hat dich nicht aufgehalten. Timber erscheint neben dir und neigt seine Krone. "Du hast den ersten Schritt getan. Nicht ohne Angst – sondern mit ihr. Das ist der Unterschied zwischen Feigheit und Mut. Willkommen im Wald der Angst."',
-        choices: [
-          {
-            id: 'f1-s6-c1',
-            text: 'Ich habe gelernt: Angst ist kein Stopp-Schild, sondern ein Wegbegleiter.',
-            points: 3,
-            nextSceneId: null
-          },
-          {
-            id: 'f1-s6-c2',
-            text: 'Danke, Timber. Ich bin bereit für das, was kommt.',
-            points: 2,
-            nextSceneId: null
-          },
-          {
-            id: 'f1-s6-c3',
-            text: 'Das war das Schwerste, was ich je gemacht habe – aber ich habe es geschafft.',
-            points: 2,
-            nextSceneId: null
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'forest-scenario-2',
-    islandId: 'forest' as IslandId,
-    title: 'Fayes zwei Welten',
-    description: 'Faye lebt zwischen Syrien und Luxemburg – und du entdeckst deine eigene Angst vor dem Anderssein',
-    npcId: 'faye',
-    completed: false,
-    scenes: [
-      {
-        id: 'f2-s1',
-        text: 'Auf der Lichtung sitzt ein Mädchen zwischen zwei Wegen. Der eine ist mit Jasmin bewachsen und riecht nach Damaskus. Der andere ist mit Moos bedeckt und führt in einen Luxemburger Wald. "Ich bin Faye", sagt sie leise. "Und jeden Tag muss ich wählen, welchen Weg ich gehe. Aber egal welchen ich wähle – ich habe Angst, den anderen zu verlieren."',
-        choices: [
-          {
-            id: 'f2-s1-c1',
-            text: 'Du musst dich nicht entscheiden. Erzähl mir von beiden Wegen.',
-            points: 3,
-            nextSceneId: 'f2-s2'
-          },
-          {
-            id: 'f2-s1-c2',
-            text: 'Wovor hast du mehr Angst – zu vergessen oder nicht dazuzugehören?',
-            points: 3,
-            nextSceneId: 'f2-s2'
-          },
-          {
-            id: 'f2-s1-c3',
-            text: 'Das klingt sehr schwer.',
-            points: 2,
-            nextSceneId: 'f2-s2'
-          }
-        ]
-      },
-      {
-        id: 'f2-s2',
-        text: 'Fayes Augen werden feucht. "In der Schule sage ich, dass ich Luxemburgerin bin. Zu Hause bin ich Syrerin. Beim Mittagessen esse ich Kniddelen, abends kocht Mama Kibbeh. Meine Freundinnen fragen: \'Was bist du eigentlich?\' Und ich denke: Wenn ich die Wahrheit sage – dass ich beides bin – gehöre ich nirgendwo dazu."',
-        choices: [
-          {
-            id: 'f2-s2-c1',
-            text: 'Beides zu sein ist keine Schwäche – es ist eine Superkraft.',
-            points: 3,
-            nextSceneId: 'f2-s3'
-          },
-          {
-            id: 'f2-s2-c2',
-            text: 'Ich kenne das Gefühl, nicht ganz hineinzupassen.',
-            points: 3,
-            nextSceneId: 'f2-s3'
-          },
-          {
-            id: 'f2-s2-c3',
-            text: 'Was sagen deine Freundinnen, wenn du ehrlich bist?',
-            points: 2,
-            nextSceneId: 'f2-s3'
-          }
-        ]
-      },
-      {
-        id: 'f2-s3',
-        text: 'Faye steht auf. "Letzte Woche sollte ich in der Schule über meine Kultur erzählen. Mein Herz raste. Was, wenn sie lachen? Was, wenn sie Syrien nur mit Krieg verbinden? Ich habe fast abgesagt." Sie schaut dich an. "Hast du auch manchmal Angst, etwas von dir zu zeigen, das anders ist?"',
-        choices: [
-          {
-            id: 'f2-s3-c1',
-            text: 'Ja. Ich habe Angst, dass andere mich nicht verstehen, wenn ich zeige, wer ich wirklich bin.',
-            points: 3,
-            nextSceneId: 'f2-s4'
-          },
-          {
-            id: 'f2-s3-c2',
-            text: 'Manchmal verstecke ich Teile von mir, um dazuzugehören.',
-            points: 3,
-            nextSceneId: 'f2-s4'
-          },
-          {
-            id: 'f2-s3-c3',
-            text: 'Ich bin nicht sicher. Vielleicht.',
-            points: 1,
-            nextSceneId: 'f2-s4'
-          }
-        ]
-      },
-      {
-        id: 'f2-s4',
-        text: '"Ich habe den Vortrag dann doch gehalten", sagt Faye und ihre Stimme wird fester. "Ich habe von Damaskus erzählt. Vom Jasmin, der über die Mauern wächst. Von meiner Oma, die die besten Geschichten kannte. Und weißt du was? Sie haben nicht gelacht. Marie hat sogar geweint. Und Tim hat gesagt: \'Das ist viel cooler als mein langweiliges Esch.\'"',
-        choices: [
-          {
-            id: 'f2-s4-c1',
-            text: 'Siehst du? Deine Geschichte hat andere berührt. Dein Anderssein ist ein Geschenk.',
-            points: 3,
-            nextSceneId: 'f2-s5'
-          },
-          {
-            id: 'f2-s4-c2',
-            text: 'Die Angst hat dich fast davon abgehalten, etwas Schönes zu teilen.',
-            points: 3,
-            nextSceneId: 'f2-s5'
-          },
-          {
-            id: 'f2-s4-c3',
-            text: 'Das war sehr mutig von dir.',
-            points: 2,
-            nextSceneId: 'f2-s5'
-          }
-        ]
-      },
-      {
-        id: 'f2-s5',
-        text: 'Faye sieht die zwei Wege an. Plötzlich wachsen sie zusammen – Jasmin und Moos verschmelzen zu einem einzigen Pfad. "Ich muss nicht wählen", flüstert sie staunend. "Ich bin kein halbes Mädchen aus zwei Hälften. Ich bin ein ganzes Mädchen aus zwei Welten." Sie dreht sich zu dir. "Und du? Welchen Teil von dir versteckst du aus Angst?"',
-        choices: [
-          {
-            id: 'f2-s5-c1',
-            text: 'Ich verstecke Dinge, die mich anders machen. Aber vielleicht sollte ich sie zeigen.',
-            points: 3,
-            nextSceneId: 'f2-s6'
-          },
-          {
-            id: 'f2-s5-c2',
-            text: 'Du hast recht – Angst vor dem Anderssein nimmt uns einen Teil von uns selbst.',
-            points: 3,
-            nextSceneId: 'f2-s6'
-          },
-          {
-            id: 'f2-s5-c3',
-            text: 'Ich muss darüber nachdenken.',
-            points: 2,
-            nextSceneId: 'f2-s6'
-          }
-        ]
-      },
-      {
-        id: 'f2-s6',
-        text: 'Faye nimmt deine Hand. "Weißt du, was mir am meisten geholfen hat? Zu verstehen, dass die Angst vor dem Anderssein eigentlich Angst vor Ablehnung ist. Aber die Menschen, die dich für das ablehnen, was du wirklich bist, sind nicht die Menschen, bei denen du sein sollst." Der Jasmin-Moos-Pfad leuchtet golden. "Geh deinen eigenen Weg. Ganz."',
-        choices: [
-          {
-            id: 'f2-s6-c1',
-            text: 'Danke, Faye. Ich werde aufhören, Teile von mir zu verstecken.',
-            points: 3,
-            nextSceneId: null
-          },
-          {
-            id: 'f2-s6-c2',
-            text: 'Du bist eine Brückenbauerin – zwischen Welten und zwischen Herzen.',
-            points: 3,
-            nextSceneId: null
-          },
-          {
-            id: 'f2-s6-c3',
-            text: 'Deine Geschichte hat mir Mut gemacht, mich selbst zu zeigen.',
-            points: 2,
-            nextSceneId: null
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'forest-scenario-3',
-    islandId: 'forest' as IslandId,
-    title: 'Der Schattenflüsterer',
-    description: 'Eine geheimnisvolle Fledermaus lehrt dich, dass Ängste nur Schatten sind',
-    npcId: 'schattenfluesterer',
-    completed: false,
-    scenes: [
-      {
-        id: 'f3-s1',
-        text: 'Tiefer im Wald wird es kälter. Du bemerkst, dass dein Schatten sich seltsam verhält – er bewegt sich anders als du. Plötzlich löst er sich vom Boden und steht dir gegenüber. Bevor du schreien kannst, flattert eine Fledermaus herab. "Keine Panik", piepst sie. "Ich bin der Schattenflüsterer. Und das dort – das ist dein Schatten-Ich. Der Teil von dir, den du nicht sehen willst."',
-        choices: [
-          {
-            id: 'f3-s1-c1',
-            text: 'Mein Schatten-Ich? Was bedeutet das?',
-            points: 2,
-            nextSceneId: 'f3-s2'
-          },
-          {
-            id: 'f3-s1-c2',
-            text: 'Ich habe Angst davor. Es sieht... dunkel aus.',
-            points: 3,
-            nextSceneId: 'f3-s2'
-          },
-          {
-            id: 'f3-s1-c3',
-            text: 'Bring es weg!',
-            points: 1,
-            nextSceneId: 'f3-s2'
-          }
-        ]
-      },
-      {
-        id: 'f3-s2',
-        text: 'Schattenflüsterer fliegt um deinen Schatten. "Jeder Mensch hat ein Schatten-Ich. Es besteht aus allem, was du fürchtest, versteckst, verleugnest. Deine Unsicherheit. Deine Eifersucht. Deine heimliche Wut. Die Dinge, für die du dich schämst." Dein Schatten wird größer. "Je mehr du ihn ignorierst, desto mächtiger wird er."',
-        choices: [
-          {
-            id: 'f3-s2-c1',
-            text: 'Dann will ich ihn kennenlernen, bevor er noch größer wird.',
-            points: 3,
-            nextSceneId: 'f3-s3'
-          },
-          {
-            id: 'f3-s2-c2',
-            text: 'Warum habe ich Angst vor einem Teil von mir selbst?',
-            points: 3,
-            nextSceneId: 'f3-s3'
-          },
-          {
-            id: 'f3-s2-c3',
-            text: 'Vielleicht sollte ich einfach nicht hinsehen.',
-            points: 1,
-            nextSceneId: 'f3-s3'
-          }
-        ]
-      },
-      {
-        id: 'f3-s3',
-        text: 'Schattenflüsterer führt dich in eine Höhle aus Wurzeln. An den Wänden flackern Bilder – Szenen aus deinem Leben. Du siehst dich selbst, wie du jemanden angelogen hast, um dazuzugehören. Wie du neidisch auf jemanden warst. Wie du vor etwas weggelaufen bist. "Das sind keine Monster", sagt die Fledermaus sanft. "Das sind Momente, die du vergessen willst. Aber sie brauchen deine Aufmerksamkeit."',
-        choices: [
-          {
-            id: 'f3-s3-c1',
-            text: 'Ich sehe hin. Es tut weh, aber ich sehe hin.',
-            points: 3,
-            nextSceneId: 'f3-s4'
-          },
-          {
-            id: 'f3-s3-c2',
-            text: 'Ich spreche zu den Bildern: "Ich erkenne euch an."',
-            points: 3,
-            nextSceneId: 'f3-s4'
-          },
-          {
-            id: 'f3-s3-c3',
-            text: 'Es ist schwer, diese Dinge anzusehen.',
-            points: 2,
-            nextSceneId: 'f3-s4'
-          }
-        ]
-      },
-      {
-        id: 'f3-s4',
-        text: 'Dein Schatten-Ich tritt vor dich. Es sieht aus wie du, aber seine Augen sind traurig. Es öffnet den Mund: "Warum hast du mich weggesperrt? Ich bin deine Angst, nicht genug zu sein. Ich bin dein Zweifel. Ich bin das Gefühl, dass alle anderen besser sind. Ich wollte dich nur beschützen – aber du hast mich zum Monster gemacht."',
-        choices: [
-          {
-            id: 'f3-s4-c1',
-            text: 'Es tut mir leid. Ich hätte dich nicht wegstoßen sollen.',
-            points: 3,
-            nextSceneId: 'f3-s5'
-          },
-          {
-            id: 'f3-s4-c2',
-            text: 'Du bist kein Monster. Du bist ein Teil von mir, den ich nicht verstanden habe.',
-            points: 3,
-            nextSceneId: 'f3-s5'
-          },
-          {
-            id: 'f3-s4-c3',
-            text: 'Was brauchst du von mir?',
-            points: 2,
-            nextSceneId: 'f3-s5'
-          }
-        ]
-      },
-      {
-        id: 'f3-s5',
-        text: 'Das Schatten-Ich streckt dir die Hand entgegen. Schattenflüsterer flüstert: "Das ist der schwierigste Moment. Die meisten Menschen rennen jetzt weg. Aber wenn du dein Schatten-Ich an die Hand nimmst – dann vereinst du Licht und Dunkelheit in dir. Dann kann keine Angst der Welt dich mehr zerbrechen."',
-        choices: [
-          {
-            id: 'f3-s5-c1',
-            text: 'Ich nehme die Hand meines Schattens. Wir gehören zusammen.',
-            points: 3,
-            nextSceneId: 'f3-s6'
-          },
-          {
-            id: 'f3-s5-c2',
-            text: 'Ich umarme mein Schatten-Ich. Du bist willkommen.',
-            points: 3,
-            nextSceneId: 'f3-s6'
-          },
-          {
-            id: 'f3-s5-c3',
-            text: 'Ich zögere... aber dann greife ich zu.',
-            points: 2,
-            nextSceneId: 'f3-s6'
-          }
-        ]
-      },
-      {
-        id: 'f3-s6',
-        text: 'Als du deinen Schatten berührst, durchströmt dich Wärme. Er verschmilzt mit dir – nicht weg, sondern hinein. Du fühlst dich... vollständiger. Stärker. Schattenflüsterer lächelt mit seinen kleinen Zähnen. "Siehst du? Du bist nicht trotz deiner Schatten wertvoll. Du bist wegen ihnen ganz. Wer seinen Schatten umarmt, den kann die Dunkelheit nicht mehr schrecken."',
-        choices: [
-          {
-            id: 'f3-s6-c1',
-            text: 'Ich bin nicht perfekt – und genau das macht mich vollständig.',
-            points: 3,
-            nextSceneId: 'f3-s7'
-          },
-          {
-            id: 'f3-s6-c2',
-            text: 'Meine Ängste sind keine Feinde mehr. Sie sind Lehrer.',
-            points: 3,
-            nextSceneId: 'f3-s7'
-          },
-          {
-            id: 'f3-s6-c3',
-            text: 'Danke, Schattenflüsterer. Das werde ich nie vergessen.',
-            points: 2,
-            nextSceneId: 'f3-s7'
-          }
-        ]
-      },
-      {
-        id: 'f3-s7',
-        text: 'Schattenflüsterer fliegt auf deine Schulter. "Eine letzte Sache", piepst er. "Die anderen im Wald brauchen dich. Timber, Faye, Lumi – sie kämpfen auch mit ihren Schatten. Was du heute gelernt hast, wirst du bald brauchen. Für sie. Und für den Wald selbst." Seine Worte klingen wie eine Warnung – und ein Versprechen.',
-        choices: [
-          {
-            id: 'f3-s7-c1',
-            text: 'Ich bin bereit, anderen zu helfen, ihre Schatten zu umarmen.',
-            points: 3,
-            nextSceneId: null
-          },
-          {
-            id: 'f3-s7-c2',
-            text: 'Was kommt auf den Wald zu? Was meinst du?',
-            points: 2,
-            nextSceneId: null
-          },
-          {
-            id: 'f3-s7-c3',
-            text: 'Ich werde da sein, wenn ich gebraucht werde.',
-            points: 2,
-            nextSceneId: null
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'forest-scenario-4',
-    islandId: 'forest' as IslandId,
-    title: 'Lumis Mission',
-    description: 'Ein winziges Glühwürmchen muss Licht durch den dunkelsten Teil des Waldes tragen – gegen alle Stimmen, die sagen: unmöglich',
-    npcId: 'lumi',
-    completed: false,
-    scenes: [
-      {
-        id: 'f4-s1',
-        text: 'Ein winziges Leuchten nähert sich dir – es ist Lumi, das Glühwürmchen. Sie flackert aufgeregt. "Du musst mir helfen! Am Ende des Waldes liegt die Schattenschlucht. Dort ist ein junger Baum, der ohne Licht stirbt. Timber hat mich gebeten, ihm mein Licht zu bringen. Aber..." Sie flackert ängstlich. "Es ist der dunkelste Ort im ganzen Wald."',
-        choices: [
-          {
-            id: 'f4-s1-c1',
-            text: 'Ich komme mit dir. Zusammen schaffen wir das.',
-            points: 3,
-            nextSceneId: 'f4-s2'
-          },
-          {
-            id: 'f4-s1-c2',
-            text: 'Warum hat Timber ausgerechnet dich gefragt?',
-            points: 2,
-            nextSceneId: 'f4-s2'
-          },
-          {
-            id: 'f4-s1-c3',
-            text: 'Die Schattenschlucht? Das klingt gefährlich.',
-            points: 2,
-            nextSceneId: 'f4-s2'
-          }
-        ]
-      },
-      {
-        id: 'f4-s2',
-        text: 'Auf dem Weg trefft ihr eine Gruppe Waldtiere – Eichhörnchen, Käfer, ein Reh. Als sie hören, wohin ihr wollt, schütteln sie die Köpfe. "Unmöglich!", ruft das Eichhörnchen. "Kein Licht überlebt die Schattenschlucht!" Das Reh flüstert: "Andere haben es versucht. Alle sind gescheitert." Der Käfer lacht. "Du? Du bist doch viel zu klein, Lumi!"',
-        choices: [
-          {
-            id: 'f4-s2-c1',
-            text: 'Hört nicht auf sie, Lumi. Größe bestimmt nicht, was du kannst.',
-            points: 3,
-            nextSceneId: 'f4-s3'
-          },
-          {
-            id: 'f4-s2-c2',
-            text: 'Vielleicht haben sie recht... es klingt wirklich gefährlich.',
-            points: 1,
-            nextSceneId: 'f4-s3'
-          },
-          {
-            id: 'f4-s2-c3',
-            text: 'Warum versucht ihr es nicht selbst, statt andere kleinzumachen?',
-            points: 3,
-            nextSceneId: 'f4-s3'
-          }
-        ]
-      },
-      {
-        id: 'f4-s3',
-        text: 'Lumis Licht wird schwächer. Die Worte der anderen verletzen sie. "Vielleicht haben sie recht", piepst sie. "Ich bin nur ein Glühwürmchen. Was kann mein kleines Licht schon gegen die Dunkelheit ausrichten?" Noch mehr Tiere versammeln sich. "Gib auf, Lumi! Das ist nichts für dich!"',
-        choices: [
-          {
-            id: 'f4-s3-c1',
-            text: 'Lumi, erinnerst du dich? Timber hat DICH gewählt. Nicht das Reh, nicht das Eichhörnchen. DICH.',
-            points: 3,
-            nextSceneId: 'f4-s4'
-          },
-          {
-            id: 'f4-s3-c2',
-            text: 'In der dunkelsten Nacht ist das kleinste Licht am wichtigsten.',
-            points: 3,
-            nextSceneId: 'f4-s4'
-          },
-          {
-            id: 'f4-s3-c3',
-            text: 'Willst du wirklich aufgeben, weil andere es sagen?',
-            points: 2,
-            nextSceneId: 'f4-s4'
-          }
-        ]
-      },
-      {
-        id: 'f4-s4',
-        text: 'Lumi leuchtet wieder heller. Ihr betretet die Schattenschlucht. Die Dunkelheit ist erdrückend – dicker als Nebel, kälter als Eis. Lumis Licht ist nur ein winziger Punkt in der Schwärze. Die Schatten flüstern: "Du wirst versagen... dein Licht erlischt gleich... du bist zu schwach..." Lumi zittert, aber fliegt weiter.',
-        choices: [
-          {
-            id: 'f4-s4-c1',
-            text: 'Ich gehe dicht neben Lumi und sage: "Ich bin hier. Du bist nicht allein."',
-            points: 3,
-            nextSceneId: 'f4-s5'
-          },
-          {
-            id: 'f4-s4-c2',
-            text: 'Die Schatten lügen, Lumi! Dein Licht brennt noch!',
-            points: 3,
-            nextSceneId: 'f4-s5'
-          },
-          {
-            id: 'f4-s4-c3',
-            text: 'Weiter, Lumi. Schritt für Schritt. Flügelschlag für Flügelschlag.',
-            points: 2,
-            nextSceneId: 'f4-s5'
-          }
-        ]
-      },
-      {
-        id: 'f4-s5',
-        text: 'Am tiefsten Punkt der Schlucht erlischt Lumis Licht fast. Sie fällt. "Ich kann nicht mehr", weint sie. "Alle hatten recht. Ich bin zu klein. Zu schwach." Um euch herum lauert die totale Dunkelheit. Das ist der Moment der Wahrheit.',
-        choices: [
-          {
-            id: 'f4-s5-c1',
-            text: 'Ich fange Lumi auf und halte sie an mein Herz. "Dein Licht kommt von innen. Niemand kann es löschen."',
-            points: 3,
-            nextSceneId: 'f4-s6'
-          },
-          {
-            id: 'f4-s5-c2',
-            text: 'Lumi, der junge Baum braucht dich. Du bist seine einzige Hoffnung.',
-            points: 3,
-            nextSceneId: 'f4-s6'
-          },
-          {
-            id: 'f4-s5-c3',
-            text: 'Atme, Lumi. Erinnerst du dich an Timbers Worte? Angst ist ein Alarm, kein Befehl.',
-            points: 2,
-            nextSceneId: 'f4-s6'
-          }
-        ]
-      },
-      {
-        id: 'f4-s6',
-        text: 'Lumi atmet tief ein – und ihr Licht explodiert. Heller als je zuvor strahlt sie und durchbricht die Schattenschlucht. Vor euch steht der junge Baum, seine Blätter bereits welk. Lumi berührt ihn – und er blüht auf, golden und strahlend. Als ihr zurückkehrt, schweigen die Waldtiere staunend. Lumi sagt leise: "Sie sagten, es sei unmöglich. Aber \'unmöglich\' ist nur die Angst der anderen, verkleidet als Ratschlag."',
-        choices: [
-          {
-            id: 'f4-s6-c1',
-            text: 'Lass nie zu, dass die Angst anderer bestimmt, was du kannst.',
-            points: 3,
-            nextSceneId: null
-          },
-          {
-            id: 'f4-s6-c2',
-            text: 'Dein Licht war nie zu klein. Die anderen hatten nur zu viel Angst, es zu sehen.',
-            points: 3,
-            nextSceneId: null
-          },
-          {
-            id: 'f4-s6-c3',
-            text: 'Du hast bewiesen, dass Mut stärker ist als Gruppendruck.',
-            points: 2,
-            nextSceneId: null
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'forest-scenario-5',
-    islandId: 'forest' as IslandId,
-    title: 'Die Nacht der Prüfung',
-    description: 'Du bist allein im Wald. Keine Hilfe. Nur du und deine Angst.',
-    npcId: 'timber',
-    completed: false,
-    scenes: [
-      {
-        id: 'f5-s1',
-        text: 'Die Sonne sinkt. Timber ruft dich zu sich. "Heute Nacht ist deine Prüfung", sagt er ernst. "Du wirst allein durch den Wald gehen. Ohne Lumi. Ohne Schattenflüsterer. Ohne Faye. Ohne mich." Er schaut dich lange an. "Du hast auf dem Vulkan Wut besiegt, im Ozean Trauer umarmt – jetzt ist die Angst dran. Aber diesmal bist du auf dich allein gestellt."',
-        choices: [
-          {
-            id: 'f5-s1-c1',
-            text: 'Ich bin bereit. Alles, was ich gelernt habe, trage ich in mir.',
-            points: 3,
-            nextSceneId: 'f5-s2'
-          },
-          {
-            id: 'f5-s1-c2',
-            text: 'Allein? Warum kann niemand mitkommen?',
-            points: 2,
-            nextSceneId: 'f5-s2'
-          },
-          {
-            id: 'f5-s1-c3',
-            text: 'Ich habe Angst. Aber ich weiß, dass Angst kein Stopp-Schild ist.',
-            points: 3,
-            nextSceneId: 'f5-s2'
-          }
-        ]
-      },
-      {
-        id: 'f5-s2',
-        text: 'Die Nacht bricht herein. Du bist allein. Der Wald knarzt, ächzt, flüstert. Jeder Schatten könnte ein Monster sein. Dein Herzschlag dröhnt in deinen Ohren. Plötzlich hörst du Schritte hinter dir – aber als du dich umdrehst, ist niemand da. Dein Körper will rennen. Jede Faser schreit: FLIEH!',
-        choices: [
-          {
-            id: 'f5-s2-c1',
-            text: 'Ich bleibe stehen. Ich atme. Vier Sekunden ein, vier halten, sechs aus. Wie Timber es gelehrt hat.',
-            points: 3,
-            nextSceneId: 'f5-s3'
-          },
-          {
-            id: 'f5-s2-c2',
-            text: 'Ich sage laut zu mir selbst: "Angst ist ein Alarm, kein Befehl."',
-            points: 3,
-            nextSceneId: 'f5-s3'
-          },
-          {
-            id: 'f5-s2-c3',
-            text: 'Ich renne ein paar Schritte, halte dann an und sammle mich.',
-            points: 1,
-            nextSceneId: 'f5-s3'
-          }
-        ]
-      },
-      {
-        id: 'f5-s3',
-        text: 'Der Wald zeigt dir Bilder. Du siehst dich selbst auf dem Vulkan – wie die Lava der Wut in dir brannte und du gelernt hast, sie nicht zu unterdrücken, sondern zu lenken. Die Erinnerung wärmt dich. Dann eine Stimme aus der Dunkelheit: "Du bist schwach. Du konntest deine Wut kaum kontrollieren. Was lässt dich glauben, du könntest die Angst besiegen?"',
-        choices: [
-          {
-            id: 'f5-s3-c1',
-            text: 'Ich habe auf dem Vulkan gelernt, dass Wut eine Kraft ist, wenn ich sie verstehe. Das gilt auch für die Angst.',
-            points: 3,
-            nextSceneId: 'f5-s4'
-          },
-          {
-            id: 'f5-s3-c2',
-            text: 'Ich will die Angst nicht besiegen. Ich will sie verstehen.',
-            points: 3,
-            nextSceneId: 'f5-s4'
-          },
-          {
-            id: 'f5-s3-c3',
-            text: 'Sei still. Du bist nur ein Echo.',
-            points: 2,
-            nextSceneId: 'f5-s4'
-          }
-        ]
-      },
-      {
-        id: 'f5-s4',
-        text: 'Neue Bilder: Du bist im Ozean. Du erinnerst dich an die Trauer, die Wellen, die dich verschlingen wollten. Du hast gelernt, nicht gegen sie anzukämpfen, sondern mit ihnen zu schwimmen. Die Dunkelheit flüstert wieder: "Aber hier gibt es kein Wasser. Hier gibt es nur Schwärze und Kälte. Hier bist du wirklich allein."',
-        choices: [
-          {
-            id: 'f5-s4-c1',
-            text: 'Im Ozean habe ich gelernt: Mitgefühl heilt. Auch Mitgefühl mit mir selbst – gerade jetzt.',
-            points: 3,
-            nextSceneId: 'f5-s5'
-          },
-          {
-            id: 'f5-s4-c2',
-            text: 'Ich bin nicht allein. Ich trage Faye, Lumi, Timber und Schattenflüsterer in meinem Herzen.',
-            points: 3,
-            nextSceneId: 'f5-s5'
-          },
-          {
-            id: 'f5-s4-c3',
-            text: 'Trauer hat mich gelehrt, verletzlich zu sein. Das hilft mir auch jetzt.',
-            points: 2,
-            nextSceneId: 'f5-s5'
-          }
-        ]
-      },
-      {
-        id: 'f5-s5',
-        text: 'Die Dunkelheit verdichtet sich zu einer Gestalt – deiner größten Angst. Sie ist riesig und hat dein Gesicht. "Du wirst versagen", sagt sie mit deiner Stimme. "Du wirst immer Angst haben. Du wirst nie genug sein. Du wirst allein bleiben." Sie steht zwischen dir und dem Ausgang des Waldes. Der einzige Weg raus – ist durch sie hindurch.',
-        choices: [
-          {
-            id: 'f5-s5-c1',
-            text: 'Ich gehe auf sie zu. "Du bist meine Angst. Und ich nehme dich an. Aber du bestimmst nicht meinen Weg."',
-            points: 3,
-            nextSceneId: 'f5-s6'
-          },
-          {
-            id: 'f5-s5-c2',
-            text: 'Ich erinnere mich an den Schattenflüsterer: Mein Schatten gehört zu mir. Ich strecke die Hand aus.',
-            points: 3,
-            nextSceneId: 'f5-s6'
-          },
-          {
-            id: 'f5-s5-c3',
-            text: 'Ich schließe die Augen und gehe geradeaus. Durch die Angst hindurch.',
-            points: 2,
-            nextSceneId: 'f5-s6'
-          }
-        ]
-      },
-      {
-        id: 'f5-s6',
-        text: 'Du gehst durch die Gestalt hindurch. Sie löst sich auf wie Nebel. Dahinter – die Morgendämmerung. Rosa und Gold am Horizont. Du hast die Nacht überlebt. Nicht weil du keine Angst hattest, sondern weil du sie angenommen hast. Du fällst auf die Knie. Tränen laufen. Aber es sind Tränen der Erleichterung, nicht der Angst.',
-        choices: [
-          {
-            id: 'f5-s6-c1',
-            text: 'Ich habe die dunkelste Nacht allein durchgestanden. Ich bin stärker, als ich dachte.',
-            points: 3,
-            nextSceneId: 'f5-s7'
-          },
-          {
-            id: 'f5-s6-c2',
-            text: 'Wut, Trauer, Angst – ich habe alle drei kennengelernt. Sie sind Teile von mir.',
-            points: 3,
-            nextSceneId: 'f5-s7'
-          },
-          {
-            id: 'f5-s6-c3',
-            text: 'Nie mehr werde ich meine Angst zum Feind machen.',
-            points: 2,
-            nextSceneId: 'f5-s7'
-          }
-        ]
-      },
-      {
-        id: 'f5-s7',
-        text: 'Timber steht am Waldrand und wartet. Seine alten Augen glänzen. "Du bist zurück", sagt er leise. "Nicht unversehrt – denn die Nacht hinterlässt immer Spuren. Aber ganz. Wer die Nacht der Prüfung besteht, den kann nichts mehr brechen." Er neigt seine Krone tief. "Aber ruh dich nicht zu lange aus. Der Wald braucht dich. Etwas Dunkles zieht auf."',
-        choices: [
-          {
-            id: 'f5-s7-c1',
-            text: 'Was auch kommt – ich bin bereit.',
-            points: 3,
-            nextSceneId: null
-          },
-          {
-            id: 'f5-s7-c2',
-            text: 'Diese Nacht hat mich verändert. Ich fürchte die Dunkelheit nicht mehr.',
-            points: 2,
-            nextSceneId: null
-          },
-          {
-            id: 'f5-s7-c3',
-            text: 'Danke, Timber. Was auch immer auf den Wald zukommt – ich werde kämpfen.',
-            points: 2,
-            nextSceneId: null
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'forest-scenario-6',
-    islandId: 'forest' as IslandId,
-    title: 'Der Wald erwacht',
-    description: 'Ein dunkler Fluch liegt über dem Wald. Nur gemeinsam – mit Mut, Mitgefühl und Beherrschung – könnt ihr ihn retten.',
-    npcId: 'timber',
-    completed: false,
-    scenes: [
-      {
-        id: 'f6-s1',
-        text: 'Ein schwarzer Nebel kriecht durch den Wald. Die Bäume erstarren, die Vögel verstummen, die Blumen welken. Timber ächzt vor Schmerz – schwarze Adern ziehen sich durch seine Rinde. "Der Schattenfluch", stöhnt er. "Jemand hat so viel Angst angesammelt, dass sie den ganzen Wald vergiftet. Wenn wir nichts tun, stirbt der Wald – und mit ihm alles, was du hier gelernt hast."',
-        choices: [
-          {
-            id: 'f6-s1-c1',
-            text: 'Wie brechen wir den Fluch? Was muss ich tun?',
-            points: 3,
-            nextSceneId: 'f6-s2'
-          },
-          {
-            id: 'f6-s1-c2',
-            text: 'Ich habe die Nacht der Prüfung bestanden. Ich kann auch das schaffen.',
-            points: 3,
-            nextSceneId: 'f6-s2'
-          },
-          {
-            id: 'f6-s1-c3',
-            text: 'Der ganze Wald? Das ist... das ist zu viel für eine Person.',
-            points: 1,
-            nextSceneId: 'f6-s2'
-          }
-        ]
-      },
-      {
-        id: 'f6-s2',
-        text: 'Timber keuchst: "Du brauchst alle. Finde Faye, Schattenflüsterer und Lumi. Aber der Fluch hat sie getroffen – sie sind in ihren tiefsten Ängsten gefangen. Du musst sie befreien." Du rennst los. Als erstes findest du Faye – sie kauert auf dem Boden und weint. "Niemand will mich hier!", schluchzt sie. "Ich gehöre nirgendwohin! Ich sollte nie hergekommen sein!"',
-        choices: [
-          {
-            id: 'f6-s2-c1',
-            text: 'Faye, du gehörst zu BEIDEN Welten! Erinnerst du dich? Jasmin und Moos, vereint auf DEINEM Weg!',
-            points: 3,
-            nextSceneId: 'f6-s3'
-          },
-          {
-            id: 'f6-s2-c2',
-            text: 'Das ist der Fluch, der spricht, nicht die Wahrheit! Du bist eine Brückenbauerin, Faye!',
-            points: 3,
-            nextSceneId: 'f6-s3'
-          },
-          {
-            id: 'f6-s2-c3',
-            text: 'Ich nehme Fayes Hand und sage: "Ich bin hier. Du bist nicht allein."',
-            points: 2,
-            nextSceneId: 'f6-s3'
-          }
-        ]
-      },
-      {
-        id: 'f6-s3',
-        text: 'Faye erhebt sich, Tränen auf den Wangen, aber fest. "Danke. Der Fluch hat meine alte Angst benutzt." Zusammen findet ihr Schattenflüsterer – er ist in seiner eigenen Höhle eingesperrt, zitternd. "Meine Schatten! Sie sind echt geworden! Sie wollen mich verschlingen!" Sein Schatten-Ich tobt als Monster durch die Höhle. Hier brauchst du, was du auf dem Vulkan gelernt hast.',
-        choices: [
-          {
-            id: 'f6-s3-c1',
-            text: 'Ich stelle mich dem Schatten-Monster ruhig entgegen. Wut kontrollieren – nicht kämpfen, nicht fliehen, sondern verstehen.',
-            points: 3,
-            nextSceneId: 'f6-s4'
-          },
-          {
-            id: 'f6-s3-c2',
-            text: 'Schattenflüsterer! Dein Schatten ist kein Feind! Umarme ihn, so wie du es MIR beigebracht hast!',
-            points: 3,
-            nextSceneId: 'f6-s4'
-          },
-          {
-            id: 'f6-s3-c3',
-            text: 'Ich atme tief durch und erinnere mich an die Vulkan-Lektion: Starke Gefühle nicht unterdrücken, sondern lenken.',
-            points: 2,
-            nextSceneId: 'f6-s4'
-          }
-        ]
-      },
-      {
-        id: 'f6-s4',
-        text: 'Das Schatten-Monster schrumpft und wird wieder zu Schattenflüsterers sanftem Schatten-Ich. "Du hast meine eigene Lektion gegen den Fluch benutzt", staunt die Fledermaus. Zu dritt findet ihr Lumi – aber ihr Licht ist aus. Komplett. Sie liegt auf dem Boden, klein und dunkel. "Es hat keinen Sinn", piepst sie kaum hörbar. "Ich bin zu klein. Zu unwichtig. Mein Licht macht keinen Unterschied." Hier brauchst du, was du im Ozean gelernt hast.',
-        choices: [
-          {
-            id: 'f6-s4-c1',
-            text: 'Ich nehme Lumi vorsichtig in meine Hände und sage mit Mitgefühl: "Ich sehe dich. Dein Schmerz ist real. Aber er ist nicht die ganze Wahrheit."',
-            points: 3,
-            nextSceneId: 'f6-s5'
-          },
-          {
-            id: 'f6-s4-c2',
-            text: 'Im Ozean habe ich gelernt: Trauer braucht Empathie, nicht Lösungen. Ich halte Lumi einfach fest und weine mit ihr.',
-            points: 3,
-            nextSceneId: 'f6-s5'
-          },
-          {
-            id: 'f6-s4-c3',
-            text: 'Lumi, erinnerst du dich an die Schattenschlucht? Du hast den jungen Baum gerettet! Dein Licht macht einen Unterschied!',
-            points: 2,
-            nextSceneId: 'f6-s5'
-          }
-        ]
-      },
-      {
-        id: 'f6-s5',
-        text: 'Lumis Licht flackert – erst schwach, dann stärker. Sie fliegt auf. "Danke", flüstert sie. Ihr seid zu viert. Aber der schwarze Nebel wird dichter, der Fluch stärker. Timber steht im Zentrum des Waldes, fast vollständig von schwarzen Adern überzogen. "Ihr seid gekommen", ächzt er. "Aber der Fluch speist sich aus der Angst aller Wesen im Wald. Um ihn zu brechen, müsst ihr zeigen, dass Angst nicht das Letzte Wort hat. Zusammen."',
-        choices: [
-          {
-            id: 'f6-s5-c1',
-            text: 'Jeder von uns bringt etwas mit. Mut, Mitgefühl, Selbstkenntnis, Licht. Gemeinsam sind wir stärker als jeder Fluch.',
-            points: 3,
-            nextSceneId: 'f6-s6'
-          },
-          {
-            id: 'f6-s5-c2',
-            text: 'Faye – zeig dem Wald, dass man aus zwei Welten Brücken bauen kann. Lumi – leuchte! Schattenflüsterer – umarme die Schatten!',
-            points: 3,
-            nextSceneId: 'f6-s6'
-          },
-          {
-            id: 'f6-s5-c3',
-            text: 'Wir haben alle unsere Prüfungen bestanden. Das hier ist die letzte.',
-            points: 2,
-            nextSceneId: 'f6-s6'
-          }
-        ]
-      },
-      {
-        id: 'f6-s6',
-        text: 'Faye singt ein syrisches Lied – ihre Stimme durchbricht die Stille. Schattenflüsterer breitet seine Flügel aus und umarmt die Schatten des Waldes. Lumi strahlt mit aller Kraft und ihr Licht breitet sich aus wie eine goldene Welle. Du stehst in der Mitte und hältst alles zusammen – deine Wut nutzt du als Feuer gegen die Kälte, dein Mitgefühl als Heilung gegen den Schmerz, deinen Mut als Schild gegen die Angst. Der schwarze Nebel beginnt zu zerfallen.',
-        choices: [
-          {
-            id: 'f6-s6-c1',
-            text: 'Ich rufe in den Wald: "Angst ist nicht euer Feind! Sie gehört zu euch – aber sie bestimmt nicht, wer ihr seid!"',
-            points: 3,
-            nextSceneId: 'f6-s7'
-          },
-          {
-            id: 'f6-s6-c2',
-            text: 'Ich halte Lumis Licht, Fayes Stimme und Schattenflüsterers Umarmung in meinem Herzen – und lasse es leuchten.',
-            points: 3,
-            nextSceneId: 'f6-s7'
-          },
-          {
-            id: 'f6-s6-c3',
-            text: 'Wut, Trauer, Angst – alle drei vereint, alle drei verwandelt in Stärke!',
-            points: 3,
-            nextSceneId: 'f6-s7'
-          }
-        ]
-      },
-      {
-        id: 'f6-s7',
-        text: 'Der Fluch zerbricht. Der schwarze Nebel löst sich auf. Farbe kehrt in den Wald zurück – Grün, Gold, Silber, alle Farben der Natur. Die Bäume richten sich auf. Vögel singen. Blumen blühen. Timber öffnet seine Augen, frei von schwarzen Adern. "Du hast es geschafft", sagt er. "Nicht allein – aber du hast alle zusammengebracht. Wut gelenkt, Trauer in Mitgefühl verwandelt, Angst in Mut. Das ist die größte Lektion des Waldes: Du bist nicht deine Angst. Du bist der Mensch, der trotz der Angst handelt." Lumi strahlt, Faye lächelt, Schattenflüsterer verbeugt sich. Der Wald ist erwacht.',
-        choices: [
-          {
-            id: 'f6-s7-c1',
-            text: 'Dieser Wald hat mich für immer verändert. Ich trage euch alle in mir – Timber, Faye, Lumi, Schattenflüsterer.',
-            points: 3,
-            nextSceneId: null
-          },
-          {
-            id: 'f6-s7-c2',
-            text: 'Wut, Trauer, Angst – keine dieser Emotionen ist mein Feind. Sie sind Teile meiner Stärke.',
-            points: 3,
-            nextSceneId: null
-          },
-          {
-            id: 'f6-s7-c3',
-            text: 'Danke, ihr alle. Ich bin nicht furchtlos – aber ich bin mutig. Und das ist genug.',
-            points: 3,
-            nextSceneId: null
-          }
-        ]
-      }
-    ]
-  }
-];
-
-// Wisdom Cards
-export const forestWisdomCards: WisdomCard[] = [
-  {
-    id: 'forest-wisdom-1',
-    islandId: 'forest' as IslandId,
-    title: 'Angst ist ein Alarm, kein Befehl',
-    content: 'Dein Körper schlägt Alarm, wenn er Gefahr vermutet – rasendes Herz, feuchte Hände, flacher Atem. Aber ein Alarm ist ein Hinweis, keine Anweisung. Du entscheidest, ob du rennst oder bleibst.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-2',
-    islandId: 'forest' as IslandId,
-    title: 'Mut ist nicht die Abwesenheit von Angst',
-    content: 'Mut bedeutet nicht, keine Angst zu haben. Mut bedeutet, Angst zu spüren – und trotzdem den nächsten Schritt zu machen. Die mutigsten Menschen sind oft die, die am meisten zittern.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-3',
-    islandId: 'forest' as IslandId,
-    title: 'Zwei Welten machen dich ganz',
-    content: 'Wenn du zwischen Kulturen, Sprachen oder Identitäten lebst, bist du kein halber Mensch. Du bist ein ganzer Mensch mit doppelter Perspektive. Deine Brücke zwischen den Welten ist deine größte Stärke.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-4',
-    islandId: 'forest' as IslandId,
-    title: 'Die Angst vor dem Anderssein ist Angst vor Ablehnung',
-    content: 'Wenn du Teile von dir versteckst, um dazuzugehören, verlierst du genau das, was dich einzigartig macht. Die Menschen, die dich für dein wahres Ich ablehnen, sind nicht deine Menschen.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-5',
-    islandId: 'forest' as IslandId,
-    title: 'Dein Schatten-Ich braucht eine Umarmung',
-    content: 'Jeder Mensch hat Seiten, die er versteckt – Unsicherheit, Neid, Zweifel. Je mehr du sie wegsperrst, desto mächtiger werden sie. Umarme dein Schatten-Ich, und es wird vom Monster zum Verbündeten.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-6',
-    islandId: 'forest' as IslandId,
-    title: 'Ängste werden kleiner, wenn du sie anschaust',
-    content: 'Eine Angst, die du vermeidest, wächst. Eine Angst, die du ansiehst, schrumpft. Nicht sofort – aber mit jedem Blick verliert sie ein Stück ihrer Macht über dich.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-7',
-    islandId: 'forest' as IslandId,
-    title: 'Das kleinste Licht besiegt die tiefste Dunkelheit',
-    content: 'Du musst nicht groß, stark oder laut sein, um etwas zu bewirken. Wie Lumi beweist: In der dunkelsten Nacht ist das kleinste Licht das Wichtigste. Dein Beitrag zählt – egal wie klein er dir erscheint.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-8',
-    islandId: 'forest' as IslandId,
-    title: '"Unmöglich" ist die Angst anderer, verkleidet als Ratschlag',
-    content: 'Wenn andere dir sagen, du kannst etwas nicht schaffen, sprechen oft ihre eigenen Ängste. Höre auf Ratschläge – aber lass nicht zu, dass die Angst anderer deine Grenzen setzt.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-9',
-    islandId: 'forest' as IslandId,
-    title: 'Gruppendruck ist ein Wind, keine Wahrheit',
-    content: 'Wenn alle in eine Richtung drängen und du spürst, dass dein Weg ein anderer ist, dann folge deinen Wurzeln. Der Wind ändert sich – deine Werte bleiben.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-10',
-    islandId: 'forest' as IslandId,
-    title: 'Allein sein ist nicht dasselbe wie einsam sein',
-    content: 'In der Nacht der Prüfung lernst du: Du kannst allein sein und trotzdem die Stimmen aller in dir tragen, die dich je ermutigt haben. Einsamkeit ist ein Gefühl – allein sein kann eine Stärke sein.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-11',
-    islandId: 'forest' as IslandId,
-    title: 'Wut, Trauer und Angst sind Geschwister',
-    content: 'Auf dem Vulkan hast du Wut kennengelernt, im Ozean Trauer, im Wald Angst. Sie sind nicht getrennt – sie sind drei Seiten desselben Diamanten. Wer alle drei versteht, versteht sich selbst.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-12',
-    islandId: 'forest' as IslandId,
-    title: 'Verletzlichkeit ist die mutigste Form der Stärke',
-    content: 'Zuzugeben, dass du Angst hast, ist mutiger als so zu tun, als hättest du keine. Verletzlichkeit öffnet Türen, die Härte verschlossen hält.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-13',
-    islandId: 'forest' as IslandId,
-    title: 'Atme, wenn die Angst kommt',
-    content: 'Vier Sekunden einatmen, vier Sekunden halten, sechs Sekunden ausatmen. Dein Atem ist der Anker, der dich im Sturm festhält. Die Angst kann nicht bleiben, wenn der Atem ruhig fließt.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-14',
-    islandId: 'forest' as IslandId,
-    title: 'Du bist nicht deine Angst',
-    content: 'Angst ist etwas, das du FÜHLST – nicht etwas, das du BIST. Du bist der Mensch, der die Angst spürt und trotzdem handelt. Dieser Unterschied ist alles.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-15',
-    islandId: 'forest' as IslandId,
-    title: 'Zusammen bricht kein Fluch',
-    content: 'Allein kannst du vieles schaffen. Aber manche Dunkelheit braucht viele Lichter. Hilfe zu suchen ist kein Zeichen von Schwäche – es ist die Weisheit, die Grenzen der eigenen Kraft zu kennen.',
-    collected: false
-  },
-  {
-    id: 'forest-wisdom-16',
-    islandId: 'forest' as IslandId,
-    title: 'Der Wald erwacht in dir',
-    content: 'Am Ende der Reise merkst du: Der dunkle Wald war nie ein Ort – er war ein Teil von dir. Und jetzt ist er nicht mehr dunkel. Er ist lebendig, bunt und stark. So wie du.',
-    collected: false
-  }
-];
-
-// Activities
 export const forestActivities: ForestActivity[] = [
   {
     id: 'forest-activity-1',
     islandId: 'forest' as IslandId,
-    title: 'Angst-Tagebuch: Brief an meine Angst',
-    description: 'Schreibe einen Brief an deine größte Angst – und lass sie antworten',
-    type: 'journal',
+    title: 'Atem gegen die Angst',
+    description: 'Eine Atemübung, die dir hilft, wenn die Angst kommt und dein Herz zu rasen beginnt.',
+    type: 'breathing',
     completed: false,
     instructions: [
-      'Nimm ein Blatt Papier und einen Stift.',
-      'Schreibe oben: "Liebe Angst, ich muss dir etwas sagen..."',
-      'Schreibe deiner Angst einen ehrlichen Brief. Was macht sie mit dir? Wie fühlt sie sich an? Was hat sie dir genommen?',
-      'Drehe das Blatt um. Jetzt antwortet deine Angst: "Lieber Mensch, ich bin hier, weil..."',
-      'Schreibe, was deine Angst dir sagen würde, wenn sie sprechen könnte. Warum ist sie da? Was will sie beschützen?',
-      'Lies beide Seiten laut vor. Spüre nach: Hat sich etwas verändert?',
-      'Schreibe zum Schluss einen Satz, der beginnt mit: "Ich höre dich, Angst, aber ich entscheide..."'
+      'Setze oder stelle dich bequem hin. Lege eine Hand auf deinen Bauch und eine auf deine Brust.',
+      'Atme langsam durch die Nase ein und zähle dabei bis 4. Spüre, wie sich dein Bauch hebt.',
+      'Halte den Atem an und zähle bis 4. Stell dir vor, die Luft verteilt Ruhe in deinem ganzen Körper.',
+      'Atme langsam durch den Mund aus und zähle bis 6. Stell dir vor, du pustest die Angst wie grauen Rauch von dir weg.',
+      'Wiederhole das 5 Mal. Bei jedem Durchgang wird der Rauch heller, bis er verschwindet.',
+      'Wenn du merkst, dass dein Herz ruhiger schlägt, sage leise zu dir: "Ich bin sicher. Die Angst ist nur ein Gefühl, und Gefühle gehen vorbei."',
+      'Nutze diese Übung immer, wenn du merkst, dass Angst in dir aufsteigt: vor einer Prüfung, vor einem Gespräch, oder wenn du nachts nicht schlafen kannst.'
     ]
   },
   {
     id: 'forest-activity-2',
     islandId: 'forest' as IslandId,
-    title: 'Atemübung: Timbers Wurzeln',
-    description: 'Verwurzle dich wie ein alter Baum und finde Ruhe im Sturm',
-    type: 'breathing',
+    title: 'Angst-Tagebuch: Was mich beschäftigt',
+    description: 'Schreibe über deine Ängste, um sie besser zu verstehen und kleiner zu machen.',
+    type: 'journal',
     completed: false,
     instructions: [
-      'Stelle dich aufrecht hin, die Füße fest auf dem Boden, hüftbreit auseinander.',
-      'Stell dir vor, aus deinen Fußsohlen wachsen Wurzeln tief in die Erde – wie Timbers Wurzeln.',
-      'Atme 4 Sekunden durch die Nase ein – spüre, wie Kraft aus der Erde durch die Wurzeln in dich aufsteigt.',
-      'Halte den Atem 4 Sekunden – du bist fest verwurzelt, nichts kann dich umwerfen.',
-      'Atme 6 Sekunden langsam durch den Mund aus – lass alle Angst wie trockene Blätter von dir fallen.',
-      'Wiederhole 5 Runden. Bei jeder Runde werden deine Wurzeln tiefer und dein Stamm fester.',
-      'Öffne die Augen und sage leise: "Ich stehe fest. Die Angst ist nur Wind."'
+      'Nimm ein Blatt Papier oder ein Heft. Schreibe das heutige Datum oben hin.',
+      'Beantworte diese Frage ehrlich: "Wovor hatte ich heute oder diese Woche Angst?" Schreibe alles auf, auch wenn es dir klein vorkommt.',
+      'Schreibe neben jede Angst eine Zahl von 1 bis 10: Wie stark war die Angst? (1 = kaum spürbar, 10 = ich konnte an nichts anderes denken)',
+      'Wähle eine Angst aus und schreibe auf: "Was ist das Schlimmste, das passieren könnte?" Dann schreibe: "Was ist das Wahrscheinlichste, das passieren wird?"',
+      'Oft ist das Wahrscheinlichste viel harmloser als das Schlimmste. Schreibe auf, was dir das zeigt.',
+      'Schreibe einen Satz, der mit diesen Worten beginnt: "Auch wenn ich Angst habe, kann ich..."',
+      'Lies dir alles noch einmal durch. Spüre nach: Fühlt sich die Angst jetzt etwas kleiner an? Aufschreiben nimmt Ängsten oft einen Teil ihrer Macht.'
     ]
   },
   {
     id: 'forest-activity-3',
     islandId: 'forest' as IslandId,
-    title: 'Schatten-Porträt: Mein ganzes Ich',
-    description: 'Male dein Licht-Ich und dein Schatten-Ich und bringe sie zusammen',
-    type: 'creative',
+    title: 'Meine Mut-Momente',
+    description: 'Eine Reflexion über Momente, in denen du trotz Angst mutig warst.',
+    type: 'reflection',
     completed: false,
     instructions: [
-      'Nimm ein großes Blatt Papier und falte es in der Mitte.',
-      'Auf die linke Seite male oder schreibe dein "Licht-Ich": Dinge, die du an dir magst, Stärken, gute Eigenschaften, Dinge, die du gern zeigst.',
-      'Auf die rechte Seite male oder schreibe dein "Schatten-Ich": Ängste, Unsicherheiten, Dinge, die du versteckst, Eigenschaften, für die du dich schämst.',
-      'Schaue beide Seiten an. Erkenne: Beides bist du. Beides gehört zusammen.',
-      'Öffne das Blatt und male in die Mitte – auf die Falte – ein großes Herz. In das Herz schreibe: "Ich bin ganz."',
-      'Male Linien vom Licht-Ich UND vom Schatten-Ich zum Herzen. Alles ist verbunden.',
-      'Hänge das Bild an einen Ort, wo du es täglich sehen kannst.'
+      'Denke an drei Situationen in deinem Leben, in denen du Angst hattest, aber trotzdem etwas getan hast. Das können kleine Dinge sein: dich im Unterricht melden, jemand Neues ansprechen, etwas Schwieriges ausprobieren.',
+      'Schreibe für jeden Moment auf: Was war die Situation? Wie hat sich die Angst angefühlt? Was hast du trotzdem getan?',
+      'Schreibe auch auf: Was ist danach passiert? War es so schlimm, wie du befürchtet hattest?',
+      'Lies deine drei Mut-Momente durch. Das bist du. Du hast das geschafft.',
+      'Schreibe einen vierten Moment auf: eine Sache, vor der du JETZT Angst hast, die du aber gerne tun würdest.',
+      'Schreibe daneben den kleinsten ersten Schritt, den du morgen machen könntest. Nicht den ganzen Berg, nur den ersten Schritt.',
+      'Wenn du diesen Schritt gehst, komme hierher zurück und schreibe auf, wie es war. Jeder Mut-Moment, den du sammelst, macht den nächsten leichter.'
     ]
   },
   {
     id: 'forest-activity-4',
     islandId: 'forest' as IslandId,
-    title: 'Lumis Licht-Meditation',
-    description: 'Finde dein inneres Licht und lass es strahlen – auch wenn du dich klein fühlst',
+    title: 'Körper-Entspannung: Anspannen und Loslassen',
+    description: 'Progressive Muskelentspannung: Lerne, wie du die Anspannung der Angst aus deinem Körper loslassen kannst.',
     type: 'meditation',
     completed: false,
     instructions: [
-      'Setze dich bequem hin und schließe die Augen. Atme dreimal tief ein und aus.',
-      'Stell dir vor, du bist in der Schattenschlucht. Es ist komplett dunkel. Du kannst nichts sehen.',
-      'Jetzt spüre ein winziges Licht in deiner Brust – wie Lumis Leuchten. Es ist klein, aber es ist DA.',
-      'Mit jedem Einatmen wird das Licht ein bisschen heller. Mit jedem Ausatmen breitet es sich ein Stück weiter aus.',
-      'Spüre, wie das Licht deine Arme, deine Beine, deinen Kopf erreicht. Du leuchtest.',
-      'Höre die Stimmen, die sagen: "Du bist zu klein. Es reicht nicht." Und antworte: "Mein Licht ist genug."',
-      'Spüre, wie dein Licht die Dunkelheit um dich herum erhellt. Du machst einen Unterschied.',
-      'Öffne die Augen und nimm dieses Gefühl mit: Du bist nie zu klein, um zu leuchten.'
+      'Setze dich bequem hin oder lege dich auf den Rücken. Schließe die Augen.',
+      'Balle beide Hände zu Fäusten. Drücke so fest du kannst, 5 Sekunden lang. Spüre die Anspannung. Dann lass los. Spüre den Unterschied: So fühlt sich Entspannung an.',
+      'Ziehe die Schultern hoch zu den Ohren, 5 Sekunden. Halte die Anspannung. Dann lass sie fallen. Spüre, wie die Anspannung aus den Schultern fließt.',
+      'Presse die Lippen fest zusammen und knirsche leicht mit den Zähnen, 5 Sekunden. Dann öffne den Mund und lasse den Kiefer locker hängen. Spüre die Erleichterung.',
+      'Spanne den Bauch an, als würdest du dich auf einen Schlag vorbereiten, 5 Sekunden. Dann lasse los und atme tief aus. Angst sitzt oft im Bauch, und jetzt lässt du sie gehen.',
+      'Drücke die Zehen fest in den Boden, 5 Sekunden. Dann lasse los. Spüre, wie sich deine Füße warm und schwer anfühlen.',
+      'Liege oder sitze jetzt einen Moment still. Dein ganzer Körper ist entspannt. Sage zu dir: "Mein Körper ist ruhig. Mein Geist ist ruhig. Die Angst hat keinen Platz mehr, an dem sie sich festhalten kann."',
+      'Nutze diese Übung vor dem Einschlafen, vor Prüfungen, oder wann immer du spürst, dass Angst deinen Körper anspannt.'
     ]
+  }
+];
+
+// =============================================================================
+// Wisdom Cards
+// =============================================================================
+
+export const forestWisdomCards: WisdomCard[] = [
+  {
+    id: 'forest-wisdom-1',
+    islandId: 'forest' as IslandId,
+    text: 'Angst ist dein Körper, der dich beschützen will. Dein Herz rast, deine Hände schwitzen, dein Bauch kribbelt. Das ist kein Fehler, sondern dein eingebautes Alarmsystem. Der Trick ist zu lernen: Wann warnt es dich vor echter Gefahr, und wann schlägt es falschen Alarm?',
+    category: 'Angst verstehen',
+    collected: false
   },
   {
-    id: 'forest-activity-5',
+    id: 'forest-wisdom-2',
     islandId: 'forest' as IslandId,
-    title: 'Reflexion: Meine drei Inseln',
-    description: 'Verbinde die Lektionen von Vulkan, Ozean und Wald zu deiner persönlichen Stärke',
-    type: 'reflection',
-    completed: false,
-    instructions: [
-      'Nimm dir 15 Minuten in Ruhe. Du brauchst Papier und Stifte.',
-      'Zeichne drei Inseln: einen Vulkan, einen Ozean und einen Wald.',
-      'Auf den Vulkan schreibe: "Was ich über Wut gelernt habe..." und vervollständige den Satz.',
-      'In den Ozean schreibe: "Was ich über Trauer gelernt habe..." und vervollständige den Satz.',
-      'In den Wald schreibe: "Was ich über Angst gelernt habe..." und vervollständige den Satz.',
-      'Zeichne Brücken zwischen den drei Inseln. Auf jede Brücke schreibe, wie die Lektionen zusammenhängen.',
-      'In die Mitte – zwischen alle drei Inseln – zeichne DICH. Schreibe darunter: "Ich bin stärker als meine Wut, tiefer als meine Trauer und mutiger als meine Angst."',
-      'Lies alles laut vor. Spüre, wie weit du gekommen bist.'
+    text: 'Je mehr wir Angst vermeiden, desto größer wird sie. Wenn du vor etwas wegläufst, sagt dein Gehirn: "Aha, das war also wirklich gefährlich!" Und beim nächsten Mal wird die Angst noch stärker. Der einzige Weg, Angst kleiner zu machen, ist, ihr in kleinen Schritten zu begegnen.',
+    category: 'Vermeidung',
+    collected: false
+  },
+  {
+    id: 'forest-wisdom-3',
+    islandId: 'forest' as IslandId,
+    text: 'Mut ist nicht, keine Angst zu haben. Mut ist, trotz Angst das Richtige zu tun. Die mutigsten Menschen der Welt hatten alle Angst. Sie haben nur gelernt, trotzdem den nächsten Schritt zu machen.',
+    category: 'Mut',
+    collected: false
+  },
+  {
+    id: 'forest-wisdom-4',
+    islandId: 'forest' as IslandId,
+    text: 'Dein Atem ist deine Geheimwaffe gegen die Angst. Wenn du langsam und tief atmest, sagst du deinem Nervensystem: "Alles ist okay. Keine Gefahr." Vier Sekunden ein, vier halten, sechs aus. Probiere es aus, wenn die Angst kommt.',
+    category: 'Werkzeuge',
+    collected: false
+  },
+  {
+    id: 'forest-wisdom-5',
+    islandId: 'forest' as IslandId,
+    text: 'Frage dich: "Was ist das Schlimmste, das passieren kann?" Meistens ist die Antwort viel harmloser, als die Angst dir einreden will. Und selbst wenn das Schlimmste passiert, wirst du damit umgehen können. Du bist stärker, als du denkst.',
+    category: 'Werkzeuge',
+    collected: false
+  },
+  {
+    id: 'forest-wisdom-6',
+    islandId: 'forest' as IslandId,
+    text: 'Angst ist ein Gefühl, keine Tatsache. Wenn deine Angst sagt "Du schaffst das nicht", ist das keine Wahrheit. Es ist ein Gedanke, den du prüfen kannst. Frage dich: Stimmt das wirklich? Oder spricht da nur meine Angst?',
+    category: 'Angst verstehen',
+    collected: false
+  },
+  {
+    id: 'forest-wisdom-7',
+    islandId: 'forest' as IslandId,
+    text: 'Jedes Mal, wenn du etwas trotz Angst tust, wirst du ein bisschen mutiger. Dein Gehirn lernt: "Ich habe das überlebt. Es war gar nicht so schlimm." Mit der Zeit wird die Angst leiser und dein Mut lauter.',
+    category: 'Mut',
+    collected: false
+  },
+  {
+    id: 'forest-wisdom-8',
+    islandId: 'forest' as IslandId,
+    text: 'Für jemanden einzustehen, der Hilfe braucht, ist eine der mutigsten Sachen, die du tun kannst. Du musst kein Held sein. Manchmal reicht es, neben jemandem zu stehen und zu sagen: "Ich bin hier." Das ist sozialer Mut, und die Welt braucht mehr davon.',
+    category: 'Sozialer Mut',
+    collected: false
+  }
+];
+
+// =============================================================================
+// Scenarios
+// =============================================================================
+
+export const forestScenarios: Scenario[] = [
+  // ---------------------------------------------------------------------------
+  // Chapter 1: Schatten zwischen den Bäumen
+  // Theme: What fear is biologically, normal vs excessive, physical symptoms
+  // Key learning: "Angst ist dein Körper, der dich beschützen will."
+  // ---------------------------------------------------------------------------
+  {
+    id: 'forest-scenario-1',
+    islandId: 'forest' as IslandId,
+    title: 'Schatten zwischen den Bäumen',
+    description: 'Seltsame Geräusche im Wald. Finn kann sich nicht mehr bewegen. Was passiert in unserem Körper, wenn die Angst kommt?',
+    scenes: [
+      {
+        id: 'f1-s1',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌲',
+        text: 'Der Waldpfad wird schmaler. Die Bäume stehen so dicht, dass kaum Licht durchkommt. Neben dir geht Finn, 12 Jahre alt, die Hände in den Jackentaschen. "Ist doch nur ein Wald", murmelt er, aber seine Stimme klingt unsicher. Plötzlich: ein Knacken im Unterholz. Dann ein Rascheln. Dann Stille. Finn bleibt stehen. Seine Augen werden groß. "Was war das?"',
+        choices: [
+          {
+            id: 'f1-s1-c1',
+            text: '"Wahrscheinlich nur ein Tier. Lass uns weitergehen."',
+            consequence: 'Du versuchst, die Situation rational einzuschätzen. Das ist eine gute Strategie gegen Angst: Fakten prüfen statt Panik.',
+            nextSceneId: 'f1-s2',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f1-s1-c2',
+            text: '"Ich höre es auch. Lass uns vorsichtig sein, aber nicht stehenbleiben."',
+            consequence: 'Du nimmst Finns Angst ernst und schlägst gleichzeitig vor, weiterzumachen. So zeigst du: Vorsicht ist klug, Stillstand nicht.',
+            nextSceneId: 'f1-s2',
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'f1-s1-c3',
+            text: '"Keine Ahnung, aber weglaufen hilft auch nicht. Komm, zusammen ist es weniger unheimlich."',
+            consequence: 'Du zeigst Mut und Empathie zugleich. Gemeinsam Angst zu begegnen macht sie kleiner.',
+            nextSceneId: 'f1-s2',
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'f1-s2',
+        speaker: 'Finn',
+        speakerEmoji: '😰',
+        text: 'Finn rührt sich nicht. Seine Beine scheinen am Boden festgewachsen. "Ich... ich kann nicht", flüstert er. Sein Gesicht ist bleich, seine Hände zittern. "Meine Beine gehorchen mir nicht." Wieder ein Rascheln, diesmal näher. Finn presst die Augen zusammen. Du siehst, wie sein Atem flach und schnell wird. Sein ganzer Körper ist angespannt, als wäre er aus Stein.',
+        choices: [
+          {
+            id: 'f1-s2-c1',
+            text: '"Finn, ich glaube, dein Körper ist gerade im Freeze-Modus. Das ist normal. Dein Gehirn versucht, dich zu schützen."',
+            consequence: 'Genau richtig. Was Finn erlebt, heißt "Freeze" und ist eine von drei natürlichen Reaktionen auf Angst: Kampf (fight), Flucht (flight) oder Erstarren (freeze). Sein Körper macht das automatisch.',
+            nextSceneId: 'f1-s3',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f1-s2-c2',
+            text: '"Hey, du zitterst ja. Und dein Atem ist ganz schnell. Hast du das gemerkt?"',
+            consequence: 'Gut beobachtet. Zittern, schneller Atem, bleiche Haut, angespannte Muskeln: Das sind typische Angstsymptome. Der Körper schüttet Adrenalin aus und macht sich bereit für Gefahr, auch wenn gar keine echte da ist.',
+            nextSceneId: 'f1-s3',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'f1-s2-c3',
+            text: 'Du nimmst Finns Hand. "Ich bin hier. Du bist nicht allein damit."',
+            consequence: 'Manchmal braucht jemand mit Angst keine Erklärung, sondern einfach das Gefühl, nicht allein zu sein. Deine Nähe hilft Finns Nervensystem, sich zu beruhigen.',
+            nextSceneId: 'f1-s3',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'f1-s3',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌲',
+        text: 'Aus dem Gebüsch springt ein kleines Reh und hoppelt davon. Finn atmet zitternd aus. "Ein Reh. Es war nur ein Reh." Er schaut auf seine Hände, die immer noch zittern. "Aber warum... warum hat mein Körper so reagiert? Es war doch keine echte Gefahr." Er setzt sich auf einen Baumstamm. "Mein Herz rast immer noch. Und mir ist übel. Wegen einem Reh!"',
+        choices: [
+          {
+            id: 'f1-s3-c1',
+            text: '"Dein Gehirn hat ein uraltes Alarmsystem. Es warnt dich vor Gefahr, BEVOR du nachdenken kannst. Manchmal warnt es dich auch, wenn gar keine Gefahr da ist."',
+            consequence: 'Richtig. Die Amygdala, ein Teil des Gehirns, löst den Alarm blitzschnell aus. Sie fragt nicht: "Ist es wirklich gefährlich?" Sie sagt: "Lieber einmal zu viel warnen als einmal zu wenig." Das hat unseren Vorfahren das Leben gerettet.',
+            nextSceneId: 'f1-s4',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f1-s3-c2',
+            text: '"Fight, Flight oder Freeze. Das sind drei Reaktionen, die dein Körper bei Angst automatisch macht. Du warst im Freeze-Modus. Das ist keine Schwäche."',
+            consequence: 'Genau. Kampf, Flucht oder Erstarren: Alle drei sind Überlebensstrategien. Manche Menschen rennen, manche kämpfen, manche erstarren. Keine Reaktion ist besser oder schlechter. Es ist dein Körper, der versucht, dich am Leben zu halten.',
+            nextSceneId: 'f1-s4',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+          },
+          {
+            id: 'f1-s3-c3',
+            text: '"Dein Körper hat gerade Adrenalin ausgeschüttet. Das ist ein Hormon, das dich auf Gefahr vorbereitet. Deshalb rast dein Herz und zittern deine Hände. Es geht vorbei."',
+            consequence: 'Richtig erklärt. Adrenalin sorgt dafür, dass dein Herz schneller pumpt, deine Muskeln sich anspannen und deine Sinne schärfer werden. Das war für unsere Vorfahren überlebenswichtig. Heute löst der Körper dieselbe Reaktion aus, auch wenn die Gefahr nur ein Reh ist.',
+            nextSceneId: 'f1-s4',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'f1-s4',
+        speaker: 'Finn',
+        speakerEmoji: '🤔',
+        text: 'Finn wird ruhiger. Die Farbe kehrt in sein Gesicht zurück. "Also ist Angst nicht... kaputt? Ich meine, ich dachte, mit mir stimmt etwas nicht. Die anderen in meiner Klasse haben nie Angst. Jedenfalls sagen sie das." Er schaut dich an. "Ist Angst normal?"',
+        choices: [
+          {
+            id: 'f1-s4-c1',
+            text: '"Angst ist total normal. Jeder Mensch hat sie. Auch die, die behaupten, sie hätten keine. Angst ist dein Körper, der dich beschützen will. Sie ist nicht dein Feind."',
+            consequence: 'Das ist die wichtigste Lektion. Angst ist kein Zeichen von Schwäche. Sie ist ein eingebautes Schutzsystem, das jeder Mensch hat. Problematisch wird es erst, wenn die Angst bei harmlosen Situationen anspringt und dich daran hindert, dein Leben zu leben.',
+            nextSceneId: 'f1-s5',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'f1-s4-c2',
+            text: '"Jeder hat Angst. Die Frage ist nur, ob die Angst zu deiner Situation passt. Bei einem Reh im Wald war der Alarm zu laut. Aber der Alarm selbst ist nicht das Problem."',
+            consequence: 'Klug unterschieden. Normale Angst schützt dich. Aber manchmal ist der Alarm lauter als er sein müsste. Dann hilft es, den Unterschied zu lernen: echte Gefahr oder falscher Alarm? So nimmst du deiner Angst nach und nach die Macht.',
+            nextSceneId: 'f1-s5',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f1-s4-c3',
+            text: '"Die anderen haben auch Angst, Finn. Sie zeigen es nur nicht. Das bedeutet nicht, dass sie mutiger sind. Manchmal ist es sogar mutiger, ehrlich zu sagen: Ich habe Angst."',
+            consequence: 'Stark gesagt. In unserer Gesellschaft tun viele so, als hätten sie keine Angst. Aber Angst zu verstecken macht sie nicht kleiner. Im Gegenteil: Wer Angst zugeben kann, kann sie auch besser verstehen und damit umgehen.',
+            nextSceneId: 'f1-s5',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'f1-s5',
+        speaker: 'Finn',
+        speakerEmoji: '😊',
+        text: 'Finn steht langsam auf. Er atmet tief ein und aus. "Angst ist mein Körper, der mich beschützen will", wiederholt er leise, als würde er es sich einprägen. "Kein Feind. Ein Alarm." Er schaut den Waldpfad entlang. "Weißt du was? Der Wald sieht plötzlich gar nicht mehr so unheimlich aus." Er macht einen Schritt vorwärts. Dann noch einen. Sein Herzschlag ist ruhiger, seine Hände zittern nicht mehr. "Ich bin noch nicht mutig", sagt er. "Aber zumindest weiß ich jetzt, dass ich nicht kaputt bin."',
+        choices: [
+          {
+            id: 'f1-s5-c1',
+            text: '"Das ist schon der erste Schritt, Finn. Angst zu verstehen ist der Anfang von Mut."',
+            consequence: 'Finn lächelt. Ihr geht weiter durch den Wald. Die Schatten zwischen den Bäumen sind noch da, aber sie haben ihre Macht verloren. Denn jetzt wisst ihr: Es sind nur Schatten. Und Angst ist nur ein Alarm, der manchmal zu laut klingelt.',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'f1-s5-c2',
+            text: '"Niemand ist immer mutig. Mut kommt in kleinen Momenten. Wie jetzt gerade, wo du weitergehst, obwohl du gerade noch erstarrt warst."',
+            consequence: 'Finn nickt nachdenklich. Ihr geht zusammen weiter. Der Wald ist immer noch dunkel, aber Finn geht mit festeren Schritten. Er hat heute etwas Wichtiges gelernt: Angst ist kein Defekt. Sie ist ein Teil von ihm, der gute Absichten hat, aber manchmal übertreibt.',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          }
+        ]
+      }
+    ]
+  },
+
+  // ---------------------------------------------------------------------------
+  // Chapter 2: Das Dunkel spricht
+  // Theme: Anxiety spirals, avoidance behavior, how anxiety grows
+  // Key learning: "Je mehr wir Angst vermeiden, desto größer wird sie."
+  // ---------------------------------------------------------------------------
+  {
+    id: 'forest-scenario-2',
+    islandId: 'forest' as IslandId,
+    title: 'Das Dunkel spricht',
+    description: 'Finn verrät sein größtes Geheimnis: Die Angst hat sich ausgebreitet und beherrscht immer mehr Teile seines Lebens.',
+    scenes: [
+      {
+        id: 'f2-s1',
+        speaker: 'Finn',
+        speakerEmoji: '😞',
+        text: 'Ihr sitzt an einer Lichtung im Wald. Finn ist still geworden. Dann sagt er leise: "Kann ich dir was erzählen? Etwas, das niemand weiß?" Er wartet nicht auf deine Antwort. "Ich habe panische Angst vor Referaten. Vor der ganzen Klasse zu stehen und zu reden. Mein Herz rast, meine Stimme zittert, mir wird schwindelig. Letztes Mal bin ich einfach weggerannt. Mitten im Referat. Einfach raus."',
+        choices: [
+          {
+            id: 'f2-s1-c1',
+            text: '"Danke, dass du mir das erzählst. Das braucht Mut. Wie hat sich das angefühlt, als du rausgerannt bist?"',
+            consequence: 'Du gibst Finn Raum, ohne zu urteilen. Das ist wichtig, denn Menschen mit Angst schämen sich oft für ihre Reaktionen. Zuhören ist der erste Schritt, um zu helfen.',
+            nextSceneId: 'f2-s2',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'f2-s1-c2',
+            text: '"Das klingt wirklich schlimm. Passiert das nur bei Referaten, oder auch in anderen Situationen?"',
+            consequence: 'Eine kluge Frage. Angst hat die Tendenz, sich auszubreiten. Was als Angst vor einer bestimmten Sache anfängt, kann sich auf immer mehr Bereiche des Lebens ausweiten, wenn man sie nicht versteht.',
+            nextSceneId: 'f2-s2',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f2-s1-c3',
+            text: '"Du bist nicht der Einzige mit dieser Angst. Viele Leute fürchten sich davor, vor anderen zu sprechen. Es gibt sogar einen Namen dafür."',
+            consequence: 'Gut, dass du das sagst. Die Angst vor öffentlichem Sprechen ist eine der häufigsten Ängste weltweit. Zu wissen, dass man nicht allein ist, nimmt der Scham etwas von ihrer Kraft.',
+            nextSceneId: 'f2-s2',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'f2-s2',
+        speaker: 'Finn',
+        speakerEmoji: '😟',
+        text: 'Finn zupft nervös an einem Grashalm. "Das Schlimme ist: Zuerst war es nur bei Referaten. Dann hatte ich auch Angst, im Unterricht aufzuzeigen. Was, wenn ich eine falsche Antwort gebe und alle lachen? Dann wurde es schlimmer. Jetzt habe ich Angst, in der Kantine laut zu bestellen. Oder jemanden nach dem Weg zu fragen. Es breitet sich aus wie... wie Dunkelheit, die immer mehr Platz einnimmt."',
+        choices: [
+          {
+            id: 'f2-s2-c1',
+            text: '"Das nennt man eine Angstspirale. Die Angst fängt klein an und wird größer, weil du immer mehr Situationen vermeidest."',
+            consequence: 'Genau. Eine Angstspirale funktioniert so: Du hast Angst vor etwas, also vermeidest du es. Die Vermeidung fühlt sich erstmal gut an. Aber dein Gehirn lernt: "Das war gefährlich, gut, dass wir geflohen sind." Beim nächsten Mal ist die Angst noch größer.',
+            nextSceneId: 'f2-s3',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f2-s2-c2',
+            text: '"Ich verstehe. Jedes Mal, wenn du einer Angst ausweichst, sagst du deinem Gehirn: Diese Sache ist gefährlich. Und dann hat es immer mehr Grund, Alarm zu schlagen."',
+            consequence: 'So ist es. Vermeidung ist wie ein Kredit: Sie fühlt sich kurzfristig gut an, aber langfristig zahlst du immer mehr Zinsen. Die Angst wächst mit jeder Vermeidung, weil dein Gehirn die Bestätigung bekommt: "Richtig, das war bedrohlich."',
+            nextSceneId: 'f2-s3',
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+          },
+          {
+            id: 'f2-s2-c3',
+            text: '"Das klingt, als würde die Angst einen immer kleineren Raum für dich übrig lassen. Wie eine Dunkelheit, die von allen Seiten kommt."',
+            consequence: 'Ein treffendes Bild. Angst, die sich ausbreitet, nimmt dir Stück für Stück deine Freiheit. Erst ein Referat, dann die Meldung im Unterricht, dann die Kantine. Der Raum, in dem du dich frei bewegen kannst, wird kleiner. Aber das Gute ist: Dieser Prozess ist umkehrbar. Jeder kleine mutige Schritt holt dir ein Stück Raum zurück.',
+            nextSceneId: 'f2-s3',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'f2-s3',
+        speaker: 'Finn',
+        speakerEmoji: '😧',
+        text: 'Finn starrt auf den Boden. "Und jetzt vermeide ich auch die Pausen. Ich esse allein auf der Toilette, weil ich Angst habe, dass jemand sieht, dass ich allein am Tisch sitze. Ich habe Angst, dass sie merken, dass ich Angst habe. Angst vor der Angst. Ist das verrückt?" Seine Stimme bricht fast.',
+        choices: [
+          {
+            id: 'f2-s3-c1',
+            text: '"Das ist nicht verrückt, Finn. Angst vor der Angst ist sogar sehr verbreitet. Aber weißt du was? Es zeigt, dass du deine Angst erkennst. Und das ist der erste Schritt, um sie zu bremsen."',
+            consequence: 'Angst vor der Angst, Fachleute nennen es "Erwartungsangst", ist einer der stärksten Treiber der Angstspirale. Allein zu wissen, dass das ein bekanntes Muster ist und kein Zeichen von Verrücktheit, kann enorm helfen.',
+            nextSceneId: 'f2-s4',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'f2-s3-c2',
+            text: '"Nein, Finn. Das ist nicht verrückt. Aber die Vermeidung macht es schlimmer. Jedes Mal, wenn du auf der Toilette isst statt in der Kantine, wird die Kantine ein bisschen angstmachender."',
+            consequence: 'Hart, aber wahr. Vermeidung ist der Motor der Angstspirale. Jede vermiedene Situation wird beim nächsten Mal noch bedrohlicher, weil das Gehirn nie die Chance bekommt zu lernen: "Es war gar nicht gefährlich."',
+            nextSceneId: 'f2-s4',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f2-s3-c3',
+            text: 'Du setzt dich neben Finn und sagst: "Ich finde es mutig, dass du das aussprichst. Viele Menschen tragen das leise mit sich herum und sagen nie etwas."',
+            consequence: 'Manchmal ist das Wichtigste nicht, die Angst sofort zu lösen, sondern dem Menschen das Gefühl zu geben, dass er sich nicht schämen muss. Finns Offenheit ist tatsächlich ein Akt des Muts, auch wenn er sich nicht so anfühlt.',
+            nextSceneId: 'f2-s4',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'f2-s4',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌲',
+        text: 'Ein Windhauch geht durch die Bäume. Finn schaut hoch. "Wenn Vermeidung die Angst größer macht, was kann ich dann tun? Soll ich einfach alles machen, wovor ich Angst habe? Ich kann nicht morgen einfach ein Referat halten. Das schaffe ich nicht." Seine Augen flehen um eine Antwort, die nicht "Stell dich nicht so an" lautet.',
+        choices: [
+          {
+            id: 'f2-s4-c1',
+            text: '"Nicht alles auf einmal. Kleine Schritte. Vielleicht erst mal eine Frage im Unterricht stellen. Dann zwei. Dann in einer kleinen Gruppe reden. Dann vor der Klasse. Schritt für Schritt."',
+            consequence: 'Das nennt man "graduelle Exposition" oder stufenweise Annäherung. Man baut eine Leiter der Angst: unten die Dinge, die nur ein bisschen Angst machen, oben die, die sehr viel Angst machen. Dann klettert man Sprosse für Sprosse. Nie alles auf einmal.',
+            nextSceneId: 'f2-s5',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f2-s4-c2',
+            text: '"Mut bedeutet nicht, alles auf einmal zu machen. Mut bedeutet, den kleinsten Schritt zu wagen, den du gerade schaffst. Und morgen vielleicht einen winzigen Schritt mehr."',
+            consequence: 'Perfekt gesagt. Mut ist kein Sprung, sondern ein Weg. Der kleinste mutige Schritt zählt: eine Bestellung an der Theke aufgeben, eine kurze Antwort im Unterricht geben. Jeder dieser Momente lehrt dein Gehirn: "Ich habe es überlebt. Es war okay."',
+            nextSceneId: 'f2-s5',
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'f2-s4-c3',
+            text: '"Stell dir eine Leiter vor. Ganz unten stehen die Dinge, die nur ein kleines bisschen Angst machen. Ganz oben das Referat. Du kletterst Sprosse für Sprosse. Nie alles auf einmal."',
+            consequence: 'Das ist die Angstleiter, ein bewährtes Werkzeug aus der Psychologie. Du schreibst alle angstmachenden Situationen auf und sortierst sie von "wenig Angst" bis "sehr viel Angst". Dann beginnst du unten. Erst wenn eine Sprosse sich okay anfühlt, gehst du zur nächsten. So baust du Stück für Stück Mut auf.',
+            nextSceneId: 'f2-s5',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'f2-s5',
+        speaker: 'Finn',
+        speakerEmoji: '🌱',
+        text: 'Finn denkt nach. Lange. Dann sagt er: "Kleine Schritte. Das klingt... machbar. Ich muss nicht morgen mutig sein. Ich muss nur morgen einen winzigen Schritt machen." Er steht auf und schaut den Waldpfad entlang, der tiefer in den Wald führt. "Weißt du, was mein erster kleiner Schritt sein könnte? Diesen Weg hier weitergehen. Auch wenn es dunkel wird." Er schaut dich an. "Aber nicht allein. Kommst du mit?"',
+        choices: [
+          {
+            id: 'f2-s5-c1',
+            text: '"Natürlich. Und wenn du irgendwann allein gehen willst, bin ich immer noch für dich da."',
+            consequence: 'Finn lächelt. Ihr geht zusammen weiter in den dunkler werdenden Wald. Er hat heute etwas Entscheidendes verstanden: Je mehr wir Angst vermeiden, desto größer wird sie. Und Mut bedeutet nicht, keine Angst zu haben, sondern kleine Schritte zu machen, trotz der Angst.',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'f2-s5-c2',
+            text: '"Ich komme mit. Und egal, wie dunkel es wird, wir machen einfach immer nur den nächsten Schritt."',
+            consequence: 'Finn nickt entschlossen. Zum ersten Mal seit langem geht er auf etwas zu, statt vor etwas wegzulaufen. Der Wald wird dunkler, aber Finn geht weiter. Nicht ohne Angst. Aber trotzdem. Und das ist der ganze Unterschied.',
+            nextSceneId: null,
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
+          },
+          {
+            id: 'f2-s5-c3',
+            text: '"Und weißt du was, Finn? Morgen in der Schule: Iss nicht auf der Toilette. Setz dich in die Kantine. Auch wenn es sich komisch anfühlt. Das ist dein erster Schritt auf der Leiter."',
+            consequence: 'Finn wird blass, dann grinst er zaghaft. "Die Kantine. Das ist Sprosse eins." Er hat jetzt ein konkretes Ziel. Nicht das Referat, nicht die perfekte Rede. Nur die Kantine. Nur sitzen und essen, wo andere auch sitzen und essen. Ein kleiner Schritt. Aber der wichtigste.',
+            nextSceneId: null,
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      }
+    ]
+  },
+
+  // ---------------------------------------------------------------------------
+  // Chapter 3: Der Pfad der Mutproben
+  // Theme: Gradual exposure, positive self-talk, breathing, concrete tools
+  // Key learning: "Mut ist nicht, keine Angst zu haben. Mut ist, trotz Angst
+  //               das Richtige zu tun."
+  // ---------------------------------------------------------------------------
+  {
+    id: 'forest-scenario-3',
+    islandId: 'forest' as IslandId,
+    title: 'Der Pfad der Mutproben',
+    description: 'Der Wald stellt dir Herausforderungen. Kleine zuerst, dann größere. Hier lernst du echte Werkzeuge gegen die Angst.',
+    scenes: [
+      {
+        id: 'f3-s1',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌲',
+        text: 'Ihr kommt an eine Weggabelung. An einem Holzschild steht: "Pfad der Mutproben. Wer hier geht, wird getestet. Nicht mit Monstern, sondern mit Wahrheit." Finn schluckt. "Was meint das?" Hinter dem Schild sieht der Wald anders aus: Die Bäume bilden Szenen, fast wie ein Theater. In der ersten Szene sitzt ein Kind in einer Schulklasse. Die Lehrerin stellt eine Frage. Das Kind weiß die Antwort, aber seine Hand bleibt unten.',
+        choices: [
+          {
+            id: 'f3-s1-c1',
+            text: '"Das Kind hat Angst, sich zu melden, weil es denkt, die anderen könnten lachen. Kennst du das Gefühl?"',
+            consequence: 'Die Angst, vor anderen Fehler zu machen, ist eine der häufigsten sozialen Ängste bei Jugendlichen. Das Kind im Bild vermeidet es, sich zu melden, obwohl es die Antwort kennt. So nimmt es sich selbst die Chance, Erfolg zu erleben.',
+            nextSceneId: 'f3-s2',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'f3-s1-c2',
+            text: '"Die erste Mutprobe. Was denkst du, Finn, was würde passieren, wenn das Kind die Hand hebt?"',
+            consequence: 'Gute Frage. Meistens passiert das, wovor wir Angst haben, gar nicht. Niemand lacht. Die Lehrerin ist froh. Und das Kind merkt: Es war gar nicht so schlimm. Aber ohne den Versuch wird es das nie erfahren.',
+            nextSceneId: 'f3-s2',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'f3-s1-c3',
+            text: '"Das Kind weiß die Antwort, aber die Angst hält es fest. Der Kopf sagt Ja, aber der Körper sagt Nein. Das ist ein Kampf, den viele Jugendliche jeden Tag führen."',
+            consequence: 'Der Konflikt zwischen Wissen und Angst ist quälend. Du weißt, dass du es kannst. Aber dein Körper weigert sich. Das liegt daran, dass die Amygdala schneller reagiert als dein Verstand. Die gute Nachricht: Mit Übung kannst du lernen, deinem Verstand die Führung zurückzugeben.',
+            nextSceneId: 'f3-s2',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'f3-s2',
+        speaker: 'Finn',
+        speakerEmoji: '😣',
+        text: 'Finn starrt auf die Szene. "Das bin ich", flüstert er. "Jeden Tag." Die Szene verändert sich: Das Kind im Bild hebt zögernd die Hand. Die Klasse dreht sich um. Und... nichts passiert. Die Lehrerin lächelt. Das Kind antwortet. Ein paar nicken. Kein Gelächter. Finn beobachtet mit großen Augen. Dann sagt er: "Aber mein Kopf sagt mir vorher immer, dass alle lachen werden. Wie bringe ich meinen Kopf dazu, das nicht mehr zu sagen?"',
+        choices: [
+          {
+            id: 'f3-s2-c1',
+            text: '"Probiere positiven Selbsttalk. Statt: Alle werden lachen, sag dir: Ich kenne die Antwort. Ich bin vorbereitet. Es ist okay, Fehler zu machen."',
+            consequence: 'Positiver Selbsttalk ist ein mächtiges Werkzeug. Dein Gehirn glaubt, was du ihm oft genug sagst. Wenn du dir immer sagst "Ich schaffe das nicht", glaubt es das. Wenn du sagst "Ich versuche es und sehe, was passiert", öffnet das neue Wege.',
+            nextSceneId: 'f3-s3',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f3-s2-c2',
+            text: '"Frag dich: Was ist das Schlimmste, das passieren kann? Und dann: Wie wahrscheinlich ist das wirklich?"',
+            consequence: 'Das ist die "Was ist das Schlimmste?"-Technik. Meistens ist die ehrliche Antwort: Jemand schaut kurz komisch. Nicht das Ende der Welt. Und die wahrscheinlichste Reaktion? Niemand kümmert sich darum. Die anderen denken an ihr eigenes Leben.',
+            nextSceneId: 'f3-s3',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f3-s2-c3',
+            text: '"Du wirst deinen Kopf nicht sofort umstimmen können. Aber du kannst ihm zeigen, dass er falsch liegt. Indem du es versuchst und siehst: Es passiert nichts Schlimmes."',
+            consequence: 'Das ist der Kern der stufenweisen Annäherung. Dein Gehirn lernt am besten durch Erfahrung, nicht durch Worte. Jedes Mal, wenn du etwas tust und die befürchtete Katastrophe nicht eintritt, lernt dein Gehirn ein Stück mehr, dass es sicher ist.',
+            nextSceneId: 'f3-s3',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'f3-s3',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌲',
+        text: 'Die nächste Szene erscheint zwischen den Bäumen: Ein Jugendlicher steht vor seiner Klasse. Alle schauen. Sein Mund ist trocken. Sein Herz klopft im Hals. Die Hände zittern. Das Blatt mit seinen Notizen raschelt. Er öffnet den Mund und... kein Ton kommt raus. Finn greift sich an die Brust. "Das bin ich. Genau so war es bei meinem Referat." Der Wald scheint auf eine Antwort zu warten.',
+        choices: [
+          {
+            id: 'f3-s3-c1',
+            text: '"Finn, wenn dir das passiert, mach als Erstes das: Atme. Vier Sekunden ein, vier halten, sechs aus. Dein Atem beruhigt dein Nervensystem, bevor du auch nur ein Wort sagen musst."',
+            consequence: 'Die 4-4-6-Atemtechnik aktiviert den Parasympathikus, den Teil deines Nervensystems, der für Entspannung zuständig ist. In dem Moment, wo dein Atem langsamer wird, bekommt dein Gehirn das Signal: "Keine akute Gefahr." Die Panik lässt nach.',
+            nextSceneId: 'f3-s4',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'f3-s3-c2',
+            text: '"Versuche mal den Muskel-Trick: Balle unter dem Tisch die Fäuste, 5 Sekunden fest drücken, dann loslassen. Die Entspannung danach beruhigt deinen ganzen Körper."',
+            consequence: 'Das ist progressive Muskelentspannung in der Kurzversion. Wenn du Muskeln bewusst anspannst und dann loslässt, entsteht ein Entspannungsreflex. Niemand merkt es, wenn du es unter dem Tisch machst. Aber dein Körper spürt den Unterschied sofort.',
+            nextSceneId: 'f3-s4',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f3-s3-c3',
+            text: '"Sag dir in dem Moment: Mein Körper macht gerade Alarm. Aber ich bin in Sicherheit. Ich stehe in meiner Schule, nicht in einem brennenden Haus. Der Alarm ist zu laut."',
+            consequence: 'Sich selbst daran zu erinnern, dass man in Sicherheit ist, nennt man "Realitätscheck". Dein Körper reagiert, als wäre eine Katastrophe im Gange. Aber die Realität ist: Du stehst in einer Schule, umgeben von Menschen, die dir nichts tun wollen. Diesen Unterschied bewusst zu benennen, hilft deinem Gehirn, den Alarm herunterzufahren.',
+            nextSceneId: 'f3-s4',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'f3-s4',
+        speaker: 'Finn',
+        speakerEmoji: '💪',
+        text: 'Finn schließt die Augen. Du siehst, wie er atmet: Ein... zwei... drei... vier. Hält. Und ausatmet. Langsam. Als er die Augen öffnet, ist sein Blick klarer. "Wow. Das funktioniert echt." Die Szene im Wald verändert sich. Der Jugendliche am Pult atmet auch. Dann öffnet er den Mund und spricht. Leise erst, dann fester. Er stolpert über ein Wort. Ein paar kichern. Aber er macht weiter. Und als er fertig ist, klatscht jemand. Dann noch jemand. Finn schaut zu. "Er hat es geschafft. Obwohl er Angst hatte."',
+        choices: [
+          {
+            id: 'f3-s4-c1',
+            text: '"Ja. Nicht perfekt. Aber er hat es getan. Und genau das ist Mut: Nicht perfekt sein, sondern trotz Angst handeln."',
+            consequence: 'Mut ist nicht, keine Angst zu haben. Mut ist, trotz Angst das Richtige zu tun. Diese Erkenntnis verändert alles. Du musst nicht furchtlos sein, du musst nicht perfekt sein. Du musst nur den nächsten Schritt machen, auch wenn deine Knie zittern.',
+            nextSceneId: 'f3-s5',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'f3-s4-c2',
+            text: '"Und schau: Ein paar haben gekichert. Das Schlimmste ist passiert. Und er hat es überlebt. Es war nicht das Ende der Welt."',
+            consequence: 'Genau das ist der Punkt. Das Schlimmste ist passiert, jemand hat gelacht, und er hat es überlebt. Das Gehirn lernt: "Okay, das war unangenehm, aber nicht tödlich." Beim nächsten Mal wird die Angst ein kleines Stück leiser sein.',
+            nextSceneId: 'f3-s5',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f3-s4-c3',
+            text: '"Merkst du, Finn? Er hat geatmet, er hat geredet, er hat gestolpert, und er hat weitergemacht. Jeder einzelne dieser Schritte war Mut."',
+            consequence: 'Mut ist kein einzelner großer Moment. Mut besteht aus vielen kleinen Entscheidungen: Aufstehen, Mund aufmachen, Weitermachen, obwohl die Stimme zittert. Jede dieser kleinen Entscheidungen trainiert dein Mut-Muskel. Und wie jeder Muskel wird er stärker, je öfter du ihn benutzt.',
+            nextSceneId: 'f3-s5',
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'f3-s5',
+        speaker: 'Finn',
+        speakerEmoji: '🌟',
+        text: 'Die Waldszenen verblassen. Finn steht da, die Hände nicht mehr in den Taschen, sondern an seinen Seiten. "Ich habe jetzt Werkzeuge", sagt er. "Atmen, wenn die Panik kommt. Mich fragen, was das Schlimmste ist, das passieren kann. Kleine Schritte statt große Sprünge. Und..." Er grinst. "...mir selbst sagen, dass ich es schaffe, statt mir selbst zu sagen, dass ich versage." Er atmet tief ein. "Mut ist nicht, keine Angst zu haben. Mut ist, trotz Angst das Richtige zu tun. Richtig?"',
+        choices: [
+          {
+            id: 'f3-s5-c1',
+            text: '"Genau, Finn. Und du hast heute bewiesen, dass du das kannst."',
+            consequence: 'Finn strahlt. Er hat heute nicht nur Werkzeuge gelernt, er hat verstanden, was Mut wirklich bedeutet. Nicht die Abwesenheit von Angst, sondern das Handeln trotz Angst. Jeder kleine Schritt, den er von nun an trotz Angst macht, wird ihn stärker machen.',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'f3-s5-c2',
+            text: '"Richtig. Und vergiss nicht: Du musst es nicht allein schaffen. Hilfe zu holen ist auch Mut."',
+            consequence: 'Finn nickt ernst. Er hat heute gelernt: Atemtechniken, positiver Selbsttalk, die "Was ist das Schlimmste?"-Frage, progressive Muskelentspannung und stufenweise Annäherung. Echte Werkzeuge für echte Ängste. Der Pfad der Mutproben endet hier, aber Finns Weg hat gerade erst begonnen.',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'f3-s5-c3',
+            text: '"Lass uns die Werkzeuge zusammenfassen: Atmen, wenn die Panik kommt. Fragen: Was ist das Schlimmste? Muskeln anspannen und loslassen. Und dir selbst sagen: Ich schaffe das."',
+            consequence: 'Finn zählt an seinen Fingern mit: "Atmen. Fragen. Anspannen-Loslassen. Positiver Selbsttalk. Kleine Schritte." Er hat jetzt fünf konkrete Werkzeuge. Nicht abstrakte Ratschläge, sondern Dinge, die er sofort einsetzen kann. Das ist der Unterschied zwischen "Hab keine Angst" und "Hier ist, was du tun kannst, wenn die Angst kommt."',
+            nextSceneId: null,
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          }
+        ]
+      }
+    ]
+  },
+
+  // ---------------------------------------------------------------------------
+  // Chapter 4: Der Wald gehört uns
+  // Theme: Social courage, standing up for others, fear as information
+  // Key learning: "Jedes Mal, wenn du etwas trotz Angst tust, wirst du ein
+  //               bisschen mutiger."
+  // ---------------------------------------------------------------------------
+  {
+    id: 'forest-scenario-4',
+    islandId: 'forest' as IslandId,
+    title: 'Der Wald gehört uns',
+    description: 'Ein neuer Schüler wird ausgegrenzt. Die Angst sagt dir: Halt dich raus. Aber ist das das Richtige?',
+    scenes: [
+      {
+        id: 'f4-s1',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌲',
+        text: 'Der Wald öffnet sich zu einer großen Lichtung. Dort sitzt eine Gruppe Jugendlicher im Kreis und lacht. Abseits, hinter einem Baum, steht ein Junge allein. Er heißt Amir, ist neu und kennt noch niemanden. Er schaut sehnsüchtig zum Kreis, aber traut sich nicht hin. Finn flüstert: "Die Gruppe hat vorhin über ihn geredet. Gesagt, er soll nicht zu ihnen kommen. Ohne Grund. Einfach so."',
+        choices: [
+          {
+            id: 'f4-s1-c1',
+            text: '"Das ist nicht in Ordnung. Jemanden ohne Grund auszuschließen ist gemein."',
+            consequence: 'Du erkennst sofort, dass hier etwas falsch läuft. Ausgrenzung ist eine der schmerzhaftesten Erfahrungen für Jugendliche. Und oft schauen alle zu, ohne etwas zu sagen.',
+            nextSceneId: 'f4-s2',
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'f4-s1-c2',
+            text: '"Amir sieht traurig aus. Wie fühlt sich das wohl an, so dazustehen und zu wissen, dass man nicht willkommen ist?"',
+            consequence: 'Du versetzt dich in Amirs Lage. Empathie, die Fähigkeit, die Gefühle anderer nachzuempfinden, ist der erste Schritt zu sozialem Mut. Denn wenn du fühlst, was der andere fühlt, fällt es schwerer, wegzuschauen.',
+            nextSceneId: 'f4-s2',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'f4-s1-c3',
+            text: '"Sollten wir etwas tun? Oder mischen wir uns besser nicht ein?"',
+            consequence: 'Eine ehrliche Frage. Dein Kopf weiß, dass Ausgrenzung falsch ist. Aber dein Bauchgefühl sagt: Wenn du dich einmischst, könntest du selbst zum Außenseiter werden. Das ist soziale Angst, und sie hält viele Menschen davon ab, das Richtige zu tun.',
+            nextSceneId: 'f4-s2',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          }
+        ]
+      },
+      {
+        id: 'f4-s2',
+        speaker: 'Finn',
+        speakerEmoji: '😰',
+        text: 'Finn beißt sich auf die Lippe. "Ich weiß, dass wir hingehen und etwas sagen sollten. Aber..." Er schaut zur Gruppe. "Was, wenn die dann über UNS reden? Was, wenn sie uns auch ausschließen? Ich habe gerade erst gelernt, mit meiner Angst umzugehen. Und jetzt soll ich mich gegen eine ganze Gruppe stellen?" Sein Atem wird schneller. Du siehst, wie die alte Angst in ihm hochsteigt.',
+        choices: [
+          {
+            id: 'f4-s2-c1',
+            text: '"Erinnerst du dich an deine Werkzeuge? Atme erst mal. Vier Sekunden ein, vier halten, sechs aus. Dann überlegen wir zusammen, was wir tun können."',
+            consequence: 'Gut, dass du Finn an seine Werkzeuge erinnerst. In Stressmomenten vergessen wir oft, was wir gelernt haben. Finn atmet. Langsam wird sein Herzschlag ruhiger. Die Angst ist noch da, aber er kann wieder klar denken.',
+            nextSceneId: 'f4-s3',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'f4-s2-c2',
+            text: '"Finn, die Angst sagt dir gerade: Halt dich raus, dann bist du sicher. Aber ist das wirklich das, was du willst? Willst du der sein, der zuschaut?"',
+            consequence: 'Eine wichtige Frage. Angst gibt dir Informationen: "Das könnte unangenehm werden." Aber Angst gibt dir keine Anweisungen. Du entscheidest, ob du auf die Angst hörst oder ob du tust, was richtig ist. Angst ist Information, nicht Instruktion.',
+            nextSceneId: 'f4-s3',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f4-s2-c3',
+            text: '"Wir müssen nicht die Gruppe konfrontieren. Wir können einfach zu Amir gehen. Manchmal reicht es, jemandem zu zeigen, dass er nicht allein ist."',
+            consequence: 'Klug gedacht. Sozialer Mut muss nicht immer bedeuten, sich gegen eine Gruppe zu stellen. Manchmal ist der mutigste Schritt, sich neben den zu setzen, der allein ist. Das verändert die Situation, ohne einen Kampf auszulösen. Und für Amir kann genau das den ganzen Unterschied machen.',
+            nextSceneId: 'f4-s3',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'f4-s3',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌲',
+        text: 'Ihr geht zu Amir. Als er euch sieht, zuckt er zusammen, als erwarte er, weggeschickt zu werden. "Hey", sagst du. "Dürfen wir uns zu dir setzen?" Amir schaut ungläubig. "Zu mir? Aber die anderen..." Aus dem Kreis der Gruppe ruft jemand: "Hey, was macht ihr denn bei DEM? Kommt lieber hierher!" Finn versteinert. Seine Hände ballen sich. Die Gruppe beobachtet euch. Das ist der Moment, in dem Angst und Mut sich gegenüberstehen.',
+        choices: [
+          {
+            id: 'f4-s3-c1',
+            text: '"Wir bleiben hier. Amir ist genauso Teil dieser Lichtung wie ihr. Jeder ist willkommen."',
+            consequence: 'Du sprichst ruhig und bestimmt. Keine Aggression, kein Vorwurf, nur eine klare Aussage. Die Gruppe wird still. Manche schauen beschämt weg. Sozialer Mut bedeutet nicht, laut zu schreien. Es bedeutet, ruhig und klar zu sagen, was richtig ist.',
+            nextSceneId: 'f4-s4',
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 3 }
+          },
+          {
+            id: 'f4-s3-c2',
+            text: 'Du setzt dich demonstrativ neben Amir und sagst zu Finn: "Komm, setz dich. Hier ist ein guter Platz."',
+            consequence: 'Manchmal sagen Taten mehr als Worte. Indem du dich neben Amir setzt, sendest du ein Signal an die ganze Lichtung: Dieser Mensch ist nicht allein. Finn setzt sich zögernd dazu. Amir lächelt zum ersten Mal.',
+            nextSceneId: 'f4-s4',
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'f4-s3-c3',
+            text: 'Du schaust zur Gruppe und sagst: "Wisst ihr, wie sich das anfühlt, wenn man ausgeschlossen wird? Stellt euch vor, ihr wärt neu und niemand redet mit euch."',
+            consequence: 'Du nutzt Empathie als Werkzeug. Statt die Gruppe anzuklagen, bittest du sie, sich in Amirs Lage zu versetzen. Einige in der Gruppe senken den Blick. Nachdenken ist der erste Schritt zur Veränderung.',
+            nextSceneId: 'f4-s4',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'f4-s4',
+        speaker: 'Finn',
+        speakerEmoji: '😮',
+        text: 'Etwas verändert sich. Ein Mädchen aus der Gruppe steht auf und kommt zu euch. "Kann ich mich auch hierher setzen?", fragt sie leise. "Ich fand es auch nicht okay, wie wir über Amir geredet haben. Ich wollte was sagen, aber ich hatte Angst." Dann noch jemand. Und noch jemand. Am Ende sitzt fast die halbe Gruppe bei euch. Finn schaut dich mit großen Augen an. "Die hatten auch Angst. Genau wie ich. Sie brauchten nur jemanden, der den ersten Schritt macht."',
+        choices: [
+          {
+            id: 'f4-s4-c1',
+            text: '"Genau. Oft wollen viele das Richtige tun, aber alle warten darauf, dass jemand anderes anfängt. Manchmal brauchst nur du den Mut für den ersten Schritt."',
+            consequence: 'Das nennt man den "Bystander-Effekt": In einer Gruppe wartet jeder darauf, dass jemand anderes handelt. Aber es braucht nur eine Person, die den Anfang macht. Eine Person, die sagt: "Das ist nicht okay." Und plötzlich bewegen sich alle.',
+            nextSceneId: 'f4-s5',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f4-s4-c2',
+            text: '"Siehst du, Finn? Angst ist eine Information, keine Anweisung. Sie sagt dir, dass etwas schwierig sein könnte. Aber sie entscheidet nicht, was du tust. Das tust du."',
+            consequence: 'Angst als Information, nicht als Instruktion: Das ist eine der wichtigsten Lektionen. Angst sagt: "Achtung, das könnte unangenehm werden." Aber DU entscheidest, ob du trotzdem handelst. Deine Angst ist dein Berater, nicht dein Chef.',
+            nextSceneId: 'f4-s5',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f4-s4-c3',
+            text: '"Die brauchten alle nur jemanden, der zeigt: Es ist okay, das Richtige zu tun. Manchmal verändert eine einzige Person die ganze Dynamik einer Gruppe."',
+            consequence: 'Das ist die Kraft des positiven Vorbilds. In einer Gruppe, in der alle schweigen, braucht es nur eine Stimme, die sagt: "Nein, das ist nicht in Ordnung." Plötzlich trauen sich auch andere. Du musst nicht die lauteste Person im Raum sein. Du musst nur die erste sein, die den Mund aufmacht.',
+            nextSceneId: 'f4-s5',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          }
+        ]
+      },
+      {
+        id: 'f4-s5',
+        speaker: 'Amir',
+        speakerEmoji: '😊',
+        text: 'Amir schaut in die Runde. "Ich dachte, hier will mich keiner", sagt er leise. "Ich war schon bereit aufzugeben und mich nie wieder zu trauen." Er schaut dich und Finn an. "Aber ihr seid gekommen. Trotz der Angst, dass die Gruppe euch ablehnt. Warum?" Finn antwortet, bevor du es kannst: "Weil Angst mir sagt, was passieren könnte. Aber sie sagt mir nicht, was richtig ist. Und das Richtige war, zu dir zu kommen."',
+        choices: [
+          {
+            id: 'f4-s5-c1',
+            text: '"Und jedes Mal, wenn du etwas trotz Angst tust, wirst du ein bisschen mutiger. Das gilt für uns alle hier."',
+            consequence: 'Die Lichtung füllt sich mit Wärme. Amir ist nicht mehr allein. Finn hat seine Angst überwunden. Und alle haben gelernt: Jedes Mal, wenn du trotz Angst handelst, wächst dein Mut ein kleines Stück. Es wird nie völlig ohne Angst sein. Aber es wird leichter. Immer ein bisschen leichter.',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'f4-s5-c2',
+            text: '"Finn, du bist gerade vom Jungen, der vor Referaten wegrennt, zum Jungen geworden, der für andere einsteht. Das ist Mut."',
+            consequence: 'Finn wird rot, aber er lächelt. Er hat eine Reise hinter sich: Vom Erstarren im Wald über das Verstehen seiner Angst, das Lernen von Werkzeugen bis zum Einsetzen für andere. Die Angst ist nicht weg. Sie wird nie ganz weg sein. Aber Finn weiß jetzt: Er ist mutiger als seine Angst. Und das reicht.',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 3 }
+          },
+          {
+            id: 'f4-s5-c3',
+            text: '"Der Wald gehört nicht der Angst. Der Wald gehört uns. Allen. Und jeder hat hier einen Platz."',
+            consequence: 'Alle auf der Lichtung nicken. Die Dunkelheit zwischen den Bäumen ist noch da, aber sie macht niemandem mehr Angst. Denn sie haben gelernt: Angst ist ein Teil des Lebens. Sie gehört dazu. Aber sie bestimmt nicht, wer du bist oder was du tust. Du bist der Mensch, der trotz Angst das Richtige tut. Und das ist genug.',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+          }
+        ]
+      }
     ]
   }
 ];

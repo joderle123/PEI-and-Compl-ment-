@@ -1,33 +1,13 @@
 // @ts-nocheck
 // =============================================================================
 // Inner Worlds - Heimat-Insel (Home Island)
-// Theme: Integration & Transfer in den Alltag
+// Theme: Integration & Transfer -- Alles zusammenbringen
 // All content in German, written for ages 10-15
-// Therapeutically grounded: consolidation of all learned skills, meta-reflection,
-// transfer planning, normalizing setbacks, forward-looking resilience
+// CDSE Luxembourg -- Therapeutic educational game for socio-emotional learning
+// Final island: consolidates every skill from the seven previous islands
 // =============================================================================
 
 import type { Scenario, WisdomCard, Activity, IslandId } from '../../../types';
-
-// -----------------------------------------------------------------------------
-// Extended Activity type (adds instructions for guided activities)
-// -----------------------------------------------------------------------------
-
-interface HomeActivity extends Activity {
-  instructions: string[];
-}
-
-// -----------------------------------------------------------------------------
-// NPC type for island characters
-// -----------------------------------------------------------------------------
-
-interface HomeNPC {
-  id: string;
-  name: string;
-  emoji: string;
-  description: string;
-  backstory: string;
-}
 
 // =============================================================================
 // 1. SCENARIOS
@@ -35,28 +15,29 @@ interface HomeNPC {
 
 export const homeScenarios: Scenario[] = [
   // ---------------------------------------------------------------------------
-  // Scenario 1: "Der Werkzeugkoffer"
-  // Teaching: Im echten Leben braucht man oft mehrere Faehigkeiten gleichzeitig.
-  // Emotionsregulation + Empathie + Kommunikation in einer komplexen Situation.
+  // Scenario 1: "Zurueck in der Realitaet"
+  // Teaching: Im echten Leben kommen alle Gefuehle gleichzeitig.
+  // Du hast jetzt die Werkzeuge, damit umzugehen.
   // ---------------------------------------------------------------------------
   {
     id: 'home-scenario-1',
     islandId: 'home' as IslandId,
-    title: 'Der Werkzeugkoffer',
+    title: 'Zurueck in der Realitaet',
     description:
-      'In der Schule passiert etwas Kompliziertes: Ein Streit, ein Missverstaendnis und verletzte Gefuehle -- alles gleichzeitig. Hier brauchst du nicht nur ein Werkzeug, sondern deinen ganzen Koffer.',
+      'Ein normaler Schultag -- aber nichts daran ist einfach. Ein Freund ist wuetend, eine andere traurig, und mitten im Flur wartet eine Mutprobe. Alles gleichzeitig. Willkommen im echten Leben.',
     scenes: [
+      // Scene 1 -- Ankunft: Die Stimmung im Klassenraum
       {
         id: 'home-s1-scene-1',
-        text: 'Montagmorgen. Du kommst in die Klasse und merkst sofort: Die Stimmung ist komisch. Deine beste Freundin Nora sitzt mit verschraenkten Armen da und schaut dich nicht an. Dein Kumpel Elias kommt zu dir und fluestert: "Hey, Nora ist sauer auf dich. Sie sagt, du haettest hinter ihrem Ruecken ueber sie geredet. Stimmt das?" Dein Magen zieht sich zusammen. Du hast keine Ahnung, wovon er redet.',
-        speaker: 'Elias',
-        speakerEmoji: '\u{1F466}',
+        text: 'Montagmorgen, kurz vor acht. Du betrittst den Klassenraum und merkst sofort: Die Luft ist anders heute. In der hinteren Ecke sitzt Malik mit verschraenkten Armen und einem Gesicht wie Gewitter -- er redet mit niemandem. Vorne am Fenster sitzt Lina, den Kopf auf die Arme gelegt, und ihre Schultern zucken leicht -- sie weint. Und mittendrin steht eine Gruppe um Jonas, der laut verkuendet: "Wer heute nicht beim Streich gegen Herrn Weber mitmacht, ist ein Feigling." Er schaut direkt zu dir. Drei Probleme. Ein Morgen. Und du mittendrin.',
+        speaker: 'Erzaehler',
+        speakerEmoji: '\u{1F3E0}',
         choices: [
           {
             id: 'home-s1-c1a',
-            text: 'Tief durchatmen und erstmal nachdenken, bevor du reagierst.',
+            text: 'Erstmal tief durchatmen und die Situation beobachten, bevor du irgendetwas tust.',
             consequence:
-              'Du spuerst, wie die Aufregung in dir hochsteigt -- aber du erinnerst dich: Erst durchatmen, dann handeln. Du holst dreimal tief Luft. Dein Kopf wird klarer. Gut so -- der erste Schritt ist, nicht impulsiv zu reagieren.',
+              'Du bleibst kurz an der Tuer stehen und holst dreimal tief Luft. Dein Blick wandert von Malik zu Lina zu Jonas. Dein Kopf sortiert: Wut. Traurigkeit. Gruppendruck. Drei verschiedene Situationen, drei verschiedene Werkzeuge. Aber du musst nicht alles gleichzeitig loesen. Eins nach dem anderen.',
             empathyPoints: 1,
             insightPoints: 3,
             couragePoints: 1,
@@ -64,131 +45,135 @@ export const homeScenarios: Scenario[] = [
           },
           {
             id: 'home-s1-c1b',
-            text: 'Sofort zu Nora gehen und sagen: "Was soll das? Ich habe nichts gesagt!"',
+            text: 'Sofort zu Lina gehen -- sie sieht aus, als braeuchte sie gerade am dringendsten jemanden.',
             consequence:
-              'Du stuerzt zu Nora. Deine Stimme ist lauter, als du willst. Nora verschraenkt die Arme noch fester: "Sicher. Luisa hat mir alles erzaehlt." Jetzt sind zwei Leute aufgebracht, und nichts ist geloest. Manchmal macht Impuls alles schlimmer.',
-            empathyPoints: 0,
+              'Du gehst zu Lina und setzt dich leise neben sie. Du sagst nichts, du bist einfach da. Nach einer Minute hebt sie den Kopf und sieht dich mit rotgeweinten Augen an. "Mein Opa ist im Krankenhaus", fluestert sie. Manchmal ist das Wichtigste, dass jemand da ist -- nicht was man sagt, sondern dass man kommt.',
+            empathyPoints: 3,
             insightPoints: 1,
             couragePoints: 1,
             nextSceneId: 'home-s1-scene-2',
           },
           {
             id: 'home-s1-c1c',
-            text: 'Elias fragen: "Was genau hat Nora gehoert? Und von wem?"',
+            text: 'Jonas direkt antworten: "Nein. Ich bin kein Feigling -- aber ich mache keinen Mist mit."',
             consequence:
-              'Elias erzaehlt: "Luisa hat wohl gesagt, du haettest ueber Noras Praesentation gelacht." Du erinnerst dich -- du hast in der Pause mit Luisa geredet und dabei ueber etwas ganz anderes gelacht. Ein Missverstaendnis. Aber fuer Nora fuehlt es sich real an.',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 1,
+              'Jonas starrt dich einen Moment an. Ein paar aus der Gruppe schauen ueberrascht. "Pff, wie du willst", sagt Jonas und wendet sich ab. Aber du siehst, wie zwei andere aus der Gruppe erleichtert aufatmen. Manchmal braucht es nur eine Person, die Nein sagt, damit andere sich auch trauen.',
+            empathyPoints: 0,
+            insightPoints: 2,
+            couragePoints: 3,
             nextSceneId: 'home-s1-scene-2',
           },
         ],
       },
+      // Scene 2 -- Maliks Wut
       {
         id: 'home-s1-scene-2',
-        text: 'Du weisst jetzt: Es war ein Missverstaendnis. Aber Nora ist wirklich verletzt. Ihre Praesentation letzte Woche war ihr super wichtig, und der Gedanke, dass du darueber gelacht hast, tut ihr weh. Du siehst, wie sie sich von den anderen abwendet. Dein innerer Guide fluestert: "Was brauchst du jetzt? Und was braucht Nora?"',
+        text: 'Die Stunde beginnt, aber du kannst dich kaum konzentrieren. Malik sitzt hinter dir und du hoerst, wie er seinen Stift so fest auf den Tisch drueckt, dass er fast bricht. In der Pause explodiert er: "Lass mich in Ruhe!", schreit er einen Mitschueler an, der nur gefragt hat, ob er einen Radiergummi leihen kann. Alle starren. Du kennst diesen Blick -- hinter der Wut steckt etwas anderes. Du erinnerst dich an die Vulkan-Insel: Wut ist oft nur die obere Schicht.',
         speaker: 'Erzaehler',
         speakerEmoji: '\u{1F3E0}',
         choices: [
           {
             id: 'home-s1-c2a',
-            text: 'Zu Nora gehen, ruhig bleiben und sagen: "Hey, ich merke, du bist verletzt. Koennen wir reden?"',
+            text: 'Warten, bis sich die Situation beruhigt, und dann leise zu Malik gehen: "Hey, alles okay bei dir?"',
             consequence:
-              'Nora schaut dich unsicher an, aber sie nickt. Deine ruhige Stimme zeigt ihr: Du nimmst sie ernst. Du nutzt gleich zwei Werkzeuge -- Emotionsregulation bei dir selbst und Empathie fuer Nora.',
+              'Du wartest eine Minute, bis die anderen weitergegangen sind. Dann gehst du zu Malik. Er schaut dich an wie jemand, der sich auf einen Kampf vorbereitet -- aber du bleibst ruhig. "Was?", knurrt er. "Ich wollte nur schauen, wie es dir geht", sagst du. Sein Blick wird weicher. "Mein Vater und meine Mutter haben sich wieder gestritten. Richtig laut." Da ist sie -- die Traurigkeit unter der Wut.',
             empathyPoints: 3,
             insightPoints: 2,
-            couragePoints: 2,
+            couragePoints: 1,
             nextSceneId: 'home-s1-scene-3',
           },
           {
             id: 'home-s1-c2b',
-            text: 'Erst mit Luisa reden, um das Missverstaendnis aufzuklaeren, und dann zu Nora gehen.',
+            text: 'Malik einen Zettel schreiben: "Wenn du reden willst, ich bin da. Kein Druck."',
             consequence:
-              'Du findest Luisa und fragst: "Hey, was hast du Nora erzaehlt?" Luisa wird rot. "Ich habe gesehen, wie du gelacht hast, und dachte..." Du erklaerst, worueber du wirklich gelacht hast. Luisa merkt, dass sie vorschnell war. Jetzt habt ihr beide die Wahrheit -- und koennt gemeinsam zu Nora gehen.',
+              'Du schiebst den Zettel ueber den Tisch. Malik liest ihn, zerknuellt ihn -- und steckt ihn dann in die Hosentasche. In der naechsten Pause kommt er zu dir. "Okay", sagt er leise. "Aber sag es niemandem." Du nickst. Manchmal oeffnet sich eine Tuer nur, wenn man keinen Druck macht.',
             empathyPoints: 2,
             insightPoints: 3,
-            couragePoints: 2,
+            couragePoints: 1,
             nextSceneId: 'home-s1-scene-3',
           },
         ],
       },
+      // Scene 3 -- Der Streich und der Gruppendruck
       {
         id: 'home-s1-scene-3',
-        text: 'Du sitzt jetzt Nora gegenueber. Ihre Augen sind ein bisschen feucht. "Ich habe so hart an der Praesentation gearbeitet", sagt sie leise. "Und dann hoere ich, dass du darueber lachst. Das hat sich angefuehlt wie ein Stich." Du merkst: Es geht gar nicht nur um das Missverstaendnis. Es geht darum, dass Nora sich verletzlich gemacht hat und jetzt Angst hat, ausgelacht zu werden.',
-        speaker: 'Nora',
-        speakerEmoji: '\u{1F467}',
+        text: 'In der grossen Pause kommt Jonas nochmal zu dir. Diesmal leiser, ohne die Gruppe. "Hey, komm schon. Es ist doch nur ein Spass. Wir verstecken nur seine Kreide. Nichts Schlimmes." Du merkst: Jonas ist nicht boese. Er will dazugehoeren und cool sein. Aber du weisst auch: Herr Weber hat es schon schwer genug, und solche Streiche machen das nicht besser. Und dann hoerst du Linas Stimme im Kopf: "Manchmal sieht man nicht, was bei anderen gerade los ist."',
+        speaker: 'Jonas',
+        speakerEmoji: '\u{1F466}',
         choices: [
           {
             id: 'home-s1-c3a',
-            text: '"Nora, ich habe nicht ueber deine Praesentation gelacht. Aber ich verstehe, warum es sich so angefuehlt hat. Deine Praesentation war echt mutig."',
+            text: '"Jonas, ich mach nicht mit. Aber vielleicht gibt es was Cooleres, das wir zusammen machen koennen, ohne dass jemand drunter leidet."',
             consequence:
-              'Noras Schultern entspannen sich ein wenig. Du hast drei Dinge gleichzeitig gemacht: die Wahrheit gesagt, ihr Gefuehl anerkannt und ihr Mut gemacht. Das ist wie drei Werkzeuge auf einmal benutzen.',
-            empathyPoints: 4,
+              'Jonas zieht die Brauen hoch. Damit hat er nicht gerechnet. "Wie... was meinst du?" Du schlugst vor, stattdessen ein lustiges Raetsel fuer die Klasse zu machen. Jonas ueberlegt -- und dann grinst er. "Okay, das koennte witzig sein." Du hast nicht nur Nein gesagt, sondern eine Alternative angeboten. Das ist eine der staerksten Formen von Mut.',
+            empathyPoints: 2,
             insightPoints: 2,
-            couragePoints: 2,
+            couragePoints: 3,
             nextSceneId: 'home-s1-scene-4',
           },
           {
             id: 'home-s1-c3b',
-            text: '"Es tut mir leid, dass du das gedacht hast. Ich habe ueber etwas ganz anderes gelacht. Kann ich dir erzaehlen, was wirklich passiert ist?"',
+            text: '"Weisst du, vielleicht hat Herr Weber auch einen schlechten Tag. Wir wissen es nicht. Ich mach da nicht mit."',
             consequence:
-              'Nora hoert dir zu. Und je mehr du erklaerst, desto mehr entspannt sich ihr Gesicht. Am Ende sagt sie: "Okay... das ergibt Sinn. Ich haette dich vielleicht einfach fragen sollen, statt es zu glauben." Ihr beide lernt etwas: Direkt fragen ist besser als annehmen.',
-            empathyPoints: 2,
-            insightPoints: 3,
+              'Jonas wird kurz still. "Das ist mir egal", sagt er -- aber du siehst, wie er nachdenkt. Spaeter, als er an Herrn Webers Pult vorbeigeht, laesst er die Kreide liegen. Vielleicht hat dein Satz doch etwas ausgeloest. Empathie ist ansteckend -- auch wenn man es nicht sofort sieht.',
+            empathyPoints: 3,
+            insightPoints: 2,
             couragePoints: 2,
             nextSceneId: 'home-s1-scene-4',
           },
           {
             id: 'home-s1-c3c',
-            text: '"Ich weiss, wie das ist, wenn man denkt, jemand lacht ueber einen. Das fuehlt sich richtig mies an."',
+            text: '"Nein, und ich finde, du solltest es auch lassen. Aber das ist deine Entscheidung."',
             consequence:
-              'Nora schaut dich ueberrascht an. "Ja, genau so. Richtig mies." Dass du ihre Gefuehle in Worte fasst, zeigt ihr, dass du sie wirklich verstehst. Empathie heisst nicht nur zuhoeren -- sondern spiegeln, was der andere fuehlt.',
-            empathyPoints: 4,
-            insightPoints: 2,
-            couragePoints: 1,
+              'Jonas zuckt die Schultern und geht. Vielleicht macht er den Streich, vielleicht nicht. Du hast deine Meinung gesagt, aber auch seine Freiheit respektiert. Du kannst nicht kontrollieren, was andere tun -- nur, was du tust. Und das hast du gut gemacht.',
+            empathyPoints: 1,
+            insightPoints: 3,
+            couragePoints: 2,
             nextSceneId: 'home-s1-scene-4',
           },
         ],
       },
+      // Scene 4 -- Lina helfen und zusammenfuehren
       {
         id: 'home-s1-scene-4',
-        text: 'Die Situation hat sich beruhigt. Nora laechelt wieder, und ihr redet normal miteinander. Elias kommt dazu: "Alles wieder gut?" Luisa steht ein paar Meter weiter und traut sich nicht so recht herzukommen. Sie fuehlt sich schuldig, weil sie das Geruecht weitergegeben hat.',
+        text: 'Der Tag geht weiter. In der letzten Stunde siehst du Lina allein auf dem Schulhof sitzen. Malik steht ein paar Meter weiter und schaut auf sein Handy, aber er wirkt ruhiger als heute Morgen. Und Jonas haengt mit seiner Gruppe ab, aber irgendwie stiller als sonst. Du realisierst: Alle drei kaempfen heute mit etwas. Und du stehst in der Mitte -- nicht als Held, sondern als jemand, der hinsieht.',
         speaker: 'Erzaehler',
         speakerEmoji: '\u{1F3E0}',
         choices: [
           {
             id: 'home-s1-c4a',
-            text: 'Luisa rufen und sagen: "Hey, komm her. Es war ein Missverstaendnis, kein Drama. Alles gut."',
+            text: 'Dich neben Lina setzen und Malik einladen, dazuzukommen: "Hey, lasst uns einfach zusammen sitzen. Keiner muss reden."',
             consequence:
-              'Luisa kommt erleichtert dazu. "Es tut mir leid, ich haette erst fragen sollen." Nora nickt: "Ja, beim naechsten Mal fragen wir alle erstmal nach." Ihr habt als Gruppe etwas gelernt: Missverstaendnisse passieren -- aber sie muessen keine Freundschaften zerstoeren.',
+              'Lina schaut ueberrascht, aber dankbar. Malik zoegert, dann kommt er. Ihr sitzt zu dritt da, und eine Weile sagt niemand etwas. Aber die Stille ist nicht unangenehm. Sie ist warm. Manchmal ist Gemeinschaft nicht reden -- sondern einfach zusammen da sein.',
             empathyPoints: 3,
             insightPoints: 2,
-            couragePoints: 2,
+            couragePoints: 1,
             nextSceneId: 'home-s1-scene-5',
           },
           {
             id: 'home-s1-c4b',
-            text: 'Zu Nora sagen: "Wollen wir Luisa mit reinnehmen? Sie fuehlt sich auch nicht gut."',
+            text: 'Zu Lina gehen und fragen: "Kann ich irgendetwas tun? Und sei es nur, neben dir zu sitzen."',
             consequence:
-              'Nora ueberlegt kurz, dann nickt sie. "Du hast recht. Sie wollte mir nicht wehtun." Ihr geht zusammen zu Luisa. Manchmal braucht es jemanden, der die Bruecke baut -- und heute warst du das.',
+              'Lina nickt und du setzt dich hin. "Danke", sagt sie leise. "Es hilft, dass du gefragt hast. Die meisten tun so, als haetten sie nichts gesehen." Du merkst: Fragen ist manchmal wichtiger als Antworten. Und Hinsehen ist wichtiger als Wegschauen.',
             empathyPoints: 3,
-            insightPoints: 3,
+            insightPoints: 2,
             couragePoints: 1,
             nextSceneId: 'home-s1-scene-5',
           },
         ],
       },
+      // Scene 5 -- Reflexion auf dem Heimweg
       {
         id: 'home-s1-scene-5',
-        text: 'Auf dem Heimweg denkst du ueber den Tag nach. Was heute Morgen wie eine Katastrophe angefangen hat, hat sich am Ende geloest. Und du merkst: Du hast nicht nur ein Werkzeug benutzt, sondern viele. Durchatmen, nachfragen, zuhoeren, die Perspektive wechseln, ehrlich reden, Bruecken bauen. Dein innerer Guide laechelt: "Siehst du? Du hast mehr drauf, als du denkst."',
+        text: 'Auf dem Heimweg denkst du nach. Was fuer ein Tag. Wut, Trauer, Gruppendruck -- alles gleichzeitig. Frueher haettest du dich vielleicht ueberfordert gefuehlt, haettest weggeschaut oder mitgemacht. Aber heute war es anders. Du hast hingeschaut. Du hast nachgedacht. Du hast gehandelt. Der Guide meldet sich in deinem Kopf: "Weisst du, was das zeigt? Dass du nicht nur einzelne Werkzeuge hast -- sondern weisst, wann du welches brauchst. Im echten Leben kommen alle Gefuehle gleichzeitig. Und du hast jetzt die Werkzeuge, damit umzugehen."',
         speaker: 'Guide',
         speakerEmoji: '\u{2728}',
         choices: [
           {
             id: 'home-s1-c5a',
-            text: '"Stimmt. Ich bin froh, dass ich nicht einfach ausgerastet bin. Frueher haette ich das vielleicht gemacht."',
+            text: '"Es war anstrengend. Aber ich bin froh, dass ich nicht weggeschaut habe."',
             consequence:
-              'Der Guide nickt. "Das zeigt, wie sehr du gewachsen bist. Du hast Werkzeuge, die dir helfen -- und das Wichtigste ist: Du weisst, wann du welches brauchst." Du laechelst. Der Werkzeugkoffer ist voll. Und du weisst, wie man ihn benutzt.',
+              'Der Guide nickt. "Genau das ist der Unterschied. Du bist nicht perfekt durch den Tag gegangen -- niemand tut das. Aber du bist hingeschaut und hast das Richtige versucht. Und das, mein Freund, ist emotionale Intelligenz in Aktion." Du laechelst. Der Tag war schwer, aber er hat sich gelohnt.',
             empathyPoints: 2,
             insightPoints: 3,
             couragePoints: 2,
@@ -196,12 +181,12 @@ export const homeScenarios: Scenario[] = [
           },
           {
             id: 'home-s1-c5b',
-            text: '"Es war trotzdem anstrengend. Aber die gute Art von anstrengend."',
+            text: '"Ich haette gern mehr getan. Fuer Malik. Fuer Lina. Fuer alle."',
             consequence:
-              'Der Guide lacht leise. "Ja, das echte Leben ist manchmal anstrengend. Aber du bist dem nicht aus dem Weg gegangen. Du bist mittendurch gegangen. Und das, mein Freund, nennt man Wachstum." Du gehst nach Hause mit einem warmen Gefuehl in der Brust.',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 2,
+              'Der Guide laechelt sanft. "Dass du das fuehlst, zeigt, wie viel Empathie in dir steckt. Aber hoer mir zu: Du musst nicht alles reparieren. Du bist kein Superheld. Du bist ein Mensch, der hinsieht, zuhoert und sein Bestes gibt. Und das ist mehr als genug." Du atmest tief durch. Er hat recht. Es ist genug.',
+            empathyPoints: 3,
+            insightPoints: 2,
+            couragePoints: 1,
             nextSceneId: null,
           },
         ],
@@ -210,132 +195,136 @@ export const homeScenarios: Scenario[] = [
   },
 
   // ---------------------------------------------------------------------------
-  // Scenario 2: "Rueckschlag"
-  // Teaching: Scheitern ist normal und gehoert zum Wachstum dazu.
-  // Sich wieder aufrappeln ist die eigentliche Staerke.
+  // Scenario 2: "Der schwierige Tag"
+  // Teaching: Schlechte Tage gehen vorbei. Was zaehlt, ist wie du mit ihnen
+  // umgehst. Resilienz und Selbstfuersorge in Krisenzeiten.
   // ---------------------------------------------------------------------------
   {
     id: 'home-scenario-2',
     islandId: 'home' as IslandId,
-    title: 'Rueckschlag',
+    title: 'Der schwierige Tag',
     description:
-      'Du hast etwas versucht, woran dir viel lag -- und es hat nicht geklappt. Jetzt fuehlt sich alles schwer an. Aber Scheitern ist nicht das Ende. Es ist ein Zwischenstopp.',
+      'Alles geht schief: eine schlechte Note, Streit zu Hause, ein Freund, der dich ignoriert, und eine gemeine Nachricht auf dem Handy. Wie ueberlebst du einen Tag, an dem alles zu viel wird?',
     scenes: [
+      // Scene 1 -- Die schlechte Note
       {
         id: 'home-s2-scene-1',
-        text: 'Du hast dich wochenlang auf den Kunstwettbewerb vorbereitet. Jeden Tag nach der Schule hast du gezeichnet, ausradiert, nochmal angefangen. Dein Bild -- eine Unterwasserwelt voller leuchtender Quallen -- war das Beste, was du je gemacht hast. Heute wurden die Ergebnisse ausgehaengt. Du hast nicht gewonnen. Nicht mal eine Erwaehnung. Du stehst vor der Tafel und das Papier verschwimmt vor deinen Augen.',
+        text: 'Es beginnt in der ersten Stunde. Herr Schmitt teilt die Mathearbeit aus. Du warst dir so sicher, dass es gut gelaufen ist -- du hast sogar geubt. Aber als du das Blatt umdrehst, steht da eine 5. Eine Fuenf. Dir wird heiss. Deine Augen brennen. Du hoerst, wie jemand neben dir sagt: "Ich hab eine 2! Und du?" Du legst das Blatt schnell mit der Rueckseite nach oben auf den Tisch.',
         speaker: 'Erzaehler',
         speakerEmoji: '\u{1F3E0}',
         choices: [
           {
             id: 'home-s2-c1a',
-            text: 'Weggehen, bevor jemand dein Gesicht sieht. Du willst gerade nicht reden.',
+            text: 'Tief durchatmen. Die Note tut weh, aber sie definiert dich nicht.',
             consequence:
-              'Du gehst schnell in die Toilette und schliesst die Tuer. Dein Atem geht schnell. Die Enttaeuschung brennt in der Brust. Es ist okay, sich zurueckzuziehen, wenn man erstmal allein sein muss. Nicht jede Reaktion muss sofort perfekt sein.',
+              'Du schliesst kurz die Augen und atmest langsam aus. Die Enttaeuschung ist da, und sie ist echt. Aber du erinnerst dich an etwas Wichtiges: Eine Note sagt nichts darueber aus, wer du bist. Sie sagt nur, wie ein Test an einem Tag gelaufen ist. Punkt.',
             empathyPoints: 0,
-            insightPoints: 2,
+            insightPoints: 3,
             couragePoints: 1,
             nextSceneId: 'home-s2-scene-2',
           },
           {
             id: 'home-s2-c1b',
-            text: 'Stehenbleiben und die Enttaeuschung zueinlassen. Die Traenen kommen, und das ist okay.',
+            text: 'Das Blatt zusammenknuellen und in die Tasche stopfen. Du willst es nicht sehen.',
             consequence:
-              'Eine Traene laeuft ueber deine Wange. Du wischst sie nicht weg. Du stehst einfach da und laesst das Gefuehl da sein. Es tut weh -- aber du weisst inzwischen: Gefuehle, die man zulaesst, gehen leichter vorbei als Gefuehle, die man verdraengt.',
-            empathyPoints: 0,
-            insightPoints: 3,
-            couragePoints: 2,
-            nextSceneId: 'home-s2-scene-2',
-          },
-          {
-            id: 'home-s2-c1c',
-            text: '"Das ist so unfair! Mein Bild war gut!" -- Du bist wuetend.',
-            consequence:
-              'Die Wut ist heiss und laut in dir. Warum haben die anderen gewonnen und nicht du? Es fuehlt sich ungerecht an. Wut ist eine natuerliche Reaktion auf Enttaeuschung -- aber sie zeigt dir auch, wie viel dir die Sache bedeutet hat.',
+              'Das Papier knistert in deiner Faust. Die Wut mischt sich mit Scham. Du willst gerade nicht darueber nachdenken. Und das ist okay -- manchmal muss man die Enttaeuschung erst sacken lassen, bevor man klar denken kann. Wichtig ist nur, dass du spaeter nochmal hinschaust.',
             empathyPoints: 0,
             insightPoints: 2,
             couragePoints: 1,
             nextSceneId: 'home-s2-scene-2',
           },
+          {
+            id: 'home-s2-c1c',
+            text: 'Die Hand heben und Herrn Schmitt nach dem Unterricht um ein Gespraech bitten.',
+            consequence:
+              'Herr Schmitt nickt. "Klar, nach der Stunde." Du bist enttaeuscht, aber du reagierst aktiv. Nachfragen, verstehen wollen, statt sich zu verstecken -- das ist eine Staerke, die viele Erwachsene nicht haben. Spaeter zeigt dir Herr Schmitt, wo deine Fehler lagen. "Du warst nah dran", sagt er. "Beim naechsten Mal."',
+            empathyPoints: 0,
+            insightPoints: 2,
+            couragePoints: 3,
+            nextSceneId: 'home-s2-scene-2',
+          },
         ],
       },
+      // Scene 2 -- Streit zu Hause (Rueckblick am Morgen)
       {
         id: 'home-s2-scene-2',
-        text: 'Spaeter am Tag sitzt du auf der Bank im Schulhof. Alles fuehlt sich grau an. Dein Kopf fluestert gemeine Sachen: "Du bist einfach nicht gut genug. Warum hast du es ueberhaupt versucht?" Der Guide setzt sich neben dich. "Ich kenne diese Stimme", sagt er sanft. "Aber sie erzaehlt nicht die ganze Geschichte. Darf ich dir eine Frage stellen?"',
-        speaker: 'Guide',
-        speakerEmoji: '\u{2728}',
+        text: 'In der Pause sitzt du allein da und die Gedanken drehen sich. Nicht nur die Note. Heute Morgen gab es Streit mit deiner Mutter. "Du raeuumst nie dein Zimmer auf! Ich bin es leid, immer alles hinter dir herzumachen!" Du hast zurueckgeschrien: "Dann lass es halt!" Und die Tuer hinter dir zugeknallt. Jetzt, Stunden spaeter, fuehlt sich der Streit wie ein Stein auf deiner Brust an. Du weisst, dass du zu hart reagiert hast. Aber sie auch. Und jetzt ist da diese Mischung aus Schuld und Wut.',
+        speaker: 'Erzaehler',
+        speakerEmoji: '\u{1F3E0}',
         choices: [
           {
             id: 'home-s2-c2a',
-            text: '"Okay. Frag."',
+            text: 'Dir vornehmen, spaeter mit deiner Mutter zu reden. Vielleicht eine kurze Nachricht schreiben: "Es tut mir leid wegen heute Morgen. Koennen wir reden?"',
             consequence:
-              'Der Guide laechelt. "Hat das Zeichnen dir Spass gemacht? Waehrend du an dem Bild gearbeitet hast -- wie hat sich das angefuehlt?" Du denkst nach. Und ploetzlich erinnerst du dich an die Abende, an denen du vergessen hast, auf die Uhr zu schauen, weil du so vertieft warst. "Es hat sich gut angefuehlt", gibst du zu.',
-            empathyPoints: 0,
-            insightPoints: 3,
-            couragePoints: 1,
+              'Du tippst die Nachricht ins Handy. Dein Finger zoegert ueber dem Senden-Button. Dann drueckst du. Wenige Minuten spaeter kommt eine Antwort: "Mir auch. Heute Abend, okay? Hab dich lieb." Der Stein auf deiner Brust wird leichter. Es braucht Mut, den ersten Schritt zu machen -- besonders wenn man sich auch verletzt fuehlt.',
+            empathyPoints: 2,
+            insightPoints: 2,
+            couragePoints: 3,
             nextSceneId: 'home-s2-scene-3',
           },
           {
             id: 'home-s2-c2b',
-            text: '"Ich will gerade keine Fragen. Ich will einfach, dass es nicht so wehtut."',
+            text: 'Erstmal die Gefuehle sortieren. Was genau fuehle ich? Wut? Schuld? Traurigkeit? Wahrscheinlich alles gleichzeitig.',
             consequence:
-              'Der Guide nickt. "Das verstehe ich. Enttaeuschung tut weh, und es ist okay, das zu fuehlen. Du musst nicht sofort eine Lektion daraus ziehen. Manchmal darf man einfach traurig sein." Du lehnst dich zurueck. Manchmal ist die wichtigste Erlaubnis: Einfach traurig sein duerfen.',
-            empathyPoints: 0,
+              'Du nimmst deinen Stift und schreibst auf die Rueckseite eines Blattes: "Wut -- weil sie mich angeschrien hat. Schuld -- weil ich auch geschrien habe. Traurigkeit -- weil ich meine Mama nicht gern streite." Die Gefuehle aufzuschreiben macht sie kleiner. Nicht weg -- aber handhabbar. Das hast du auf der Vulkan-Insel gelernt: Gefuehle benennen ist der erste Schritt, sie zu verstehen.',
+            empathyPoints: 1,
             insightPoints: 3,
             couragePoints: 1,
             nextSceneId: 'home-s2-scene-3',
           },
         ],
       },
+      // Scene 3 -- Der Freund, der dich ignoriert
       {
         id: 'home-s2-scene-3',
-        text: 'Am naechsten Tag triffst du zufaellig Frau Berger, die Kunstlehrerin, die in der Jury sass. Sie sieht dich und kommt zu dir. "Ich wollte dir etwas sagen", beginnt sie. "Dein Bild war wirklich gut. Die Entscheidung war knapp. Aber weisst du, was mir am meisten aufgefallen ist? Dein Mut, etwas Eigenes zu zeigen. Das trauen sich viele nicht."',
-        speaker: 'Frau Berger',
-        speakerEmoji: '\u{1F469}\u{200D}\u{1F3A8}',
+        text: 'Es wird noch schlimmer. In der Mittagspause siehst du deinen besten Freund Tim mit einer anderen Gruppe lachen. Du gehst zu ihm und sagst "Hey!" -- aber Tim schaut nur kurz, murmelt "Ja, hi" und dreht sich wieder um. Als waerst du Luft. Der Stich geht tief. Seit wann ist Tim so? Hast du etwas getan? Oder hat er einfach neue Freunde und du bist... ueberfluessig?',
+        speaker: 'Erzaehler',
+        speakerEmoji: '\u{1F3E0}',
         choices: [
           {
             id: 'home-s2-c3a',
-            text: '"Danke. Aber es hat trotzdem nicht gereicht."',
+            text: 'Spaeter, wenn Tim allein ist, direkt ansprechen: "Hey, ist irgendwas? Du wirkst irgendwie anders mir gegenueber."',
             consequence:
-              'Frau Berger nickt. "Ich verstehe die Enttaeuschung. Aber lass mich dir etwas erzaehlen: Als ich angefangen habe zu malen, habe ich dreizehn Wettbewerbe verloren, bevor ich den ersten gewonnen habe. Dreizehn. Jeder einzelne tat weh. Aber jeder hat mich besser gemacht." Du schluckst. Dreizehn Mal.',
+              'Du wartest den richtigen Moment ab. Als Tim am Spind steht, gehst du zu ihm. "Ist was los zwischen uns?" Tim sieht ueberrascht aus. "Nein... ich hatte nur viel um die Ohren. Sorry, ich war nicht absichtlich komisch." Manchmal ist die grosse Katastrophe in unserem Kopf in Wirklichkeit ein Missverstaendnis. Aber das erfaehrt man nur, wenn man fragt.',
             empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 2,
+            insightPoints: 2,
+            couragePoints: 3,
             nextSceneId: 'home-s2-scene-4',
           },
           {
             id: 'home-s2-c3b',
-            text: '"Wirklich? Sie fanden mein Bild gut?"',
+            text: 'Erstmal Abstand nehmen. Du bist gerade sowieso emotional am Limit. Das Gespraech mit Tim kann warten.',
             consequence:
-              'Frau Berger laechelt. "Ja. Die Quallen waren wunderschoen. Und das Licht, das du eingefangen hast -- das war etwas Besonderes." Ihre Worte waermen dich von innen. Manchmal sieht man vor lauter Enttaeuschung nicht mehr, was man tatsaechlich geschafft hat.',
+              'Du gehst in die Bibliothek und setzt dich in die ruhige Ecke. Dein Kopf braucht eine Pause. Und du weisst: Wenn du jetzt mit Tim redest, waehrend alles in dir brodelt, sagst du vielleicht Dinge, die du nicht meinst. Pause machen ist kein Weglaufen -- es ist klug.',
             empathyPoints: 0,
             insightPoints: 3,
-            couragePoints: 2,
+            couragePoints: 1,
             nextSceneId: 'home-s2-scene-4',
           },
         ],
       },
+      // Scene 4 -- Die gemeine Nachricht (Cyberbullying)
       {
         id: 'home-s2-scene-4',
-        text: 'Du sitzt abends an deinem Schreibtisch. Dein Zeichenblock liegt vor dir, zugeklappt. Du schaust ihn an. Ein Teil von dir will ihn in die Ecke werfen und nie wieder aufmachen. Ein anderer Teil erinnert sich an die leuchtenden Quallen und daran, wie stolz du warst, als du sie fertig hattest.',
+        text: 'Und dann, auf dem Heimweg, vibriert dein Handy. Eine Nachricht in der Klassengruppe. Jemand hat ein haessliches Meme ueber dich gepostet -- dein Gesicht, reinmontiert in ein peinliches Bild. Darunter Lachsmileys. Dein Herz rast. Deine Haende zittern. Du scrollst und siehst: Zehn Leute haben gelacht. Nur zwei haben nichts geschrieben. Keiner hat gesagt, dass das nicht okay ist. Die Traenen kommen jetzt echt.',
         speaker: 'Erzaehler',
         speakerEmoji: '\u{1F3E0}',
         choices: [
           {
             id: 'home-s2-c4a',
-            text: 'Den Block aufschlagen und einfach anfangen zu kritzeln. Nicht fuer einen Wettbewerb. Fuer dich.',
+            text: 'Einen Screenshot machen und das Bild einer Vertrauensperson zeigen -- Mama, Papa, ein Lehrer, die Schulsozialarbeit.',
             consequence:
-              'Dein Stift beruehrt das Papier, und zuerst sind es nur Linien ohne Sinn. Aber dann formt sich etwas -- ein kleiner Vogel, der in einen Sturm fliegt. Du musst laecheln. Das bist irgendwie du. Und du fliegst weiter.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 4,
+              'Du machst einen Screenshot. Dann schreibst du deiner Mutter: "Mama, jemand hat was Gemeines ueber mich gepostet. Kann ich dir das zeigen?" Innerhalb von Minuten ruft sie an. Ihre Stimme ist warm und fest: "Zeig es mir. Und dann klaeren wir das zusammen." Du bist nicht allein. Das war schon immer wahr -- aber jetzt fuehlt es sich auch so an. Screenshots sichern und Hilfe holen -- das ist der richtige Weg bei Cybermobbing.',
+            empathyPoints: 1,
+            insightPoints: 3,
+            couragePoints: 3,
             nextSceneId: 'home-s2-scene-5',
           },
           {
             id: 'home-s2-c4b',
-            text: 'Heute noch nicht. Aber den Block nicht in die Ecke werfen. Stattdessen sagst du dir: "Nicht heute, aber bald."',
+            text: 'Nicht antworten. Das Handy weglegen. Tief durchatmen und spaeter mit jemandem reden.',
             consequence:
-              'Du legst den Block zurueck auf den Schreibtisch, sorgfaeltig. Das ist kein Aufgeben -- das ist eine Pause. Und Pausen sind manchmal genau das, was man braucht, bevor man weitermacht.',
+              'Du legst das Handy mit dem Bildschirm nach unten auf den Tisch. Dein Atem geht schnell, aber du zwingst dich, langsam zu atmen. Ein, zwei, drei, vier. Aus, zwei, drei, vier. Die Traenen kommen trotzdem, aber das ist okay. Nicht antworten ist die staerkste Reaktion, die du geben kannst. Morgen redest du mit einem Erwachsenen darueber. Aber jetzt brauchst du erstmal dich selbst.',
             empathyPoints: 0,
             insightPoints: 3,
             couragePoints: 2,
@@ -343,39 +332,40 @@ export const homeScenarios: Scenario[] = [
           },
           {
             id: 'home-s2-c4c',
-            text: 'Das Quallen-Bild nochmal anschauen und dir ueberlegen, was du naechstes Mal anders machen wuerdest.',
+            text: 'In der Gruppe schreiben: "Das ist nicht witzig. Das ist Mobbing. Und es sagt mehr ueber euch aus als ueber mich."',
             consequence:
-              'Du holst das Bild raus und betrachtest es mit neuen Augen. "Die Farben hier koennten kraeftiger sein", denkst du. "Und die Komposition..." Ploetzlich bist du nicht mehr traurig, sondern neugierig. Aus Rueckschlaegen lernen -- das ist eine Superkraft.',
-            empathyPoints: 0,
-            insightPoints: 4,
-            couragePoints: 2,
+              'Du tippst den Satz mit zitternden Fingern. Dann drueckst du Senden. Stille. Dann loescht jemand den Post. Zwei Leute schreiben privat: "Sorry. Das war echt nicht okay." Dein Mut hat etwas veraendert. Aber: Egal was passiert waere -- du solltest trotzdem mit einer Vertrauensperson darueber reden. Cybermobbing allein zu tragen, ist zu viel.',
+            empathyPoints: 1,
+            insightPoints: 2,
+            couragePoints: 3,
             nextSceneId: 'home-s2-scene-5',
           },
         ],
       },
+      // Scene 5 -- Abend: Selbstfuersorge
       {
         id: 'home-s2-scene-5',
-        text: 'Der Guide erscheint ein letztes Mal. "Weisst du, was mich an dir beeindruckt?", sagt er. "Nicht, dass du es versucht hast. Sondern dass du nach dem Scheitern immer noch hier bist. Du bist nicht weggerannt. Du hast die Enttaeuschung gefuehlt, und du stehst immer noch."',
+        text: 'Es ist Abend. Du liegst auf deinem Bett und starrst an die Decke. Was fuer ein Tag. Schlechte Note, Streit mit Mama, Tim, das Meme. Alles auf einmal. Dein Koerper fuehlt sich schwer an, als waerst du gelaufen, obwohl du nur gesessen hast. Der Guide meldet sich, leise und warm: "Hey. Das war ein harter Tag. Und du hast ihn ueberlebt. Das allein ist schon eine Leistung. Aber jetzt ist etwas Wichtiges dran: Wie sorgst du jetzt fuer dich selbst?"',
         speaker: 'Guide',
         speakerEmoji: '\u{2728}',
         choices: [
           {
             id: 'home-s2-c5a',
-            text: '"Scheitern gehoert dazu, oder? Auch wenn es sich nicht so anfuehlt."',
+            text: '"Ich mache etwas, das mir guttut. Musik hoeren, warm duschen, mein Lieblingsessen. Kleine Dinge."',
             consequence:
-              'Der Guide nickt. "Jeder Mensch, der etwas Grosses geschafft hat, ist vorher gescheitert. Nicht einmal, nicht zweimal -- oft viele Male. Der Unterschied ist: Sie sind aufgestanden. Und du stehst auch." Du atmest tief ein. Es tut noch ein bisschen weh. Aber es wird besser.',
+              'Du setzt Kopfhoerer auf und laesst dein Lieblingslied laufen. Die Musik huellt dich ein wie eine warme Decke. Der Guide fluestert: "Genau so. Selbstfuersorge ist kein Luxus. Es ist eine Notwendigkeit. Besonders an Tagen wie diesen." Morgen wird anders. Und selbst wenn nicht -- du weisst jetzt, wie du durch schwere Tage kommst. Schlechte Tage gehen vorbei. Was zaehlt, ist wie du mit ihnen umgehst.',
             empathyPoints: 1,
             insightPoints: 3,
-            couragePoints: 3,
+            couragePoints: 2,
             nextSceneId: null,
           },
           {
             id: 'home-s2-c5b',
-            text: '"Ich glaube, ich habe mehr gelernt als die, die gewonnen haben."',
+            text: '"Ich schreibe alles auf. In mein Tagebuch. Damit die Gedanken nicht mehr in meinem Kopf kreisen."',
             consequence:
-              'Der Guide laechelt breit. "Das ist einer der klügsten Saetze, die ich je gehoert habe. Gewinnen fuehlt sich gut an -- aber wachsen tut man meistens in den Momenten, die sich nicht gut anfuehlen." Du nimmst deinen Stift. Morgen zeichnest du weiter.',
+              'Dein Stift kratzt ueber das Papier. Du schreibst alles -- die Fuenf, den Streit, Tim, das Meme, die Traenen. Und dann, ganz am Ende, schreibst du: "Aber ich habe den Tag ueberlebt. Und morgen ist ein neuer." Der Guide laechelt. "Aufschreiben befreit. Und dein Tagebuch urteilt nie." Du machst das Licht aus. Es war ein schlimmer Tag. Aber du bist staerker als er.',
             empathyPoints: 0,
-            insightPoints: 4,
+            insightPoints: 3,
             couragePoints: 2,
             nextSceneId: null,
           },
@@ -385,172 +375,159 @@ export const homeScenarios: Scenario[] = [
   },
 
   // ---------------------------------------------------------------------------
-  // Scenario 3: "Brief an mich"
-  // Teaching: Selbstreflexion, Wachstum erkennen, sich selbst wertschaetzen.
+  // Scenario 3: "Hilfe geben und nehmen"
+  // Teaching: Hilfe zu suchen ist kein Zeichen von Schwaeche -- es ist ein
+  // Zeichen von Staerke. Konkrete Werkzeuge: Vertrauenspersonen, professionelle
+  // Hilfe, wie man jemanden in einer Krise unterstuetzt.
   // ---------------------------------------------------------------------------
   {
     id: 'home-scenario-3',
     islandId: 'home' as IslandId,
-    title: 'Brief an mich',
+    title: 'Hilfe geben und nehmen',
     description:
-      'Du schreibst einen Brief an dein zukuenftiges Ich. Was hast du gelernt? Was willst du dir merken? Was wuenschst du dir? Manchmal ist der wichtigste Gespraechspartner man selbst.',
+      'Eine Freundin braucht dringend Hilfe -- aber du selbst auch. Wann hole ich mir Unterstuetzung? Wie rede ich mit Vertrauenspersonen? Und warum ist um Hilfe bitten das Mutigste, was man tun kann?',
     scenes: [
+      // Scene 1 -- Sarahs Veraenderung
       {
         id: 'home-s3-scene-1',
-        text: 'Es ist ein ruhiger Nachmittag. Du sitzt an deinem Lieblingsplatz -- vielleicht am Schreibtisch, vielleicht im Park, vielleicht auf deinem Bett. Vor dir liegt ein leeres Blatt Papier. ZukunftsDu, eine schimmernde Version von dir selbst, sitzt dir gegenueber und laechelt. "Hey", sagt ZukunftsDu. "Ich bin du, ein Jahr von jetzt. Und ich habe eine Bitte: Schreib mir einen Brief. Erzaehl mir, wo du gerade stehst."',
-        speaker: 'ZukunftsDu',
-        speakerEmoji: '\u{1F31F}',
+        text: 'Seit ein paar Wochen ist Sarah anders. Frueher hat sie immer gelacht, Witze gemacht, war die Erste, die bei allem dabei war. Jetzt sitzt sie meistens allein, isst kaum noch in der Pause, und gestern hat sie gesagt: "Ist doch alles egal." Du hast ein mulmiges Gefuehl. Es ist nicht nur schlechte Laune -- irgendetwas stimmt wirklich nicht. Gleichzeitig merkst du, dass dich das belastet. Du liegst abends wach und machst dir Sorgen um Sarah. Dein eigener Schlaf leidet, deine Noten auch.',
+        speaker: 'Erzaehler',
+        speakerEmoji: '\u{1F3E0}',
         choices: [
           {
             id: 'home-s3-c1a',
-            text: '"Das klingt komisch... aber okay. Wo fange ich an?"',
+            text: 'Zu Sarah gehen und direkt und ehrlich sagen: "Sarah, ich mache mir Sorgen um dich. Du bist anders in letzter Zeit."',
             consequence:
-              'ZukunftsDu laechelt. "Fang damit an, was du in letzter Zeit ueber dich gelernt hast. Ueber deine Gefuehle. Ueber den Umgang mit anderen." Du ueberlegst. Es ist erstaunlich, wie viel sich veraendert hat.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 1,
+              'Sarah sieht dich einen langen Moment an. Dann sagt sie leise: "Es ist... kompliziert. Zu Hause laeuft alles schief. Meine Eltern..." Sie bricht ab. Du siehst, wie schwer es ihr faellt zu reden. Aber dass du gefragt hast -- direkt, ehrlich, ohne Umwege -- hat eine Tuer geoeffnet. Hinschauen ist der erste Schritt.',
+            empathyPoints: 3,
+            insightPoints: 1,
+            couragePoints: 2,
             nextSceneId: 'home-s3-scene-2',
           },
           {
             id: 'home-s3-c1b',
-            text: '"Einen Brief an mich selbst? Liest den ueberhaupt jemand?"',
+            text: 'Erstmal beobachten und gleichzeitig ueberlegen, mit wem du ueber deine Sorgen reden koenntest.',
             consequence:
-              'ZukunftsDu grinst. "Ja -- du. In einem Jahr. Und glaub mir, du wirst froh sein, ihn zu haben. Manchmal vergisst man, wie weit man schon gekommen ist. Dieser Brief wird dich daran erinnern." Du nimmst den Stift.',
-            empathyPoints: 0,
-            insightPoints: 2,
-            couragePoints: 2,
+              'Du beobachtest Sarah eine Woche lang genauer. Sie isst weniger, redet weniger, laechelt fast nie. Und du merkst: Je mehr du dich sorgst, desto schlechter geht es dir selbst. Beobachten ist gut -- aber allein damit bleiben nicht. Du brauchst auch jemanden, mit dem du darueber reden kannst.',
+            empathyPoints: 2,
+            insightPoints: 3,
+            couragePoints: 0,
             nextSceneId: 'home-s3-scene-2',
           },
         ],
       },
+      // Scene 2 -- Wie hilft man richtig?
       {
         id: 'home-s3-scene-2',
-        text: 'Du beginnst zu schreiben. Die ersten Saetze kommen zoegerlich. Aber dann fliesst es. ZukunftsDu liest leise ueber deine Schulter und nickt. "Erzaehl mir von deinen groessten Erkenntnissen", sagt ZukunftsDu. "Was weisst du heute, das du vor einem halben Jahr noch nicht wusstest?"',
-        speaker: 'ZukunftsDu',
-        speakerEmoji: '\u{1F31F}',
+        text: 'Sarah hat angefangen zu reden. Stueckweise, vorsichtig. Ihre Eltern lassen sich scheiden. Ihr Bruder gibt ihr die Schuld. Sie fuehlt sich unsichtbar. Und dann sagt sie etwas, das dir den Atem nimmt: "Manchmal denke ich, es waere besser, wenn ich einfach nicht mehr da waere." Du erstarrst. Was sagt man darauf? Dein Herz haemmert. Du weisst: Das ist zu gross fuer dich allein.',
+        speaker: 'Sarah',
+        speakerEmoji: '\u{1F467}',
         choices: [
           {
             id: 'home-s3-c2a',
-            text: '"Ich habe gelernt, dass Gefuehle nicht mein Feind sind. Auch die unangenehmen nicht."',
+            text: '"Sarah, ich bin froh, dass du mir das gesagt hast. Aber ich glaube, wir muessen mit jemandem reden, der helfen kann. Zusammen."',
             consequence:
-              'Du schreibst: "Lieber Zukunfts-Ich, ich weiss jetzt, dass Wut, Angst und Traurigkeit keine Zeichen von Schwaeche sind. Sie sind Signale. Und wenn ich ihnen zuhoere, statt sie wegzudruecken, helfen sie mir, mich selbst besser zu verstehen." ZukunftsDu nickt: "Das ist eine der wichtigsten Lektionen ueberhaupt."',
-            empathyPoints: 1,
-            insightPoints: 4,
-            couragePoints: 1,
-            nextSceneId: 'home-s3-scene-3',
-          },
-          {
-            id: 'home-s3-c2b',
-            text: '"Ich habe gelernt, dass Mut nicht heisst, keine Angst zu haben."',
-            consequence:
-              'Du schreibst: "Lieber Zukunfts-Ich, ich dachte immer, mutige Menschen haben keine Angst. Aber das stimmt nicht. Mut ist, wenn du Angst hast UND es trotzdem machst. Jeder mutige Mensch kennt Angst." ZukunftsDu laechelt warm: "Vergiss das nie."',
-            empathyPoints: 0,
-            insightPoints: 3,
+              'Sarah schaut erschrocken. "Nein! Sag niemandem was!" Du bleibst ruhig, obwohl du innerlich zitterst. "Ich verrate dich nicht. Aber das, was du gerade gesagt hast, ist etwas, wobei ein Erwachsener helfen muss. Nicht weil du schwach bist -- sondern weil du Hilfe verdienst." Sarah weint. Aber sie nickt. Das war einer der mutigsten Momente deines Lebens.',
+            empathyPoints: 3,
+            insightPoints: 2,
             couragePoints: 3,
             nextSceneId: 'home-s3-scene-3',
           },
           {
-            id: 'home-s3-c2c',
-            text: '"Ich habe gelernt, dass ich nicht allein sein muss mit schwierigen Sachen."',
+            id: 'home-s3-c2b',
+            text: 'Ihr zuhoeren, bei ihr bleiben, und nach dem Gespraech sofort eine Vertrauensperson informieren.',
             consequence:
-              'Du schreibst: "Lieber Zukunfts-Ich, frueher habe ich versucht, alles allein zu schaffen. Aber ich weiss jetzt: Um Hilfe bitten ist kein Zeichen von Schwaeche. Es ist das Mutigste, was man tun kann." ZukunftsDu fluester: "Bitte vergiss das nie. Auch in einem Jahr nicht."',
+              'Du hoerst zu. Du haeltst ihre Hand. Du sagst: "Ich bin hier. Du bist nicht allein." Und dann, als Sarah nach Hause geht, gehst du zu Frau Klein, der Schulsozialarbeiterin. Du erzaehlst, was Sarah gesagt hat. Frau Klein wird ernst, aber auch warm. "Du hast genau das Richtige getan", sagt sie. "Sarah braucht professionelle Hilfe. Und du warst mutig genug, das zu erkennen."',
             empathyPoints: 2,
             insightPoints: 3,
-            couragePoints: 2,
+            couragePoints: 3,
             nextSceneId: 'home-s3-scene-3',
           },
         ],
       },
+      // Scene 3 -- Mit einer Vertrauensperson reden
       {
         id: 'home-s3-scene-3',
-        text: 'ZukunftsDu lehnt sich vor. "Jetzt kommt der schwierigere Teil", sagt ZukunftsDu sanft. "Schreib auch ueber die Dinge, die noch schwer sind. Ueber die Baustellen. Denn Wachstum heisst nicht, dass alles perfekt ist -- sondern dass man weiss, woran man noch arbeiten moechte."',
-        speaker: 'ZukunftsDu',
-        speakerEmoji: '\u{1F31F}',
+        text: 'Frau Klein, die Schulsozialarbeiterin, sitzt dir gegenueber. Sie hat ein ruhiges Buero mit einer Pflanze am Fenster und Postkarten an der Wand. "Erzaehl mir, was los ist", sagt sie. Du merkst, dass du nicht nur ueber Sarah reden willst -- sondern auch ueber dich. Ueber die schlaflosen Naechte. Ueber die Sorgen, die sich anfuehlen wie ein Rucksack voller Steine. "Du darfst auch ueber dich reden", sagt Frau Klein, als haette sie deine Gedanken gelesen. "Denn um fuer andere da zu sein, musst du auch fuer dich da sein."',
+        speaker: 'Frau Klein',
+        speakerEmoji: '\u{1F469}\u{200D}\u{1F3EB}',
         choices: [
           {
             id: 'home-s3-c3a',
-            text: '"Manchmal faellt es mir immer noch schwer, Nein zu sagen. Aber ich arbeite daran."',
+            text: 'Ueber Sarah UND ueber dich reden. Ehrlich sagen, dass dich die Situation ueberfordert.',
             consequence:
-              'Du schreibst ehrlich ueber die Momente, in denen du nachgegeben hast, obwohl du nicht wolltest. Und dann fuegest du hinzu: "Aber ich weiss jetzt, dass mein Nein genauso viel zaehlt wie mein Ja. Und ich uebe es, Stueck fuer Stueck." Ehrlichkeit mit sich selbst -- das ist die Grundlage fuer alles andere.',
-            empathyPoints: 1,
+              'Du holst tief Luft und sagst: "Ich mache mir grosse Sorgen um Sarah. Aber ich merke auch, dass es mich selbst runterzieht. Ich schlafe schlecht und kann mich nicht konzentrieren." Frau Klein nickt. "Das ist voellig normal. Du bist kein Therapeut -- du bist ein Freund. Und auch Freunde brauchen Unterstuetzung." Sie erklaert dir, dass es Stellen gibt, an die sich Jugendliche wenden koennen. Das Kinder- und Jugendtelefon: 116 111, kostenlos, anonym. "Auch fuer dich", sagt sie.',
+            empathyPoints: 2,
             insightPoints: 3,
-            couragePoints: 2,
+            couragePoints: 3,
             nextSceneId: 'home-s3-scene-4',
           },
           {
             id: 'home-s3-c3b',
-            text: '"Ich werde manchmal immer noch wuetend und sage Dinge, die ich nicht meine."',
+            text: 'Nur ueber Sarah reden. Deine eigenen Probleme sind im Vergleich nicht so wichtig.',
             consequence:
-              'Du schreibst: "Zukunfts-Ich, ich hoffe, du bist besser darin geworden, in der Wut eine Pause einzulegen. Ich weiss, dass die Wut nicht das Problem ist -- aber was ich in der Wut sage, manchmal schon." ZukunftsDu nickt: "Das ist so ehrlich. Und Ehrlichkeit ist der erste Schritt."',
-            empathyPoints: 0,
-            insightPoints: 4,
-            couragePoints: 1,
-            nextSceneId: 'home-s3-scene-4',
-          },
-          {
-            id: 'home-s3-c3c',
-            text: '"Ich vergleiche mich immer noch viel mit anderen. Und meistens schneide ich dabei schlecht ab."',
-            consequence:
-              'Du schreibst: "Zukunfts-Ich, bitte hoer auf, dich mit anderen zu vergleichen. Dein Weg ist deiner, und der ist gut genug." ZukunftsDu legt eine Hand auf deinen Arm. "Das, was du gerade geschrieben hast -- lies es, wenn du es wieder vergisst. Und du wirst es vergessen. Aber dann hast du diesen Brief."',
-            empathyPoints: 0,
-            insightPoints: 4,
+              'Du erzaehlst alles ueber Sarah. Frau Klein hoert aufmerksam zu und verspricht, sich darum zu kuemmern. Aber dann sagt sie etwas Unerwartetes: "Und wie geht es dir damit?" Du zuckst die Schultern. "Mir geht es gut." Frau Klein laechelt sanft. "Ich glaube dir das nicht ganz. Weisst du, was ich oft sehe? Dass die Menschen, die am besten auf andere achten, am schlechtesten auf sich selbst achten. Auch du darfst Hilfe annehmen."',
+            empathyPoints: 2,
+            insightPoints: 3,
             couragePoints: 1,
             nextSceneId: 'home-s3-scene-4',
           },
         ],
       },
+      // Scene 4 -- Wie man mit Vertrauenspersonen redet (konkrete Werkzeuge)
       {
         id: 'home-s3-scene-4',
-        text: 'ZukunftsDu steht auf und sagt: "Noch ein letzter Abschnitt. Schreib einen Wunsch an dich selbst. Etwas, das du dir fuer die Zukunft wuenschst. Nicht was du haben willst -- sondern wer du sein willst."',
-        speaker: 'ZukunftsDu',
-        speakerEmoji: '\u{1F31F}',
+        text: 'Frau Klein gibt dir konkrete Tipps fuer die Zukunft: "Wenn du mit einer Vertrauensperson reden moechtest, hilft es, vorher kurz zu ueberlegen: Was moechte ich sagen? Was brauche ich gerade? Und du darfst immer so anfangen: Ich brauche Hilfe mit etwas. Oder: Kann ich Ihnen etwas erzaehlen, das mich belastet?" Sie macht eine Pause. "Und wenn du nicht persoenlich reden kannst: Das Kinder- und Jugendtelefon 116 111 ist kostenlos und anonym. Dort hoert dir jemand zu -- ohne Bewertung." Du nimmst dir alles zu Herzen. Und dann fragt Frau Klein: "Wer sind deine Vertrauenspersonen?"',
+        speaker: 'Frau Klein',
+        speakerEmoji: '\u{1F469}\u{200D}\u{1F3EB}',
         choices: [
           {
             id: 'home-s3-c4a',
-            text: '"Ich wuensche mir, dass ich der Mensch bin, der hinsieht, wenn jemand Hilfe braucht."',
+            text: '"Meine Mutter, meine Tante, und... Sie, Frau Klein."',
             consequence:
-              'Du schreibst: "Zukunfts-Ich, sei der Mensch, der nicht wegschaut. Sei der, der fragt: Alles gut bei dir? Sei der, der den leisen Menschen zuhoert." ZukunftsDu hat Traenen in den Augen. "Das ist wunderschoen. Und ich verspreche dir: Du wirst genau dieser Mensch sein."',
-            empathyPoints: 4,
+              'Frau Klein laechelt. "Ich fuehle mich geehrt. Und es ist gut, dass du mehrere Menschen hast. Wenn eine Person mal nicht erreichbar ist, gibt es eine andere. Das ist wie ein Sicherheitsnetz -- je mehr Faeden, desto stabiler." Du merkst: Ein Netzwerk aus Vertrauenspersonen aufzubauen ist kein Zeichen von Schwaeche, sondern von Klugheit.',
+            empathyPoints: 2,
             insightPoints: 2,
             couragePoints: 2,
             nextSceneId: 'home-s3-scene-5',
           },
           {
             id: 'home-s3-c4b',
-            text: '"Ich wuensche mir, dass ich mich selbst genauso behandle, wie ich meine Freunde behandle."',
+            text: '"Ich weiss nicht genau. Ich rede nicht so gern ueber meine Probleme."',
             consequence:
-              'Du schreibst: "Zukunfts-Ich, sei nett zu dir. Rede mit dir so, wie du mit deinem besten Freund reden wuerdest. Du verdienst die gleiche Freundlichkeit." ZukunftsDu laechelt: "Das ist vielleicht die schwerste Lektion von allen. Aber du bist auf dem richtigen Weg."',
-            empathyPoints: 2,
-            insightPoints: 4,
-            couragePoints: 1,
-            nextSceneId: 'home-s3-scene-5',
-          },
-          {
-            id: 'home-s3-c4c',
-            text: '"Ich wuensche mir, dass ich Fehler machen darf und trotzdem weiss, dass ich genug bin."',
-            consequence:
-              'Du schreibst: "Zukunfts-Ich, du wirst Fehler machen. Viele. Und das ist okay. Fehler bedeuten, dass du etwas versuchst. Und du bist immer, immer genug -- egal was passiert." ZukunftsDu fluestert: "Diesen Brief werde ich aufheben. Fuer immer."',
+              'Frau Klein nickt verstaendnisvoll. "Das geht vielen so. Aber weisst du, was ich glaube? Dass du gerade, in diesem Moment, genau das tust -- ueber deine Probleme reden. Und es ist nicht so schlimm, wie du dachtest, oder?" Du denkst nach. Stimmt. Es fuehlt sich sogar ein bisschen leichter an. "Der erste Schritt ist immer der schwerste", sagt sie. "Und den hast du schon gemacht."',
             empathyPoints: 1,
-            insightPoints: 4,
+            insightPoints: 3,
             couragePoints: 2,
             nextSceneId: 'home-s3-scene-5',
           },
         ],
       },
+      // Scene 5 -- Fuer andere da sein UND fuer sich selbst
       {
         id: 'home-s3-scene-5',
-        text: 'Du faltest den Brief zusammen. ZukunftsDu beginnt langsam zu verblassen. "Danke", sagt ZukunftsDu leise. "Dieser Brief wird mich an alles erinnern, was du gelernt hast. An deine Staerken und an deine Baustellen. An deinen Mut und an deine Verletzlichkeit. An alles, was dich zu dir macht."',
-        speaker: 'ZukunftsDu',
-        speakerEmoji: '\u{1F31F}',
+        text: 'Auf dem Nachhauseweg fuehlt sich die Welt etwas leichter an. Nicht perfekt -- Sarah geht es immer noch schlecht, und deine Sorgen sind nicht verschwunden. Aber du weisst jetzt: Du musst das nicht allein tragen. Frau Klein kuemmert sich um Sarah. Und du hast gelernt, dass auch du Hilfe annehmen darfst. Der Guide meldet sich ein letztes Mal: "Weisst du, was ich heute an dir bewundert habe? Dass du den Mut hattest, Hilfe zu holen. Fuer Sarah UND fuer dich. Hilfe zu suchen ist kein Zeichen von Schwaeche -- es ist ein Zeichen von Staerke."',
+        speaker: 'Guide',
+        speakerEmoji: '\u{2728}',
         choices: [
           {
             id: 'home-s3-c5a',
-            text: '"Mach es gut, Zukunfts-Ich. Ich vertraue dir."',
+            text: '"Ich bin froh, dass es Menschen wie Frau Klein gibt. Und dass ich jetzt weiss, wie ich um Hilfe bitten kann."',
             consequence:
-              'ZukunftsDu winkt und loest sich in tausend kleine Lichtpunkte auf, die wie Gluehwuermchen durch den Raum schweben. Du schaust auf den Brief in deinen Haenden. Er fuehlt sich wertvoll an. Weil du wertvoll bist. Und weil du das jetzt auch weisst.',
+              'Der Guide nickt. "Merk dir diese Werkzeuge: Vertrauenspersonen benennen. Das Kinder- und Jugendtelefon 116 111 kennen. Und wissen, dass der Satz Ich brauche Hilfe einer der staerksten Saetze ist, die es gibt." Du atmest tief ein. Heute hast du nicht nur Sarah geholfen -- du hast auch dir selbst geholfen. Und das ist die wichtigste Lektion dieses Tages.',
+            empathyPoints: 2,
+            insightPoints: 3,
+            couragePoints: 2,
+            nextSceneId: null,
+          },
+          {
+            id: 'home-s3-c5b',
+            text: '"Es war schwer. Aber es fuehlt sich richtig an. Und ich werde jetzt besser auf mich aufpassen."',
+            consequence:
+              'Der Guide laechelt warm. "Das ist das Gleichgewicht, das man lernen muss: Fuer andere da sein, ohne sich selbst zu vergessen. Du kannst anderen nur helfen, wenn du selbst genug Kraft hast. Wie im Flugzeug: Erst die eigene Sauerstoffmaske, dann die der anderen." Du laechelst. Ab heute kuemerst du dich auch um dich. Weil du es wert bist.',
             empathyPoints: 1,
             insightPoints: 3,
-            couragePoints: 3,
+            couragePoints: 2,
             nextSceneId: null,
           },
         ],
@@ -559,170 +536,166 @@ export const homeScenarios: Scenario[] = [
   },
 
   // ---------------------------------------------------------------------------
-  // Scenario 4: "Das Fest der Inseln"
-  // Teaching: Alle gelernten Faehigkeiten kommen zusammen. NPCs aus allen Inseln
-  // kehren zurueck. Feier des Wachstums und Blick in die Zukunft.
+  // Scenario 4: "Deine Superkraft"
+  // Teaching: Integration aller Faehigkeiten. Persoenlicher Notfallkoffer.
+  // "Du bist staerker, als du denkst. Du hast mehr Werkzeuge, als du weisst.
+  // Und du bist nie allein."
   // ---------------------------------------------------------------------------
   {
     id: 'home-scenario-4',
     islandId: 'home' as IslandId,
-    title: 'Das Fest der Inseln',
+    title: 'Deine Superkraft',
     description:
-      'Ein grosses Fest vereint alle Inseln. Bekannte Gesichter kehren zurueck, und gemeinsam feiert ihr alles, was ihr gelernt habt. Denn Wachstum verdient gefeiert zu werden.',
+      'Die letzte Station deiner Reise. Du blickst zurueck auf alles, was du gelernt hast, und baust dir deinen persoenlichen Notfallkoffer. Denn du bist staerker, als du denkst.',
     scenes: [
+      // Scene 1 -- Der Kreis der Inseln
       {
         id: 'home-s4-scene-1',
-        text: 'Heute ist ein besonderer Tag. Die Heimat-Insel leuchtet in allen Farben, denn heute findet das Fest der Inseln statt -- ein Fest, bei dem alle zusammenkommen, die dich auf deiner Reise begleitet haben. Am Eingang steht ein grosses Banner: "Fuer alle, die gewachsen sind." Du siehst vertraute Gesichter: Timber, der Waldgeist, winkt dir zwischen den Baeumen zu. Marina, die Meerjungfrau, hat einen kleinen Brunnen mitgebracht, in dem bunte Fische schwimmen. Und da hinten -- ist das nicht Amadou mit seiner Djembe?',
-        speaker: 'Erzaehler',
-        speakerEmoji: '\u{1F3E0}',
+        text: 'Du stehst auf einem Huegel und schaust ueber das Meer. In der Ferne siehst du sie alle: die Vulkan-Insel, die Ozean-Insel, den Wald, den Berg, den Garten, die Nacht-Insel, die Regenbogen-Insel. Jede hat dich etwas anderes gelehrt. Jede hat einen Teil von dir veraendert. Der Guide steht neben dir. "Weisst du noch, wie du am Anfang warst?", fragt er. "Unsicher, vielleicht ueberfordert, vielleicht ein bisschen aengstlich. Und jetzt schau dich an."',
+        speaker: 'Guide',
+        speakerEmoji: '\u{2728}',
         choices: [
           {
             id: 'home-s4-c1a',
-            text: 'Zuerst zu Timber gehen und ihn begruessen.',
+            text: '"Ich habe auf jeder Insel etwas gelernt. Auf dem Vulkan, mit Wut umzugehen. Im Ozean, Traurigkeit zuzulassen. Im Wald, trotz Angst mutig zu sein."',
             consequence:
-              'Timber leuchtet sanft, als er dich sieht. "Da bist du ja", sagt er warm. "Weisst du noch, als wir zusammen im Wald ueber Angst gesprochen haben? Schau dich an jetzt. Du bist so viel mutiger geworden." Sein Leuchten wird heller. "Und weisst du, was mich am meisten freut? Du hast gelernt, dass Mut und Angst zusammen existieren koennen."',
-            empathyPoints: 1,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: 'home-s4-scene-2',
-          },
-          {
-            id: 'home-s4-c1b',
-            text: 'Marina am Brunnen besuchen.',
-            consequence:
-              'Marina laechelt, als du kommst. "Erinnerst du dich an den Ozean?", fragt sie. "An die Wellen der Traurigkeit?" Du nickst. "Weisst du, was ich an dir bewundere?", sagt sie. "Du hast gelernt, dass Traurigkeit keine Schwaeche ist. Und du hast gelernt, darueber zu sprechen. Das koennen nicht mal alle Erwachsenen."',
+              'Der Guide nickt bei jedem Satz. "Weiter." Du ueberlegst: "Auf dem Berg habe ich gelernt, dass ich genug bin. Im Garten, wie Beziehungen funktionieren. In der Nacht, achtsam zu sein. Und auf der Regenbogen-Insel, dass Verschiedenheit etwas Schoenes ist." Der Guide laechelt. "Und all das zusammen -- das ist deine Superkraft."',
             empathyPoints: 2,
-            insightPoints: 2,
+            insightPoints: 3,
             couragePoints: 1,
             nextSceneId: 'home-s4-scene-2',
           },
           {
-            id: 'home-s4-c1c',
-            text: 'Zu Amadou gehen, der bereits trommelt.',
+            id: 'home-s4-c1b',
+            text: '"Ich bin immer noch nicht perfekt. Ich mache immer noch Fehler."',
             consequence:
-              'Amadou grinst dich an und schlaegt einen Willkommensrhythmus. "Hey! Erinnerst du dich, als wir ueber Vielfalt gesprochen haben? Ueber all die verschiedenen Menschen und Geschichten?" Er reicht dir eine kleine Trommel. "Heute feiern wir, dass verschieden sein das Beste ist, was es gibt."',
-            empathyPoints: 2,
-            insightPoints: 1,
+              'Der Guide lacht leise. "Natuerlich! Perfekt sein ist nicht das Ziel. Das Ziel ist, bewusst zu handeln, statt nur zu reagieren. Fruether hast du vielleicht geschrien, wenn du wuetend warst. Jetzt atmest du erstmal durch. Frueher hast du vielleicht weggeschaut, wenn jemand Hilfe brauchte. Jetzt schaust du hin. Das sind keine kleinen Veraenderungen -- das sind riesige."',
+            empathyPoints: 0,
+            insightPoints: 3,
             couragePoints: 2,
             nextSceneId: 'home-s4-scene-2',
           },
         ],
       },
+      // Scene 2 -- Der Notfallkoffer
       {
         id: 'home-s4-scene-2',
-        text: 'Das Fest ist in vollem Gange. Ueberall gibt es Stationen, die an die verschiedenen Inseln erinnern. Am Vulkan-Stand kann man seine Wut in einen Boxsack schlagen und danach tief durchatmen. Am Garten-Stand gibt es Samen zum Einpflanzen -- als Symbol dafuer, dass Beziehungen gepflegt werden muessen. Am Nacht-Stand leuchten Sterne und man kann sich leise Geschichten erzaehlen. Der Guide tritt auf eine kleine Buehne und sagt: "Bevor wir weiterfeiern, moechte ich etwas Besonderes machen. Ich moechte, dass jeder von euch eine Sache teilt, die er auf dieser Reise gelernt hat."',
+        text: 'Der Guide setzt sich ins Gras und sagt: "Jetzt kommt der wichtigste Teil. Du baust dir deinen persoenlichen Notfallkoffer. Nicht aus Holz und Naegeln -- sondern aus allem, was du gelernt hast. Fuer die Tage, die schwer werden. Fuer die Momente, in denen alles zu viel wird." Er legt einen unsichtbaren Koffer vor dich hin. "Was kommt rein?"',
         speaker: 'Guide',
         speakerEmoji: '\u{2728}',
         choices: [
           {
             id: 'home-s4-c2a',
-            text: '"Ich habe gelernt, dass es okay ist, nicht okay zu sein."',
+            text: '"Erstens: Atmen. Wenn alles zu viel wird -- viermal einatmen, viermal ausatmen. Das bringt mich zurueck ins Hier und Jetzt."',
             consequence:
-              'Es wird still. Dann nicken viele. Timber sagt leise: "Das war auch meine groesste Lektion." Marina wischt sich eine Traene weg. Dein Satz hat etwas beruehrt, weil er wahr ist. Und weil jeder hier das Gleiche gefuehlt hat.',
-            empathyPoints: 2,
+              'Der Guide nickt. "Gut. Das ist dein Grundwerkzeug. Es kostet nichts, du hast es immer dabei, und es funktioniert. Die Vulkan-Insel hat dir das beigebracht." Er tut so, als wuerde er etwas in den Koffer legen. "Was noch?"',
+            empathyPoints: 0,
             insightPoints: 3,
-            couragePoints: 2,
+            couragePoints: 1,
             nextSceneId: 'home-s4-scene-3',
           },
           {
             id: 'home-s4-c2b',
-            text: '"Ich habe gelernt, dass meine Gefuehle mich nicht definieren -- aber sie sind wichtig."',
+            text: '"Erstens: Meine Vertrauenspersonen. Die Namen und Nummern der Menschen, denen ich vertraue."',
             consequence:
-              'Amadou trommelt einen anerkennenden Rhythmus. "Ja!", ruft er. "Gefuehle kommen und gehen wie Musik. Aber du bist das ganze Lied, nicht nur ein einzelner Ton." Die Menge lacht und klatscht. Du hast etwas gesagt, das sitzt.',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 2,
-            nextSceneId: 'home-s4-scene-3',
-          },
-          {
-            id: 'home-s4-c2c',
-            text: '"Ich habe gelernt, dass man zusammen staerker ist als allein."',
-            consequence:
-              'Sofia nickt heftig. "Genau das! Als ich allein war, fuehlte sich alles riesig an. Aber mit anderen an meiner Seite wurde alles handhabbar." Der Guide laechelt. "Das ist der Kern von allem, was wir hier machen: Fuereinander da sein."',
-            empathyPoints: 3,
+              'Der Guide laechelt. "Das ist vielleicht das wichtigste Werkzeug von allen. Zu wissen, wer an deiner Seite steht. Mama, Papa, Tante, Lehrer, Frau Klein, das Kinder- und Jugendtelefon 116 111. Du bist nie allein -- und dieses Werkzeug erinnert dich daran." Er legt es symbolisch in den Koffer. "Was kommt als Naechstes?"',
+            empathyPoints: 2,
             insightPoints: 2,
             couragePoints: 1,
             nextSceneId: 'home-s4-scene-3',
           },
+          {
+            id: 'home-s4-c2c',
+            text: '"Erstens: Gefuehle benennen. Wenn ich weiss, was ich fuehle, kann ich besser damit umgehen."',
+            consequence:
+              'Der Guide nickt anerkennend. "Absolut. Benennen ist Baendigen, hat mal jemand Kluges gesagt. Wenn du sagst: Ich bin wuetend -- dann bist du nicht mehr nur die Wut. Du bist du, und du FUEHLST Wut. Das ist ein riesiger Unterschied." Er legt das Werkzeug in den Koffer. "Was noch?"',
+            empathyPoints: 1,
+            insightPoints: 3,
+            couragePoints: 0,
+            nextSceneId: 'home-s4-scene-3',
+          },
         ],
       },
+      // Scene 3 -- Den Koffer fuellen
       {
         id: 'home-s4-scene-3',
-        text: 'Es wird langsam dunkel und jemand hat Lichterketten aufgehaengt. Die Atmosphaere ist warm und friedlich. ZukunftsDu erscheint neben dir, schimmert leise im Lichterschein. "Schau dich um", sagt ZukunftsDu. "All diese Menschen und Wesen, die du getroffen hast. Jede Begegnung hat dich ein Stueckchen veraendert. Du bist nicht mehr dieselbe Person, die diese Reise begonnen hat."',
-        speaker: 'ZukunftsDu',
-        speakerEmoji: '\u{1F31F}',
+        text: 'Der Koffer fuellt sich. Atmen. Vertrauenspersonen. Gefuehle benennen. Aber es fehlt noch etwas. Der Guide fragt: "Was tust du, wenn du merkst, dass du fuer einen Freund nicht genug helfen kannst? Wenn etwas zu gross ist fuer dich allein?"',
+        speaker: 'Guide',
+        speakerEmoji: '\u{2728}',
         choices: [
           {
             id: 'home-s4-c3a',
-            text: '"Stimmt. Ich hab mich veraendert. Und es fuehlt sich gut an."',
+            text: '"Ich hole einen Erwachsenen dazu. Nicht weil ich es nicht kann -- sondern weil manche Dinge professionelle Hilfe brauchen."',
             consequence:
-              'ZukunftsDu nickt. "Du hast gelernt, deine Wut zu verstehen, statt sie rauszulassen. Du hast gelernt, Traurigkeit zuzulassen, statt sie zu verstecken. Du hast gelernt, Angst zu spueren und trotzdem mutig zu sein. Das alles traegst du jetzt in dir -- fuer immer."',
+              'Der Guide sagt: "Genau. Du bist ein Freund, kein Therapeut. Und das ist voellig in Ordnung. Wenn jemand sagt, er will nicht mehr leben, oder wenn jemand sich selbst verletzt, oder wenn du das Gefuehl hast, dass es wirklich ernst ist -- dann ist Hilfe holen das Richtigste, was du tun kannst. Auch wenn die Person sagt: Sag es niemandem. Denn Sicherheit geht vor Geheimnis."',
             empathyPoints: 1,
             insightPoints: 3,
-            couragePoints: 2,
+            couragePoints: 3,
             nextSceneId: 'home-s4-scene-4',
           },
           {
             id: 'home-s4-c3b',
-            text: '"Ich bin ein bisschen traurig, dass die Reise vorbei ist."',
+            text: '"Ich sage: Ich bin fuer dich da, aber ich kenne jemanden, der dir noch besser helfen kann. Lass uns zusammen hingehen."',
             consequence:
-              'ZukunftsDu laechelt sanft. "Die Reise ist nicht vorbei. Sie geht weiter -- jeden Tag, in jeder Situation. Der Unterschied ist: Jetzt hast du Werkzeuge. Und du weisst, dass du nicht allein bist." Du schaust auf das Fest und spuerst: Das stimmt. Es geht weiter.',
-            empathyPoints: 1,
-            insightPoints: 3,
-            couragePoints: 1,
+              'Der Guide strahlt. "Das ist perfekt. Du laesst die Person nicht allein, UND du holst professionelle Hilfe. Das zeigt: Du kuemmerst dich, du nimmst es ernst, und du kennst deine Grenzen. Dieses Werkzeug -- zu wissen, wann etwas groesser ist als du -- ist eines der reifsten, das es gibt."',
+            empathyPoints: 3,
+            insightPoints: 2,
+            couragePoints: 2,
             nextSceneId: 'home-s4-scene-4',
           },
         ],
       },
+      // Scene 4 -- Der Mut-Satz
       {
         id: 'home-s4-scene-4',
-        text: 'Der Guide tritt noch einmal auf die Buehne. "Zum Abschluss unseres Festes habe ich eine letzte Aufgabe fuer euch", sagt er. "Keine schwere. Eine schoene. Ich moechte, dass jeder von euch sich eine Person aussucht, der er heute etwas Nettes sagt. Etwas Echtes. Etwas, das von Herzen kommt." Er schaut dich an. "Willst du anfangen?"',
+        text: 'Der Guide sagt: "Noch ein letztes Werkzeug. Das wichtigste vielleicht. Ein Satz, den du dir selbst sagst, wenn alles dunkel wirkt. Dein persoenlicher Mut-Satz. Etwas, das du wirklich glaubst und das dich daran erinnert, wer du bist." Er schaut dich an. "Was ist dein Satz?"',
         speaker: 'Guide',
         speakerEmoji: '\u{2728}',
         choices: [
           {
             id: 'home-s4-c4a',
-            text: 'Zum Guide gehen und sagen: "Danke, dass du mich auf dieser Reise begleitet hast. Du hast mir gezeigt, dass ich mehr kann, als ich dachte."',
+            text: '"Ich bin staerker, als ich denke. Ich habe mehr Werkzeuge, als ich weiss. Und ich bin nie allein."',
             consequence:
-              'Der Guide schluckt und seine Augen werden feucht. "Das... das bedeutet mir sehr viel", sagt er leise. "Aber weisst du was? Alles, was du gelernt hast, war schon in dir. Ich habe nur geholfen, es zu finden." Ringsherum laecheln die anderen.',
-            empathyPoints: 3,
-            insightPoints: 2,
-            couragePoints: 2,
-            nextSceneId: 'home-s4-scene-5',
-          },
-          {
-            id: 'home-s4-c4b',
-            text: 'Zu Timber, Marina und den anderen gehen und sagen: "Danke, dass ihr mir eure Geschichten erzaehlt habt. Jede einzelne hat etwas in mir veraendert."',
-            consequence:
-              'Timber leuchtet heller. Marina laechelt. Amadou spielt einen sanften Rhythmus. Du spuerst, wie warm es sich anfuehlt, Dankbarkeit auszusprechen -- nicht nur zu fuehlen, sondern laut zu sagen. "Danke" ist eines der machtvollsten Woerter, die es gibt.',
-            empathyPoints: 4,
-            insightPoints: 1,
-            couragePoints: 2,
-            nextSceneId: 'home-s4-scene-5',
-          },
-          {
-            id: 'home-s4-c4c',
-            text: 'Dir selbst etwas sagen: "Ich bin stolz auf mich. Auf alles, was ich geschafft habe."',
-            consequence:
-              'Du sagst es leise, nur fuer dich. Aber ZukunftsDu hoert es und laechelt. Der Guide nickt wissend. Sich selbst anzuerkennen -- das ist vielleicht die mutigste Sache von allen. Und du hast es verdient.',
+              'Der Guide schliesst die Augen und laechelt. "Das ist dein Satz. Merk ihn dir. Schreib ihn auf. Kleb ihn an den Spiegel. Sag ihn dir, wenn du aufwachst und die Welt sich zu gross anfuehlt." Er legt den Satz in den Koffer. "Dein Notfallkoffer ist fertig. Er ist nicht schwer -- aber er ist maechtig."',
             empathyPoints: 1,
             insightPoints: 3,
             couragePoints: 3,
             nextSceneId: 'home-s4-scene-5',
           },
+          {
+            id: 'home-s4-c4b',
+            text: '"Schlechte Tage gehen vorbei. Und ich habe schon schlimmere ueberstanden."',
+            consequence:
+              'Der Guide nickt. "Das ist ein Satz voller Wahrheit. Denn schau zurueck: Jeder schwierige Moment, jeder schmerzhafte Tag, den du hattest -- du bist noch hier. Du hast jeden einzelnen ueberlebt. Und das wirst du auch in Zukunft." Er legt den Satz vorsichtig in den Koffer. "Bereit fuer den letzten Schritt?"',
+            empathyPoints: 0,
+            insightPoints: 3,
+            couragePoints: 3,
+            nextSceneId: 'home-s4-scene-5',
+          },
+          {
+            id: 'home-s4-c4c',
+            text: '"Es ist okay, nicht okay zu sein. Aber ich bleibe nicht stehen -- ich hole mir Hilfe und gehe weiter."',
+            consequence:
+              'Der Guide sagt leise: "Das ist einer der klügsten Saetze, die ich je gehoert habe. Er verbindet Selbstakzeptanz mit Handlung. Du erkennst an, dass es schwer ist -- und trotzdem gehst du weiter. Nicht allein, sondern mit Hilfe." Er legt den Satz in den Koffer. "Dein Notfallkoffer ist komplett."',
+            empathyPoints: 1,
+            insightPoints: 3,
+            couragePoints: 2,
+            nextSceneId: 'home-s4-scene-5',
+          },
         ],
       },
+      // Scene 5 -- Der Abschied und Aufbruch
       {
         id: 'home-s4-scene-5',
-        text: 'Das Fest neigt sich dem Ende zu. Die Lichterketten leuchten wie kleine Sterne. Einer nach dem anderen verabschiedet sich -- aber nicht fuer immer. "Wir sind immer da", sagt Timber beim Gehen. "In deinem Kopf, in deinem Herzen, in deinem Werkzeugkoffer." Marina winkt vom Brunnen aus. ZukunftsDu steht neben dir und sagt: "Bereit fuer morgen?"',
-        speaker: 'ZukunftsDu',
-        speakerEmoji: '\u{1F31F}',
+        text: 'Der Guide steht auf und schaut dich an. Um euch herum leuchtet die Heimat-Insel in warmen Farben. "Du hast die Reise geschafft", sagt er. "Acht Inseln. Dutzende Entscheidungen. Hunderte von Momenten, in denen du gewachsen bist. Und jetzt gehst du zurueck ins echte Leben -- mit einem vollen Werkzeugkoffer und dem Wissen, dass du nie allein bist." Er streckt dir die Hand hin. "Ich bin stolz auf dich. Und weisst du, wer noch stolz auf dich sein sollte?"',
+        speaker: 'Guide',
+        speakerEmoji: '\u{2728}',
         choices: [
           {
             id: 'home-s4-c5a',
-            text: '"Bereit. Nicht perfekt. Aber bereit."',
+            text: '"Ich selbst."',
             consequence:
-              'ZukunftsDu lacht. "Das ist die beste Antwort, die es gibt. Perfekt muss man nicht sein. Bereit reicht voellig." Du schaust auf die Insel, die leise leuchtet. In dir ist ein warmes Gefuehl -- wie eine Flamme, die niemand ausloeschen kann. Du bist gewachsen. Du bist staerker. Und was auch kommt -- du bist bereit.',
+              'Der Guide drueckt deine Hand und laechelt. "Genau. Du selbst. Du bist staerker, als du denkst. Du hast mehr Werkzeuge, als du weisst. Und du bist nie allein. Vergiss das nie." Das Licht der Inseln flackert ein letztes Mal auf, und du spuerst eine Waerme in deiner Brust, die bleibt. Die Reise endet hier -- aber alles, was du gelernt hast, traegst du fuer immer in dir. Und das naechste Abenteuer? Das ist dein Leben. Und du bist bereit.',
             empathyPoints: 2,
             insightPoints: 3,
             couragePoints: 3,
@@ -730,11 +703,11 @@ export const homeScenarios: Scenario[] = [
           },
           {
             id: 'home-s4-c5b',
-            text: '"Bereit. Und diesmal weiss ich: Ich muss es nicht allein schaffen."',
+            text: '"Alle, die mich auf dem Weg begleitet haben. Und ich bin stolz auf sie."',
             consequence:
-              'ZukunftsDu nickt. "Das ist die wichtigste Erkenntnis von allen." In der Ferne hoerst du Amadous Trommel, leise und stetig wie ein Herzschlag. Du laechelst. Die Reise geht weiter. Aber jetzt traegst du alles in dir, was du brauchst -- und du weisst, wo du Hilfe findest, wenn du sie brauchst.',
-            empathyPoints: 2,
-            insightPoints: 3,
+              'Der Guide bekommt feuchte Augen. "Das zeigt, wie viel Empathie in dir steckt. Du denkst an die anderen, selbst in diesem Moment. Aber vergiss nicht: Auch du verdienst Stolz. Auf jede mutige Entscheidung, jedes ehrliche Gespraech, jeden Moment, in dem du hingeschaut hast, statt wegzuschauen." Das Licht huellt euch beide ein. Die Reise ist vorbei -- aber was bleibt, ist alles, was du geworden bist. Du bist staerker, als du denkst. Du hast mehr Werkzeuge, als du weisst. Und du bist nie allein.',
+            empathyPoints: 3,
+            insightPoints: 2,
             couragePoints: 2,
             nextSceneId: null,
           },
@@ -749,88 +722,68 @@ export const homeScenarios: Scenario[] = [
 // =============================================================================
 
 export const homeWisdomCards: WisdomCard[] = [
+  // Card 1 -- From Volcano Island (Anger Management)
   {
     id: 'home-wisdom-1',
     islandId: 'home' as IslandId,
-    text: 'Du hast nicht nur ein Werkzeug -- du hast einen ganzen Koffer. Durchatmen, zuhoeren, Grenzen setzen, Hilfe holen. Benutze, was du brauchst.',
-    category: 'strategy',
+    text: 'Wut ist nicht dein Feind -- sie ist ein Signal. Lerne, sie zu hoeren, statt ihr zu gehorchen. Durchatmen, benennen, handeln.',
+    category: 'emotion',
     collected: false,
   },
+  // Card 2 -- From Ocean Island (Grief / Sadness)
   {
     id: 'home-wisdom-2',
     islandId: 'home' as IslandId,
-    text: 'Scheitern ist kein Zeichen, dass du aufhoeren sollst. Es ist ein Zeichen, dass du etwas Mutiges versucht hast.',
-    category: 'courage',
+    text: 'Traurigkeit zuzulassen ist staerker, als sie zu verdraengen. Traenen sind kein Zeichen von Schwaeche -- sie sind ein Zeichen, dass dir etwas wichtig ist.',
+    category: 'emotion',
     collected: false,
   },
+  // Card 3 -- From Forest Island (Fear / Courage)
   {
     id: 'home-wisdom-3',
     islandId: 'home' as IslandId,
-    text: 'Wachstum ist kein gerader Weg. Manchmal geht es zurueck, bevor es vorwaerts geht. Und das ist voellig normal.',
-    category: 'insight',
+    text: 'Mut bedeutet nicht, keine Angst zu haben. Mut bedeutet, Angst zu fuehlen und trotzdem das Richtige zu tun.',
+    category: 'courage',
     collected: false,
   },
+  // Card 4 -- From Mountain Island (Self-Worth)
   {
     id: 'home-wisdom-4',
     islandId: 'home' as IslandId,
-    text: 'Sei zu dir selbst so freundlich, wie du zu deinem besten Freund waerst. Du verdienst die gleiche Guete.',
-    category: 'emotion',
+    text: 'Du bist genug. Genau so, wie du bist. Nicht erst, wenn du perfekt bist -- sondern jetzt, mit all deinen Ecken und Kanten.',
+    category: 'insight',
     collected: false,
   },
+  // Card 5 -- From Garden Island (Relationships)
   {
     id: 'home-wisdom-5',
     islandId: 'home' as IslandId,
-    text: 'Im echten Leben kommen Probleme selten einzeln. Aber du hast gelernt, viele Werkzeuge gleichzeitig zu nutzen -- und das macht dich staerker, als du denkst.',
+    text: 'Beziehungen sind wie Gaerten: Sie brauchen Pflege, Geduld und ehrliche Worte. Und manchmal muss man auch Unkraut jaeten -- also ansprechen, was nicht stimmt.',
     category: 'strategy',
     collected: false,
   },
+  // Card 6 -- From Night Island (Mindfulness / Digital Balance)
   {
     id: 'home-wisdom-6',
     islandId: 'home' as IslandId,
-    text: 'Du musst nicht perfekt sein, um wertvoll zu sein. Du bist genug, genau so, wie du bist -- mit all deinen Ecken und Kanten.',
-    category: 'emotion',
-    collected: false,
-  },
-  {
-    id: 'home-wisdom-7',
-    islandId: 'home' as IslandId,
-    text: 'Jede schwierige Situation, die du gemeistert hast, hat dir etwas beigebracht. Du bist die Summe all deiner Erfahrungen.',
-    category: 'insight',
-    collected: false,
-  },
-  {
-    id: 'home-wisdom-8',
-    islandId: 'home' as IslandId,
-    text: 'Hilfe annehmen ist genauso mutig wie Hilfe geben. Beides braucht Vertrauen und Staerke.',
-    category: 'courage',
-    collected: false,
-  },
-  {
-    id: 'home-wisdom-9',
-    islandId: 'home' as IslandId,
-    text: 'Die Menschen, die du auf deinem Weg triffst, veraendern dich -- und du veraenderst sie. Jede Begegnung zaehlt.',
-    category: 'emotion',
-    collected: false,
-  },
-  {
-    id: 'home-wisdom-10',
-    islandId: 'home' as IslandId,
-    text: 'Wenn du nicht weisst, was du tun sollst, frag dich: Was wuerde ich meinem besten Freund in dieser Situation raten? Und dann nimm deinen eigenen Rat an.',
+    text: 'In der Stille findest du dich selbst. Schalte manchmal alles aus -- Handy, Geraeusche, Erwartungen. Was bleibt, bist du. Und du bist mehr als genug.',
     category: 'strategy',
     collected: false,
   },
+  // Card 7 -- From Rainbow Island (Diversity / Identity)
   {
-    id: 'home-wisdom-11',
+    id: 'home-wisdom-7',
     islandId: 'home' as IslandId,
-    text: 'Du darfst stolz auf dich sein -- nicht erst, wenn alles perfekt laeuft, sondern gerade dann, wenn es schwer war und du trotzdem weitergemacht hast.',
-    category: 'courage',
+    text: 'Jeder Mensch ist anders -- und genau das macht die Welt bunt. Verschieden sein ist kein Problem. Es ist eine Superkraft.',
+    category: 'insight',
     collected: false,
   },
+  // Card 8 -- From Home Island (Integration / Transfer)
   {
-    id: 'home-wisdom-12',
+    id: 'home-wisdom-8',
     islandId: 'home' as IslandId,
-    text: 'Die Reise endet hier nicht. Alles, was du gelernt hast, traegst du in dir -- fuer jeden Tag, jede Herausforderung, jedes Abenteuer, das noch kommt.',
-    category: 'insight',
+    text: 'Du bist staerker, als du denkst. Du hast mehr Werkzeuge, als du weisst. Und du bist nie allein. Merk dir das -- fuer jeden Tag, der kommt.',
+    category: 'courage',
     collected: false,
   },
 ];
@@ -839,70 +792,53 @@ export const homeWisdomCards: WisdomCard[] = [
 // 3. ACTIVITIES
 // =============================================================================
 
-export const homeActivities: HomeActivity[] = [
+export const homeActivities: Activity[] = [
   // ---------------------------------------------------------------------------
-  // Activity 1: Werkzeugkoffer (Reflection)
-  // Ueberblick ueber alle gelernten Strategien
+  // Activity 1: Mein Notfallkoffer (Personal Emergency Kit)
   // ---------------------------------------------------------------------------
   {
     id: 'home-activity-1',
     islandId: 'home' as IslandId,
-    type: 'reflection',
-    title: 'Werkzeugkoffer',
+    type: 'creative',
+    title: 'Mein persoenlicher Notfallkoffer',
     description:
-      'Erstelle einen Ueberblick ueber alle Strategien und Werkzeuge, die du auf deiner Reise gelernt hast. Dein persoenlicher Werkzeugkoffer fuer den Alltag.',
-    instructions: [
-      'Nimm dir ein Blatt Papier oder oeffne ein leeres Dokument. Zeichne einen grossen Koffer in die Mitte -- das ist dein Werkzeugkoffer.',
-      'Denke zurueck an jede Insel, die du besucht hast. Was hast du dort gelernt? Schreibe fuer jede Insel mindestens ein "Werkzeug" auf. Zum Beispiel: Vulkan-Insel = "Tief durchatmen bei Wut", Ozean-Insel = "Ueber Traurigkeit reden hilft".',
-      'Ordne deine Werkzeuge in Kategorien ein: Welche helfen bei Wut? Welche bei Angst? Welche bei Traurigkeit? Welche bei Konflikten mit anderen? Welche, wenn du dich allein fuehlst?',
-      'Markiere die drei Werkzeuge, die dir persoenlich am meisten geholfen haben. Schreibe daneben, in welcher Situation du sie benutzt hast.',
-      'Gibt es Situationen, fuer die du noch kein passendes Werkzeug hast? Schreibe sie auf. Ueberlege: Wen koenntest du fragen? Was koenntest du ausprobieren?',
-      'Bewahre deinen Werkzeugkoffer an einem Ort auf, wo du ihn leicht findest. Wenn eine schwierige Situation kommt, schau drauf und waehle das passende Werkzeug aus. Dein Koffer waechst mit dir -- du kannst jederzeit neue Werkzeuge hinzufuegen.',
-    ],
+      'Erstelle deinen persoenlichen Notfallkoffer -- eine Sammlung von Strategien, Kontakten und Dingen, die dir an schwierigen Tagen helfen. Schreibe alles auf eine Karte, die du immer bei dir tragen kannst. Der Koffer enthaelt: deine Vertrauenspersonen (mit Kontaktdaten), deine besten Strategien (Atmen, Tagebuch, Bewegung, Musik), deinen persoenlichen Mut-Satz, und die Nummer des Kinder- und Jugendtelefons: 116 111 (kostenlos, anonym). Gestalte die Karte so, dass sie dich an deine Staerke erinnert.',
     completed: false,
   },
-
   // ---------------------------------------------------------------------------
-  // Activity 2: Notfallplan (Creative)
-  // Persoenlichen Krisenplan erstellen
+  // Activity 2: Meine Reise -- Tagebuchreflexion (Journal Reflection)
   // ---------------------------------------------------------------------------
   {
     id: 'home-activity-2',
     islandId: 'home' as IslandId,
-    type: 'creative',
-    title: 'Notfallplan',
+    type: 'journal',
+    title: 'Meine Reise -- Tagebuchreflexion',
     description:
-      'Erstelle deinen persoenlichen Notfallplan fuer richtig schwierige Tage. Mit Kontakten, Strategien und Erinnerungen an das, was dir hilft.',
-    instructions: [
-      'Nimm ein schoenes Blatt Papier oder eine Karteikarte. Schreibe oben gross: "Mein Notfallplan -- fuer Tage, die sich zu gross anfuehlen".',
-      'Abschnitt 1 -- Meine Menschen: Schreibe 3-5 Personen auf, denen du vertraust und die du anrufen kannst, wenn es dir nicht gut geht. Schreibe ihren Namen und ihre Telefonnummer oder wie du sie erreichst.',
-      'Abschnitt 2 -- Professionelle Hilfe: Notiere diese wichtigen Nummern: Kinder- und Jugendtelefon: 116 111 (kostenlos, anonym). Schreibe auch auf, ob es an deiner Schule eine Schulsozialarbeit oder Vertrauenslehrkraft gibt.',
-      'Abschnitt 3 -- Was mir hilft: Schreibe 5 Dinge auf, die dir in schwierigen Momenten guttun. Zum Beispiel: Musik hoeren, rausgehen, zeichnen, mit dem Hund kuscheln, meine Lieblingsdecke, ein bestimmtes Lied.',
-      'Abschnitt 4 -- Mein Mut-Satz: Schreibe einen Satz auf, den du dir selbst sagen kannst, wenn alles zu viel wird. Zum Beispiel: "Es geht vorbei. Ich habe schon Schwieriges geschafft." Oder: "Ich darf mir Hilfe holen."',
-      'Falte den Plan und lege ihn an einen sicheren Ort -- zum Beispiel in deine Handyhuelle, in deinen Geldbeutel oder in die Schublade neben deinem Bett. Er ist da, wenn du ihn brauchst. Und allein das Wissen, dass er da ist, kann schon helfen.',
-    ],
+      'Schreibe einen ausfuehrlichen Tagebucheintrag ueber deine gesamte Reise durch die Inneren Welten. Beantworte diese Fragen ehrlich: Was habe ich ueber mich selbst gelernt? Welche Insel hat mich am meisten beruehrt und warum? Was war der schwierigste Moment -- und wie bin ich damit umgegangen? Was hat sich in meinem Alltag veraendert, seit ich diese Reise begonnen habe? Welches Werkzeug benutze ich am haeufigsten? Worauf bin ich stolz? Und was moechte ich noch lernen?',
     completed: false,
   },
-
   // ---------------------------------------------------------------------------
-  // Activity 3: Ziele-Kompass (Assessment)
-  // SMART-Ziele setzen fuer die Zukunft
+  // Activity 3: Mein Ziele-Kompass (Future Goals Exercise)
   // ---------------------------------------------------------------------------
   {
     id: 'home-activity-3',
     islandId: 'home' as IslandId,
     type: 'assessment',
-    title: 'Ziele-Kompass',
+    title: 'Mein Ziele-Kompass',
     description:
-      'Setze dir persoenliche Ziele fuer die naechsten Wochen und Monate. Ein Kompass, der dir zeigt, wohin du wachsen moechtest.',
-    instructions: [
-      'Stell dir einen Kompass vor. Jede Himmelsrichtung steht fuer einen Bereich deines Lebens: Norden = Schule & Lernen, Osten = Freundschaften & Beziehungen, Sueden = Gefuehle & innere Welt, Westen = Hobbys & Kreativitaet. Zeichne diesen Kompass auf.',
-      'Waehle einen Bereich aus, in dem du wachsen moechtest. Formuliere ein konkretes Ziel. Nicht zu gross, nicht zu klein. Zum Beispiel: "Ich moechte innerhalb der naechsten zwei Wochen einmal jemandem ehrlich sagen, wie ich mich fuehle."',
-      'Pruefe dein Ziel mit der SMART-Regel: S = Spezifisch (Ist klar, was genau du tun willst?), M = Messbar (Kannst du pruefen, ob du es geschafft hast?), A = Attraktiv (Willst du das wirklich?), R = Realistisch (Kannst du das in der Zeit schaffen?), T = Terminiert (Bis wann willst du es schaffen?).',
-      'Schreibe unter dein Ziel: "Mein erster Schritt ist..." Zum Beispiel: "Mein erster Schritt ist, morgen in der Pause mit Lena zu reden und ihr zu sagen, dass ich sie vermisse."',
-      'Ueberlege: Was koennte dich daran hindern? Und was kannst du tun, wenn ein Hindernis auftaucht? Schreibe einen Plan B auf. Zum Beispiel: "Wenn ich mich nicht traue, es persoenlich zu sagen, schreibe ich ihr eine Nachricht."',
-      'Setze dir einen Erinnerungstermin -- zum Beispiel in zwei Wochen. Schau dann auf dein Ziel zurueck: Hast du es geschafft? Teilweise? Gar nicht? Jedes Ergebnis ist okay -- wichtig ist, dass du es versucht hast. Und dann setzt du dir das naechste Ziel.',
-    ],
+      'Setze dir drei persoenliche Ziele fuer die naechsten Wochen: ein Ziel fuer den Umgang mit deinen Gefuehlen (z.B. "Ich moechte meine Wut oefter benennen, statt sie rauszulassen"), ein Ziel fuer Beziehungen (z.B. "Ich moechte einmal pro Woche jemandem sagen, was ich an ihm schaetze"), und ein Ziel fuer dich selbst (z.B. "Ich moechte mir jeden Tag fuenf Minuten Stille goennen"). Schreibe fuer jedes Ziel den ersten konkreten Schritt auf, den du morgen tun kannst. Und setze dir einen Termin in zwei Wochen, um zurueckzuschauen: Was hat funktioniert? Was nicht? Und was ist das naechste Ziel?',
+    completed: false,
+  },
+  // ---------------------------------------------------------------------------
+  // Activity 4: Dankbarkeitsbrief (Gratitude Letter)
+  // ---------------------------------------------------------------------------
+  {
+    id: 'home-activity-4',
+    islandId: 'home' as IslandId,
+    type: 'reflection',
+    title: 'Dankbarkeitsbrief',
+    description:
+      'Schreibe einen Brief an eine Person, die dir wichtig ist -- jemand, der dir geholfen hat, der an dich geglaubt hat, oder der einfach fuer dich da war. Du musst den Brief nicht abschicken (aber du kannst). Schreibe ehrlich, was diese Person fuer dich bedeutet. Was hat sie getan, das dir geholfen hat? Was wuerdest du ihr gerne sagen, was du vielleicht noch nie laut gesagt hast? Dieser Brief ist ein Werkzeug fuer dich: Dankbarkeit auszudruecken macht nicht nur den anderen gluecklich -- es staerkt auch dich selbst. Forschung zeigt, dass Dankbarkeit eines der staerksten Werkzeuge fuer emotionales Wohlbefinden ist.',
     completed: false,
   },
 ];
@@ -911,23 +847,4 @@ export const homeActivities: HomeActivity[] = [
 // 4. NPCs
 // =============================================================================
 
-export const homeNPCs: HomeNPC[] = [
-  {
-    id: 'home-npc-guide',
-    name: 'Guide',
-    emoji: '\u{2728}',
-    description:
-      'Ein weiser Begleiter, der die ganze Reise ueber an deiner Seite war. Er spricht ruhig und bedacht, und seine Worte haben die Waerme von jemandem, der dich wirklich kennt.',
-    backstory:
-      'Der Guide war selbst einmal ein Reisender wie du. Er hat jede Insel besucht, jeden Sturm erlebt, jede Traene geweint und jedes Lachen geteilt. Er hat gelernt, seine Wut zu verstehen, seine Traurigkeit zuzulassen und seine Angst als Kompass zu nutzen. Heute begleitet er andere auf ihrer Reise -- nicht als jemand, der alle Antworten hat, sondern als jemand, der die richtigen Fragen stellt. "Ich bin nicht hier, um dir zu sagen, was du tun sollst", sagt er oft. "Ich bin hier, um dich daran zu erinnern, dass du es schon weisst." Der Guide glaubt an jeden einzelnen Reisenden, den er trifft. Und sein groesster Stolz ist, wenn sie irgendwann nicht mehr seine Hilfe brauchen -- weil sie gelernt haben, ihr eigener Guide zu sein.',
-  },
-  {
-    id: 'home-npc-zukunftsdu',
-    name: 'ZukunftsDu',
-    emoji: '\u{1F31F}',
-    description:
-      'Eine schimmernde, leicht durchsichtige Version von dir selbst -- du in einem Jahr. Sie/er strahlt eine ruhige Zuversicht aus und kennt dich besser als jeder andere.',
-    backstory:
-      'ZukunftsDu ist nicht wirklich aus der Zukunft. ZukunftsDu ist die Version von dir, die bereits in dir existiert -- die kluge, ruhige, mitfuehlende Stimme, die du manchmal hoerst, wenn du ganz still bist. Es ist die Stimme, die sagt: "Du schaffst das." Es ist die Stimme, die weiss, dass Fehler zum Wachsen gehoeren. ZukunftsDu kennt all deine Staerken, auch die, die du selbst noch nicht siehst. Und ZukunftsDu kennt all deine Schwaechen -- und liebt dich trotzdem, gerade deswegen. "Ich bin du", sagt ZukunftsDu manchmal. "Nur mit ein bisschen mehr Erfahrung. Aber alles, was ich kann, kannst du auch. Du weisst es nur noch nicht." ZukunftsDu taucht immer dann auf, wenn du Zweifel hast. Nicht um dir zu sagen, dass alles perfekt sein wird -- sondern um dich daran zu erinnern, dass du staerker bist, als du denkst.',
-  },
-];
+export const homeNPCs: never[] = [];

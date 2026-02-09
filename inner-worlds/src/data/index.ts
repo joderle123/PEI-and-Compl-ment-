@@ -1,11 +1,11 @@
-import { volcanoScenarios, volcanoActivities, volcanoWisdomCards, volcanoNPCs } from './islands/volcano';
-import { oceanScenarios, oceanActivities, oceanWisdomCards, oceanNPCs } from './islands/ocean';
-import { forestScenarios, forestActivities, forestWisdomCards, forestNPCs } from './islands/forest';
-import { mountainScenarios, mountainActivities, mountainWisdomCards, mountainNPCs } from './islands/mountain';
-import { gardenScenarios, gardenActivities, gardenWisdomCards, gardenNPCs } from './islands/garden';
-import { nightScenarios, nightActivities, nightWisdomCards, nightNPCs } from './islands/night';
-import { rainbowScenarios, rainbowActivities, rainbowWisdomCards, rainbowNPCs } from './islands/rainbow';
-import { homeScenarios, homeActivities, homeWisdomCards, homeNPCs } from './islands/home';
+import { volcanoScenarios, volcanoActivities, volcanoWisdomCards } from './islands/volcano';
+import { oceanScenarios, oceanActivities, oceanWisdomCards } from './islands/ocean';
+import { forestScenarios, forestActivities, forestWisdomCards } from './islands/forest';
+import { mountainScenarios, mountainActivities, mountainWisdomCards } from './islands/mountain';
+import { gardenScenarios, gardenActivities, gardenWisdomCards } from './islands/garden';
+import { nightScenarios, nightActivities, nightWisdomCards } from './islands/night';
+import { rainbowScenarios, rainbowActivities, rainbowWisdomCards } from './islands/rainbow';
+import { homeScenarios, homeActivities, homeWisdomCards } from './islands/home';
 
 export const allScenarios: Record<string, any[]> = {
   volcano: volcanoScenarios,
@@ -40,22 +40,10 @@ export const allWisdomCards: Record<string, any[]> = {
   home: homeWisdomCards,
 };
 
-export const allNPCs: Record<string, any[]> = {
-  volcano: volcanoNPCs,
-  ocean: oceanNPCs,
-  forest: forestNPCs,
-  mountain: mountainNPCs,
-  garden: gardenNPCs,
-  night: nightNPCs,
-  rainbow: rainbowNPCs,
-  home: homeNPCs,
-};
-
 export const getIslandData = (islandId: string) => ({
   scenarios: allScenarios[islandId] || [],
   activities: allActivities[islandId] || [],
   wisdomCards: allWisdomCards[islandId] || [],
-  npcs: allNPCs[islandId] || [],
 });
 
 export const getAllWisdomCards = () => {

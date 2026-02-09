@@ -1,744 +1,658 @@
 // @ts-nocheck
 import type { Scenario, WisdomCard, Activity, IslandId } from '../../../types';
 
-interface VolcanoActivity extends Activity {
-  instructions: string[];
-}
+// =============================================================================
+// Vulkaninsel - Wut & Emotionsregulation (Anger Management)
+// Therapeutisches Lernspiel für Jugendliche 10-15, CDSE Luxemburg
+// =============================================================================
+//
+// THERAPEUTISCHER HINTERGRUND:
+// Die Vulkaninsel behandelt eines der häufigsten Themen bei Jugendlichen
+// mit sozio-emotionalen Schwierigkeiten: den Umgang mit Wut.
+//
+// Die vier Kapitel bauen progressiv aufeinander auf:
+//   Kapitel 1 - ERKENNEN: Körperliche Warnzeichen der Wut identifizieren
+//   Kapitel 2 - VERSTEHEN: Wut als Sekundäremotion (Eisberg-Modell)
+//   Kapitel 3 - HANDELN: Konkrete Werkzeuge (Atmen, Ich-Botschaften)
+//   Kapitel 4 - ANWENDEN: Wut konstruktiv einsetzen (Selbstbehauptung)
+//
+// Alle Inhalte sind in altersgerechtem Deutsch verfasst und folgen
+// evidenzbasierten Ansätzen der kognitiven Verhaltenstherapie (KVT),
+// der Gewaltfreien Kommunikation (GFK) nach Rosenberg und der
+// Emotionsfokussierten Therapie (EFT).
+// =============================================================================
 
-interface NPC {
-  id: string;
-  name: string;
-  emoji: string;
-  description: string;
-  backstory: string;
-}
+// -----------------------------------------------------------------------------
+// NPCs - Nicht-Spieler-Charaktere
+// Auf dieser Insel werden NPCs über die Szenarien direkt eingeführt.
+// Die Hauptfigur Ash (14 Jahre) dient als Spiegel für die Spieler.
+// -----------------------------------------------------------------------------
+export const volcanoNPCs: any[] = [];
 
-// NPCs
-export const volcanoNPCs: NPC[] = [
-  {
-    id: 'flamara',
-    name: 'Flamara',
-    emoji: '🔥',
-    description: 'Die sarkastische Wächterin des Vulkans, die mehr weiß als sie zugibt',
-    backstory: 'Flamara war nicht immer eine Wächterin. Vor langer Zeit war sie selbst ein Teenager, der vor Wut fast alles verloren hätte. Seitdem hütet sie den Vulkan mit einer Mischung aus trockenem Humor und tiefer Weisheit. Sie nervt gerne – aber immer mit Absicht.'
-  },
-  {
-    id: 'ash',
-    name: 'Ash',
-    emoji: '🌑',
-    description: 'Ein patziger Teenager, dessen Wut ein Geheimnis verbirgt',
-    backstory: 'Ash ist vor drei Monaten auf der Vulkaninsel gelandet und weigert sich seitdem, irgendjemanden an sich heranzulassen. Er ist laut, er ist wütend, und er hat für alles einen sarkastischen Kommentar. Was niemand weiß: Unter der ganzen Wut versteckt sich eine Traurigkeit, die er niemals zeigen würde.'
-  },
-  {
-    id: 'magmus',
-    name: 'Magmus',
-    emoji: '🪨',
-    description: 'Ein Golem aus erstarrter Lava mit extrem trockenem Humor',
-    backstory: 'Magmus spricht in kurzen Sätzen und bewegt sich wie in Zeitlupe. Manche denken, er sei langsam – aber sein Verstand ist messerscharf. Er war einst tobende Lava und hat Jahrtausende gebraucht, um fest zu werden. Diese Erfahrung hat ihn gelehrt, dass Geduld die unterschätzteste Superkraft ist.'
-  },
-  {
-    id: 'zinnia',
-    name: 'Zinnia',
-    emoji: '🌺',
-    description: 'Eine rebellische Blume, die auf dem Vulkan einen geheimen Garten pflegt',
-    backstory: 'Zinnia ist die Überraschung der Vulkaninsel: eine leuchtende Blume, die im härtesten Boden wächst. Was sie aber wirklich besonders macht, ist ihre Vergangenheit – sie war selbst einmal voller Zorn und hat gelernt, diese Energie in etwas Schönes zu verwandeln. Sie ist kein bisschen sanft, wenn es darauf ankommt.'
-  }
-];
+// =============================================================================
+// SZENARIEN
+// 4 Kapitel mit progressivem Aufbau:
+//   1. Wut erkennen (körperliche Zeichen, Kampf-oder-Flucht)
+//   2. Wut als Sekundäremotion (der Eisberg unter der Oberfläche)
+//   3. Gesunde Wut-Ausdrucksformen (Ich-Botschaften, Atmen, Abstand)
+//   4. Wut konstruktiv nutzen (Selbstbehauptung, gegen Mobbing einstehen)
+// =============================================================================
 
-// Scenarios
 export const volcanoScenarios: Scenario[] = [
+  // =========================================================================
+  // KAPITEL 1: Wenn der Vulkan brodelt
+  // Kernthema: Wut erkennen - körperliche Warnsignale verstehen
+  // Lernziel: Spieler lernen die Kampf-oder-Flucht-Reaktion kennen und
+  //           verstehen, warum der Körper bei Wut so reagiert.
+  // Psychologische Basis: Amygdala-Aktivierung, Stressreaktion,
+  //                       emotionale Validierung
+  // =========================================================================
   {
     id: 'volcano-scenario-1',
     islandId: 'volcano' as IslandId,
-    title: 'Ankunft auf der Vulkaninsel',
-    description: 'Du wachst an einem unbekannten Ort auf – und der Boden unter dir ist heiß',
+    title: 'Wenn der Vulkan brodelt',
+    description: 'Du kommst auf der Vulkaninsel an und triffst Ash, der gerade die Kontrolle verliert. Lerne, die Zeichen der Wut zu erkennen.',
     scenes: [
       {
         id: 'v1-s1',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Du öffnest die Augen. Über dir ein roter Himmel, unter dir warmer Fels. Dein Kopf brummt. Wo bist du? Als du dich aufrichtest, siehst du einen rauchenden Vulkan in der Ferne. Der Boden vibriert leicht. Alles riecht nach Schwefel und Abenteuer. Und dann hörst du eine Stimme hinter dir: "Na, gut geschlafen? Oder eher – schlecht gelandet?"',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌋',
+        text: 'Die Vulkaninsel empfängt dich mit heißer Luft und dem Geruch von Schwefel. Der Boden unter deinen Füßen vibriert leicht - als hätte die Insel selbst einen Herzschlag. In der Ferne siehst du den Krater rauchen. Der Himmel leuchtet in Orange- und Rottönen. Als du einen schmalen Pfad zwischen schwarzen Felsen entlang gehst, hörst du plötzlich lautes Schreien. Zwischen den Felsen steht ein Junge - vielleicht 14 Jahre alt, mit dunklen Haaren und einem zerrissenen T-Shirt. Er heißt Ash. Seine Fäuste sind geballt, sein Gesicht ist rot angelaufen, und er tritt mit voller Wucht gegen einen Stein. "DAS IST SO UNFAIR!", brüllt er so laut, dass seine Stimme von den Felswänden widerhallt. "ICH HABE NICHTS GEMACHT UND TROTZDEM WERDE ICH BESTRAFT!" Er hat dich noch nicht bemerkt. Der Vulkan hinter ihm stößt eine dunkle Rauchwolke aus, als würde er auf Ashs Emotionen reagieren.',
         choices: [
           {
             id: 'v1-s1-c1',
-            text: 'Erschrocken herumwirbeln: "Wer bist du?!"',
-            consequence: 'Du reagierst wachsam – Vorsicht ist auch eine Form von Stärke.',
+            text: 'Sofort zu ihm gehen: "Hey, was ist los?"',
+            consequence: 'Dein Mut zeigt sich in deiner direkten Reaktion. Manchmal braucht es jemanden, der den ersten Schritt macht - jemanden, der nicht wegschaut, wenn ein anderer Mensch leidet. Aber Vorsicht: Wenn jemand gerade sehr wütend ist, kann plötzliches Ansprechen die Situation auch verschärfen. Die Psychologie lehrt uns: Der Timing ist wichtig. Im besten Fall gibst du dem anderen einen Moment, bevor du eingreifst.',
             nextSceneId: 'v1-s2',
-            points: { empathyPoints: 0, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
           },
           {
             id: 'v1-s1-c2',
-            text: 'Vorsichtig umdrehen und die Stimme mustern',
-            consequence: 'Deine Einsicht hilft dir, die Situation erst zu beobachten, bevor du handelst.',
+            text: 'Erst mal aus der Ferne beobachten und die Situation einschätzen',
+            consequence: 'Kluge Entscheidung. Wenn jemand gerade mitten in einem Wutausbruch steckt, ist es oft besser, erst zu beobachten. In der Psychologie nennt man das "emotionale Sicherheit" - du schützt dich selbst und gibst dem anderen Raum, bevor du eingreifst.',
             nextSceneId: 'v1-s2',
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v1-s1-c3',
-            text: '"Wo bin ich? Was ist hier los?"',
-            consequence: 'Dein Einfühlungsvermögen zeigt sich in deinem ehrlichen Bedürfnis, die Situation zu verstehen.',
+            text: 'Innerlich mitfühlen - du kennst das Gefühl, wenn etwas unfair ist',
+            consequence: 'Du spürst sofort Mitgefühl. Das ist eine wichtige Fähigkeit: Empathie bedeutet, die Gefühle anderer nachzuempfinden, ohne sie selbst zu übernehmen. Du erkennst Ashs Schmerz, weil du ähnliche Situationen kennst.',
             nextSceneId: 'v1-s2',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v1-s2',
-        speaker: 'Flamara',
-        speakerEmoji: '🔥',
-        text: 'Vor dir steht eine Gestalt aus flackerndem Feuer – aber mit einem ziemlich lässigen Grinsen. "Ich bin Flamara. Wächterin dieser Insel. Und bevor du fragst: Nein, du träumst nicht. Ja, der Vulkan ist echt. Und ja, es wird noch weirder." Sie verschränkt die Arme. "Willkommen in den Inneren Welten. Du bist auf der Vulkaninsel gelandet. Hier dreht sich alles um..." Sie tippt dir an die Brust. "...das Feuer da drin."',
+        speaker: 'Ash',
+        speakerEmoji: '😡',
+        text: 'Ash bemerkt dich und dreht sich ruckartig um. Sein Gesicht ist knallrot, seine Hände zittern, und du kannst sehen, wie sein Brustkorb sich schnell hebt und senkt. "Was glotzt du so?!", faucht er. "Der Lehrer hat mir verboten, am Vulkanfest teilzunehmen! Dabei war ICH es gar nicht, der den Feuerzauber ruiniert hat! Das war Leon! Aber niemand glaubt mir!" Er atmet schwer. Du bemerkst, wie sein ganzer Körper angespannt ist - die Schultern hochgezogen, der Kiefer zusammengepresst.',
         choices: [
           {
             id: 'v1-s2-c1',
-            text: '"Feuer? Meinst du... Wut?"',
-            consequence: 'Deine Einsicht lässt dich die richtigen Fragen stellen.',
+            text: '"Das klingt wirklich unfair. Ich würde auch wütend sein."',
+            consequence: 'Du bestätigst sein Gefühl, ohne die Situation zu bewerten. In der Psychologie heißt das "Validierung". Wenn jemand merkt, dass sein Gefühl akzeptiert wird, beruhigt sich das Nervensystem oft ganz von selbst. Du sagst nicht "beruhig dich" - du sagst "ich verstehe dich".',
+            nextSceneId: 'v1-s3',
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 0 }
+          },
+          {
+            id: 'v1-s2-c2',
+            text: '"Wow, du bist gerade richtig aufgebracht. Hast du mal geschaut, wie dein Körper sich anfühlt?"',
+            consequence: 'Eine sehr kluge Frage! Wenn wir wütend werden, schaltet unser Gehirn in den Kampf-oder-Flucht-Modus. Das bedeutet: Dein Herz schlägt schneller, deine Muskeln spannen sich an, dein Gesicht wird heiß, und deine Fäuste ballen sich automatisch. Diese körperlichen Zeichen zu erkennen ist der erste Schritt, um Wut zu kontrollieren.',
             nextSceneId: 'v1-s3',
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           },
           {
-            id: 'v1-s2-c2',
-            text: '"Ich will hier weg! Sofort!"',
-            consequence: 'Dein Mut zeigt sich, auch wenn er aus Unsicherheit entsteht.',
-            nextSceneId: 'v1-s3',
-            points: { empathyPoints: 0, insightPoints: 1, couragePoints: 3 }
-          },
-          {
             id: 'v1-s2-c3',
-            text: '"Innere Welten? Klingt nach einem Videospiel."',
-            consequence: 'Dein Einfühlungsvermögen hilft dir, die Situation mit Humor zu nehmen.',
+            text: '"HEY! Schrei mich nicht an! Ich hab dir nichts getan!"',
+            consequence: 'Deine Reaktion ist völlig verständlich - niemand wird gerne angeschrien. Aber hier passiert etwas Interessantes: Ashs Wut hat DEINE Wut ausgelöst. Das nennt man "emotionale Ansteckung". Wut kann wie ein Funke von einer Person zur nächsten springen. Genau deshalb ist es so wichtig zu lernen, diesen Funken zu erkennen, bevor er zum Feuer wird.',
             nextSceneId: 'v1-s3',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
-          }
-        ]
-      },
-      {
-        id: 'v1-s3',
-        speaker: 'Flamara',
-        speakerEmoji: '🔥',
-        text: 'Flamara lacht – ein Geräusch wie knisterndes Holz. "Clever. Ja, Wut. Jeder, der hier ankommt, hat irgendwas mit Wut zu klären. Nicht weil Wut schlecht ist – sondern weil die meisten nicht wissen, was sie damit sollen." Sie zeigt auf den Vulkan. "Siehst du den Rauch? Der reagiert auf DICH. Auf deine Emotionen." Tatsächlich – als du genauer hinschaust, pulsiert der Rauch im Rhythmus deines Herzschlags.',
-        choices: [
-          {
-            id: 'v1-s3-c1',
-            text: '"Das ist... unheimlich. Aber irgendwie cool."',
-            consequence: 'Deine Einsicht verbindet Respekt mit Neugier – eine starke Mischung.',
-            nextSceneId: 'v1-s4',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
-          },
-          {
-            id: 'v1-s3-c2',
-            text: '"Heißt das, der Vulkan spürt meine Gefühle?"',
-            consequence: 'Deine Einsicht lässt dich die tiefere Bedeutung der Verbindung erkennen.',
-            nextSceneId: 'v1-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
-          },
-          {
-            id: 'v1-s3-c3',
-            text: 'Absichtlich an etwas Ärgerliches denken, um zu testen, ob es stimmt',
-            consequence: 'Dein Mut treibt dich an, die Grenzen selbst auszutesten.',
-            nextSceneId: 'v1-s4',
             points: { empathyPoints: 0, insightPoints: 2, couragePoints: 3 }
           }
         ]
       },
       {
+        id: 'v1-s3',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌋',
+        text: 'Ash hält kurz inne. Sein Atem geht immer noch schnell, aber er schaut dich jetzt richtig an. "Sorry", murmelt er leise. "Ich wollte dich nicht anschreien." Er setzt sich auf einen Felsen und vergräbt das Gesicht in den Händen. "Ich weiß nicht, was mit mir los ist. Immer wenn so was passiert, werde ich so... so..." Er ballt die Fäuste und öffnet sie wieder. "Es fühlt sich an, als würde in meinem Bauch ein Vulkan ausbrechen. Alles wird heiß und laut und ich kann nicht mehr denken."',
+        choices: [
+          {
+            id: 'v1-s3-c1',
+            text: '"Was du beschreibst, hat einen Namen. Das ist die Kampf-oder-Flucht-Reaktion."',
+            consequence: 'Genau richtig! Was Ash beschreibt, ist die natürliche Stressreaktion des Körpers, die schon seit Jahrtausenden in uns steckt. Dein Gehirn - genauer gesagt die Amygdala, das "Alarmsystem" im Inneren deines Kopfes - erkennt eine Bedrohung und bereitet deinen Körper darauf vor, zu kämpfen oder zu fliehen. Deshalb wird alles heiß, das Herz rast, die Muskeln spannen sich an, und klares Denken wird schwierig, weil das Blut aus dem Denkhirn (dem präfrontalen Kortex) in die Muskeln geleitet wird. Das ist nicht Ashs Schuld - es ist Biologie! Und das Beste: Man kann lernen, diesen Mechanismus zu beeinflussen.',
+            nextSceneId: 'v1-s4',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v1-s3-c2',
+            text: 'Neben ihn setzen und schweigen - manchmal braucht man einfach jemanden, der da ist',
+            consequence: 'Manchmal sind Worte nicht nötig - und können sogar stören. Deine bloße Anwesenheit sagt Ash: "Du bist nicht allein. Du musst nichts erklären. Ich bin einfach hier." In der Psychologie nennt man das "Co-Regulation": Die ruhige Präsenz einer anderen Person kann das aufgewühlte Nervensystem beruhigen. Dein ruhiger Atem, deine entspannte Haltung und dein Schweigen wirken wie ein Anker in einem Sturm aus Emotionen.',
+            nextSceneId: 'v1-s4',
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'v1-s3-c3',
+            text: '"Ich kenne das. Bei mir fühlt sich Wut an wie ein Gewitter im Kopf."',
+            consequence: 'Indem du deine eigene Erfahrung teilst, schaffst du eine Verbindung. Ash merkt: Er ist nicht der Einzige, dem das passiert. Wut ist ein universelles Gefühl - jeder Mensch kennt es. Es in Bilder zu fassen wie "Vulkan" oder "Gewitter" hilft, das Gefühl besser zu verstehen und darüber zu sprechen.',
+            nextSceneId: 'v1-s4',
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          }
+        ]
+      },
+      {
         id: 'v1-s4',
-        speaker: 'Flamara',
-        speakerEmoji: '🔥',
-        text: 'WUMM! Ein kleines Feuertierchen – halb Eidechse, halb Flamme – rennt direkt in dein Bein und stolpert weiter, ohne sich auch nur umzudrehen. Es tut weh! Dein Schienbein brennt. Der Vulkan spuckt sofort eine kleine Rauchwolke aus. Flamara beobachtet dich mit hochgezogener Augenbraue. "Und? Was machst du jetzt?"',
+        speaker: 'Ash',
+        speakerEmoji: '😤',
+        text: 'Ash schaut dich überrascht an. "Du... du denkst nicht, dass ich verrückt bin?" Er reibt sich den Nacken. "Alle sagen immer nur: Ash, beruhig dich! Ash, reiß dich zusammen! Als ob ich einen Schalter hätte, den ich einfach umlegen kann." Er steht auf und geht ein paar Schritte. "Weißt du, was das Schlimmste ist? Wenn die Wut dann weg ist, schäme ich mich total. Dann denke ich: Warum konnte ich mich nicht kontrollieren? Was stimmt nicht mit mir?"',
         choices: [
           {
             id: 'v1-s4-c1',
-            text: '"HEY! Pass doch auf, du...!" – dem Tierchen hinterherrufen',
-            consequence: 'Dein Mut zeigt sich in deiner direkten Reaktion – manchmal muss man laut werden.',
+            text: '"Mit dir stimmt alles. Wut ist ein normales Gefühl. Es kommt darauf an, was du DAMIT machst."',
+            consequence: 'Das ist eine der wichtigsten Lektionen über Wut: Das Gefühl selbst ist NIEMALS das Problem. Wut ist genauso normal wie Freude oder Traurigkeit. Sie hat sogar einen wichtigen Zweck - sie zeigt uns, wenn eine Grenze überschritten wurde. Das Problem entsteht erst, wenn wir auf ungesunde Weise damit umgehen. Ash ist nicht kaputt - er braucht nur bessere Werkzeuge.',
             nextSceneId: 'v1-s5',
-            points: { empathyPoints: 0, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v1-s4-c2',
-            text: 'Tief durchatmen und das Bein reiben – es war wahrscheinlich keine Absicht',
-            consequence: 'Dein Einfühlungsvermögen hilft dir, auch im Schmerz Verständnis zu zeigen.',
+            text: '"Sich schämen macht es nur schlimmer, oder? Wie ein Teufelskreis."',
+            consequence: 'Du hast einen wichtigen Mechanismus erkannt: Der Scham-Wut-Kreislauf. Man wird wütend, reagiert impulsiv, schämt sich danach, fühlt sich schlecht, und beim nächsten Mal ist die Wut noch größer, weil die Scham dazukommt. Diesen Kreislauf zu durchbrechen ist möglich - und es beginnt damit, sich selbst nicht zu verurteilen.',
             nextSceneId: 'v1-s5',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 0 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v1-s4-c3',
-            text: 'Die Wut spüren, aber erst mal beobachten, was passiert',
-            consequence: 'Deine Einsicht lehrt dich, Wut bewusst wahrzunehmen, statt blindlings zu reagieren.',
+            text: '"Hey, du hast dich gerade bei mir entschuldigt. Das zeigt, dass du mehr Kontrolle hast, als du denkst."',
+            consequence: 'Brilliant beobachtet! Ash hat sich entschuldigt - das bedeutet, er KANN reflektieren und Verantwortung übernehmen, selbst nachdem er die Kontrolle verloren hat. Das ist eine enorme Stärke, die er bisher komplett übersehen hat. In der Psychologie nennt man das "selektive Aufmerksamkeit auf das Negative": Wir konzentrieren uns so sehr auf unsere Ausrutscher und Fehler, dass wir unsere Fortschritte nicht sehen. Ash hat bereits mehr Emotionsregulation, als er sich selbst zutraut. Er braucht jemanden, der ihm das zeigt.',
             nextSceneId: 'v1-s5',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v1-s5',
-        speaker: 'Flamara',
-        speakerEmoji: '🔥',
-        text: 'Flamara nickt langsam. "Interessant. Schau mal zum Vulkan." Der Rauch hat sich verändert – je nachdem, wie du reagiert hast. "Siehst du den Zusammenhang? Deine Reaktion steuert die Flammen. Nicht die Situation – DEINE Antwort darauf." Sie grinst. "Kleine Übung: Denk an etwas, das dich richtig nervt. Siehst du den Rauch steigen? Gut. Jetzt: Atme ein... zwei... drei... und lass los." Der Rauch wird langsamer, dünner.',
+        speaker: 'Ash',
+        speakerEmoji: '🙂',
+        text: 'Ash ist still. Dann sagt er leise: "Weißt du was? Noch nie hat jemand so mit mir geredet. Alle sagen mir immer, was ich NICHT machen soll. Aber niemand hat mir je erklärt, WARUM mein Körper das macht." Er schaut zum Vulkan hinauf. Der Rauch ist ruhiger geworden. "Der Vulkan da oben... der ist wie ich, oder? Er brodelt und brodelt, und dann bricht er aus. Aber vielleicht kann man lernen, den Druck vorher abzulassen?" Er sieht dich fragend an. "Bleibst du noch ein bisschen? Ich glaube, ich muss noch ein paar Sachen verstehen."',
         choices: [
           {
             id: 'v1-s5-c1',
-            text: 'Mitmachen und spüren, wie die Wut nachlässt – krass!',
-            consequence: 'Deine Einsicht öffnet dir die Augen für die Macht der Selbstkontrolle.',
-            nextSceneId: 'v1-s6',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+            text: '"Klar bleibe ich. Und ja - genau das ist der Schlüssel: den Druck vorher erkennen."',
+            consequence: 'Du hast den Kern der Wut-Prävention erfasst. Die körperlichen Warnzeichen - schnelles Herz, heiße Wangen, angespannte Muskeln, geballte Fäuste - sind wie ein Frühwarnsystem. Wer diese Zeichen bei sich selbst erkennt, kann handeln, BEVOR die Wut übernimmt. Das ist keine Schwäche - das ist emotionale Intelligenz.',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v1-s5-c2',
-            text: '"Okay, das funktioniert echt. Aber ist das im echten Leben genauso einfach?"',
-            consequence: 'Deine Einsicht hinterfragt klug, ob das Gelernte auch im Alltag funktioniert.',
-            nextSceneId: 'v1-s6',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+            text: '"Ich bleibe. Und weißt du was? Ich lerne hier genauso viel wie du."',
+            consequence: 'Was für eine ehrliche und verbindende Antwort. Du zeigst Ash, dass Lernen keine Einbahnstraße ist. Indem du zugibst, dass auch du etwas lernst, nimmst du ihm das Gefühl, ein "Problemfall" zu sein. Ihr seid zwei Menschen, die gemeinsam wachsen. Das ist die stärkste Form der Unterstützung.',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
           },
           {
             id: 'v1-s5-c3',
-            text: '"Was, wenn die Wut zu stark ist zum Loslassen?"',
-            consequence: 'Dein Einfühlungsvermögen zeigt sich in deiner ehrlichen Sorge um die schwierigen Momente.',
-            nextSceneId: 'v1-s6',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
-          }
-        ]
-      },
-      {
-        id: 'v1-s6',
-        speaker: 'Flamara',
-        speakerEmoji: '🔥',
-        text: 'Flamara legt dir kurz die Hand auf die Schulter – ihre Berührung ist warm, nicht heiß. "Gute Fragen. Und genau deshalb bist du hier." Sie schaut zum Vulkan, und ihr Grinsen verschwindet für einen Moment. "Morgen triffst du Ash. Er lebt hier seit drei Monaten und ist eine... wandelnde Zeitbombe. Alle anderen haben aufgegeben, ihm zu helfen." Sie sieht dich an. "Vielleicht schaffst du es. Oder er verscheucht dich in fünf Minuten. Mal sehen." Sie zwinkert und löst sich in Funken auf.',
-        choices: [
-          {
-            id: 'v1-s6-c1',
-            text: '"Warte – wer ist Ash? Flamara?!" Aber sie ist schon weg.',
-            consequence: 'Deine Einsicht und dein Mut zeigen sich in deiner Neugier auf das Unbekannte.',
+            text: '"Natürlich. Und der erste Schritt: Lass uns mal aufschreiben, was dein Körper macht, wenn die Wut kommt."',
+            consequence: 'Hervorragend! Du schlägst eine konkrete Übung vor. Ein "Körper-Scan" bei Wut ist ein bewährtes Werkzeug in der Therapie: Wo spürst du die Wut zuerst? Im Bauch? In den Fäusten? Im Kiefer? Wer seinen eigenen Körper kennt, kann die Wut frühzeitig erkennen - und dann bewusst entscheiden, wie er reagiert, statt automatisch zu explodieren.',
             nextSceneId: null,
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
-          },
-          {
-            id: 'v1-s6-c2',
-            text: 'Neugierig sein. Jemand, dem noch niemand helfen konnte? Challenge accepted.',
-            consequence: 'Dein Mut lässt dich jede Herausforderung als Chance sehen.',
-            nextSceneId: null,
-            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
-          },
-          {
-            id: 'v1-s6-c3',
-            text: 'Ein mulmiges Gefühl haben, aber auch Mitgefühl – dieser Ash klingt einsam.',
-            consequence: 'Dein Einfühlungsvermögen spürt die Einsamkeit hinter der Wut.',
-            nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
           }
         ]
       }
     ]
   },
+
+  // =========================================================================
+  // KAPITEL 2: Das Geheimnis unter der Lava
+  // Kernthema: Wut als Sekundäremotion - der Eisberg unter der Oberfläche
+  // Lernziel: Spieler verstehen, dass Wut oft Traurigkeit, Angst oder
+  //           Hilflosigkeit überdeckt. Ash öffnet sich über die Trennung
+  //           seiner Eltern.
+  // Psychologische Basis: Sekundäremotionen, Schutzmechanismen,
+  //                       Selbstmitgefühl, Eisberg-Modell
+  // =========================================================================
   {
     id: 'volcano-scenario-2',
     islandId: 'volcano' as IslandId,
-    title: 'Ashs Herausforderung',
-    description: 'Ein wütender Junge, der kein Mitleid will – aber vielleicht etwas anderes braucht',
+    title: 'Das Geheimnis unter der Lava',
+    description: 'Ash öffnet sich und zeigt dir, was sich wirklich unter seiner Wut verbirgt. Lerne, dass Wut oft nur die Oberfläche ist.',
     scenes: [
       {
         id: 'v2-s1',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Du findest Ash an einer Felswand. Er wirft Steine gegen das Gestein – WHAM, WHAM, WHAM – als hätte der Fels ihm etwas getan. Als er dich bemerkt, verdreht er die Augen. "Oh nein. Lass mich raten: Flamara hat dich geschickt, um mich zu \'retten\'." Er macht Anführungszeichen mit den Fingern. "Spar dir die Mühe. Die letzte Person, die das versucht hat, ist heulend weggerannt."',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌋',
+        text: 'Ein paar Tage später triffst du Ash wieder. Er sitzt am Rand eines erkalteten Lavastroms und wirft kleine Steine in die erkaltete schwarze Masse. Heute ist er ruhiger, aber irgendetwas stimmt nicht. Seine Augen sind gerötet, als hätte er nicht geschlafen - oder geweint. Dunkle Ringe liegen unter seinen Augen. "Hey", sagt er, ohne dich anzuschauen. Seine Stimme klingt dünn, fast zerbrechlich. "Ich muss dir was erzählen. Aber... ich hab noch nie jemandem davon erzählt." Er schluckt schwer und dreht einen Stein in den Händen. "Meine Eltern... die trennen sich gerade. Mein Vater ist vor zwei Wochen ausgezogen. Einfach... weg."',
         choices: [
           {
             id: 'v2-s1-c1',
-            text: '"Ich bin nicht hier, um dich zu retten. Ich bin einfach hier."',
-            consequence: 'Dein Einfühlungsvermögen zeigt sich in deiner unaufdringlichen Präsenz.',
+            text: 'Nichts sagen, aber dich neben ihn setzen - zeigen, dass du zuhörst',
+            consequence: 'Manchmal ist Schweigen die beste Antwort. Wenn jemand etwas so Schweres teilt, braucht er keinen Ratschlag - er braucht einen sicheren Raum. Indem du einfach da bist, sagst du: "Du kannst reden, wenn du bereit bist. Ich gehe nirgendwohin." Das nennt man aktives Zuhören.',
             nextSceneId: 'v2-s2',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 0 }
           },
           {
             id: 'v2-s1-c2',
-            text: '"Heulend? Was hast du gemacht?" – neugierig, nicht eingeschüchtert',
-            consequence: 'Dein Mut zeigt sich darin, dass du dich nicht einschüchtern lässt.',
+            text: '"Das tut mir leid, Ash. Das muss richtig hart für dich sein."',
+            consequence: 'Mit diesen Worten zeigst du echtes Mitgefühl. Du versuchst nicht, es "besser zu machen" oder zu sagen "Wird schon wieder". Du anerkennst seinen Schmerz. Das ist wichtig, weil viele Erwachsene oft versuchen, den Schmerz von Jugendlichen kleinzureden: "Das verstehst du noch nicht" oder "Es ist ja nicht so schlimm." Doch - es IST schlimm, und das anzuerkennen hilft.',
             nextSceneId: 'v2-s2',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           },
           {
             id: 'v2-s1-c3',
-            text: 'Wortlos einen Stein aufheben und neben ihm gegen die Wand werfen',
-            consequence: 'Dein Mut spricht durch Taten – manchmal sagt eine Geste mehr als tausend Worte.',
+            text: '"Danke, dass du mir das erzählst. Das braucht Mut."',
+            consequence: 'Du erkennst an, wie schwer es für Ash ist, sich zu öffnen. Über schmerzhafte Dinge zu sprechen - besonders als Jugendlicher - erfordert enormen Mut. Indem du das aussprichst, stärkst du Ash. Du zeigst ihm, dass Verletzlichkeit keine Schwäche ist, sondern eine besondere Form von Stärke.',
             nextSceneId: 'v2-s2',
-            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'v2-s2',
         speaker: 'Ash',
-        speakerEmoji: '🌋',
-        text: 'Ash mustert dich überrascht. So hat noch niemand reagiert. Er wirft noch einen Stein, aber weniger aggressiv. "Du bist komisch, weißt du das?" Stille. Dann: "Alle sagen immer \'Ash, beruhig dich\' oder \'Ash, warum bist du so wütend?\'. Als ob ICH das Problem wäre." Er tritt gegen einen Stein. "Du denkst, du weißt, warum ich wütend bin?"',
+        speakerEmoji: '😢',
+        text: 'Ash starrt auf den Boden. "Weißt du, warum ich immer so wütend bin?" Seine Stimme ist kaum ein Flüstern. "Weil... weil Wut sich BESSER anfühlt als das andere." Er wischt sich über die Augen. "Wenn ich wütend bin, fühle ich mich stark. Wenn ich traurig bin, fühle ich mich hilflos. Und Hilflosigkeit ist das Schlimmste, was es gibt." Er dreht einen Stein in seinen Händen. "Zu Hause konnte ich nichts tun. Meine Eltern haben gestritten, und ich stand dazwischen und konnte NICHTS machen. Also wurde ich wütend. Weil Wut sich weniger schrecklich anfühlt als... als das."',
         choices: [
           {
             id: 'v2-s2-c1',
-            text: '"Nee, keine Ahnung. Erzähl mal – wenn du willst."',
-            consequence: 'Dein Einfühlungsvermögen gibt Ash den Raum, den er braucht.',
+            text: '"Wut ist oft nur die Spitze des Eisbergs. Darunter verstecken sich andere Gefühle."',
+            consequence: 'Du hast einen der wichtigsten Grundsätze der Emotionspsychologie ausgesprochen. Psychologen nennen Wut häufig eine "Sekundäremotion" - ein Gefühl, das ÜBER einem anderen, verwundbareren Gefühl liegt. Stell dir einen Eisberg vor: Die Spitze, die aus dem Wasser ragt, ist die Wut - sichtbar, laut, kraftvoll. Aber der riesige Teil unter der Oberfläche besteht aus Traurigkeit, Angst, Hilflosigkeit, Scham oder Einsamkeit. Die Wut schützt uns davor, diese schmerzhafteren Gefühle spüren zu müssen. Sie gibt uns eine Illusion von Stärke. Aber nur wenn wir den Mut haben, unter die Oberfläche zu tauchen, können wir wirklich heilen.',
             nextSceneId: 'v2-s3',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
           },
           {
             id: 'v2-s2-c2',
-            text: '"Ich glaube, du weißt es selbst nicht so genau."',
-            consequence: 'Deine Einsicht erkennt, was Ash selbst noch nicht sehen kann.',
+            text: '"Es ist nicht deine Schuld, Ash. Die Trennung deiner Eltern ist NICHT deine Schuld."',
+            consequence: 'Diese Worte sind unglaublich wichtig. Viele Kinder und Jugendliche glauben im Geheimen, dass die Trennung ihrer Eltern irgendwie ihre Schuld ist. Diese falsche Überzeugung kann zu enormer Wut führen - Wut auf sich selbst, die sich dann nach außen richtet. Ash muss hören, und zwar so oft wie nötig: Er ist nicht verantwortlich für die Entscheidungen seiner Eltern.',
             nextSceneId: 'v2-s3',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
           },
           {
             id: 'v2-s2-c3',
-            text: '"Ich weiß nur, dass Wut meistens einen Grund hat."',
-            consequence: 'Deine Einsicht versteht, dass Wut immer eine Geschichte erzählt.',
+            text: '"Das ergibt total Sinn. Wut gibt dir das Gefühl, dass du etwas tun kannst."',
+            consequence: 'Du triffst den Kern. Wut gibt ein Gefühl von Kontrolle und Macht in Situationen, wo man sich eigentlich machtlos fühlt. Das ist ein psychologischer Schutzmechanismus. Er ist nicht "falsch" - er hat Ash sogar geholfen, eine sehr schmerzhafte Zeit zu überstehen. Aber jetzt ist es Zeit, auch die Gefühle darunter anzuschauen.',
             nextSceneId: 'v2-s3',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v2-s3',
         speaker: 'Ash',
-        speakerEmoji: '🌋',
-        text: 'Ash öffnet den Mund, schließt ihn wieder. Öffnet ihn nochmal. "Ich bin wütend, weil..." Er stockt. Sein Blick wandert zum Vulkan, als suche er dort die Antwort. Plötzlich sagt er ganz leise etwas Seltsames: "Zu Hause war\'s leiser." Dann ballt er sofort die Fäuste, als hätte er zu viel gesagt. Der Vulkan spuckt eine Rauchwolke. Flamara erscheint kurz als Feuerfunke neben deinem Ohr und flüstert: "Achte auf das, was er NICHT sagt."',
+        speakerEmoji: '😢',
+        text: 'Ash zittert leicht. "Ich vermisse meinen Vater so sehr", flüstert er. Eine Träne läuft über seine Wange, und diesmal wischt er sie nicht weg. "Aber jedes Mal, wenn ich das fühle, wird es sofort zu Wut. Gegen ihn, weil er gegangen ist. Gegen meine Mutter, weil sie ihn nicht aufgehalten hat. Gegen mich, weil ich nichts tun konnte." Er sieht dich an, und in seinen Augen liegt keine Wut mehr - nur Traurigkeit und Angst. "Was mache ich jetzt mit alldem?"',
         choices: [
           {
             id: 'v2-s3-c1',
-            text: 'Nichts sagen. Einfach dasitzen. Ihm Zeit geben.',
-            consequence: 'Dein Einfühlungsvermögen schenkt Ash die Stille, die er zum Öffnen braucht.',
+            text: '"Du lässt es raus. Nicht als Wut, sondern als das, was es wirklich ist. Und ich bin hier."',
+            consequence: 'Du gibst Ash die Erlaubnis, traurig zu sein - und das ist ein unglaublich wertvolles Geschenk. In unserer Gesellschaft lernen besonders Jungen oft: "Wein nicht. Sei stark. Männer zeigen keine Schwäche." Aber diese Botschaften sind falsch und schädlich. Tränen sind kein Zeichen von Schwäche - sie sind die natürliche Art des Körpers, emotionalen Schmerz zu verarbeiten. Wissenschaftliche Studien zeigen, dass Weinen tatsächlich Stresshormone wie Cortisol abbaut und heilend wirkt. Wer nicht weinen darf, muss seine Trauer woanders hinschicken - oft in die Wut.',
             nextSceneId: 'v2-s4',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
           },
           {
             id: 'v2-s3-c2',
-            text: '"Zu Hause? Vermisst du es?"',
-            consequence: 'Dein Einfühlungsvermögen und deine Einsicht helfen dir, die richtige Frage zu stellen.',
+            text: '"Fühlen. Einfach fühlen. Du musst es nicht lösen. Du musst es nur fühlen dürfen."',
+            consequence: 'Das ist eine tiefgreifende Erkenntnis. Wir denken oft, wir müssen unsere Gefühle "lösen" wie ein Matheproblem. Aber Gefühle wollen nicht gelöst werden - sie wollen gefühlt werden. Wenn wir Traurigkeit zulassen, statt sie in Wut umzuwandeln, kann sie durch uns hindurchfließen und mit der Zeit leichter werden. Unterdrückte Gefühle bleiben, gefühlte Gefühle gehen.',
             nextSceneId: 'v2-s4',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
           },
           {
             id: 'v2-s3-c3',
-            text: '"Ash... bist du vielleicht nicht nur wütend?"',
-            consequence: 'Deine Einsicht erkennt, dass unter Ashs Wut etwas anderes verborgen liegt.',
+            text: '"Ash, du bist gerade unglaublich mutig. Die meisten Erwachsenen schaffen nicht, was du gerade tust."',
+            consequence: 'Indem du Ashs Verletzlichkeit als Mut anerkennst, drehst du sein Weltbild um. Er dachte, Stärke bedeutet, keine Gefühle zu zeigen. Aber echte Stärke zeigt sich darin, ehrlich zu seinen Gefühlen zu stehen. Ash öffnet sich gerade mehr, als er es je getan hat - und das verdient Respekt.',
             nextSceneId: 'v2-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'v2-s4',
-        speaker: 'Ash',
+        speaker: 'Erzähler',
         speakerEmoji: '🌋',
-        text: 'Ash dreht sich weg. Seine Schultern zittern. "Hör auf damit." Seine Stimme klingt anders – nicht wütend, sondern... brüchig. "Ich bin WÜTEND, okay? Nur wütend. Das ist alles." Aber du siehst es: Für einen winzigen Moment glänzen seine Augen verdächtig. Er wischt sich schnell übers Gesicht. "Verdammter Rauch hier." Es gibt keinen Rauch in der Nähe.',
+        text: 'Ash weint. Richtig weint. Zum ersten Mal seit Monaten. Und etwas Erstaunliches passiert: Der Vulkan, der die ganze Zeit geraucht und gegrollt hat, wird ruhiger. Der Rauch wird dünner, das Beben legt sich. Als ob der Vulkan auf Ashs inneren Zustand reagiert. Nach einer Weile wischt Ash sich die Augen und atmet tief durch. "Das ist komisch", sagt er. "Ich fühle mich leichter. Nicht gut, aber... leichter." Er schaut zum Vulkan. "Der hat auch aufgehört zu grummeln."',
         choices: [
           {
             id: 'v2-s4-c1',
-            text: '"Ash, es ist okay, traurig zu sein. Das ist kein Zeichen von Schwäche."',
-            consequence: 'Dein Einfühlungsvermögen gibt Ash die Erlaubnis, verletzlich zu sein.',
+            text: '"Siehst du? Wenn du die Traurigkeit rauslässt, muss die Wut nicht mehr so laut sein."',
+            consequence: 'Du hilfst Ash, den Zusammenhang zu verstehen. Wenn die eigentlichen Gefühle - Trauer, Angst, Hilflosigkeit - ausgedrückt werden dürfen, braucht der Körper die Wut nicht mehr als Schutzschild. Das bedeutet nicht, dass Ash nie wieder wütend sein wird. Aber seine Wut wird nicht mehr das einzige Werkzeug sein, das er hat.',
             nextSceneId: 'v2-s5',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
           },
           {
             id: 'v2-s4-c2',
-            text: '"Ich kenne das. Manchmal bin ich auch wütend, weil ich nicht traurig sein will."',
-            consequence: 'Dein Einfühlungsvermögen und deine Einsicht schaffen eine Brücke der Verbindung.',
+            text: '"Leichter ist ein guter Anfang. Du musst nicht sofort glücklich sein."',
+            consequence: 'Wichtige Worte! Heilung ist kein Lichtschalter. Es gibt keinen magischen Moment, in dem plötzlich alles gut ist. "Leichter" ist ein riesiger Fortschritt. In der Therapie spricht man von kleinen Schritten. Ash muss nicht morgen alles gelöst haben. Er muss nur heute ein bisschen ehrlicher mit sich selbst sein als gestern.',
             nextSceneId: 'v2-s5',
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 0 }
           },
           {
             id: 'v2-s4-c3',
-            text: 'Ihm eine Hand auf die Schulter legen – vorsichtig',
-            consequence: 'Dein Mut und dein Einfühlungsvermögen sprechen durch eine einfache Geste.',
+            text: '"Der Vulkan reagiert auf dich. Vielleicht zeigt er dir, dass du auf dem richtigen Weg bist."',
+            consequence: 'Eine schöne Beobachtung. Der Vulkan als Metapher für Ashs innere Welt: Wenn der innere Druck nachlässt, beruhigt sich auch das Äußere. Im echten Leben funktioniert das ähnlich: Wenn Menschen lernen, ihre wahren Gefühle auszudrücken, verschwinden oft auch körperliche Symptome wie Kopfschmerzen, Bauchschmerzen oder Schlafprobleme.',
             nextSceneId: 'v2-s5',
-            points: { empathyPoints: 3, insightPoints: 0, couragePoints: 3 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v2-s5',
         speaker: 'Ash',
-        speakerEmoji: '🌋',
-        text: 'Ash erstarrt. Dann bricht es aus ihm heraus: "Wenn ich wütend bin, muss ich nicht traurig sein! Verstehst du das?! Wut ist STARK! Traurigkeit ist..." Er sucht nach Worten. "...das Schlimmste." Seine Stimme ist jetzt kaum mehr als ein Flüstern. "Wenn ich aufhöre wütend zu sein, dann spüre ich alles andere. Und das..." Er schluckt. "...das halte ich nicht aus." Der Vulkan wird ganz still. Kein Rauch. Kein Grollen. Als würde er zuhören.',
+        speakerEmoji: '🙂',
+        text: 'Ash steht auf und streckt sich. Er sieht immer noch traurig aus, aber anders als vorher - weniger verkrampft, weniger angespannt. "Ich glaube, ich verstehe jetzt was", sagt er langsam. "Die ganze Zeit war ich wütend auf alle - auf meine Eltern, auf die Lehrer, auf die ganze Welt. Aber eigentlich war ich traurig und hatte Angst. Und weil sich Wut stärker anfühlt als Angst..." Er unterbricht sich und grinst schief. "Mann, ich hätte mir echt eine Menge Stress ersparen können, wenn das mal jemand erklärt hätte."',
         choices: [
           {
             id: 'v2-s5-c1',
-            text: '"Du musst es nicht alleine aushalten. Dafür sind Leute da."',
-            consequence: 'Dein Einfühlungsvermögen erinnert Ash daran, dass er nicht allein kämpfen muss.',
-            nextSceneId: 'v2-s6',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+            text: '"Das nächste Mal, wenn die Wut kommt, frag dich: Was versteckt sich darunter?"',
+            consequence: 'Du gibst Ash ein konkretes Werkzeug mit auf den Weg. Die "Was-steckt-darunter-Frage" ist eine der wirkungsvollsten Techniken in der Emotionsregulation. Wenn die Wut aufsteigt: Stopp. Frage dich - bin ich wirklich wütend? Oder bin ich eigentlich traurig, verletzt, enttäuscht, verängstigt? Allein diese Frage kann den Automatismus der Wut unterbrechen.',
+            nextSceneId: null,
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v2-s5-c2',
-            text: '"Wut als Schutzschild... Das ist eigentlich ziemlich schlau. Aber es funktioniert nicht ewig."',
-            consequence: 'Deine Einsicht durchschaut Ashs Schutzmechanismus mit Respekt und Klarheit.',
-            nextSceneId: 'v2-s6',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+            text: '"Sei nicht so streng mit dir. Du hast überlebt, so gut du konntest."',
+            consequence: 'Selbstmitgefühl ist eine der wichtigsten Fähigkeiten, die Ash lernen kann. Er hat die Wut nicht "gewählt" - sein Gehirn hat automatisch den Schutzschild hochgefahren, um ihn vor dem Schmerz zu schützen. Das war keine Schwäche, sondern Überlebensstrategie. Jetzt, wo er sicherer ist, kann er lernen, neue Wege zu gehen.',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 0 }
           },
           {
             id: 'v2-s5-c3',
-            text: '"Du hältst gerade viel mehr aus als du denkst. Du redest mit mir. DAS ist mutig."',
-            consequence: 'Dein Mut erkennt Stärke in Ashs Verletzlichkeit.',
-            nextSceneId: 'v2-s6',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
-          }
-        ]
-      },
-      {
-        id: 'v2-s6',
-        speaker: 'Ash',
-        speakerEmoji: '🌋',
-        text: 'Ash schweigt lange. Dann – zum ersten Mal – lächelt er. Ganz kurz, kaum sichtbar. "Du bist... okay, schätze ich. Nicht so nervig wie die anderen." Für Ash ist das quasi eine Liebeserklärung. Er steht auf und klopft sich den Staub ab. "Kommst du morgen wieder? Ich meine... mir egal. Mach was du willst." Aber er sieht dich dabei an, als wäre es ihm ganz und gar nicht egal.',
-        choices: [
-          {
-            id: 'v2-s6-c1',
-            text: '"Klar. Gleiche Zeit, gleicher Fels?"',
-            consequence: 'Dein Einfühlungsvermögen schafft einen sicheren Ort für Ash.',
+            text: '"Du hast es jetzt verstanden. Und das ist der erste Schritt. Der Rest kommt mit der Zeit."',
+            consequence: 'Du normalisierst den Prozess. Selbsterkenntnis ist erst der Anfang - aber ein unglaublich wichtiger. Ash weiß jetzt, dass seine Wut eine Botschaft hat. Er muss nicht alles sofort verändern. Wissen allein verändert schon etwas: Ab jetzt wird er in Momenten der Wut einen leisen Gedanken hören, der fragt: "Ist es wirklich Wut - oder steckt da mehr dahinter?"',
             nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
-          },
-          {
-            id: 'v2-s6-c2',
-            text: '"Ich bin da. Und Ash? Du bist stärker als du denkst."',
-            consequence: 'Dein Einfühlungsvermögen und dein Mut geben Ash Kraft und Zuversicht.',
-            nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
-          },
-          {
-            id: 'v2-s6-c3',
-            text: 'Einfach nicken und gehen – mit einem guten Gefühl',
-            consequence: 'Deine Einsicht sagt dir, dass manchmal ein stilles Gehen die stärkste Botschaft ist.',
-            nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
           }
         ]
       }
     ]
   },
+
+  // =========================================================================
+  // KAPITEL 3: Der Ausbruch
+  // Kernthema: Gesunder vs. ungesunder Umgang mit Wut - konkrete Werkzeuge
+  // Lernziel: Spieler lernen Ich-Botschaften, Atemtechniken und den
+  //           Unterschied zwischen zerstörerischer und schützender Wut.
+  // Psychologische Basis: Gewaltfreie Kommunikation (Rosenberg),
+  //                       Parasympathikus-Aktivierung, Situationsveränderung,
+  //                       Bystander-Effekt
+  // =========================================================================
   {
     id: 'volcano-scenario-3',
     islandId: 'volcano' as IslandId,
-    title: 'Das Magma-Labyrinth',
-    description: 'Ein Labyrinth, in dem deine Wut die Lava steigen lässt – bleib cool. Buchstäblich.',
+    title: 'Der Ausbruch',
+    description: 'Ein Konflikt eskaliert und du musst entscheiden, wie du mit aufsteigender Wut umgehst. Lerne konkrete Werkzeuge für den Ernstfall.',
     scenes: [
       {
         id: 'v3-s1',
-        speaker: 'Magmus',
-        speakerEmoji: '🪨',
-        text: 'Magmus steht vor einem dunklen Höhleneingang. Er ist riesig, aus grauem Gestein, und bewegt sich in Zeitlupe. "Du." Er zeigt auf den Eingang. "Da rein." Du wartest auf mehr Erklärung. Er blinzelt. Langsam. "Dort drin steigt die Lava, wenn du wütend wirst. Dein Zorn ist dort... echt." Er macht eine Pause, die gefühlt drei Minuten dauert. "Bleib cool." Noch eine Pause. "Buchstäblich."',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌋',
+        text: 'In der Schule auf der Vulkaninsel gibt es Aufregung. Jemand hat ein hässliches Gerücht über Maya, eine Freundin von Ash, verbreitet: Sie würde heimlich andere Schüler bestehlen. Das stimmt nicht - aber alle reden schon darüber. Maya sitzt allein in einer Ecke und kämpft mit den Tränen. Ash steht vor Leon, dem Gerüchte-Verbreiter, und seine Fäuste ballen sich. "NIMM DAS ZURÜCK!", brüllt Ash. Leon grinst nur: "Warum? Ist doch die Wahrheit." Du spürst, wie auch in DIR die Wut aufsteigt. Das ist so ungerecht!',
         choices: [
           {
             id: 'v3-s1-c1',
-            text: '"Und wenn ich es nicht schaffe, cool zu bleiben?"',
-            consequence: 'Deine Einsicht lässt dich die Risiken abwägen, bevor du handelst.',
+            text: 'Tief durchatmen: 4 Sekunden ein, 4 halten, 6 aus. Erst denken, dann handeln.',
+            consequence: 'Die 4-4-6-Atemtechnik ist ein echtes Erste-Hilfe-Werkzeug bei Wut - und es ist wissenschaftlich bewiesen, dass sie funktioniert. Durch das langsame Ausatmen (das Ausatmen ist LÄNGER als das Einatmen - das ist der Trick!) aktivierst du den Parasympathikus - den Teil deines Nervensystems, der für Beruhigung zuständig ist. In nur 30 Sekunden senkt sich dein Puls, deine Muskeln entspannen sich, und dein Denkhirn - der präfrontale Kortex - schaltet sich wieder ein. Jetzt kannst du bewusst entscheiden, statt impulsiv zu reagieren. Merke dir: 4 ein, 4 halten, 6 aus.',
             nextSceneId: 'v3-s2',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 0, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'v3-s1-c2',
-            text: '"Du bist nicht gerade ein Mann vieler Worte, oder?" – reingehen',
-            consequence: 'Dein Mut treibt dich vorwärts, auch ohne alle Antworten zu haben.',
+            text: 'Erst zu Maya gehen und fragen, ob es ihr gut geht',
+            consequence: 'Du priorisierst die Person, die gerade am meisten leidet. Während Ash und Leon streiten, sitzt Maya allein mit ihrem Schmerz. Dein Mitgefühl sagt dir: Manchmal ist es wichtiger, sich um das Opfer zu kümmern als den Täter zu konfrontieren. Maya braucht gerade jemanden, der an ihrer Seite steht.',
             nextSceneId: 'v3-s2',
-            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           },
           {
             id: 'v3-s1-c3',
-            text: '"Kommst du wenigstens mit?"',
-            consequence: 'Dein Einfühlungsvermögen zeigt sich in deinem Wunsch nach Gemeinschaft.',
+            text: 'Ash am Arm festhalten: "Ash, stopp. So löst du das nicht."',
+            consequence: 'Du greifst mutig ein, bevor die Situation eskaliert. Das erfordert Mut, weil Ash gerade voller Wut ist und du riskierst, dass er sich auch gegen dich wendet. Aber manchmal muss ein Freund die Bremse sein. Du erinnerst Ash an das, was er gelernt hat - auch wenn er es in diesem Moment vergessen hat.',
             nextSceneId: 'v3-s2',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'v3-s2',
-        speaker: 'Magmus',
-        speakerEmoji: '🪨',
-        text: 'Im Innern der Höhle glühen die Wände orange. Es ist heiß, aber auszuhalten. Du folgst einem schmalen Pfad. Plötzlich – KNALL – ein Fels fällt von der Decke und blockiert den Weg direkt vor dir. Du springst zurück. Dein Herz rast. Und du siehst es: Die Lava an den Wänden steigt ein paar Zentimeter. Magmus\' Stimme dröhnt von irgendwo: "Das war ein Test. Du bist wärmer geworden. Nicht gut."',
+        speaker: 'Ash',
+        speakerEmoji: '😡',
+        text: 'Ash atmet schwer, aber er hält sich zurück. "Okay, okay", presst er hervor. "Ich... ich weiß, ich soll nicht explodieren. Aber WAS soll ich denn machen?! Leon LÜGT über Maya und alle glauben ihm! Das ist so UNGERECHT!" Seine Augen füllen sich mit Tränen der Frustration. "Wenn ich nichts mache, denken alle, das Gerücht stimmt. Und wenn ich Leon schlage, kriege ICH Ärger. Was auch immer ich mache, ich verliere!" Leon steht immer noch grinsend da.',
         choices: [
           {
             id: 'v3-s2-c1',
-            text: 'Tief durchatmen – die Vulkan-Atmung von Flamara! Ein, zwei, drei... aus.',
-            consequence: 'Deine Einsicht erinnert dich an das, was du bereits gelernt hast.',
+            text: '"Es gibt einen Weg zwischen Nichtstun und Zuschlagen: Ich-Botschaften. Sag Leon, wie du dich fühlst."',
+            consequence: 'Ich-Botschaften sind eines der mächtigsten Kommunikationswerkzeuge, das die Psychologie kennt - entwickelt vom Psychologen Thomas Gordon und weiterentwickelt durch Marshall Rosenbergs "Gewaltfreie Kommunikation". Statt "DU bist ein Lügner!" (was den anderen sofort in die Defensive treibt und den Konflikt verschärft) sagst du: "ICH fühle mich wütend, WEIL etwas Unwahres über meine Freundin gesagt wird, und ICH WÜNSCHE MIR, dass du damit aufhörst." Der Unterschied ist gewaltig: Du greifst nicht an, du drückst dein Gefühl aus. Du machst dich nicht klein, du machst dich klar. Das ist keine Schwäche - das ist kontrollierte, zielsichere Stärke.',
             nextSceneId: 'v3-s3',
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'v3-s2-c2',
-            text: '"Echt jetzt?! WARNUNG wäre nett gewesen!" – frustriert sein',
-            consequence: 'Dein Mut zeigt sich auch in der Frustration – doch die Lava steigt.',
+            text: '"Wut ist wie Feuer - sie kann zerstören, aber auch schützen. Nutze sie, um für Maya einzustehen, nicht um Leon zu verletzen."',
+            consequence: 'Das ist der Kern gesunder Wut-Nutzung. Wut ist Energie - und Energie hat keine Richtung, bis DU ihr eine gibst. Zerstörerische Wut richtet sich auf Vergeltung: "Ich will, dass du leidest!" Schützende Wut richtet sich auf Gerechtigkeit: "Ich will, dass die Wahrheit ans Licht kommt." Gleiche Energie, komplett anderes Ergebnis.',
             nextSceneId: 'v3-s3',
-            points: { empathyPoints: 0, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v3-s2-c3',
-            text: 'Einen Moment stillstehen, die Angst anerkennen, dann weitergehen',
-            consequence: 'Dein Einfühlungsvermögen für dich selbst hilft dir, die Angst zu akzeptieren.',
+            text: '"Komm, wir gehen erst mal weg. Manchmal ist Abstand die klügste Waffe."',
+            consequence: 'Sich zu entfernen ist kein Weglaufen - es ist eine der effektivsten Techniken der Emotionsregulation! In der Psychologie nennt man das "Situationsveränderung". Wenn du in einer aufgeheizten Situation bist, kann allein der Ortswechsel deinem Gehirn helfen, vom Kampf-Modus zurück in den Denk-Modus zu schalten. Danach kannst du mit klarem Kopf entscheiden, was du tust.',
             nextSceneId: 'v3-s3',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
           }
         ]
       },
       {
         id: 'v3-s3',
-        speaker: 'Magmus',
-        speakerEmoji: '🪨',
-        text: 'Du kommst an eine Gabelung. Rechts: ein breiter, gut beleuchteter Gang. Links: ein enger, dunkler Spalt, aber du hörst Wasser – Kühlung! Die Lava ist jetzt auf Kniehöhe. Du musst dich entscheiden, und zwar schnell. Magmus: "Wut sagt: schnell handeln. Weisheit sagt: denk erstmal nach. Wer gewinnt?"',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌋',
+        text: 'Ash schließt kurz die Augen. Du siehst, wie er innerlich bis zehn zählt. Dann geht er auf Leon zu - nicht aggressiv, sondern bestimmt. "Leon", sagt er mit fester Stimme. "Was du über Maya sagst, ist gelogen. ICH fühle mich wütend, weil sie meine Freundin ist und du ihr schadest. ICH möchte, dass du aufhörst." Leon ist überrascht - er hatte eine Prügelei erwartet, keine ruhigen Worte. "Und wenn nicht?", fragt Leon unsicher. Ash antwortet: "Dann gehe ich zum Lehrer. Nicht weil ich petze, sondern weil Lügen Konsequenzen haben sollten."',
         choices: [
           {
             id: 'v3-s3-c1',
-            text: 'Den breiten Weg nehmen – sieht sicherer aus',
-            consequence: 'Deine Einsicht wägt die Optionen ab und wählt den sicheren Weg.',
+            text: 'Neben Ash stellen und ihn unterstützen: "Er hat Recht. Und wir sind nicht die Einzigen, die das wissen."',
+            consequence: 'Du zeigst Solidarität. Wenn jemand mutig für die Wahrheit einsteht, ist es wichtig, nicht allein zu stehen. Deine Unterstützung verstärkt Ashs Botschaft und zeigt Leon, dass Lügen nicht unbemerkt bleiben. In der Sozialpsychologie nennt man das den "Bystander-Effekt umkehren": Statt zuzuschauen, greifst du ein.',
             nextSceneId: 'v3-s4',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
           },
           {
             id: 'v3-s3-c2',
-            text: 'Zum Wasser! Den engen Spalt nehmen – Instinkt folgen',
-            consequence: 'Dein Mut folgt dem Instinkt – manchmal ist das die beste Entscheidung.',
+            text: 'Zu Maya gehen und sie dazuholen: "Maya, du hast das Recht, für dich selbst zu sprechen."',
+            consequence: 'Statt FÜR Maya zu sprechen, gibst du IHR die Stimme zurück. Das ist echtes Empowerment. Maya ist die Person, die am meisten betroffen ist, und sie verdient es, Teil der Lösung zu sein. Du behandelst sie nicht als hilfloses Opfer, sondern als jemanden mit eigener Stärke.',
             nextSceneId: 'v3-s4',
-            points: { empathyPoints: 0, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
           },
           {
             id: 'v3-s3-c3',
-            text: 'Drei Sekunden anhalten. Denken. Dann entscheiden.',
-            consequence: 'Deine Einsicht lehrt dich, auch unter Druck einen klaren Kopf zu behalten.',
+            text: 'Leon in die Augen schauen: "Warum machst du das eigentlich, Leon? Was hast du davon?"',
+            consequence: 'Eine mutige und gleichzeitig einfühlsame Frage. Menschen, die andere verletzen, haben oft selbst einen Grund dafür - Unsicherheit, Eifersucht, eigener Schmerz. Das rechtfertigt nichts, aber es zu verstehen kann helfen, den Kreislauf zu durchbrechen. Wer fragt "Warum?", statt nur "Hör auf!", öffnet eine Tür, die Aggression allein nie öffnen würde.',
             nextSceneId: 'v3-s4',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v3-s4',
-        speaker: 'Magmus',
-        speakerEmoji: '🪨',
-        text: 'Egal welchen Weg du gewählt hast – du landest in einer großen Höhle. Die Lava brodelt unter dir auf einer Glasplattform. Und dann passiert etwas Fieses: Aus dem Nichts erscheint eine Stimme, die klingt wie jemand, der dich ärgert. "Du schaffst das eh nicht. Du bist zu schwach. Gib auf!" Die Lava schießt hoch! Das ist eine Illusion – aber sie FÜHLT sich echt an.',
+        speaker: 'Leon',
+        speakerEmoji: '😟',
+        text: 'Leons Grinsen verschwindet. Er schaut zu Boden. "Ich... ich weiß nicht", murmelt er. "Maya hat letzte Woche im Unterricht eine bessere Note bekommen als ich, und meine Mutter hat gesagt... ach, vergiss es." Er sieht plötzlich kleiner aus. Ash starrt ihn an und du siehst, wie etwas in seinem Gesicht sich verändert: Die Wut weicht dem Verständnis. "Du warst eifersüchtig", sagt Ash leise. "Und statt das zuzugeben, hast du Maya schlecht gemacht." Leon nickt kaum merklich.',
         choices: [
           {
             id: 'v3-s4-c1',
-            text: '"Das ist nicht echt! Das sind nur meine eigenen Zweifel!" – dagegen ankämpfen',
-            consequence: 'Dein Mut und deine Einsicht erkennen die Illusion und kämpfen dagegen an.',
-            nextSceneId: 'v3-s5',
-            points: { empathyPoints: 0, insightPoints: 3, couragePoints: 3 }
-          },
-          {
-            id: 'v3-s4-c2',
-            text: 'Die Augen schließen. Atmen. An Ashs Worte denken: Wut ist manchmal nur Angst.',
-            consequence: 'Dein Einfühlungsvermögen verbindet dich mit dem, was du von anderen gelernt hast.',
+            text: '"Leon, das mit der Note und deiner Mutter klingt nach viel Druck. Aber Maya zu verletzen löst das nicht."',
+            consequence: 'Du zeigst Verständnis für Leons Situation, ohne sein Verhalten zu entschuldigen. Das ist die reife Art, mit Konflikten umzugehen: Man kann das Verhalten ablehnen und trotzdem den Menschen dahinter sehen. Leon handelte aus eigenem Schmerz heraus - das macht es nicht richtig, aber es macht es verständlich.',
             nextSceneId: 'v3-s5',
             points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
           },
           {
-            id: 'v3-s4-c3',
-            text: 'Sich selbst laut Mut zusprechen: "Ich bin stärker als das!"',
-            consequence: 'Dein Mut gibt dir die Kraft, an dich selbst zu glauben.',
+            id: 'v3-s4-c2',
+            text: '"Das war mutig von dir, das zuzugeben. Aber Maya verdient eine Entschuldigung."',
+            consequence: 'Du anerkennst Leons Ehrlichkeit UND forderst Verantwortung ein. Das ist ein wichtiges Gleichgewicht: Verständnis zeigen heißt nicht, Konsequenzen aufzuheben. Leon muss verstehen, dass seine Gefühle verständlich sind, aber seine Handlungen trotzdem Schaden angerichtet haben. Eine echte Entschuldigung ist der nächste Schritt.',
             nextSceneId: 'v3-s5',
-            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'v3-s4-c3',
+            text: 'Ash ansehen und leise sagen: "Siehst du? Unter seiner Gemeinheit steckte auch was anderes."',
+            consequence: 'Du verbindest die Lektion aus Kapitel 2 mit der jetzigen Situation. Nicht nur Ashs Wut hatte einen tieferen Grund - auch Leons Verhalten. Eifersucht, Leistungsdruck, Angst vor Enttäuschung - das sind die wahren Ursachen. Ash erkennt das Muster und versteht zum ersten Mal: Wut als Schutzschild ist nicht sein alleiniges Problem. Es ist menschlich.',
+            nextSceneId: 'v3-s5',
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           }
         ]
       },
       {
         id: 'v3-s5',
-        speaker: 'Magmus',
-        speakerEmoji: '🪨',
-        text: 'Die Stimme wird leiser. Die Lava sinkt. Du hast es geschafft – fast. Der letzte Gang führt nach draußen, du kannst den Himmel sehen! Aber... Sackgasse. Eine Wand versperrt den Ausgang. Du drückst dagegen – sie bewegt sich nicht. Die Lava steigt wieder. Magmus\' Stimme, ganz ruhig: "Stärke ist nicht, alles allein zu schaffen."',
+        speaker: 'Ash',
+        speakerEmoji: '🙂',
+        text: 'Leon geht zu Maya und entschuldigt sich - leise und unbeholfen, aber ehrlich. Maya nickt, noch sichtlich verletzt, aber sie nimmt die Entschuldigung an. Ash kommt zu dir. "Weißt du, was krass ist?", sagt er. "Vor einer Woche hätte ich Leon die Nase gebrochen. Und dann hätte ICH den Ärger bekommen, Leon wäre das Opfer gewesen, und Maya hätte immer noch gelitten." Er schüttelt den Kopf. "Atmen, Ich-Botschaften, verstehen wollen statt zuschlagen... das klingt so einfach, wenn man es sagt. Aber es hat funktioniert." Er grinst. "Wut ist wie Feuer - sie kann zerstören, aber auch wärmen und schützen. Stimmt\'s?"',
         choices: [
           {
             id: 'v3-s5-c1',
-            text: '"Magmus! Ich brauche Hilfe!" – um Hilfe rufen',
-            consequence: 'Dein Mut überwindet den Stolz und ruft um Hilfe – das erfordert wahre Stärke.',
-            nextSceneId: 'v3-s6',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
+            text: '"Genau. Und du hast heute dein Feuer genutzt, um Maya zu schützen. DAS ist Stärke."',
+            consequence: 'Du hilfst Ash, sein neues Bild von Stärke zu festigen. Wahre Stärke ist nicht die Faust, die zuschlägt. Wahre Stärke ist die Faust, die sich öffnet und stattdessen ein Gespräch beginnt. Ash hat heute bewiesen, dass man wütend sein UND respektvoll handeln kann. Das ist eine Fähigkeit, die viele Erwachsene nie lernen.',
+            nextSceneId: null,
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'v3-s5-c2',
-            text: 'Nachdenken: Was würde Magmus tun? Warten. Beobachten. Die Wand genauer anschauen.',
-            consequence: 'Deine Einsicht sucht nach dem klugen Weg, nicht nach dem einfachen.',
-            nextSceneId: 'v3-s6',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+            text: '"Und das Beste: Du hast nicht nur Maya geholfen, sondern auch Leon. Er hat kapiert, was er falsch gemacht hat."',
+            consequence: 'Eine wichtige Perspektive. Gewaltfreie Konfliktlösung hat oft mehr als ein Opfer "gerettet". Leon hätte ohne dieses Gespräch vielleicht weitergemacht und immer mehr Leute verletzt. Durch Ashs ruhige Konfrontation konnte Leon erkennen, was wirklich hinter seinem Verhalten steckte. Gesunde Wut kann heilen - nicht nur den Wütenden, sondern alle Beteiligten.',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 0 }
           },
           {
             id: 'v3-s5-c3',
-            text: 'Akzeptieren, dass du Hilfe brauchst – das ist keine Schwäche',
-            consequence: 'Dein Einfühlungsvermögen erkennt, dass Verletzlichkeit keine Schwäche ist.',
-            nextSceneId: 'v3-s6',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
-          }
-        ]
-      },
-      {
-        id: 'v3-s6',
-        speaker: 'Magmus',
-        speakerEmoji: '🪨',
-        text: 'Magmus schiebt sich langsam – seeehr langsam – durch die Höhlenwand. Buchstäblich. Er IST Stein. "Du hast gerufen." Er legt seine riesige Hand auf die blockierende Wand und schiebt sie weg wie eine Tür. Frische Luft strömt rein. Die Lava zieht sich sofort zurück. Draußen wartet die Sonne.',
-        choices: [
-          {
-            id: 'v3-s6-c1',
-            text: '"Das war... intensiv. Danke, Magmus."',
-            consequence: 'Dein Einfühlungsvermögen zeigt echte Dankbarkeit für die Hilfe.',
-            nextSceneId: 'v3-s7',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
-          },
-          {
-            id: 'v3-s6-c2',
-            text: '"Hättest du das nicht etwas SCHNELLER machen können?!" – lachen',
-            consequence: 'Dein Mut findet sogar in der Erleichterung Platz für Humor.',
-            nextSceneId: 'v3-s7',
-            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
-          },
-          {
-            id: 'v3-s6-c3',
-            text: '"Warum hast du mich nicht einfach getragen?"',
-            consequence: 'Deine Einsicht hinterfragt, warum die Lektion so und nicht anders gelaufen ist.',
-            nextSceneId: 'v3-s7',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
-          }
-        ]
-      },
-      {
-        id: 'v3-s7',
-        speaker: 'Magmus',
-        speakerEmoji: '🪨',
-        text: 'Magmus sieht dich an – und du schwörst, ein winziges Lächeln huscht über sein Steingesicht. "Nicht schlecht. Du hast den heißesten Teil ohne Explosion überstanden." Pause. "Ich bin beeindruckt." Noch eine Pause. "Das sage ich nicht oft." Die längste Pause der Welt. "Eigentlich nie." Er dreht sich um und bewegt sich langsam davon. Über die Schulter sagt er: "Morgen triffst du Zinnia. Sie ist... anders. Und du wirst überrascht sein." Du bleibst stehen, verschwitzt aber stolz.',
-        choices: [
-          {
-            id: 'v3-s7-c1',
-            text: 'Stolz auf sich selbst sein – das war WIRKLICH schwer',
-            consequence: 'Dein Mut hat dich durch die härteste Prüfung getragen.',
+            text: '"Merk dir die Werkzeuge: Atmen. Ich-Botschaften. Verstehen wollen. Die funktionieren immer."',
+            consequence: 'Du fasst die konkreten Werkzeuge zusammen, die Ash (und du!) heute gelernt habt. Erstens: Atmen (4-4-6), um das Denkhirn einzuschalten. Zweitens: Ich-Botschaften statt Du-Vorwürfe. Drittens: Fragen "Was steckt dahinter?" statt sofort zu urteilen. Diese drei Werkzeuge sind wie ein Feuerlöscher, den du immer dabei haben kannst.',
             nextSceneId: null,
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
-          },
-          {
-            id: 'v3-s7-c2',
-            text: 'Darüber nachdenken, was man gelernt hat: Hilfe holen ist nicht schwach',
-            consequence: 'Deine Einsicht fasst die wichtigste Lektion zusammen: Hilfe holen ist Stärke.',
-            nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
-          },
-          {
-            id: 'v3-s7-c3',
-            text: '"Magmus!" Er dreht sich um. "Danke. Echt jetzt."',
-            consequence: 'Dein Einfühlungsvermögen drückt echte Wertschätzung aus – das berührt sogar Stein.',
-            nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+            points: { empathyPoints: 0, insightPoints: 3, couragePoints: 2 }
           }
         ]
       }
     ]
   },
+
+  // =========================================================================
+  // KAPITEL 4: Die Kraft des Vulkans
+  // Kernthema: Wut konstruktiv kanalisieren - Selbstbehauptung lernen
+  // Lernziel: Spieler setzen alles Gelernte ein, um gegen Mobbing
+  //           einzustehen. Ash zeigt seine Transformation. Wut wird
+  //           als Motor für positive Veränderung erfahren.
+  // Psychologische Basis: Assertivität (vs. Aggression), Empowerment,
+  //                       Perspektivwechsel, Resilienzforschung
+  // =========================================================================
   {
     id: 'volcano-scenario-4',
     islandId: 'volcano' as IslandId,
-    title: 'Zinnias Geheimnis',
-    description: 'Ein Garten auf einem Vulkan? Zinnia zeigt dir, dass Wut Dinge erschaffen kann',
+    title: 'Die Kraft des Vulkans',
+    description: 'Die letzte Herausforderung: Setze alles ein, was du gelernt hast, um gegen Mobbing einzustehen - mit Stärke und Respekt.',
     scenes: [
       {
         id: 'v4-s1',
-        speaker: 'Zinnia',
-        speakerEmoji: '🌺',
-        text: 'Das ergibt keinen Sinn. Mitten auf dem schwarzen Vulkangestein liegt ein Garten voller leuchtender Blumen – rot, orange, violett. Und mittendrin steht Zinnia, eine Blume so groß wie du, die dir direkt in die Augen schaut. "Überrascht?" Sie lacht. "Alle sind überrascht. Eine Blume auf einem Vulkan. Unmöglich, oder?" Sie streckt ein Blatt aus wie eine Hand. "Und doch bin ich hier. Die Frage ist: Wie?"',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌋',
+        text: 'Eine Gruppe älterer Schüler hat begonnen, ein jüngeres Kind namens Lina systematisch auszuschließen. Es hat mit kleinen Sticheleien angefangen, aber inzwischen ist es schlimmer geworden: Sie lachen sie aus, wenn sie im Unterricht spricht, verstecken ihre Sachen, und flüstern laut genug, dass Lina es hören kann: "Die ist so seltsam. Niemand will mit der befreundet sein. Guck dir mal an, was die anhat." Lina hat aufgehört zu reden. Sie sitzt jeden Tag allein am Rand des Pausenhofs, den Blick gesenkt, die Schultern eingezogen, als würde sie versuchen, unsichtbar zu werden. Ash kommt zu dir, und du siehst: Er kocht vor Wut. Seine Fäuste sind geballt, sein Kiefer angespannt. Aber dann tut er etwas, das er vor ein paar Wochen nicht getan hätte - er atmet. "Ich halt das nicht mehr aus", sagt er mit kontrollierter Stimme. "Aber ich weiß: Einfach hinrennen und schreien bringt nichts. Was MACHEN wir?"',
         choices: [
           {
             id: 'v4-s1-c1',
-            text: '"Der vulkanische Boden ist nährstoffreich – nach Ausbrüchen wächst alles besser!"',
-            consequence: 'Deine Einsicht verbindet wissenschaftliches Wissen mit emotionaler Weisheit.',
-            nextSceneId: 'v4-s2',
-            points: { empathyPoints: 0, insightPoints: 3, couragePoints: 1 }
-          },
-          {
-            id: 'v4-s1-c2',
-            text: '"Ehrlich? Keine Ahnung. Aber es ist wunderschön."',
-            consequence: 'Dein Einfühlungsvermögen lässt dich die Schönheit in Unerwartetem erkennen.',
+            text: '"Erst zu Lina. Sie muss wissen, dass sie nicht allein ist."',
+            consequence: 'Bevor man ein Problem löst, kümmert man sich um den Menschen, der leidet. Lina braucht gerade keine Helden, die in ihrem Namen kämpfen - sie braucht jemanden, der sie sieht und ihr zeigt: "Du bist nicht unsichtbar." In der Mobbingforschung weiß man: Das Schlimmste am Mobbing ist nicht die Tat selbst, sondern das Gefühl, dass niemand hilft.',
             nextSceneId: 'v4-s2',
             points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           },
           {
-            id: 'v4-s1-c3',
-            text: '"Wie überlebst du die Hitze und die Ausbrüche?"',
-            consequence: 'Deine Einsicht stellt die richtigen Fragen über Widerstandskraft.',
+            id: 'v4-s1-c2',
+            text: '"Wir brauchen einen Plan. Wer kann helfen? Wir sammeln Verbündete."',
+            consequence: 'Strategisches Denken unter emotionalem Druck - das zeigt echte Reife. Gegen eine Gruppe allein anzutreten ist mutig, aber oft nicht effektiv. Wenn du andere einbeziehst - Freunde, andere Schüler, Vertrauenspersonen - wird aus einem einsamen Protest eine Gemeinschaft, die sagt: "Das akzeptieren wir nicht." Das hat viel mehr Kraft als ein einzelner Wutausbruch.',
             nextSceneId: 'v4-s2',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v4-s1-c3',
+            text: '"Ash, deine Wut ist jetzt RICHTIG. Nutze sie. Aber nutze sie klug."',
+            consequence: 'Du erkennst etwas Entscheidendes: Nicht jede Wut muss beruhigt werden. Manche Wut ist BERECHTIGT. Wut über Ungerechtigkeit, über Mobbing, über Ausgrenzung - diese Wut ist ein moralischer Kompass. Sie sagt dir: "Hier stimmt etwas nicht, und du musst handeln." Der Schlüssel ist nicht, die Wut abzuschalten, sondern sie in konstruktives Handeln umzuwandeln.',
+            nextSceneId: 'v4-s2',
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'v4-s2',
-        speaker: 'Zinnia',
-        speakerEmoji: '🌺',
-        text: '"Kluge Antwort!" Zinnia wiegt sich zufrieden. "Weißt du, was nach einem Vulkanausbruch passiert? ALLES wächst. Besser, schneller, stärker als vorher. Die Asche wird zu Dünger. Die Zerstörung wird zum Nährboden." Sie beugt sich vor, als würde sie ein Geheimnis verraten. "Und genau so funktioniert das mit Wut. Die gleiche Energie, die zerstören kann, kann auch erschaffen. Du wählst."',
+        speaker: 'Ash',
+        speakerEmoji: '😤',
+        text: 'Ihr geht zusammen zu Lina. Sie schaut euch misstrauisch an. "Was wollt ihr?", fragt sie leise. "Seid ihr auch hier, um euch lustig zu machen?" Ash kniet sich neben sie hin. "Nein", sagt er. "Wir sind hier, weil das, was die anderen machen, nicht okay ist. Und weil ich weiß, wie sich das anfühlt." Lina schaut ihn überrascht an. "Du?" Ash nickt. "Ich war auch mal der, den alle gemieden haben. Und ich war so wütend, dass ich alles nur schlimmer gemacht habe." Er sieht zu dir. "Aber dann hat mir jemand gezeigt, dass es einen anderen Weg gibt."',
         choices: [
           {
             id: 'v4-s2-c1',
-            text: '"Wut als Energie zum Erschaffen? Das hat mir noch nie jemand gesagt."',
-            consequence: 'Deine Einsicht öffnet sich für eine völlig neue Perspektive auf Wut.',
+            text: '"Lina, du bist nicht das Problem. Die, die dich ausschließen, sind das Problem."',
+            consequence: 'Mobbingopfer glauben oft, dass etwas mit IHNEN nicht stimmt: "Ich bin zu seltsam, zu leise, zu anders." Diese Überzeugung einzureißen ist der wichtigste erste Schritt. Mobbing sagt NICHTS über das Opfer aus - es sagt alles über die Täter. Lina muss hören und verstehen: Sie ist nicht kaputt. Die Situation ist kaputt.',
             nextSceneId: 'v4-s3',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
           },
           {
             id: 'v4-s2-c2',
-            text: '"Aber wenn ich wütend bin, will ich Dinge KAPUTTMACHEN, nicht aufbauen!"',
-            consequence: 'Dein Einfühlungsvermögen für dich selbst zeigt ehrliche Selbstreflexion.',
+            text: '"Wir haben einen Plan. Aber zuerst: Was wünschst DU dir, Lina?"',
+            consequence: 'Du gibst Lina ihre Stimme zurück. Statt über ihren Kopf hinweg zu entscheiden, fragst du sie, was SIE will. Das ist der Unterschied zwischen "retten" und "unterstützen". Retten nimmt jemandem die Kontrolle. Unterstützen gibt Kontrolle zurück. Lina soll Teil der Lösung sein, nicht nur das Problem, das gelöst wird.',
             nextSceneId: 'v4-s3',
-            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v4-s2-c3',
-            text: '"Zeig mir, wie das geht!"',
-            consequence: 'Dein Mut treibt dich an, neue Dinge sofort auszuprobieren.',
+            text: '"Ash hat recht. Wir stehen auf deiner Seite. Ab heute bist du nicht mehr allein."',
+            consequence: 'Worte wie diese können ein Leben verändern. Studien zur Resilienz zeigen: Ein einziger Mensch, der an dich glaubt und zu dir steht, kann den Unterschied machen zwischen "das überstehe ich" und "ich gehe daran kaputt". Für Lina ist dieses Versprechen nicht nur nett - es könnte der Wendepunkt sein.',
             nextSceneId: 'v4-s3',
-            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 0, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'v4-s3',
-        speaker: 'Zinnia',
-        speakerEmoji: '🌺',
-        text: 'Zinnia zeigt auf ein leeres Stück Vulkanboden. "Probier es aus. Denk an etwas, das dich richtig wütend macht." Du denkst nach – und spürst die Hitze in dir steigen. "Gut. Spürst du die Energie? Jetzt: Was willst du damit MACHEN? Nicht zerstören – stell dir vor, du drückst diese Kraft in den Boden, wie ein Samenkorn." Du konzentrierst dich – und aus dem schwarzen Boden sprießt ein winziger, leuchtender Trieb!',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌋',
+        text: 'Ihr habt einen Plan. Zusammen mit ein paar anderen Schülern, die auch genug hatten, geht ihr auf die Gruppe zu. Ash spricht als Erster, und seine Stimme ist fest, nicht laut. "Was ihr mit Lina macht, ist Mobbing. Und wir akzeptieren das nicht mehr." Die Anführerin der Gruppe, Tara, verschränkt die Arme: "Und was willst du machen? Uns verpetzen?" Die Luft knistert vor Spannung. Du spürst die Wut in deinem Bauch. Gleichzeitig weißt du: Wie du JETZT reagierst, entscheidet alles.',
         choices: [
           {
             id: 'v4-s3-c1',
-            text: '"WHOA! Das hab ICH gemacht?!"',
-            consequence: 'Dein Mut zeigt sich in deinem ehrlichen Staunen über die eigene Kraft.',
+            text: '"Wir wollen euch nicht verpetzen. Wir wollen, dass ihr versteht, was ihr anrichtet."',
+            consequence: 'Du wählst den Weg der Aufklärung statt der Drohung. Indem du die Täter nicht als "böse" behandelst, sondern als Menschen, die die Auswirkungen ihres Handelns nicht sehen, gibst du ihnen die Chance, sich zu ändern. Das ist unglaublich schwer, wenn man wütend ist. Aber es ist auch unglaublich wirkungsvoll. Drohungen erzeugen Trotz. Verständnis erzeugt Nachdenken.',
             nextSceneId: 'v4-s4',
-            points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v4-s3-c2',
-            text: '"Das ist... die gleiche Wut. Aber sie fühlt sich ganz anders an."',
-            consequence: 'Deine Einsicht erkennt den feinen Unterschied in der Qualität der Emotion.',
+            text: '"Tara, stell dir vor, DICH würde jemand jeden Tag so behandeln. Wie würdest du dich fühlen?"',
+            consequence: 'Du nutzt die mächtigste Waffe gegen Mobbing: Perspektivwechsel. Mobber sehen ihre Opfer oft nicht als echte Menschen mit echten Gefühlen. Wenn du Tara zwingst, sich in Linas Position zu versetzen, bricht diese Mauer. Das ist nicht Manipulation - das ist Empathie erzeugen. Und Empathie ist der natürliche Feind von Mobbing.',
             nextSceneId: 'v4-s4',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
           },
           {
             id: 'v4-s3-c3',
-            text: '"Kann man das mit allen Gefühlen machen?"',
-            consequence: 'Deine Einsicht denkt weiter und fragt nach dem größeren Bild.',
+            text: '"Wir holen uns Hilfe von Erwachsenen, wenn nötig. Nicht um zu petzen, sondern weil alle das Recht auf Sicherheit haben."',
+            consequence: 'Sich Hilfe von Erwachsenen zu holen ist KEINE Schwäche und kein Petzen. Es ist ein kluger, mutiger Schritt. Du kannst wütend sein UND dir Hilfe holen. Du kannst für jemanden einstehen UND wissen, dass manche Situationen zu groß für dich allein sind. Das ist reife Selbstbehauptung: Du handelst, wo du kannst, und holst Verstärkung, wo du musst.',
             nextSceneId: 'v4-s4',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 0 }
+            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
           }
         ]
       },
       {
         id: 'v4-s4',
-        speaker: 'Zinnia',
-        speakerEmoji: '🌺',
-        text: 'Zinnia strahlt. Dann wird sie plötzlich ernst und zeigt auf eine Ecke des Gartens, die du vorher nicht bemerkt hast. Verwelkte Blumen, vertrocknete Stängel, graue Erde. "Siehst du das? Das sind meine Fehler. Die Momente, wo ich meine Wut nicht genutzt, sondern verschluckt habe." Sie schüttelt die Blätter. "Verschluckte Wut vergiftet den Boden. Sie wird zu Bitterkeit. Und auf bitterem Boden wächst nichts."',
+        speaker: 'Tara',
+        speakerEmoji: '😶',
+        text: 'Tara schweigt. Zum ersten Mal sieht sie unsicher aus. Einer aus ihrer Gruppe, Kai, tritt einen Schritt zurück und murmelt: "Ich wollte eigentlich nie... ich hab nur mitgemacht, weil..." Er verstummt. Die Dynamik hat sich verändert. Ash sagt ruhig: "Ihr müsst jetzt nicht antworten. Aber denkt drüber nach." Er dreht sich zu Lina um, die zum ersten Mal seit Wochen den Kopf hebt. Leise sagt Ash zu dir: "Ich bin so wütend. Aber ich bin auch... stolz? Kann man beides gleichzeitig sein?"',
         choices: [
           {
             id: 'v4-s4-c1',
-            text: '"Warte – DU warst auch mal wütend? Richtig wütend?"',
-            consequence: 'Dein Einfühlungsvermögen entdeckt die gemeinsame Geschichte hinter der Weisheit.',
+            text: '"Ja! Du kannst wütend sein UND respektvoll handeln. Das ist wahre Stärke."',
+            consequence: 'Das ist die zentrale Botschaft der gesamten Vulkaninsel. Wut und Respekt schließen sich nicht aus - sie können sogar zusammenarbeiten. Man kann empört sein über Ungerechtigkeit und trotzdem würdevoll handeln. Man kann innerlich kochen und trotzdem kluge Worte wählen. Man kann das Feuer in sich spüren und es trotzdem kontrolliert einsetzen. DAS ist die wahre Kraft des Vulkans: Nicht die blinde, zerstörerische Explosion, sondern die fokussierte, kontrollierte Energie, die Berge versetzen und die Welt verändern kann.',
             nextSceneId: 'v4-s5',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
           },
           {
             id: 'v4-s4-c2',
-            text: '"Also ist Wut runterschlucken genauso schlecht wie explodieren?"',
-            consequence: 'Deine Einsicht erkennt die wichtige Balance zwischen Unterdrücken und Explodieren.',
+            text: '"Du hast heute bewiesen, dass Wut eine Superkraft sein kann, wenn du sie richtig einsetzt."',
+            consequence: 'Ash hat seine Wut kanalisiert: nicht in eine Faust, sondern in klare Worte und mutiges Handeln. Die gleiche Energie, die früher Dinge zerstört hat, hat heute eine Gemeinschaft in Bewegung gesetzt. In der Geschichte der Menschheit haben alle großen Veränderungen mit gesunder, kanalisierter Wut begonnen - Wut über Ungerechtigkeit, die zu konstruktivem Handeln führte.',
             nextSceneId: 'v4-s5',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
           },
           {
             id: 'v4-s4-c3',
-            text: 'Die verwelkten Blumen vorsichtig berühren – sie tun dir leid',
-            consequence: 'Dein Einfühlungsvermögen zeigt sich in deiner zärtlichen Geste gegenüber dem Verlorenen.',
+            text: '"Sieh dir Lina an. Sie lächelt. DAS hast du bewirkt."',
+            consequence: 'Manchmal ist die beste Belohnung nicht der Sieg über den Gegner, sondern das Lächeln desjenigen, für den man eingestanden ist. Ash sieht die direkte Auswirkung seines Handelns: Ein Mensch, der sich wieder gesehen und geschützt fühlt. Das ist stärker als jede Revanche. Deine Wut kann Licht in die Dunkelheit bringen, wenn du sie weise einsetzt.',
             nextSceneId: 'v4-s5',
             points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
           }
@@ -746,481 +660,30 @@ export const volcanoScenarios: Scenario[] = [
       },
       {
         id: 'v4-s5',
-        speaker: 'Zinnia',
-        speakerEmoji: '🌺',
-        text: 'Zinnia nickt. "Ich war wie Ash, damals. Voller Zorn. Aber dann hat mir jemand gezeigt, was ich dir zeige. Und langsam – ganz langsam – habe ich gelernt, die Feuerenergie umzuleiten." Sie sieht dich lange an. "Du hast dich verändert seit du hier bist, weißt du das? Am Anfang wärst du bei Magmus\' Labyrinth wahrscheinlich durchgedreht. Aber du hast durchgehalten."',
+        speaker: 'Ash',
+        speakerEmoji: '😊',
+        text: 'Ash steht auf einem Felsvorsprung und schaut über die Vulkaninsel. Die Sonne geht unter und taucht alles in warmes Orange und Gold. Lina steht neben ihm - zum ersten Mal seit Langem nicht allein. Sogar ein kleines Lächeln huscht über ihr Gesicht. Der Vulkan hinter euch glüht sanft im Abendlicht - nicht bedrohlich, nicht explosiv, sondern warm und beständig. Wie ein Lagerfeuer, das Wärme gibt, ohne zu verbrennen. "Weißt du, was ich gelernt habe?", sagt Ash zu dir. Seine Stimme ist ruhig, aber voller Überzeugung. "Wut ist nicht mein Feind. Sie war nie mein Feind. Sie war die ganze Zeit eine Botschaft: Etwas stimmt nicht, und du musst etwas tun." Er dreht sich zu dir und zum ersten Mal sieht er nicht wütend, nicht traurig, sondern... friedlich aus. "Danke. Nicht für die Antworten - sondern dafür, dass du mir die richtigen Fragen gestellt hast. Und dafür, dass du geblieben bist."',
         choices: [
           {
             id: 'v4-s5-c1',
-            text: '"Ich hab einfach gelernt, dass Wut nicht mein Feind ist."',
-            consequence: 'Deine Einsicht hat die zentrale Lektion der Vulkaninsel verinnerlicht.',
-            nextSceneId: 'v4-s6',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+            text: '"Du hattest die Antworten die ganze Zeit in dir. Du brauchtest nur jemanden, der zuhört."',
+            consequence: 'Die tiefste Wahrheit dieser gesamten Reise: Ash war nie kaputt. Er brauchte keine Reparatur - er brauchte Verständnis, Werkzeuge und einen sicheren Raum, um zu wachsen. Kein Mensch ist "sein Problem". Jeder Mensch hat die Fähigkeit, mit seinen Emotionen klug umzugehen - manchmal braucht es nur jemanden, der an uns glaubt, der uns die richtigen Fragen stellt statt Antworten aufzuzwingen, und der uns zeigt, dass ein anderer Weg möglich ist. DU warst dieser Mensch für Ash. Und vielleicht ist jemand da draußen, der DICH gerade braucht.',
+            nextSceneId: null,
+            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
           },
           {
             id: 'v4-s5-c2',
-            text: '"Na ja, ICH hätte das ohne Flamara, Ash und Magmus nicht geschafft."',
-            consequence: 'Dein Einfühlungsvermögen erkennt den Wert jeder Begegnung auf deinem Weg.',
-            nextSceneId: 'v4-s6',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+            text: '"Vergiss nicht, was du hier gelernt hast: Atmen. Fühlen. Verstehen. Handeln. In dieser Reihenfolge."',
+            consequence: 'Du fasst die vier Schritte der gesunden Wut-Verarbeitung zusammen: Erstens ATMEN - den Körper beruhigen. Zweitens FÜHLEN - die Wut wahrnehmen, ohne sie zu unterdrücken. Drittens VERSTEHEN - was steckt dahinter? Was ist die Botschaft? Viertens HANDELN - bewusst und respektvoll. Diese vier Schritte funktionieren in jeder Situation, in jedem Alter, in jedem Konflikt.',
+            nextSceneId: null,
+            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v4-s5-c3',
-            text: '"Und was kommt jetzt? Ich bin bereit für mehr."',
-            consequence: 'Dein Mut drängt nach vorne – bereit für jede neue Herausforderung.',
-            nextSceneId: 'v4-s6',
-            points: { empathyPoints: 0, insightPoints: 2, couragePoints: 3 }
-          }
-        ]
-      },
-      {
-        id: 'v4-s6',
-        speaker: 'Zinnia',
-        speakerEmoji: '🌺',
-        text: 'Zinnia wird still. Ihre Blüten zittern leicht. "Was jetzt kommt, ist... schwierig. Ich sage dir etwas, das du vielleicht nicht hören willst." Stille. "Flamara, Magmus, Ash und ich – wir streiten. Richtig. Und es wird hässlich." Ihr Blick ist sorgenvoll. "Jemand muss das klären. Und ich glaube..." Sie sieht dich an. "...das bist du." Der Vulkan grummelt, als würde er zustimmen.',
-        choices: [
-          {
-            id: 'v4-s6-c1',
-            text: '"Ihr streitet? Aber ihr seid doch ein Team!"',
-            consequence: 'Dein Einfühlungsvermögen zeigt Sorge um die Gemeinschaft der Wächter.',
-            nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
-          },
-          {
-            id: 'v4-s6-c2',
-            text: '"Warum ich? Ich bin doch erst seit ein paar Tagen hier!"',
-            consequence: 'Deine Einsicht hinterfragt, warum ausgerechnet du diese Rolle übernehmen sollst.',
-            nextSceneId: null,
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
-          },
-          {
-            id: 'v4-s6-c3',
-            text: '"Okay. Sag mir, worum es geht."',
-            consequence: 'Dein Mut lässt dich die Herausforderung direkt annehmen.',
+            text: '"Die nächste Insel wartet. Aber den Vulkan in dir nimmst du mit - und er wird dir helfen."',
+            consequence: 'Der innere Vulkan verschwindet nicht - und das soll er auch gar nicht. Wut bleibt ein Teil von dir, aber ab jetzt ist sie ein Werkzeug, kein Fluch. Du nimmst von dieser Insel mit: Erstens, die Fähigkeit, deine Körpersignale zu lesen und die Wut frühzeitig zu erkennen. Zweitens, das Wissen, dass unter der Wut oft tiefere Gefühle wie Traurigkeit, Angst oder Hilflosigkeit liegen. Drittens, konkrete Techniken - Atmen, Ich-Botschaften, die Stopp-Frage "Was steckt darunter?" Und viertens, den Mut, für dich selbst und für andere einzustehen - mit Stärke UND Respekt. Das ist die wahre, unzerstörbare Kraft des Vulkans.',
             nextSceneId: null,
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'volcano-scenario-5',
-    islandId: 'volcano' as IslandId,
-    title: 'Der Streit der Wächter',
-    description: 'Alle streiten, der Vulkan bebt, und du bist der Einzige, der das lösen kann',
-    scenes: [
-      {
-        id: 'v5-s1',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Du hörst sie schon von weitem. Flamara brüllt: "DU mit deiner ewigen Geduld! Während DU gewartet hast, wäre fast alles explodiert!" Magmus, untypisch laut: "Besser warten als blind drauflosrennen wie DU!" Ash steht am Rand und schreit: "Ihr seid BEIDE schuld!" Zinnia versucht zu schlichten, aber niemand hört ihr zu. Der Vulkan bebt so stark, dass Steine fallen. Das ist ernst.',
-        choices: [
-          {
-            id: 'v5-s1-c1',
-            text: '"HEY! ALLE MAL STOPP!" – laut und bestimmt',
-            consequence: 'Dein Mut durchbricht das Chaos mit einer klaren Stimme.',
-            nextSceneId: 'v5-s2',
-            points: { empathyPoints: 0, insightPoints: 1, couragePoints: 3 }
-          },
-          {
-            id: 'v5-s1-c2',
-            text: 'Erst beobachten: Was ist passiert? Warum streiten sie?',
-            consequence: 'Deine Einsicht lehrt dich, erst zu verstehen, bevor du handelst.',
-            nextSceneId: 'v5-s2',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
-          },
-          {
-            id: 'v5-s1-c3',
-            text: 'Zu Ash gehen – er sieht am aufgewühltesten aus',
-            consequence: 'Dein Einfühlungsvermögen erkennt, wer am dringendsten Unterstützung braucht.',
-            nextSceneId: 'v5-s2',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
-          }
-        ]
-      },
-      {
-        id: 'v5-s2',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Stück für Stück bekommst du die Geschichte zusammen. Es gab eine Erdspalte, die sich gefährlich öffnete. Flamara wollte sofort handeln – Magmus wollte warten und beobachten. Flamara handelte, Magmus griff nicht ein. Die Spalte schloss sich, aber ein Teil von Zinnias Garten wurde zerstört. Jeder gibt dem anderen die Schuld. Flamara: "Er hätte mir helfen müssen!" Magmus: "Sie hätte nicht blindlings losrennen dürfen!" Zinnia leise: "Mein Garten..."',
-        choices: [
-          {
-            id: 'v5-s2-c1',
-            text: '"Flamara – du wolltest helfen. Magmus – du wolltest vorsichtig sein. Ihr hattet BEIDE recht."',
-            consequence: 'Deine Einsicht findet die Wahrheit in beiden Perspektiven.',
-            nextSceneId: 'v5-s3',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
-          },
-          {
-            id: 'v5-s2-c2',
-            text: '"Wartet. Ich will JEDEN einzeln hören. Flamara zuerst."',
-            consequence: 'Dein Einfühlungsvermögen gibt jedem die Chance, gehört zu werden.',
-            nextSceneId: 'v5-s3',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
-          },
-          {
-            id: 'v5-s2-c3',
-            text: '"Zinnia, wie geht es dir? Dein Garten..." – sich um die kümmern, die am meisten verletzt ist',
-            consequence: 'Dein Einfühlungsvermögen kümmert sich zuerst um die, die am meisten verletzt sind.',
-            nextSceneId: 'v5-s3',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
-          }
-        ]
-      },
-      {
-        id: 'v5-s3',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Flamara mit verschränkten Armen: "Er denkt, mein Temperament ist das Problem!" Magmus, Arme vor der Brust: "Sie denkt, meine Geduld ist Schwäche." Ash platzt raus: "Und ICH finde, ihr seid beide Idioten!" Stille. Ash wird rot. "Sorry. Alte Gewohnheit." Er sieht dich an: "Was soll ich machen? Wie du es mir gezeigt hast?" Du erinnerst dich: Ash hat von dir gelernt.',
-        choices: [
-          {
-            id: 'v5-s3-c1',
-            text: '"Ash, atme erstmal. Und dann: Sag ihnen, was du WIRKLICH fühlst."',
-            consequence: 'Dein Einfühlungsvermögen und deine Einsicht helfen Ash, das Gelernte anzuwenden.',
-            nextSceneId: 'v5-s4',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
-          },
-          {
-            id: 'v5-s3-c2',
-            text: '"Flamara, Magmus – Ash hat \'sorry\' gesagt. Könnt ihr das auch?"',
-            consequence: 'Dein Mut fordert die Wächter heraus, ehrlich zu sich selbst zu sein.',
-            nextSceneId: 'v5-s4',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
-          },
-          {
-            id: 'v5-s3-c3',
-            text: '"Wisst ihr, was ICH sehe? Vier Leute, denen dieser Ort am Herzen liegt. Ihr streitet nicht, weil ihr euch hasst – sondern weil es euch wichtig ist."',
-            consequence: 'Dein Einfühlungsvermögen und deine Einsicht enthüllen die wahre Ursache des Streits.',
-            nextSceneId: 'v5-s4',
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
-          }
-        ]
-      },
-      {
-        id: 'v5-s4',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Flamara und Magmus schauen sich an. Die Wut flackert noch. "Ich war nicht wütend auf dich," sagt Flamara plötzlich. Alle starren sie an. "Ich war... ich hatte ANGST. Als die Spalte sich öffnete, dachte ich, wir verlieren alles. Und als du nicht sofort reagiert hast, Magmus, dachte ich..." Ihre Stimme bricht. "...du hast aufgegeben." Magmus blinzelt. Langsam. "Ich hatte auch Angst. Deshalb habe ich gewartet. Angst und Warten sind bei mir dasselbe."',
-        choices: [
-          {
-            id: 'v5-s4-c1',
-            text: '"Seht ihr? Ihr hattet beide Angst! Die Wut war nur die Verpackung!"',
-            consequence: 'Deine Einsicht durchschaut die Verpackung und findet die Angst darunter.',
-            nextSceneId: 'v5-s5',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
-          },
-          {
-            id: 'v5-s4-c2',
-            text: '"Flamara drückt Angst als Aktion aus. Magmus drückt Angst als Stillstand aus. Beides ist okay."',
-            consequence: 'Deine Einsicht erkennt, dass jeder Angst anders ausdrückt – und beides ist gültig.',
-            nextSceneId: 'v5-s5',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
-          },
-          {
-            id: 'v5-s4-c3',
-            text: 'Leise zu Ash: "Siehst du? Auch die Großen haben Angst."',
-            consequence: 'Dein Einfühlungsvermögen teilt diese wichtige Erkenntnis behutsam mit Ash.',
-            nextSceneId: 'v5-s5',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
-          }
-        ]
-      },
-      {
-        id: 'v5-s5',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Magmus bewegt sich. Langsam, wie immer – aber er geht auf Flamara zu. "Dein Feuer ist keine Bedrohung. Es ist... Leidenschaft." Flamara schluckt. "Und deine Geduld ist keine Schwäche. Sie ist... Stärke." Sie sehen sich an. Zinnia flüstert: "Endlich!" Ash wischt sich verstohlen eine Träne ab und murmelt: "Bin nicht am Heulen. Ist der Rauch."',
-        choices: [
-          {
-            id: 'v5-s5-c1',
-            text: 'Ash ansehen und leise lächeln – ihr wisst beide, dass es kein Rauch ist',
-            consequence: 'Dein Einfühlungsvermögen verbindet dich und Ash in einem stillen Moment der Wahrheit.',
-            nextSceneId: 'v5-s6',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
-          },
-          {
-            id: 'v5-s5-c2',
-            text: '"Und Zinnias Garten? Den bauen wir gemeinsam wieder auf."',
-            consequence: 'Dein Einfühlungsvermögen denkt bereits an die nächste Aufgabe: Wiederaufbau.',
-            nextSceneId: 'v5-s6',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
-          },
-          {
-            id: 'v5-s5-c3',
-            text: 'Nichts sagen. Diesen Moment einfach wirken lassen.',
-            consequence: 'Deine Einsicht weiß, dass manche Momente keine Worte brauchen.',
-            nextSceneId: 'v5-s6',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
-          }
-        ]
-      },
-      {
-        id: 'v5-s6',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Sie schauen dich alle an. Flamara schüttelt ungläubig den Kopf. "Wie hast du das gemacht? Wir streiten seit TAGEN, und du kommst und..." Magmus: "Du hast zugehört." Pause. "Das tut fast niemand." Zinnia lächelt. "Du hast jeden von uns ernst genommen. Und du hast uns gezeigt, was unter der Wut steckt." Ash grinst: "Und das, obwohl du erst seit ein paar Tagen hier bist."',
-        choices: [
-          {
-            id: 'v5-s6-c1',
-            text: '"Ich hab von euch ALLEN gelernt. Flamara: Feuer spüren. Ash: Ehrlich sein. Magmus: Geduld haben. Zinnia: Umwandeln."',
-            consequence: 'Deine Einsicht fasst zusammen, was jeder Wächter dich gelehrt hat.',
-            nextSceneId: 'v5-s7',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
-          },
-          {
-            id: 'v5-s6-c2',
-            text: '"Ich hab nichts Besonderes gemacht. Ich hab euch nur zugehört."',
-            consequence: 'Dein Einfühlungsvermögen zeigt echte Bescheidenheit – Zuhören ist eine Superkraft.',
-            nextSceneId: 'v5-s7',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
-          },
-          {
-            id: 'v5-s6-c3',
-            text: '"Nächstes Mal streitet euch nicht TAGELANG, bevor ihr redet, okay?"',
-            consequence: 'Dein Mut spricht aus, was alle denken – mit einem Augenzwinkern.',
-            nextSceneId: 'v5-s7',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
-          }
-        ]
-      },
-      {
-        id: 'v5-s7',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Alle lachen. Der Vulkan beruhigt sich. Dann wird Flamara ernst. "Es gibt etwas, das du wissen musst. Der Vulkan... er reagiert auf UNS ALLE. Unsere Wut, unsere Angst, unsere Konflikte. Und gerade war er kurz davor..." Sie zögert. Magmus beendet den Satz: "...auszubrechen." Stille. Zinnia: "Und das wird er. Bald. Wenn wir nicht bereit sind." Alle Augen ruhen auf dir.',
-        choices: [
-          {
-            id: 'v5-s7-c1',
-            text: '"Dann müssen wir bereit sein. Zusammen."',
-            consequence: 'Dein Mut inspiriert alle, gemeinsam für die Zukunft zu kämpfen.',
-            nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
-          },
-          {
-            id: 'v5-s7-c2',
-            text: 'Ein mulmiges Gefühl, aber auch Entschlossenheit. Du bist nicht mehr allein.',
-            consequence: 'Deine Einsicht verbindet Angst mit Entschlossenheit – du bist nicht mehr allein.',
-            nextSceneId: null,
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
-          },
-          {
-            id: 'v5-s7-c3',
-            text: '"Was passiert, wenn der Vulkan ausbricht?"',
-            consequence: 'Deine Einsicht stellt die entscheidende Frage, die alle beschäftigt.',
-            nextSceneId: null,
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'volcano-scenario-6',
-    islandId: 'volcano' as IslandId,
-    title: 'Der große Ausbruch',
-    description: 'Der Vulkan bricht aus – und nur alles, was du gelernt hast, kann die Insel retten',
-    scenes: [
-      {
-        id: 'v6-s1',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Es ist mitten in der Nacht, als der Boden so heftig bebt, dass du aus dem Schlaf gerissen wirst. Der Vulkan GLÜHT. Rot, orange, weiß. Flamara steht vor dir, und zum ersten Mal sieht sie aus, als hätte sie Angst. "Es ist soweit. Der Vulkan bricht aus. Und diesmal meine ich nicht den in deinem Kopf – den ECHTEN." Lava strömt bereits den Berg hinunter. "Alles, was du gelernt hast, wird jetzt gebraucht."',
-        choices: [
-          {
-            id: 'v6-s1-c1',
-            text: 'Tief atmen. Die Angst spüren. Aber nicht weglaufen. "Was muss ich tun?"',
-            consequence: 'Dein Mut lässt dich die Angst spüren, ohne vor ihr wegzulaufen.',
-            nextSceneId: 'v6-s2',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
-          },
-          {
-            id: 'v6-s1-c2',
-            text: '"Wo sind die anderen? Wir schaffen das nur zusammen!"',
-            consequence: 'Dein Einfühlungsvermögen denkt sofort an die anderen – Zusammenhalt ist Stärke.',
-            nextSceneId: 'v6-s2',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
-          },
-          {
-            id: 'v6-s1-c3',
-            text: 'Kurz die Augen schließen. Flamaras Lektion: Wut und Angst sind Boten, keine Feinde.',
-            consequence: 'Deine Einsicht erinnert dich an die wichtigste Lektion: Gefühle sind Boten.',
-            nextSceneId: 'v6-s2',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
-          }
-        ]
-      },
-      {
-        id: 'v6-s2',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Ihr rennt durch die Nacht. Ash kommt euch entgegen – seine Augen sind weit aufgerissen. "Die Lava! Sie kommt auf Zinnias Garten zu! Und Magmus – er steht einfach DA und RÜHRT SICH NICHT!" Du siehst es: Magmus steht mitten im Lavastrom, reglos. Ash schreit: "ER GIBT AUF! Warum tut er NICHTS?!" Ashs alte Wut flammt auf – seine Fäuste ballen sich.',
-        choices: [
-          {
-            id: 'v6-s2-c1',
-            text: '"Ash, erinnerst du dich? Wut ist manchmal Angst. Magmus hat Angst. Wie DU damals."',
-            consequence: 'Dein Einfühlungsvermögen hilft Ash, seine eigene Angst zu erkennen.',
-            nextSceneId: 'v6-s3',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
-          },
-          {
-            id: 'v6-s2-c2',
-            text: '"Ash! Atmen! Jetzt! Wir brauchen dich klar, nicht wütend!"',
-            consequence: 'Dein Mut greift in der Krise durch und gibt klare Anweisungen.',
-            nextSceneId: 'v6-s3',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
-          },
-          {
-            id: 'v6-s2-c3',
-            text: '"Er gibt nicht auf – er ist eingefroren vor Angst. Wir müssen zu ihm."',
-            consequence: 'Deine Einsicht erkennt sofort, was wirklich mit Magmus passiert.',
-            nextSceneId: 'v6-s3',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
-          }
-        ]
-      },
-      {
-        id: 'v6-s3',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Ash schließt die Augen. Atmet. Öffnet sie wieder. "Okay. Ich bin klar." Ein winziges Lächeln: "Danke." Zusammen lauft ihr zu Magmus. Die Lava umspült ihn bereits, aber sein Steinleib hält stand. Flamara ruft: "MAGMUS! Wir brauchen dich!" Nichts. Er ist wie versteinert – buchstäblich und im übertragenen Sinn. Zinnia erscheint neben euch: "Er hat Angst, etwas falsch zu machen. Wie beim letzten Mal."',
-        choices: [
-          {
-            id: 'v6-s3-c1',
-            text: '"Magmus! Du musst nicht perfekt sein! Du musst nur DA sein!"',
-            consequence: 'Dein Mut ruft Magmus die wichtigste Wahrheit zu: Präsenz zählt mehr als Perfektion.',
-            nextSceneId: 'v6-s4',
-            points: { empathyPoints: 2, insightPoints: 2, couragePoints: 3 }
-          },
-          {
-            id: 'v6-s3-c2',
-            text: '"Magmus, du hast MIR beigebracht, dass Hilfe holen keine Schwäche ist. Lass UNS DIR helfen!"',
-            consequence: 'Dein Einfühlungsvermögen dreht Magmus\' eigene Weisheit um und gibt sie ihm zurück.',
-            nextSceneId: 'v6-s4',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
-          },
-          {
-            id: 'v6-s3-c3',
-            text: 'Durch die Lava waten und Magmus\' steinerne Hand nehmen, egal wie heiß es ist',
-            consequence: 'Dein Mut überwindet die Hitze – du reichst Magmus die Hand, egal was kommt.',
-            nextSceneId: 'v6-s4',
-            points: { empathyPoints: 2, insightPoints: 0, couragePoints: 3 }
-          }
-        ]
-      },
-      {
-        id: 'v6-s4',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Magmus bewegt sich. Langsam. Dann schneller. "Du hast... recht." Seine Stimme bebt. "Danke." Er steht auf – und plötzlich wird klar, wie RIESIG er ist. Er stellt sich vor den Lavastrom und lenkt ihn mit seinem Körper um. Flamara schießt Feuerstöße in die Luft, um die Druckwellen umzuleiten. Ash schleppt Steine. Zinnia breitet ihre Wurzeln aus, um den Boden zu festigen. Aber die Lava kommt immer schneller. Flamara dreht sich zu dir: "Du musst zum Krater! Der Vulkan... er ist WÜTEND. Wie ein Lebewesen. Und du bist der Einzige, der ihn beruhigen kann."',
-        choices: [
-          {
-            id: 'v6-s4-c1',
-            text: '"Den Vulkan BERUHIGEN? Wie beruhigt man einen VULKAN?!"',
-            consequence: 'Deine Einsicht stellt die richtige Frage – Verstehen kommt vor dem Handeln.',
-            nextSceneId: 'v6-s5',
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
-          },
-          {
-            id: 'v6-s4-c2',
-            text: '"Genauso, wie ich Ash beruhigt habe. Und euch alle. Zuhören."',
-            consequence: 'Deine Einsicht verbindet alles Gelernte zu einer klaren Erkenntnis.',
-            nextSceneId: 'v6-s5',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
-          },
-          {
-            id: 'v6-s4-c3',
-            text: 'Ohne zu zögern losrennen – Richtung Krater',
-            consequence: 'Dein Mut kennt kein Zögern – du handelst, wenn es darauf ankommt.',
-            nextSceneId: 'v6-s5',
-            points: { empathyPoints: 0, insightPoints: 1, couragePoints: 3 }
-          }
-        ]
-      },
-      {
-        id: 'v6-s5',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Du stehst am Kraterrand. Die Hitze ist unerträglich. Unter dir kocht das Magma wie ein wütendes Meer. Und dann SPÜRST du es – der Vulkan hat Gefühle. Uralte, tiefe, brodelnde Wut. Seit Jahrtausenden aufgestaut. Niemand hat je zugehört. Du schließt die Augen. Alles, was du gelernt hast, sammelt sich in dir: Flamaras Feuer verstehen. Ashs Schutzschild durchschauen. Magmus\' Geduld. Zinnias Verwandlung.',
-        choices: [
-          {
-            id: 'v6-s5-c1',
-            text: '"Ich höre dich. Du bist wütend. Du bist seit so langer Zeit wütend. Und niemand hat hingehört."',
-            consequence: 'Dein Einfühlungsvermögen gibt dem Vulkan das, was er seit Jahrtausenden vermisst hat: Gehör.',
-            nextSceneId: 'v6-s6',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
-          },
-          {
-            id: 'v6-s5-c2',
-            text: '"Deine Wut ist berechtigt. Aber du musst nicht alles zerstören, um gehört zu werden."',
-            consequence: 'Deine Einsicht findet die richtigen Worte für eine uralte Wut.',
-            nextSceneId: 'v6-s6',
-            points: { empathyPoints: 2, insightPoints: 3, couragePoints: 2 }
-          },
-          {
-            id: 'v6-s5-c3',
-            text: 'Nicht sprechen. Einfach FÜHLEN. Die Wut des Vulkans anerkennen. Da sein.',
-            consequence: 'Dein Mut und dein Einfühlungsvermögen brauchen keine Worte – Präsenz ist genug.',
-            nextSceneId: 'v6-s6',
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 3 }
-          }
-        ]
-      },
-      {
-        id: 'v6-s6',
-        speaker: 'narrator',
-        speakerEmoji: '📜',
-        text: 'Der Vulkan... hört auf. Nicht sofort – langsam. Das Magma beruhigt sich. Die Erde hört auf zu beben. Der Krater dampft noch, aber das Feuer wird zu warmem Glühen. Du spürst es: Der Vulkan ist nicht weniger wütend. Er ist... VERSTANDEN. Zum ersten Mal seit Tausenden von Jahren. Und das reicht. Du sinkst auf die Knie, völlig erschöpft aber mit einem Gefühl, das du nicht beschreiben kannst.',
-        choices: [
-          {
-            id: 'v6-s6-c1',
-            text: 'Tränen laufen dir über die Wangen. Nicht aus Trauer – aus Erleichterung.',
-            consequence: 'Dein Einfühlungsvermögen lässt die Tränen fließen – Erleichterung ist auch ein Gefühl.',
-            nextSceneId: 'v6-s7',
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
-          },
-          {
-            id: 'v6-s6-c2',
-            text: '"Ich hab\'s geschafft..." Ungläubig flüstern.',
-            consequence: 'Dein Mut hat das Unmögliche möglich gemacht.',
-            nextSceneId: 'v6-s7',
-            points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
-          },
-          {
-            id: 'v6-s6-c3',
-            text: 'Dem Vulkan leise danken – für die Lektion, für das Vertrauen',
-            consequence: 'Dein Einfühlungsvermögen und deine Einsicht ehren die Verbindung mit dem Vulkan.',
-            nextSceneId: 'v6-s7',
-            points: { empathyPoints: 3, insightPoints: 3, couragePoints: 1 }
-          }
-        ]
-      },
-      {
-        id: 'v6-s7',
-        speaker: 'Flamara',
-        speakerEmoji: '🔥',
-        text: 'Als du den Krater hinuntersteigst, stehen sie alle da. Flamara, Ash, Magmus, Zinnia. Flamara hat Tränen in den Augen – flüssige Lava, die golden leuchtet. "Du bist nicht mehr die Person, die hier angekommen ist." Ash grinst und boxt dir leicht gegen die Schulter: "Nicht schlecht. Für einen Neuling." Magmus legt dir seine schwere Hand auf den Kopf. "Gut." Pause. "Sehr gut." Zinnia lässt eine Blume aus dem Boden sprießen – direkt neben deinem Fuß. Hinter euch liegt die Insel im ersten Licht der Morgensonne. Dort, wo die Lava geflossen ist, glitzert neues, fruchtbares Land. Flamara lächelt. "Die nächste Insel wartet auf dich. Aber vergiss nie, was du hier gelernt hast: Wut ist eine Sprache. Und du sprichst sie jetzt fließend."',
-        choices: [
-          {
-            id: 'v6-s7-c1',
-            text: '"Ich werde euch nie vergessen. Jeden Einzelnen von euch."',
-            consequence: 'Dein Einfühlungsvermögen hat tiefe Verbindungen geschaffen, die bleiben werden.',
-            nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
-          },
-          {
-            id: 'v6-s7-c2',
-            text: '"Ash – pass auf die anderen auf, ja?" Ash rollt die Augen, aber lächelt.',
-            consequence: 'Dein Einfühlungsvermögen vertraut Ash die Verantwortung an – und er nimmt sie an.',
-            nextSceneId: null,
-            points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
-          },
-          {
-            id: 'v6-s7-c3',
-            text: 'Einmal zurückschauen. Dann vorwärts. Die nächste Insel wartet.',
-            consequence: 'Dein Mut und deine Einsicht tragen dich vorwärts – bereit für neue Abenteuer.',
-            nextSceneId: null,
-            points: { empathyPoints: 1, insightPoints: 3, couragePoints: 3 }
           }
         ]
       }
@@ -1228,233 +691,119 @@ export const volcanoScenarios: Scenario[] = [
   }
 ];
 
-// Activities
-export const volcanoActivities: VolcanoActivity[] = [
+// =============================================================================
+// AKTIVITÄTEN
+// 4 praktische Übungen für den Alltag:
+//   1. Vulkan-Atmung (breathing) - Atemtechnik gegen akute Wut
+//   2. Wut-Detektiv (journal) - Auslöser erkennen und Muster finden
+//   3. Ich-Botschaften (reflection) - Kommunikation ohne Vorwürfe
+//   4. Wut-Profil (assessment) - Selbsteinschätzung und Fortschrittsmessung
+// =============================================================================
+
+export const volcanoActivities: Activity[] = [
   {
-    id: 'volcano-breathing',
+    id: 'volcano-activity-breathing',
     islandId: 'volcano' as IslandId,
-    title: 'Vulkan-Atmung',
-    description: 'Eine Atemtechnik, die hilft, die innere Hitze zu kontrollieren',
     type: 'breathing',
-    duration: 5,
-    completed: false,
-    instructions: [
-      'Setze oder stelle dich bequem hin. Schließe die Augen.',
-      'Stelle dir vor, du bist ein Vulkan. In deinem Bauch glüht die Lava deiner Wut.',
-      'Atme tief durch die Nase ein (4 Sekunden). Spüre, wie die Lava ansteigt.',
-      'Halte den Atem an (4 Sekunden). Die Lava wartet am Kraterrand.',
-      'Atme langsam durch den Mund aus (6 Sekunden), als würdest du Rauch ablassen.',
-      'Spüre, wie mit jedem Ausatmen die Lava ein bisschen abkühlt.',
-      'Wiederhole das 5-10 Mal, bis du dich ruhiger fühlst.',
-      'Deine Wut ist noch da, aber sie kontrolliert dich nicht mehr.'
-    ]
+    title: 'Vulkan-Atmung: Dein Feuerlöscher',
+    description: 'Eine Atemübung speziell für Momente, in denen die Wut aufsteigt. Lerne, deinen inneren Vulkan zu beruhigen, bevor er ausbricht. Setze dich bequem hin und folge diesen Schritten: 1) Schließe die Augen. Stelle dir vor, in deinem Bauch glüht heiße Lava - das ist deine Wut. 2) Atme langsam durch die Nase ein und zähle dabei bis 4. Spüre, wie die Lava ansteigt. 3) Halte den Atem an und zähle bis 4. Die Lava wartet am Kraterrand. 4) Atme ganz langsam durch den Mund aus und zähle bis 6. Stelle dir vor, wie kühler Rauch entweicht. 5) Spüre, wie die Lava mit jedem Ausatmen ein bisschen kühler wird. 6) Wiederhole das 5-8 Mal. 7) Zum Abschluss: Lege eine Hand auf deinen Bauch und eine auf dein Herz. Dein Vulkan ist ruhig. Deine Wut ist noch da, aber sie kontrolliert dich nicht mehr - DU kontrollierst sie.',
+    completed: false
   },
   {
-    id: 'volcano-journal',
+    id: 'volcano-activity-journal',
     islandId: 'volcano' as IslandId,
-    title: 'Wut-Tagebuch',
-    description: 'Schreibe deine Wut auf und verstehe sie besser',
     type: 'journal',
-    duration: 10,
-    completed: false,
-    instructions: [
-      'Nimm ein Notizbuch oder öffne eine Notiz-App.',
-      'Schreibe oben: "Meine Wut vom [heutiges Datum]"',
-      'Beantworte diese Fragen: Was hat mich heute wütend gemacht?',
-      'Wie hat sich die Wut in meinem Körper angefühlt?',
-      'Was wollte mir die Wut sagen? (z.B. "Das war unfair!" oder "Meine Grenze wurde überschritten!")',
-      'Wie habe ich reagiert? Bin ich stolz auf meine Reaktion?',
-      'Was könnte ich beim nächsten Mal anders machen?',
-      'Schließe ab mit: "Meine Wut ist ein Teil von mir, und das ist okay."'
-    ]
+    title: 'Wut-Detektiv: Meine Auslöser kennen',
+    description: 'Ein Tagebuch-Impuls, der dir hilft, deine persönlichen Wut-Auslöser zu erkennen und Muster zu entdecken. Beantworte diese Fragen ehrlich: 1) Beschreibe die letzte Situation, in der du richtig wütend warst. Was ist genau passiert? 2) Wo in deinem Körper hast du die Wut gespürt? (Bauch, Fäuste, Kiefer, Brust?) 3) Auf einer Skala von 1-10: Wie stark war die Wut? 4) Jetzt die Eisberg-Frage: Was hat sich UNTER der Wut versteckt? Warst du vielleicht auch traurig, verletzt, enttäuscht, verängstigt oder beschämt? 5) Was hast du getan? Bist du stolz auf deine Reaktion? 6) Wenn du eine Zeitmaschine hättest: Was würdest du beim nächsten Mal anders machen? 7) Gibt es ein Muster? Werde ich immer in ähnlichen Situationen wütend? Tipp: Mache diese Übung regelmäßig. Je besser du deine Auslöser kennst, desto besser kannst du dich vorbereiten.',
+    completed: false
   },
   {
-    id: 'volcano-art',
+    id: 'volcano-activity-ich-botschaften',
     islandId: 'volcano' as IslandId,
-    title: 'Emotions-Vulkan',
-    description: 'Male oder zeichne deinen inneren Vulkan',
-    type: 'creative',
-    duration: 15,
-    completed: false,
-    instructions: [
-      'Nimm Papier und Stifte (am besten Rot, Orange, Gelb, aber auch Blau und Grün).',
-      'Zeichne in die Mitte einen großen Vulkan – das bist du.',
-      'Male die Lava in den Farben, die deine Wut für dich hat.',
-      'Füge Symbole hinzu: Was macht dich wütend? (zeichne kleine Bilder drumherum)',
-      'Jetzt male Dinge, die dir helfen, ruhig zu bleiben (Wasser, Bäume, Freunde).',
-      'Schreibe Wörter auf den Vulkan, die beschreiben, wie du mit Wut umgehen willst.',
-      'Hänge das Bild auf oder fotografiere es. Es ist dein Wut-Management-Plan.',
-      'Jedes Mal, wenn du wütend bist, erinnere dich an dieses Bild.'
-    ]
-  },
-  {
-    id: 'volcano-meditation',
-    islandId: 'volcano' as IslandId,
-    title: 'Kühlende Lava',
-    description: 'Eine geführte Meditation zur Beruhigung intensiver Emotionen',
-    type: 'meditation',
-    duration: 8,
-    completed: false,
-    instructions: [
-      'Finde einen ruhigen Ort. Setze dich bequem hin oder lege dich hin.',
-      'Schließe die Augen und atme ruhig.',
-      'Stelle dir vor, du bist flüssige, heiße Lava. Du bist mächtig und glühend.',
-      'Mit jedem Atemzug kühlst du ein bisschen ab. Du wirst langsamer, dichter.',
-      'Du bist immer noch heiß, aber nicht mehr kochend. Du wirst zu festem Gestein.',
-      'Spüre die Stärke des Gesteins. Du bist nicht mehr wild, sondern beständig.',
-      'Du bist ein Berg. Stark. Geerdet. Ruhig. Emotionen fließen durch dich, aber du bleibst.',
-      'Atme noch dreimal tief. Öffne die Augen. Nimm diese Ruhe mit in den Tag.'
-    ]
-  },
-  {
-    id: 'volcano-triggers',
-    islandId: 'volcano' as IslandId,
-    title: 'Wut-Auslöser Detektiv',
-    description: 'Erkenne, was deine Wut auslöst und bereite dich vor',
     type: 'reflection',
-    duration: 12,
-    completed: false,
-    instructions: [
-      'Nimm Papier und teile es in drei Spalten: "Auslöser", "Reaktion", "Alternative"',
-      'Denke an die letzten Male, wo du richtig wütend warst.',
-      'Schreibe in "Auslöser": Was war der Grund? (z.B. "Bruder nimmt meine Sachen")',
-      'Schreibe in "Reaktion": Wie hast du reagiert? (z.B. "Ich habe geschrien")',
-      'Schreibe in "Alternative": Was könntest du stattdessen tun? (z.B. "Ruhig sagen: Frag mich erst")',
-      'Suche nach Mustern: Gibt es Auslöser, die immer wiederkommen?',
-      'Wähle die 3 häufigsten Auslöser und überlege dir für jeden einen konkreten Plan.',
-      'Übe in Gedanken, wie du beim nächsten Mal anders reagierst.'
-    ]
+    title: 'Ich-Botschaften statt Du-Vorwürfe',
+    description: 'Lerne, deine Wut auszudrücken, ohne andere anzugreifen. Ich-Botschaften sind wie ein Schlüssel: Sie öffnen Türen, die Du-Vorwürfe verschließen. So funktioniert die Formel: Statt "DU bist so gemein!" sagst du: "ICH fühle mich verletzt, WEIL du über mich gelacht hast, und ICH WÜNSCHE MIR, dass du damit aufhörst." Übe jetzt mit diesen Situationen: Situation 1 - Dein Bruder nimmt ohne zu fragen deine Sachen. Du-Vorwurf: "Du klaust immer meine Sachen!" Wandle es um in eine Ich-Botschaft. Situation 2 - Ein Freund erzählt dein Geheimnis weiter. Du-Vorwurf: "Du bist der schlechteste Freund überhaupt!" Wandle es um. Situation 3 - Dein Lehrer gibt dir eine unfaire Note. Du-Vorwurf: "Sie sind ungerecht!" Wandle es um. Merke dir die drei Teile: ICH FÜHLE... (Gefühl benennen), WEIL... (Situation beschreiben), und ICH WÜNSCHE MIR... (konkreten Wunsch äußern). Probiere es diese Woche in einer echten Situation aus!',
+    completed: false
+  },
+  {
+    id: 'volcano-activity-assessment',
+    islandId: 'volcano' as IslandId,
+    type: 'assessment',
+    title: 'Mein Wut-Profil: Wo stehe ich?',
+    description: 'Ein Selbsttest, um herauszufinden, wie du aktuell mit Wut umgehst und wo du dich verbessern kannst. Bewerte dich ehrlich auf einer Skala von 1 (trifft gar nicht zu) bis 5 (trifft voll zu): 1) Ich merke rechtzeitig, wenn ich wütend werde (Körperzeichen). 2) Ich kann benennen, welches Gefühl sich unter meiner Wut versteckt. 3) Ich kann atmen und nachdenken, bevor ich reagiere. 4) Ich benutze Ich-Botschaften statt Vorwürfe. 5) Ich kann wütend sein, ohne andere zu verletzen. 6) Ich weiß, was meine typischen Auslöser sind. 7) Ich kann mich entschuldigen, wenn ich im Zorn jemanden verletzt habe. 8) Ich kann meine Wut nutzen, um für mich oder andere einzustehen. Auswertung: 8-16 Punkte: Du bist am Anfang deiner Reise. Das ist völlig okay! Jeder fängt irgendwo an. 17-28 Punkte: Du bist auf einem guten Weg. Es gibt Bereiche, in denen du schon stark bist, und andere, an denen du arbeiten kannst. 29-40 Punkte: Du gehst sehr reflektiert mit Wut um. Teile dein Wissen mit anderen! Wiederhole diesen Test nach ein paar Wochen und vergleiche deine Ergebnisse.',
+    completed: false
   }
 ];
 
-// Wisdom Cards
+// =============================================================================
+// WEISHEITSKARTEN
+// 8 Karten, die zentrale Erkenntnisse der Vulkaninsel zusammenfassen.
+// Jede Karte steht für einen Aspekt der Wut-Kompetenz:
+//   1. Emotionswissen - Wut als Alarmsignal
+//   2. Selbsterkenntnis - Der Eisberg unter der Wut
+//   3. Selbstregulation - Der Raum zwischen Reiz und Reaktion
+//   4. Emotionsregulation - Feuer kontrollieren, nicht löschen
+//   5. Selbstbehauptung - Wut und Respekt vereinen
+//   6. Körperbewusstsein - Frühwarnsystem des Körpers
+//   7. Kommunikation - Ich-Botschaften als Schlüssel
+//   8. Resilienz - Nach dem Ausbruch weitermachen
+// =============================================================================
+
 export const volcanoWisdomCards: WisdomCard[] = [
   {
     id: 'volcano-wisdom-1',
     islandId: 'volcano' as IslandId,
-    title: 'Die Natur der Wut',
-    content: 'Wut ist nicht dein Feind. Sie ist ein Bote, der dir zeigt, dass eine Grenze überschritten wurde oder etwas Wichtiges in Gefahr ist.',
-    category: 'wisdom',
+    text: 'Wut ist nicht dein Feind. Sie ist ein Alarmsignal deines Körpers, das dir sagt: Eine Grenze wurde überschritten, etwas Wichtiges ist in Gefahr, oder eine Ungerechtigkeit muss angesprochen werden. Höre auf die Botschaft, nicht nur auf den Lärm.',
+    category: 'Emotionswissen',
     collected: false
   },
   {
     id: 'volcano-wisdom-2',
     islandId: 'volcano' as IslandId,
-    title: 'Der Unterschied',
-    content: 'Du bist nicht deine Wut. Du HAST Wut, aber du BIST der Berg, der sie enthält. Emotionen kommen und gehen, aber du bleibst.',
-    category: 'wisdom',
+    text: 'Wut ist oft nur die Spitze des Eisbergs. Darunter verstecken sich andere Gefühle: Traurigkeit, Angst, Scham, Hilflosigkeit oder Enttäuschung. Wer den Mut hat, unter die Oberfläche zu schauen, findet die wahre Ursache - und den wahren Weg zur Heilung.',
+    category: 'Selbsterkenntnis',
     collected: false
   },
   {
     id: 'volcano-wisdom-3',
     islandId: 'volcano' as IslandId,
-    title: 'Die Warnzeichen',
-    content: 'Dein Körper warnt dich, bevor die Wut explodiert: schneller Herzschlag, geballte Fäuste, Hitze im Gesicht. Lerne, diese Zeichen zu erkennen.',
-    category: 'wisdom',
+    text: 'Zwischen dem Moment, in dem die Wut aufsteigt, und deiner Reaktion liegt ein kleiner Raum. In diesem Raum hast du die Macht zu wählen. Atme. Zähle. Geh einen Schritt zurück. Dieser Raum ist deine Freiheit.',
+    category: 'Selbstregulation',
     collected: false
   },
   {
     id: 'volcano-wisdom-4',
     islandId: 'volcano' as IslandId,
-    title: 'Die Pause',
-    content: 'Zwischen Auslöser und Reaktion liegt ein Raum. In diesem Raum liegt deine Kraft zu wählen. Atme. Zähle. Geh. Nutze die Pause.',
-    category: 'wisdom',
+    text: 'Wut ist wie Feuer: Sie kann ein ganzes Haus niederbrennen oder eine ganze Familie wärmen. Der Unterschied liegt nicht im Feuer selbst, sondern darin, wie du es nutzt. Lerne, dein Feuer zu kontrollieren, statt es zu löschen.',
+    category: 'Emotionsregulation',
     collected: false
   },
   {
     id: 'volcano-wisdom-5',
     islandId: 'volcano' as IslandId,
-    title: 'Flamaras Weisheit',
-    content: 'Kontrolliere das Feuer, lösche es nicht. Eine Welt ohne Wut wäre eine Welt ohne Gerechtigkeit, ohne Schutz, ohne Veränderung.',
-    category: 'wisdom',
+    text: 'Du kannst wütend sein UND respektvoll handeln. Du kannst empört sein UND kluge Worte wählen. Du kannst innerlich kochen UND trotzdem die richtige Entscheidung treffen. Das ist keine Widerspruch - das ist wahre Stärke.',
+    category: 'Selbstbehauptung',
     collected: false
   },
   {
     id: 'volcano-wisdom-6',
     islandId: 'volcano' as IslandId,
-    title: 'Magmus\' Geduld',
-    content: 'Warten ist keine Schwäche. Die heißeste Lava wird zum stärksten Gestein, wenn sie Zeit bekommt abzukühlen. Gib dir diese Zeit.',
-    category: 'wisdom',
+    text: 'Dein Körper warnt dich, bevor die Wut explodiert: Das Herz rast, die Fäuste ballen sich, das Gesicht wird heiß, der Kiefer presst sich zusammen. Diese Zeichen sind dein Frühwarnsystem. Wer sie erkennt, kann handeln, BEVOR es zu spät ist.',
+    category: 'Körperbewusstsein',
     collected: false
   },
   {
     id: 'volcano-wisdom-7',
     islandId: 'volcano' as IslandId,
-    title: 'Zinnias Balance',
-    content: 'Die gleiche Energie, die zerstören kann, kann auch etwas Wunderschönes erschaffen. Wut ist Treibstoff – du wählst die Richtung.',
-    category: 'wisdom',
+    text: 'Sage nicht "DU machst mich wütend!" Sage stattdessen: "ICH fühle mich wütend, weil..." Der Unterschied ist riesig. Ich-Botschaften öffnen Türen, Du-Vorwürfe schließen sie. Wer seine Gefühle ausdrückt statt anzugreifen, wird gehört.',
+    category: 'Kommunikation',
     collected: false
   },
   {
     id: 'volcano-wisdom-8',
     islandId: 'volcano' as IslandId,
-    title: 'Die Kraft des Kanals',
-    content: 'Wut braucht einen Weg hinaus: Worte, Bewegung, Kunst. Finde deinen Kanal und nutze ihn, bevor die Wut dich überwältigt.',
-    category: 'wisdom',
-    collected: false
-  },
-  {
-    id: 'volcano-wisdom-9',
-    islandId: 'volcano' as IslandId,
-    title: 'Die Botschaft verstehen',
-    content: 'Frage deine Wut: "Was willst du mir sagen?" Oft zeigt sie dir, was dir wichtig ist. Höre zu, dann entscheide, wie du handelst.',
-    category: 'wisdom',
-    collected: false
-  },
-  {
-    id: 'volcano-wisdom-10',
-    islandId: 'volcano' as IslandId,
-    title: 'Ashs Lektion',
-    content: 'Wut ist oft ein Schutzschild. Darunter verstecken sich Traurigkeit, Angst oder Einsamkeit. Wer das versteht, versteht sich selbst.',
-    category: 'wisdom',
-    collected: false
-  },
-  {
-    id: 'volcano-wisdom-11',
-    islandId: 'volcano' as IslandId,
-    title: 'Die Vulkan-Atmung',
-    content: 'Einatmen (Lava steigt), Halten (Lava wartet), Ausatmen (Rauch entweicht). Mit jedem Atemzug wird die Glut kühler und kontrollierbarer.',
-    category: 'wisdom',
-    collected: false
-  },
-  {
-    id: 'volcano-wisdom-12',
-    islandId: 'volcano' as IslandId,
-    title: 'Nach dem Ausbruch',
-    content: 'Wenn du explodiert bist: Entschuldige dich, lerne daraus, mache weiter. Ein Ausbruch definiert dich nicht. Deine nächste Wahl tut es.',
-    category: 'wisdom',
-    collected: false
-  },
-  {
-    id: 'volcano-wisdom-13',
-    islandId: 'volcano' as IslandId,
-    title: 'Die transformierte Wut',
-    content: 'Aus erkalteter Lava wächst fruchtbarer Boden. Aus verstandener Wut wächst Weisheit, Mut und die Kraft, für dich einzustehen.',
-    category: 'wisdom',
-    collected: false
-  },
-  {
-    id: 'volcano-wisdom-14',
-    islandId: 'volcano' as IslandId,
-    title: 'Die Auslöser kennen',
-    content: 'Werde ein Detektiv deiner Wut. Je besser du weißt, was dich triggert, desto besser kannst du dich vorbereiten und anders reagieren.',
-    category: 'wisdom',
-    collected: false
-  },
-  {
-    id: 'volcano-wisdom-15',
-    islandId: 'volcano' as IslandId,
-    title: 'Gemeinsam stärker',
-    content: 'Du musst nicht allein mit deiner Wut kämpfen. Sprich mit Menschen, denen du vertraust. Gemeinsam findet ihr Wege, die du allein nicht siehst.',
-    category: 'wisdom',
-    collected: false
-  },
-  {
-    id: 'volcano-wisdom-16',
-    islandId: 'volcano' as IslandId,
-    title: 'Das innere Feuer',
-    content: 'Dein inneres Feuer ist ein Geschenk. Es wärmt dich, es schützt dich, es zeigt deine Leidenschaft. Respektiere es, und es wird dich leuchten lassen.',
-    category: 'wisdom',
+    text: 'Wenn du explodiert bist: Entschuldige dich, lerne daraus, und mach weiter. Ein Ausbruch definiert dich nicht. Deine nächste Entscheidung tut es. Selbst der mächtigste Vulkan hat Ruhephasen - und nach der Lava wächst der fruchtbarste Boden.',
+    category: 'Resilienz',
     collected: false
   }
 ];

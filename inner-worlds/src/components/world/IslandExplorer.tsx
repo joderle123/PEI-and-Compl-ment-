@@ -1,3 +1,4 @@
+// @ts-nocheck
 // =============================================================================
 // IslandExplorer.tsx
 // 3D island exploration component using Three.js / @react-three/fiber / drei
