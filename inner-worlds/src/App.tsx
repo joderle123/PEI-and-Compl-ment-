@@ -10,7 +10,7 @@ import CompanionSelect from './components/onboarding/CompanionSelect';
 import SelfAssessment from './components/onboarding/SelfAssessment';
 import MoodCheckIn from './components/onboarding/MoodCheckIn';
 import IslandMap from './components/world/IslandMap';
-import IslandHub from './components/world/IslandHub';
+import IslandView from './components/world/IslandView';
 import IslandTravel from './components/world/IslandTravel';
 import ScenarioPlayer from './components/gameplay/ScenarioPlayer';
 import ActivityRouter from './components/activities/ActivityRouter';
@@ -102,7 +102,7 @@ function App() {
       case 'world-map':
         return <IslandMap />;
       case 'island':
-        return <IslandHub />;
+        return <IslandView />;
       case 'travel':
         return <IslandTravel />;
       case 'scenario':
