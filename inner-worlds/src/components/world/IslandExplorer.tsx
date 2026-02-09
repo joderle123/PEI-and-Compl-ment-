@@ -4733,17 +4733,19 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
   const handleScenarioStart = useCallback(
     (scenarioId: string) => {
       sessionStorage.setItem('activeScenarioId', scenarioId);
+      sessionStorage.setItem('activeIslandId', islandId);
       setScreen('scenario');
     },
-    [setScreen],
+    [setScreen, islandId],
   );
 
   const handleActivityStart = useCallback(
     (activityId: string) => {
       sessionStorage.setItem('activeActivityId', activityId);
+      sessionStorage.setItem('activeIslandId', islandId);
       setScreen('activity');
     },
-    [setScreen],
+    [setScreen, islandId],
   );
 
   const handleMiniGameClick = useCallback(() => {
