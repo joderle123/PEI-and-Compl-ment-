@@ -1942,7 +1942,7 @@ function InteractiveMarker({
         ref={meshRef}
         onClick={(e) => {
           e.stopPropagation();
-          if (isNear) onClick();
+          onClick();
         }}
         castShadow
       >
@@ -1983,27 +1983,31 @@ function InteractiveMarker({
           />
         </mesh>
       )}
-      {/* Label when near */}
-      {isNear && (
-        <Html position={[0, 2.2, 0]} center>
-          <div
-            style={{
-              color,
-              fontSize: 11,
-              fontWeight: 'bold',
-              background: 'rgba(0,0,0,0.8)',
-              padding: '3px 10px',
-              borderRadius: 4,
-              border: `1px solid ${color}44`,
-              whiteSpace: 'nowrap',
-              pointerEvents: 'none',
-              userSelect: 'none',
-            }}
-          >
-            {completed ? '\u2713 ' : ''}{label}
-          </div>
-        </Html>
-      )}
+      {/* Label - always visible, brighter when near */}
+      <Html position={[0, 2.2, 0]} center>
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+          }}
+          style={{
+            color,
+            fontSize: isNear ? 13 : 11,
+            fontWeight: 'bold',
+            background: isNear ? 'rgba(0,0,0,0.9)' : 'rgba(0,0,0,0.6)',
+            padding: isNear ? '5px 14px' : '3px 10px',
+            borderRadius: 6,
+            border: isNear ? `2px solid ${color}88` : `1px solid ${color}33`,
+            whiteSpace: 'nowrap',
+            cursor: 'pointer',
+            userSelect: 'none',
+            transition: 'all 0.3s ease',
+            boxShadow: isNear ? `0 0 12px ${color}44` : 'none',
+          }}
+        >
+          {completed ? '\u2713 ' : '\u25B6 '}{label}
+        </div>
+      </Html>
     </group>
   );
 }
@@ -4733,17 +4737,19 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
   const handleScenarioStart = useCallback(
     (scenarioId: string) => {
       sessionStorage.setItem('activeScenarioId', scenarioId);
+      sessionStorage.setItem('activeIslandId', islandId);
       setScreen('scenario');
     },
-    [setScreen],
+    [setScreen, islandId],
   );
 
   const handleActivityStart = useCallback(
     (activityId: string) => {
       sessionStorage.setItem('activeActivityId', activityId);
+      sessionStorage.setItem('activeIslandId', islandId);
       setScreen('activity');
     },
-    [setScreen],
+    [setScreen, islandId],
   );
 
   const handleMiniGameClick = useCallback(() => {
@@ -4935,13 +4941,10 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
         theme={theme}
       />
 
-      {/* Quest Tracker (left side) */}
+      {/* Quest Tracker (left side) - clickable items */}
       <div
         className="fixed top-20 left-4 z-30 flex flex-col gap-1.5 max-h-[60vh] overflow-y-auto"
-        style={{
-          width: '220px',
-          pointerEvents: 'none',
-        }}
+        style={{ width: '220px' }}
       >
         <div
           className="text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg"
@@ -4949,7 +4952,6 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
             color: 'rgba(201,168,76,0.8)',
             background: 'rgba(0,0,0,0.5)',
             backdropFilter: 'blur(4px)',
-            pointerEvents: 'auto',
           }}
         >
           {'\u{1F4DC}'} Geschichten
@@ -4957,19 +4959,20 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
         {scenarioMarkers.map((s) => {
           const done = completedScenarios.includes(s.id);
           return (
-            <div
+            <button
               key={s.id}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-left transition-all hover:scale-[1.02] cursor-pointer"
               style={{
-                background: 'rgba(0,0,0,0.4)',
+                background: done ? 'rgba(0,0,0,0.3)' : 'rgba(255,215,0,0.08)',
                 backdropFilter: 'blur(4px)',
-                color: done ? 'rgba(100,200,100,0.7)' : 'rgba(255,215,0,0.7)',
-                pointerEvents: 'auto',
+                color: done ? 'rgba(100,200,100,0.7)' : 'rgba(255,215,0,0.9)',
+                border: done ? '1px solid rgba(100,200,100,0.15)' : '1px solid rgba(255,215,0,0.25)',
               }}
+              onClick={() => handleScenarioStart(s.id)}
             >
-              <span>{done ? '\u2705' : '\u{1F4A0}'}</span>
+              <span>{done ? '\u2705' : '\u25B6'}</span>
               <span className="truncate">{s.title}</span>
-            </div>
+            </button>
           );
         })}
         <div
@@ -4978,7 +4981,6 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
             color: 'rgba(64,192,128,0.8)',
             background: 'rgba(0,0,0,0.5)',
             backdropFilter: 'blur(4px)',
-            pointerEvents: 'auto',
           }}
         >
           {'\u{1F3AF}'} Aktivit{'\u00E4'}ten
@@ -4986,22 +4988,132 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
         {activityMarkers.map((a) => {
           const done = completedActivities.includes(a.id);
           return (
-            <div
+            <button
               key={a.id}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-left transition-all hover:scale-[1.02] cursor-pointer"
               style={{
-                background: 'rgba(0,0,0,0.4)',
+                background: done ? 'rgba(0,0,0,0.3)' : 'rgba(64,192,128,0.08)',
                 backdropFilter: 'blur(4px)',
-                color: done ? 'rgba(100,200,100,0.7)' : 'rgba(64,192,128,0.7)',
-                pointerEvents: 'auto',
+                color: done ? 'rgba(100,200,100,0.7)' : 'rgba(64,192,128,0.9)',
+                border: done ? '1px solid rgba(100,200,100,0.15)' : '1px solid rgba(64,192,128,0.25)',
               }}
+              onClick={() => handleActivityStart(a.id)}
             >
-              <span>{done ? '\u2705' : '\u{1F4A0}'}</span>
+              <span>{done ? '\u2705' : '\u25B6'}</span>
               <span className="truncate">{a.title}</span>
-            </div>
+            </button>
           );
         })}
+        <button
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-left transition-all hover:scale-[1.02] cursor-pointer mt-1"
+          style={{
+            background: 'rgba(176,96,255,0.08)',
+            backdropFilter: 'blur(4px)',
+            color: 'rgba(200,160,255,0.9)',
+            border: '1px solid rgba(176,96,255,0.25)',
+          }}
+          onClick={handleMiniGameClick}
+        >
+          <span>{'\u{1F3AE}'}</span>
+          <span className="truncate">Minispiel</span>
+        </button>
       </div>
+
+      {/* Next Task Guide - the "red thread" */}
+      {(() => {
+        const nextScenario = scenarioMarkers.find((s) => !completedScenarios.includes(s.id));
+        const nextActivity = activityMarkers.find((a) => !completedActivities.includes(a.id));
+        const totalDone = completedScenarios.filter((id) => scenarioMarkers.some((s) => s.id === id)).length
+          + completedActivities.filter((id) => activityMarkers.some((a) => a.id === id)).length;
+        const totalTasks = scenarioMarkers.length + activityMarkers.length;
+        const allDone = totalDone >= totalTasks;
+
+        if (allDone) {
+          return (
+            <div
+              className="fixed bottom-20 left-1/2 z-40 px-5 py-3 rounded-2xl"
+              style={{
+                transform: 'translateX(-50%)',
+                background: 'linear-gradient(135deg, rgba(40,80,40,0.95), rgba(20,50,20,0.98))',
+                border: '2px solid rgba(100,220,100,0.4)',
+                boxShadow: '0 0 30px rgba(100,220,100,0.2)',
+                backdropFilter: 'blur(8px)',
+              }}
+            >
+              <p className="text-sm font-bold text-center" style={{ color: '#88ff88' }}>
+                {'\u2728'} Alle Aufgaben erledigt! {'\u2728'}
+              </p>
+              <p className="text-xs text-center mt-1" style={{ color: 'rgba(150,255,150,0.7)' }}>
+                Reise zur n{'\u00E4'}chsten Insel oder spiele ein Minispiel
+              </p>
+            </div>
+          );
+        }
+
+        // Prioritize: first scenarios, then activities
+        const nextTask = nextScenario
+          ? { type: 'scenario' as const, id: nextScenario.id, title: nextScenario.title, step: totalDone + 1 }
+          : nextActivity
+            ? { type: 'activity' as const, id: nextActivity.id, title: nextActivity.title, step: totalDone + 1 }
+            : null;
+
+        if (!nextTask) return null;
+
+        return (
+          <button
+            className="fixed bottom-20 left-1/2 z-40 px-5 py-3 rounded-2xl transition-all hover:scale-105 cursor-pointer"
+            style={{
+              transform: 'translateX(-50%)',
+              background: nextTask.type === 'scenario'
+                ? 'linear-gradient(135deg, rgba(60,40,10,0.95), rgba(30,20,5,0.98))'
+                : 'linear-gradient(135deg, rgba(10,40,30,0.95), rgba(5,25,15,0.98))',
+              border: nextTask.type === 'scenario'
+                ? '2px solid rgba(255,215,0,0.5)'
+                : '2px solid rgba(64,192,128,0.5)',
+              boxShadow: nextTask.type === 'scenario'
+                ? '0 0 30px rgba(255,215,0,0.15), 0 4px 20px rgba(0,0,0,0.5)'
+                : '0 0 30px rgba(64,192,128,0.15), 0 4px 20px rgba(0,0,0,0.5)',
+              backdropFilter: 'blur(8px)',
+              minWidth: '280px',
+            }}
+            onClick={() => {
+              if (nextTask.type === 'scenario') handleScenarioStart(nextTask.id);
+              else handleActivityStart(nextTask.id);
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                style={{
+                  background: nextTask.type === 'scenario'
+                    ? 'rgba(255,215,0,0.2)'
+                    : 'rgba(64,192,128,0.2)',
+                  color: nextTask.type === 'scenario' ? '#ffd700' : '#40c080',
+                  border: nextTask.type === 'scenario'
+                    ? '1px solid rgba(255,215,0,0.4)'
+                    : '1px solid rgba(64,192,128,0.4)',
+                }}
+              >
+                {nextTask.step}/{totalTasks}
+              </div>
+              <div className="flex-1 text-left min-w-0">
+                <p className="text-[10px] uppercase tracking-wider font-bold" style={{
+                  color: nextTask.type === 'scenario'
+                    ? 'rgba(255,215,0,0.6)'
+                    : 'rgba(64,192,128,0.6)',
+                }}>
+                  {nextTask.type === 'scenario' ? 'N\u00E4chste Geschichte' : 'N\u00E4chste Aktivit\u00E4t'}
+                </p>
+                <p className="text-sm font-bold truncate" style={{
+                  color: nextTask.type === 'scenario' ? '#ffd700' : '#40c080',
+                }}>
+                  {'\u25B6'} {nextTask.title}
+                </p>
+              </div>
+            </div>
+          </button>
+        );
+      })()}
 
       {/* Bottom: Controls hint */}
       {!isTouchDevice && (
@@ -5015,26 +5127,27 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
             border: '1px solid rgba(201,168,76,0.15)',
           }}
         >
-          WASD = Bewegen &bull; Laufe zu NPCs & leuchtenden Markern &bull; E / Klick = Interagieren
+          WASD = Bewegen &bull; Klicke Marker oder die Seitenleiste &bull; E = NPC ansprechen
         </div>
       )}
 
-      {/* Bottom: Proximity hint */}
+      {/* Bottom: NPC proximity hint with interact button */}
       {nearbyNPC && !dialogNPC && (
         <div
           className="fixed bottom-16 left-1/2 z-40 max-w-sm w-full px-4"
           style={{ transform: 'translateX(-50%)' }}
         >
-          <div
-            className="rounded-xl p-3 flex items-center gap-3"
+          <button
+            className="w-full rounded-xl p-3 flex items-center gap-3 transition-all hover:scale-[1.02] cursor-pointer"
             style={{
               background: 'linear-gradient(135deg, rgba(30,20,60,0.92), rgba(13,13,26,0.95))',
-              border: '1px solid rgba(201,168,76,0.3)',
-              boxShadow: '0 4px 24px rgba(0,0,0,0.5)',
+              border: '2px solid rgba(201,168,76,0.4)',
+              boxShadow: '0 4px 24px rgba(0,0,0,0.5), 0 0 20px rgba(201,168,76,0.1)',
             }}
+            onClick={() => setDialogNPC(nearbyNPC)}
           >
             <span className="text-2xl">{nearbyNPC.emoji}</span>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 text-left">
               <p className="text-sm font-bold truncate" style={{ color: '#c9a84c' }}>
                 {nearbyNPC.name}
               </p>
@@ -5042,7 +5155,17 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
                 {nearbyNPC.description}
               </p>
             </div>
-          </div>
+            <div
+              className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold"
+              style={{
+                background: 'rgba(201,168,76,0.15)',
+                border: '1px solid rgba(201,168,76,0.3)',
+                color: '#ffd700',
+              }}
+            >
+              E / Klick
+            </div>
+          </button>
         </div>
       )}
 
