@@ -9,6 +9,7 @@ import type {
   MoodEntry,
   IslandId,
   IslandLevel,
+  IslandProgress,
   JournalEntry,
   Settings,
   Island,
@@ -92,6 +93,14 @@ interface GameStore extends GameState {
 
   // Skill points
   addSkillPoints: (empathy: number, insight: number, courage: number) => void;
+
+  // Island Progress (chapters & mysteries)
+  advanceChapter: (islandId: IslandId) => void;
+  discoverClue: (islandId: IslandId, clueId: string) => void;
+  unlockZone: (islandId: IslandId, zoneId: string) => void;
+  startMystery: (islandId: IslandId) => void;
+  solveMystery: (islandId: IslandId) => void;
+  getIslandProgress: (islandId: IslandId) => IslandProgress;
 
   // Combo
   increaseCombo: () => void;
@@ -204,6 +213,21 @@ const initialIslands: Island[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Initial island progress (all islands start at chapter 1, no mystery started)
+// ---------------------------------------------------------------------------
+
+const initialIslandProgress: IslandProgress[] = [
+  { islandId: 'volcano', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
+  { islandId: 'ocean', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
+  { islandId: 'forest', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
+  { islandId: 'mountain', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
+  { islandId: 'garden', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
+  { islandId: 'night', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
+  { islandId: 'rainbow', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
+  { islandId: 'home', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
+];
+
+// ---------------------------------------------------------------------------
 // Default settings
 // ---------------------------------------------------------------------------
 
@@ -233,6 +257,9 @@ const initialState: GameState = {
   completedScenarios: [],
   completedActivities: [],
   unlockedIslands: ['volcano'] as IslandId[],
+
+  // Island progress
+  islandProgress: initialIslandProgress,
 
   // Islands
   islands: initialIslands,
@@ -513,7 +540,25 @@ export const useGameStore = create<GameStore>()(
             }
           }
 
-          return { completedScenarios, islands, unlockedIslands, streak, bestStreak, achievements, lastEvent };
+          // Auto-advance chapter based on completed scenarios for this island
+          const islandScenarioCount = completedScenarios.filter((id) =>
+            id.startsWith(`${islandId}-scenario-`),
+          ).length;
+          const islandProgress = state.islandProgress.map((ip) => {
+            if (ip.islandId !== islandId) return ip;
+            // Each completed scenario can advance the chapter
+            const newChapter = Math.min(Math.max(islandScenarioCount, ip.currentChapter), 4);
+            if (newChapter === ip.currentChapter) return ip;
+            const zoneNames = ['entrance', 'depths', 'heart', 'summit'];
+            const newZone = zoneNames[newChapter - 1] || `zone-${newChapter}`;
+            const unlockedZones = ip.unlockedZones.includes(newZone)
+              ? ip.unlockedZones
+              : [...ip.unlockedZones, newZone];
+            const mysteryStarted = newChapter >= 1 || ip.mysteryStarted;
+            return { ...ip, currentChapter: newChapter, unlockedZones, mysteryStarted };
+          });
+
+          return { completedScenarios, islands, unlockedIslands, streak, bestStreak, achievements, lastEvent, islandProgress };
         }),
 
       completeActivity: (activityId: string, islandId: IslandId) =>
@@ -668,6 +713,100 @@ export const useGameStore = create<GameStore>()(
 
           return { totalEmpathyPoints, totalInsightPoints, totalCouragePoints, achievements, lastEvent };
         }),
+
+      // ------------------------------------------------------------------
+      // Island Progress (chapters & mysteries)
+      // ------------------------------------------------------------------
+
+      advanceChapter: (islandId: IslandId) =>
+        set((state) => {
+          const islandProgress = state.islandProgress.map((ip) => {
+            if (ip.islandId !== islandId) return ip;
+            const nextChapter = Math.min(ip.currentChapter + 1, 4);
+            // Auto-unlock zone for the new chapter
+            const zoneNames = ['entrance', 'depths', 'heart', 'summit'];
+            const newZone = zoneNames[nextChapter - 1] || `zone-${nextChapter}`;
+            const unlockedZones = ip.unlockedZones.includes(newZone)
+              ? ip.unlockedZones
+              : [...ip.unlockedZones, newZone];
+            return { ...ip, currentChapter: nextChapter, unlockedZones };
+          });
+          const lastEvent: GameEvent = {
+            type: 'chapter-unlocked',
+            data: { islandId, chapter: islandProgress.find((ip) => ip.islandId === islandId)?.currentChapter },
+            timestamp: Date.now(),
+          };
+          return { islandProgress, lastEvent };
+        }),
+
+      discoverClue: (islandId: IslandId, clueId: string) =>
+        set((state) => {
+          const islandProgress = state.islandProgress.map((ip) => {
+            if (ip.islandId !== islandId) return ip;
+            if (ip.discoveredClues.includes(clueId)) return ip;
+            return { ...ip, discoveredClues: [...ip.discoveredClues, clueId] };
+          });
+          const lastEvent: GameEvent = {
+            type: 'clue-discovered',
+            data: { islandId, clueId },
+            timestamp: Date.now(),
+          };
+          return { islandProgress, lastEvent };
+        }),
+
+      unlockZone: (islandId: IslandId, zoneId: string) =>
+        set((state) => {
+          const islandProgress = state.islandProgress.map((ip) => {
+            if (ip.islandId !== islandId) return ip;
+            if (ip.unlockedZones.includes(zoneId)) return ip;
+            return { ...ip, unlockedZones: [...ip.unlockedZones, zoneId] };
+          });
+          return { islandProgress };
+        }),
+
+      startMystery: (islandId: IslandId) =>
+        set((state) => {
+          const islandProgress = state.islandProgress.map((ip) => {
+            if (ip.islandId !== islandId) return ip;
+            if (ip.mysteryStarted) return ip;
+            return { ...ip, mysteryStarted: true };
+          });
+          const lastEvent: GameEvent = {
+            type: 'mystery-started',
+            data: { islandId },
+            timestamp: Date.now(),
+          };
+          return { islandProgress, lastEvent };
+        }),
+
+      solveMystery: (islandId: IslandId) =>
+        set((state) => {
+          const islandProgress = state.islandProgress.map((ip) => {
+            if (ip.islandId !== islandId) return ip;
+            if (ip.mysterySolved) return ip;
+            return { ...ip, mysterySolved: true };
+          });
+          const lastEvent: GameEvent = {
+            type: 'mystery-solved',
+            data: { islandId },
+            timestamp: Date.now(),
+          };
+          return { islandProgress, lastEvent };
+        }),
+
+      getIslandProgress: (islandId: IslandId): IslandProgress => {
+        const s = useGameStore.getState() as unknown as GameState;
+        return (
+          s.islandProgress.find((ip: IslandProgress) => ip.islandId === islandId) || {
+            islandId,
+            currentChapter: 1,
+            mysteryStarted: false,
+            mysterySolved: false,
+            discoveredClues: [] as string[],
+            unlockedZones: ['entrance'] as string[],
+          }
+        );
+      },
 
       // ------------------------------------------------------------------
       // Combo

@@ -83,10 +83,10 @@ type Vec3 = [number, number, number];
 // Constants
 // ---------------------------------------------------------------------------
 
-const MOVE_SPEED = 0.1;
-const GROUND_SIZE = 35;
-const INTERACT_DIST = 5;
-const CAM_OFFSET = new THREE.Vector3(14, 16, 14);
+const MOVE_SPEED = 0.13;
+const GROUND_SIZE = 60;
+const INTERACT_DIST = 6;
+const CAM_OFFSET = new THREE.Vector3(20, 24, 20);
 const CAM_LERP = 0.04;
 
 // Reusable temp vectors to avoid GC pressure in useFrame
@@ -140,7 +140,7 @@ function generateNpcPositions(count: number, seed: number): Vec3[] {
   for (let i = 0; i < count; i++) {
     const base = i * sector;
     const angle = base + rng() * sector * 0.5;
-    const r = 8 + rng() * 10;
+    const r = 12 + rng() * 20;
     result.push([Math.cos(angle) * r, 0, Math.sin(angle) * r]);
   }
   return result;
@@ -153,7 +153,8 @@ function generateMarkerPositions(count: number, seed: number): Vec3[] {
   for (let i = 0; i < count; i++) {
     const base = i * sector + Math.PI / 4;
     const angle = base + rng() * sector * 0.4;
-    const r = 6 + rng() * 15;
+    // Spread markers across zones: chapter 1 closer (10-20), chapter 2+ further (20-40)
+    const r = 10 + (i * 8) + rng() * 12;
     result.push([Math.cos(angle) * r, 0.5, Math.sin(angle) * r]);
   }
   return result;
@@ -173,8 +174,8 @@ const THEMES: Record<string, IslandTheme> = {
     sunIntensity: 0.8,
     sunPosition: [10, 20, 5],
     fogColor: '#1a0800',
-    fogNear: 35,
-    fogFar: 85,
+    fogNear: 50,
+    fogFar: 130,
     skyColor: '#330800',
     treeVariant: 'dead',
     trunkColor: '#1a1a1a',
@@ -184,9 +185,9 @@ const THEMES: Record<string, IslandTheme> = {
     waterColor: '#cc3300',
     waterOpacity: 0.85,
     playerAccent: '#ff6b35',
-    treeCount: 16,
-    rockCount: 20,
-    decorationCount: 20,
+    treeCount: 30,
+    rockCount: 35,
+    decorationCount: 36,
   },
   ocean: {
     groundColor: '#d4b896',
@@ -197,8 +198,8 @@ const THEMES: Record<string, IslandTheme> = {
     sunIntensity: 1.0,
     sunPosition: [15, 25, 10],
     fogColor: '#4488bb',
-    fogNear: 35,
-    fogFar: 80,
+    fogNear: 50,
+    fogFar: 130,
     skyColor: '#87ceeb',
     treeVariant: 'palm',
     trunkColor: '#8B6914',
@@ -208,9 +209,9 @@ const THEMES: Record<string, IslandTheme> = {
     waterColor: '#1a6aaa',
     waterOpacity: 0.75,
     playerAccent: '#4a90d9',
-    treeCount: 14,
-    rockCount: 16,
-    decorationCount: 22,
+    treeCount: 26,
+    rockCount: 28,
+    decorationCount: 36,
   },
   forest: {
     groundColor: '#2d5a1e',
@@ -221,8 +222,8 @@ const THEMES: Record<string, IslandTheme> = {
     sunIntensity: 0.65,
     sunPosition: [8, 18, 12],
     fogColor: '#1a3a1a',
-    fogNear: 20,
-    fogFar: 55,
+    fogNear: 35,
+    fogFar: 100,
     skyColor: '#4a7a4a',
     treeVariant: 'pine',
     trunkColor: '#5c3a1e',
@@ -232,9 +233,9 @@ const THEMES: Record<string, IslandTheme> = {
     waterColor: '#2a5a3a',
     waterOpacity: 0.8,
     playerAccent: '#4caf50',
-    treeCount: 30,
-    rockCount: 18,
-    decorationCount: 22,
+    treeCount: 50,
+    rockCount: 30,
+    decorationCount: 38,
   },
   mountain: {
     groundColor: '#7a6a5a',
@@ -245,8 +246,8 @@ const THEMES: Record<string, IslandTheme> = {
     sunIntensity: 0.85,
     sunPosition: [12, 22, 8],
     fogColor: '#8090a0',
-    fogNear: 25,
-    fogFar: 65,
+    fogNear: 40,
+    fogFar: 120,
     skyColor: '#8899aa',
     treeVariant: 'short',
     trunkColor: '#5c4030',
@@ -256,9 +257,9 @@ const THEMES: Record<string, IslandTheme> = {
     waterColor: '#5577aa',
     waterOpacity: 0.7,
     playerAccent: '#8d6e63',
-    treeCount: 8,
-    rockCount: 20,
-    decorationCount: 14,
+    treeCount: 16,
+    rockCount: 36,
+    decorationCount: 28,
   },
   garden: {
     groundColor: '#4a8a3a',
@@ -269,8 +270,8 @@ const THEMES: Record<string, IslandTheme> = {
     sunIntensity: 1.0,
     sunPosition: [10, 25, 10],
     fogColor: '#a8d8a8',
-    fogNear: 35,
-    fogFar: 80,
+    fogNear: 50,
+    fogFar: 130,
     skyColor: '#c8e0f8',
     treeVariant: 'cherry',
     trunkColor: '#6a4a2a',
@@ -280,9 +281,9 @@ const THEMES: Record<string, IslandTheme> = {
     waterColor: '#4a99bb',
     waterOpacity: 0.65,
     playerAccent: '#ec407a',
-    treeCount: 16,
-    rockCount: 10,
-    decorationCount: 24,
+    treeCount: 28,
+    rockCount: 20,
+    decorationCount: 40,
   },
   night: {
     groundColor: '#1a1030',
@@ -293,8 +294,8 @@ const THEMES: Record<string, IslandTheme> = {
     sunIntensity: 0.35,
     sunPosition: [5, 15, 10],
     fogColor: '#0d0820',
-    fogNear: 20,
-    fogFar: 50,
+    fogNear: 35,
+    fogFar: 95,
     skyColor: '#0a0618',
     treeVariant: 'mushroom',
     trunkColor: '#e0d8f0',
@@ -304,9 +305,9 @@ const THEMES: Record<string, IslandTheme> = {
     waterColor: '#1a1040',
     waterOpacity: 0.85,
     playerAccent: '#7e57c2',
-    treeCount: 14,
-    rockCount: 10,
-    decorationCount: 16,
+    treeCount: 24,
+    rockCount: 20,
+    decorationCount: 30,
   },
   rainbow: {
     groundColor: '#e8e0f0',
@@ -317,8 +318,8 @@ const THEMES: Record<string, IslandTheme> = {
     sunIntensity: 1.0,
     sunPosition: [10, 25, 10],
     fogColor: '#e0d0f0',
-    fogNear: 30,
-    fogFar: 80,
+    fogNear: 45,
+    fogFar: 125,
     skyColor: '#e0d0f0',
     treeVariant: 'crystal',
     trunkColor: '#c0c0c0',
@@ -328,9 +329,9 @@ const THEMES: Record<string, IslandTheme> = {
     waterColor: '#aa88dd',
     waterOpacity: 0.6,
     playerAccent: '#ff7043',
-    treeCount: 12,
-    rockCount: 12,
-    decorationCount: 14,
+    treeCount: 22,
+    rockCount: 22,
+    decorationCount: 28,
   },
   home: {
     groundColor: '#6a8a4a',
@@ -341,8 +342,8 @@ const THEMES: Record<string, IslandTheme> = {
     sunIntensity: 0.95,
     sunPosition: [12, 20, 10],
     fogColor: '#c8d8b0',
-    fogNear: 30,
-    fogFar: 75,
+    fogNear: 45,
+    fogFar: 125,
     skyColor: '#87ceeb',
     treeVariant: 'fruit',
     trunkColor: '#5c3a20',
@@ -352,9 +353,9 @@ const THEMES: Record<string, IslandTheme> = {
     waterColor: '#3388aa',
     waterOpacity: 0.7,
     playerAccent: '#ffb74d',
-    treeCount: 18,
-    rockCount: 14,
-    decorationCount: 22,
+    treeCount: 30,
+    rockCount: 24,
+    decorationCount: 36,
   },
 };
 
@@ -4629,10 +4630,19 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
   const unlockedIslands = useGameStore((s) => s.unlockedIslands);
   const startTravel = useGameStore((s) => s.startTravel);
 
+  const islandProgress = useGameStore((s) => s.islandProgress);
+
   const islandId = activeIsland ?? ('volcano' as IslandId);
   const islandMeta = islands.find((i) => i.id === islandId);
   const islandData = useMemo(() => getIslandData(islandId), [islandId]);
   const theme = THEMES[islandId] ?? THEMES.volcano;
+
+  // Current chapter progress for this island
+  const currentProgress = useMemo(
+    () => islandProgress.find((ip) => ip.islandId === islandId) || { currentChapter: 1, unlockedZones: ['entrance'], mysteryStarted: false, mysterySolved: false, discoveredClues: [] as string[] },
+    [islandProgress, islandId],
+  );
+  const currentChapter = currentProgress.currentChapter;
 
   // ---- Shared refs for Canvas communication ----
   const keysRef = useRef(new Set<string>());
@@ -4691,28 +4701,36 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
     }));
   }, [islandData.npcs, islandId]);
 
-  // ---- Scenario markers ----
+  // ---- Scenario markers (progressively unlocked by chapter) ----
   const scenarioMarkers = useMemo(() => {
     const data = (islandData.scenarios ?? []) as ScenarioData[];
     const positions = generateMarkerPositions(data.length, SEED_MAP[islandId] ?? 101);
-    return data.map((s, i) => ({
-      ...s,
-      pos: positions[i] ?? ([0, 0.5, 0] as Vec3),
-    }));
-  }, [islandData.scenarios, islandId]);
+    // Only show scenarios up to the current chapter
+    return data
+      .map((s, i) => ({
+        ...s,
+        pos: positions[i] ?? ([0, 0.5, 0] as Vec3),
+        chapter: i + 1,
+      }))
+      .filter((s) => s.chapter <= currentChapter);
+  }, [islandData.scenarios, islandId, currentChapter]);
 
-  // ---- Activity markers ----
+  // ---- Activity markers (progressively unlocked by chapter) ----
   const activityMarkers = useMemo(() => {
     const data = (islandData.activities ?? []) as ActivityData[];
     const positions = generateMarkerPositions(
       data.length,
       (SEED_MAP[islandId] ?? 101) + 1000,
     );
-    return data.map((a, i) => ({
-      ...a,
-      pos: positions[i] ?? ([0, 0.5, 0] as Vec3),
-    }));
-  }, [islandData.activities, islandId]);
+    // Activities unlock based on chapter: ch1 = first 2, ch2 = next 2, etc.
+    const maxActivities = Math.min(currentChapter * 2, data.length);
+    return data
+      .slice(0, maxActivities)
+      .map((a, i) => ({
+        ...a,
+        pos: positions[i] ?? ([0, 0.5, 0] as Vec3),
+      }));
+  }, [islandData.activities, islandId, currentChapter]);
 
   // ---- Mini-game position ----
   const miniGamePos = useMemo((): Vec3 => {
@@ -4901,9 +4919,9 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
         </span>
       </div>
 
-      {/* Top-right: Progress */}
+      {/* Top-right: Chapter Progress */}
       <div
-        className="fixed top-4 right-4 z-40 flex items-center gap-3 px-4 py-2 rounded-xl"
+        className="fixed top-4 right-4 z-40 flex flex-col gap-1.5 px-4 py-2.5 rounded-xl"
         style={{
           background: 'linear-gradient(135deg, rgba(30,20,60,0.9), rgba(13,13,26,0.95))',
           border: '1px solid rgba(201,168,76,0.4)',
@@ -4911,25 +4929,28 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
           boxShadow: '0 4px 16px rgba(0,0,0,0.5)',
         }}
       >
-        <span className="text-xs font-bold" style={{ color: '#c9a84c' }}>
-          Fortschritt
-        </span>
-        <div
-          className="w-24 h-2 rounded-full overflow-hidden"
-          style={{ backgroundColor: 'rgba(201,168,76,0.2)' }}
-        >
-          <div
-            className="h-full rounded-full transition-all duration-700"
-            style={{
-              width: `${completionPercent}%`,
-              background: 'linear-gradient(90deg, #c9a84c, #ffd700)',
-              boxShadow: '0 0 8px rgba(255,215,0,0.5)',
-            }}
-          />
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold" style={{ color: '#c9a84c' }}>
+            Kapitel {currentChapter} / 4
+          </span>
+          <span className="text-xs" style={{ color: 'rgba(201,168,76,0.5)' }}>
+            {completionPercent}%
+          </span>
         </div>
-        <span className="text-xs font-bold" style={{ color: '#ffd700' }}>
-          {completionPercent}%
-        </span>
+        <div className="flex gap-1.5">
+          {[1, 2, 3, 4].map((ch) => (
+            <div
+              key={ch}
+              className="h-1.5 rounded-full flex-1 transition-all duration-700"
+              style={{
+                background: ch <= currentChapter
+                  ? 'linear-gradient(90deg, #c9a84c, #ffd700)'
+                  : 'rgba(201,168,76,0.15)',
+                boxShadow: ch <= currentChapter ? '0 0 6px rgba(255,215,0,0.4)' : 'none',
+              }}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Mini-map (GTA-style bottom-right radar) */}
@@ -4946,6 +4967,18 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
         className="fixed top-20 left-4 z-30 flex flex-col gap-1.5 max-h-[60vh] overflow-y-auto"
         style={{ width: '220px' }}
       >
+        {/* Chapter title */}
+        <div
+          className="text-xs font-bold uppercase tracking-wider px-3 py-2 rounded-lg mb-1"
+          style={{
+            color: '#ffd700',
+            background: 'linear-gradient(135deg, rgba(30,20,60,0.9), rgba(13,13,26,0.95))',
+            border: '1px solid rgba(201,168,76,0.3)',
+            backdropFilter: 'blur(4px)',
+          }}
+        >
+          {'\u{1F4D6}'} Kapitel {currentChapter}: {currentChapter === 1 ? 'Erkennen' : currentChapter === 2 ? 'Verstehen' : currentChapter === 3 ? 'Handeln' : 'Meistern'}
+        </div>
         <div
           className="text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-lg"
           style={{

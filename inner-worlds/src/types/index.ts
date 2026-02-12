@@ -323,6 +323,46 @@ export interface GameEvent {
 }
 
 // -----------------------------------------------------------------------------
+// Island Chapter Progression (progressive unlocking within islands)
+// -----------------------------------------------------------------------------
+
+/** Tracks which chapter a player has reached on a specific island */
+export interface IslandProgress {
+  /** The island this progress belongs to */
+  islandId: IslandId;
+  /** Current chapter unlocked (1-4, scenarios unlock progressively) */
+  currentChapter: number;
+  /** Whether the island's mystery/puzzle arc has been started */
+  mysteryStarted: boolean;
+  /** Whether the island's mystery/puzzle arc is fully solved */
+  mysterySolved: boolean;
+  /** Clues discovered on this island */
+  discoveredClues: string[];
+  /** Hidden areas/zones unlocked on this island */
+  unlockedZones: string[];
+}
+
+// -----------------------------------------------------------------------------
+// Island Story (narrative arc per island)
+// -----------------------------------------------------------------------------
+
+/** A story-driven narrative arc for each island's mystery */
+export interface IslandStory {
+  /** The island this story belongs to */
+  islandId: IslandId;
+  /** Title of the island's overarching mystery */
+  mysteryTitle: string;
+  /** Short hook text shown when first arriving */
+  hook: string;
+  /** Chapter introductions shown when unlocking each chapter */
+  chapterIntros: string[];
+  /** Clue descriptions that can be discovered */
+  clues: { id: string; text: string; chapter: number }[];
+  /** Final revelation text when the mystery is solved */
+  revelation: string;
+}
+
+// -----------------------------------------------------------------------------
 // Game State
 // -----------------------------------------------------------------------------
 
@@ -360,6 +400,9 @@ export interface GameState {
   completedActivities: string[];
   /** Set of island IDs the player has unlocked */
   unlockedIslands: IslandId[];
+
+  /** Per-island chapter progression and mystery tracking */
+  islandProgress: IslandProgress[];
 
   // Streak
   /** Current consecutive scenario completion streak */
