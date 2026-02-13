@@ -137,11 +137,31 @@ function generateNpcPositions(count: number, seed: number): Vec3[] {
   const rng = makeRng(seed + 5000);
   const result: Vec3[] = [];
   const sector = (Math.PI * 2) / Math.max(count, 1);
+  const MIN_NPC_DIST = 18; // Minimum distance between any two NPCs
   for (let i = 0; i < count; i++) {
-    const base = i * sector;
-    const angle = base + rng() * sector * 0.5;
-    const r = 12 + rng() * 20;
-    result.push([Math.cos(angle) * r, 0, Math.sin(angle) * r]);
+    let bestPos: Vec3 = [0, 0, 0];
+    let bestMinDist = 0;
+    // Try multiple positions and pick the one with best spacing
+    for (let attempt = 0; attempt < 8; attempt++) {
+      const base = i * sector;
+      const angle = base + rng() * sector * 0.6;
+      // Much wider spread: 25-50 units from center (was 12-32)
+      const r = 25 + rng() * 25;
+      const candidate: Vec3 = [Math.cos(angle) * r, 0, Math.sin(angle) * r];
+      // Check distance to all existing NPCs
+      let minDist = Infinity;
+      for (const existing of result) {
+        const dx = candidate[0] - existing[0];
+        const dz = candidate[2] - existing[2];
+        minDist = Math.min(minDist, Math.sqrt(dx * dx + dz * dz));
+      }
+      if (result.length === 0 || minDist > bestMinDist) {
+        bestPos = candidate;
+        bestMinDist = minDist;
+      }
+      if (minDist >= MIN_NPC_DIST) break;
+    }
+    result.push(bestPos);
   }
   return result;
 }
@@ -153,8 +173,8 @@ function generateMarkerPositions(count: number, seed: number): Vec3[] {
   for (let i = 0; i < count; i++) {
     const base = i * sector + Math.PI / 4;
     const angle = base + rng() * sector * 0.4;
-    // Spread markers across zones: chapter 1 closer (10-20), chapter 2+ further (20-40)
-    const r = 10 + (i * 8) + rng() * 12;
+    // Progressive spacing: chapter 1 at ~18-28, chapter 4 at ~42-52
+    const r = 18 + (i * 8) + rng() * 10;
     result.push([Math.cos(angle) * r, 0.5, Math.sin(angle) * r]);
   }
   return result;

@@ -62,7 +62,7 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v1-s1-c1',
             text: 'Sofort zu ihm gehen: "Hey, was ist los?"',
-            consequence: 'Dein Mut zeigt sich in deiner direkten Reaktion. Manchmal braucht es jemanden, der den ersten Schritt macht - jemanden, der nicht wegschaut, wenn ein anderer Mensch leidet. Aber Vorsicht: Wenn jemand gerade sehr wütend ist, kann plötzliches Ansprechen die Situation auch verschärfen. Die Psychologie lehrt uns: Der Timing ist wichtig. Im besten Fall gibst du dem anderen einen Moment, bevor du eingreifst.',
+            consequence: 'Dein Mut zeigt sich in deiner direkten Reaktion. Manchmal braucht es jemanden, der den ersten Schritt macht - jemanden, der nicht wegschaut, wenn ein anderer Mensch leidet. Die Psychologie lehrt uns: Der Timing ist wichtig - aber der Mut, hinzusehen, ist noch wichtiger.',
             nextSceneId: 'v1-s2',
             points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
           },
@@ -76,9 +76,40 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v1-s1-c3',
             text: 'Innerlich mitfühlen - du kennst das Gefühl, wenn etwas unfair ist',
-            consequence: 'Du spürst sofort Mitgefühl. Das ist eine wichtige Fähigkeit: Empathie bedeutet, die Gefühle anderer nachzuempfinden, ohne sie selbst zu übernehmen. Du erkennst Ashs Schmerz, weil du ähnliche Situationen kennst.',
+            consequence: 'Du spürst sofort Mitgefühl. Das ist eine wichtige Fähigkeit: Empathie bedeutet, die Gefühle anderer nachzuempfinden, ohne sie selbst zu übernehmen.',
             nextSceneId: 'v1-s2',
             points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'v1-s1-c4',
+            text: 'Umdrehen und weitergehen. Nicht dein Problem.',
+            consequence: 'Du gehst einfach weiter. Ash bleibt allein mit seiner Wut. Der Vulkan hinter ihm stößt eine bedrohliche Rauchwolke aus. Manchmal entscheiden wir uns wegzuschauen, weil es bequemer ist. Aber das Wegsehen hat einen Preis: Der andere Mensch bleibt allein mit seinem Schmerz - und du verpasst die Chance, etwas zu bewirken.',
+            nextSceneId: 'v1-s2b',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
+          }
+        ]
+      },
+      {
+        id: 'v1-s2b',
+        speaker: 'Erzähler',
+        speakerEmoji: '🌋',
+        text: 'Du gehst ein paar Schritte weg, aber etwas hält dich zurück. Ein Gefühl im Bauch - vielleicht Schuld, vielleicht Neugier. Du drehst dich noch einmal um und siehst, wie Ash auf die Knie fällt, die Hände in die Asche greift und leise schluchzt. Der Junge, der gerade noch geschrien hat, sieht plötzlich so klein aus. Der Vulkan grollt bedrohlich. Du merkst: Weggehen war der falsche Instinkt.',
+        choices: [
+          {
+            id: 'v1-s2b-c1',
+            text: 'Doch umkehren und auf ihn zugehen',
+            consequence: 'Du korrigierst deinen Fehler. Das ist keine Schwäche - das ist Wachstum. Fehler passieren. Was zählt, ist, was du als Nächstes tust.',
+            nextSceneId: 'v1-s2',
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'v1-s2b-c2',
+            text: 'Endgültig weitergehen. Er wird schon klarkommen.',
+            consequence: 'Du gehst. Ash bleibt allein. Der Vulkan spuckt wütend Asche in den Himmel. Du hast eine Chance verpasst - für Ash UND für dich. Aber vielleicht lernst du daraus: Wegsehen, wenn jemand leidet, ist auch eine Entscheidung. Eine, die wehtut.',
+            nextSceneId: 'v1-s3',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -91,23 +122,47 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v1-s2-c1',
             text: '"Das klingt wirklich unfair. Ich würde auch wütend sein."',
-            consequence: 'Du bestätigst sein Gefühl, ohne die Situation zu bewerten. In der Psychologie heißt das "Validierung". Wenn jemand merkt, dass sein Gefühl akzeptiert wird, beruhigt sich das Nervensystem oft ganz von selbst. Du sagst nicht "beruhig dich" - du sagst "ich verstehe dich".',
+            consequence: 'Du bestätigst sein Gefühl, ohne die Situation zu bewerten. In der Psychologie heißt das "Validierung". Wenn jemand merkt, dass sein Gefühl akzeptiert wird, beruhigt sich das Nervensystem oft ganz von selbst.',
             nextSceneId: 'v1-s3',
             points: { empathyPoints: 3, insightPoints: 2, couragePoints: 0 }
           },
           {
             id: 'v1-s2-c2',
             text: '"Wow, du bist gerade richtig aufgebracht. Hast du mal geschaut, wie dein Körper sich anfühlt?"',
-            consequence: 'Eine sehr kluge Frage! Wenn wir wütend werden, schaltet unser Gehirn in den Kampf-oder-Flucht-Modus. Das bedeutet: Dein Herz schlägt schneller, deine Muskeln spannen sich an, dein Gesicht wird heiß, und deine Fäuste ballen sich automatisch. Diese körperlichen Zeichen zu erkennen ist der erste Schritt, um Wut zu kontrollieren.',
+            consequence: 'Eine sehr kluge Frage! Wenn wir wütend werden, schaltet unser Gehirn in den Kampf-oder-Flucht-Modus. Diese körperlichen Zeichen zu erkennen ist der erste Schritt, um Wut zu kontrollieren.',
             nextSceneId: 'v1-s3',
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
           },
           {
             id: 'v1-s2-c3',
-            text: '"HEY! Schrei mich nicht an! Ich hab dir nichts getan!"',
-            consequence: 'Deine Reaktion ist völlig verständlich - niemand wird gerne angeschrien. Aber hier passiert etwas Interessantes: Ashs Wut hat DEINE Wut ausgelöst. Das nennt man "emotionale Ansteckung". Wut kann wie ein Funke von einer Person zur nächsten springen. Genau deshalb ist es so wichtig zu lernen, diesen Funken zu erkennen, bevor er zum Feuer wird.',
+            text: 'Die Augen verdrehen: "Jetzt beruhig dich mal. So schlimm ist das auch nicht."',
+            consequence: 'Ash erstarrt. Sein Blick wird kalt. "Beruhig dich?! Sag mir nicht, ich soll mich beruhigen!" Die schlimmsten zwei Worte, die man einem wütenden Menschen sagen kann: "Beruhig dich." Du hast gerade seine Gefühle komplett entwertet. In der Psychologie heißt das "Invalidierung" - und sie macht alles schlimmer.',
+            nextSceneId: 'v1-s3b',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
+          }
+        ]
+      },
+      {
+        id: 'v1-s3b',
+        speaker: 'Ash',
+        speakerEmoji: '🤬',
+        text: 'Ash dreht sich weg. "Vergiss es", zischt er. "Du bist auch wie alle anderen." Seine Mauern sind wieder hochgefahren - höher als zuvor. Der Vulkan hinter ihm donnert bedrohlich. Du hast gerade das Vertrauen verspielt, das du hättest aufbauen können. Ash geht ein paar Schritte weg, aber dann bleibt er stehen. Seine Schultern sacken zusammen. "Warum... warum hört mir nie jemand zu?"',
+        choices: [
+          {
+            id: 'v1-s3b-c1',
+            text: '"Es tut mir leid. Das war falsch von mir. Ich höre dir jetzt zu - wirklich."',
+            consequence: 'Du entschuldigst dich ehrlich. Das braucht Mut - und es zeigt Ash, dass Menschen Fehler machen UND sie korrigieren können. Deine Entschuldigung öffnet langsam die Tür, die du gerade zugeschlagen hast.',
             nextSceneId: 'v1-s3',
-            points: { empathyPoints: 0, insightPoints: 2, couragePoints: 3 }
+            points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'v1-s3b-c2',
+            text: '"Na gut, dann eben nicht. Du willst ja gar keine Hilfe."',
+            consequence: 'Ash schüttelt den Kopf und geht allein weiter. Du stehst da und merkst: Du hast doppelt versagt. Erst seine Gefühle abgetan, dann aufgegeben. Der Vulkan grollt tief - als würde die Insel selbst dir zeigen, was passiert, wenn man Emotionen ignoriert.',
+            nextSceneId: 'v1-s3',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -134,9 +189,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v1-s3-c3',
             text: '"Ich kenne das. Bei mir fühlt sich Wut an wie ein Gewitter im Kopf."',
-            consequence: 'Indem du deine eigene Erfahrung teilst, schaffst du eine Verbindung. Ash merkt: Er ist nicht der Einzige, dem das passiert. Wut ist ein universelles Gefühl - jeder Mensch kennt es. Es in Bilder zu fassen wie "Vulkan" oder "Gewitter" hilft, das Gefühl besser zu verstehen und darüber zu sprechen.',
+            consequence: 'Indem du deine eigene Erfahrung teilst, schaffst du eine Verbindung. Ash merkt: Er ist nicht der Einzige, dem das passiert.',
             nextSceneId: 'v1-s4',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'v1-s3-c4',
+            text: '"Jeder hat Probleme. Du bist nicht der Einzige, dem es schlecht geht."',
+            consequence: 'Ash zuckt zusammen, als hättest du ihn geschlagen. "Klar... hab ich ja nicht gesagt", murmelt er. Aber seine Augen sagen etwas anderes: Du hast seinen Schmerz gerade kleingemacht. Seine Mauern fahren hoch. Vergleich und Relativierung sind Gift für Vertrauen - jeder Schmerz verdient gehört zu werden.',
+            nextSceneId: 'v1-s4',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -163,9 +226,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v1-s4-c3',
             text: '"Hey, du hast dich gerade bei mir entschuldigt. Das zeigt, dass du mehr Kontrolle hast, als du denkst."',
-            consequence: 'Brilliant beobachtet! Ash hat sich entschuldigt - das bedeutet, er KANN reflektieren und Verantwortung übernehmen, selbst nachdem er die Kontrolle verloren hat. Das ist eine enorme Stärke, die er bisher komplett übersehen hat. In der Psychologie nennt man das "selektive Aufmerksamkeit auf das Negative": Wir konzentrieren uns so sehr auf unsere Ausrutscher und Fehler, dass wir unsere Fortschritte nicht sehen. Ash hat bereits mehr Emotionsregulation, als er sich selbst zutraut. Er braucht jemanden, der ihm das zeigt.',
+            consequence: 'Brilliant beobachtet! Ash hat sich entschuldigt - das bedeutet, er KANN reflektieren und Verantwortung übernehmen. Das ist eine enorme Stärke, die er bisher komplett übersehen hat.',
             nextSceneId: 'v1-s5',
             points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'v1-s4-c4',
+            text: '"Naja, die Leute haben halt recht - wenn du die Kontrolle verlierst, ist das schon ein Problem."',
+            consequence: 'Ash zuckt zusammen, als wäre er geohrfeigt worden. "Also denkst du auch, dass mit mir was nicht stimmt." Seine Stimme ist jetzt eiskalt. Du hast gerade sein schlimmstes Selbstbild bestätigt. Statt ihm zu helfen, hast du seinen inneren Kritiker gefüttert. Die Wut steigt wieder, aber diesmal richtet sie sich auch gegen sich selbst.',
+            nextSceneId: 'v1-s5',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -192,9 +263,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v1-s5-c3',
             text: '"Natürlich. Und der erste Schritt: Lass uns mal aufschreiben, was dein Körper macht, wenn die Wut kommt."',
-            consequence: 'Hervorragend! Du schlägst eine konkrete Übung vor. Ein "Körper-Scan" bei Wut ist ein bewährtes Werkzeug in der Therapie: Wo spürst du die Wut zuerst? Im Bauch? In den Fäusten? Im Kiefer? Wer seinen eigenen Körper kennt, kann die Wut frühzeitig erkennen - und dann bewusst entscheiden, wie er reagiert, statt automatisch zu explodieren.',
+            consequence: 'Hervorragend! Du schlägst eine konkrete Übung vor. Ein "Körper-Scan" bei Wut ist ein bewährtes Werkzeug in der Therapie.',
             nextSceneId: null,
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v1-s5-c4',
+            text: '"Du brauchst einfach mehr Disziplin. Reiß dich zusammen."',
+            consequence: 'Ash verstummt. Sein kurzes Lächeln erlischt. "Reiß dich zusammen" - die Worte, die er von allen hört und die noch NIE geholfen haben. Du hast gerade alles kaputt gemacht, was sich aufgebaut hat. "Disziplin" klingt logisch, aber es ignoriert die Biologie: Wenn die Amygdala den Alarm auslöst, kann man sich nicht einfach "zusammenreißen". Das ist, als würde man jemandem mit gebrochenem Bein sagen: "Lauf einfach schneller."',
+            nextSceneId: null,
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       }
@@ -239,9 +318,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v2-s1-c3',
             text: '"Danke, dass du mir das erzählst. Das braucht Mut."',
-            consequence: 'Du erkennst an, wie schwer es für Ash ist, sich zu öffnen. Über schmerzhafte Dinge zu sprechen - besonders als Jugendlicher - erfordert enormen Mut. Indem du das aussprichst, stärkst du Ash. Du zeigst ihm, dass Verletzlichkeit keine Schwäche ist, sondern eine besondere Form von Stärke.',
+            consequence: 'Du erkennst an, wie schwer es für Ash ist, sich zu öffnen. Verletzlichkeit ist keine Schwäche - sie ist eine besondere Form von Stärke.',
             nextSceneId: 'v2-s2',
             points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'v2-s1-c4',
+            text: '"Ach, Trennung? Das ist doch heutzutage normal. Halb so wild."',
+            consequence: 'Ash erstarrt. "Normal?!" Seine Stimme bricht. "Es fühlt sich überhaupt nicht normal an!" Du hast gerade seinen Schmerz relativiert - eine der schmerzhaftesten Formen der Entwertung. Dass etwas häufig vorkommt, macht es nicht weniger schmerzhaft. Ashs Welt bricht zusammen, und du sagst ihm, das sei "normal"? Er zieht sich zurück und verschließt sich.',
+            nextSceneId: 'v2-s2',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -268,9 +355,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v2-s2-c3',
             text: '"Das ergibt total Sinn. Wut gibt dir das Gefühl, dass du etwas tun kannst."',
-            consequence: 'Du triffst den Kern. Wut gibt ein Gefühl von Kontrolle und Macht in Situationen, wo man sich eigentlich machtlos fühlt. Das ist ein psychologischer Schutzmechanismus. Er ist nicht "falsch" - er hat Ash sogar geholfen, eine sehr schmerzhafte Zeit zu überstehen. Aber jetzt ist es Zeit, auch die Gefühle darunter anzuschauen.',
+            consequence: 'Du triffst den Kern. Wut gibt ein Gefühl von Kontrolle und Macht, wo man sich eigentlich machtlos fühlt.',
             nextSceneId: 'v2-s3',
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v2-s2-c4',
+            text: '"Du solltest nicht so viel an deine Eltern denken. Konzentrier dich lieber auf die Schule."',
+            consequence: 'Ash starrt dich ungläubig an. "Nicht... dran denken?!" Du hast ihm gerade gesagt, er soll seine Gefühle ignorieren - genau das, was ihn krank macht. Gefühle verschwinden nicht, wenn man sie ignoriert. Sie stauen sich auf wie Magma unter einem Vulkan. Irgendwann explodiert alles. Verdrängen ist keine Lösung.',
+            nextSceneId: 'v2-s3',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -297,9 +392,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v2-s3-c3',
             text: '"Ash, du bist gerade unglaublich mutig. Die meisten Erwachsenen schaffen nicht, was du gerade tust."',
-            consequence: 'Indem du Ashs Verletzlichkeit als Mut anerkennst, drehst du sein Weltbild um. Er dachte, Stärke bedeutet, keine Gefühle zu zeigen. Aber echte Stärke zeigt sich darin, ehrlich zu seinen Gefühlen zu stehen. Ash öffnet sich gerade mehr, als er es je getan hat - und das verdient Respekt.',
+            consequence: 'Indem du Ashs Verletzlichkeit als Mut anerkennst, drehst du sein Weltbild um. Echte Stärke zeigt sich darin, ehrlich zu seinen Gefühlen zu stehen.',
             nextSceneId: 'v2-s4',
             points: { empathyPoints: 2, insightPoints: 1, couragePoints: 3 }
+          },
+          {
+            id: 'v2-s3-c4',
+            text: '"Hör auf zu weinen. Du bist doch kein kleines Kind mehr."',
+            consequence: 'Die Worte treffen Ash wie ein Schlag. Er wischt sich hastig die Augen und dreht sich weg. "Stimmt ja", sagt er bitter. "Echte Jungs weinen nicht, oder?" Du hast gerade eine der giftigsten Überzeugungen unserer Gesellschaft wiederholt. Tränen sind KEIN Zeichen von Schwäche - sie sind die natürliche Art des Körpers, Stresshormone abzubauen. Wer nicht weinen darf, wird krank.',
+            nextSceneId: 'v2-s4',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -326,9 +429,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v2-s4-c3',
             text: '"Der Vulkan reagiert auf dich. Vielleicht zeigt er dir, dass du auf dem richtigen Weg bist."',
-            consequence: 'Eine schöne Beobachtung. Der Vulkan als Metapher für Ashs innere Welt: Wenn der innere Druck nachlässt, beruhigt sich auch das Äußere. Im echten Leben funktioniert das ähnlich: Wenn Menschen lernen, ihre wahren Gefühle auszudrücken, verschwinden oft auch körperliche Symptome wie Kopfschmerzen, Bauchschmerzen oder Schlafprobleme.',
+            consequence: 'Der Vulkan als Metapher für Ashs innere Welt: Wenn der innere Druck nachlässt, beruhigt sich auch das Äußere.',
             nextSceneId: 'v2-s5',
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v2-s4-c4',
+            text: '"Siehst du, war doch gar nicht so schwer. Mach das einfach öfter."',
+            consequence: 'Ash zieht die Brauen zusammen. "Einfach? Du hast keine Ahnung, wie schwer das war." Du hast seinen emotionalen Durchbruch gerade auf "war doch easy" reduziert. Gefühle zuzulassen ist für viele Menschen das Schwerste überhaupt. Es kleinzureden zeigt, dass du nicht wirklich verstehst, was gerade passiert ist.',
+            nextSceneId: 'v2-s5',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -355,9 +466,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v2-s5-c3',
             text: '"Du hast es jetzt verstanden. Und das ist der erste Schritt. Der Rest kommt mit der Zeit."',
-            consequence: 'Du normalisierst den Prozess. Selbsterkenntnis ist erst der Anfang - aber ein unglaublich wichtiger. Ash weiß jetzt, dass seine Wut eine Botschaft hat. Er muss nicht alles sofort verändern. Wissen allein verändert schon etwas: Ab jetzt wird er in Momenten der Wut einen leisen Gedanken hören, der fragt: "Ist es wirklich Wut - oder steckt da mehr dahinter?"',
+            consequence: 'Du normalisierst den Prozess. Selbsterkenntnis ist erst der Anfang - aber ein unglaublich wichtiger.',
             nextSceneId: null,
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'v2-s5-c4',
+            text: '"Naja, wenigstens weißt du jetzt, dass du komisch bist, weil deine Eltern sich trennen."',
+            consequence: 'Ash steht auf und geht wortlos weg. "Komisch"? "Weil deine Eltern sich trennen"? Du hast gerade seine Eltern-Situation als URSACHE für ein PROBLEM dargestellt. Ash ist nicht "komisch". Er verarbeitet Schmerz. Und du hast ihm gerade das Gefühl gegeben, kaputt zu sein. Der Vulkan spuckt dunkle Asche.',
+            nextSceneId: null,
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       }
@@ -402,9 +521,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v3-s1-c3',
             text: 'Ash am Arm festhalten: "Ash, stopp. So löst du das nicht."',
-            consequence: 'Du greifst mutig ein, bevor die Situation eskaliert. Das erfordert Mut, weil Ash gerade voller Wut ist und du riskierst, dass er sich auch gegen dich wendet. Aber manchmal muss ein Freund die Bremse sein. Du erinnerst Ash an das, was er gelernt hat - auch wenn er es in diesem Moment vergessen hat.',
+            consequence: 'Du greifst mutig ein, bevor die Situation eskaliert. Manchmal muss ein Freund die Bremse sein.',
             nextSceneId: 'v3-s2',
             points: { empathyPoints: 1, insightPoints: 1, couragePoints: 3 }
+          },
+          {
+            id: 'v3-s1-c4',
+            text: '"Lass ihn! Hau Leon eine rein, der hat es verdient!"',
+            consequence: 'Du gießt Benzin ins Feuer. Ash stürzt sich auf Leon. Es gibt eine Schlägerei. Ergebnis: Ash bekommt Schulverweis, Leon spielt das Opfer, und Maya? Sitzt immer noch allein da - nur jetzt ohne Ash. Gewalt löst NICHTS. Sie macht den Täter zum Opfer und das eigentliche Opfer unsichtbar. Das war die schlechteste aller möglichen Entscheidungen.',
+            nextSceneId: 'v3-s2',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -431,9 +558,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v3-s2-c3',
             text: '"Komm, wir gehen erst mal weg. Manchmal ist Abstand die klügste Waffe."',
-            consequence: 'Sich zu entfernen ist kein Weglaufen - es ist eine der effektivsten Techniken der Emotionsregulation! In der Psychologie nennt man das "Situationsveränderung". Wenn du in einer aufgeheizten Situation bist, kann allein der Ortswechsel deinem Gehirn helfen, vom Kampf-Modus zurück in den Denk-Modus zu schalten. Danach kannst du mit klarem Kopf entscheiden, was du tust.',
+            consequence: 'Sich zu entfernen ist kein Weglaufen - es ist eine der effektivsten Techniken der Emotionsregulation!',
             nextSceneId: 'v3-s3',
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'v3-s2-c4',
+            text: '"Ist doch nur ein Gerücht. Maya soll sich nicht so anstellen."',
+            consequence: 'Ash starrt dich fassungslos an. "Nur ein Gerücht?! Maya weint jeden Tag!" Du hast gerade Mobbing verharmlost. Gerüchte können Leben zerstören - Isolation, Depression, Schulabbruch. Was für dich "nicht so schlimm" klingt, ist für Maya ein täglicher Albtraum. Empathie bedeutet, durch die Augen des Anderen zu sehen - nicht durch deine.',
+            nextSceneId: 'v3-s3',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -460,9 +595,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v3-s3-c3',
             text: 'Leon in die Augen schauen: "Warum machst du das eigentlich, Leon? Was hast du davon?"',
-            consequence: 'Eine mutige und gleichzeitig einfühlsame Frage. Menschen, die andere verletzen, haben oft selbst einen Grund dafür - Unsicherheit, Eifersucht, eigener Schmerz. Das rechtfertigt nichts, aber es zu verstehen kann helfen, den Kreislauf zu durchbrechen. Wer fragt "Warum?", statt nur "Hör auf!", öffnet eine Tür, die Aggression allein nie öffnen würde.',
+            consequence: 'Wer fragt "Warum?", statt nur "Hör auf!", öffnet eine Tür, die Aggression allein nie öffnen würde.',
             nextSceneId: 'v3-s4',
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v3-s3-c4',
+            text: 'Dein Handy rausholen und alles filmen: "Das kommt auf Social Media!"',
+            consequence: 'Ash und Leon drehen sich beide zu dir. "Was machst du da?!", ruft Ash entsetzt. Statt zu helfen, machst du aus dem Schmerz anderer Content. Das ist das Gegenteil von Empathie - es ist Ausbeutung. Leon fühlt sich bloßgestellt, Ash fühlt sich verraten, und Maya? Wird zum Opfer vor einem noch größeren Publikum. Filmen statt Handeln ist feige.',
+            nextSceneId: 'v3-s4',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -489,9 +632,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v3-s4-c3',
             text: 'Ash ansehen und leise sagen: "Siehst du? Unter seiner Gemeinheit steckte auch was anderes."',
-            consequence: 'Du verbindest die Lektion aus Kapitel 2 mit der jetzigen Situation. Nicht nur Ashs Wut hatte einen tieferen Grund - auch Leons Verhalten. Eifersucht, Leistungsdruck, Angst vor Enttäuschung - das sind die wahren Ursachen. Ash erkennt das Muster und versteht zum ersten Mal: Wut als Schutzschild ist nicht sein alleiniges Problem. Es ist menschlich.',
+            consequence: 'Nicht nur Ashs Wut hatte einen tieferen Grund - auch Leons Verhalten. Ash erkennt das Muster.',
             nextSceneId: 'v3-s5',
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'v3-s4-c4',
+            text: '"Ist mir egal, warum Leon das gemacht hat. Er ist einfach ein Idiot."',
+            consequence: 'Ash schaut dich enttäuscht an. "Du klingst wie ich... vor ein paar Wochen." Ouch. Du hast gerade genau das getan, was du von Leon kritisierst: einen Menschen auf sein schlimmstes Verhalten reduziert. "Idiot" zu sagen ist einfach. Verstehen zu wollen ist schwer. Aber nur Verstehen durchbricht Kreisläufe.',
+            nextSceneId: 'v3-s5',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -518,9 +669,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v3-s5-c3',
             text: '"Merk dir die Werkzeuge: Atmen. Ich-Botschaften. Verstehen wollen. Die funktionieren immer."',
-            consequence: 'Du fasst die konkreten Werkzeuge zusammen, die Ash (und du!) heute gelernt habt. Erstens: Atmen (4-4-6), um das Denkhirn einzuschalten. Zweitens: Ich-Botschaften statt Du-Vorwürfe. Drittens: Fragen "Was steckt dahinter?" statt sofort zu urteilen. Diese drei Werkzeuge sind wie ein Feuerlöscher, den du immer dabei haben kannst.',
+            consequence: 'Erstens: Atmen (4-4-6). Zweitens: Ich-Botschaften. Drittens: Fragen "Was steckt dahinter?" Diese drei Werkzeuge sind wie ein Feuerlöscher.',
             nextSceneId: null,
             points: { empathyPoints: 0, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'v3-s5-c4',
+            text: '"Leon ist halt ein Feigling. Typisch Mobber - stark nur in der Gruppe."',
+            consequence: 'Ash schüttelt den Kopf. "Das stimmt vielleicht, aber... hat er sich nicht gerade entschuldigt?" Du hast den Moment der Versöhnung zerstört. Leon hat gerade den schwierigsten Schritt gemacht - zugegeben, dass er falsch lag. Und du machst ihn fertig dafür. So funktioniert keine Konfliktlösung. So entstehen neue Konflikte.',
+            nextSceneId: null,
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       }
@@ -565,9 +724,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v4-s1-c3',
             text: '"Ash, deine Wut ist jetzt RICHTIG. Nutze sie. Aber nutze sie klug."',
-            consequence: 'Du erkennst etwas Entscheidendes: Nicht jede Wut muss beruhigt werden. Manche Wut ist BERECHTIGT. Wut über Ungerechtigkeit, über Mobbing, über Ausgrenzung - diese Wut ist ein moralischer Kompass. Sie sagt dir: "Hier stimmt etwas nicht, und du musst handeln." Der Schlüssel ist nicht, die Wut abzuschalten, sondern sie in konstruktives Handeln umzuwandeln.',
+            consequence: 'Nicht jede Wut muss beruhigt werden. Wut über Ungerechtigkeit ist ein moralischer Kompass.',
             nextSceneId: 'v4-s2',
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'v4-s1-c4',
+            text: '"Lass mal. Lina ist halt anders. Vielleicht sollte sie sich besser anpassen."',
+            consequence: 'Ash tritt einen Schritt zurück und starrt dich an. "Anpassen?! Die wird GEMOBBT!" Du hast gerade dem Opfer die Schuld gegeben - das nennt man "Victim Blaming". Niemand muss sich anpassen, um respektiert zu werden. Mobbing ist IMMER die Schuld der Mobber, nie die des Opfers. Lina hat nichts falsch gemacht, außer sie selbst zu sein.',
+            nextSceneId: 'v4-s2',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -594,9 +761,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v4-s2-c3',
             text: '"Ash hat recht. Wir stehen auf deiner Seite. Ab heute bist du nicht mehr allein."',
-            consequence: 'Worte wie diese können ein Leben verändern. Studien zur Resilienz zeigen: Ein einziger Mensch, der an dich glaubt und zu dir steht, kann den Unterschied machen zwischen "das überstehe ich" und "ich gehe daran kaputt". Für Lina ist dieses Versprechen nicht nur nett - es könnte der Wendepunkt sein.',
+            consequence: 'Ein einziger Mensch, der an dich glaubt und zu dir steht, kann den Unterschied machen.',
             nextSceneId: 'v4-s3',
             points: { empathyPoints: 2, insightPoints: 0, couragePoints: 3 }
+          },
+          {
+            id: 'v4-s2-c4',
+            text: '"Lina, du musst dich wehren! Schlag zurück! Zeig denen, dass du keine Schwächling bist!"',
+            consequence: 'Lina schrumpft noch weiter zusammen. "Zurückschlagen? Ich... ich kann das nicht..." Du hast gerade ein Mobbingopfer unter Druck gesetzt, sich GEWALTSAM zu wehren - obwohl sie sich kaum traut zu sprechen. Das ist keine Hilfe, das ist Druck. Manche Menschen reagieren mit Kampf, andere mit Flucht oder Erstarrung. Alle Reaktionen sind normal. Lina braucht Unterstützung, keinen Befehl.',
+            nextSceneId: 'v4-s3',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -623,9 +798,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v4-s3-c3',
             text: '"Wir holen uns Hilfe von Erwachsenen, wenn nötig. Nicht um zu petzen, sondern weil alle das Recht auf Sicherheit haben."',
-            consequence: 'Sich Hilfe von Erwachsenen zu holen ist KEINE Schwäche und kein Petzen. Es ist ein kluger, mutiger Schritt. Du kannst wütend sein UND dir Hilfe holen. Du kannst für jemanden einstehen UND wissen, dass manche Situationen zu groß für dich allein sind. Das ist reife Selbstbehauptung: Du handelst, wo du kannst, und holst Verstärkung, wo du musst.',
+            consequence: 'Sich Hilfe zu holen ist KEINE Schwäche. Das ist reife Selbstbehauptung.',
             nextSceneId: 'v4-s4',
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'v4-s3-c4',
+            text: '"Tara, warte nur. Wir verbreiten auch Gerüchte über DICH. Mal sehen, wie dir das gefällt!"',
+            consequence: 'Ash packt dich am Arm. "Nein! Dann sind wir genauso schlimm wie sie!" Er hat recht. Rache ist keine Gerechtigkeit - sie ist ein Kreislauf. Wenn du Mobbing mit Mobbing bekämpfst, hast du nicht gewonnen. Du hast nur die Seiten gewechselt. Auge um Auge macht die ganze Welt blind.',
+            nextSceneId: 'v4-s4',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -652,9 +835,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v4-s4-c3',
             text: '"Sieh dir Lina an. Sie lächelt. DAS hast du bewirkt."',
-            consequence: 'Manchmal ist die beste Belohnung nicht der Sieg über den Gegner, sondern das Lächeln desjenigen, für den man eingestanden ist. Ash sieht die direkte Auswirkung seines Handelns: Ein Mensch, der sich wieder gesehen und geschützt fühlt. Das ist stärker als jede Revanche. Deine Wut kann Licht in die Dunkelheit bringen, wenn du sie weise einsetzt.',
+            consequence: 'Das Lächeln eines Menschen, für den du eingestanden bist, ist stärker als jede Revanche.',
             nextSceneId: 'v4-s5',
             points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'v4-s4-c4',
+            text: '"Die werden morgen eh weitermachen. Mobber ändern sich nicht."',
+            consequence: 'Ash sieht dich traurig an. "Wenn das stimmt, warum habe ICH mich dann geändert?" Guter Punkt. Du hast gerade gesagt: Menschen können sich nicht ändern. Aber Ash selbst ist der lebende Beweis, dass das falsch ist. Zynismus ist bequem, aber falsch. Veränderung ist möglich - auch wenn sie nicht immer sofort sichtbar ist.',
+            nextSceneId: 'v4-s5',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -681,9 +872,17 @@ export const volcanoScenarios: Scenario[] = [
           {
             id: 'v4-s5-c3',
             text: '"Die nächste Insel wartet. Aber den Vulkan in dir nimmst du mit - und er wird dir helfen."',
-            consequence: 'Der innere Vulkan verschwindet nicht - und das soll er auch gar nicht. Wut bleibt ein Teil von dir, aber ab jetzt ist sie ein Werkzeug, kein Fluch. Du nimmst von dieser Insel mit: Erstens, die Fähigkeit, deine Körpersignale zu lesen und die Wut frühzeitig zu erkennen. Zweitens, das Wissen, dass unter der Wut oft tiefere Gefühle wie Traurigkeit, Angst oder Hilflosigkeit liegen. Drittens, konkrete Techniken - Atmen, Ich-Botschaften, die Stopp-Frage "Was steckt darunter?" Und viertens, den Mut, für dich selbst und für andere einzustehen - mit Stärke UND Respekt. Das ist die wahre, unzerstörbare Kraft des Vulkans.',
+            consequence: 'Der innere Vulkan verschwindet nicht - und das soll er auch gar nicht. Wut bleibt ein Teil von dir, aber ab jetzt ist sie ein Werkzeug, kein Fluch.',
             nextSceneId: null,
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'v4-s5-c4',
+            text: '"War ganz okay, aber ich glaube nicht, dass sich wirklich was ändert."',
+            consequence: 'Ash sieht dich lange an. "Weißt du, vor ein paar Wochen hätte ich genauso gedacht", sagt er leise. "Aber dann hat jemand an mich geglaubt, auch als ich nicht an mich selbst geglaubt habe." Er schaut zu Lina. "Ich glaube, du hast mehr verändert, als du denkst. Aber nur wenn du es auch glaubst." Dein Zynismus hat Ash nicht gestoppt - er hat seine Überzeugung sogar gestärkt. Aber du hast dir selbst etwas genommen: die Freude daran, einen Unterschied gemacht zu haben.',
+            nextSceneId: null,
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       }

@@ -73,6 +73,15 @@ export const mountainScenarios: Scenario[] = [
             couragePoints: 1,
             nextSceneId: 'm1-s3',
           },
+          {
+            id: 'm1-s2-c3',
+            text: '«Naja, du hast schon recht – es gibt halt Leute, die besonderer sind als andere. So ist das Leben.»',
+            isWrong: true,
+            consequence:
+              'Lenas Gesicht fällt zusammen. «Siehst du? Sogar du denkst das.» Sie zieht sich noch weiter in sich zurück. Das war genau das Falsche: Lenas negative Überzeugung zu bestätigen, hat ihr Selbstbild weiter beschädigt. Jeder Mensch hat einen einzigartigen Wert – und niemand ist «besonderer» als ein anderer. Wenn jemand sich wertlos fühlt, braucht er keine Bestätigung dieser Lüge, sondern jemanden, der ihm hilft, die Wahrheit zu sehen.',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            nextSceneId: 'm1-s3',
+          },
         ],
       },
       {
@@ -111,6 +120,15 @@ export const mountainScenarios: Scenario[] = [
             couragePoints: 3,
             nextSceneId: 'm1-s4',
           },
+          {
+            id: 'm1-s3-c4',
+            text: '«Ja, sie sieht echt perfekt aus. Vielleicht musst du einfach mehr an dir arbeiten, dann siehst du auch so aus.»',
+            isWrong: true,
+            consequence:
+              'Lena nickt traurig. «Du hast recht. Ich bin einfach nicht gut genug.» Ihre Schultern sacken noch tiefer. Das war ein schwerer Fehler: Statt Lena zu helfen, die Vergleichsfalle zu erkennen, hast du sie tiefer hineingestoßen. Du hast bestätigt, dass ihr Wert von ihrem Aussehen abhängt – und dass sie «nicht genug» ist. Niemand muss wie jemand anderes aussehen, um wertvoll zu sein. Vergleiche mit bearbeiteten Fotos sind unfair und zerstörerisch.',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            nextSceneId: 'm1-s4',
+          },
         ],
       },
       {
@@ -137,6 +155,15 @@ export const mountainScenarios: Scenario[] = [
             empathyPoints: 3,
             insightPoints: 3,
             couragePoints: 1,
+            nextSceneId: 'm1-s5',
+          },
+          {
+            id: 'm1-s4-c3',
+            text: '«Naja, Spiegel lügen nicht. Vielleicht solltest du einfach akzeptieren, was du siehst, und das Beste draus machen.»',
+            isWrong: true,
+            consequence:
+              'Lena erstarrt. «Also … siehst du es auch?» Ihr Blick wird leer. Statt ihr zu helfen, den verzerrten Spiegel als das zu erkennen, was er ist – eine Verzerrung – hast du ihr gesagt, sie solle das falsche Bild als Realität akzeptieren. Das ist, als würdest du jemandem mit einer kaputten Brille sagen: «Akzeptiere, dass die Welt verschwommen ist.» Der Spiegel war verzerrt, nicht Lena. Und Gedanken, die uns verletzen, verdienen es, hinterfragt zu werden – nicht akzeptiert.',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
             nextSceneId: 'm1-s5',
           },
         ],
@@ -175,6 +202,15 @@ export const mountainScenarios: Scenario[] = [
             empathyPoints: 2,
             insightPoints: 3,
             couragePoints: 3,
+            nextSceneId: null,
+          },
+          {
+            id: 'm1-s5-c4',
+            text: '«Vielleicht hat die Stimme recht und du solltest einfach härter an dir arbeiten, bis du gut genug bist.»',
+            isWrong: true,
+            consequence:
+              'Lena sackt zusammen. «Ja … vielleicht muss ich einfach besser werden. In allem.» Du hast ihr gerade gesagt, dass sie sich ihren Selbstwert erst verdienen muss – durch Leistung, durch Perfektion, durch «genug» Arbeit. Aber das ist eine Lüge: Niemand muss sich seinen Wert verdienen. Perfektionismus ist kein Heilmittel gegen geringen Selbstwert – er ist Gift. Er sagt: «Du bist nur etwas wert, wenn du fehlerfrei bist.» Und weil niemand fehlerfrei ist, verliert man immer.',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
             nextSceneId: null,
           },
         ],
@@ -228,6 +264,15 @@ export const mountainScenarios: Scenario[] = [
             couragePoints: 1,
             nextSceneId: 'm2-s3',
           },
+          {
+            id: 'm2-s2-c3',
+            text: '«Naja, vielleicht hat er das gesagt, weil du dich nicht genug Mühe gibst mit deinem Aussehen. Hast du mal was anderes probiert?»',
+            isWrong: true,
+            consequence:
+              'Lena wird blass. «Also … es ist meine Schuld?» Ihre Stimme bricht. Du hast gerade dem Opfer die Schuld gegeben. Statt Lena zu unterstützen, hast du bestätigt, dass Mobbing verdient sein kann – wenn man nur «besser» aussehen würde. Das ist grundfalsch: Niemand verdient es, beleidigt zu werden, egal wie er aussieht. Und Aussehen bestimmt nicht den Wert eines Menschen. Diese Antwort hat Lenas Schmerz verdoppelt und ihr gezeigt, dass selbst du auf der Seite des Mobbers stehst.',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            nextSceneId: 'm2-s3',
+          },
         ],
       },
       {
@@ -266,6 +311,15 @@ export const mountainScenarios: Scenario[] = [
             couragePoints: 1,
             nextSceneId: 'm2-s4',
           },
+          {
+            id: 'm2-s3-c4',
+            text: '«Ein Wort hat so viel Macht, weil es die Wahrheit trifft. Wenn es nicht stimmen würde, würde es nicht so wehtun.»',
+            isWrong: true,
+            consequence:
+              'Lena erstarrt. «Also … es stimmt? Es stimmt wirklich?» Ihre Augen füllen sich mit Tränen. Du hast gerade eine furchtbare Logik bestätigt: dass Schmerz ein Beweis für Wahrheit ist. Aber das stimmt nicht. Worte verletzen, weil wir Menschen soziale Wesen sind – nicht weil die Worte wahr sind. Ein Tritt gegen das Schienbein tut auch weh, ohne dass der Tritt «recht hat». Lenas Schmerz ist real, aber der Inhalt der Beleidigung ist es nicht. Diese Antwort hat den Stein tiefer in ihr Herz gedrückt.',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            nextSceneId: 'm2-s4',
+          },
         ],
       },
       {
@@ -294,6 +348,15 @@ export const mountainScenarios: Scenario[] = [
             couragePoints: 2,
             nextSceneId: 'm2-s5',
           },
+          {
+            id: 'm2-s4-c3',
+            text: '«Behalte den Stein lieber. Dann vergisst du nie, was andere wirklich über dich denken, und du kannst dich verbessern.»',
+            isWrong: true,
+            consequence:
+              'Lena umklammert den Stein fester. «Du hast recht. Ich darf das nicht vergessen. Ich muss mich verbessern.» Ihre Knöchel werden weiß. Das war das Schlimmste, was du sagen konntest: Du hast Lena geraten, den Schmerz festzuhalten und als Motivation zu benutzen. Aber Schmerz ist kein guter Lehrer – er ist ein guter Zerstörer. Sich an Beleidigungen zu klammern, um «besser zu werden», zementiert die Lüge, dass man nicht gut genug ist. Lena braucht nicht den Stein eines Mobbers als Antrieb – sie braucht die Freiheit, ihn loszulassen.',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            nextSceneId: 'm2-s5',
+          },
         ],
       },
       {
@@ -320,6 +383,15 @@ export const mountainScenarios: Scenario[] = [
             empathyPoints: 3,
             insightPoints: 2,
             couragePoints: 4,
+            nextSceneId: null,
+          },
+          {
+            id: 'm2-s5-c3',
+            text: '«Hör auf zu jammern – andere haben echte Probleme. Sei froh, dass du nicht schlimmer dran bist.»',
+            isWrong: true,
+            consequence:
+              'Lena verstummt. Ihre Augen werden glasig, aber sie schluckt die Tränen herunter. «Du hast recht. Ich bin undankbar. Andere haben es schlimmer.» Sie zieht die Kapuze wieder über den Kopf und verschließt sich komplett. Das war toxische Relativierung: Lenas Schmerz ist real, auch wenn andere Menschen andere Probleme haben. Jemandem zu sagen «andere haben es schlimmer» hilft nicht – es sagt nur: «Deine Gefühle sind nicht wichtig genug.» Jeder Schmerz verdient es, gehört zu werden, egal wie groß oder klein er im Vergleich erscheint.',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
             nextSceneId: null,
           },
         ],
@@ -367,6 +439,15 @@ export const mountainScenarios: Scenario[] = [
             couragePoints: 3,
             nextSceneId: 'm3-s2',
           },
+          {
+            id: 'm3-s1-c3',
+            text: '«Ich weiß nicht – das Schild sagt ‹nur für Mutige›. Bist du sicher, dass du das schaffst? Ist das nicht ein bisschen zu viel für dich?»',
+            isWrong: true,
+            consequence:
+              'Lena tritt einen Schritt zurück. «Du hast recht. Was habe ich mir dabei gedacht? Ich schaffe so etwas doch nie.» Der Funke in ihren Augen erlischt. Du hast gerade Lenas zaghaften Mut im Keim erstickt. Statt sie zu ermutigen, hast du ihre Zweifel bestätigt und ihr gesagt, dass sie nicht fähig genug ist. Mut wächst, wenn jemand an uns glaubt – und stirbt, wenn jemand unsere Ängste bestätigt. Lena brauchte jemanden, der sagt «Du kannst das», nicht jemanden, der sagt «Bist du sicher?».',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            nextSceneId: 'm3-s2',
+          },
         ],
       },
       {
@@ -393,6 +474,15 @@ export const mountainScenarios: Scenario[] = [
             empathyPoints: 1,
             insightPoints: 3,
             couragePoints: 4,
+            nextSceneId: 'm3-s3',
+          },
+          {
+            id: 'm3-s2-c3',
+            text: '«Siehst du? Ich hab mir schon gedacht, dass das passiert. Manche Leute sind halt nicht fürs Klettern gemacht.»',
+            isWrong: true,
+            consequence:
+              'Lena lässt den Fels los und setzt sich auf den Boden. «Stimmt. Ich bin halt nicht fürs Klettern gemacht. Ich bin für gar nichts gemacht.» Die Energie, die sie gerade noch hatte, ist verschwunden. Das war ein klassisches Fixed Mindset – die Überzeugung, dass Fähigkeiten angeboren und unveränderlich sind. Statt Lena zu zeigen, dass Fehler zum Lernen gehören, hast du bestätigt, dass ihr Abrutschen ein Beweis für ihre Unfähigkeit ist. Aber kein Mensch wird als Kletterer geboren. Man wird es durch Übung, Geduld und den Mut, es nochmal zu versuchen.',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
             nextSceneId: 'm3-s3',
           },
         ],

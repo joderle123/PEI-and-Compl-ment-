@@ -130,7 +130,23 @@ const CONSEQUENCE_POOL: Record<string, string[]> = {
     'Du hast alle Seiten abgewogen. Das zeigt echte Reife.',
     'Balance ist nicht Mittelma\u00DF \u2013 es ist die schwerste Kunst.',
   ],
+  wrong: [
+    'Das war nicht die beste Entscheidung. Dein Gegen\u00FCber zieht sich zur\u00FCck.',
+    'Hmm... das hat die Situation eher verschlechtert. Aber du kannst daraus lernen.',
+    'Das hat wehgetan. Worte haben Macht \u2013 manchmal mehr als wir denken.',
+    'Die Stimmung kippt. Vielleicht h\u00E4tte es einen besseren Weg gegeben.',
+    'Du sp\u00FCrst sofort: Das war falsch. Aber Fehler sind auch Lehrer.',
+    'Das Vertrauen ist angeknackst. N\u00E4chstes Mal genauer nachdenken.',
+  ],
 };
+
+/** Determine if a choice is "wrong" (0 total points or explicitly marked) */
+function isWrongChoice(choice: any): boolean {
+  if (choice.isWrong) return true;
+  const pts = choice.points || choice;
+  const total = (pts.empathyPoints || 0) + (pts.insightPoints || 0) + (pts.couragePoints || 0);
+  return total <= 0;
+}
 
 function getConsequenceText(choice: any): string {
   if (choice.consequence) return choice.consequence;
@@ -139,8 +155,9 @@ function getConsequenceText(choice: any): string {
   const ins = pts.insightPoints || 0;
   const cou = pts.couragePoints || 0;
   const total = emp + ins + cou;
-  if (total === 0) return '';
   const hash = (choice.id || '').split('').reduce((a: number, c: string) => a + c.charCodeAt(0), 0);
+  // Wrong choices get negative feedback
+  if (total <= 0) return CONSEQUENCE_POOL.wrong[hash % CONSEQUENCE_POOL.wrong.length];
   const max = Math.max(emp, ins, cou);
   if (emp === ins && ins === cou) return CONSEQUENCE_POOL.balanced[hash % CONSEQUENCE_POOL.balanced.length];
   if (max === emp) return CONSEQUENCE_POOL.empathy[hash % CONSEQUENCE_POOL.empathy.length];
@@ -151,6 +168,12 @@ function getConsequenceText(choice: any): string {
 function getSkillToasts(choice: any): SkillToast[] {
   const pts = choice.points || choice;
   const toasts: SkillToast[] = [];
+  const total = (pts.empathyPoints || 0) + (pts.insightPoints || 0) + (pts.couragePoints || 0);
+  // Wrong choice: show warning toast
+  if (total <= 0) {
+    toasts.push({ id: 'wrong', icon: '\u26A0\uFE0F', label: 'Fehlgriff', color: '#e74c3c' });
+    return toasts;
+  }
   if ((pts.empathyPoints || 0) > 0) toasts.push({ id: 'emp', icon: '\u{1F497}', label: 'Empathie', color: '#fd79a8' });
   if ((pts.insightPoints || 0) > 0) toasts.push({ id: 'ins', icon: '\u{1F4A1}', label: 'Einsicht', color: '#a29bfe' });
   if ((pts.couragePoints || 0) > 0) toasts.push({ id: 'cou', icon: '\u{1F981}', label: 'Mut', color: '#ffa502' });
@@ -469,6 +492,8 @@ export default function ScenarioPlayer() {
     (choice: any) => {
       setAwaitingChoice(false);
 
+      const wrong = isWrongChoice(choice);
+
       // Add player's choice to chat
       const playerMsg: ChatMessage = {
         id: `msg-${++msgCounter.current}`,
@@ -479,30 +504,34 @@ export default function ScenarioPlayer() {
 
       // Calculate points
       const pts = choice.points || choice;
-      const empathy = pts.empathyPoints || 0;
-      const insight = pts.insightPoints || 0;
-      const courage = pts.couragePoints || 0;
+      const empathy = Math.max(0, pts.empathyPoints || 0);
+      const insight = Math.max(0, pts.insightPoints || 0);
+      const courage = Math.max(0, pts.couragePoints || 0);
       const points = empathy + insight + courage;
-      const xp = points * 5 + 10;
-      setEarnedXP((prev) => prev + xp);
-      addXP(xp);
 
-      if (points > 0) {
-        (useGameStore.getState() as any).increaseCombo?.();
-      } else {
+      if (wrong) {
+        // Wrong choice: 0 XP, reset combo, no skill points
         (useGameStore.getState() as any).resetCombo?.();
+      } else {
+        // Good choice: normal XP reward
+        const xp = points * 5 + 10;
+        setEarnedXP((prev) => prev + xp);
+        addXP(xp);
+        if (points > 0) {
+          (useGameStore.getState() as any).increaseCombo?.();
+        }
+        (useGameStore.getState() as any).addSkillPoints?.(empathy, insight, courage);
       }
-      (useGameStore.getState() as any).addSkillPoints?.(empathy, insight, courage);
 
-      // Show subtle skill toasts
+      // Show skill toasts (warning for wrong, positive for good)
       const toasts = getSkillToasts(choice);
       if (toasts.length > 0) {
         setActiveToasts(toasts);
-        setTimeout(() => setActiveToasts([]), 2500);
+        setTimeout(() => setActiveToasts([]), wrong ? 3500 : 2500);
       }
 
-      // Wisdom card chance
-      if (Math.random() < 0.3) {
+      // Wisdom card chance - only on good choices
+      if (!wrong && Math.random() < 0.3) {
         const wisdomCards = getIslandData(islandId).wisdomCards;
         if (wisdomCards.length > 0) {
           const randomCard = wisdomCards[Math.floor(Math.random() * wisdomCards.length)];
@@ -511,19 +540,20 @@ export default function ScenarioPlayer() {
         }
       }
 
-      // Add consequence as NPC response (after a beat)
+      // Add consequence as response (after a beat)
       const consequenceText = getConsequenceText(choice);
       if (consequenceText) {
         setTimeout(() => {
           const consequenceMsg: ChatMessage = {
             id: `msg-${++msgCounter.current}`,
-            type: 'thought',
-            text: consequenceText,
+            // Wrong choices show as 'warning' type, good as 'thought'
+            type: wrong ? 'narrator' : 'thought',
+            text: wrong ? `\u26A0\uFE0F ${consequenceText}` : consequenceText,
           };
           setChatLog((prev) => [...prev, consequenceMsg]);
 
           // Then show continue prompt
-          setTimeout(() => setAwaitingContinue(true), 500);
+          setTimeout(() => setAwaitingContinue(true), wrong ? 800 : 500);
         }, 800);
       } else {
         setTimeout(() => setAwaitingContinue(true), 500);

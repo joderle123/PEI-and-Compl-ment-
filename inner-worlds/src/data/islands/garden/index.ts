@@ -95,6 +95,19 @@ export const gardenScenarios: Scenario[] = [
               'Manchmal braucht es nur einen Menschen, der hinsieht.',
             nextSceneId: 'g1-s2',
             points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'g1-s1-c4',
+            text:
+              'Weitergehen und so tun, als haettest du nichts gehoert. ' +
+              'Ihr Streit geht dich nichts an.',
+            consequence:
+              'Du hast dich entschieden, wegzuschauen. Mia und Tom bleiben ' +
+              'mit ihrem Konflikt allein. Gleichgueltigkeit ist das Gegenteil ' +
+              'von Empathie – und manchmal schadet Nichtstun genauso wie falsches Handeln.',
+            isWrong: true,
+            nextSceneId: 'g1-s2',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -148,6 +161,20 @@ export const gardenScenarios: Scenario[] = [
               'verteidigen zu muessen.',
             nextSceneId: 'g1-s3',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'g1-s2-c4',
+            text:
+              '"Mia, Tom hat recht – es war doch nur ein Witz. Du bist ' +
+              'wirklich zu empfindlich. Nimm nicht alles so persoenlich."',
+            consequence:
+              'Du hast Mias Gefuehle abgewertet und Tom in seinem Verhalten ' +
+              'bestaerkt. Mia fuehlt sich jetzt noch einsamer und unverstanden. ' +
+              'Wenn jemand dir sagt, dass etwas wehtut, ist die Antwort nie: ' +
+              '"Du uebertreibst."',
+            isWrong: true,
+            nextSceneId: 'g1-s3',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -201,6 +228,20 @@ export const gardenScenarios: Scenario[] = [
               'verstanden hat? Wissen bringt Verantwortung.',
             nextSceneId: 'g1-s4',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'g1-s3-c4',
+            text:
+              '"Tom, dein Vater hat recht. Jungs sollten nicht so empfindlich ' +
+              'sein. Stell dich nicht so an – und Mia sollte das auch lernen."',
+            consequence:
+              'Du hast genau das Muster verstaerkt, unter dem Tom leidet. Anstatt ' +
+              'ihm zu helfen, den Kreislauf zu durchbrechen, hast du ihn tiefer ' +
+              'hineingedrueckt. Gefuehle zu unterdruecken ist keine Staerke – ' +
+              'es ist der Grund, warum Tom andere verletzt.',
+            isWrong: true,
+            nextSceneId: 'g1-s4',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -253,6 +294,19 @@ export const gardenScenarios: Scenario[] = [
               'braucht Zeit.',
             nextSceneId: 'g1-s5',
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'g1-s4-c4',
+            text:
+              '"Das aendert doch nichts. Naechste Woche streitet ihr euch wieder. ' +
+              'Ist doch immer das Gleiche mit euch."',
+            consequence:
+              'Du hast den zaghaften Versoehnungsversuch zerstoert. Mia und Tom ' +
+              'haben gerade Mut gezeigt, und du hast ihn kleingemacht. Wer Fortschritt ' +
+              'entwertet, nimmt anderen die Motivation, es weiter zu versuchen.',
+            isWrong: true,
+            nextSceneId: 'g1-s5',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -305,6 +359,20 @@ export const gardenScenarios: Scenario[] = [
               'sondern auch ueber dich selbst.',
             nextSceneId: null,
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'g1-s5-c4',
+            text:
+              '"Ehrlich gesagt war das alles uebertrieben. Manche Leute sind ' +
+              'halt zu empfindlich – das ist deren Problem, nicht meins."',
+            consequence:
+              'Du hast die gesamte Lektion verpasst. Empathie beginnt damit, ' +
+              'die Gefuehle anderer ernst zu nehmen – auch wenn du sie nicht ' +
+              'teilst. Wer die Gefuehle anderer als "uebertrieben" abstempelt, ' +
+              'baut Mauern statt Bruecken.',
+            isWrong: true,
+            nextSceneId: null,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       }
@@ -373,6 +441,20 @@ export const gardenScenarios: Scenario[] = [
               'hat immer eine Geschichte.',
             nextSceneId: 'g2-s2',
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'g2-s1-c4',
+            text:
+              '"Tom hat Mia zum Weinen gebracht. Der verdient es, allein zu ' +
+              'sitzen. Soll er mal sehen, wie sich das anfuehlt."',
+            consequence:
+              'Du hast entschieden, dass Tom bestraft werden soll, statt ' +
+              'verstanden zu werden. Rache und Schadenfreude fuehlen sich ' +
+              'kurz gut an, aber sie loesen kein Problem. Wer verletzt, ' +
+              'braucht vielleicht selbst Hilfe – auch wenn das schwer zu akzeptieren ist.',
+            isWrong: true,
+            nextSceneId: 'g2-s2',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -426,6 +508,21 @@ export const gardenScenarios: Scenario[] = [
               'Meinung zu finden, unabhaengig von seinem Vater.',
             nextSceneId: 'g2-s3',
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'g2-s2-c4',
+            text:
+              '"Echt? Dein Vater sagt so was? Das erzaehl ich den anderen – ' +
+              'die muessen wissen, was bei dir zu Hause los ist."',
+            consequence:
+              'Tom hat dir etwas Persoenliches anvertraut – und du willst es ' +
+              'weitererzaehlen. Das ist Vertrauensbruch in seiner schlimmsten ' +
+              'Form. Wer Geheimnisse anderer weitergibt, zerstoert nicht nur ' +
+              'eine Freundschaft, sondern sorgt dafuer, dass sich die Person ' +
+              'nie wieder jemandem oeffnet.',
+            isWrong: true,
+            nextSceneId: 'g2-s3',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -479,6 +576,20 @@ export const gardenScenarios: Scenario[] = [
               'entschuldigen. Verstehen ist nicht Zustimmen.',
             nextSceneId: 'g2-s4',
             points: { empathyPoints: 3, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'g2-s3-c4',
+            text:
+              '"Dein Vater hat vielleicht recht. Zu viele Gefuehle zeigen ' +
+              'macht dich nur angreifbar. Bleib lieber hart."',
+            consequence:
+              'Du hast das schaedliche Muster bestaerkt, das Tom gerade ' +
+              'durchbrechen wollte. Er hat dir seinen inneren Kampf gezeigt, ' +
+              'und du hast ihn zurueck in den Kaefig gedrueckt. Gefuehle zu ' +
+              'unterdruecken fuehrt zu Einsamkeit – genau das, wovor Tom Angst hat.',
+            isWrong: true,
+            nextSceneId: 'g2-s4',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -532,6 +643,20 @@ export const gardenScenarios: Scenario[] = [
               'ist wichtiger als Formulierung.',
             nextSceneId: 'g2-s5',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'g2-s4-c4',
+            text:
+              '"Sag Mia einfach, was sie hoeren will, dann hast du Ruhe. ' +
+              'Ob du es ehrlich meinst, merkt sie eh nicht."',
+            consequence:
+              'Du hast Tom geraten, Mia zu manipulieren. Eine falsche ' +
+              'Entschuldigung ist schlimmer als keine – weil sie Vertrauen ' +
+              'vortaeuscht, das nicht da ist. Wenn Mia das durchschaut, und das ' +
+              'wird sie, ist die Freundschaft endgueltig zerstoert.',
+            isWrong: true,
+            nextSceneId: 'g2-s5',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -587,6 +712,20 @@ export const gardenScenarios: Scenario[] = [
               'zu verlassen, nicht darin, sie fortzusetzen.',
             nextSceneId: null,
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'g2-s5-c4',
+            text:
+              '"Jetzt weiss ich, wie Leute ticken, die hart zu anderen sind. ' +
+              'Das kann ich nutzen, um sie zu durchschauen und zu kontrollieren."',
+            consequence:
+              'Du hast Empathie als Waffe verstanden statt als Verbindung. ' +
+              'Wer das Wissen ueber die Verletzlichkeit anderer nutzt, um sie ' +
+              'zu manipulieren, hat die Lektion komplett verfehlt. Verstehen ' +
+              'soll heilen – nicht verletzen.',
+            isWrong: true,
+            nextSceneId: null,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       }
@@ -657,6 +796,21 @@ export const gardenScenarios: Scenario[] = [
               'Das ist das Herzstück der gewaltfreien Kommunikation.',
             nextSceneId: 'g3-s2',
             points: { empathyPoints: 2, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'g3-s1-c4',
+            text:
+              '"Hoert alle auf mich! Meine Idee ist die beste, und wer das ' +
+              'nicht kapiert, kann ja gehen."',
+            consequence:
+              'Du hast versucht, dich mit Dominanz durchzusetzen – genau das ' +
+              'Verhalten, das den Streit verschlimmert. Wer andere zum Schweigen ' +
+              'bringt, gewinnt vielleicht die Diskussion, aber verliert das ' +
+              'Vertrauen aller. Echte Zusammenarbeit entsteht durch Zuhoeren, ' +
+              'nicht durch Befehlen.',
+            isWrong: true,
+            nextSceneId: 'g3-s2',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -710,6 +864,21 @@ export const gardenScenarios: Scenario[] = [
               'ein. Ein konkreter Schritt.',
             nextSceneId: 'g3-s3',
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'g3-s2-c4',
+            text:
+              '"Nuri redet sowieso nie – also brauchen wir seine Meinung ' +
+              'auch nicht. Wer nichts sagt, hat wohl nichts beizutragen."',
+            consequence:
+              'Du hast Nuri ausgeschlossen und ihm das Gefuehl gegeben, ' +
+              'unsichtbar und unwichtig zu sein. Stille Menschen haben oft ' +
+              'die besten Ideen – sie brauchen nur jemanden, der ihnen ' +
+              'Raum gibt. Ausgrenzung ist eine der schaedlichsten Formen ' +
+              'sozialen Verhaltens.',
+            isWrong: true,
+            nextSceneId: 'g3-s3',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },

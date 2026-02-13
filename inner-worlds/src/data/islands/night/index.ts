@@ -78,6 +78,14 @@ export const nightScenarios: Scenario[] = [
             consequence: 'Du fragst um Erlaubnis – das zeigt Respekt fuer ihren Raum.',
             nextSceneId: 'n1-s2',
             points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'n1-s1-c4',
+            text: '"Ach, stell dich nicht so an. Jeder hat mal Stress – einfach nicht drueber nachdenken!"',
+            consequence: 'Yuki zieht sich zurueck. Ihre Sorgen werden nicht weniger – aber jetzt traut sie sich nicht mehr, darueber zu reden. Gefuehle kleinzureden macht sie nur groesser.',
+            nextSceneId: 'n1-s2',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -107,6 +115,14 @@ export const nightScenarios: Scenario[] = [
             consequence: 'Yuki blinzelt ueberrascht. Der Gedanke, dass sie die Gedanken nicht stoppen muss, ist neu fuer sie.',
             nextSceneId: 'n1-s3',
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'n1-s2-c4',
+            text: '"Leg dich einfach hin und denk an was Schoenes. So schwer kann das doch nicht sein."',
+            consequence: 'Yuki fuehlt sich missverstanden. Wenn es so einfach waere, haette sie es laengst gemacht. Solche Ratschlaege zeigen, dass man das Problem nicht ernst nimmt.',
+            nextSceneId: 'n1-s3',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -136,6 +152,14 @@ export const nightScenarios: Scenario[] = [
             consequence: 'Gemeinsam teilt ihr die Bilder im Wasser in zwei Gruppen. Die Sorgen, die Yuki beeinflussen kann, werden weniger bedrohlich.',
             nextSceneId: 'n1-s4',
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'n1-s3-c4',
+            text: '"Sorgen sind total ueberfluessig. Einfach ignorieren und ablenken, dann gehen die schon weg."',
+            consequence: 'Yuki versucht, ihre Sorgen zu unterdruecken. Aber verdraengte Gedanken kommen immer staerker zurueck – wie ein Wasserball, den man unter Wasser drueckt.',
+            nextSceneId: 'n1-s4',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -165,6 +189,14 @@ export const nightScenarios: Scenario[] = [
             consequence: 'Yuki nickt langsam. Die Verbindung zwischen Selbstwert und Gedankenfreiheit leuchtet ihr ein.',
             nextSceneId: 'n1-s5',
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'n1-s4-c4',
+            text: '"Gedanken sind egal – einfach TikTok anmachen und ablenken, dann wird das schon."',
+            consequence: 'Yuki greift zum Handy. Die Gedanken werden kurz leiser, aber die Bildschirmzeit macht die Schlafprobleme noch schlimmer. Ablenkung ist keine Loesung – sie ist Aufschub.',
+            nextSceneId: 'n1-s5',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -194,6 +226,14 @@ export const nightScenarios: Scenario[] = [
             consequence: 'Yuki lacht leise – das erste Mal seit langem. Es klingt wie Hoffnung.',
             nextSceneId: null,
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'n1-s5-c4',
+            text: '"Siehst du, war doch gar nicht so schlimm. Du hast einfach uebertrieben mit deinen Sorgen."',
+            consequence: 'Yukis Laecheln verschwindet. Ihre Erleichterung wird von dem Gefuehl ueberdeckt, dass ihre Gefuehle unwichtig sind. Gefuehle herunterspielen ist das Gegenteil von Achtsamkeit.',
+            nextSceneId: null,
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       }
@@ -239,6 +279,14 @@ export const nightScenarios: Scenario[] = [
             consequence: 'Yuki starrt dich an. "Schmerzmittel... ja. Genau so fuehlt es sich an." Niemand hat es bisher so beschrieben.',
             nextSceneId: 'n2-s2',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'n2-s1-c4',
+            text: '"6 Stunden? Das ist doch normal heutzutage. Ich bin noch laenger am Handy – mach dir keinen Kopf!"',
+            consequence: 'Yuki fuehlt sich kurz besser – aber das Problem bleibt. Nur weil etwas verbreitet ist, heisst es nicht, dass es gesund ist. Probleme zu normalisieren verhindert Veraenderung.',
+            nextSceneId: 'n2-s2',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -268,6 +316,14 @@ export const nightScenarios: Scenario[] = [
             consequence: 'Yuki erinnert sich an ihre eigene Unsicherheit. Vielleicht fuettert sie sie jeden Abend, ohne es zu merken.',
             nextSceneId: 'n2-s3',
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'n2-s2-c4',
+            text: '"Die Leute auf Insta haben halt einfach ein besseres Leben. So ist das eben – manche haben mehr Glueck."',
+            consequence: 'Yuki fuehlt sich noch kleiner. Der Vergleich mit inszenierten Bildern frisst ihr Selbstwertgefuehl auf. Soziale Medien zeigen nicht die Realitaet – nur die Fassade.',
+            nextSceneId: 'n2-s3',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -297,6 +353,14 @@ export const nightScenarios: Scenario[] = [
             consequence: 'Yuki denkt nach. "Wahrscheinlich nicht. Die meisten Chats vergesse ich sowieso am naechsten Tag." Die Erkenntnis ist befreiend.',
             nextSceneId: 'n2-s4',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'n2-s3-c4',
+            text: '"Du MUSST immer online sein, sonst verpasst du wirklich alles und deine Freunde vergessen dich!"',
+            consequence: 'Yukis Angst wird groesser. Die FOMO-Spirale dreht sich schneller und sie greift panisch zum Handy zurueck. Angst zu schueren ist das Gegenteil von Hilfe.',
+            nextSceneId: 'n2-s4',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -326,6 +390,14 @@ export const nightScenarios: Scenario[] = [
             consequence: 'Yukis Augen leuchten. Die Idee, die Kontrolle zurueckzunehmen, gibt ihr Kraft.',
             nextSceneId: 'n2-s5',
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'n2-s4-c4',
+            text: '"Installier doch noch mehr Apps – es gibt bestimmt eine App, die dein Handyproblem loest!"',
+            consequence: 'Noch mehr Bildschirmzeit als Loesung fuer zu viel Bildschirmzeit? Das ist wie Feuer mit Benzin loeschen. Die Loesung liegt nicht im Bildschirm, sondern ausserhalb davon.',
+            nextSceneId: 'n2-s5',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },

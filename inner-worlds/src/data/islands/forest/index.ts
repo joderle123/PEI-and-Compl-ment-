@@ -217,6 +217,14 @@ export const forestScenarios: Scenario[] = [
             consequence: 'Du zeigst Mut und Empathie zugleich. Gemeinsam Angst zu begegnen macht sie kleiner.',
             nextSceneId: 'f1-s2',
             points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'f1-s1-c4',
+            text: '"Stell dich nicht so an, Finn. Das sind nur ein paar Geräusche. Nur Feiglinge haben vor so was Angst."',
+            consequence: 'Du beschämst Finn für seine Angst und nennst ihn indirekt einen Feigling. Das ist verletzend und falsch. Angst vor unbekannten Geräuschen im dunklen Wald ist eine völlig normale Reaktion. Jemanden dafür zu beschämen macht die Angst nicht kleiner, sondern sorgt dafür, dass die Person sich zusätzlich schämt und ihre Gefühle versteckt.',
+            isWrong: true,
+            nextSceneId: 'f1-s2',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -246,6 +254,14 @@ export const forestScenarios: Scenario[] = [
             consequence: 'Manchmal braucht jemand mit Angst keine Erklärung, sondern einfach das Gefühl, nicht allein zu sein. Deine Nähe hilft Finns Nervensystem, sich zu beruhigen.',
             nextSceneId: 'f1-s3',
             points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'f1-s2-c4',
+            text: '"Komm schon, reiß dich zusammen! Was ist los mit dir? Das ist doch total lächerlich."',
+            consequence: 'Du sagst Finn, er soll sich zusammenreißen. Aber das kann er nicht, denn sein Körper ist gerade im Freeze-Modus, einer automatischen Schutzreaktion. Niemand kann sich einfach zusammenreißen, wenn das Nervensystem auf Alarm geschaltet hat. Deine Worte machen Finn nur noch hilfloser und geben ihm das Gefühl, dass etwas mit ihm nicht stimmt.',
+            isWrong: true,
+            nextSceneId: 'f1-s3',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -275,6 +291,14 @@ export const forestScenarios: Scenario[] = [
             consequence: 'Richtig erklärt. Adrenalin sorgt dafür, dass dein Herz schneller pumpt, deine Muskeln sich anspannen und deine Sinne schärfer werden. Das war für unsere Vorfahren überlebenswichtig. Heute löst der Körper dieselbe Reaktion aus, auch wenn die Gefahr nur ein Reh ist.',
             nextSceneId: 'f1-s4',
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f1-s3-c4',
+            text: '"Wegen einem Reh? Das ist ja peinlich. Ich hätte nicht mal gezuckt."',
+            consequence: 'Du machst dich über Finns Reaktion lustig und prahlst damit, dass du selbst keine Angst gehabt hättest. Das ist toxische Tapferkeit. Jeder Mensch hat eine Angstreaktion, und sie für ein Reh zu beschämen ist respektlos. Finn fühlt sich jetzt noch schlechter und wird in Zukunft seine Angst verstecken statt sie zu verstehen.',
+            isWrong: true,
+            nextSceneId: 'f1-s4',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -304,6 +328,14 @@ export const forestScenarios: Scenario[] = [
             consequence: 'Stark gesagt. In unserer Gesellschaft tun viele so, als hätten sie keine Angst. Aber Angst zu verstecken macht sie nicht kleiner. Im Gegenteil: Wer Angst zugeben kann, kann sie auch besser verstehen und damit umgehen.',
             nextSceneId: 'f1-s5',
             points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'f1-s4-c4',
+            text: '"Naja, die meisten Leute haben das nicht so schlimm. Vielleicht stimmt wirklich was nicht mit dir."',
+            consequence: 'Du bestätigst Finns schlimmste Befürchtung: dass etwas mit ihm kaputt ist. Das ist falsch und schädlich. Angst ist eine völlig normale menschliche Emotion, die jeder Mensch hat. Finn das Gefühl zu geben, er sei anders oder defekt, verstärkt seine Scham und macht es ihm noch schwerer, Hilfe zu suchen oder offen über seine Ängste zu sprechen.',
+            isWrong: true,
+            nextSceneId: 'f1-s5',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -326,6 +358,14 @@ export const forestScenarios: Scenario[] = [
             consequence: 'Finn nickt nachdenklich. Ihr geht zusammen weiter. Der Wald ist immer noch dunkel, aber Finn geht mit festeren Schritten. Er hat heute etwas Wichtiges gelernt: Angst ist kein Defekt. Sie ist ein Teil von ihm, der gute Absichten hat, aber manchmal übertreibt.',
             nextSceneId: null,
             points: { empathyPoints: 2, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'f1-s5-c3',
+            text: '"Na endlich. War doch gar nicht so schwer. Ich weiß nicht, warum du so ein Drama daraus gemacht hast."',
+            consequence: 'Du tust so, als wäre Finns Angst übertrieben und unwichtig gewesen. Das entwertet alles, was er gerade durchgemacht und gelernt hat. Angst ist kein Drama, und jemanden dafür kleinzumachen, dass er ehrlich mit seinen Gefühlen war, zerstört Vertrauen. Finn wird sich beim nächsten Mal zweimal überlegen, ob er sich jemandem anvertraut.',
+            isWrong: true,
+            nextSceneId: null,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       }
@@ -369,6 +409,14 @@ export const forestScenarios: Scenario[] = [
             consequence: 'Gut, dass du das sagst. Die Angst vor öffentlichem Sprechen ist eine der häufigsten Ängste weltweit. Zu wissen, dass man nicht allein ist, nimmt der Scham etwas von ihrer Kraft.',
             nextSceneId: 'f2-s2',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'f2-s1-c4',
+            text: '"Ein Referat? Ernsthaft? Das ist doch nichts Besonderes. Einfach hinstellen und reden, fertig."',
+            consequence: 'Du tust so, als wäre Finns Angst lächerlich und die Lösung ganz einfach. Aber für jemanden mit Redeangst ist ein Referat alles andere als einfach. Deine Worte zeigen null Verständnis und geben Finn das Gefühl, dass sein Problem nicht ernst genommen wird. So verschließt er sich und wird seine Angst in Zukunft für sich behalten.',
+            isWrong: true,
+            nextSceneId: 'f2-s2',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -398,6 +446,14 @@ export const forestScenarios: Scenario[] = [
             consequence: 'Ein treffendes Bild. Angst, die sich ausbreitet, nimmt dir Stück für Stück deine Freiheit. Erst ein Referat, dann die Meldung im Unterricht, dann die Kantine. Der Raum, in dem du dich frei bewegen kannst, wird kleiner. Aber das Gute ist: Dieser Prozess ist umkehrbar. Jeder kleine mutige Schritt holt dir ein Stück Raum zurück.',
             nextSceneId: 'f2-s3',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'f2-s2-c4',
+            text: '"Du übertreibst. In der Kantine bestellen kann doch jeder. Hör einfach auf, so viel nachzudenken."',
+            consequence: 'Du vereinfachst Finns Problem und sagst ihm, er soll einfach aufhören, Angst zu haben. Das ist so, als würdest du jemandem mit Fieber sagen: Hör auf, krank zu sein. Angst ist keine Entscheidung, die man einfach abstellen kann. Deine Worte zeigen, dass du die Angstspirale nicht verstehst, und Finn fühlt sich noch einsamer mit seinem Problem.',
+            isWrong: true,
+            nextSceneId: 'f2-s3',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -427,6 +483,14 @@ export const forestScenarios: Scenario[] = [
             consequence: 'Manchmal ist das Wichtigste nicht, die Angst sofort zu lösen, sondern dem Menschen das Gefühl zu geben, dass er sich nicht schämen muss. Finns Offenheit ist tatsächlich ein Akt des Muts, auch wenn er sich nicht so anfühlt.',
             nextSceneId: 'f2-s4',
             points: { empathyPoints: 3, insightPoints: 1, couragePoints: 1 }
+          },
+          {
+            id: 'f2-s3-c4',
+            text: '"Auf der Toilette essen? Das ist echt seltsam. Kein Wunder, dass die anderen komisch gucken."',
+            consequence: 'Du beschämst Finn für sein Vermeidungsverhalten, anstatt zu verstehen, warum er es tut. Auf der Toilette zu essen ist ein Zeichen dafür, wie verzweifelt Finn ist, nicht dafür, dass er seltsam ist. Deine Worte bestätigen genau die Angst, die ihn dazu gebracht hat: dass andere ihn für komisch halten. Du machst alles schlimmer.',
+            isWrong: true,
+            nextSceneId: 'f2-s4',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -456,6 +520,14 @@ export const forestScenarios: Scenario[] = [
             consequence: 'Das ist die Angstleiter, ein bewährtes Werkzeug aus der Psychologie. Du schreibst alle angstmachenden Situationen auf und sortierst sie von "wenig Angst" bis "sehr viel Angst". Dann beginnst du unten. Erst wenn eine Sprosse sich okay anfühlt, gehst du zur nächsten. So baust du Stück für Stück Mut auf.',
             nextSceneId: 'f2-s5',
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'f2-s4-c4',
+            text: '"Stell dich nicht so an. Angst ist nur eine Ausrede. Morgen gehst du hin und hältst einfach dein Referat. Fertig."',
+            consequence: 'Du sagst genau das, wovor Finn am meisten Angst hat: Stell dich nicht so an. Du nennst seine Angst eine Ausrede und forderst ihn auf, etwas zu tun, das ihn gerade völlig überfordert. Das ist weder hilfreich noch einfühlsam. Angst ist keine Ausrede, sondern ein echtes Gefühl. Und jemanden ins kalte Wasser zu werfen, ohne Werkzeuge und ohne Vorbereitung, kann die Angst sogar verstärken.',
+            isWrong: true,
+            nextSceneId: 'f2-s5',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -485,6 +557,14 @@ export const forestScenarios: Scenario[] = [
             consequence: 'Finn wird blass, dann grinst er zaghaft. "Die Kantine. Das ist Sprosse eins." Er hat jetzt ein konkretes Ziel. Nicht das Referat, nicht die perfekte Rede. Nur die Kantine. Nur sitzen und essen, wo andere auch sitzen und essen. Ein kleiner Schritt. Aber der wichtigste.',
             nextSceneId: null,
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'f2-s5-c4',
+            text: '"Kleine Schritte sind was für Babys. Wenn du wirklich mutig sein willst, musst du einfach ins kalte Wasser springen und es durchziehen."',
+            consequence: 'Du machst den Ansatz der kleinen Schritte lächerlich und forderst Finn auf, sich seiner größten Angst sofort zu stellen. Das ist gefährlich. Ohne Vorbereitung und Werkzeuge kann eine solche Konfrontation zu einer traumatischen Erfahrung führen und die Angst massiv verstärken. Graduelle Exposition, also kleine Schritte, ist wissenschaftlich bewährt. Ins kalte Wasser springen ist kein Mut, sondern Leichtsinn.',
+            isWrong: true,
+            nextSceneId: null,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       }

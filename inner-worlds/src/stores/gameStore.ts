@@ -216,15 +216,30 @@ const initialIslands: Island[] = [
 // Initial island progress (all islands start at chapter 1, no mystery started)
 // ---------------------------------------------------------------------------
 
+const makeIslandProgress = (islandId: IslandId): IslandProgress => ({
+  islandId,
+  currentChapter: 1,
+  mysteryStarted: false,
+  mysterySolved: false,
+  discoveredClues: [],
+  unlockedZones: ['entrance'],
+  completedMainQuests: [],
+  completedSideQuests: [],
+  activeQuests: [],
+  discoveredLocations: [],
+  metNPCs: [],
+  completedMiniGames: [],
+});
+
 const initialIslandProgress: IslandProgress[] = [
-  { islandId: 'volcano', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
-  { islandId: 'ocean', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
-  { islandId: 'forest', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
-  { islandId: 'mountain', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
-  { islandId: 'garden', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
-  { islandId: 'night', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
-  { islandId: 'rainbow', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
-  { islandId: 'home', currentChapter: 1, mysteryStarted: false, mysterySolved: false, discoveredClues: [], unlockedZones: ['entrance'] },
+  makeIslandProgress('volcano'),
+  makeIslandProgress('ocean'),
+  makeIslandProgress('forest'),
+  makeIslandProgress('mountain'),
+  makeIslandProgress('garden'),
+  makeIslandProgress('night'),
+  makeIslandProgress('rainbow'),
+  makeIslandProgress('home'),
 ];
 
 // ---------------------------------------------------------------------------
@@ -300,6 +315,11 @@ const initialState: GameState = {
   travelOrigin: null,
   travelDestination: null,
   travelVehicle: null,
+
+  // Quest system
+  activeMiniGame: null,
+  activeQuestId: null,
+  completedMiniGameIds: [],
 };
 
 // ---------------------------------------------------------------------------
@@ -797,14 +817,8 @@ export const useGameStore = create<GameStore>()(
       getIslandProgress: (islandId: IslandId): IslandProgress => {
         const s = useGameStore.getState() as unknown as GameState;
         return (
-          s.islandProgress.find((ip: IslandProgress) => ip.islandId === islandId) || {
-            islandId,
-            currentChapter: 1,
-            mysteryStarted: false,
-            mysterySolved: false,
-            discoveredClues: [] as string[],
-            unlockedZones: ['entrance'] as string[],
-          }
+          s.islandProgress.find((ip: IslandProgress) => ip.islandId === islandId) ||
+          makeIslandProgress(islandId)
         );
       },
 

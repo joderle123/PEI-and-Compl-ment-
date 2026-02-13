@@ -52,6 +52,48 @@ export type ActivityType =
   | 'assessment'
   | 'creative';
 
+/** All mini-game types available in the game */
+export type MiniGameType =
+  | 'memory'
+  | 'catcher'
+  | 'sorter'
+  | 'emotion-compass'
+  | 'feeling-puzzle'
+  | 'mood-painter'
+  | 'empathy-theater'
+  | 'mindful-garden'
+  | 'values-scale'
+  | 'emotion-detective'
+  | 'trust-bridge'
+  | 'story-weaver';
+
+/** Quest status tracking */
+export type QuestStatus = 'locked' | 'available' | 'active' | 'completed';
+
+/** Quest objective types */
+export type ObjectiveType =
+  | 'talk-to-npc'
+  | 'complete-scenario'
+  | 'play-minigame'
+  | 'collect-items'
+  | 'discover-location'
+  | 'complete-activity'
+  | 'reach-zone'
+  | 'earn-skill-points';
+
+/** Location types in the open world */
+export type LocationType =
+  | 'quest-giver'
+  | 'mini-game-station'
+  | 'hidden-secret'
+  | 'meditation-spot'
+  | 'story-shrine'
+  | 'challenge-arena'
+  | 'npc-home'
+  | 'collectible'
+  | 'portal'
+  | 'landmark';
+
 /** Supported UI languages */
 export type Language = 'de' | 'fr';
 
@@ -71,6 +113,8 @@ export type GameScreen =
   | 'travel'
   | 'scenario'
   | 'activity'
+  | 'mini-game'
+  | 'quest-log'
   | 'journal'
   | 'collection'
   | 'settings'
@@ -323,6 +367,207 @@ export interface GameEvent {
 }
 
 // -----------------------------------------------------------------------------
+// Open World: Quests, Locations, NPCs
+// -----------------------------------------------------------------------------
+
+/** A single objective within a quest */
+export interface QuestObjective {
+  /** Unique objective identifier */
+  id: string;
+  /** Description of what the player must do */
+  description: string;
+  /** Type of objective */
+  type: ObjectiveType;
+  /** Target ID (e.g., NPC id, scenario id, location id) */
+  targetId: string;
+  /** Required count (e.g., collect 3 items) */
+  requiredCount: number;
+  /** Current progress count */
+  currentCount: number;
+  /** Whether this objective is complete */
+  completed: boolean;
+}
+
+/** Reward given upon quest completion */
+export interface QuestReward {
+  /** XP earned */
+  xp: number;
+  /** Empathy points earned */
+  empathyPoints: number;
+  /** Insight points earned */
+  insightPoints: number;
+  /** Courage points earned */
+  couragePoints: number;
+  /** Wisdom card ID unlocked (optional) */
+  wisdomCardId?: string;
+  /** Achievement ID unlocked (optional) */
+  achievementId?: string;
+  /** Zone unlocked (optional) */
+  zoneUnlock?: string;
+}
+
+/** A main story quest within an island */
+export interface MainQuest {
+  /** Unique quest identifier */
+  id: string;
+  /** Island this quest belongs to */
+  islandId: IslandId;
+  /** Chapter number (1-4) */
+  chapter: number;
+  /** Quest title */
+  title: string;
+  /** Narrative description */
+  description: string;
+  /** Story introduction text */
+  storyIntro: string;
+  /** Story conclusion text */
+  storyConclusion: string;
+  /** Current status */
+  status: QuestStatus;
+  /** Ordered list of objectives */
+  objectives: QuestObjective[];
+  /** Rewards for completing the quest */
+  rewards: QuestReward;
+  /** Scenario IDs tied to this quest */
+  scenarioIds: string[];
+  /** Mini-game IDs tied to this quest */
+  miniGameIds: string[];
+  /** ID of the NPC who gives this quest */
+  questGiverId: string;
+}
+
+/** A side quest - optional but rewarding */
+export interface SideQuest {
+  /** Unique side quest identifier */
+  id: string;
+  /** Island this quest belongs to */
+  islandId: IslandId;
+  /** Quest title */
+  title: string;
+  /** Short description */
+  description: string;
+  /** Emoji icon for the quest */
+  emoji: string;
+  /** Current status */
+  status: QuestStatus;
+  /** Minimum chapter required to unlock */
+  requiredChapter: number;
+  /** Objectives to complete */
+  objectives: QuestObjective[];
+  /** Rewards for completing */
+  rewards: QuestReward;
+  /** Linked mini-game type (optional) */
+  miniGameType?: MiniGameType;
+  /** ID of the NPC who gives this quest */
+  questGiverId: string;
+  /** Dialogue shown when accepting the quest */
+  acceptDialogue: string;
+  /** Dialogue shown upon completion */
+  completeDialogue: string;
+  /** Zone where this quest is available */
+  zone: string;
+}
+
+/** A point of interest in the open world */
+export interface WorldLocation {
+  /** Unique location identifier */
+  id: string;
+  /** Island this location belongs to */
+  islandId: IslandId;
+  /** Display name */
+  name: string;
+  /** Location type */
+  type: LocationType;
+  /** Emoji icon */
+  emoji: string;
+  /** Short description */
+  description: string;
+  /** 3D position [x, y, z] in the world */
+  position: [number, number, number];
+  /** Zone this location belongs to */
+  zone: string;
+  /** Whether this location is initially hidden */
+  hidden: boolean;
+  /** NPC ID present at this location (optional) */
+  npcId?: string;
+  /** Mini-game available here (optional) */
+  miniGameType?: MiniGameType;
+  /** Quest ID associated with this location (optional) */
+  questId?: string;
+  /** Interaction radius */
+  interactRadius: number;
+}
+
+/** A fully-typed NPC in the open world */
+export interface WorldNPC {
+  /** Unique NPC identifier */
+  id: string;
+  /** Display name */
+  name: string;
+  /** Emoji icon */
+  emoji: string;
+  /** Role description */
+  role: string;
+  /** Island this NPC belongs to */
+  islandId: IslandId;
+  /** Backstory shown when first met */
+  backstory: string;
+  /** Idle dialogue lines (randomly selected) */
+  idleDialogue: string[];
+  /** Quest-related dialogue */
+  questDialogue: {
+    /** Dialogue when quest is available */
+    available?: string;
+    /** Dialogue when quest is in progress */
+    inProgress?: string;
+    /** Dialogue when quest is complete */
+    completed?: string;
+  };
+  /** Zone where this NPC is found */
+  zone: string;
+  /** Position in the world */
+  position: [number, number, number];
+  /** Quest IDs this NPC is involved in */
+  questIds: string[];
+  /** Whether this NPC sells/trades items */
+  isShopkeeper: boolean;
+}
+
+/** Island open-world configuration */
+export interface IslandOpenWorld {
+  /** Island identifier */
+  islandId: IslandId;
+  /** Main quests (one per chapter) */
+  mainQuests: MainQuest[];
+  /** Side quests */
+  sideQuests: SideQuest[];
+  /** Points of interest / locations */
+  locations: WorldLocation[];
+  /** NPCs */
+  npcs: WorldNPC[];
+  /** Zone definitions */
+  zones: IslandZone[];
+}
+
+/** A zone within an island */
+export interface IslandZone {
+  /** Unique zone identifier */
+  id: string;
+  /** Display name */
+  name: string;
+  /** Description */
+  description: string;
+  /** Emoji icon */
+  emoji: string;
+  /** Chapter required to unlock */
+  requiredChapter: number;
+  /** Bounds in the 3D world [minX, minZ, maxX, maxZ] */
+  bounds: [number, number, number, number];
+  /** Theme color */
+  color: string;
+}
+
+// -----------------------------------------------------------------------------
 // Island Chapter Progression (progressive unlocking within islands)
 // -----------------------------------------------------------------------------
 
@@ -340,6 +585,18 @@ export interface IslandProgress {
   discoveredClues: string[];
   /** Hidden areas/zones unlocked on this island */
   unlockedZones: string[];
+  /** Main quest progress - IDs of completed main quests */
+  completedMainQuests: string[];
+  /** Side quest progress - IDs of completed side quests */
+  completedSideQuests: string[];
+  /** IDs of active (in-progress) quests */
+  activeQuests: string[];
+  /** Discovered location IDs */
+  discoveredLocations: string[];
+  /** Met NPC IDs */
+  metNPCs: string[];
+  /** Mini-games completed (by ID) */
+  completedMiniGames: string[];
 }
 
 // -----------------------------------------------------------------------------
@@ -437,4 +694,12 @@ export interface GameState {
   travelDestination: IslandId | null;
   /** Travel vehicle: 'boat' for adjacent islands, 'airplane' for distant ones */
   travelVehicle: 'boat' | 'airplane' | null;
+
+  // Quest system
+  /** Currently active mini-game type */
+  activeMiniGame: MiniGameType | null;
+  /** ID of the currently viewed quest */
+  activeQuestId: string | null;
+  /** IDs of all completed mini-games across all islands */
+  completedMiniGameIds: string[];
 }

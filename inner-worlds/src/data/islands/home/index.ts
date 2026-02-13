@@ -63,6 +63,15 @@ export const homeScenarios: Scenario[] = [
             couragePoints: 3,
             nextSceneId: 'home-s1-scene-2',
           },
+          {
+            id: 'home-s1-c1d',
+            text: 'Kopfhoerer rein, ab an deinen Platz. Nicht dein Problem.',
+            consequence:
+              'Du gehst an allen vorbei, als waerst du unsichtbar. Malik bleibt allein mit seiner Wut, Lina weint weiter, und Jonas bekommt die Bestaetigung, dass keiner widerspricht. Du hast auf allen Inseln gelernt, hinzuschauen -- und in dem Moment, wo es zaehlt, schaust du weg. Die Werkzeuge nuetzen nichts, wenn man sie im Rucksack laesst.',
+            nextSceneId: 'home-s1-scene-2',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+          },
         ],
       },
       // Scene 2 -- Maliks Wut
@@ -91,6 +100,15 @@ export const homeScenarios: Scenario[] = [
             insightPoints: 3,
             couragePoints: 1,
             nextSceneId: 'home-s1-scene-3',
+          },
+          {
+            id: 'home-s1-c2c',
+            text: '"Malik soll sich mal zusammenreissen. Jeder hat Probleme."',
+            consequence:
+              'Du sagst es halblaut zu einem Mitschueler. Malik hoert es. Sein Blick wird kalt, und er dreht sich weg. Du hast gerade genau das getan, was auf der Vulkan-Insel als groesster Fehler galt: die Gefuehle eines anderen kleinreden. Wut zu sehen und zu sagen "Stell dich nicht so an" ist wie einen Vulkan zu ignorieren -- er bricht trotzdem aus.',
+            nextSceneId: 'home-s1-scene-3',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
           },
         ],
       },
@@ -131,6 +149,15 @@ export const homeScenarios: Scenario[] = [
             couragePoints: 2,
             nextSceneId: 'home-s1-scene-4',
           },
+          {
+            id: 'home-s1-c3d',
+            text: '"Ach, warum nicht? Ist doch nur ein Spass. Machen wir alle mit."',
+            consequence:
+              'Du laesst dich mitziehen, obwohl du es besser weisst. Der Streich passiert, Herr Weber merkt es, und die Stimmung kippt. Du spuerst sofort: Das war falsch. Alles, was du auf den Inseln ueber Mut gelernt hast -- dass man Nein sagen darf, dass Gruppendruck keine Entschuldigung ist -- hast du in diesem Moment vergessen. Mitmachen, obwohl man weiss, dass es falsch ist, ist kein Spass. Es ist Feigheit.',
+            nextSceneId: 'home-s1-scene-4',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+          },
         ],
       },
       // Scene 4 -- Lina helfen und zusammenfuehren
@@ -160,6 +187,15 @@ export const homeScenarios: Scenario[] = [
             couragePoints: 1,
             nextSceneId: 'home-s1-scene-5',
           },
+          {
+            id: 'home-s1-c4c',
+            text: 'Einfach nach Hause gehen. Du bist nicht dafuer zustaendig, dich um alle zu kuemmern.',
+            consequence:
+              'Du drehst dich um und gehst. Lina bleibt allein. Malik steht allein. Jonas zieht sein Ding durch. Und du? Du sagst dir: "Ich brauche niemanden und niemand braucht mich." Aber tief in dir weisst du, dass das nicht stimmt. Auf der Garten-Insel hast du gelernt, dass Beziehungen Pflege brauchen. Sich fuer unabhaengig zu erklaeren ist manchmal nur ein anderes Wort fuer weglaufen.',
+            nextSceneId: 'home-s1-scene-5',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+          },
         ],
       },
       // Scene 5 -- Reflexion auf dem Heimweg
@@ -188,6 +224,15 @@ export const homeScenarios: Scenario[] = [
             insightPoints: 2,
             couragePoints: 1,
             nextSceneId: null,
+          },
+          {
+            id: 'home-s1-c5c',
+            text: '"War okay, hat mich aber nicht wirklich beruehrt. Morgen ist eh alles vergessen."',
+            consequence:
+              'Du zuckst die Schultern und steckst die Kopfhoerer rein. Aber der Guide schuettelt den Kopf: "Du tust so, als waere der Tag egal gewesen. Aber ich habe gesehen, wie du hingeschaut hast. Emotionale Distanz schuetzt dich nicht -- sie isoliert dich. Auf der Ozean-Insel hast du gelernt, dass Gefuehle zuzulassen Staerke ist. Wegschieben ist das Gegenteil davon."',
+            nextSceneId: null,
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
           },
         ],
       },
@@ -243,6 +288,15 @@ export const homeScenarios: Scenario[] = [
             couragePoints: 3,
             nextSceneId: 'home-s2-scene-2',
           },
+          {
+            id: 'home-s2-c1d',
+            text: '"Ist doch egal. Noten sind sowieso sinnlos. Schule bringt eh nichts."',
+            consequence:
+              'Du schiebst das Blatt vom Tisch und starrst aus dem Fenster. Die Enttaeuschung verwandelt sich in Gleichgueltigkeit -- aber das ist eine Luege, die du dir selbst erzaehlst. Aufgeben, weil etwas wehgetan hat, ist keine Staerke. Auf der Berg-Insel hast du gelernt, dass du genug bist -- auch wenn eine Note etwas anderes zu sagen scheint. Aber diesen Satz hast du gerade vergessen.',
+            nextSceneId: 'home-s2-scene-2',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+          },
         ],
       },
       // Scene 2 -- Streit zu Hause (Rueckblick am Morgen)
@@ -272,6 +326,15 @@ export const homeScenarios: Scenario[] = [
             couragePoints: 1,
             nextSceneId: 'home-s2-scene-3',
           },
+          {
+            id: 'home-s2-c2c',
+            text: '"Soll sie doch machen, was sie will. Ist mir egal. Gefuehle sind Zeitverschwendung."',
+            consequence:
+              'Du drueckst die Wut und die Schuld tief runter. Aber sie verschwinden nicht -- sie gaeren. Abends liegst du wach und der Streit spielt sich immer wieder ab. Auf der Vulkan-Insel hast du gelernt, dass verdraengte Gefuehle nicht verschwinden, sondern staerker werden. Zu sagen "Ist mir egal" ist oft nur ein Schutzschild -- und es schuetzt dich nicht, es isoliert dich.',
+            nextSceneId: 'home-s2-scene-3',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+          },
         ],
       },
       // Scene 3 -- Der Freund, der dich ignoriert
@@ -300,6 +363,15 @@ export const homeScenarios: Scenario[] = [
             insightPoints: 3,
             couragePoints: 1,
             nextSceneId: 'home-s2-scene-4',
+          },
+          {
+            id: 'home-s2-c3c',
+            text: '"Dann brauche ich ihn eben auch nicht. Ich brauche sowieso niemanden."',
+            consequence:
+              'Du drehst dich um und gehst allein in eine Ecke. Die Wut und die Verletzung verwandeln sich in kalte Distanz. Aber du merkst: Es fuehlt sich nicht stark an -- es fuehlt sich einsam an. Auf der Garten-Insel hast du gelernt, dass Beziehungen Arbeit brauchen. Sich zurueckzuziehen und zu sagen "Ich brauche niemanden" ist keine Unabhaengigkeit. Es ist Angst, nochmal verletzt zu werden.',
+            nextSceneId: 'home-s2-scene-4',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
           },
         ],
       },
@@ -340,6 +412,15 @@ export const homeScenarios: Scenario[] = [
             couragePoints: 3,
             nextSceneId: 'home-s2-scene-5',
           },
+          {
+            id: 'home-s2-c4d',
+            text: 'Sofort zurueckschreiben und auch etwas Gemeines ueber den Absender posten. Auge um Auge.',
+            consequence:
+              'Du tippst wuetend eine Antwort und postest ein haessliches Bild zurueck. Fuer einen Moment fuehlt es sich gut an -- Rache. Aber dann eskaliert alles. Mehr Nachrichten, mehr Haeme, mehr Traenen. Du hast aus Cybermobbing einen Krieg gemacht, und jetzt steckst du noch tiefer drin. Auf der Vulkan-Insel hast du gelernt: Wut als Waffe einsetzen macht alles schlimmer. Rache ist kein Werkzeug -- sie ist eine Falle.',
+            nextSceneId: 'home-s2-scene-5',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+          },
         ],
       },
       // Scene 5 -- Abend: Selbstfuersorge
@@ -368,6 +449,15 @@ export const homeScenarios: Scenario[] = [
             insightPoints: 3,
             couragePoints: 2,
             nextSceneId: null,
+          },
+          {
+            id: 'home-s2-c5c',
+            text: '"Gar nichts. Einfach alles abschalten. Gefuehle sind nur Ballast, den ich nicht brauche."',
+            consequence:
+              'Du legst dich hin und versuchst, einfach nichts zu fuehlen. Aber die Gedanken drehen sich trotzdem. Der Guide sagt leise: "Gefuehle abschalten klingt nach Schutz, aber es ist das Gegenteil. Auf der Ozean-Insel hast du gelernt, dass Traurigkeit zulassen staerker ist als verdraengen. Und auf der Nacht-Insel, dass Achtsamkeit heisst: wahrnehmen, was da ist. Nicht wegschieben. Sich selbst zu betaeuben ist keine Selbstfuersorge -- es ist Selbstaufgabe."',
+            nextSceneId: null,
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
           },
         ],
       },
@@ -413,6 +503,15 @@ export const homeScenarios: Scenario[] = [
             insightPoints: 3,
             couragePoints: 0,
             nextSceneId: 'home-s3-scene-2',
+          },
+          {
+            id: 'home-s3-c1c',
+            text: '"Jeder hat mal schlechte Laune. Sarah soll sich nicht so anstellen."',
+            consequence:
+              'Du sagst dir, dass Sarah einfach eine Phase hat, und kuemerst dich nicht weiter. Aber die Zeichen werden staerker -- und du ignorierst sie. Auf der Ozean-Insel hast du gelernt, dass Traurigkeit ernst genommen werden muss. Und auf der Regenbogen-Insel, dass jeder Mensch eine eigene Geschichte hat. Zu sagen "Stell dich nicht an" ist das Gegenteil von Empathie. Es ist Blindheit.',
+            nextSceneId: 'home-s3-scene-2',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
           },
         ],
       },

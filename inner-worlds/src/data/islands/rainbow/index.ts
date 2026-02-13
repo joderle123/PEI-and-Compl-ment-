@@ -93,6 +93,14 @@ export const rainbowScenarios: Scenario[] = [
             consequence: 'Frau Wagner hat gerade gesagt, woher Amir kommt. Trotzdem fragst du nach – als ob die Antwort nicht reichen würde. Das passiert oft unbewusst: Wir suchen nach «mehr Information», weil wir jemanden in eine Schublade sortieren wollen. Das ist kein böser Wille, aber es ist der Anfang von Vorurteilen.',
             nextSceneId: 'r1-s2',
             points: { empathyPoints: 0, insightPoints: 1, couragePoints: 0 }
+          },
+          {
+            id: 'r1-s1-c4',
+            text: 'Die Augen verdrehen und murmeln: «Toll, schon wieder einer, der kein Deutsch kann. Die sollen erstmal die Sprache lernen, bevor sie in unsere Klasse kommen.»',
+            consequence: 'Du hast gerade über einen Menschen geurteilt, den du noch kein einziges Mal hast sprechen hören. Woher weißt du, ob Amir Deutsch kann oder nicht? Du hast sein Gesicht gesehen und sofort eine Schublade aufgemacht. Das ist ein Vorurteil in Reinform: ein Urteil VOR dem Kennenlernen. Und dein Kommentar sendet eine Botschaft an alle um dich herum: «Dieser Mensch gehört nicht hierher.» Solche Sätze sind wie Gift – sie vergiften die Atmosphäre, noch bevor Amir eine Chance hatte, sich vorzustellen. Menschen, die so empfangen werden, ziehen sich zurück, werden still, fühlen sich wertlos. Nicht weil sie es sind – sondern weil andere es ihnen einreden.',
+            nextSceneId: 'r1-s2',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            isWrong: true
           }
         ]
       },
@@ -122,6 +130,14 @@ export const rainbowScenarios: Scenario[] = [
             consequence: 'Du gehst weiter. Das Gefühl im Bauch sagt dir, dass etwas falsch war – aber der Kopf sagt: «Ist nicht mein Problem.» Psychologen nennen das den «Bystander-Effekt»: Je mehr Leute zuschauen, desto weniger fühlt sich jemand verantwortlich. Der Effekt wurde 1968 erforscht und erklärt, warum in großen Gruppen oft niemand hilft – jeder denkt, der andere wird schon eingreifen. Aber die Wahrheit ist: Schweigen ist keine neutrale Handlung. Wer zuschaut und nichts tut, sendet eine Botschaft – auch an Amir. Und Amir versteht die Botschaft: «Du bist nicht wichtig genug, dass sich jemand einmischt.»',
             nextSceneId: 'r1-s3',
             points: { empathyPoints: 0, insightPoints: 1, couragePoints: 0 }
+          },
+          {
+            id: 'r1-s2-c4',
+            text: 'Mitlachen und dazusetzen: «Ja, erzähl mal! Hast du auch ein Kamel gehabt? Und habt ihr in Zelten geschlafen?»',
+            consequence: 'Du machst mit – und machst es schlimmer. Deine Fragen reduzieren ein ganzes Land, eine ganze Kultur auf Klischees aus Filmen und Schlagzeilen. Syrien ist eines der ältesten Kulturländer der Welt – mit Universitäten, Städten und Geschichten, die tausende Jahre alt sind. Aber du siehst nur das Bild, das dir Vorurteile liefern. Für Amir ist das nicht lustig. Es ist demütigend. Er wird auf Stereotype reduziert, die nichts mit seinem Leben zu tun haben. Und das Lachen der Gruppe macht es noch schlimmer – denn es zeigt ihm: Hier bin ich nicht Amir. Hier bin ich nur «der Flüchtling aus dem Fernsehen». Stereotypen sind Gefängnisse: Sie sperren Menschen in Bilder ein, die andere für sie gemalt haben.',
+            nextSceneId: 'r1-s3',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            isWrong: true
           }
         ]
       },
@@ -144,6 +160,14 @@ export const rainbowScenarios: Scenario[] = [
             consequence: 'Du sagst Lisa direkt, dass ihre Aussage falsch war. Das ist mutig. Aber Vorsicht: Der Ton macht die Musik. Wenn Lisa sich angegriffen fühlt, macht sie vielleicht zu statt auf. Besser wäre: «Lisa, stell dir vor, jemand würde sagen, in Luxemburg gibt es nur Banken und Regen.» Humor und Perspektivwechsel wirken oft stärker als Vorwürfe.',
             nextSceneId: 'r1-s4',
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 3 }
+          },
+          {
+            id: 'r1-s3-c3',
+            text: 'Lisa zustimmen: «Stimmt, im Fernsehen sieht man ja immer nur Ruinen. Amir kann froh sein, dass er jetzt hier ist und nicht mehr dort.»',
+            consequence: 'Du wiederholst Lisas Vorurteil und packst noch eines drauf: «Er kann froh sein, dass er hier ist.» Das klingt vielleicht nett – aber es ist herablassend. Du reduzierst Amir auf ein Opfer, das «gerettet» wurde, und sein Herkunftsland auf ein Trümmerfeld. Syrien hat wunderschöne Städte, eine reiche Kultur, Musik, Kunst und Millionen von Menschen, die ihr Land lieben. Niemand verlässt seine Heimat freiwillig – und niemand möchte dafür «dankbar» sein müssen, dass er jetzt anderswo leben darf. Dieser Satz nimmt Amir seine Würde: Er wird vom Menschen zum Bittsteller. Das nennt man «wohlwollende Diskriminierung» – Vorurteile, die sich als Freundlichkeit verkleiden, aber genauso verletzen.',
+            nextSceneId: 'r1-s4',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            isWrong: true
           }
         ]
       },
@@ -173,6 +197,14 @@ export const rainbowScenarios: Scenario[] = [
             consequence: 'Du meinst es nett – aber dieser Satz legt die ganze Verantwortung auf Amirs Schultern. «Gib ihnen Zeit» heißt übersetzt: «Halt es aus, bis die anderen sich an dich gewöhnt haben.» Aber warum sollte ER sich gedulden, wenn ANDERE das Problem haben? Manchmal sind gut gemeinte Sätze nicht gut genug. Empathie bedeutet auch, ehrlich zu sein statt zu trösten.',
             nextSceneId: 'r1-s5',
             points: { empathyPoints: 1, insightPoints: 1, couragePoints: 0 }
+          },
+          {
+            id: 'r1-s4-c4',
+            text: '«Naja, das ist halt so. Die Leute urteilen nach dem Äußeren – das ist normal. Du musst dich einfach besser anpassen, dann hört das auf.»',
+            consequence: 'Du sagst Amir, dass ER sich ändern muss – nicht die anderen. Das nennt man «Assimilationsdruck»: Die Erwartung, dass Menschen, die anders aussehen oder klingen, sich der Mehrheit anpassen sollen, damit die Mehrheit sich wohl fühlt. Aber warum sollte Amir seinen Akzent, seine Kultur, sein Aussehen ändern? Das Problem sind nicht seine Unterschiede – das Problem sind die Vorurteile der anderen. Wenn du sagst «pass dich an», sagst du eigentlich: «Versteck, wer du bist, damit wir uns nicht anstrengen müssen.» Das ist nicht Hilfe – das ist Unterdrückung mit einem Lächeln. Amir schaut weg. Dein Satz hat ihm gerade bestätigt, was er befürchtet hat: Hier darf er nur sein, wenn er so tut, als wäre er jemand anderes.',
+            nextSceneId: 'r1-s5',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            isWrong: true
           }
         ]
       },
@@ -231,6 +263,14 @@ export const rainbowScenarios: Scenario[] = [
             consequence: 'Halt – woher weißt du, was Lena kann und was nicht? Hast du sie gefragt? Oder hast du den Rollstuhl gesehen und automatisch gedacht: «geht nicht»? Genau DAS ist eine unsichtbare Mauer. Wir sehen die Behinderung und vergessen den Menschen dahinter. Lena hat eine Meinung, einen Willen und Fähigkeiten. Aber wenn alle für sie entscheiden, wird sie unsichtbar.',
             nextSceneId: 'r2-s2',
             points: { empathyPoints: 0, insightPoints: 1, couragePoints: 0 }
+          },
+          {
+            id: 'r2-s1-c4',
+            text: '«Lena sollte froh sein, dass sie überhaupt dabei sein darf. Im Rollstuhl kann man halt nicht alles machen – das muss man akzeptieren.»',
+            consequence: 'Dieser Satz ist Ableismus pur – Diskriminierung von Menschen mit Behinderung. Du entscheidest für Lena, was sie kann und was nicht. Du sagst ihr, sie soll «dankbar» sein, als wäre ihre Anwesenheit ein Geschenk und kein Recht. Jeder Mensch hat das Recht auf Teilhabe – das steht in der UN-Behindertenrechtskonvention, die auch Luxemburg unterschrieben hat. «Du kannst halt nicht alles machen» ist der Satz, mit dem Menschen mit Behinderung ihr ganzes Leben lang kleingehalten werden. Aber die Wahrheit ist: Die Barriere ist nicht Lenas Rollstuhl – die Barriere ist eine Gesellschaft, die alles nur für Menschen ohne Behinderung baut. Lena hört deinen Satz und sagt nichts. Aber in ihren Augen siehst du etwas erlöschen. Du hast gerade ihre Würde mit Füßen getreten – und es nicht einmal gemerkt.',
+            nextSceneId: 'r2-s2',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            isWrong: true
           }
         ]
       },
@@ -260,6 +300,14 @@ export const rainbowScenarios: Scenario[] = [
             consequence: '«Sie muss sich halt durchsetzen» – dieser Satz klingt logisch, ist aber unfair. Er sagt: Das Problem liegt bei Elif, nicht bei der Gruppe. Aber warum sollte ELIF sich ändern? Warum ändert die Gruppe nicht ihr Verhalten und lässt ALLE zu Wort kommen? Wenn eine Tür zu eng ist, bauen wir die Tür um – wir sagen nicht dem Rollstuhlfahrer, er soll dünner werden.',
             nextSceneId: 'r2-s3',
             points: { empathyPoints: 0, insightPoints: 1, couragePoints: 0 }
+          },
+          {
+            id: 'r2-s2-c4',
+            text: '«Wenn Elif nichts sagt, hat sie wohl einfach keine guten Ideen. In einer Gruppe setzen sich halt die besten Ideen durch – so ist das.»',
+            consequence: 'Du verwechselst «laut» mit «gut». Das ist ein gefährlicher Denkfehler. In Gruppen setzen sich nicht die besten Ideen durch, sondern die lautesten. Das nennt man den «Lautstärke-Bias»: Wer am meisten redet, wird für kompetenter gehalten – auch wenn das Gesagte mittelmäßig ist. Elif hat möglicherweise die brillanteste Idee im Raum – aber du wirst es nie erfahren, weil du glaubst, Schweigen bedeutet Leere. Damit sprichst du stillen, introvertierten und zurückhaltenden Menschen das Recht ab, wertvolle Beiträge zu leisten. Du baust eine Welt, in der nur die Lauten zählen – und das schließt Millionen von Menschen aus. Die Geschichte zeigt: Viele der größten Denker waren still. Einstein, Rosa Parks, Malala – sie alle haben die Welt verändert, nicht durch Lautstärke, sondern durch Tiefe.',
+            nextSceneId: 'r2-s3',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            isWrong: true
           }
         ]
       },
@@ -289,6 +337,14 @@ export const rainbowScenarios: Scenario[] = [
             consequence: 'Wieder Schweigen. Wieder der Bystander-Effekt. Paul geht nach Hause und fühlt sich allein. Nicht weil Lukas gelacht hat – das hat er erwartet. Sondern weil alle anderen es gehört haben und NIEMAND etwas gesagt hat. Forschung zeigt: Der Schmerz des Ignoriert-Werdens aktiviert dieselben Hirnregionen wie körperlicher Schmerz. Das ist die Botschaft, die Paul mitnimmt: «Keiner steht für mich ein.» Schweigen ist eine Wahl – und sie hat Konsequenzen, die tiefer gehen, als wir denken.',
             nextSceneId: 'r2-s4',
             points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
+          },
+          {
+            id: 'r2-s3-c4',
+            text: 'Mitlachen und denken: «Wer kein Geld hat, soll halt nicht mitkommen. Wieso sollen wir uns für andere Leute verantwortlich fühlen?»',
+            consequence: 'Du lachst mit – und machst aus Armut einen Witz. Das nennt man Klassismus: Diskriminierung aufgrund von Geld oder sozialer Herkunft. «Wer kein Geld hat, ist selbst schuld» ist einer der grausamsten Sätze unserer Gesellschaft, denn er ignoriert die Realität. Pauls Mutter arbeitet zwei Jobs. Sie tut alles, was sie kann. Trotzdem reicht es nicht – weil Mieten steigen, weil Essen teurer wird, weil das System nicht für alle gleich funktioniert. Dein Lachen sagt Paul: «Du bist weniger wert, weil deine Familie weniger Geld hat.» Und das trifft ins Mark. Armut ist kein Charakterfehler – sie ist ein gesellschaftliches Problem. Wer darüber lacht, hat nicht verstanden, wie die Welt funktioniert. Und Paul? Paul wird sich dieses Lachen merken. Für immer.',
+            nextSceneId: 'r2-s4',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            isWrong: true
           }
         ]
       },
@@ -311,6 +367,14 @@ export const rainbowScenarios: Scenario[] = [
             consequence: 'DAS ist die mutigste Frage von allen. Sich selbst zu hinterfragen ist unbequem, aber unglaublich wichtig. Wahrscheinlich hat jeder von uns schon einmal jemanden unbewusst ausgegrenzt – durch einen Witz, durch Ignorieren, durch Mitleid statt Respekt. Das macht dich nicht zu einem schlechten Menschen. Es macht dich zu einem AUFMERKSAMEN Menschen, der dazulernt.',
             nextSceneId: 'r2-s5',
             points: { empathyPoints: 3, insightPoints: 3, couragePoints: 2 }
+          },
+          {
+            id: 'r2-s4-c3',
+            text: '«Naja, die Welt ist halt nicht fair. Manche haben Pech, da kann man nichts machen. So war das schon immer.»',
+            consequence: 'Mit diesem Satz gibst du auf, bevor du es überhaupt versucht hast. «So war das schon immer» ist der Lieblingssatz von Menschen, die nichts ändern wollen. Aber die Welt hat sich schon tausend Mal verändert – weil Menschen gesagt haben: «So soll es NICHT bleiben.» Frauen durften früher nicht wählen – bis jemand sagte: «Das ist falsch.» Sklaverei galt als «normal» – bis Menschen dagegen aufstanden. Apartheid, Rassentrennung, Diskriminierung – alles wurde als «so ist die Welt halt» verteidigt. Und jedes Mal haben mutige Menschen bewiesen: Nein, die Welt kann anders sein. Wenn du sagst «da kann man nichts machen», sagst du eigentlich: «Ich will nichts machen.» Und das ist eine Entscheidung – die falsche.',
+            nextSceneId: 'r2-s5',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            isWrong: true
           }
         ]
       },
