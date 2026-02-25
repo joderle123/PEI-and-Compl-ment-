@@ -555,8 +555,46 @@ export default function ScenarioPlayer() {
           };
           setChatLog((prev) => [...prev, consequenceMsg]);
 
-          // Then show continue prompt
-          setTimeout(() => setAwaitingContinue(true), wrong ? 800 : 500);
+          // Emotional validation after wrong choices - therapeutic approach
+          if (wrong) {
+            setTimeout(() => {
+              const validations = [
+                'Es ist verst\u00E4ndlich, so zu reagieren. Viele Menschen w\u00FCrden das tun. Aber es gibt noch andere Wege.',
+                'Dieses Gef\u00FChl ist v\u00F6llig normal. Die Frage ist: Was hilft dir wirklich weiter?',
+                'Manchmal w\u00E4hlen wir den einfachsten Weg, nicht den besten. Das ist menschlich.',
+                'Es ist okay, Fehler zu machen. Jeder Fehler ist eine Chance, etwas \u00FCber dich zu lernen.',
+                'Deine Reaktion zeigt, dass dir etwas wichtig ist. Lass uns schauen, wie du das n\u00E4chste Mal anders handeln k\u00F6nntest.',
+              ];
+              const validationMsg: ChatMessage = {
+                id: `msg-${++msgCounter.current}`,
+                type: 'thought',
+                text: `\u{1F49C} ${validations[Math.floor(Math.random() * validations.length)]}`,
+              };
+              setChatLog((prev) => [...prev, validationMsg]);
+
+              setTimeout(() => setAwaitingContinue(true), 600);
+            }, 1200);
+          } else {
+            // Good choice validation
+            if (points >= 3) {
+              setTimeout(() => {
+                const affirmations = [
+                  'Das zeigt echte Empathie. Du verstehst, was andere f\u00FChlen.',
+                  'Mut bedeutet nicht, keine Angst zu haben. Es bedeutet, trotzdem das Richtige zu tun.',
+                  'Du hast gerade gezeigt, dass du auf deine innere Stimme h\u00F6ren kannst.',
+                ];
+                const affirmMsg: ChatMessage = {
+                  id: `msg-${++msgCounter.current}`,
+                  type: 'thought',
+                  text: `\u2728 ${affirmations[Math.floor(Math.random() * affirmations.length)]}`,
+                };
+                setChatLog((prev) => [...prev, affirmMsg]);
+                setTimeout(() => setAwaitingContinue(true), 500);
+              }, 800);
+            } else {
+              setTimeout(() => setAwaitingContinue(true), 500);
+            }
+          }
         }, 800);
       } else {
         setTimeout(() => setAwaitingContinue(true), 500);
@@ -709,13 +747,25 @@ export default function ScenarioPlayer() {
           </motion.h2>
 
           <motion.p
-            className="text-sm mb-6"
+            className="text-sm mb-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
             style={{ color: 'rgba(232,224,208,0.7)' }}
           >
             &ldquo;{scenario.title}&rdquo;
+          </motion.p>
+
+          {/* Therapeutic validation message */}
+          <motion.p
+            className="text-xs mb-6 max-w-xs mx-auto leading-relaxed"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            style={{ color: 'rgba(200,180,140,0.5)' }}
+          >
+            Jede Geschichte, die du erlebst, macht dich st\u00E4rker.
+            Es geht nicht darum, perfekt zu sein {'\u2013'} es geht darum, hinzuschauen.
           </motion.p>
 
           {/* XP earned - subtle badge */}
