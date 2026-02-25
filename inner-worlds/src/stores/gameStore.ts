@@ -18,6 +18,11 @@ import type {
 } from '../types';
 
 // ---------------------------------------------------------------------------
+// Shadow Self (unused import kept for future component integration)
+// ---------------------------------------------------------------------------
+// import { getShadowEncounter } from '../data/shadowSelf';
+
+// ---------------------------------------------------------------------------
 // Combo multiplier steps
 // ---------------------------------------------------------------------------
 
@@ -112,6 +117,13 @@ interface GameStore extends GameState {
   // Travel
   startTravel: (origin: IslandId, destination: IslandId, vehicle: 'boat' | 'airplane') => void;
   completeTravel: () => void;
+
+  // Shadow Self
+  completeShadowEncounter: (islandId: IslandId) => void;
+  integrateShadow: () => void;
+
+  // Companion affection
+  increaseCompanionAffection: () => void;
 
   // Reset
   resetGame: () => void;
@@ -320,6 +332,11 @@ const initialState: GameState = {
   activeMiniGame: null,
   activeQuestId: null,
   completedMiniGameIds: [],
+
+  // Shadow Self arc
+  shadowEncountersCompleted: [] as IslandId[],
+  shadowIntegrated: false,
+  companionAffection: 1,
 };
 
 // ---------------------------------------------------------------------------
@@ -865,6 +882,48 @@ export const useGameStore = create<GameStore>()(
           travelDestination: null,
           travelVehicle: null,
         })),
+
+      // ------------------------------------------------------------------
+      // Shadow Self
+      // ------------------------------------------------------------------
+
+      completeShadowEncounter: (islandId: IslandId) =>
+        set((state) => {
+          if (state.shadowEncountersCompleted.includes(islandId)) return state;
+          const shadowEncountersCompleted = [...state.shadowEncountersCompleted, islandId];
+          const lastEvent: GameEvent = {
+            type: 'shadow-encounter',
+            data: { islandId, totalEncounters: shadowEncountersCompleted.length },
+            timestamp: Date.now(),
+          };
+          return { shadowEncountersCompleted, lastEvent };
+        }),
+
+      integrateShadow: () =>
+        set(() => {
+          const lastEvent: GameEvent = {
+            type: 'shadow-integrated',
+            data: { message: 'Du hast dein Schatten-Selbst umarmt.' },
+            timestamp: Date.now(),
+          };
+          return { shadowIntegrated: true, lastEvent };
+        }),
+
+      // ------------------------------------------------------------------
+      // Companion affection
+      // ------------------------------------------------------------------
+
+      increaseCompanionAffection: () =>
+        set((state) => {
+          const newAffection = Math.min(state.companionAffection + 1, 5);
+          if (newAffection === state.companionAffection) return state;
+          const lastEvent: GameEvent = {
+            type: 'companion-affection-up',
+            data: { level: newAffection },
+            timestamp: Date.now(),
+          };
+          return { companionAffection: newAffection, lastEvent };
+        }),
 
       // ------------------------------------------------------------------
       // Reset

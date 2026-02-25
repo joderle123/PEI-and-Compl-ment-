@@ -7,6 +7,10 @@ import { nightScenarios, nightActivities, nightWisdomCards } from './islands/nig
 import { rainbowScenarios, rainbowActivities, rainbowWisdomCards } from './islands/rainbow';
 import { homeScenarios, homeActivities, homeWisdomCards } from './islands/home';
 
+// Shadow Self & Companion systems
+export { shadowEncounters, getShadowEncounter, getShadowProgress, getCurrentHumanization } from './shadowSelf';
+export { companionBackstories, companionReactions, getCompanionBackstory, getCompanionReaction, getIslandArrivalComment } from './companions';
+
 // ---------------------------------------------------------------------------
 // NPC data for each island (4 NPCs per island, one per scenario)
 // ---------------------------------------------------------------------------
