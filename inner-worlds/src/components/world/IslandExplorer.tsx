@@ -380,6 +380,32 @@ const THEMES: Record<string, IslandTheme> = {
 };
 
 // ---------------------------------------------------------------------------
+// Island-specific post-processing configurations
+// Each island gets a unique visual treatment for atmosphere
+// ---------------------------------------------------------------------------
+
+const POST_FX: Record<string, {
+  bloomIntensity: number;
+  bloomThreshold: number;
+  saturation: number;
+  brightness: number;
+  contrast: number;
+  chromaticOffset: number;
+  tiltBlur: number;
+  vignetteDarkness: number;
+  vignetteOffset: number;
+}> = {
+  volcano: { bloomIntensity: 0.85, bloomThreshold: 0.32, saturation: 0.06, brightness: -0.03, contrast: 0.18, chromaticOffset: 0.0009, tiltBlur: 0.04, vignetteDarkness: 0.75, vignetteOffset: 0.05 },
+  ocean: { bloomIntensity: 0.5, bloomThreshold: 0.5, saturation: 0.22, brightness: 0.05, contrast: 0.07, chromaticOffset: 0.0003, tiltBlur: 0.1, vignetteDarkness: 0.4, vignetteOffset: 0.12 },
+  forest: { bloomIntensity: 0.7, bloomThreshold: 0.38, saturation: 0.12, brightness: -0.04, contrast: 0.14, chromaticOffset: 0.0003, tiltBlur: 0.07, vignetteDarkness: 0.65, vignetteOffset: 0.07 },
+  mountain: { bloomIntensity: 0.4, bloomThreshold: 0.52, saturation: 0.05, brightness: 0.04, contrast: 0.05, chromaticOffset: 0.0002, tiltBlur: 0.06, vignetteDarkness: 0.5, vignetteOffset: 0.1 },
+  garden: { bloomIntensity: 0.55, bloomThreshold: 0.45, saturation: 0.28, brightness: 0.04, contrast: 0.08, chromaticOffset: 0.0003, tiltBlur: 0.1, vignetteDarkness: 0.32, vignetteOffset: 0.14 },
+  night: { bloomIntensity: 1.0, bloomThreshold: 0.25, saturation: 0.08, brightness: -0.07, contrast: 0.1, chromaticOffset: 0.0008, tiltBlur: 0.04, vignetteDarkness: 0.85, vignetteOffset: 0.03 },
+  rainbow: { bloomIntensity: 0.7, bloomThreshold: 0.38, saturation: 0.35, brightness: 0.06, contrast: 0.1, chromaticOffset: 0.0005, tiltBlur: 0.08, vignetteDarkness: 0.28, vignetteOffset: 0.16 },
+  home: { bloomIntensity: 0.55, bloomThreshold: 0.48, saturation: 0.2, brightness: 0.03, contrast: 0.08, chromaticOffset: 0.0003, tiltBlur: 0.09, vignetteDarkness: 0.42, vignetteOffset: 0.12 },
+};
+
+// ---------------------------------------------------------------------------
 // 3D Sub-components: Ground
 // ---------------------------------------------------------------------------
 
@@ -1102,6 +1128,9 @@ function PlayerCharacter({
 }) {
   const internalRef = useRef<THREE.Group>(null);
   const walkCycle = useRef(0);
+  const idleTimer = useRef(0);
+  const headRef = useRef<THREE.Mesh>(null);
+  const torsoRef = useRef<THREE.Mesh>(null);
   const leftLegRef = useRef<THREE.Mesh>(null);
   const rightLegRef = useRef<THREE.Mesh>(null);
   const leftArmRef = useRef<THREE.Mesh>(null);
@@ -1152,6 +1181,7 @@ function PlayerCharacter({
     const speed = MOVE_SPEED * delta * 60;
 
     if (moving) {
+      idleTimer.current = 0;
       const newX = group.position.x + _moveDir.x * speed;
       const newZ = group.position.z + _moveDir.z * speed;
       const distFromCenter = Math.sqrt(newX * newX + newZ * newZ);
@@ -1172,12 +1202,34 @@ function PlayerCharacter({
       if (rightLegRef.current) rightLegRef.current.rotation.x = -swing;
       if (leftArmRef.current) leftArmRef.current.rotation.x = -swing * 0.6;
       if (rightArmRef.current) rightArmRef.current.rotation.x = swing * 0.6;
+      // Reset idle poses
+      if (headRef.current) { headRef.current.rotation.y *= 0.8; headRef.current.rotation.z *= 0.8; }
     } else {
+      idleTimer.current += delta;
       // Reset walk animation
       if (leftLegRef.current) leftLegRef.current.rotation.x *= 0.85;
       if (rightLegRef.current) rightLegRef.current.rotation.x *= 0.85;
       if (leftArmRef.current) leftArmRef.current.rotation.x *= 0.85;
       if (rightArmRef.current) rightArmRef.current.rotation.x *= 0.85;
+
+      // Idle animations: breathing + subtle head movement
+      const t = Date.now() * 0.001;
+      // Breathing: torso scale pulse
+      if (torsoRef.current) {
+        const breathe = 1 + Math.sin(t * 1.8) * 0.015;
+        torsoRef.current.scale.set(1, breathe, 1);
+      }
+      // Head look-around after 2 seconds idle
+      if (idleTimer.current > 2 && headRef.current) {
+        const lookPhase = (idleTimer.current - 2) * 0.3;
+        headRef.current.rotation.y = Math.sin(lookPhase) * 0.25;
+        headRef.current.rotation.z = Math.sin(lookPhase * 0.7 + 1) * 0.05;
+      }
+      // Subtle weight shift
+      if (idleTimer.current > 1) {
+        const shift = Math.sin(t * 0.8) * 0.02;
+        if (leftLegRef.current) leftLegRef.current.position.y = 0.3 + shift * 0.5;
+      }
     }
 
     // Sync external ref
@@ -1216,7 +1268,7 @@ function PlayerCharacter({
         <meshStandardMaterial color="#5a4020" roughness={0.8} />
       </mesh>
       {/* Torso */}
-      <mesh position={[0, 0.95, 0]} castShadow>
+      <mesh ref={torsoRef} position={[0, 0.95, 0]} castShadow>
         <boxGeometry args={[0.5, 0.65, 0.3]} />
         <meshStandardMaterial color={accentColor} roughness={0.7} />
       </mesh>
@@ -1226,7 +1278,7 @@ function PlayerCharacter({
         <meshStandardMaterial color="#f5d0b0" roughness={0.65} />
       </mesh>
       {/* Head */}
-      <mesh position={[0, 1.6, 0]} castShadow>
+      <mesh ref={headRef} position={[0, 1.6, 0]} castShadow>
         <boxGeometry args={[0.4, 0.4, 0.4]} />
         <meshStandardMaterial color="#f5d0b0" roughness={0.65} />
       </mesh>
@@ -3408,6 +3460,239 @@ function AmbientWildlife({ islandId, theme }: { islandId: string; theme: IslandT
 
 
 // ---------------------------------------------------------------------------
+// 3D: Shadow Self Entity (dark figure watching from a distance)
+// ---------------------------------------------------------------------------
+
+function ShadowSelfEntity({
+  islandId,
+  playerGroupRef,
+}: {
+  islandId: string;
+  playerGroupRef: { readonly current: THREE.Group | null };
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const bodyMatRef = useRef<THREE.MeshStandardMaterial>(null);
+  const auraRef = useRef<THREE.Mesh>(null);
+
+  // Shadow self positions per island (watching from the edges)
+  const shadowPos = useMemo((): Vec3 => {
+    const positions: Record<string, Vec3> = {
+      volcano: [GROUND_SIZE - 5, 0, -(GROUND_SIZE - 8)],
+      ocean: [-(GROUND_SIZE - 6), 0, GROUND_SIZE - 7],
+      forest: [GROUND_SIZE - 6, 0, GROUND_SIZE - 5],
+      mountain: [-(GROUND_SIZE - 5), 0, -(GROUND_SIZE - 6)],
+      garden: [GROUND_SIZE - 7, 0, -(GROUND_SIZE - 5)],
+      night: [-(GROUND_SIZE - 5), 0, -(GROUND_SIZE - 7)],
+      rainbow: [GROUND_SIZE - 5, 0, GROUND_SIZE - 6],
+    };
+    return positions[islandId] ?? [GROUND_SIZE - 5, 0, -(GROUND_SIZE - 5)];
+  }, [islandId]);
+
+  // Humanization progression: gets less threatening across islands
+  const humanization = useMemo(() => {
+    const levels: Record<string, number> = {
+      volcano: 0.1, ocean: 0.25, forest: 0.4, mountain: 0.55,
+      garden: 0.7, night: 0.8, rainbow: 0.9,
+    };
+    return levels[islandId] ?? 0.1;
+  }, [islandId]);
+
+  // Eye color shifts from threatening purple to warm gold as humanization increases
+  const eyeColor = useMemo(() => {
+    const c = new THREE.Color('#8800ff');
+    c.lerp(new THREE.Color('#ffaa44'), humanization);
+    return '#' + c.getHexString();
+  }, [humanization]);
+
+  useFrame(({ clock }) => {
+    if (!groupRef.current || !bodyMatRef.current) return;
+    const t = clock.getElapsedTime();
+
+    // Glitch flicker - less glitchy as humanization increases
+    const glitchThreshold = 0.92 + humanization * 0.07; // 0.92 → 0.99
+    const flicker = Math.sin(t * 15) > glitchThreshold ? 0 : 1;
+    const breathe = 0.95 + Math.sin(t * 1.5) * 0.05;
+    groupRef.current.scale.set(breathe, breathe * flicker, breathe);
+
+    // Face the player
+    if (playerGroupRef.current) {
+      const px = playerGroupRef.current.position.x;
+      const pz = playerGroupRef.current.position.z;
+      const angle = Math.atan2(px - shadowPos[0], pz - shadowPos[2]);
+      groupRef.current.rotation.y = angle;
+    }
+
+    // Pulsing dark aura
+    bodyMatRef.current.emissiveIntensity = 0.2 + Math.sin(t * 2) * 0.15;
+
+    // Aura pulse
+    if (auraRef.current) {
+      const pulse = 1.5 + Math.sin(t * 1.2) * 0.3;
+      auraRef.current.scale.setScalar(pulse);
+      (auraRef.current.material as THREE.MeshBasicMaterial).opacity = 0.06 + Math.sin(t * 2) * 0.03;
+    }
+  });
+
+  // Don't show on home island (integration happens in scenario)
+  if (islandId === 'home') return null;
+
+  return (
+    <group ref={groupRef} position={shadowPos}>
+      {/* Dark humanoid silhouette */}
+      <group>
+        {/* Legs */}
+        <mesh position={[-0.14, 0.3, 0]} castShadow>
+          <boxGeometry args={[0.17, 0.5, 0.2]} />
+          <meshStandardMaterial ref={bodyMatRef} color="#050008" emissive="#1a0030" emissiveIntensity={0.3} roughness={0.95} />
+        </mesh>
+        <mesh position={[0.14, 0.3, 0]} castShadow>
+          <boxGeometry args={[0.17, 0.5, 0.2]} />
+          <meshStandardMaterial color="#050008" emissive="#1a0030" emissiveIntensity={0.3} roughness={0.95} />
+        </mesh>
+        {/* Torso */}
+        <mesh position={[0, 0.95, 0]} castShadow>
+          <boxGeometry args={[0.5, 0.65, 0.3]} />
+          <meshStandardMaterial color="#050008" emissive="#1a0030" emissiveIntensity={0.3} roughness={0.95} />
+        </mesh>
+        {/* Head */}
+        <mesh position={[0, 1.6, 0]} castShadow>
+          <boxGeometry args={[0.4, 0.4, 0.4]} />
+          <meshStandardMaterial color="#050008" emissive="#1a0030" emissiveIntensity={0.3} roughness={0.95} />
+        </mesh>
+        {/* Glowing eyes */}
+        <mesh position={[0.1, 1.65, 0.21]}>
+          <boxGeometry args={[0.07, 0.07, 0.02]} />
+          <meshStandardMaterial color={eyeColor} emissive={eyeColor} emissiveIntensity={2.5} />
+        </mesh>
+        <mesh position={[-0.1, 1.65, 0.21]}>
+          <boxGeometry args={[0.07, 0.07, 0.02]} />
+          <meshStandardMaterial color={eyeColor} emissive={eyeColor} emissiveIntensity={2.5} />
+        </mesh>
+        {/* Arms */}
+        <mesh position={[-0.38, 0.9, 0]} castShadow>
+          <boxGeometry args={[0.14, 0.55, 0.14]} />
+          <meshStandardMaterial color="#050008" emissive="#1a0030" emissiveIntensity={0.3} roughness={0.95} />
+        </mesh>
+        <mesh position={[0.38, 0.9, 0]} castShadow>
+          <boxGeometry args={[0.14, 0.55, 0.14]} />
+          <meshStandardMaterial color="#050008" emissive="#1a0030" emissiveIntensity={0.3} roughness={0.95} />
+        </mesh>
+      </group>
+      {/* Dark aura sphere */}
+      <mesh ref={auraRef} position={[0, 1, 0]}>
+        <sphereGeometry args={[1.5, 12, 8]} />
+        <meshBasicMaterial color="#1a0030" transparent opacity={0.08} depthWrite={false} side={THREE.BackSide} />
+      </mesh>
+      {/* Ground shadow circle */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+        <circleGeometry args={[1.8, 16]} />
+        <meshBasicMaterial color="#0a0015" transparent opacity={0.25} />
+      </mesh>
+      {/* Subtle point light */}
+      <pointLight position={[0, 1.5, 0]} color="#4400aa" intensity={0.6} distance={8} decay={2} />
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 3D: Animated Lava Effect (Volcano island overlay)
+// ---------------------------------------------------------------------------
+
+function VolcanoLavaEffect() {
+  const lavaRef = useRef<THREE.Mesh>(null);
+  const streamsRef = useRef<THREE.Group>(null);
+  const poolRef = useRef<THREE.Mesh>(null);
+
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+
+    // Pulsing lava crater glow
+    if (lavaRef.current) {
+      const mat = lavaRef.current.material as THREE.MeshStandardMaterial;
+      mat.emissiveIntensity = 0.7 + Math.sin(t * 1.5) * 0.3 + Math.sin(t * 3.7) * 0.1;
+      lavaRef.current.scale.setScalar(1 + Math.sin(t * 3) * 0.04);
+    }
+
+    // Lava streams pulsing
+    if (streamsRef.current) {
+      streamsRef.current.children.forEach((stream, i) => {
+        const mat = (stream as THREE.Mesh).material as THREE.MeshStandardMaterial;
+        mat.emissiveIntensity = 0.4 + Math.sin(t * 2 + i * 1.5) * 0.25;
+        // Subtle flow wiggle
+        stream.position.y = stream.userData.baseY + Math.sin(t * 1.2 + i) * 0.05;
+      });
+    }
+
+    // Lava pool bubble effect
+    if (poolRef.current) {
+      const mat = poolRef.current.material as THREE.MeshStandardMaterial;
+      mat.emissiveIntensity = 0.5 + Math.sin(t * 2.5) * 0.2;
+      poolRef.current.scale.set(
+        1 + Math.sin(t * 1.8) * 0.03,
+        1,
+        1 + Math.cos(t * 2.1) * 0.03,
+      );
+    }
+  });
+
+  // Initialize stream base Y positions
+  useEffect(() => {
+    if (!streamsRef.current) return;
+    streamsRef.current.children.forEach((stream) => {
+      stream.userData.baseY = stream.position.y;
+    });
+  }, []);
+
+  return (
+    <group position={[0, 0, -2]}>
+      {/* Animated lava surface in crater (on top of existing CentralLandmark) */}
+      <mesh ref={lavaRef} position={[0, 5.2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[1.0, 16]} />
+        <meshStandardMaterial
+          color="#ff6600"
+          emissive="#ff2200"
+          emissiveIntensity={0.8}
+          roughness={0.15}
+        />
+      </mesh>
+
+      {/* Animated lava streams flowing down */}
+      <group ref={streamsRef}>
+        <mesh position={[1.6, 1.8, 0.9]} rotation={[0, 0.3, 0.65]}>
+          <planeGeometry args={[0.35, 3.8]} />
+          <meshStandardMaterial color="#ff4400" emissive="#ff2200" emissiveIntensity={0.5} side={THREE.DoubleSide} transparent opacity={0.85} />
+        </mesh>
+        <mesh position={[-1.1, 1.5, -1.3]} rotation={[0, -0.5, -0.5]}>
+          <planeGeometry args={[0.3, 3.2]} />
+          <meshStandardMaterial color="#ff5500" emissive="#ff2200" emissiveIntensity={0.4} side={THREE.DoubleSide} transparent opacity={0.8} />
+        </mesh>
+        <mesh position={[0.4, 1.2, 1.6]} rotation={[0, 0.8, 0.55]}>
+          <planeGeometry args={[0.25, 2.8]} />
+          <meshStandardMaterial color="#ff3300" emissive="#ff1100" emissiveIntensity={0.45} side={THREE.DoubleSide} transparent opacity={0.75} />
+        </mesh>
+      </group>
+
+      {/* Lava pool at volcano base */}
+      <mesh ref={poolRef} position={[3.5, 0.08, 2]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[1.8, 12]} />
+        <meshStandardMaterial
+          color="#ff4400"
+          emissive="#ff2200"
+          emissiveIntensity={0.5}
+          roughness={0.2}
+          transparent
+          opacity={0.9}
+        />
+      </mesh>
+
+      {/* Heat glow lights around lava */}
+      <pointLight position={[0, 5.5, 0]} color="#ff4400" intensity={1.2} distance={12} decay={2} />
+      <pointLight position={[3.5, 0.5, 2]} color="#ff3300" intensity={0.6} distance={6} decay={2} />
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // 3D: Dock & Airport (departure points for inter-island travel)
 // ---------------------------------------------------------------------------
 
@@ -4376,6 +4661,12 @@ function WorldScene({
       {/* Ambient wildlife (butterflies, fireflies, fish) */}
       <AmbientWildlife islandId={islandId} theme={theme} />
 
+      {/* Shadow Self - dark figure watching from a distance */}
+      <ShadowSelfEntity islandId={islandId} playerGroupRef={playerGroupRef} />
+
+      {/* Animated lava effects (volcano only) */}
+      {islandId === 'volcano' && <VolcanoLavaEffect />}
+
       {/* Dock area (harbor for boat travel) */}
       <DockArea theme={theme} />
 
@@ -4656,6 +4947,7 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
   const islandMeta = islands.find((i) => i.id === islandId);
   const islandData = useMemo(() => getIslandData(islandId), [islandId]);
   const theme = THEMES[islandId] ?? THEMES.volcano;
+  const postFx = POST_FX[islandId] ?? POST_FX.volcano;
 
   // Current chapter progress for this island
   const currentProgress = useMemo(
@@ -4878,12 +5170,12 @@ export default function IslandExplorer({ onStartMiniGame, onBack }: IslandExplor
         />
         <EffectComposer multisampling={0}>
           <N8AO aoRadius={0.5} intensity={2.5} aoSamples={6} denoiseSamples={4} distanceFalloff={1} halfRes />
-          <Bloom luminanceThreshold={0.45} luminanceSmoothing={0.9} intensity={0.6} mipmapBlur />
-          <HueSaturation saturation={0.18} />
-          <BrightnessContrast brightness={0.03} contrast={0.1} />
-          <ChromaticAberration offset={[0.0004, 0.0004]} blendFunction={BlendFunction.NORMAL} />
-          <TiltShift2 blur={0.08} />
-          <Vignette eskil={false} offset={0.1} darkness={0.55} />
+          <Bloom luminanceThreshold={postFx.bloomThreshold} luminanceSmoothing={0.9} intensity={postFx.bloomIntensity} mipmapBlur />
+          <HueSaturation saturation={postFx.saturation} />
+          <BrightnessContrast brightness={postFx.brightness} contrast={postFx.contrast} />
+          <ChromaticAberration offset={[postFx.chromaticOffset, postFx.chromaticOffset]} blendFunction={BlendFunction.NORMAL} />
+          <TiltShift2 blur={postFx.tiltBlur} />
+          <Vignette eskil={false} offset={postFx.vignetteOffset} darkness={postFx.vignetteDarkness} />
         </EffectComposer>
       </Canvas>
 
