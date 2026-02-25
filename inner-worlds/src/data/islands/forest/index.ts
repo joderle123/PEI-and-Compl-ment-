@@ -609,6 +609,14 @@ export const forestScenarios: Scenario[] = [
             consequence: 'Der Konflikt zwischen Wissen und Angst ist quälend. Du weißt, dass du es kannst. Aber dein Körper weigert sich. Das liegt daran, dass die Amygdala schneller reagiert als dein Verstand. Die gute Nachricht: Mit Übung kannst du lernen, deinem Verstand die Führung zurückzugeben.',
             nextSceneId: 'f3-s2',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'f3-s1-c4',
+            text: '"Wer sich nicht traut, sich zu melden, hat halt Pech. Im Leben setzen sich die Starken durch, nicht die Ängstlichen."',
+            consequence: 'Du redest, als wäre das Leben ein Wettbewerb, in dem Angsthasen verlieren. Das ist eine gefährliche Denkweise. Angst macht niemanden schwach, und Stärke hat nichts damit zu tun, ob man sich im Unterricht meldet. Mit dieser Einstellung lernst du nichts über Angst und machst Menschen, die damit kämpfen, nur noch kleiner.',
+            isWrong: true,
+            nextSceneId: 'f3-s2',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -638,6 +646,14 @@ export const forestScenarios: Scenario[] = [
             consequence: 'Das ist der Kern der stufenweisen Annäherung. Dein Gehirn lernt am besten durch Erfahrung, nicht durch Worte. Jedes Mal, wenn du etwas tust und die befürchtete Katastrophe nicht eintritt, lernt dein Gehirn ein Stück mehr, dass es sicher ist.',
             nextSceneId: 'f3-s3',
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'f3-s2-c4',
+            text: '"Einfach nicht dran denken. Ignoriere die Angst, dann geht sie von allein weg."',
+            consequence: 'Du rätst Finn, seine Angst einfach zu unterdrücken und zu ignorieren. Das funktioniert nicht. Unterdrückte Gefühle verschwinden nicht, sie werden stärker. Es ist wie ein Ball, den du unter Wasser drückst: Je fester du drückst, desto heftiger springt er hoch, wenn du loslässt. Angst muss verstanden und verarbeitet werden, nicht ignoriert.',
+            isWrong: true,
+            nextSceneId: 'f3-s3',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -667,6 +683,14 @@ export const forestScenarios: Scenario[] = [
             consequence: 'Sich selbst daran zu erinnern, dass man in Sicherheit ist, nennt man "Realitätscheck". Dein Körper reagiert, als wäre eine Katastrophe im Gange. Aber die Realität ist: Du stehst in einer Schule, umgeben von Menschen, die dir nichts tun wollen. Diesen Unterschied bewusst zu benennen, hilft deinem Gehirn, den Alarm herunterzufahren.',
             nextSceneId: 'f3-s4',
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'f3-s3-c4',
+            text: '"Ach, das passiert jedem mal. Mach dir keinen Kopf, beim nächsten Mal wird es schon besser."',
+            consequence: 'Du tust so, als würde sich das Problem von allein lösen, wenn man es nur ignoriert. Das ist toxische Positivität. Finn braucht keine leeren Phrasen, sondern echte Werkzeuge. Ohne Atemtechnik, ohne Muskelentspannung, ohne positiven Selbsttalk wird das nächste Referat genauso enden wie das letzte. Gute Absichten ohne konkrete Hilfe ändern nichts.',
+            isWrong: true,
+            nextSceneId: 'f3-s4',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },

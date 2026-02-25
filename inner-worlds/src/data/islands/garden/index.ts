@@ -933,6 +933,21 @@ export const gardenScenarios: Scenario[] = [
               'Was brauchst du? Nicht: Was willst du?',
             nextSceneId: 'g3-s4',
             points: { empathyPoints: 3, insightPoints: 1, couragePoints: 2 }
+          },
+          {
+            id: 'g3-s3-c4',
+            text:
+              '"Jonas, du heulst wegen deiner Eltern? Das ist doch keine ' +
+              'Ausrede. Wir reden hier ueber den Garten, nicht ueber deine ' +
+              'Probleme."',
+            consequence:
+              'Jonas hat sich geoeffnet und etwas sehr Persoenliches geteilt – ' +
+              'und du hast es abgewertet. Wer den Mut anderer bestraft, sorgt ' +
+              'dafuer, dass sich nie wieder jemand oeffnet. Persoenliche Geschichten ' +
+              'zu teilen braucht Vertrauen, und du hast es gerade zerstoert.',
+            isWrong: true,
+            nextSceneId: 'g3-s4',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -986,6 +1001,20 @@ export const gardenScenarios: Scenario[] = [
               'durch Durchsetzen. Das gilt ueberall.',
             nextSceneId: 'g3-s5',
             points: { empathyPoints: 1, insightPoints: 3, couragePoints: 1 }
+          },
+          {
+            id: 'g3-s4-c4',
+            text:
+              '"Kompromisse sind fuer Schwache. Einer muss gewinnen, die ' +
+              'anderen passen sich an. So laeuft das im echten Leben."',
+            consequence:
+              'Du hast die gemeinsame Loesung torpediert. Wer Zusammenarbeit ' +
+              'als Schwaeche sieht, endet allein. Die besten Ergebnisse ' +
+              'entstehen, wenn alle ihre Staerken einbringen – nicht wenn ' +
+              'einer alle anderen unterdrueckt.',
+            isWrong: true,
+            nextSceneId: 'g3-s5',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -1040,6 +1069,21 @@ export const gardenScenarios: Scenario[] = [
               'sondern der ehrliche Wille zur Verstaendigung.',
             nextSceneId: null,
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'g3-s5-c4',
+            text:
+              '"Ich-Botschaften und aktives Zuhoeren? Das klingt nach Therapie. ' +
+              'Im echten Leben setzt sich der Staerkere durch."',
+            consequence:
+              'Du hast die Werkzeuge abgelehnt, die Konflikte loesen koennen. ' +
+              'Wer glaubt, Staerke sei das einzige, was zaehlt, verwechselt ' +
+              'Durchsetzung mit Verbindung. Die "staerksten" Menschen sind ' +
+              'oft die einsamsten – weil niemand gerne mit jemandem redet, ' +
+              'der nie zuhoert.',
+            isWrong: true,
+            nextSceneId: null,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       }

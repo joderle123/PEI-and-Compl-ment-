@@ -434,6 +434,14 @@ export const rainbowScenarios: Scenario[] = [
             consequence: 'Spoiler: Es regelt sich nicht von allein. Konflikte, die ignoriert werden, verschwinden nicht – sie wachsen. In der Psychologie gibt es den Begriff «Konfliktvermeidung»: Man hofft, das Problem verschwindet, aber in Wahrheit wird es nur schlimmer. Jemand muss den Anfang machen.',
             nextSceneId: 'r3-s2',
             points: { empathyPoints: 0, insightPoints: 1, couragePoints: 0 }
+          },
+          {
+            id: 'r3-s1-c4',
+            text: '«Kann ich nicht die Gruppe wechseln? Ich will mit meinen Freunden arbeiten, nicht mit Leuten, die ich nicht kenne und die eh ganz anders sind.»',
+            consequence: 'Du wählst die Komfortzone – und schließt damit alle aus, die nicht in deine gewohnte Welt passen. «Die sind eh ganz anders» – woher weißt du das? Du hast noch kein einziges Wort mit ihnen gewechselt. Was du gerade tust, nennt man «In-Group-Bias»: die Bevorzugung der eigenen Gruppe und die Ablehnung aller, die nicht dazugehören. Das ist einer der ältesten Mechanismen des menschlichen Gehirns – und einer der gefährlichsten. Denn er führt zu Grüppchenbildung, Ausgrenzung und am Ende zu einer Gesellschaft, in der jeder nur noch mit Seinesgleichen redet. Amir, Lena und Sarah hören deinen Satz. Für sie heißt er: «Du bist nicht gut genug für meine Welt.» Das tut weh – und es zerstört jede Chance auf echte Begegnung, bevor sie überhaupt beginnen konnte.',
+            nextSceneId: 'r3-s2',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            isWrong: true
           }
         ]
       },
@@ -456,6 +464,14 @@ export const rainbowScenarios: Scenario[] = [
             consequence: 'Du findest den Mittelweg – du erkennst beide Standpunkte an und suchst nach Verbindung statt Trennung. Das ist eine Schlüsselkompetenz: In Konflikten nicht «Wer hat recht?» fragen, sondern «Was können wir voneinander lernen?» Die Gruppe merkt: Es geht nicht ums Gewinnen, sondern ums Verstehen.',
             nextSceneId: 'r3-s3',
             points: { empathyPoints: 3, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'r3-s2-c3',
+            text: '«Sonderbehandlung ist unfair. Jeder ist seines Glückes Schmied – wer es nicht schafft, ist selbst schuld. So einfach ist das.»',
+            consequence: 'Dieser Satz klingt «fair» – ist aber das Gegenteil. «Jeder ist seines Glückes Schmied» funktioniert nur, wenn alle mit dem gleichen Werkzeug starten. Aber das tun sie nicht. Lena startet mit Treppen, die sie nicht hochkommt. Amir startet mit einer Sprache, die nicht seine ist. Paul startet mit einem leeren Geldbeutel. Wenn du sagst «selbst schuld», ignorierst du alle Hindernisse, die diese Menschen nicht selbst gewählt haben. Das nennt man den «Meritokratie-Mythos»: der Glaube, dass Erfolg nur von Leistung abhängt. Aber Forschung zeigt klar: Wo du geboren wirst, wie viel Geld deine Eltern haben, welche Hautfarbe du hast – all das beeinflusst deine Chancen massiv. Lena schaut dich an und sagt leise: «Ich hab mir meinen Rollstuhl nicht ausgesucht. Trotzdem soll ich selbst schuld sein, wenn die Welt nicht für mich gebaut ist?» Darauf hast du keine Antwort – weil es keine gibt.',
+            nextSceneId: 'r3-s3',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            isWrong: true
           }
         ]
       },
@@ -485,6 +501,14 @@ export const rainbowScenarios: Scenario[] = [
             consequence: 'Du suchst dir einen Verbündeten – das ist schlau und mutig zugleich. Gemeinsam fühlt man sich sicherer. Max zögert, aber dann nickt er. Ihr geht zusammen zu Sarah. Allein wärt ihr vielleicht unsicher gewesen, aber zusammen seid ihr stärker. Das ist die Kraft von Verbündeten: Man muss nicht alles allein machen.',
             nextSceneId: 'r3-s4',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'r3-s3-c4',
+            text: 'Denken: «Naja, wer ein Kopftuch trägt, muss halt mit solchen Kommentaren rechnen. Das ist doch klar – wer auffällt, wird angesprochen.»',
+            consequence: 'Du gibst Sarah die Schuld dafür, dass sie belästigt wird. Das nennt man «Victim Blaming» – Täter-Opfer-Umkehr. Du sagst: «Du bist selbst schuld, weil du anders aussiehst.» Aber Moment: Niemand hat das Recht, andere Menschen wegen ihres Aussehens, ihrer Kleidung oder ihres Glaubens zu belästigen. Sarah trägt ihr Kopftuch aus Überzeugung. Es ist Teil ihrer Identität – genauso wie dein Lieblings-Hoodie Teil deiner ist. Würdest du akzeptieren, wenn jemand dich wegen deiner Kleidung verspottet und dann sagt: «Tja, selbst schuld, zieh dich halt anders an»? Victim Blaming ist einer der giftigsten Mechanismen der Diskriminierung: Er schützt den Täter und bestraft das Opfer. Und er sorgt dafür, dass Betroffene schweigen – weil sie glauben, sie hätten es verdient. Sarah hat NICHTS verdient außer Respekt.',
+            nextSceneId: 'r3-s4',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            isWrong: true
           }
         ]
       },

@@ -427,6 +427,14 @@ export const nightScenarios: Scenario[] = [
             consequence: 'Yuki ist nervoes, aber auch neugierig. Zum ersten Mal freut sie sich auf morgen – und nicht auf den naechsten Feed.',
             nextSceneId: null,
             points: { empathyPoints: 1, insightPoints: 2, couragePoints: 2 }
+          },
+          {
+            id: 'n2-s5-c4',
+            text: '"Morgen kannst du ja wieder normal weiterscrollen. Eine Nacht ohne Handy aendert sowieso nichts."',
+            consequence: 'Yuki verliert die Motivation. Ohne den Glauben an Veraenderung gibt es keinen Grund, es ueberhaupt zu versuchen. Jede Veraenderung beginnt mit einem einzigen Schritt – und den hast du ihr gerade genommen.',
+            nextSceneId: null,
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       }
@@ -473,6 +481,14 @@ export const nightScenarios: Scenario[] = [
             consequence: 'Yuki entspannt sich. Nicht GEGEN den Sturm – DURCH ihn hindurch.',
             nextSceneId: 'n3-s2',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'n3-s1-c4',
+            text: '"Achtsamkeit ist doch Quatsch – das bringt nichts. Nimm lieber eine Schlaftablette, dann schlaefst du sofort."',
+            consequence: 'Yuki verliert das Vertrauen in die Werkzeuge, bevor sie sie ausprobieren konnte. Schnelle chemische Loesungen ersetzen keine echte Bewaeltigungsstrategie und koennen abhaengig machen.',
+            nextSceneId: 'n3-s2',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -502,6 +518,14 @@ export const nightScenarios: Scenario[] = [
             consequence: 'Yuki laechelt. "Eine geheime Superkraft." Genau. Eine, die man nicht sehen kann – aber die alles veraendert.',
             nextSceneId: 'n3-s3',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'n3-s2-c4',
+            text: '"Das ist doch Kinderkram! Du brauchst keine Uebungen – reiss dich einfach zusammen!"',
+            consequence: 'Yuki schaemt sich. Die Idee, dass Hilfe-Suchen und Uebungen Kinderkram sind, haelt sie davon ab, weiterzumachen. Zusammenreissen klingt stark, ist aber nur Unterdrueckung.',
+            nextSceneId: 'n3-s3',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -531,6 +555,14 @@ export const nightScenarios: Scenario[] = [
             consequence: 'Yuki zaehlt mit. Nach vier Runden sagt sie: "Ich fuehle mich... klarer. Als haette jemand ein Fenster geoeffnet."',
             nextSceneId: 'n3-s4',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'n3-s3-c4',
+            text: '"Atmen tust du doch sowieso den ganzen Tag. So ein Unsinn bringt gegen echten Stress ueberhaupt nichts."',
+            consequence: 'Yuki zweifelt an der Technik. Ohne Vertrauen in die Uebung kann sie nicht wirken. Wissenschaftlich bewiesene Methoden abzutun, nimmt Yuki ein maechtiges Werkzeug.',
+            nextSceneId: 'n3-s4',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },
@@ -560,6 +592,14 @@ export const nightScenarios: Scenario[] = [
             consequence: 'Yuki versteht: Achtsamkeit ist kein einmaliges Ding. Es ist eine Uebung, die mit der Zeit staerker wird.',
             nextSceneId: 'n3-s5',
             points: { empathyPoints: 2, insightPoints: 2, couragePoints: 1 }
+          },
+          {
+            id: 'n3-s4-c4',
+            text: '"Schlaf ist total ueberbewertet. Man kann locker mit 4 Stunden klarkommen – die erfolgreichsten Leute schlafen kaum!"',
+            consequence: 'Yuki glaubt, wenig Schlaf sei normal. Aber chronischer Schlafmangel schadet dem Gehirn, der Stimmung und der Konzentration enorm. Schlaf ist kein Luxus – er ist lebensnotwendig.',
+            nextSceneId: 'n3-s5',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 }
           }
         ]
       },

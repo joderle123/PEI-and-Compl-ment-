@@ -523,6 +523,15 @@ export const mountainScenarios: Scenario[] = [
             couragePoints: 2,
             nextSceneId: 'm3-s4',
           },
+          {
+            id: 'm3-s3-c4',
+            text: '«Das war einfach nur Glück. Beim nächsten Mal schaffst du das wahrscheinlich nicht nochmal.»',
+            isWrong: true,
+            consequence:
+              'Das Funkeln in Lenas Augen verschwindet sofort. «Ja … wahrscheinlich war es nur Zufall.» Sie macht sich wieder klein. Du hast gerade Lenas Erfolg entwertet, indem du ihn auf Glück reduziert hast. Das ist eine zerstörerische Botschaft: Wenn Erfolge «nur Glück» sind, aber Misserfolge «Beweis für Unfähigkeit», dann kann man nur verlieren. Lenas Leistung war echt – sie hat kreativ gedacht und eine Lösung gefunden. Das hat nichts mit Glück zu tun. Stärken kleinzureden ist genauso schädlich wie Schwächen zu übertreiben.',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+            nextSceneId: 'm3-s4',
+          },
         ],
       },
       {
@@ -549,6 +558,15 @@ export const mountainScenarios: Scenario[] = [
             empathyPoints: 2,
             insightPoints: 4,
             couragePoints: 3,
+            nextSceneId: null,
+          },
+          {
+            id: 'm3-s4-c3',
+            text: '«Wie wäre es mit: ‹Ich muss perfekt sein, damit mich die Leute mögen›? Das motiviert dich bestimmt!»',
+            isWrong: true,
+            consequence:
+              'Lena wiederholt den Satz leise: «Ich muss perfekt sein, damit mich die Leute mögen.» Dann sackt sie in sich zusammen. «Aber … ich bin nicht perfekt. Heißt das, mich mag niemand?» Das war keine Affirmation – das war ein Fluch. Du hast Lenas Wert an Perfektion geknüpft und damit an eine Bedingung, die kein Mensch jemals erfüllen kann. Echte Affirmationen sind bedingungslos: «Ich bin genug, so wie ich bin.» Nicht: «Ich bin genug, WENN ich perfekt bin.» Perfektionismus ist der Feind des Selbstwerts, nicht sein Freund.',
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
             nextSceneId: null,
           },
         ],

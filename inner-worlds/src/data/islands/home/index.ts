@@ -542,6 +542,15 @@ export const homeScenarios: Scenario[] = [
             couragePoints: 3,
             nextSceneId: 'home-s3-scene-3',
           },
+          {
+            id: 'home-s3-c2c',
+            text: '"Das geht mich nichts an. Ich bin nicht ihr Therapeut. Soll sie selber klarkommen."',
+            consequence:
+              'Du drehst dich um und gehst. Sarah bleibt allein -- mit Gedanken, die viel zu schwer sind fuer eine Person. Und du? Du redest dir ein, dass es dich nichts angeht. Aber auf jeder Insel hast du gelernt: Hinschauen, wenn jemand leidet, ist keine Pflicht -- es ist Menschlichkeit. Wegsehen, wenn jemand sagt "Ich will nicht mehr da sein", kann Folgen haben, die du nie wieder rueckgaengig machen kannst.',
+            nextSceneId: 'home-s3-scene-3',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+          },
         ],
       },
       // Scene 3 -- Mit einer Vertrauensperson reden
@@ -570,6 +579,15 @@ export const homeScenarios: Scenario[] = [
             insightPoints: 3,
             couragePoints: 1,
             nextSceneId: 'home-s3-scene-4',
+          },
+          {
+            id: 'home-s3-c3c',
+            text: '"Mir geht es gut. Ich brauche keine Hilfe. Ich schaffe alles allein."',
+            consequence:
+              'Frau Klein schaut dich pruefend an. "Bist du sicher?" Du nickst, stehst auf und gehst. Aber auf dem Flur merkst du: Die Last ist immer noch da. Schwerer als vorher, weil du gerade eine Chance auf Entlastung abgelehnt hast. Auf der Berg-Insel hast du gelernt, dass du genug bist. Aber "genug" heisst nicht "allein". Hilfe anzunehmen ist keine Schwaeche -- sie abzulehnen aus Stolz schon.',
+            nextSceneId: 'home-s3-scene-4',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
           },
         ],
       },
@@ -600,6 +618,15 @@ export const homeScenarios: Scenario[] = [
             couragePoints: 2,
             nextSceneId: 'home-s3-scene-5',
           },
+          {
+            id: 'home-s3-c4c',
+            text: '"Ich brauche keine Vertrauenspersonen. Andere Menschen enttaeuschen einen eh nur."',
+            consequence:
+              'Frau Klein wird still. Dann sagt sie: "Das klingt nach jemandem, der schon mal enttaeuscht wurde. Und das tut mir leid. Aber wenn du alle Menschen ausschliesst, schliesst du auch die aus, die dir helfen wollen." Du zuckst die Schultern, aber ihre Worte treffen einen Nerv. Auf der Garten-Insel hast du gelernt: Vertrauen ist ein Risiko -- aber ohne Vertrauen gibt es keine echte Verbindung. Zynismus schuetzt nicht. Er macht einsam.',
+            nextSceneId: 'home-s3-scene-5',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
+          },
         ],
       },
       // Scene 5 -- Fuer andere da sein UND fuer sich selbst
@@ -628,6 +655,15 @@ export const homeScenarios: Scenario[] = [
             insightPoints: 3,
             couragePoints: 2,
             nextSceneId: null,
+          },
+          {
+            id: 'home-s3-c5c',
+            text: '"Das war alles nur ein Gespraech. Im echten Leben aendert sich dadurch sowieso nichts."',
+            consequence:
+              'Der Guide schuettelt traurig den Kopf. "Du hast gerade etwas Wichtiges getan -- du hast Hilfe geholt, du hast geredet, du hast zugehoert. Und jetzt sagst du, es bringt nichts? Das ist die Stimme der Resignation, nicht der Wahrheit. Auf jeder Insel hast du erlebt, dass kleine Schritte grosse Wirkung haben. Ein Gespraech kann ein Leben veraendern. Deins. Oder das von Sarah. Aber nur, wenn du daran glaubst."',
+            nextSceneId: null,
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
           },
         ],
       },
@@ -673,6 +709,15 @@ export const homeScenarios: Scenario[] = [
             insightPoints: 3,
             couragePoints: 2,
             nextSceneId: 'home-s4-scene-2',
+          },
+          {
+            id: 'home-s4-c1c',
+            text: '"Das war alles nur ein Spiel. Im echten Leben hilft das sowieso nicht."',
+            consequence:
+              'Der Guide wird still. Dann sagt er leise: "Wirklich? War es nur ein Spiel, als du jemandem zugehoert hast, der traurig war? War es nur ein Spiel, als du Nein gesagt hast, obwohl alle Ja gesagt haben? Jede Entscheidung, die du hier getroffen hast, war echt -- weil die Gefuehle dahinter echt waren. Zu sagen, dass nichts zaehlt, ist der einfachste Weg, alles, was du gelernt hast, wegzuwerfen. Und das waere schade."',
+            nextSceneId: 'home-s4-scene-2',
+            isWrong: true,
+            points: { empathyPoints: 0, insightPoints: 0, couragePoints: 0 },
           },
         ],
       },
