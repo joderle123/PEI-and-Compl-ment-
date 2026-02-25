@@ -620,6 +620,78 @@ export interface IslandStory {
 }
 
 // -----------------------------------------------------------------------------
+// Shadow Self (Overarching Story Arc)
+// -----------------------------------------------------------------------------
+
+/** A shadow encounter that occurs on each island as part of the overarching narrative */
+export interface ShadowEncounter {
+  /** Island where this encounter takes place */
+  islandId: IslandId;
+  /** When during the island this encounter triggers (chapter completion) */
+  triggerChapter: number;
+  /** The shadow's appearance description for this island */
+  appearance: string;
+  /** The shadow's monologue - the uncomfortable truth it represents */
+  monologue: string;
+  /** The therapeutic message the player learns from this encounter */
+  lesson: string;
+  /** Player response choices for the shadow encounter */
+  responses: ShadowResponse[];
+  /** Visual effect intensity (0-1, increases with each island) */
+  humanization: number;
+}
+
+/** A player response to the shadow self */
+export interface ShadowResponse {
+  /** Response text */
+  text: string;
+  /** Shadow's reaction to this response */
+  reaction: string;
+  /** Whether this response shows understanding/acceptance */
+  isAccepting: boolean;
+}
+
+// -----------------------------------------------------------------------------
+// Companion Backstory & Reactions
+// -----------------------------------------------------------------------------
+
+/** A companion's personal backstory, revealed at affection level 3 */
+export interface CompanionBackstory {
+  /** Companion type this belongs to */
+  type: CompanionType;
+  /** The backstory narrative (told in first person) */
+  story: string;
+  /** The therapeutic parallel to the game's themes */
+  parallel: string;
+}
+
+/** Companion reactions to player choices */
+export interface CompanionReaction {
+  /** Reaction to good choices */
+  goodChoice: string[];
+  /** Reaction to wrong choices */
+  wrongChoice: string[];
+  /** Reaction to shadow encounters */
+  shadowEncounter: string[];
+  /** Island-specific comments when arriving */
+  islandArrival: Record<IslandId, string>;
+}
+
+// -----------------------------------------------------------------------------
+// Real-World Transfer Prompts
+// -----------------------------------------------------------------------------
+
+/** A transfer prompt connecting game content to real life */
+export interface TransferPrompt {
+  /** The scenario this prompt follows */
+  scenarioId: string;
+  /** The prompt text shown to the player */
+  prompt: string;
+  /** A hint/example to help the player think */
+  hint: string;
+}
+
+// -----------------------------------------------------------------------------
 // Game State
 // -----------------------------------------------------------------------------
 
@@ -702,4 +774,12 @@ export interface GameState {
   activeQuestId: string | null;
   /** IDs of all completed mini-games across all islands */
   completedMiniGameIds: string[];
+
+  // Shadow Self arc
+  /** IDs of islands where the shadow self has been encountered */
+  shadowEncountersCompleted: IslandId[];
+  /** Whether the final shadow integration (Home island) is complete */
+  shadowIntegrated: boolean;
+  /** Companion affection level (1-5, increases with good choices) */
+  companionAffection: number;
 }
