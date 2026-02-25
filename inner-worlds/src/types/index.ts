@@ -300,7 +300,7 @@ export interface Activity {
 // Journal
 // -----------------------------------------------------------------------------
 
-/** A journal entry written by the player */
+/** A journal entry written by the player ("Logbuch des Seelentauchers") */
 export interface JournalEntry {
   /** Unique entry identifier */
   id: string;
@@ -312,6 +312,18 @@ export interface JournalEntry {
   response: string;
   /** The island context in which this entry was written */
   islandId: IslandId;
+  /** Optional mood emoji at time of writing */
+  mood?: string;
+  /** Which scenario triggered this entry */
+  scenarioId?: string;
+  /** Which NPC was involved */
+  npcName?: string;
+  /** Type of journal entry */
+  entryType?: 'reflection' | 'transfer' | 'shadow' | 'companion' | 'free';
+  /** Emotional tags/themes */
+  tags?: string[];
+  /** Emotional intensity 1-5 */
+  emotionalIntensity?: number;
 }
 
 // -----------------------------------------------------------------------------

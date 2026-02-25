@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../../stores/gameStore';
 import { getIslandData } from '../../data';
+import { getTransferPrompt } from '../../data/transferPrompts';
 import type { IslandId } from '../../types';
 
 // ---------------------------------------------------------------------------
@@ -444,6 +445,8 @@ export default function ScenarioPlayer() {
   const [earnedXP, setEarnedXP] = useState(0);
   const [activeToasts, setActiveToasts] = useState<SkillToast[]>([]);
   const [showReflection, setShowReflection] = useState(false);
+  const [showTransferPrompt, setShowTransferPrompt] = useState(false);
+  const [transferResponse, setTransferResponse] = useState('');
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const msgCounter = useRef(0);
@@ -612,7 +615,21 @@ export default function ScenarioPlayer() {
         prompt: `Reflexion zu "${scenario?.title}"`,
         response: reflection,
         islandId,
+        entryType: 'reflection',
+        scenarioId: scenario?.id,
       });
+    }
+    if (transferResponse.trim()) {
+      const tp = scenarioId ? getTransferPrompt(scenarioId) : undefined;
+      addJournalEntry({
+        date: new Date().toISOString(),
+        prompt: tp?.prompt || 'Transfer-Reflexion',
+        response: transferResponse,
+        islandId,
+        entryType: 'transfer',
+        scenarioId: scenario?.id,
+      });
+      addXP(20); // Bonus XP for transfer prompt
     }
     setScreen('island');
   };
@@ -718,8 +735,8 @@ export default function ScenarioPlayer() {
             </span>
           </motion.div>
 
-          {/* Reflection - conversational */}
-          {!showReflection ? (
+          {/* Reflection & Transfer Prompt - conversational flow */}
+          {!showReflection && !showTransferPrompt ? (
             <motion.div
               className="space-y-3"
               initial={{ opacity: 0 }}
@@ -754,7 +771,7 @@ export default function ScenarioPlayer() {
                 Weiter erkunden {'\u2192'}
               </motion.button>
             </motion.div>
-          ) : (
+          ) : showReflection && !showTransferPrompt ? (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -787,6 +804,107 @@ export default function ScenarioPlayer() {
               <p className="text-xs" style={{ color: 'rgba(160,152,136,0.5)' }}>
                 Nur du kannst das lesen.
               </p>
+
+              {/* Show transfer prompt button if available */}
+              {scenarioId && getTransferPrompt(scenarioId) ? (
+                <motion.button
+                  whileHover={{ scale: 1.03, boxShadow: '0 0 20px rgba(100,180,255,0.3)' }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setShowTransferPrompt(true)}
+                  className="w-full py-3.5 px-6 rounded-xl font-bold cursor-pointer"
+                  style={{
+                    background: 'linear-gradient(135deg, #92600a, #b8860b, #daa520, #ffd700)',
+                    color: '#1a0a2e',
+                    boxShadow: '0 0 15px rgba(201,168,76,0.2)',
+                  }}
+                >
+                  {reflection.trim() ? 'Weiter' : '\u00DCberspringen'} {'\u2192'}
+                </motion.button>
+              ) : (
+                <motion.button
+                  whileHover={{ scale: 1.03, boxShadow: '0 0 25px rgba(201,168,76,0.3)' }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={handleFinish}
+                  className="w-full py-3.5 px-6 rounded-xl font-bold cursor-pointer"
+                  style={{
+                    background: 'linear-gradient(135deg, #92600a, #b8860b, #daa520, #ffd700)',
+                    color: '#1a0a2e',
+                    boxShadow: '0 0 15px rgba(201,168,76,0.2)',
+                  }}
+                >
+                  {reflection.trim() ? 'Speichern & weiter' : 'Weiter erkunden'} {'\u2192'}
+                </motion.button>
+              )}
+            </motion.div>
+          ) : showTransferPrompt ? (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-left space-y-3"
+            >
+              {/* Transfer Prompt: Bridge to Reality */}
+              {(() => {
+                const tp = scenarioId ? getTransferPrompt(scenarioId) : null;
+                if (!tp) return null;
+                return (
+                  <>
+                    <div
+                      className="rounded-xl p-4"
+                      style={{
+                        background: 'rgba(100,180,255,0.06)',
+                        border: '1px solid rgba(100,180,255,0.2)',
+                      }}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-lg">{'\u{1F309}'}</span>
+                        <span className="text-xs font-bold uppercase tracking-wider" style={{ color: '#5eb8ff' }}>
+                          Br\u00FCcke zur Realit\u00E4t
+                        </span>
+                        <span className="text-[10px] ml-auto px-2 py-0.5 rounded-full" style={{
+                          background: 'rgba(255,215,0,0.1)',
+                          border: '1px solid rgba(255,215,0,0.25)',
+                          color: '#ffd700',
+                        }}>
+                          +20 EP Bonus
+                        </span>
+                      </div>
+                      <p className="text-sm leading-relaxed" style={{ color: '#e8e0d0' }}>
+                        {tp.prompt}
+                      </p>
+                      {tp.hint && (
+                        <p className="text-xs mt-2 italic" style={{ color: 'rgba(100,180,255,0.5)' }}>
+                          {'\u{1F4A1}'} Tipp: {tp.hint}
+                        </p>
+                      )}
+                    </div>
+                    <textarea
+                      value={transferResponse}
+                      onChange={(e) => setTransferResponse(e.target.value)}
+                      placeholder="Deine Antwort... (optional)"
+                      className="w-full p-4 rounded-xl resize-none text-sm focus:outline-none transition-all duration-300"
+                      style={{
+                        backgroundColor: 'rgba(100,180,255,0.04)',
+                        border: '1px solid rgba(100,180,255,0.15)',
+                        color: '#e8e0d0',
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = 'rgba(100,180,255,0.4)';
+                        e.currentTarget.style.boxShadow = '0 0 12px rgba(100,180,255,0.08)';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = 'rgba(100,180,255,0.15)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                      rows={3}
+                      autoFocus
+                    />
+                    <p className="text-xs" style={{ color: 'rgba(160,152,136,0.5)' }}>
+                      Kein Zwang {'\u2013'} du kannst jederzeit \u00FCberspringen.
+                    </p>
+                  </>
+                );
+              })()}
+
               <motion.button
                 whileHover={{ scale: 1.03, boxShadow: '0 0 25px rgba(201,168,76,0.3)' }}
                 whileTap={{ scale: 0.97 }}
@@ -798,10 +916,10 @@ export default function ScenarioPlayer() {
                   boxShadow: '0 0 15px rgba(201,168,76,0.2)',
                 }}
               >
-                {reflection.trim() ? 'Speichern & weiter' : 'Weiter erkunden'} {'\u2192'}
+                {transferResponse.trim() ? 'Speichern & weiter' : 'Weiter erkunden'} {'\u2192'}
               </motion.button>
             </motion.div>
-          )}
+          ) : null}
         </motion.div>
       </div>
     );
