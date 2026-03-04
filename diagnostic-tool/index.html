@@ -1113,6 +1113,8 @@
             <button class="nav-btn" data-section="feelkj"><span class="nav-icon">💗</span> FEEL-KJ</button>
             <button class="nav-btn" data-section="cft"><span class="nav-icon">🧩</span> CFT 20-R</button>
             <button class="nav-btn" data-section="vineland"><span class="nav-icon">🏠</span> Vineland-3</button>
+            <button class="nav-btn" data-section="sonr"><span class="nav-icon">🔷</span> SON-R</button>
+            <button class="nav-btn" data-section="kabc"><span class="nav-icon">🔶</span> K-ABC II</button>
         </div>
     </nav>
 
@@ -1192,14 +1194,31 @@
                 </div>
                 <form id="wisc-form" onsubmit="evaluateWISC(event)">
                     <div class="form-section">
-                        <div class="form-section-title">Indexwerte (M=100, SD=15)</div>
+                        <div class="form-section-title">Primärindizes (M=100, SD=15)</div>
                         <div class="form-grid">
-                            <div class="form-group"><label>Sprachverständnis</label><input type="number" id="wisc-vci" min="40" max="160" placeholder="40-160"></div>
-                            <div class="form-group"><label>Visuell-räumlich</label><input type="number" id="wisc-vsi" min="40" max="160" placeholder="40-160"></div>
-                            <div class="form-group"><label>Fluides Denken</label><input type="number" id="wisc-fri" min="40" max="160" placeholder="40-160"></div>
-                            <div class="form-group"><label>Arbeitsgedächtnis</label><input type="number" id="wisc-wmi" min="40" max="160" placeholder="40-160"></div>
-                            <div class="form-group"><label>Verarbeitungstempo</label><input type="number" id="wisc-psi" min="40" max="160" placeholder="40-160"></div>
-                            <div class="form-group"><label><strong>Gesamt-IQ</strong></label><input type="number" id="wisc-fsiq" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>Sprachverständnis (SVI)</label><input type="number" id="wisc-vci" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>Visuell-räumlich (VRI)</label><input type="number" id="wisc-vsi" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>Fluides Denken (FSI)</label><input type="number" id="wisc-fri" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>Arbeitsgedächtnis (AGI)</label><input type="number" id="wisc-wmi" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>Verarbeitungstempo (VGI)</label><input type="number" id="wisc-psi" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label><strong>Gesamt-IQ (FSIQ)</strong></label><input type="number" id="wisc-fsiq" min="40" max="160" placeholder="40-160"></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Zusätzliche Indizes (M=100, SD=15)</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Nonverbaler Index (NVI)</label><input type="number" id="wisc-nvi" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>Allg. Fähigkeitsindex (GAI)</label><input type="number" id="wisc-gai" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>Kogn. Leistungsindex (KLI)</label><input type="number" id="wisc-kli" min="40" max="160" placeholder="40-160"></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Sprachen</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Testsprache</label><select id="wisc-testlang"><option value="Deutsch">Deutsch</option><option value="Französisch">Französisch</option><option value="Luxemburgisch">Luxemburgisch</option><option value="Englisch">Englisch</option><option value="Portugiesisch">Portugiesisch</option></select></div>
+                            <div class="form-group"><label>Instruktionssprache</label><select id="wisc-instlang"><option value="Deutsch">Deutsch</option><option value="Französisch">Französisch</option><option value="Luxemburgisch">Luxemburgisch</option><option value="Englisch">Englisch</option><option value="Portugiesisch">Portugiesisch</option></select></div>
+                            <div class="form-group"><label>Muttersprache Schüler/in</label><input type="text" id="wisc-motherlang" placeholder="z.B. Portugiesisch"></div>
+                            <div class="form-group"><label>Alphabetisierungssprache</label><input type="text" id="wisc-alphalang" placeholder="z.B. Deutsch"></div>
                         </div>
                     </div>
                     <div class="btn-group">
@@ -1410,7 +1429,14 @@
                         </div>
                     </div>
                     <div class="form-section">
-                        <div class="form-section-title">Inhaltsskalen (T-Werte) <span class="form-hint">T≥65 = auffällig | T≥70 = stark auffällig</span></div>
+                        <div class="form-section-title">Validitätsskalen <span class="form-hint">Rohwerte; nur erwähnt wenn &gt;2</span></div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Inkonsistenzindex (PI)</label><input type="number" id="con-pi" min="0" max="20" placeholder="Rohwert"></div>
+                            <div class="form-group"><label>Positiver Eindruck (NI)</label><input type="number" id="con-ni" min="0" max="20" placeholder="Rohwert"></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Conners-Inhaltsskalen (T-Werte) <span class="form-hint">T≥65 = auffällig | T≥70 = stark auffällig</span></div>
                         <div class="form-grid">
                             <div class="form-group"><label>Unaufmerksamkeit</label><input type="number" id="con-in" min="30" max="90" placeholder="T-Wert"></div>
                             <div class="form-group"><label>Hyperaktivität/Impuls.</label><input type="number" id="con-hi" min="30" max="90" placeholder="T-Wert"></div>
@@ -1421,7 +1447,14 @@
                         </div>
                     </div>
                     <div class="form-section">
-                        <div class="form-section-title">DSM-Skalen (T-Werte)</div>
+                        <div class="form-section-title">Zusätzliche Skalen (T-Werte) <span class="form-hint">Nur Text wenn auffällig</span></div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Ängstlichkeit</label><input type="number" id="con-anx" min="30" max="90" placeholder="T-Wert"></div>
+                            <div class="form-group"><label>Depression</label><input type="number" id="con-dep" min="30" max="90" placeholder="T-Wert"></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">DSM-5-Skalen (T-Werte)</div>
                         <div class="form-grid">
                             <div class="form-group"><label>ADHS Unaufmerksam</label><input type="number" id="con-dsm-in" min="30" max="90" placeholder="T-Wert"></div>
                             <div class="form-group"><label>ADHS Hyperaktiv-Imp.</label><input type="number" id="con-dsm-hi" min="30" max="90" placeholder="T-Wert"></div>
@@ -1596,6 +1629,97 @@
                     </div>
                 </form>
                 <div id="vineland-results" class="results"></div>
+            </div>
+        </section>
+
+        <!-- SON-R -->
+        <section id="sonr" class="section">
+            <div class="card">
+                <div class="card-header card-header-top">
+                    <div>
+                        <h2 class="card-title"><span class="icon">🔷</span> SON-R</h2>
+                        <p class="card-subtitle">Snijders-Oomen Non-verbaler Intelligenztest</p>
+                    </div>
+                    <button class="help-btn" onclick="showHelpModal('sonr')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                </div>
+                <form id="sonr-form" onsubmit="evaluateSONR(event)">
+                    <div class="form-section">
+                        <div class="form-section-title">Gesamtergebnis (M=100, SD=15)</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label><strong>SON-IQ</strong></label><input type="number" id="sonr-iq" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>Prozentrang</label><input type="number" id="sonr-pr" min="1" max="99" placeholder="1-99"></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Untertests (Wertpunkte, M=10, SD=3)</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Mosaike</label><input type="number" id="sonr-mos" min="1" max="19" placeholder="1-19"></div>
+                            <div class="form-group"><label>Kategorien</label><input type="number" id="sonr-kat" min="1" max="19" placeholder="1-19"></div>
+                            <div class="form-group"><label>Puzzles</label><input type="number" id="sonr-puz" min="1" max="19" placeholder="1-19"></div>
+                            <div class="form-group"><label>Analogien</label><input type="number" id="sonr-ana" min="1" max="19" placeholder="1-19"></div>
+                            <div class="form-group"><label>Situationen</label><input type="number" id="sonr-sit" min="1" max="19" placeholder="1-19"></div>
+                            <div class="form-group"><label>Zeichenmuster</label><input type="number" id="sonr-zei" min="1" max="19" placeholder="1-19"></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Sprachen</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Testsprache</label><select id="sonr-testlang"><option value="Nonverbal">Nonverbal (sprachfrei)</option><option value="Deutsch">Deutsch</option><option value="Französisch">Französisch</option><option value="Luxemburgisch">Luxemburgisch</option></select></div>
+                            <div class="form-group"><label>Instruktionssprache</label><input type="text" id="sonr-instlang" placeholder="z.B. Luxemburgisch"></div>
+                            <div class="form-group"><label>Muttersprache</label><input type="text" id="sonr-motherlang" placeholder="z.B. Portugiesisch"></div>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="clearForm('sonr')">Zurücksetzen</button>
+                        <button type="submit" class="btn btn-primary">Auswerten →</button>
+                    </div>
+                </form>
+                <div id="sonr-results" class="results"></div>
+            </div>
+        </section>
+
+        <!-- K-ABC II -->
+        <section id="kabc" class="section">
+            <div class="card">
+                <div class="card-header card-header-top">
+                    <div>
+                        <h2 class="card-title"><span class="icon">🔶</span> K-ABC II</h2>
+                        <p class="card-subtitle">Kaufman Assessment Battery for Children – Second Edition</p>
+                    </div>
+                    <button class="help-btn" onclick="showHelpModal('kabc')" title="Durchführungshinweise anzeigen">📋 Anleitung</button>
+                </div>
+                <form id="kabc-form" onsubmit="evaluateKABC(event)">
+                    <div class="form-section">
+                        <div class="form-section-title">Globalskalen (M=100, SD=15)</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label><strong>FKI (Fluid-Krist. Index)</strong></label><input type="number" id="kabc-fki" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>NVI (Nonverbaler Index)</label><input type="number" id="kabc-nvi" min="40" max="160" placeholder="40-160"></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Indexskalen (M=100, SD=15)</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Sequenziell/Gsm</label><input type="number" id="kabc-seq" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>Simultan/Gv</label><input type="number" id="kabc-sim" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>Lernen/Glr</label><input type="number" id="kabc-lrn" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>Planung/Gf</label><input type="number" id="kabc-pln" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>Wissen/Gc</label><input type="number" id="kabc-wis" min="40" max="160" placeholder="40-160"></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Sprachen</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Testsprache</label><select id="kabc-testlang"><option value="Deutsch">Deutsch</option><option value="Französisch">Französisch</option><option value="Luxemburgisch">Luxemburgisch</option><option value="Englisch">Englisch</option></select></div>
+                            <div class="form-group"><label>Instruktionssprache</label><input type="text" id="kabc-instlang" placeholder="z.B. Deutsch"></div>
+                            <div class="form-group"><label>Muttersprache</label><input type="text" id="kabc-motherlang" placeholder="z.B. Portugiesisch"></div>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="clearForm('kabc')">Zurücksetzen</button>
+                        <button type="submit" class="btn btn-primary">Auswerten →</button>
+                    </div>
+                </form>
+                <div id="kabc-results" class="results"></div>
             </div>
         </section>
 
@@ -2291,6 +2415,64 @@
                     <li><strong>50-69:</strong> Niedrig (moderate Einschränkung)</li>
                     <li><strong>&lt;50:</strong> Sehr niedrig (schwere Einschränkung)</li>
                 </ul>
+            `,
+            sonr: `
+                <h5>Material</h5>
+                <ul>
+                    <li>SON-R Testkoffer mit Aufgabenmaterial</li>
+                    <li>Protokollbogen und Auswertungsblatt</li>
+                    <li>Stoppuhr</li>
+                </ul>
+                <h5>Grundprinzip</h5>
+                <p>Der SON-R ist ein <strong>sprachfreier Intelligenztest</strong>. Alle Aufgaben können ohne gesprochene Sprache instruiert werden (über Demonstration und Gestik). Besonders geeignet für Kinder mit Hörbeeinträchtigungen, Sprachentwicklungsstörungen oder mehrsprachigem Hintergrund.</p>
+                <h5>Durchführung</h5>
+                <ol>
+                    <li><strong>Instruktion nonverbal:</strong> Aufgaben werden durch Vormachen demonstriert</li>
+                    <li><strong>Feedback:</strong> Nach den ersten Übungsaufgaben wird Feedback gegeben</li>
+                    <li><strong>Adaptives Vorgehen:</strong> Schwierigkeit wird angepasst</li>
+                </ol>
+                <h5>Untertests</h5>
+                <ul>
+                    <li><strong>Mosaike:</strong> Muster mit farbigen Quadraten nachlegen</li>
+                    <li><strong>Kategorien:</strong> Bilder nach Kategorie sortieren</li>
+                    <li><strong>Puzzles:</strong> Puzzleteile zusammensetzen</li>
+                    <li><strong>Analogien:</strong> Beziehungen zwischen Bildern erkennen</li>
+                    <li><strong>Situationen:</strong> Fehlende Teile in Bildern erkennen</li>
+                    <li><strong>Zeichenmuster:</strong> Muster abzeichnen</li>
+                </ul>
+                <div class="admin-box">
+                    <div class="admin-box-title">Zeitangaben</div>
+                    <span class="admin-time">⏱ Durchführung: 45-60 Minuten</span>
+                </div>
+            `,
+            kabc: `
+                <h5>Material</h5>
+                <ul>
+                    <li>K-ABC II Testkoffer (Easel, Stimulusbücher)</li>
+                    <li>Protokollbogen</li>
+                    <li>Stoppuhr</li>
+                </ul>
+                <h5>Grundprinzip</h5>
+                <p>Die K-ABC II misst kognitive Fähigkeiten basierend auf dem <strong>CHC-Modell</strong> und dem <strong>Luria-Modell</strong>. Sie bietet flexible Auswertung: FKI (Fluid-Kristalliner Index) als Gesamtmaß oder NVI (Nonverbaler Index) bei sprachlichen Einschränkungen.</p>
+                <h5>Indexskalen</h5>
+                <ul>
+                    <li><strong>Sequenziell/Gsm:</strong> Kurzzeitgedächtnis, Reihenfolgen merken</li>
+                    <li><strong>Simultan/Gv:</strong> Visuelle Verarbeitung, Muster erkennen</li>
+                    <li><strong>Lernen/Glr:</strong> Neue Informationen speichern und abrufen</li>
+                    <li><strong>Planung/Gf:</strong> Logisches Denken und Problemlösen</li>
+                    <li><strong>Wissen/Gc:</strong> Erworbenes Wissen und Wortschatz</li>
+                </ul>
+                <div class="admin-box">
+                    <div class="admin-box-title">Zeitangaben</div>
+                    <span class="admin-time">⏱ Kerntestung: 30-45 Minuten</span>
+                    <span class="admin-time">⏱ Vollständig: 60-90 Minuten</span>
+                </div>
+                <h5>Wichtige Hinweise</h5>
+                <ul>
+                    <li>✓ Untertests in vorgegebener Reihenfolge durchführen</li>
+                    <li>✓ Bei mehrsprachigen Kindern: NVI statt FKI verwenden</li>
+                    <li>✓ Altersangemessene Untertests auswählen (3-6 vs. 7-18 Jahre)</li>
+                </ul>
             `
         };
 
@@ -2306,7 +2488,9 @@
             conners: 'Conners-3 – ADHS-Diagnostik',
             feelkj: 'FEEL-KJ – Emotionsregulation',
             cft: 'CFT 20-R – Culture Fair Intelligence Test',
-            vineland: 'Vineland-3 – Adaptive Behavior Scales'
+            vineland: 'Vineland-3 – Adaptive Behavior Scales',
+            sonr: 'SON-R – Snijders-Oomen Non-verbaler Intelligenztest',
+            kabc: 'K-ABC II – Kaufman Assessment Battery for Children'
         };
 
         // Modal öffnen mit Durchführungshinweisen
@@ -2472,7 +2656,6 @@
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">4. Grafische Darstellung des Ergebnisprofils</h4>
                         <div class="chart-container">${chart(labels,keys.map(k=>d[k]),keys.map(k=>c[k]),10)}</div>
-                        ${wordChart(labels, keys.map(k=>d[k]), keys.map(k=>c[k]), 10, 'SDQ-Skalenprofil (Rohwerte 0-10)')}
                         <p style="text-align:center;margin-top:1rem;font-size:0.85rem;color:var(--text-muted);">Grün = Unauffällig | Orange = Grenzwertig | Rot = Klinisch auffällig</p>
                     </div>
 
@@ -2589,16 +2772,17 @@
             fri: {n:'Index Fluides Schlussfolgern (FSI)', desc:'Erfasst induktives und quantitatives Schlussfolgern'},
             wmi: {n:'Arbeitsgedächtnisindex (AGI)', desc:'Erfasst Arbeitsgedächtnis und Aufmerksamkeitssteuerung'},
             psi: {n:'Verarbeitungsgeschwindigkeitsindex (VGI)', desc:'Erfasst Verarbeitungsgeschwindigkeit und graphomotorische Geschwindigkeit'},
-            fsiq: {n:'Gesamt-IQ (FSIQ)', desc:'Gesamtmaß der allgemeinen kognitiven Leistungsfähigkeit'}
+            fsiq: {n:'Gesamt-IQ (FSIQ)', desc:'Gesamtmaß der allgemeinen kognitiven Leistungsfähigkeit'},
+            nvi: {n:'Nonverbaler Index (NVI)', desc:'Erfasst nonverbale kognitive Fähigkeiten unabhängig von Sprache'},
+            gai: {n:'Allgemeiner Fähigkeitsindex (GAI)', desc:'Erfasst allgemeine kognitive Fähigkeiten ohne Arbeitsgedächtnis und Verarbeitungsgeschwindigkeit'},
+            kli: {n:'Kognitiver Leistungsindex (KLI)', desc:'Erfasst kognitive Effizienz (Arbeitsgedächtnis und Verarbeitungsgeschwindigkeit)'}
         };
 
         function iqClass(v) {
-            if(v>=130) return {l:'Weit überdurchschnittlich',c:'normal',pr:'>98'};
-            if(v>=120) return {l:'Überdurchschnittlich',c:'normal',pr:'91-98'};
-            if(v>=110) return {l:'Hoch durchschnittlich',c:'normal',pr:'75-91'};
-            if(v>=90) return {l:'Durchschnittlich',c:'normal',pr:'25-75'};
-            if(v>=80) return {l:'Niedrig durchschnittlich',c:'borderline',pr:'9-25'};
-            if(v>=70) return {l:'Unterdurchschnittlich',c:'borderline',pr:'2-9'};
+            if(v>=130) return {l:'Weit überdurchschnittlich',c:'vhigh',pr:'>98'};
+            if(v>=115) return {l:'Überdurchschnittlich',c:'high',pr:'84-98'};
+            if(v>=85) return {l:'Durchschnittlich',c:'normal',pr:'16-84'};
+            if(v>=70) return {l:'Unterdurchschnittlich',c:'borderline',pr:'2-16'};
             return {l:'Weit unterdurchschnittlich',c:'clinical',pr:'<2'};
         }
 
@@ -2607,7 +2791,8 @@
             const pat = getPatient();
             const idx = {
                 vci:{v:v('wisc-vci')},vsi:{v:v('wisc-vsi')},fri:{v:v('wisc-fri')},
-                wmi:{v:v('wisc-wmi')},psi:{v:v('wisc-psi')},fsiq:{v:v('wisc-fsiq')}
+                wmi:{v:v('wisc-wmi')},psi:{v:v('wisc-psi')},fsiq:{v:v('wisc-fsiq')},
+                nvi:{v:v('wisc-nvi')},gai:{v:v('wisc-gai')},kli:{v:v('wisc-kli')}
             };
             const valid = Object.entries(idx).filter(([k,x])=>x.v!==null);
             if(!valid.length) return alert('Mindestens ein Wert eingeben');
@@ -2615,15 +2800,23 @@
             const c = {}; valid.forEach(([k,x])=>c[k]=iqClass(x.v));
             const pronomen = pat.sex === 'w' ? {er:'sie',sein:'ihr',ihm:'ihr',seine:'ihre'} : {er:'er',sein:'sein',ihm:'ihm',seine:'seine'};
 
-            // Profil-Analyse
-            const indices = valid.filter(([k])=>k!=='fsiq');
+            // Sprachinfo
+            const testLang = document.getElementById('wisc-testlang')?.value || 'Deutsch';
+            const instLang = document.getElementById('wisc-instlang')?.value || 'Deutsch';
+            const motherLang = document.getElementById('wisc-motherlang')?.value || '';
+            const alphaLang = document.getElementById('wisc-alphalang')?.value || '';
+
+            // Profil-Analyse (nur Primärindizes, keine Zusatzindizes)
+            const primaryKeys = ['vci','vsi','fri','wmi','psi'];
+            const indices = valid.filter(([k])=>primaryKeys.includes(k));
+            const supplementary = valid.filter(([k])=>['nvi','gai','kli'].includes(k));
             const vals = indices.map(([k,x])=>x.v);
             const diff = indices.length >= 2 ? Math.max(...vals) - Math.min(...vals) : 0;
             const maxIdx = indices.length ? indices.reduce((a,b)=>a[1].v>b[1].v?a:b) : null;
             const minIdx = indices.length ? indices.reduce((a,b)=>a[1].v<b[1].v?a:b) : null;
 
             // Stärken und Schwächen
-            const staerken = indices.filter(([k,x])=>x.v>=110);
+            const staerken = indices.filter(([k,x])=>x.v>=115);
             const schwaechen = indices.filter(([k,x])=>x.v<85);
             const fsiq = idx.fsiq.v;
 
@@ -2633,12 +2826,24 @@
                 vsi: `<p><strong>Visuell-räumlicher Index (VRI = ${idx.vsi.v || '-'}):</strong> Dieser Index misst die visuell-räumliche Verarbeitung und die Fähigkeit, räumliche Beziehungen zu analysieren und visuelle Stimuli zu konstruieren. ${pat.name} zeigt ${idx.vsi.v >= 110 ? 'überdurchschnittliche Fähigkeiten in der räumlichen Vorstellung und visuellen Analyse, was eine relative Stärke darstellt' : idx.vsi.v >= 90 ? 'altersgemäße visuell-räumliche Fähigkeiten' : 'Schwierigkeiten in der visuell-räumlichen Verarbeitung, die sich auf Fächer wie Geometrie, Kunst oder technisches Zeichnen auswirken können'}.</p>`,
                 fri: `<p><strong>Index Fluides Schlussfolgern (FSI = ${idx.fri.v || '-'}):</strong> Dieser Index erfasst die Fähigkeit zum induktiven und deduktiven Schlussfolgern sowie zum quantitativen Denken – Fähigkeiten, die relativ unabhängig von erworbenem Wissen sind. ${pat.name} zeigt ${idx.fri.v >= 110 ? 'überdurchschnittliche Fähigkeiten im logischen Denken und Problemlösen, was auf ein hohes Potenzial für abstraktes Denken hindeutet' : idx.fri.v >= 90 ? 'altersgemäße Fähigkeiten im logischen Schlussfolgern' : 'Schwierigkeiten im abstrakten und logischen Denken, die sich auf mathematische und naturwissenschaftliche Fächer auswirken können'}.</p>`,
                 wmi: `<p><strong>Arbeitsgedächtnisindex (AGI = ${idx.wmi.v || '-'}):</strong> Dieser Index misst die Fähigkeit, Informationen kurzfristig im Gedächtnis zu halten und mental zu manipulieren. Das Arbeitsgedächtnis ist zentral für schulisches Lernen, Kopfrechnen und das Befolgen komplexer Anweisungen. ${pat.name} zeigt ${idx.wmi.v >= 110 ? 'eine überdurchschnittliche Arbeitsgedächtniskapazität, was das Lernen und die Informationsverarbeitung erleichtert' : idx.wmi.v >= 90 ? 'eine altersgemäße Arbeitsgedächtniskapazität' : 'Einschränkungen der Arbeitsgedächtniskapazität, die sich auf das Behalten von Anweisungen, Kopfrechnen und das Lernen neuer Inhalte auswirken können'}. ${idx.wmi.v < 85 ? 'Bei Arbeitsgedächtnisdefiziten sollte eine ADHS-Diagnostik erwogen werden, da Aufmerksamkeitsprobleme häufig mit reduzierten AGI-Werten einhergehen.' : ''}</p>`,
-                psi: `<p><strong>Verarbeitungsgeschwindigkeitsindex (VGI = ${idx.psi.v || '-'}):</strong> Dieser Index erfasst die Geschwindigkeit der Informationsverarbeitung und die graphomotorische Geschwindigkeit. Er ist relevant für zeitgebundene Aufgaben und effizientes Arbeiten. ${pat.name} zeigt ${idx.psi.v >= 110 ? 'eine überdurchschnittliche Verarbeitungsgeschwindigkeit, was effizientes Arbeiten unter Zeitdruck ermöglicht' : idx.psi.v >= 90 ? 'eine altersgemäße Verarbeitungsgeschwindigkeit' : 'eine reduzierte Verarbeitungsgeschwindigkeit, die sich auf zeitgebundene Aufgaben und die Bewältigung des Schulalltags auswirken kann'}. ${idx.psi.v < 85 ? 'Bei reduzierter Verarbeitungsgeschwindigkeit sollten Nachteilsausgleiche (z.B. Zeitverlängerung bei Prüfungen) geprüft werden.' : ''}</p>`
+                psi: `<p><strong>Verarbeitungsgeschwindigkeitsindex (VGI = ${idx.psi.v || '-'}):</strong> Dieser Index erfasst die Geschwindigkeit der Informationsverarbeitung und die graphomotorische Geschwindigkeit. Er ist relevant für zeitgebundene Aufgaben und effizientes Arbeiten. ${pat.name} zeigt ${idx.psi.v >= 110 ? 'eine überdurchschnittliche Verarbeitungsgeschwindigkeit, was effizientes Arbeiten unter Zeitdruck ermöglicht' : idx.psi.v >= 90 ? 'eine altersgemäße Verarbeitungsgeschwindigkeit' : 'eine reduzierte Verarbeitungsgeschwindigkeit, die sich auf zeitgebundene Aufgaben und die Bewältigung des Schulalltags auswirken kann'}. ${idx.psi.v < 85 ? 'Bei reduzierter Verarbeitungsgeschwindigkeit sollten Nachteilsausgleiche (z.B. Zeitverlängerung bei Prüfungen) geprüft werden.' : ''}</p>`,
+                nvi: `<p><strong>Nonverbaler Index (NVI = ${idx.nvi.v || '-'}):</strong> Dieser Index erfasst nonverbale kognitive Fähigkeiten unabhängig von sprachlichen Kompetenzen. Er ist besonders relevant bei Kindern mit Sprachentwicklungsauffälligkeiten oder bei mehrsprachig aufwachsenden Kindern. ${pat.name} zeigt ${idx.nvi.v >= 115 ? 'überdurchschnittliche nonverbale kognitive Fähigkeiten' : idx.nvi.v >= 85 ? 'altersgemäße nonverbale kognitive Fähigkeiten' : 'Schwierigkeiten im nonverbalen kognitiven Bereich'}.</p>`,
+                gai: `<p><strong>Allgemeiner Fähigkeitsindex (GAI = ${idx.gai.v || '-'}):</strong> Der GAI fasst den Sprachverständnisindex, den Visuell-räumlichen Index und den Index Fluides Schlussfolgern zusammen. Er bietet eine Einschätzung der allgemeinen kognitiven Fähigkeiten, die weniger durch Arbeitsgedächtnis und Verarbeitungsgeschwindigkeit beeinflusst wird als der Gesamt-IQ. ${idx.gai.v && idx.fsiq.v && Math.abs(idx.gai.v - idx.fsiq.v) >= 10 ? `Die Differenz von ${Math.abs(idx.gai.v - idx.fsiq.v)} Punkten zum Gesamt-IQ (${idx.fsiq.v}) deutet darauf hin, dass ${idx.gai.v > idx.fsiq.v ? 'kognitive Effizienz (Arbeitsgedächtnis/Verarbeitungsgeschwindigkeit) die Gesamtleistung nach unten beeinflusst' : 'kognitive Effizienz die Gesamtleistung zusätzlich stützt'}.` : ''}</p>`,
+                kli: `<p><strong>Kognitiver Leistungsindex (KLI = ${idx.kli.v || '-'}):</strong> Der KLI fasst Arbeitsgedächtnisindex und Verarbeitungsgeschwindigkeitsindex zusammen und bildet damit die kognitive Effizienz ab. ${pat.name} zeigt ${idx.kli.v >= 115 ? 'eine überdurchschnittliche kognitive Effizienz' : idx.kli.v >= 85 ? 'eine altersgemäße kognitive Effizienz' : 'eine eingeschränkte kognitive Effizienz, die das schulische Leistungsvermögen beeinträchtigen kann'}.</p>`
             };
 
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('WISC-V', 'Wechsler Intelligence Scale for Children – Fifth Edition', pat)}
+
+                    ${(testLang || instLang || motherLang || alphaLang) ? `
+                    <div class="gutachten-meta" style="margin-top:0;">
+                        ${testLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Testsprache:</span> <span class="gutachten-meta-value">${testLang}</span></div>` : ''}
+                        ${instLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Instruktionssprache:</span> <span class="gutachten-meta-value">${instLang}</span></div>` : ''}
+                        ${motherLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Muttersprache:</span> <span class="gutachten-meta-value">${motherLang}</span></div>` : ''}
+                        ${alphaLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Alphabetisierungssprache:</span> <span class="gutachten-meta-value">${alphaLang}</span></div>` : ''}
+                    </div>
+                    ` : ''}
 
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Untersuchungsanlass und Fragestellung</h4>
@@ -2650,7 +2855,7 @@
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">2. Beschreibung des Testverfahrens</h4>
                         <div class="gutachten-text">
-                            <p>Die WISC-V (Wechsler, 2014; deutsche Adaptation: Petermann, 2017) ist das international am weitesten verbreitete und am besten validierte Individualverfahren zur Erfassung der kognitiven Fähigkeiten von Kindern und Jugendlichen im Alter von 6;0 bis 16;11 Jahren. Das Verfahren basiert auf dem Cattell-Horn-Carroll (CHC) Modell der Intelligenz und erfasst sowohl die allgemeine kognitive Leistungsfähigkeit (g-Faktor) als auch spezifische kognitive Fähigkeiten.</p>
+                            <p>Die WISC-V (Wechsler, 2014; deutsche Adaptation: Petermann, 2017) ist das international am weitesten verbreitete und am besten validierte Individualverfahren zur Erfassung der kognitiven Fähigkeiten von Kindern und Jugendlichen im Alter von 6;0 bis 16;11 Jahren. Das Verfahren erfasst sowohl die allgemeine kognitive Leistungsfähigkeit als auch spezifische kognitive Fähigkeiten.</p>
                             <p>Die WISC-V umfasst 15 Untertests, aus denen fünf Primärindizes und ein Gesamt-IQ gebildet werden:</p>
                             <ul class="gutachten-list">
                                 <li><strong>Sprachverständnisindex (SVI):</strong> Erfasst kristalline Intelligenz, sprachliche Begriffsbildung, verbales Schlussfolgern und erworbenes Wissen. Untertests: Gemeinsamkeiten finden, Wortschatz-Test.</li>
@@ -2659,19 +2864,7 @@
                                 <li><strong>Arbeitsgedächtnisindex (AGI):</strong> Erfasst die Kapazität des Arbeitsgedächtnisses und die Aufmerksamkeitssteuerung. Untertests: Zahlen nachsprechen, Bilder-Folgen.</li>
                                 <li><strong>Verarbeitungsgeschwindigkeitsindex (VGI):</strong> Erfasst die Geschwindigkeit der kognitiven Verarbeitung und graphomotorische Koordination. Untertests: Zahlen-Symbol-Test, Symbol-Suche.</li>
                             </ul>
-                            <p>Die Ergebnisse werden als IQ-Werte mit einem Mittelwert von 100 und einer Standardabweichung von 15 angegeben. Die Klassifikation erfolgt nach internationalen Standards:</p>
-                            <table class="gutachten-table" style="margin-top:1rem;">
-                                <thead><tr><th>IQ-Bereich</th><th>Klassifikation</th><th>Prozentrang</th><th>Anteil der Population</th></tr></thead>
-                                <tbody>
-                                    <tr><td>≥130</td><td>Weit überdurchschnittlich</td><td>>98</td><td>~2%</td></tr>
-                                    <tr><td>120-129</td><td>Überdurchschnittlich</td><td>91-98</td><td>~7%</td></tr>
-                                    <tr><td>110-119</td><td>Hoch durchschnittlich</td><td>75-90</td><td>~16%</td></tr>
-                                    <tr><td>90-109</td><td>Durchschnittlich</td><td>25-74</td><td>~50%</td></tr>
-                                    <tr><td>80-89</td><td>Niedrig durchschnittlich</td><td>9-24</td><td>~16%</td></tr>
-                                    <tr><td>70-79</td><td>Unterdurchschnittlich</td><td>2-8</td><td>~7%</td></tr>
-                                    <tr><td>≤69</td><td>Weit unterdurchschnittlich</td><td><2</td><td>~2%</td></tr>
-                                </tbody>
-                            </table>
+                            <p>Die Ergebnisse werden als IQ-Werte mit einem Mittelwert von 100 und einer Standardabweichung von 15 angegeben.</p>
                         </div>
                     </div>
 
@@ -2686,29 +2879,30 @@
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">4. Quantitative Testergebnisse</h4>
                         <table class="gutachten-table">
-                            <thead><tr><th>Index</th><th>IQ-Wert</th><th>95%-Konfidenzintervall</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>Index</th><th>IQ-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
                             <tbody>
-                                ${valid.map(([k,x])=>`<tr${k==='fsiq'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${WISC_NAMES[k].n}</td><td><strong>${x.v}</strong></td><td>${Math.round(x.v*0.95)} – ${Math.round(x.v*1.05)}</td><td>${c[k].pr}</td><td class="${c[k].c}"><strong>${c[k].l}</strong></td></tr>`).join('')}
+                                ${valid.filter(([k])=>primaryKeys.includes(k)||k==='fsiq').map(([k,x])=>`<tr${k==='fsiq'?' style="font-weight:700;"':''}><td>${WISC_NAMES[k].n}</td><td><strong>${x.v}</strong></td><td>${c[k].pr}</td><td>${c[k].l}</td></tr>`).join('')}
                             </tbody>
                         </table>
+                        ${supplementary.length ? `
+                        <p style="margin-top:1rem;font-weight:bold;">Zusätzliche Indizes:</p>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Index</th><th>IQ-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                ${supplementary.map(([k,x])=>`<tr><td>${WISC_NAMES[k].n}</td><td><strong>${x.v}</strong></td><td>${c[k].pr}</td><td>${c[k].l}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                        ` : ''}
+                        <div style="margin-top:1rem;font-size:0.9em;color:#4a5568;">
+                            <p><strong>Erläuterungen:</strong> Die IQ-Werte haben einen Mittelwert von 100 und eine Standardabweichung von 15. Der Prozentrang gibt an, wie viel Prozent der Gleichaltrigen einen niedrigeren Wert erzielt haben. Ein IQ von 100 entspricht dem Durchschnitt (Prozentrang 50). Der Durchschnittsbereich umfasst IQ-Werte von 85 bis 114 (Prozentrang 16–84). Werte ab 115 gelten als überdurchschnittlich, Werte unter 85 als unterdurchschnittlich.</p>
+                        </div>
                         ${indices.length >= 2 ? `<p style="margin-top:1rem;"><strong>Profilstreuung:</strong> Die Differenz zwischen dem höchsten (${maxIdx ? WISC_NAMES[maxIdx[0]].n.split('(')[0].trim() : '-'}: ${maxIdx ? maxIdx[1].v : '-'}) und niedrigsten Index (${minIdx ? WISC_NAMES[minIdx[0]].n.split('(')[0].trim() : '-'}: ${minIdx ? minIdx[1].v : '-'}) beträgt ${diff} IQ-Punkte. ${diff >= 23 ? 'Diese Streuung ist statistisch signifikant und klinisch bedeutsam.' : diff >= 15 ? 'Diese Streuung ist moderat.' : 'Das Profil ist homogen.'}</p>` : ''}
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">5. Grafische Darstellung des kognitiven Profils</h4>
-                        <div class="chart-container">
-                            ${chart(valid.map(([k])=>k==='fsiq'?'FSIQ':k.toUpperCase()),valid.map(([k,x])=>x.v),valid.map(([k])=>c[k].c),160)}
-                            <div style="display:flex;justify-content:space-between;margin-top:1rem;font-size:0.75rem;color:var(--text-muted);">
-                                <span>≤69: Weit unterdurchschn.</span><span>90-109: Durchschnitt</span><span>≥130: Weit überdurchschn.</span>
-                            </div>
-                        </div>
-                        ${wordChart(valid.map(([k])=>WISC_NAMES[k]?.n || k.toUpperCase()), valid.map(([k,x])=>x.v), valid.map(([k])=>c[k].c), 160, 'WISC-V Indexprofil (IQ-Werte, M=100, SD=15)')}
-                    </div>
-
-                    <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">6. Interpretation der Ergebnisse</h4>
+                        <h4 class="gutachten-section-title">5. Interpretation der Ergebnisse</h4>
                         <div class="gutachten-text">
-                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">6.1 Allgemeine kognitive Leistungsfähigkeit</h5>
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">5.1 Allgemeine kognitive Leistungsfähigkeit</h5>
                             ${fsiq ? `
                                 <p>Die Untersuchung der kognitiven Leistungsfähigkeit mittels WISC-V ergibt einen <strong>Gesamt-IQ von ${fsiq}</strong> (95%-Konfidenzintervall: ${Math.round(fsiq*0.95)}-${Math.round(fsiq*1.05)}). Dieser Wert liegt im <strong>${c.fsiq.l.toLowerCase()}en Bereich</strong> und entspricht einem Prozentrang von ${c.fsiq.pr}. Dies bedeutet, dass ${pat.name} ${fsiq >= 100 ? `besser abschneidet als etwa ${c.fsiq.pr.includes('>') ? 'mehr als 98' : c.fsiq.pr.split('-')[0]}% der Gleichaltrigen` : `von etwa ${100-parseInt(c.fsiq.pr.split('-')[1] || c.fsiq.pr.replace('<',''))}% der Gleichaltrigen übertroffen wird`}.</p>
                                 ${fsiq >= 130 ? `<p>${pat.name} verfügt über eine <strong>weit überdurchschnittliche intellektuelle Begabung</strong>, die im Bereich der intellektuellen Hochbegabung liegt (IQ ≥ 130). Diese außergewöhnlichen kognitiven Fähigkeiten stellen ein besonderes Potenzial dar, das durch geeignete Förderung und Forderung optimal entfaltet werden sollte. Hochbegabte Kinder haben oft besondere Bedürfnisse hinsichtlich der Lernumgebung und können bei mangelnder Passung Unterforderungssymptome zeigen.</p>` : ''}
@@ -2719,15 +2913,22 @@
                                 ${diff >= 23 ? `<p><strong>Wichtiger Hinweis zur Profilstreuung:</strong> Die erhebliche Diskrepanz von ${diff} IQ-Punkten zwischen den Indizes schränkt die Aussagekraft des Gesamt-IQ ein. Bei einem derart heterogenen Profil sollte der Gesamt-IQ nicht als alleiniger Indikator der kognitiven Leistungsfähigkeit interpretiert werden. Die einzelnen Indizes liefern differenziertere Informationen über spezifische kognitive Stärken und Schwächen.</p>` : ''}
                             ` : '<p>Es wurde kein Gesamt-IQ erfasst. Die Interpretation basiert auf den vorliegenden Indexwerten.</p>'}
 
-                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">6.2 Spezifische kognitive Funktionen</h5>
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">5.2 Spezifische kognitive Funktionen</h5>
                             ${idx.vci.v ? indexBeschreibungen.vci : ''}
                             ${idx.vsi.v ? indexBeschreibungen.vsi : ''}
                             ${idx.fri.v ? indexBeschreibungen.fri : ''}
                             ${idx.wmi.v ? indexBeschreibungen.wmi : ''}
                             ${idx.psi.v ? indexBeschreibungen.psi : ''}
 
+                            ${supplementary.length ? `
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">5.3 Zusätzliche Indizes</h5>
+                            ${idx.nvi.v ? indexBeschreibungen.nvi : ''}
+                            ${idx.gai.v ? indexBeschreibungen.gai : ''}
+                            ${idx.kli.v ? indexBeschreibungen.kli : ''}
+                            ` : ''}
+
                             ${staerken.length || schwaechen.length ? `
-                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">6.3 Stärken-Schwächen-Analyse</h5>
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">${supplementary.length ? '5.4' : '5.3'} Stärken-Schwächen-Analyse</h5>
                             ${staerken.length ? `<div class="gutachten-highlight"><strong>Relative Stärken:</strong> ${pat.name} zeigt überdurchschnittliche Fähigkeiten im Bereich: ${staerken.map(([k])=>WISC_NAMES[k].n).join(', ')}. Diese Stärken können als Ressourcen für schulisches Lernen und Kompensation eventueller Schwächen genutzt werden.</div>` : ''}
                             ${schwaechen.length ? `<div class="gutachten-warning"><strong>Relative Schwächen:</strong> Unterdurchschnittliche Leistungen zeigen sich im Bereich: ${schwaechen.map(([k])=>WISC_NAMES[k].n).join(', ')}. Diese Schwächen sollten bei der Förderplanung berücksichtigt werden und könnten gezielte Unterstützung erfordern.</div>` : ''}
                             ` : ''}
@@ -2735,7 +2936,7 @@
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">7. Diagnostische Einordnung nach ICD-10/ICD-11</h4>
+                        <h4 class="gutachten-section-title">6. Diagnostische Einordnung nach ICD-10/ICD-11</h4>
                         <div class="gutachten-text">
                             ${fsiq && fsiq < 70 ? `
                                 <p>Die Ergebnisse der Intelligenzdiagnostik sind vereinbar mit dem Vorliegen einer <strong>Intelligenzminderung</strong> nach ICD-10 (F70-F79) bzw. ICD-11 (Disorders of intellectual development). Der Schweregrad richtet sich nach dem IQ-Wert:</p>
@@ -2762,7 +2963,7 @@
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">8. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">7. Empfehlungen</h4>
                         <div class="gutachten-text">
                             ${fsiq && fsiq >= 130 ? `
                                 <p>Aufgrund der festgestellten intellektuellen Hochbegabung werden folgende Maßnahmen empfohlen:</p>
@@ -2806,7 +3007,7 @@
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">9. Zusammenfassung</h4>
+                        <h4 class="gutachten-section-title">8. Zusammenfassung</h4>
                         <div class="gutachten-text">
                             <p>${pat.name} (${pat.age ? pat.age + ' Jahre' : 'Alter nicht angegeben'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) wurde am ${formatDate(pat.date)} mittels WISC-V untersucht. ${fsiq ? `Der Gesamt-IQ von <strong>${fsiq}</strong> liegt im <strong>${c.fsiq.l.toLowerCase()}en Bereich</strong> (PR ${c.fsiq.pr}).` : 'Es wurden einzelne Indexwerte erhoben.'}</p>
                             ${fsiq >= 130 ? `<p>Die Ergebnisse sind vereinbar mit einer intellektuellen Hochbegabung. Eine entsprechende Förderung wird empfohlen.</p>` : ''}
@@ -2989,7 +3190,6 @@
                                 <span>T&lt;65: unauffällig</span><span>T 65-69: grenzwertig</span><span>T≥70: klinisch</span>
                             </div>
                         </div>
-                        ${wordChart(validSyn.map(([k])=>synLabels[k]), validSyn.map(([k,x])=>x), validSyn.map(([k])=>cSyn[k]), 90, 'CBCL Syndromskalen-Profil (T-Werte)')}
                     </div>` : ''}
 
                     <div class="gutachten-section">
@@ -3146,7 +3346,6 @@
                                 <span>1-4: unauffällig</span><span>5-6: erhöht</span><span>7-9: auffällig</span>
                             </div>
                         </div>
-                        ${wordChart(valid.map(([k])=>labels[k]), valid.map(([k,x])=>x), valid.map(([k])=>c[k]), 9, 'DISYPS-III Skalenprofil (Stanine 1-9)')}
                     </div>
 
                     <div class="gutachten-section">
@@ -3240,7 +3439,7 @@
             }
 
             if(su_clin) {
-                interp += ` Zusätzlich besteht eine deutlich erhöhte Schulunlust (Stanine ${d.su}), die auf motivationale Probleme und eine negative Einstellung zur Schule hindeutet.`;
+                interp += ` Zusätzlich besteht eine deutlich erhöhte Schulunlust (Stanine ${d.su}), die auf motivationale Schwierigkeiten und eine negative Einstellung zur Schule hindeutet.`;
             }
 
             if(se_clin) {
@@ -3297,7 +3496,6 @@
                         <div class="chart-container">
                             ${chart(valid.map(([k])=>labels[k]),valid.map(([k,x])=>x),valid.map(([k])=>c[k]),9)}
                         </div>
-                        ${wordChart(valid.map(([k])=>labels[k]), valid.map(([k,x])=>x), valid.map(([k])=>c[k]), 9, 'AFS Skalenprofil (Stanine 1-9)')}
                     </div>
 
                     <div class="gutachten-section">
@@ -3465,7 +3663,6 @@
                                 <span>PR &lt;16: unterdurchschn.</span><span>PR 16-84: Durchschnitt</span><span>PR &gt;84: überdurchschn.</span>
                             </div>
                         </div>
-                        ${wordChart(valid.map(([k])=>labels[k]), valid.map(([k,x])=>x), valid.map(([k])=>c[k]), 100, 'd2-R Leistungsprofil (Prozentränge)')}
                     </div>
 
                     <div class="gutachten-section">
@@ -3641,27 +3838,61 @@
             const resp = document.querySelector('input[name="conners-resp"]:checked').value;
             const respText = {parent:'Elternurteil',teacher:'Lehrerurteil',self:'Selbsturteil'}[resp];
 
-            const scales = {
+            // Validitätsskalen (Rohwerte)
+            const piVal = v('con-pi');
+            const niVal = v('con-ni');
+
+            // Conners-Inhaltsskalen
+            const connersScales = {
                 in: {v:v('con-in'), n:'Unaufmerksamkeit'},
                 hi: {v:v('con-hi'), n:'Hyperaktivität/Impulsivität'},
                 lp: {v:v('con-lp'), n:'Lernprobleme'},
                 ef: {v:v('con-ef'), n:'Exekutive Funktionen'},
                 ag: {v:v('con-ag'), n:'Aggression'},
-                pr: {v:v('con-pr'), n:'Peer-Beziehungen'},
-                dsm_in: {v:v('con-dsm-in'), n:'DSM ADHS-Unaufmerksam'},
-                dsm_hi: {v:v('con-dsm-hi'), n:'DSM ADHS-Hyperaktiv'},
-                dsm_cd: {v:v('con-dsm-cd'), n:'DSM Sozialverhalten'},
-                dsm_odd: {v:v('con-dsm-odd'), n:'DSM Oppositionell'},
-                adhd: {v:v('con-adhd'), n:'ADHS-Index'}
+                pr: {v:v('con-pr'), n:'Peer-Beziehungen'}
             };
 
-            const valid = Object.entries(scales).filter(([k,x])=>x.v!==null);
+            // Zusätzliche Skalen
+            const anxVal = v('con-anx');
+            const depVal = v('con-dep');
+
+            // DSM-5-Skalen
+            const dsmScales = {
+                dsm_in: {v:v('con-dsm-in'), n:'ADHS Unaufmerksam'},
+                dsm_hi: {v:v('con-dsm-hi'), n:'ADHS Hyperaktiv-Impulsiv'},
+                dsm_cd: {v:v('con-dsm-cd'), n:'Störung des Sozialverhaltens'},
+                dsm_odd: {v:v('con-dsm-odd'), n:'Oppositionelles Trotzverhalten'}
+            };
+
+            const adhdIndex = {adhd: {v:v('con-adhd'), n:'ADHS-Index'}};
+
+            // Alle Skalen zusammen für Kompatibilität
+            const scales = {...connersScales, ...dsmScales, ...adhdIndex};
+
+            const validConners = Object.entries(connersScales).filter(([k,x])=>x.v!==null);
+            const validDsm = Object.entries(dsmScales).filter(([k,x])=>x.v!==null);
+            const validAdhd = Object.entries(adhdIndex).filter(([k,x])=>x.v!==null);
+            const valid = [...validConners, ...validDsm, ...validAdhd];
             if(!valid.length) return alert('Bitte mindestens einen Wert eingeben');
 
             const c = {};
             valid.forEach(([k,x]) => {
                 c[k] = x.v < 60 ? 'normal' : x.v < 65 ? 'borderline' : x.v < 70 ? 'clinical' : 'clinical';
             });
+
+            // T-Wert zu Prozentrang (Approximation)
+            const tToPR = t => {
+                if(t<=30) return '<2';
+                if(t<=35) return '~7';
+                if(t<=40) return '~16';
+                if(t<=45) return '~31';
+                if(t<=50) return '~50';
+                if(t<=55) return '~69';
+                if(t<=60) return '~84';
+                if(t<=65) return '~93';
+                if(t<=70) return '~98';
+                return '>98';
+            };
 
             const cText = val => val < 60 ? 'Durchschnittlich' : val < 65 ? 'Leicht erhöht' : val < 70 ? 'Erhöht' : 'Stark erhöht';
 
@@ -3687,13 +3918,36 @@
                     </div>
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        ${(piVal !== null && piVal > 2) || (niVal !== null && niVal > 2) ? `
+                        <div class="gutachten-warning">
+                            <strong>Hinweis zur Reliabilität der Antworten:</strong>
+                            ${piVal > 2 ? `Der Inkonsistenzindex (PI = ${piVal}) ist erhöht, was auf inkonsistentes Antwortverhalten hindeuten kann.` : ''}
+                            ${niVal > 2 ? `Der Index für Positiven Eindruck (NI = ${niVal}) ist erhöht, was auf eine Tendenz zu sozial erwünschtem Antwortverhalten hinweisen kann.` : ''}
+                            Die Ergebnisse sollten vor diesem Hintergrund mit Vorsicht interpretiert werden.
+                        </div>
+                        ` : ''}
+                        ${validConners.length ? `
+                        <p style="font-weight:bold;margin-top:1rem;">Conners-Inhaltsskalen (${respText})</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
                             <tbody>
-                                ${valid.map(([k,x])=>`<tr${k==='adhd'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${x.n}</td><td><strong>${x.v}</strong></td><td>T < 65</td><td class="${c[k]}"><strong>${cText(x.v)}</strong></td></tr>`).join('')}
+                                ${validConners.map(([k,x])=>`<tr><td>${x.n}</td><td><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td>${cText(x.v)}</td></tr>`).join('')}
                             </tbody>
                         </table>
-                        ${wordChart(valid.map(([k,x])=>x.n.split('/')[0].substring(0,15)), valid.map(([k,x])=>x.v), valid.map(([k])=>c[k]), 90, 'Conners-3 Skalenprofil (T-Werte, M=50, SD=10)')}
+                        ` : ''}
+                        ${validDsm.length || validAdhd.length ? `
+                        <p style="font-weight:bold;margin-top:1rem;">DSM-5-Skalen und ADHS-Index</p>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                ${validDsm.map(([k,x])=>`<tr><td>${x.n}</td><td><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td>${cText(x.v)}</td></tr>`).join('')}
+                                ${validAdhd.map(([k,x])=>`<tr style="font-weight:700;"><td>${x.n}</td><td><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td>${cText(x.v)}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                        ` : ''}
+                        <div style="margin-top:1rem;font-size:0.9em;color:#4a5568;">
+                            <p><strong>Erläuterungen:</strong> T-Werte haben einen Mittelwert von 50 und eine Standardabweichung von 10. T-Werte ≥65 gelten als erhöht (auffällig), ≥70 als stark erhöht (deutlich auffällig). Der Prozentrang gibt an, wie viel Prozent der Gleichaltrigen niedrigere Werte erzielen.</p>
+                        </div>
                     </div>
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">3. Interpretation</h4>
@@ -3702,7 +3956,9 @@
                             ${scales.in.v && c.in !== 'normal' ? `<p><strong>Unaufmerksamkeit:</strong> Der erhöhte Wert (T=${scales.in.v}) weist auf bedeutsame Schwierigkeiten bei der Aufrechterhaltung der Aufmerksamkeit hin.</p>` : ''}
                             ${scales.hi.v && c.hi !== 'normal' ? `<p><strong>Hyperaktivität/Impulsivität:</strong> Der erhöhte Wert (T=${scales.hi.v}) deutet auf übermäßige motorische Aktivität und/oder impulsives Verhalten hin.</p>` : ''}
                             ${scales.ef.v && c.ef !== 'normal' ? `<p><strong>Exekutive Funktionen:</strong> Der erhöhte Wert (T=${scales.ef.v}) weist auf Schwierigkeiten bei Planung, Organisation und Selbstregulation hin.</p>` : ''}
-                            ${valid.every(([k])=>c[k]==='normal') ? `<p>Das Ergebnisprofil liegt im unauffälligen Bereich. Es ergeben sich keine Hinweise auf eine ADHS oder damit assoziierte Probleme.</p>` : ''}
+                            ${anxVal !== null && anxVal >= 65 ? `<p><strong>Ängstlichkeit:</strong> Der erhöhte Wert (T=${anxVal}) weist auf relevante Angstsymptome hin, die im Kontext einer ADHS-Abklärung differentialdiagnostisch berücksichtigt werden sollten.</p>` : ''}
+                            ${depVal !== null && depVal >= 65 ? `<p><strong>Depression:</strong> Der erhöhte Wert (T=${depVal}) deutet auf depressive Symptome hin, die komorbid oder differentialdiagnostisch relevant sein können.</p>` : ''}
+                            ${valid.every(([k])=>c[k]==='normal') && !(anxVal >= 65) && !(depVal >= 65) ? `<p>Das Ergebnisprofil liegt im unauffälligen Bereich. Es ergeben sich keine Hinweise auf eine ADHS oder damit assoziierte Probleme.</p>` : ''}
                             ${(c.adhd === 'clinical' || (c.in === 'clinical' && c.hi === 'clinical')) ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Die Befunde sprechen für eine hohe Wahrscheinlichkeit einer ADHS. Eine umfassende multimodale Diagnostik wird dringend empfohlen.</div>' : ''}
                         </div>
                     </div>
@@ -3825,8 +4081,6 @@
                                 ${sekundar.maladapt ? `<tr style="font-weight:700;background:var(--bg-input);"><td>Maladaptive Strategien Gesamt</td><td><strong>${sekundar.maladapt}</strong></td><td class="${sekundar.maladapt<=55?'normal':sekundar.maladapt<=60?'borderline':'clinical'}">${cMaladaptText(sekundar.maladapt)}</td></tr>` : ''}
                             </tbody>
                         </table>` : ''}
-                        ${validAdapt.length ? wordChart(validAdapt.map(([k])=>adaptLabels[k]), validAdapt.map(([k,x])=>x), validAdapt.map(([k])=>cAdapt[k]), 80, 'Adaptive Strategien (T-Werte, niedrig = ungünstig)') : ''}
-                        ${validMaladapt.length ? wordChart(validMaladapt.map(([k])=>maladaptLabels[k]), validMaladapt.map(([k,x])=>x), validMaladapt.map(([k])=>cMaladapt[k]), 80, 'Maladaptive Strategien (T-Werte, hoch = ungünstig)') : ''}
                     </div>
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">3. Interpretation</h4>
@@ -3924,7 +4178,6 @@
                                 ${validSub.map(([k,x])=>`<tr><td>${subtestLabels[k]}</td><td>${x}</td><td>${iqClass(x).pr}</td><td class="${iqClass(x).c}">${iqClass(x).l}</td></tr>`).join('')}
                             </tbody>
                         </table>
-                        ${validSub.length ? wordChart(['Gesamt-IQ', ...validSub.map(([k])=>subtestLabels[k])], [iqVal, ...validSub.map(([k,x])=>x)], [c.c, ...validSub.map(([k,x])=>iqClass(x).c)], 160, 'CFT 20-R Profil (IQ-Werte, M=100, SD=15)') : wordChart(['Gesamt-IQ'], [iqVal], [c.c], 160, 'CFT 20-R Ergebnis (IQ-Werte, M=100, SD=15)')}
                     </div>
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">3. Interpretation</h4>
@@ -4110,13 +4363,6 @@
                                 </tbody>
                             </table>
                         ` : ''}
-                        ${wordChart(
-                            [abcVal ? 'ABC Gesamt' : '', ...validDomains.map(([k,d])=>d.n)].filter(x=>x),
-                            [abcVal, ...validDomains.map(([k,d])=>d.v)].filter(x=>x!==null),
-                            [abcVal ? abcClassFinal.c : '', ...validDomains.map(([k])=>domainClasses[k].c)].filter(x=>x),
-                            160,
-                            'Vineland-3 Domänenprofil (Standardwerte, M=100, SD=15)'
-                        )}
                     </div>
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">3. Interpretation</h4>
@@ -4221,6 +4467,256 @@
             R.vineland = {abc:abcVal,domains:validDomains.map(([k,d])=>({k,...d,c:domainClasses[k]})),maladaptive,gutachten}; updateReport();
         }
 
+        // SON-R
+        const SONR_SUBTESTS = {
+            mos: {n:'Mosaike', desc:'Visuell-konstruktive Fähigkeiten'},
+            kat: {n:'Kategorien', desc:'Klassifikation und Abstraktion'},
+            puz: {n:'Puzzles', desc:'Räumliches Denken'},
+            ana: {n:'Analogien', desc:'Schlussfolgerndes Denken'},
+            sit: {n:'Situationen', desc:'Konkretes Denken und Handlungsplanung'},
+            zei: {n:'Zeichenmuster', desc:'Visuomotorik und Raumvorstellung'}
+        };
+
+        function wpClass(wp) {
+            if(wp>=14) return {l:'Überdurchschnittlich',c:'high'};
+            if(wp>=8) return {l:'Durchschnittlich',c:'normal'};
+            if(wp>=5) return {l:'Unterdurchschnittlich',c:'borderline'};
+            return {l:'Weit unterdurchschnittlich',c:'clinical'};
+        }
+
+        function evaluateSONR(e) {
+            e.preventDefault();
+            const pat = getPatient();
+            const pronomen = pat.sex === 'w' ? {er:'sie',sein:'ihr',ihm:'ihr'} : {er:'er',sein:'sein',ihm:'ihm'};
+            const iqVal = v('sonr-iq');
+            const prVal = v('sonr-pr');
+            const subtests = {mos:v('sonr-mos'),kat:v('sonr-kat'),puz:v('sonr-puz'),ana:v('sonr-ana'),sit:v('sonr-sit'),zei:v('sonr-zei')};
+            const validSub = Object.entries(subtests).filter(([k,x])=>x!==null);
+
+            if(iqVal === null && !validSub.length) return alert('Bitte mindestens Gesamt-IQ oder Untertests eingeben');
+
+            const iq = iqVal || 100;
+            const c = iqClass(iq);
+
+            const testLang = document.getElementById('sonr-testlang')?.value || 'Nonverbal';
+            const instLang = document.getElementById('sonr-instlang')?.value || '';
+            const motherLang = document.getElementById('sonr-motherlang')?.value || '';
+
+            const gutachten = `
+                <div class="gutachten">
+                    ${gutachtenHeader('SON-R', 'Snijders-Oomen Non-verbaler Intelligenztest', pat)}
+
+                    <div class="gutachten-meta" style="margin-top:0;">
+                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">Testsprache:</span> <span class="gutachten-meta-value">${testLang}</span></div>
+                        ${instLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Instruktionssprache:</span> <span class="gutachten-meta-value">${instLang}</span></div>` : ''}
+                        ${motherLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Muttersprache:</span> <span class="gutachten-meta-value">${motherLang}</span></div>` : ''}
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <div class="gutachten-text">
+                            <p>Der SON-R (Snijders-Oomen Non-verbaler Intelligenztest; Tellegen et al.) ist ein sprachfreier Intelligenztest für Kinder und Jugendliche. Das Verfahren eignet sich besonders für die Diagnostik bei Kindern mit Hörbeeinträchtigungen, Sprachentwicklungsstörungen oder mehrsprachigem Hintergrund, da die Instruktionen ohne gesprochene Sprache vermittelt werden können.</p>
+                            <p>Der SON-R umfasst sechs Untertests, die zwei Skalen zugeordnet werden: Handlungsskala (Mosaike, Puzzles, Zeichenmuster) und Denkskala (Kategorien, Analogien, Situationen). Die Ergebnisse werden als IQ-Werte (M=100, SD=15) angegeben.</p>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        ${iqVal ? `
+                        <table class="gutachten-table">
+                            <thead><tr><th>Skala</th><th>IQ-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                <tr style="font-weight:700;"><td>SON-IQ (Gesamtwert)</td><td><strong>${iqVal}</strong></td><td>${prVal || c.pr}</td><td>${c.l}</td></tr>
+                            </tbody>
+                        </table>
+                        ` : ''}
+                        ${validSub.length ? `
+                        <p style="font-weight:bold;margin-top:1rem;">Untertests (Wertpunkte, M=10, SD=3):</p>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Untertest</th><th>Wertpunkt</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                ${validSub.map(([k,x])=>`<tr><td>${SONR_SUBTESTS[k].n}</td><td><strong>${x}</strong></td><td>${wpClass(x).l}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                        ` : ''}
+                        <div style="margin-top:1rem;font-size:0.9em;color:#4a5568;">
+                            <p><strong>Erläuterungen:</strong> Die IQ-Werte haben einen Mittelwert von 100 und eine Standardabweichung von 15. Wertpunkte der Untertests haben einen Mittelwert von 10 und eine Standardabweichung von 3. Der Durchschnittsbereich umfasst IQ-Werte von 85–114 bzw. Wertpunkte von 8–12.</p>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">3. Interpretation</h4>
+                        <div class="gutachten-text">
+                            ${iqVal ? `<p>Die Untersuchung der nonverbalen kognitiven Leistungsfähigkeit mittels SON-R ergibt einen <strong>SON-IQ von ${iqVal}</strong> (PR: ${prVal || c.pr}). Dieser Wert liegt im <strong>${c.l.toLowerCase()}en Bereich</strong>.</p>` : ''}
+                            ${iqVal >= 130 ? `<p>${pat.name} verfügt über <strong>weit überdurchschnittliche nonverbale kognitive Fähigkeiten</strong>.</p>` : ''}
+                            ${iqVal >= 115 && iqVal < 130 ? `<p>${pat.name} verfügt über <strong>überdurchschnittliche nonverbale kognitive Fähigkeiten</strong>, die gute Voraussetzungen für visuell-räumliches Denken und Problemlösen darstellen.</p>` : ''}
+                            ${iqVal >= 85 && iqVal < 115 ? `<p>${pat.name} verfügt über <strong>durchschnittliche nonverbale kognitive Fähigkeiten</strong>. Die sprachfreien intellektuellen Voraussetzungen entsprechen dem Erwartungswert für ${pronomen.sein} Altersgruppe.</p>` : ''}
+                            ${iqVal < 85 && iqVal >= 70 ? `<p>${pat.name} zeigt <strong>unterdurchschnittliche nonverbale kognitive Fähigkeiten</strong>. Gezielte Förderung wird empfohlen.</p>` : ''}
+                            ${iqVal < 70 ? `<p>${pat.name} zeigt <strong>deutlich unterdurchschnittliche nonverbale kognitive Fähigkeiten</strong>. Eine umfassende Entwicklungsdiagnostik wird empfohlen.</p>` : ''}
+                            <p><em>Da der SON-R ein sprachfreier Test ist, bildet er kognitive Fähigkeiten unabhängig von Sprachkompetenzen ab. ${motherLang && motherLang !== 'Deutsch' ? `Dies ist besonders relevant, da die Muttersprache von ${pat.name} (${motherLang}) von der Testsprache abweicht.` : ''}</em></p>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">4. Empfehlungen</h4>
+                        <div class="gutachten-text">
+                            <ul class="gutachten-list">
+                                ${iqVal >= 130 ? '<li>Begabungsförderung und intellektuelle Herausforderungen</li>' : ''}
+                                ${iqVal < 85 ? '<li>Gezielte Förderung im visuell-räumlichen Bereich</li>' : ''}
+                                ${iqVal < 70 ? '<li>Prüfung eines sonderpädagogischen Förderbedarfs</li>' : ''}
+                                <li>Bei Diskrepanz zu sprachgebundenen Testverfahren: Abklärung sprachlicher Kompetenzen</li>
+                                <li>Vergleich mit sprachgebundenen IQ-Tests (z.B. WISC-V) für ein vollständiges Begabungsprofil</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    ${gutachtenFooter()}
+                </div>
+            `;
+
+            const summaryItems = [{l:'SON-IQ',v:iqVal||'-',c:c.c,s:c.l}];
+            document.getElementById('sonr-results').innerHTML = `
+                <div class="results-header"><h3 class="results-title">Ergebnis SON-R</h3></div>
+                ${summary(summaryItems)}
+                ${gutachten}
+                <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
+                    <button class="btn btn-primary" onclick="exportTestToWord('sonr')">📝 Als Word exportieren (.doc)</button>
+                </div>
+            `;
+            document.getElementById('sonr-results').classList.add('show');
+            R.sonr = {iq:iqVal,pr:prVal,subtests,c,gutachten}; updateReport();
+        }
+
+        // K-ABC II
+        const KABC_NAMES = {
+            fki: {n:'Fluid-Kristalliner Index (FKI)', desc:'Gesamtmaß der kognitiven Leistungsfähigkeit nach CHC-Modell'},
+            nvi: {n:'Nonverbaler Index (NVI)', desc:'Kognitive Leistungsfähigkeit ohne sprachliche Anforderungen'},
+            seq: {n:'Sequenziell/Gsm', desc:'Kurzzeitgedächtnis und sequenzielle Verarbeitung'},
+            sim: {n:'Simultan/Gv', desc:'Visuelle Verarbeitung und simultane Problemlösung'},
+            lrn: {n:'Lernen/Glr', desc:'Langzeitspeicherung und -abruf'},
+            pln: {n:'Planung/Gf', desc:'Fluides Denken und Problemlösen'},
+            wis: {n:'Wissen/Gc', desc:'Kristalline Fähigkeiten und erworbenes Wissen'}
+        };
+
+        function evaluateKABC(e) {
+            e.preventDefault();
+            const pat = getPatient();
+            const pronomen = pat.sex === 'w' ? {er:'sie',sein:'ihr',ihm:'ihr'} : {er:'er',sein:'sein',ihm:'ihm'};
+
+            const idx = {
+                fki:{v:v('kabc-fki')},nvi:{v:v('kabc-nvi')},
+                seq:{v:v('kabc-seq')},sim:{v:v('kabc-sim')},lrn:{v:v('kabc-lrn')},
+                pln:{v:v('kabc-pln')},wis:{v:v('kabc-wis')}
+            };
+            const valid = Object.entries(idx).filter(([k,x])=>x.v!==null);
+            if(!valid.length) return alert('Bitte mindestens einen Wert eingeben');
+
+            const c = {}; valid.forEach(([k,x])=>c[k]=iqClass(x.v));
+
+            const testLang = document.getElementById('kabc-testlang')?.value || 'Deutsch';
+            const instLang = document.getElementById('kabc-instlang')?.value || '';
+            const motherLang = document.getElementById('kabc-motherlang')?.value || '';
+
+            const globals = valid.filter(([k])=>['fki','nvi'].includes(k));
+            const indices = valid.filter(([k])=>['seq','sim','lrn','pln','wis'].includes(k));
+            const mainIQ = idx.fki.v || idx.nvi.v;
+            const mainC = idx.fki.v ? c.fki : (idx.nvi.v ? c.nvi : iqClass(100));
+
+            const gutachten = `
+                <div class="gutachten">
+                    ${gutachtenHeader('K-ABC II', 'Kaufman Assessment Battery for Children – Second Edition', pat)}
+
+                    <div class="gutachten-meta" style="margin-top:0;">
+                        ${testLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Testsprache:</span> <span class="gutachten-meta-value">${testLang}</span></div>` : ''}
+                        ${instLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Instruktionssprache:</span> <span class="gutachten-meta-value">${instLang}</span></div>` : ''}
+                        ${motherLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Muttersprache:</span> <span class="gutachten-meta-value">${motherLang}</span></div>` : ''}
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <div class="gutachten-text">
+                            <p>Die K-ABC II (Kaufman & Kaufman, 2004; deutsche Fassung: Melchers & Melchers, 2015) ist ein Individualtest zur Erfassung kognitiver Fähigkeiten von Kindern und Jugendlichen im Alter von 3 bis 18 Jahren. Das Verfahren basiert auf dem Cattell-Horn-Carroll (CHC) Modell und dem neuropsychologischen Modell von Luria.</p>
+                            <p>Die K-ABC II bietet einen Fluid-Kristallinen Index (FKI) als umfassendes Maß der kognitiven Leistungsfähigkeit sowie einen Nonverbalen Index (NVI) für die sprachfreie Einschätzung. Fünf Indexskalen erfassen spezifische kognitive Bereiche.</p>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        ${globals.length ? `
+                        <p style="font-weight:bold;">Globalskalen:</p>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Skala</th><th>Standardwert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                ${globals.map(([k,x])=>`<tr style="font-weight:700;"><td>${KABC_NAMES[k].n}</td><td><strong>${x.v}</strong></td><td>${c[k].pr}</td><td>${c[k].l}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                        ` : ''}
+                        ${indices.length ? `
+                        <p style="font-weight:bold;margin-top:1rem;">Indexskalen:</p>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Skala</th><th>Standardwert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                ${indices.map(([k,x])=>`<tr><td>${KABC_NAMES[k].n}</td><td><strong>${x.v}</strong></td><td>${c[k].pr}</td><td>${c[k].l}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                        ` : ''}
+                        <div style="margin-top:1rem;font-size:0.9em;color:#4a5568;">
+                            <p><strong>Erläuterungen:</strong> Standardwerte haben einen Mittelwert von 100 und eine Standardabweichung von 15. Der Durchschnittsbereich umfasst Werte von 85–114 (Prozentrang 16–84). Werte ab 115 gelten als überdurchschnittlich, Werte unter 85 als unterdurchschnittlich.</p>
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">3. Interpretation</h4>
+                        <div class="gutachten-text">
+                            ${mainIQ ? `<p>Die Untersuchung mittels K-ABC II ergibt einen <strong>${idx.fki.v ? 'Fluid-Kristallinen Index (FKI)' : 'Nonverbalen Index (NVI)'} von ${mainIQ}</strong> (PR: ${mainC.pr}). Dieser Wert liegt im <strong>${mainC.l.toLowerCase()}en Bereich</strong>.</p>` : ''}
+                            ${mainIQ >= 115 ? `<p>${pat.name} verfügt über <strong>überdurchschnittliche kognitive Fähigkeiten</strong>.</p>` : ''}
+                            ${mainIQ >= 85 && mainIQ < 115 ? `<p>${pat.name} verfügt über <strong>durchschnittliche kognitive Fähigkeiten</strong>.</p>` : ''}
+                            ${mainIQ < 85 && mainIQ >= 70 ? `<p>${pat.name} zeigt <strong>unterdurchschnittliche kognitive Fähigkeiten</strong>.</p>` : ''}
+                            ${mainIQ < 70 ? `<p>${pat.name} zeigt <strong>deutlich unterdurchschnittliche kognitive Fähigkeiten</strong>. Eine umfassende Entwicklungsdiagnostik wird empfohlen.</p>` : ''}
+                            ${indices.length >= 2 ? (() => {
+                                const iVals = indices.map(([k,x])=>x.v);
+                                const diff = Math.max(...iVals) - Math.min(...iVals);
+                                const maxI = indices.reduce((a,b)=>a[1].v>b[1].v?a:b);
+                                const minI = indices.reduce((a,b)=>a[1].v<b[1].v?a:b);
+                                return diff >= 15 ? `<p><strong>Profilanalyse:</strong> Es zeigt sich eine bedeutsame Diskrepanz von ${diff} Punkten zwischen dem stärksten Bereich (${KABC_NAMES[maxI[0]].n}: ${maxI[1].v}) und dem schwächsten Bereich (${KABC_NAMES[minI[0]].n}: ${minI[1].v}).</p>` : `<p>Das kognitive Profil ist weitgehend homogen.</p>`;
+                            })() : ''}
+                            ${idx.fki.v && idx.nvi.v && Math.abs(idx.fki.v - idx.nvi.v) >= 10 ? `<p>Die Differenz von ${Math.abs(idx.fki.v - idx.nvi.v)} Punkten zwischen FKI (${idx.fki.v}) und NVI (${idx.nvi.v}) deutet darauf hin, dass ${idx.nvi.v > idx.fki.v ? 'nonverbale Fähigkeiten stärker ausgeprägt sind als sprachgebundene' : 'sprachgebundene Fähigkeiten die nonverbalen Fähigkeiten übersteigen'}.</p>` : ''}
+                        </div>
+                    </div>
+
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">4. Empfehlungen</h4>
+                        <div class="gutachten-text">
+                            <ul class="gutachten-list">
+                                ${mainIQ >= 130 ? '<li>Begabungsförderung und Enrichment-Maßnahmen</li>' : ''}
+                                ${mainIQ < 85 ? '<li>Gezielte Förderung in den identifizierten Schwächebereichen</li>' : ''}
+                                ${mainIQ < 70 ? '<li>Prüfung eines sonderpädagogischen Förderbedarfs</li><li>Umfassende Entwicklungsdiagnostik</li>' : ''}
+                                <li>Integration der Ergebnisse mit weiteren diagnostischen Befunden</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    ${gutachtenFooter()}
+                </div>
+            `;
+
+            const summaryItems = [];
+            if(idx.fki.v) summaryItems.push({l:'FKI',v:idx.fki.v,c:c.fki.c,s:c.fki.l});
+            if(idx.nvi.v) summaryItems.push({l:'NVI',v:idx.nvi.v,c:c.nvi.c,s:c.nvi.l});
+            indices.forEach(([k,x])=>summaryItems.push({l:KABC_NAMES[k].n.split('/')[0],v:x.v,c:c[k].c,s:c[k].l}));
+
+            document.getElementById('kabc-results').innerHTML = `
+                <div class="results-header"><h3 class="results-title">Ergebnis K-ABC II</h3></div>
+                ${summary(summaryItems)}
+                ${gutachten}
+                <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
+                    <button class="btn btn-primary" onclick="exportTestToWord('kabc')">📝 Als Word exportieren (.doc)</button>
+                </div>
+            `;
+            document.getElementById('kabc-results').classList.add('show');
+            R.kabc = {idx,c,gutachten}; updateReport();
+        }
+
         function updateReport() {
             // Diese Funktion wird aufgerufen um das R-Objekt aktuell zu halten
             // Die Bericht-Seite wurde entfernt - Export erfolgt jetzt pro Test
@@ -4237,7 +4733,7 @@
             const testNames = {
                 sdq:'SDQ',wisc:'WISC-V',cbcl:'CBCL',disyps:'DISYPS-III',
                 afs:'AFS',d2r:'d2-R',dikj:'DIKJ',conners:'Conners-3',
-                feelkj:'FEEL-KJ',cft:'CFT 20-R',vineland:'Vineland-3'
+                feelkj:'FEEL-KJ',cft:'CFT 20-R',vineland:'Vineland-3',sonr:'SON-R',kabc:'K-ABC II'
             };
             const testName = testNames[testKey] || testKey.toUpperCase();
 
@@ -4412,7 +4908,7 @@
             }
 
             const pat = getPatient();
-            const names = {sdq:'SDQ',wisc:'WISC-V',cbcl:'CBCL',disyps:'DISYPS-III',afs:'AFS',d2r:'d2-R',dikj:'DIKJ',conners:'Conners-3',feelkj:'FEEL-KJ',cft:'CFT 20-R',vineland:'Vineland-3'};
+            const names = {sdq:'SDQ',wisc:'WISC-V',cbcl:'CBCL',disyps:'DISYPS-III',afs:'AFS',d2r:'d2-R',dikj:'DIKJ',conners:'Conners-3',feelkj:'FEEL-KJ',cft:'CFT 20-R',vineland:'Vineland-3',sonr:'SON-R',kabc:'K-ABC II'};
 
             // Sammle alle Gutachten
             let gutachtenHTML = '';
