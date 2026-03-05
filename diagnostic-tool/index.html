@@ -1131,14 +1131,23 @@
                 <div class="form-group"><label>Untersucher/in</label><input type="text" id="pat-examiner" placeholder="Name"></div>
             </div>
             <div class="report-options" style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
-                <div class="form-group" style="display:flex;align-items:center;gap:1rem;">
+                <div class="form-section-title" style="font-size:0.85rem;margin-bottom:0.5rem;">Berichtoptionen</div>
+                <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
                     <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
-                        <input type="checkbox" id="show-charts" checked style="width:18px;height:18px;">
-                        <span>Visualisierungen im Bericht</span>
+                        <input type="checkbox" id="show-charts" style="width:16px;height:16px;">
+                        <span style="font-size:0.9rem;">Visualisierungen</span>
                     </label>
-                    <select id="report-style" style="padding:0.4rem 0.8rem;border-radius:6px;background:var(--bg-input);border:1px solid var(--border);color:var(--text);">
-                        <option value="eltern">Für Eltern (mit Erklärungen)</option>
-                        <option value="fachlich">Für Fachkollegen (kompakt)</option>
+                    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+                        <input type="checkbox" id="show-differential" checked style="width:16px;height:16px;">
+                        <span style="font-size:0.9rem;">Differentialdiagnostik</span>
+                    </label>
+                    <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+                        <input type="checkbox" id="show-eltern" checked style="width:16px;height:16px;">
+                        <span style="font-size:0.9rem;">Zusammenfassung für Eltern</span>
+                    </label>
+                    <select id="report-style" style="padding:0.4rem 0.8rem;border-radius:6px;background:var(--bg-input);border:1px solid var(--border);color:var(--text);font-size:0.9rem;">
+                        <option value="eltern">Für Eltern</option>
+                        <option value="fachlich">Für Fachkollegen</option>
                     </select>
                 </div>
             </div>
@@ -1915,8 +1924,19 @@
             return erklaerungen[typ] || '';
         }
 
+        // Prüft ob Elternzusammenfassung angezeigt werden soll
+        function showElternSummary() {
+            return document.getElementById('show-eltern')?.checked !== false;
+        }
+
+        // Prüft ob Differentialdiagnostik angezeigt werden soll
+        function showDifferential() {
+            return document.getElementById('show-differential')?.checked !== false;
+        }
+
         // Elternverständliche Zusammenfassung generieren
         function elternZusammenfassung(testname, befund, empfehlungen) {
+            if (!showElternSummary()) return '';
             return `
                 <div class="eltern-zusammenfassung">
                     <h4>Zusammenfassung für Eltern und Erziehungsberechtigte</h4>
@@ -3656,17 +3676,7 @@
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Grafische Darstellung</h4>
-                        <div class="chart-container">
-                            ${chart(valid.map(([k])=>labels[k]),valid.map(([k,x])=>x),valid.map(([k])=>c[k]),100)}
-                            <div style="display:flex;justify-content:center;gap:2rem;margin-top:1rem;font-size:0.75rem;">
-                                <span>PR &lt;16: unterdurchschn.</span><span>PR 16-84: Durchschnitt</span><span>PR &gt;84: überdurchschn.</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Interpretation</h4>
+                        <h4 class="gutachten-section-title">3. Interpretation</h4>
                         <div class="gutachten-text">
                             <p>${interp}</p>
                             ${kl_low ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Unterdurchschnittliche Konzentrationsleistung kann schulische und alltägliche Anforderungen beeinträchtigen.</div>' : ''}
@@ -3675,7 +3685,7 @@
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">5. Diagnostische Einordnung</h4>
+                        <h4 class="gutachten-section-title">4. Diagnostische Einordnung</h4>
                         <div class="gutachten-text">
                             <p>Der d2-R misst selektive Aufmerksamkeit, die bei verschiedenen Störungsbildern beeinträchtigt sein kann:</p>
                             ${kl_low || fehler_high ? `
@@ -3688,7 +3698,7 @@
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">6. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">5. Empfehlungen</h4>
                         <div class="gutachten-text">${empf}</div>
                     </div>
 
