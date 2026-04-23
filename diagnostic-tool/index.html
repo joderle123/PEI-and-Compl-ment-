@@ -687,6 +687,31 @@
             border-radius: 0 8px 8px 0;
         }
 
+        .gutachten-danger {
+            background: #fef2f2;
+            border: 2px solid var(--danger);
+            border-left: 6px solid var(--danger);
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+            border-radius: 8px;
+            color: #7f1d1d;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.12);
+        }
+
+        .gutachten-danger strong {
+            color: #991b1b;
+            font-size: 1.02em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .gutachten-danger strong::before {
+            content: "⚠";
+            font-size: 1.2em;
+        }
+
         .gutachten-list {
             margin: 1rem 0;
             padding-left: 1.5rem;
@@ -1185,6 +1210,22 @@
                             <div class="form-group"><label>Prosozial ⭐</label><input type="number" id="sdq-pr" min="0" max="10" required placeholder="0-10"><span class="form-hint">Höher = besser (invertiert)</span></div>
                         </div>
                     </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Impact Supplement <span class="form-hint">Funktionelle Beeinträchtigung (Items 21–25) – manual-konform zwingend</span></div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Liegt eine Schwierigkeit vor?</label><select id="sdq-impact-any"><option value="">– nicht erfasst –</option><option value="0">Nein (keine Schwierigkeiten)</option><option value="1">Ja, leichte Schwierigkeiten</option><option value="2">Ja, deutliche Schwierigkeiten</option><option value="3">Ja, massive Schwierigkeiten</option></select></div>
+                            <div class="form-group"><label>Dauer der Schwierigkeit</label><select id="sdq-impact-dur"><option value="">– nicht angegeben –</option><option value="lt1">Weniger als 1 Monat</option><option value="1-5">1–5 Monate</option><option value="6-12">6–12 Monate</option><option value="gt12">Über 1 Jahr</option></select></div>
+                        </div>
+                        <div class="form-hint" style="margin:0.75rem 0 0.5rem;">Die folgenden Items nur ausfüllen, wenn oben „Schwierigkeiten ≥ 1" angegeben wurde. Skalierung: 0 = gar nicht, 1 = ein wenig, 2 = ziemlich, 3 = massiv.</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Belastung des Kindes</label><select id="sdq-impact-distress"><option value="">–</option><option value="0">0 – gar nicht</option><option value="1">1 – ein wenig</option><option value="2">2 – ziemlich</option><option value="3">3 – massiv</option></select></div>
+                            <div class="form-group"><label>Beeinträchtigung zu Hause</label><select id="sdq-impact-home"><option value="">–</option><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+                            <div class="form-group"><label>Beeinträchtigung bei Freundschaften</label><select id="sdq-impact-friends"><option value="">–</option><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+                            <div class="form-group"><label>Beeinträchtigung in Unterricht / Arbeit</label><select id="sdq-impact-class"><option value="">–</option><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+                            <div class="form-group"><label>Beeinträchtigung in der Freizeit</label><select id="sdq-impact-leisure"><option value="">–</option><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></div>
+                            <div class="form-group"><label>Belastung anderer durch das Kind</label><select id="sdq-impact-burden"><option value="">–</option><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option></select><span class="form-hint">Nur Eltern-/Lehrerurteil</span></div>
+                        </div>
+                    </div>
                     <div class="btn-group">
                         <button type="button" class="btn btn-secondary" onclick="clearForm('sdq')">Zurücksetzen</button>
                         <button type="submit" class="btn btn-primary">Auswerten →</button>
@@ -1208,20 +1249,20 @@
                     <div class="form-section">
                         <div class="form-section-title">Primärindizes (M=100, SD=15)</div>
                         <div class="form-grid">
-                            <div class="form-group"><label>Sprachverständnis (SVI)</label><input type="number" id="wisc-vci" min="40" max="160" placeholder="40-160"></div>
-                            <div class="form-group"><label>Visuell-räumlich (VRI)</label><input type="number" id="wisc-vsi" min="40" max="160" placeholder="40-160"></div>
-                            <div class="form-group"><label>Fluides Denken (FSI)</label><input type="number" id="wisc-fri" min="40" max="160" placeholder="40-160"></div>
-                            <div class="form-group"><label>Arbeitsgedächtnis (AGI)</label><input type="number" id="wisc-wmi" min="40" max="160" placeholder="40-160"></div>
-                            <div class="form-group"><label>Verarbeitungstempo (VGI)</label><input type="number" id="wisc-psi" min="40" max="160" placeholder="40-160"></div>
-                            <div class="form-group"><label><strong>Gesamt-IQ (FSIQ)</strong></label><input type="number" id="wisc-fsiq" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>SVI – Sprachverständnis</label><input type="number" id="wisc-vci" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>VRI – Visuell-räumliche Verarbeitung</label><input type="number" id="wisc-vsi" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>FRI – Fluides Schlussfolgern</label><input type="number" id="wisc-fri" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>AMI – Arbeitsgedächtnis</label><input type="number" id="wisc-wmi" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>VGI – Verarbeitungsgeschwindigkeit</label><input type="number" id="wisc-psi" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label><strong>FSIQ – Gesamt-IQ</strong></label><input type="number" id="wisc-fsiq" min="40" max="160" placeholder="40-160"></div>
                         </div>
                     </div>
                     <div class="form-section">
                         <div class="form-section-title">Zusätzliche Indizes (M=100, SD=15)</div>
                         <div class="form-grid">
-                            <div class="form-group"><label>Nonverbaler Index (NVI)</label><input type="number" id="wisc-nvi" min="40" max="160" placeholder="40-160"></div>
-                            <div class="form-group"><label>Allg. Fähigkeitsindex (GAI)</label><input type="number" id="wisc-gai" min="40" max="160" placeholder="40-160"></div>
-                            <div class="form-group"><label>Kogn. Leistungsindex (KLI)</label><input type="number" id="wisc-kli" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>NVI – Nonverbaler Index</label><input type="number" id="wisc-nvi" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>AFI – Allgemeiner Fähigkeitsindex</label><input type="number" id="wisc-gai" min="40" max="160" placeholder="40-160"></div>
+                            <div class="form-group"><label>KLI – Kognitiver Leistungsindex</label><input type="number" id="wisc-kli" min="40" max="160" placeholder="40-160"></div>
                         </div>
                     </div>
                     <div class="form-section">
@@ -1328,6 +1369,35 @@
                             </table>
                         </div>
                     </div>
+                    <div class="form-section" style="border:2px solid #fecaca;background:#fef2f2;border-radius:10px;padding:1rem 1.25rem;">
+                        <div class="form-section-title" style="color:#991b1b;">⚠ Kritische Einzelitems – verpflichtend zu prüfen <span class="form-hint" style="color:#991b1b;">Rohwert pro Item: 0 = nicht zutreffend, 1 = teilweise/manchmal, 2 = genau/häufig zutreffend</span></div>
+                        <div style="overflow-x:auto;">
+                            <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">
+                                <thead>
+                                    <tr style="background:rgba(239,68,68,0.08);">
+                                        <th style="text-align:left;padding:0.4rem 0.5rem;">Kritisches Item</th>
+                                        <th style="padding:0.4rem;min-width:90px;">Eltern</th>
+                                        <th style="padding:0.4rem;min-width:90px;">Lehrer</th>
+                                        <th style="padding:0.4rem;min-width:90px;">Selbst</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="padding:0.35rem 0.5rem;">Item 18 – Selbstverletzung (absichtlich)</td>
+                                        <td style="padding:0.25rem;"><select id="cbcl-parent-i18" style="width:100%;"><option value="">–</option><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
+                                        <td style="padding:0.25rem;"><select id="cbcl-teacher-i18" style="width:100%;"><option value="">–</option><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
+                                        <td style="padding:0.25rem;"><select id="cbcl-self-i18" style="width:100%;"><option value="">–</option><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:0.35rem 0.5rem;">Item 91 – Gedanken, sich das Leben zu nehmen</td>
+                                        <td style="padding:0.25rem;"><select id="cbcl-parent-i91" style="width:100%;"><option value="">–</option><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
+                                        <td style="padding:0.25rem;"><select id="cbcl-teacher-i91" style="width:100%;"><option value="">–</option><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
+                                        <td style="padding:0.25rem;"><select id="cbcl-self-i91" style="width:100%;"><option value="">–</option><option value="0">0</option><option value="1">1</option><option value="2">2</option></select></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                     <div class="btn-group">
                         <button type="button" class="btn btn-secondary" onclick="clearForm('cbcl')">Zurücksetzen</button>
                         <button type="submit" class="btn btn-primary">Auswerten →</button>
@@ -1348,6 +1418,15 @@
                     <p class="card-subtitle">Diagnostik-System für psychische Störungen – ADHS und Sozialverhalten</p>
                 </div>
                 <form id="disyps-form" onsubmit="evaluateDISYPS(event)">
+                    <div class="form-section">
+                        <div class="form-section-title">Beurteiler / Fragebogenversion</div>
+                        <div class="radio-group">
+                            <div class="radio-btn"><input type="radio" name="dis-resp" id="dis-fbb-parent" value="fbb-parent" checked><label for="dis-fbb-parent">FBB – Eltern</label></div>
+                            <div class="radio-btn"><input type="radio" name="dis-resp" id="dis-fbb-teacher" value="fbb-teacher"><label for="dis-fbb-teacher">FBB – Lehrer</label></div>
+                            <div class="radio-btn"><input type="radio" name="dis-resp" id="dis-sbb" value="sbb"><label for="dis-sbb">SBB – Selbst (ab 11 J.)</label></div>
+                        </div>
+                        <div class="form-hint" style="margin-top:0.5rem;">FBB = Fremdbeurteilungsbogen (Eltern/Lehrer) · SBB = Selbstbeurteilungsbogen. Eigene Normtabellen pro Version und Altersgruppe – bitte aus dem jeweiligen Manual ablesen.</div>
+                    </div>
                     <div class="form-section">
                         <div class="form-section-title">ADHS-Skalen (Stanine 1-9) <span class="form-hint">7-9 = auffällig</span></div>
                         <div class="form-grid">
@@ -1415,13 +1494,13 @@
                 </div>
                 <form id="d2r-form" onsubmit="evaluateD2R(event)">
                     <div class="form-section">
-                        <div class="form-section-title">Prozentränge (0-100) <span class="form-hint">PR &lt;16 = unterdurchschnittlich</span></div>
+                        <div class="form-section-title">Prozentränge (0-100) <span class="form-hint">PR &lt;16 = unterdurchschnittlich · Hauptkennwerte laut Manual: KL und BZO</span></div>
                         <div class="form-grid">
-                            <div class="form-group"><label><strong>Konzentration (KL)</strong></label><input type="number" id="d2r-kl" min="0" max="100" placeholder="PR"></div>
-                            <div class="form-group"><label>Tempo (BZ)</label><input type="number" id="d2r-bz" min="0" max="100" placeholder="PR"></div>
-                            <div class="form-group"><label>Fehler (F)</label><input type="number" id="d2r-f" min="0" max="100" placeholder="PR"></div>
-                            <div class="form-group"><label>Fehlerprozent</label><input type="number" id="d2r-fp" min="0" max="100" placeholder="PR"></div>
-                            <div class="form-group"><label>Schwankung</label><input type="number" id="d2r-sb" min="0" max="100" placeholder="PR"></div>
+                            <div class="form-group"><label><strong>KL – Konzentrationsleistung</strong></label><input type="number" id="d2r-kl" min="0" max="100" placeholder="PR"><span class="form-hint">Haupt­kennwert (Tempo & Sorgfalt integriert)</span></div>
+                            <div class="form-group"><label><strong>BZO – Bearbeitungsgeschwindigkeit-Ordnung</strong></label><input type="number" id="d2r-bz" min="0" max="100" placeholder="PR"><span class="form-hint">Bearbeitungsmenge minus Fehler</span></div>
+                            <div class="form-group"><label>F – Fehler (Gesamt)</label><input type="number" id="d2r-f" min="0" max="100" placeholder="PR"><span class="form-hint">Summe Auslass- + Verwechslungsfehler</span></div>
+                            <div class="form-group"><label>F% – Fehlerprozent</label><input type="number" id="d2r-fp" min="0" max="100" placeholder="PR"></div>
+                            <div class="form-group"><label>SB – Schwankungsbreite</label><input type="number" id="d2r-sb" min="0" max="100" placeholder="PR"></div>
                         </div>
                     </div>
                     <div class="btn-group">
@@ -1457,6 +1536,13 @@
                         <div class="form-grid">
                             <div class="form-group"><label>Geschlecht Normierung</label><select id="dikj-sex"><option value="combined">Kombiniert</option><option value="m">Jungen</option><option value="w">Mädchen</option></select><span class="form-hint">DIKJ bietet geschlechts­spezifische Normen – im Manual nachschlagen</span></div>
                             <div class="form-group"><label>Altersgruppe</label><select id="dikj-age"><option value="">– nicht angegeben –</option><option value="8-13">8–13 Jahre</option><option value="14-17">14–17 Jahre</option></select></div>
+                        </div>
+                    </div>
+                    <div class="form-section" style="border:2px solid #fecaca;background:#fef2f2;border-radius:10px;padding:1rem 1.25rem;">
+                        <div class="form-section-title" style="color:#991b1b;">⚠ Suizidalität – kritische Items <span class="form-hint" style="color:#991b1b;">Manual-konform verpflichtend zu prüfen</span></div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Item 9 – Suizidgedanken</label><select id="dikj-item9"><option value="">– nicht erfasst –</option><option value="0">0 – keine Suizidgedanken</option><option value="1">1 – Gedanken an Tod / sich etwas antun</option><option value="2">2 – konkrete Suizidabsicht / -plan</option></select><span class="form-hint">Rating 0–2 aus dem Fragebogen übertragen</span></div>
+                            <div class="form-group"><label>Zusätzliche Suizid-Exploration</label><select id="dikj-suizid-expl"><option value="">– keine Angabe –</option><option value="keine">Keine Hinweise auf Suizidalität im Gespräch</option><option value="passiv">Passive Todeswünsche / Lebensüberdruss</option><option value="aktiv">Aktive Suizidgedanken ohne Plan</option><option value="konkret">Konkrete Absicht / Plan / Vorbereitung</option></select></div>
                         </div>
                     </div>
                     <div class="btn-group">
@@ -2630,6 +2716,34 @@
             const intern = d.em + d.pe;
             const extern = d.co + d.hy;
 
+            // Impact Supplement
+            const readSel = id => {
+                const el = document.getElementById(id);
+                return el && el.value !== '' ? parseInt(el.value) : null;
+            };
+            const impactAny      = readSel('sdq-impact-any');
+            const impactDurRaw   = document.getElementById('sdq-impact-dur')?.value || '';
+            const impactDurText  = {lt1:'< 1 Monat', '1-5':'1–5 Monate', '6-12':'6–12 Monate', gt12:'> 1 Jahr'}[impactDurRaw] || '';
+            const impactDistress = readSel('sdq-impact-distress');
+            const impactHome     = readSel('sdq-impact-home');
+            const impactFriends  = readSel('sdq-impact-friends');
+            const impactClass    = readSel('sdq-impact-class');
+            const impactLeisure  = readSel('sdq-impact-leisure');
+            const impactBurden   = readSel('sdq-impact-burden');
+
+            // Goodman: Impact Score = Distress + Home + Friends + Class + Leisure (0-10 für Eltern/Lehrer; Leisure nicht bei Selbst)
+            // Selbst: Distress + Home + Friends + Class + Leisure (auch 0-10)
+            // Cut-offs Eltern/Lehrer: 0 = normal, 1 = borderline, 2+ = clinical
+            // Cut-off Selbst: 0 = normal, 1 = borderline, 2+ = clinical
+            const impactParts = [impactDistress, impactHome, impactFriends, impactClass, impactLeisure];
+            const impactHasAny = impactAny !== null || impactParts.some(x => x !== null);
+            let impactScore = null, impactClassif = null, impactClassText = '';
+            if(impactParts.some(x => x !== null) && impactAny !== null && impactAny >= 1) {
+                impactScore = impactParts.reduce((s,x)=> s + (x||0), 0);
+                impactClassif = impactScore <= 0 ? 'normal' : impactScore === 1 ? 'borderline' : 'clinical';
+                impactClassText = {normal:'Unauffällig', borderline:'Grenzwertig', clinical:'Klinisch relevante Beeinträchtigung'}[impactClassif];
+            }
+
             const labels = ['Emotional','Verhalten','Hyperaktiv.','Peer','Prosozial'];
             const keys = ['em','co','hy','pe','pr'];
             const respFull = {parent:'der Eltern',teacher:'der Lehrkraft',self:'des Kindes/Jugendlichen selbst'}[r];
@@ -2738,6 +2852,25 @@
                             </tbody>
                         </table>
                         <p style="margin-top:1rem;"><strong>Summenwerte:</strong> Internalisierende Symptome (EM+PE): ${intern} | Externalisierende Symptome (VP+HY): ${extern}</p>
+                        ${impactHasAny ? `
+                        <p style="font-weight:600;margin:1.5rem 0 0.5rem;">Impact Supplement – funktionelle Beeinträchtigung</p>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Bereich</th><th>Wert</th><th>Bedeutung</th></tr></thead>
+                            <tbody>
+                                ${impactAny !== null ? `<tr><td>Schwierigkeiten insgesamt</td><td><strong>${impactAny}</strong></td><td>${['keine','leicht','deutlich','massiv'][impactAny]}</td></tr>` : ''}
+                                ${impactDurText ? `<tr><td>Dauer</td><td><strong>${impactDurText}</strong></td><td>-</td></tr>` : ''}
+                                ${impactDistress !== null ? `<tr><td>Belastung des Kindes</td><td><strong>${impactDistress}</strong></td><td>${['gar nicht','ein wenig','ziemlich','massiv'][impactDistress]}</td></tr>` : ''}
+                                ${impactHome !== null ? `<tr><td>Beeinträchtigung zu Hause</td><td><strong>${impactHome}</strong></td><td>-</td></tr>` : ''}
+                                ${impactFriends !== null ? `<tr><td>Freundschaften</td><td><strong>${impactFriends}</strong></td><td>-</td></tr>` : ''}
+                                ${impactClass !== null ? `<tr><td>Unterricht / Arbeit</td><td><strong>${impactClass}</strong></td><td>-</td></tr>` : ''}
+                                ${impactLeisure !== null ? `<tr><td>Freizeit</td><td><strong>${impactLeisure}</strong></td><td>-</td></tr>` : ''}
+                                ${impactBurden !== null ? `<tr><td>Belastung anderer durch das Kind</td><td><strong>${impactBurden}</strong></td><td>-</td></tr>` : ''}
+                                ${impactScore !== null ? `<tr style="font-weight:700;background:var(--bg-input);"><td>Impact Score (Summe)</td><td><strong>${impactScore}</strong></td><td class="${impactClassif}">${impactClassText}</td></tr>` : ''}
+                            </tbody>
+                        </table>
+                        <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-muted);">Impact-Score-Cut-offs (Goodman): 0 = unauffällig · 1 = grenzwertig · ≥ 2 = klinisch bedeutsame Beeinträchtigung. Ein niedriger Gesamtproblemwert bei hohem Impact spricht für hohe subjektive Belastung trotz geringer beobachtbarer Symptome.</p>
+                        ${impactClassif === 'clinical' ? '<div class="gutachten-warning" style="margin-top:0.75rem;"><strong>Klinisch bedeutsame funktionelle Beeinträchtigung:</strong> Der Impact-Score weist auf eine relevante Beeinträchtigung des Alltagsfunktionierens hin – unabhängig von der Symptomintensität ist eine vertiefte diagnostische Abklärung und Interventionsplanung indiziert.</div>' : ''}
+                        ` : ''}
                     </div>
 
                     <div class="gutachten-section">
@@ -2856,12 +2989,12 @@
         const WISC_NAMES = {
             vci: {n:'Sprachverständnisindex (SVI)', desc:'Erfasst verbale Begriffsbildung, verbales Schlussfolgern und erworbenes Wissen'},
             vsi: {n:'Visuell-räumlicher Index (VRI)', desc:'Erfasst visuell-räumliche Verarbeitung und Konstruktionsfähigkeiten'},
-            fri: {n:'Index Fluides Schlussfolgern (FSI)', desc:'Erfasst induktives und quantitatives Schlussfolgern'},
-            wmi: {n:'Arbeitsgedächtnisindex (AGI)', desc:'Erfasst Arbeitsgedächtnis und Aufmerksamkeitssteuerung'},
+            fri: {n:'Index Fluides Schlussfolgern (FRI)', desc:'Erfasst induktives und quantitatives Schlussfolgern'},
+            wmi: {n:'Arbeitsgedächtnisindex (AMI)', desc:'Erfasst Arbeitsgedächtnis und Aufmerksamkeitssteuerung'},
             psi: {n:'Verarbeitungsgeschwindigkeitsindex (VGI)', desc:'Erfasst Verarbeitungsgeschwindigkeit und graphomotorische Geschwindigkeit'},
             fsiq: {n:'Gesamt-IQ (FSIQ)', desc:'Gesamtmaß der allgemeinen kognitiven Leistungsfähigkeit'},
             nvi: {n:'Nonverbaler Index (NVI)', desc:'Erfasst nonverbale kognitive Fähigkeiten unabhängig von Sprache'},
-            gai: {n:'Allgemeiner Fähigkeitsindex (GAI)', desc:'Erfasst allgemeine kognitive Fähigkeiten ohne Arbeitsgedächtnis und Verarbeitungsgeschwindigkeit'},
+            gai: {n:'Allgemeiner Fähigkeitsindex (AFI)', desc:'Erfasst allgemeine kognitive Fähigkeiten ohne Arbeitsgedächtnis und Verarbeitungsgeschwindigkeit'},
             kli: {n:'Kognitiver Leistungsindex (KLI)', desc:'Erfasst kognitive Effizienz (Arbeitsgedächtnis und Verarbeitungsgeschwindigkeit)'}
         };
 
@@ -2911,11 +3044,11 @@
             const indexBeschreibungen = {
                 vci: `<p><strong>Sprachverständnisindex (SVI = ${idx.vci.v || '-'}):</strong> Dieser Index erfasst die sprachliche Begriffsbildung, das verbale Schlussfolgern sowie erworbenes Wissen. Ein ${idx.vci.v >= 110 ? 'überdurchschnittlicher' : idx.vci.v >= 90 ? 'durchschnittlicher' : 'unterdurchschnittlicher'} Wert in diesem Bereich deutet auf ${idx.vci.v >= 110 ? 'gut entwickelte verbale Fähigkeiten hin, die eine Stärke im sprachlichen Denken und der verbalen Ausdrucksfähigkeit repräsentieren' : idx.vci.v >= 90 ? 'altersgemäß entwickelte sprachliche Fähigkeiten' : 'Schwierigkeiten im Bereich der sprachlichen Begriffsbildung, die sich auf das schulische Lernen auswirken können'}. ${idx.vci.v < 90 ? 'Eine logopädische Abklärung sowie sprachliche Förderung könnten indiziert sein.' : ''}</p>`,
                 vsi: `<p><strong>Visuell-räumlicher Index (VRI = ${idx.vsi.v || '-'}):</strong> Dieser Index misst die visuell-räumliche Verarbeitung und die Fähigkeit, räumliche Beziehungen zu analysieren und visuelle Stimuli zu konstruieren. ${pat.name} zeigt ${idx.vsi.v >= 110 ? 'überdurchschnittliche Fähigkeiten in der räumlichen Vorstellung und visuellen Analyse, was eine relative Stärke darstellt' : idx.vsi.v >= 90 ? 'altersgemäße visuell-räumliche Fähigkeiten' : 'Schwierigkeiten in der visuell-räumlichen Verarbeitung, die sich auf Fächer wie Geometrie, Kunst oder technisches Zeichnen auswirken können'}.</p>`,
-                fri: `<p><strong>Index Fluides Schlussfolgern (FSI = ${idx.fri.v || '-'}):</strong> Dieser Index erfasst die Fähigkeit zum induktiven und deduktiven Schlussfolgern sowie zum quantitativen Denken – Fähigkeiten, die relativ unabhängig von erworbenem Wissen sind. ${pat.name} zeigt ${idx.fri.v >= 110 ? 'überdurchschnittliche Fähigkeiten im logischen Denken und Problemlösen, was auf ein hohes Potenzial für abstraktes Denken hindeutet' : idx.fri.v >= 90 ? 'altersgemäße Fähigkeiten im logischen Schlussfolgern' : 'Schwierigkeiten im abstrakten und logischen Denken, die sich auf mathematische und naturwissenschaftliche Fächer auswirken können'}.</p>`,
-                wmi: `<p><strong>Arbeitsgedächtnisindex (AGI = ${idx.wmi.v || '-'}):</strong> Dieser Index misst die Fähigkeit, Informationen kurzfristig im Gedächtnis zu halten und mental zu manipulieren. Das Arbeitsgedächtnis ist zentral für schulisches Lernen, Kopfrechnen und das Befolgen komplexer Anweisungen. ${pat.name} zeigt ${idx.wmi.v >= 110 ? 'eine überdurchschnittliche Arbeitsgedächtniskapazität, was das Lernen und die Informationsverarbeitung erleichtert' : idx.wmi.v >= 90 ? 'eine altersgemäße Arbeitsgedächtniskapazität' : 'Einschränkungen der Arbeitsgedächtniskapazität, die sich auf das Behalten von Anweisungen, Kopfrechnen und das Lernen neuer Inhalte auswirken können'}. ${idx.wmi.v < 85 ? 'Bei Arbeitsgedächtnisdefiziten sollte eine ADHS-Diagnostik erwogen werden, da Aufmerksamkeitsprobleme häufig mit reduzierten AGI-Werten einhergehen.' : ''}</p>`,
+                fri: `<p><strong>Index Fluides Schlussfolgern (FRI = ${idx.fri.v || '-'}):</strong> Dieser Index erfasst die Fähigkeit zum induktiven und deduktiven Schlussfolgern sowie zum quantitativen Denken – Fähigkeiten, die relativ unabhängig von erworbenem Wissen sind. ${pat.name} zeigt ${idx.fri.v >= 110 ? 'überdurchschnittliche Fähigkeiten im logischen Denken und Problemlösen, was auf ein hohes Potenzial für abstraktes Denken hindeutet' : idx.fri.v >= 90 ? 'altersgemäße Fähigkeiten im logischen Schlussfolgern' : 'Schwierigkeiten im abstrakten und logischen Denken, die sich auf mathematische und naturwissenschaftliche Fächer auswirken können'}.</p>`,
+                wmi: `<p><strong>Arbeitsgedächtnisindex (AMI = ${idx.wmi.v || '-'}):</strong> Dieser Index misst die Fähigkeit, Informationen kurzfristig im Gedächtnis zu halten und mental zu manipulieren. Das Arbeitsgedächtnis ist zentral für schulisches Lernen, Kopfrechnen und das Befolgen komplexer Anweisungen. ${pat.name} zeigt ${idx.wmi.v >= 110 ? 'eine überdurchschnittliche Arbeitsgedächtniskapazität, was das Lernen und die Informationsverarbeitung erleichtert' : idx.wmi.v >= 90 ? 'eine altersgemäße Arbeitsgedächtniskapazität' : 'Einschränkungen der Arbeitsgedächtniskapazität, die sich auf das Behalten von Anweisungen, Kopfrechnen und das Lernen neuer Inhalte auswirken können'}. ${idx.wmi.v < 85 ? 'Bei Arbeitsgedächtnisdefiziten sollte eine ADHS-Diagnostik erwogen werden, da Aufmerksamkeitsprobleme häufig mit reduzierten AMI-Werten einhergehen.' : ''}</p>`,
                 psi: `<p><strong>Verarbeitungsgeschwindigkeitsindex (VGI = ${idx.psi.v || '-'}):</strong> Dieser Index erfasst die Geschwindigkeit der Informationsverarbeitung und die graphomotorische Geschwindigkeit. Er ist relevant für zeitgebundene Aufgaben und effizientes Arbeiten. ${pat.name} zeigt ${idx.psi.v >= 110 ? 'eine überdurchschnittliche Verarbeitungsgeschwindigkeit, was effizientes Arbeiten unter Zeitdruck ermöglicht' : idx.psi.v >= 90 ? 'eine altersgemäße Verarbeitungsgeschwindigkeit' : 'eine reduzierte Verarbeitungsgeschwindigkeit, die sich auf zeitgebundene Aufgaben und die Bewältigung des Schulalltags auswirken kann'}. ${idx.psi.v < 85 ? 'Bei reduzierter Verarbeitungsgeschwindigkeit sollten Nachteilsausgleiche (z.B. Zeitverlängerung bei Prüfungen) geprüft werden.' : ''}</p>`,
                 nvi: `<p><strong>Nonverbaler Index (NVI = ${idx.nvi.v || '-'}):</strong> Dieser Index erfasst nonverbale kognitive Fähigkeiten unabhängig von sprachlichen Kompetenzen. Er ist besonders relevant bei Kindern mit Sprachentwicklungsauffälligkeiten oder bei mehrsprachig aufwachsenden Kindern. ${pat.name} zeigt ${idx.nvi.v >= 115 ? 'überdurchschnittliche nonverbale kognitive Fähigkeiten' : idx.nvi.v >= 85 ? 'altersgemäße nonverbale kognitive Fähigkeiten' : 'Schwierigkeiten im nonverbalen kognitiven Bereich'}.</p>`,
-                gai: `<p><strong>Allgemeiner Fähigkeitsindex (GAI = ${idx.gai.v || '-'}):</strong> Der GAI fasst den Sprachverständnisindex, den Visuell-räumlichen Index und den Index Fluides Schlussfolgern zusammen. Er bietet eine Einschätzung der allgemeinen kognitiven Fähigkeiten, die weniger durch Arbeitsgedächtnis und Verarbeitungsgeschwindigkeit beeinflusst wird als der Gesamt-IQ. ${idx.gai.v && idx.fsiq.v && Math.abs(idx.gai.v - idx.fsiq.v) >= 10 ? `Die Differenz von ${Math.abs(idx.gai.v - idx.fsiq.v)} Punkten zum Gesamt-IQ (${idx.fsiq.v}) deutet darauf hin, dass ${idx.gai.v > idx.fsiq.v ? 'kognitive Effizienz (Arbeitsgedächtnis/Verarbeitungsgeschwindigkeit) die Gesamtleistung nach unten beeinflusst' : 'kognitive Effizienz die Gesamtleistung zusätzlich stützt'}.` : ''}</p>`,
+                gai: `<p><strong>Allgemeiner Fähigkeitsindex (AFI = ${idx.gai.v || '-'}):</strong> Der AFI fasst den Sprachverständnisindex, den Visuell-räumlichen Index und den Index Fluides Schlussfolgern zusammen. Er bietet eine Einschätzung der allgemeinen kognitiven Fähigkeiten, die weniger durch Arbeitsgedächtnis und Verarbeitungsgeschwindigkeit beeinflusst wird als der Gesamt-IQ. ${idx.gai.v && idx.fsiq.v && Math.abs(idx.gai.v - idx.fsiq.v) >= 10 ? `Die Differenz von ${Math.abs(idx.gai.v - idx.fsiq.v)} Punkten zum Gesamt-IQ (${idx.fsiq.v}) deutet darauf hin, dass ${idx.gai.v > idx.fsiq.v ? 'kognitive Effizienz (Arbeitsgedächtnis/Verarbeitungsgeschwindigkeit) die Gesamtleistung nach unten beeinflusst' : 'kognitive Effizienz die Gesamtleistung zusätzlich stützt'}.` : ''}</p>`,
                 kli: `<p><strong>Kognitiver Leistungsindex (KLI = ${idx.kli.v || '-'}):</strong> Der KLI fasst Arbeitsgedächtnisindex und Verarbeitungsgeschwindigkeitsindex zusammen und bildet damit die kognitive Effizienz ab. ${pat.name} zeigt ${idx.kli.v >= 115 ? 'eine überdurchschnittliche kognitive Effizienz' : idx.kli.v >= 85 ? 'eine altersgemäße kognitive Effizienz' : 'eine eingeschränkte kognitive Effizienz, die das schulische Leistungsvermögen beeinträchtigen kann'}.</p>`
             };
 
@@ -2947,8 +3080,8 @@
                             <ul class="gutachten-list">
                                 <li><strong>Sprachverständnisindex (SVI):</strong> Erfasst kristalline Intelligenz, sprachliche Begriffsbildung, verbales Schlussfolgern und erworbenes Wissen. Untertests: Gemeinsamkeiten finden, Wortschatz-Test.</li>
                                 <li><strong>Visuell-räumlicher Index (VRI):</strong> Erfasst visuell-räumliche Verarbeitung und die Analyse räumlicher Beziehungen. Untertests: Mosaik-Test, Visuelle Puzzles.</li>
-                                <li><strong>Index Fluides Schlussfolgern (FSI):</strong> Erfasst fluide Intelligenz, induktives und quantitatives Schlussfolgern. Untertests: Matrizen-Test, Waagen.</li>
-                                <li><strong>Arbeitsgedächtnisindex (AGI):</strong> Erfasst die Kapazität des Arbeitsgedächtnisses und die Aufmerksamkeitssteuerung. Untertests: Zahlen nachsprechen, Bilder-Folgen.</li>
+                                <li><strong>Index Fluides Schlussfolgern (FRI):</strong> Erfasst fluide Intelligenz, induktives und quantitatives Schlussfolgern. Untertests: Matrizen-Test, Waagen.</li>
+                                <li><strong>Arbeitsgedächtnisindex (AMI):</strong> Erfasst die Kapazität des Arbeitsgedächtnisses und die Aufmerksamkeitssteuerung. Untertests: Zahlen nachsprechen, Bilder-Folgen.</li>
                                 <li><strong>Verarbeitungsgeschwindigkeitsindex (VGI):</strong> Erfasst die Geschwindigkeit der kognitiven Verarbeitung und graphomotorische Koordination. Untertests: Zahlen-Symbol-Test, Symbol-Suche.</li>
                             </ul>
                             <p>Die Ergebnisse werden als IQ-Werte mit einem Mittelwert von 100 und einer Standardabweichung von 15 angegeben.</p>
@@ -3178,8 +3311,13 @@
         function readCbclRater(rater){
             const bb  = {int:v(`cbcl-${rater}-int`), ext:v(`cbcl-${rater}-ext`), tot:v(`cbcl-${rater}-tot`)};
             const syn = {anx:v(`cbcl-${rater}-anx`), wit:v(`cbcl-${rater}-wit`), som:v(`cbcl-${rater}-som`), soc:v(`cbcl-${rater}-soc`), tho:v(`cbcl-${rater}-tho`), att:v(`cbcl-${rater}-att`), rul:v(`cbcl-${rater}-rul`), agg:v(`cbcl-${rater}-agg`)};
-            const hasAny = Object.values({...bb,...syn}).some(x=>x!==null);
-            return {bb, syn, hasAny};
+            const readItem = id => {
+                const el = document.getElementById(id);
+                return el && el.value !== '' ? parseInt(el.value) : null;
+            };
+            const crit = {i18: readItem(`cbcl-${rater}-i18`), i91: readItem(`cbcl-${rater}-i91`)};
+            const hasAny = Object.values({...bb,...syn}).some(x=>x!==null) || Object.values(crit).some(x=>x!==null);
+            return {bb, syn, crit, hasAny};
         }
 
         function evaluateCBCL(e) {
@@ -3200,6 +3338,30 @@
 
             const raterKeys = Object.keys(raters);
             if(raterKeys.length === 0) return alert('Bitte mindestens einen Wert für mindestens einen Beurteiler eingeben.');
+
+            // Kritische Items aggregieren über alle Beurteiler
+            const criticalItems = [];
+            raterKeys.forEach(r => {
+                const meta = CBCL_RATERS[r];
+                if(raters[r].crit.i18 !== null && raters[r].crit.i18 >= 1) {
+                    criticalItems.push({rater: meta.short, item: 18, label: 'Selbstverletzung (absichtlich)', score: raters[r].crit.i18});
+                }
+                if(raters[r].crit.i91 !== null && raters[r].crit.i91 >= 1) {
+                    criticalItems.push({rater: meta.short, item: 91, label: 'Gedanken, sich das Leben zu nehmen', score: raters[r].crit.i91});
+                }
+            });
+            const anyCritAcute = criticalItems.some(ci => ci.score === 2);
+            const criticalAlertHtml = criticalItems.length ? `
+                <div class="gutachten-danger">
+                    <strong>SICHERHEITS­HINWEIS – Kritische CBCL-/TRF-/YSR-Items</strong><br>
+                    Folgende sicherheitsrelevante Einzelitems wurden mit ≥ 1 bewertet:
+                    <ul style="margin:0.5rem 0 0.5rem 1.25rem;">
+                        ${criticalItems.map(ci => `<li><strong>Item ${ci.item}</strong> (${ci.label}) – ${ci.rater}: <strong>${ci.score}</strong></li>`).join('')}
+                    </ul>
+                    ${anyCritAcute
+                        ? '<strong>Ein Item wurde mit 2 („trifft genau zu / oft zutreffend") beantwortet – dies weist auf eine <em>akute</em> Selbst- bzw. Fremdgefährdung hin.</strong> Sofortiges strukturiertes Suizidrisiko-/Selbstverletzungs-Assessment (z.B. C-SSRS), umgehende kinder- und jugendpsychiatrische Vorstellung, Sicherheitsplan, ggf. stationäre Einweisung prüfen.'
+                        : 'Verpflichtende vertiefte Exploration erforderlich: Suizidalität / nicht-suizidales selbstverletzendes Verhalten (NSSV) strukturiert abklären, Auslöser und Risikofaktoren klären, Sicherheitsplan erstellen.'}
+                </div>` : '';
 
             // Pro Beurteiler Klassifizierung berechnen
             raterKeys.forEach(r => {
@@ -3278,7 +3440,7 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('CBCL/TRF/YSR', 'Child Behavior Checklist – Achenbach System', pat)}
-
+                    ${criticalAlertHtml}
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
@@ -3472,6 +3634,12 @@
         function evaluateDISYPS(e) {
             e.preventDefault();
             const pat = getPatient();
+            const resp = document.querySelector('input[name="dis-resp"]:checked')?.value || 'fbb-parent';
+            const respLabel = {
+                'fbb-parent':  'FBB – Elternurteil',
+                'fbb-teacher': 'FBB – Lehrerurteil',
+                'sbb':         'SBB – Selbsturteil'
+            }[resp];
             const d = {ina:v('dis-ina'),hyp:v('dis-hyp'),imp:v('dis-imp'),adhs:v('dis-adhs'),opp:v('dis-opp'),agg:v('dis-agg'),ssv:v('dis-ssv')};
             const valid = Object.entries(d).filter(([k,x])=>x!==null);
             if(!valid.length) return alert('Mindestens ein Wert eingeben');
@@ -3538,6 +3706,7 @@
                         <div class="gutachten-text">
                             <p>Der DISYPS-III (Döpfner & Görtz-Dorten, 2017) ist ein klinisches Diagnostiksystem zur Erfassung psychischer Störungen im Kindes- und Jugendalter. Die vorliegenden Ergebnisse beziehen sich auf die Skalen zur Erfassung von ADHS-Symptomatik und Störungen des Sozialverhaltens (SSV).</p>
                             <p>Die Ergebnisse werden als Stanine-Werte (1-9) dargestellt. Stanine 1-4: unauffällig, Stanine 5-6: erhöht (subklinisch), Stanine 7-9: klinisch auffällig.</p>
+                            <p><strong>Verwendete Version:</strong> ${respLabel}. Norm­tabellen und Cut-offs sind version- und altersspezifisch; FBB und SBB sind nicht direkt austauschbar.</p>
                         </div>
                     </div>
 
@@ -3773,7 +3942,7 @@
         // d2-R
         const D2R_SCALES = {
             kl: {n:'Konzentrationsleistung (KL)', desc:'Qualität der Konzentrationsleistung – Hauptkennwert', inv:false},
-            bz: {n:'Bearbeitete Zielzeichen (BZO)', desc:'Arbeitstempo und Antrieb', inv:false},
+            bz: {n:'Bearbeitungsgeschwindigkeit-Ordnung (BZO)', desc:'Arbeitstempo bereinigt um Auslassungsfehler – zentraler Tempo-Kennwert', inv:false},
             f: {n:'Fehler (F)', desc:'Gesamtanzahl der Fehler', inv:true},
             fp: {n:'Fehlerprozent (F%)', desc:'Fehleranteil an bearbeiteten Zeichen – Sorgfalt', inv:true},
             sb: {n:'Schwankungsbreite (SB)', desc:'Gleichmäßigkeit der Leistung über die Zeit', inv:true}
@@ -3853,7 +4022,7 @@
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
                             <p>Der d2-R (Brickenkamp, Schmidt-Atzert & Liepmann, 2010) ist ein standardisierter Aufmerksamkeits- und Konzentrationstest für Personen ab 9 Jahren. Der Test erfasst die Fähigkeit zur fokussierten und selektiven Aufmerksamkeit unter Zeitdruck.</p>
-                            <p>Der Hauptkennwert ist die Konzentrationsleistung (KL), die Tempo und Sorgfalt integriert. Die Ergebnisse werden als Prozentränge (PR) angegeben. PR 16-84: Durchschnitt, PR 7-15 bzw. 85-93: leicht unter-/überdurchschnittlich, PR <7 bzw. >93: deutlich abweichend.</p>
+                            <p>Die beiden zentralen Kennwerte sind die <strong>Konzentrationsleistung (KL)</strong> – die Tempo und Sorgfalt zu einem Index integriert – und die <strong>Bearbeitungsgeschwindigkeit-Ordnung (BZO)</strong>, die das reine Arbeitstempo bereinigt um Auslassungsfehler abbildet. Ergänzt werden diese durch Gesamtfehler (F), Fehlerprozent (F%) und Schwankungsbreite (SB). Die Ergebnisse werden als Prozentränge (PR) angegeben. PR 16-84: Durchschnitt, PR 7-15 bzw. 85-93: leicht unter-/überdurchschnittlich, PR &lt;7 bzw. &gt;93: deutlich abweichend.</p>
                         </div>
                     </div>
 
@@ -3935,6 +4104,10 @@
             const sexNorm = document.getElementById('dikj-sex').value;
             const ageNorm = document.getElementById('dikj-age')?.value || '';
             const sexLabel = {combined:'Kombiniert (alle Geschlechter)', m:'Jungen', w:'Mädchen'}[sexNorm];
+            const item9Raw = document.getElementById('dikj-item9')?.value || '';
+            const item9 = item9Raw === '' ? null : parseInt(item9Raw);
+            const suizidExpl = document.getElementById('dikj-suizid-expl')?.value || '';
+            const suizidExplText = {keine:'Keine Hinweise auf Suizidalität im Gespräch',passiv:'Passive Todeswünsche / Lebensüberdruss',aktiv:'Aktive Suizidgedanken ohne Plan',konkret:'Konkrete Absicht / Plan / Vorbereitung'}[suizidExpl] || '';
 
             if(t === null) {
                 if(raw === null) return alert('Bitte T-Wert (oder wenigstens Rohwert) eingeben.');
@@ -3943,12 +4116,27 @@
 
             const tEstimated = (t === null);
             const tVal = t !== null ? t : Math.min(80, Math.max(20, 50 + (raw - 15) * 1.5));
+
+            // Suizidalitäts-Safety-Check (unabhängig vom Gesamt-T-Wert)
+            const suizidAlert = (item9 !== null && item9 >= 1) || suizidExpl === 'passiv' || suizidExpl === 'aktiv' || suizidExpl === 'konkret';
+            const suizidAkut = item9 === 2 || suizidExpl === 'konkret';
+            const suizidAlertHtml = suizidAlert ? `
+                <div class="gutachten-danger">
+                    <strong>SICHERHEITS­HINWEIS – Suizidalität</strong><br>
+                    ${item9 !== null ? `DIKJ-Item 9 wurde mit <strong>${item9}</strong> beantwortet (${['keine Suizidgedanken','Gedanken an Tod / sich etwas antun','konkrete Suizidabsicht / -plan'][item9]}).` : ''}
+                    ${suizidExplText ? `<br>Exploration: <strong>${suizidExplText}</strong>.` : ''}
+                    <br><br>
+                    ${suizidAkut
+                        ? 'Es liegt eine <strong>akute Suizidgefährdung</strong> nahe. <strong>Sofortiges strukturiertes Suizidrisiko-Assessment</strong> (z.B. C-SSRS) und umgehende kinder- und jugendpsychiatrische Vorstellung erforderlich. Sicherheit des Kindes muss gewährleistet werden (No-Suicide-Contract/Notfallplan, ggf. stationäre Einweisung nach § 1631b BGB prüfen).'
+                        : 'Eine <strong>vertiefte Exploration der Suizidalität</strong> ist verpflichtend. Strukturiertes Suizidrisiko-Assessment (C-SSRS o.ä.), Abklärung von Risikofaktoren (Pläne, Mittel, Frühere Versuche, Impulsivität) und Sicherheitsplan erstellen.'}
+                </div>` : '';
             const c = tVal < 60 ? 'normal' : tVal < 70 ? 'borderline' : 'clinical';
             const cText = {normal:'Unauffällig',borderline:'Leicht erhöht',clinical:'Klinisch auffällig'}[c];
 
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('DIKJ', 'Depressions-Inventar für Kinder und Jugendliche', pat)}
+                    ${suizidAlertHtml}
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
@@ -3965,6 +4153,7 @@
                                 ${raw !== null ? `<tr><td>Rohwert</td><td><strong>${raw}</strong></td><td>0-52</td><td>-</td></tr>` : ''}
                                 <tr style="font-weight:700;background:var(--bg-input);"><td>T-Wert${tEstimated ? ' <small style="font-weight:400;color:#b91c1c;">(geschätzt)</small>' : ''}</td><td><strong>${Math.round(tVal)}</strong></td><td>T < 60</td><td class="${c}"><strong>${cText}</strong></td></tr>
                                 ${pr !== null ? `<tr><td>Prozentrang</td><td>${pr}</td><td>-</td><td>-</td></tr>` : ''}
+                                ${item9 !== null ? `<tr${item9>=1?' class="clinical"':''}><td>Item 9 – Suizidgedanken</td><td><strong>${item9}</strong></td><td>0</td><td>${item9===0?'Unauffällig':(item9===1?'Auffällig':'Akut')}</td></tr>` : ''}
                             </tbody>
                         </table>
                         ${tEstimated ? '<div class="gutachten-warning" style="margin-top:0.75rem;"><strong>Achtung:</strong> Der T-Wert wurde grob aus dem Rohwert linear geschätzt (nicht normgetreu, keine Alters-/Geschlechtsdifferenzierung). Für einen validen Befund bitte den T-Wert aus der Normtabelle des DIKJ-Manuals entnehmen.</div>' : ''}
@@ -4093,6 +4282,28 @@
             // Kritische Items (Rohwert-Anzahl)
             const kiVal = v('con-ki');
 
+            // Safety-Trigger: bei Selbsturteil erhöhte Depression/Angst → Suizidrisiko-Assessment
+            const isSelf = resp === 'self';
+            const depElevated = depVal !== null && depVal >= 65;
+            const depSevere = depVal !== null && depVal >= 70;
+            const anxElevated = anxVal !== null && anxVal >= 65;
+            const kiSevere = kiVal !== null && kiVal >= 2;
+            const needsMoodSafety = isSelf && (depElevated || anxElevated);
+            const moodSafetyHtml = needsMoodSafety ? `
+                <div class="gutachten-danger">
+                    <strong>SICHERHEITS­HINWEIS – Stimmung / Angst (Selbsturteil)</strong><br>
+                    Im Selbsturteil sind die Screener-Items ${depElevated ? `<strong>Depression (SI-D, T=${depVal})</strong>` : ''}${depElevated && anxElevated ? ' und ' : ''}${anxElevated ? `<strong>Ängstlichkeit (SI-Ä, T=${anxVal})</strong>` : ''} erhöht. ${depSevere ? 'Der Depressions-Screener liegt im <em>stark erhöhten</em> Bereich (T ≥ 70).' : ''}
+                    <br><br>
+                    Ein <strong>strukturiertes Suizidrisiko-Assessment</strong> (z.B. C-SSRS, SIQ-JR) ist verpflichtend durchzuführen. Zusätzliche depressions-/angstspezifische Diagnostik (DIKJ, SCAS, BDI-II) wird empfohlen. Bei konkreter Gefährdung sofortige kinder- und jugendpsychiatrische Vorstellung.
+                </div>` : '';
+            const kiSafetyHtml = kiSevere ? `
+                <div class="gutachten-danger">
+                    <strong>SICHERHEITS­HINWEIS – Schwere Störung des Sozialverhaltens</strong><br>
+                    ${kiVal} von 7 kritischen Items (Items 14, 20, 26, 31, 58, 65, 87) wurden mit ≥ 1 bewertet. Dies weist auf ernsthafte antisoziale bzw. aggressive Verhaltensweisen hin (z.B. Waffengebrauch, Tierquälerei, Feuerlegen, sexuelle Gewalt, Einbruch).
+                    <br><br>
+                    Dringende klinische Abklärung von <strong>Fremdgefährdung</strong>, Kindeswohlgefährdung und ggf. Einbezug von Jugendhilfe / ASD erforderlich.
+                </div>` : '';
+
             // Alle Skalen zusammen für Kompatibilität
             const scales = {...connersScales, ...dsmScales, ...icdScales, ...indices};
 
@@ -4136,6 +4347,8 @@
             const gutachten = `
                 <div class="gutachten">
                     ${gutachtenHeader('Conners-3', 'Conners Skalen zu Aufmerksamkeit und Verhalten – 3. Auflage', pat)}
+                    ${moodSafetyHtml}
+                    ${kiSafetyHtml}
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
