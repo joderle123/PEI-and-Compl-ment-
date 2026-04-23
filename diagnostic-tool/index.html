@@ -11,22 +11,24 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --bg: #0f172a;
-            --bg-card: #1e293b;
-            --bg-card-hover: #334155;
-            --bg-input: #0f172a;
+            --bg: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f1f5f9;
+            --bg-input: #f8fafc;
             --primary: #6366f1;
             --primary-light: #818cf8;
-            --primary-glow: rgba(99, 102, 241, 0.4);
+            --primary-glow: rgba(99, 102, 241, 0.15);
             --success: #10b981;
-            --success-glow: rgba(16, 185, 129, 0.3);
+            --success-glow: rgba(16, 185, 129, 0.15);
             --warning: #f59e0b;
-            --warning-glow: rgba(245, 158, 11, 0.3);
+            --warning-glow: rgba(245, 158, 11, 0.15);
             --danger: #ef4444;
-            --danger-glow: rgba(239, 68, 68, 0.3);
-            --text: #f1f5f9;
-            --text-muted: #94a3b8;
-            --border: #334155;
+            --danger-glow: rgba(239, 68, 68, 0.15);
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+            --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
             --gradient-1: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
             --gradient-2: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
         }
@@ -165,6 +167,7 @@
             border-radius: 20px;
             padding: 2rem;
             margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-md);
         }
 
         .card-header {
@@ -701,7 +704,7 @@
             padding: 0.75rem 1rem;
             margin-bottom: 1.5rem;
             font-size: 0.8rem;
-            color: #fca5a5;
+            color: #b91c1c;
             text-align: center;
         }
 
@@ -816,7 +819,7 @@
         }
 
         .admin-hinweise-header h4 {
-            color: #60a5fa;
+            color: #1d4ed8;
             margin: 0;
             font-size: 0.95rem;
             display: flex;
@@ -825,7 +828,7 @@
         }
 
         .admin-hinweise-toggle {
-            color: #60a5fa;
+            color: #1d4ed8;
             font-size: 1.2rem;
             transition: transform 0.3s;
         }
@@ -844,11 +847,11 @@
         }
 
         .admin-hinweise h5 {
-            color: #93c5fd;
+            color: #1e40af;
             font-size: 0.9rem;
             margin: 1rem 0 0.5rem;
             padding-bottom: 0.25rem;
-            border-bottom: 1px solid rgba(59,130,246,0.2);
+            border-bottom: 1px solid rgba(59,130,246,0.25);
         }
 
         .admin-hinweise h5:first-child {
@@ -871,7 +874,7 @@
         }
 
         .admin-box {
-            background: rgba(0,0,0,0.2);
+            background: rgba(59,130,246,0.06);
             border-radius: 8px;
             padding: 0.75rem 1rem;
             margin: 0.75rem 0;
@@ -880,7 +883,7 @@
 
         .admin-box-title {
             font-weight: 600;
-            color: #93c5fd;
+            color: #1e40af;
             margin-bottom: 0.5rem;
         }
 
@@ -888,11 +891,11 @@
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            background: rgba(59,130,246,0.2);
+            background: rgba(59,130,246,0.1);
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
             font-size: 0.8rem;
-            color: #93c5fd;
+            color: #1e40af;
             margin: 0.25rem 0.25rem 0.25rem 0;
         }
 
@@ -1173,13 +1176,13 @@
                         </div>
                     </div>
                     <div class="form-section">
-                        <div class="form-section-title">Skalenwerte (0-10)</div>
+                        <div class="form-section-title">Skalenwerte (0–10) <span class="form-hint">Summe der 5 Items pro Skala</span></div>
                         <div class="form-grid">
                             <div class="form-group"><label>Emotionale Probleme</label><input type="number" id="sdq-em" min="0" max="10" required placeholder="0-10"></div>
                             <div class="form-group"><label>Verhaltensprobleme</label><input type="number" id="sdq-co" min="0" max="10" required placeholder="0-10"></div>
                             <div class="form-group"><label>Hyperaktivität</label><input type="number" id="sdq-hy" min="0" max="10" required placeholder="0-10"></div>
                             <div class="form-group"><label>Peer-Probleme</label><input type="number" id="sdq-pe" min="0" max="10" required placeholder="0-10"></div>
-                            <div class="form-group"><label>Prosozial ⭐</label><input type="number" id="sdq-pr" min="0" max="10" required placeholder="0-10"><span class="form-hint">Höher = besser</span></div>
+                            <div class="form-group"><label>Prosozial ⭐</label><input type="number" id="sdq-pr" min="0" max="10" required placeholder="0-10"><span class="form-hint">Höher = besser (invertiert)</span></div>
                         </div>
                     </div>
                     <div class="btn-group">
@@ -1251,15 +1254,6 @@
                 </div>
                 <form id="cbcl-form" onsubmit="evaluateCBCL(event)">
                     <div class="form-section">
-                        <div class="form-section-title">Version / Beurteiler</div>
-                        <div class="radio-group">
-                            <div class="radio-btn"><input type="radio" name="cbcl-resp" id="cbcl-parent" value="parent" checked><label for="cbcl-parent">CBCL/6-18R (Eltern)</label></div>
-                            <div class="radio-btn"><input type="radio" name="cbcl-resp" id="cbcl-teacher" value="teacher"><label for="cbcl-teacher">TRF (Lehrer)</label></div>
-                            <div class="radio-btn"><input type="radio" name="cbcl-resp" id="cbcl-self" value="self"><label for="cbcl-self">YSR/11-18R (Selbst)</label></div>
-                        </div>
-                        <div class="form-hint" style="margin-top:0.5rem;">Jede Version verwendet eigene geschlechts-/altersspezifische Normen. T-Werte und Normbereiche sind identisch, aber die Rohwert-zu-T-Wert-Umrechnung unterscheidet sich.</div>
-                    </div>
-                    <div class="form-section">
                         <div class="form-section-title">Skalierungsart <span class="form-hint">Welche Werte wurden dem Manual entnommen?</span></div>
                         <div class="radio-group">
                             <div class="radio-btn"><input type="radio" name="cbcl-scale" id="cbcl-scale-t" value="t" checked><label for="cbcl-scale-t">T-Werte (M=50, SD=10)</label></div>
@@ -1267,28 +1261,71 @@
                         </div>
                         <div class="form-hint" style="margin-top:0.5rem;">
                             <strong>T-Wert:</strong> Übergeordnete Skalen: Grenz T≥60, Klinisch T≥64 · Syndromskalen: Grenz T≥65, Klinisch T≥70<br>
-                            <strong>Stanine:</strong> 1–3 unterdurchschnittlich, 4–6 durchschnittlich, 7 grenzwertig, 8–9 klinisch auffällig
+                            <strong>Stanine:</strong> 1–6 normal, 7 grenzwertig, 8–9 klinisch auffällig
                         </div>
                     </div>
                     <div class="form-section">
-                        <div class="form-section-title">Übergeordnete Skalen (Bandbreiten)</div>
-                        <div class="form-grid">
-                            <div class="form-group"><label>INT – Internalisierend</label><input type="number" id="cbcl-int" min="1" max="100" placeholder="Wert"></div>
-                            <div class="form-group"><label>EXT – Externalisierend</label><input type="number" id="cbcl-ext" min="1" max="100" placeholder="Wert"></div>
-                            <div class="form-group"><label><strong>GES – Gesamtproblemwert</strong></label><input type="number" id="cbcl-tot" min="1" max="100" placeholder="Wert"></div>
-                        </div>
-                    </div>
-                    <div class="form-section">
-                        <div class="form-section-title">Syndromskalen</div>
-                        <div class="form-grid">
-                            <div class="form-group"><label>ÄD – Ängstlich/Depressiv</label><input type="number" id="cbcl-anx" min="1" max="100" placeholder="Wert"></div>
-                            <div class="form-group"><label>RD – Sozialer Rückzug/Depressiv</label><input type="number" id="cbcl-wit" min="1" max="100" placeholder="Wert"></div>
-                            <div class="form-group"><label>KB – Körperliche Beschwerden</label><input type="number" id="cbcl-som" min="1" max="100" placeholder="Wert"></div>
-                            <div class="form-group"><label>SP – Soziale Probleme</label><input type="number" id="cbcl-soc" min="1" max="100" placeholder="Wert"></div>
-                            <div class="form-group"><label>SD – Schizoid/Denkstörungen</label><input type="number" id="cbcl-tho" min="1" max="100" placeholder="Wert"></div>
-                            <div class="form-group"><label>AP – Aufmerksamkeitsprobleme</label><input type="number" id="cbcl-att" min="1" max="100" placeholder="Wert"></div>
-                            <div class="form-group"><label>DR – Dissoziales/Regelverletzendes Verhalten</label><input type="number" id="cbcl-rul" min="1" max="100" placeholder="Wert"></div>
-                            <div class="form-group"><label>AG – Aggressives Verhalten</label><input type="number" id="cbcl-agg" min="1" max="100" placeholder="Wert"></div>
+                        <div class="form-section-title">Multi-Informant-Vergleich <span class="form-hint">Spalten nur ausfüllen, wenn Werte vorliegen</span></div>
+                        <div class="form-hint" style="margin-bottom:0.5rem;">Jede Version hat eigene geschlechts- und altersspezifische Normen – die T-Werte/Stanine sind direkt vergleichbar, sobald sie aus dem jeweiligen Manual abgelesen sind.</div>
+                        <div style="overflow-x:auto;">
+                            <table class="cbcl-multi" style="width:100%;border-collapse:collapse;font-size:0.9rem;">
+                                <thead>
+                                    <tr style="background:var(--bg-input,#f3f4f6);">
+                                        <th style="text-align:left;padding:0.5rem;border-bottom:2px solid var(--border,#e5e7eb);">Skala</th>
+                                        <th style="padding:0.5rem;border-bottom:2px solid var(--border,#e5e7eb);min-width:110px;">CBCL/6-18R<br><small style="font-weight:400;">Eltern</small></th>
+                                        <th style="padding:0.5rem;border-bottom:2px solid var(--border,#e5e7eb);min-width:110px;">TRF<br><small style="font-weight:400;">Lehrer</small></th>
+                                        <th style="padding:0.5rem;border-bottom:2px solid var(--border,#e5e7eb);min-width:110px;">YSR/11-18R<br><small style="font-weight:400;">Selbst</small></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="background:#f9fafb;"><td colspan="4" style="padding:0.4rem 0.5rem;font-weight:600;font-size:0.85rem;">Übergeordnete Skalen</td></tr>
+                                    <tr><td style="padding:0.35rem 0.5rem;">INT – Internalisierend</td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-parent-int" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-teacher-int" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-self-int" min="1" max="100" style="width:100%;"></td></tr>
+                                    <tr><td style="padding:0.35rem 0.5rem;">EXT – Externalisierend</td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-parent-ext" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-teacher-ext" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-self-ext" min="1" max="100" style="width:100%;"></td></tr>
+                                    <tr style="font-weight:700;background:#f9fafb;"><td style="padding:0.35rem 0.5rem;">GES – Gesamtproblemwert</td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-parent-tot" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-teacher-tot" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-self-tot" min="1" max="100" style="width:100%;"></td></tr>
+                                    <tr style="background:#f9fafb;"><td colspan="4" style="padding:0.4rem 0.5rem;font-weight:600;font-size:0.85rem;">Syndromskalen</td></tr>
+                                    <tr><td style="padding:0.35rem 0.5rem;">ÄD – Ängstlich/Depressiv</td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-parent-anx" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-teacher-anx" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-self-anx" min="1" max="100" style="width:100%;"></td></tr>
+                                    <tr><td style="padding:0.35rem 0.5rem;">RD – Sozialer Rückzug/Depressiv</td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-parent-wit" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-teacher-wit" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-self-wit" min="1" max="100" style="width:100%;"></td></tr>
+                                    <tr><td style="padding:0.35rem 0.5rem;">KB – Körperliche Beschwerden</td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-parent-som" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-teacher-som" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-self-som" min="1" max="100" style="width:100%;"></td></tr>
+                                    <tr><td style="padding:0.35rem 0.5rem;">SP – Soziale Probleme</td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-parent-soc" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-teacher-soc" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-self-soc" min="1" max="100" style="width:100%;"></td></tr>
+                                    <tr><td style="padding:0.35rem 0.5rem;">SD – Schizoid/Denkstörungen</td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-parent-tho" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-teacher-tho" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-self-tho" min="1" max="100" style="width:100%;"></td></tr>
+                                    <tr><td style="padding:0.35rem 0.5rem;">AP – Aufmerksamkeitsprobleme</td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-parent-att" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-teacher-att" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-self-att" min="1" max="100" style="width:100%;"></td></tr>
+                                    <tr><td style="padding:0.35rem 0.5rem;">DR – Dissoziales/Regelverletzendes Verhalten</td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-parent-rul" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-teacher-rul" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-self-rul" min="1" max="100" style="width:100%;"></td></tr>
+                                    <tr><td style="padding:0.35rem 0.5rem;">AG – Aggressives Verhalten</td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-parent-agg" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-teacher-agg" min="1" max="100" style="width:100%;"></td>
+                                        <td style="padding:0.25rem;"><input type="number" id="cbcl-self-agg" min="1" max="100" style="width:100%;"></td></tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div class="btn-group">
@@ -1408,17 +1445,18 @@
                 </div>
                 <form id="dikj-form" onsubmit="evaluateDIKJ(event)">
                     <div class="form-section">
-                        <div class="form-section-title">Testergebnis</div>
+                        <div class="form-section-title">Testergebnis <span class="form-hint">T-Wert bitte aus Manual-Tabelle ablesen (alter-/geschlechtsspezifisch)</span></div>
                         <div class="form-grid">
-                            <div class="form-group"><label><strong>Rohwert</strong></label><input type="number" id="dikj-raw" min="0" max="52" placeholder="0-52"><span class="form-hint">Summe aller Items</span></div>
-                            <div class="form-group"><label>T-Wert</label><input type="number" id="dikj-t" min="20" max="80" placeholder="T-Wert"><span class="form-hint">M=50, SD=10</span></div>
+                            <div class="form-group"><label>Rohwert</label><input type="number" id="dikj-raw" min="0" max="52" placeholder="0-52"><span class="form-hint">Summe aller Items</span></div>
+                            <div class="form-group"><label><strong>T-Wert (Manual)</strong></label><input type="number" id="dikj-t" min="20" max="80" placeholder="T-Wert"><span class="form-hint">M=50, SD=10 – führend für Auswertung</span></div>
                             <div class="form-group"><label>Prozentrang</label><input type="number" id="dikj-pr" min="0" max="100" placeholder="PR"></div>
                         </div>
                     </div>
                     <div class="form-section">
-                        <div class="form-section-title">Optionale Angaben</div>
+                        <div class="form-section-title">Normstichprobe</div>
                         <div class="form-grid">
-                            <div class="form-group"><label>Geschlecht Normierung</label><select id="dikj-sex"><option value="combined">Kombiniert</option><option value="m">Jungen</option><option value="w">Mädchen</option></select></div>
+                            <div class="form-group"><label>Geschlecht Normierung</label><select id="dikj-sex"><option value="combined">Kombiniert</option><option value="m">Jungen</option><option value="w">Mädchen</option></select><span class="form-hint">DIKJ bietet geschlechts­spezifische Normen – im Manual nachschlagen</span></div>
+                            <div class="form-group"><label>Altersgruppe</label><select id="dikj-age"><option value="">– nicht angegeben –</option><option value="8-13">8–13 Jahre</option><option value="14-17">14–17 Jahre</option></select></div>
                         </div>
                     </div>
                     <div class="btn-group">
@@ -3131,25 +3169,53 @@
             return {normal:'Unauffällig',borderline:'Grenzwertig',clinical:'Klinisch auffällig'}[c];
         }
 
+        const CBCL_RATERS = {
+            parent:  {short:'Eltern',  full:'CBCL/6-18R (Elternurteil)',  color:'#6366f1'},
+            teacher: {short:'Lehrer',  full:'TRF (Lehrerurteil)',         color:'#10b981'},
+            self:    {short:'Selbst',  full:'YSR/11-18R (Selbsturteil)',  color:'#f59e0b'}
+        };
+
+        function readCbclRater(rater){
+            const bb  = {int:v(`cbcl-${rater}-int`), ext:v(`cbcl-${rater}-ext`), tot:v(`cbcl-${rater}-tot`)};
+            const syn = {anx:v(`cbcl-${rater}-anx`), wit:v(`cbcl-${rater}-wit`), som:v(`cbcl-${rater}-som`), soc:v(`cbcl-${rater}-soc`), tho:v(`cbcl-${rater}-tho`), att:v(`cbcl-${rater}-att`), rul:v(`cbcl-${rater}-rul`), agg:v(`cbcl-${rater}-agg`)};
+            const hasAny = Object.values({...bb,...syn}).some(x=>x!==null);
+            return {bb, syn, hasAny};
+        }
+
         function evaluateCBCL(e) {
             e.preventDefault();
             const pat = getPatient();
-            const resp = document.querySelector('input[name="cbcl-resp"]:checked').value;
             const scaleMode = document.querySelector('input[name="cbcl-scale"]:checked').value;
-            const respText = {parent:'CBCL/6-18R (Elternurteil)',teacher:'TRF (Lehrerurteil)',self:'YSR/11-18R (Selbsturteil)'}[resp];
             const scaleText = scaleMode==='stanine' ? 'Stanine (1–9, z-standardisiert)' : 'T-Werte (M=50, SD=10)';
             const valLabel = scaleMode==='stanine' ? 'Stanine' : 'T';
             const bbNorm = scaleMode==='stanine' ? 'Stanine 1–6' : 'T < 60';
             const synNorm = scaleMode==='stanine' ? 'Stanine 1–6' : 'T < 65';
 
-            const bb = {int:v('cbcl-int'),ext:v('cbcl-ext'),tot:v('cbcl-tot')};
-            const syn = {anx:v('cbcl-anx'),wit:v('cbcl-wit'),som:v('cbcl-som'),soc:v('cbcl-soc'),tho:v('cbcl-tho'),att:v('cbcl-att'),rul:v('cbcl-rul'),agg:v('cbcl-agg')};
+            // Alle drei Beurteiler einlesen
+            const raters = {};
+            ['parent','teacher','self'].forEach(r => {
+                const d = readCbclRater(r);
+                if(d.hasAny) raters[r] = d;
+            });
 
-            if(Object.values({...bb,...syn}).every(x=>x===null)) return alert('Mindestens ein Wert eingeben');
+            const raterKeys = Object.keys(raters);
+            if(raterKeys.length === 0) return alert('Bitte mindestens einen Wert für mindestens einen Beurteiler eingeben.');
 
-            const cBB = {}, cSyn = {};
-            Object.entries(bb).filter(([k,x])=>x!==null).forEach(([k,x])=>cBB[k]=cbclClass(x,'bb',scaleMode));
-            Object.entries(syn).filter(([k,x])=>x!==null).forEach(([k,x])=>cSyn[k]=cbclClass(x,'syn',scaleMode));
+            // Pro Beurteiler Klassifizierung berechnen
+            raterKeys.forEach(r => {
+                const d = raters[r];
+                d.cBB = {}; d.cSyn = {};
+                Object.entries(d.bb).filter(([k,x])=>x!==null).forEach(([k,x])=>d.cBB[k]=cbclClass(x,'bb',scaleMode));
+                Object.entries(d.syn).filter(([k,x])=>x!==null).forEach(([k,x])=>d.cSyn[k]=cbclClass(x,'syn',scaleMode));
+            });
+
+            // Kompatibilitäts-Aliase auf "ersten vorhandenen" Beurteiler für den Rest der Funktion
+            const primary = raterKeys[0];
+            const bb = raters[primary].bb;
+            const syn = raters[primary].syn;
+            const cBB = raters[primary].cBB;
+            const cSyn = raters[primary].cSyn;
+            const respText = CBCL_RATERS[primary].full;
 
             const synLabels = {anx:'Ängstlich',wit:'Rückzug',som:'Somatisch',soc:'Sozial',tho:'Denken',att:'Aufmerks.',rul:'Regeln',agg:'Aggressiv'};
             const bbLabels = {int:'Internalisierend',ext:'Externalisierend',tot:'Gesamtproblemwert'};
@@ -3225,34 +3291,95 @@
                             <p>Für die vorliegende Auswertung wurden <strong>${scaleText}</strong> verwendet. ${scaleMode==='stanine'
                                 ? 'Stanine-Werte sind z-standardisiert (M=5, SD=2) mit einem Wertebereich von 1 bis 9. Richtwerte: 1–3 unterdurchschnittlich, 4–6 durchschnittlich, 7 grenzwertig, 8–9 klinisch auffällig.'
                                 : 'T-Werte sind standardisiert mit M=50 und SD=10. Für die übergeordneten Skalen (Internalisierend, Externalisierend, Gesamt) gilt: T&lt;60 = unauffällig, T 60–63 = grenzwertig, T≥64 = klinisch auffällig. Für die Syndromskalen: T&lt;65 = unauffällig, T 65–69 = grenzwertig, T≥70 = klinisch auffällig.'}</p>
-                            <p><strong>Verwendete Version:</strong> ${respText}</p>
+                            <p><strong>Eingesetzte Version(en):</strong> ${raterKeys.map(r=>CBCL_RATERS[r].full).join(' · ')}</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
-                        <p style="font-weight:600;margin-bottom:1rem;">Übergeordnete Skalen (Bandbreiten)</p>
-                        <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>${valLabel}-Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
-                            <tbody>
-                                ${validBB.map(([k,x])=>`<tr${k==='tot'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${bbLabels[k]}</td><td>${x}</td><td>${bbNorm}</td><td class="${cBB[k]}">${cbclClassText(cBB[k])}</td></tr>`).join('')}
-                            </tbody>
-                        </table>
-                        ${validSyn.length ? `
-                        <p style="font-weight:600;margin:1.5rem 0 1rem;">Syndromskalen</p>
-                        <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>${valLabel}-Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
-                            <tbody>
-                                ${validSyn.map(([k,x])=>`<tr><td>${CBCL_SYN[k].n}</td><td>${x}</td><td>${synNorm}</td><td class="${cSyn[k]}">${cbclClassText(cSyn[k])}</td></tr>`).join('')}
-                            </tbody>
-                        </table>` : ''}
+                        <h4 class="gutachten-section-title">2. Testergebnisse pro Beurteiler</h4>
+                        ${raterKeys.map(r => {
+                            const d = raters[r];
+                            const meta = CBCL_RATERS[r];
+                            const vBB  = Object.entries(d.bb).filter(([k,x])=>x!==null);
+                            const vSyn = Object.entries(d.syn).filter(([k,x])=>x!==null);
+                            return `
+                            <div style="margin-bottom:1.5rem;padding:0.75rem 1rem;border-left:4px solid ${meta.color};background:rgba(99,102,241,0.03);border-radius:4px;">
+                                <p style="font-weight:700;margin:0 0 0.75rem;color:${meta.color};">${meta.full}</p>
+                                ${vBB.length ? `
+                                <p style="font-weight:600;margin:0.5rem 0;">Übergeordnete Skalen</p>
+                                <table class="gutachten-table">
+                                    <thead><tr><th>Skala</th><th>${valLabel}-Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
+                                    <tbody>
+                                        ${vBB.map(([k,x])=>`<tr${k==='tot'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${bbLabels[k]}</td><td>${x}</td><td>${bbNorm}</td><td class="${d.cBB[k]}">${cbclClassText(d.cBB[k])}</td></tr>`).join('')}
+                                    </tbody>
+                                </table>` : ''}
+                                ${vSyn.length ? `
+                                <p style="font-weight:600;margin:0.75rem 0 0.5rem;">Syndromskalen</p>
+                                <table class="gutachten-table">
+                                    <thead><tr><th>Skala</th><th>${valLabel}-Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
+                                    <tbody>
+                                        ${vSyn.map(([k,x])=>`<tr><td>${CBCL_SYN[k].n}</td><td>${x}</td><td>${synNorm}</td><td class="${d.cSyn[k]}">${cbclClassText(d.cSyn[k])}</td></tr>`).join('')}
+                                    </tbody>
+                                </table>` : ''}
+                            </div>`;
+                        }).join('')}
                     </div>
+
+                    ${raterKeys.length >= 2 ? (() => {
+                        const bbKeys = ['int','ext','tot'];
+                        const synKeys = Object.keys(CBCL_SYN);
+                        const bbRowLabels = {int:'INT – Internalisierend', ext:'EXT – Externalisierend', tot:'GES – Gesamtproblemwert'};
+                        const diffThreshold = scaleMode==='stanine' ? 2 : 10;
+                        // Helfer: eine Vergleichszeile pro Skala bauen
+                        const compareRow = (key, type) => {
+                            const values = raterKeys.map(r => type==='bb' ? raters[r].bb[key] : raters[r].syn[key]);
+                            const classes = raterKeys.map((r,i) => {
+                                if(values[i]===null) return null;
+                                return type==='bb' ? raters[r].cBB[key] : raters[r].cSyn[key];
+                            });
+                            const filled = values.filter(x=>x!==null);
+                            if(filled.length < 2) return null; // nur ein Wert -> kein Vergleich
+                            const spread = Math.max(...filled) - Math.min(...filled);
+                            const hasClinAndNormal = classes.includes('clinical') && classes.includes('normal');
+                            const flag = hasClinAndNormal ? 'strong' : (spread >= diffThreshold ? 'moderate' : 'agree');
+                            const flagBadge = {
+                                strong:   '<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#fee2e2;color:#991b1b;font-weight:600;">Diskrepant</span>',
+                                moderate: '<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#fef3c7;color:#92400e;font-weight:600;">Unterschiedlich</span>',
+                                agree:    '<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#d1fae5;color:#065f46;font-weight:600;">Übereinstimmend</span>'
+                            }[flag];
+                            const label = type==='bb' ? bbRowLabels[key] : CBCL_SYN[key].n;
+                            const cells = raterKeys.map((r,i) => {
+                                if(values[i]===null) return '<td style="text-align:center;color:#9ca3af;">–</td>';
+                                const c = classes[i];
+                                return `<td class="${c}" style="text-align:center;">${valLabel}=${values[i]}<br><small style="opacity:0.75;">${cbclClassText(c)}</small></td>`;
+                            }).join('');
+                            return `<tr><td>${label}</td>${cells}<td style="text-align:center;">${spread}</td><td style="text-align:center;">${flagBadge}</td></tr>`;
+                        };
+                        const bbRows  = bbKeys.map(k=>compareRow(k,'bb')).filter(x=>x).join('');
+                        const synRows = synKeys.map(k=>compareRow(k,'syn')).filter(x=>x).join('');
+                        if(!bbRows && !synRows) return '';
+                        return `
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">3. Cross-Informant-Vergleich</h4>
+                        <div class="gutachten-text">
+                            <p>Die folgende Übersicht stellt die Einschätzungen der verschiedenen Beurteiler direkt gegenüber. Unterschiede werden markiert als <strong>Diskrepant</strong> (einer klinisch, ein anderer normal), <strong>Unterschiedlich</strong> (Differenz ≥ ${diffThreshold} ${valLabel === 'Stanine' ? 'Stanine-Punkte' : 'T-Punkte'}) oder <strong>Übereinstimmend</strong>.</p>
+                            <table class="gutachten-table" style="margin-top:0.75rem;">
+                                <thead><tr><th>Skala</th>${raterKeys.map(r=>`<th style="text-align:center;">${CBCL_RATERS[r].short}</th>`).join('')}<th style="text-align:center;">Δ</th><th style="text-align:center;">Übereinstimmung</th></tr></thead>
+                                <tbody>
+                                    ${bbRows ? `<tr style="background:var(--bg-input);"><td colspan="${raterKeys.length+3}" style="font-weight:600;">Übergeordnete Skalen</td></tr>${bbRows}` : ''}
+                                    ${synRows ? `<tr style="background:var(--bg-input);"><td colspan="${raterKeys.length+3}" style="font-weight:600;">Syndromskalen</td></tr>${synRows}` : ''}
+                                </tbody>
+                            </table>
+                            <p style="margin-top:1rem;font-size:0.9em;color:#4a5568;"><strong>Hinweis:</strong> Diskrepanzen zwischen Informanten sind häufig und inhaltlich bedeutsam – sie können auf <em>situationsspezifisches</em> Verhalten hindeuten (z.B. Symptome nur in der Schule / nur zuhause / nur aus Selbstsicht). Starke Diskrepanzen sollten exploriert werden.</p>
+                        </div>
+                    </div>`;
+                    })() : ''}
 
                     ${validSyn.length ? `
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Grafische Darstellung</h4>
+                        <h4 class="gutachten-section-title">${raterKeys.length >= 2 ? '4' : '3'}. Grafische Darstellung${raterKeys.length >= 2 ? ` (${CBCL_RATERS[primary].short})` : ''}</h4>
                         <div class="chart-container">
-                            <div class="chart-title">Syndromskalen-Profil</div>
+                            <div class="chart-title">Syndromskalen-Profil${raterKeys.length >= 2 ? ` – ${CBCL_RATERS[primary].full}` : ''}</div>
                             ${chart(validSyn.map(([k])=>synLabels[k]),validSyn.map(([k,x])=>x),validSyn.map(([k])=>cSyn[k]),scaleMode==='stanine'?9:90)}
                             <div style="display:flex;justify-content:center;gap:2rem;margin-top:1rem;font-size:0.75rem;">
                                 ${scaleMode==='stanine'
@@ -3263,7 +3390,7 @@
                     </div>` : ''}
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Interpretation</h4>
+                        <h4 class="gutachten-section-title">${raterKeys.length >= 2 ? '5' : '4'}. Interpretation${raterKeys.length >= 2 ? ` (${CBCL_RATERS[primary].short})` : ''}</h4>
                         <div class="gutachten-text">
                             <p>${interp}</p>
                             ${clinSyn.length ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Die erhöhten Syndromskalen weisen auf spezifische Problembereiche hin, die einer weiteren Abklärung bedürfen.</div>' : ''}
@@ -3271,7 +3398,7 @@
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">5. Differenzialdiagnostische Überlegungen</h4>
+                        <h4 class="gutachten-section-title">${raterKeys.length >= 2 ? '6' : '5'}. Differenzialdiagnostische Überlegungen</h4>
                         <div class="gutachten-text">
                             <p>Basierend auf den auffälligen Syndromskalen sollten folgende Störungsbilder differenzialdiagnostisch abgeklärt werden:</p>
                             <ul class="gutachten-list">
@@ -3282,7 +3409,7 @@
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">6. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">${raterKeys.length >= 2 ? '7' : '6'}. Empfehlungen</h4>
                         <div class="gutachten-text">${empf}</div>
                     </div>
 
@@ -3304,8 +3431,20 @@
                 </div>
             `;
 
-            let html = `<div class="results-header"><h3 class="results-title">Ergebnis ${respText}</h3></div>`;
-            html += summary(validBB.map(([k,x])=>({l:bbLabels[k],v:valLabel+' '+x,c:cBB[k],s:cbclClassText(cBB[k])})));
+            const resultsTitle = raterKeys.length >= 2
+                ? `Ergebnis CBCL – Multi-Informant (${raterKeys.map(r=>CBCL_RATERS[r].short).join(' · ')})`
+                : `Ergebnis ${respText}`;
+
+            // Summary-Karten: GES pro Beurteiler als Schnellüberblick
+            const summaryCards = raterKeys
+                .filter(r => raters[r].bb.tot !== null)
+                .map(r => ({l: CBCL_RATERS[r].short + ' – GES', v: valLabel+' '+raters[r].bb.tot, c: raters[r].cBB.tot, s: cbclClassText(raters[r].cBB.tot)}));
+            const summaryContent = summaryCards.length
+                ? summary(summaryCards)
+                : summary(validBB.map(([k,x])=>({l:bbLabels[k],v:valLabel+' '+x,c:cBB[k],s:cbclClassText(cBB[k])})));
+
+            let html = `<div class="results-header"><h3 class="results-title">${resultsTitle}</h3></div>`;
+            html += summaryContent;
             html += gutachten;
             html += `<div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
                     <button class="btn btn-primary" onclick="exportTestToWord('cbcl')">📝 Als Word exportieren (.doc)</button>
@@ -3313,7 +3452,7 @@
 
             document.getElementById('cbcl-results').innerHTML = html;
             document.getElementById('cbcl-results').classList.add('show');
-            R.cbcl = {bb,syn,cBB,cSyn,gutachten}; updateReport();
+            R.cbcl = {raters, scaleMode, bb, syn, cBB, cSyn, gutachten}; updateReport();
         }
 
         // DISYPS
@@ -3353,8 +3492,12 @@
             }
 
             // Interpretation
+            // ADHS klinisch, wenn entweder der ADHS-Gesamtwert klinisch ist
+            // ODER mindestens zwei der drei Kernsymptom-Skalen (UA / HYP / IMP) klinisch sind
+            // (entspricht DSM-5-Kriterien für einen kombinierten bzw. eindeutigen Typ).
             let interp = '';
-            const adhs_clin = c.adhs === 'clinical' || (c.ina === 'clinical' && (c.hyp === 'clinical' || c.imp === 'clinical'));
+            const coreClin = [c.ina, c.hyp, c.imp].filter(x => x === 'clinical').length;
+            const adhs_clin = c.adhs === 'clinical' || coreClin >= 2;
             const ssv_clin = c.ssv === 'clinical' || c.opp === 'clinical' || c.agg === 'clinical';
 
             if(adhs_clin && ssv_clin) {
@@ -3789,11 +3932,17 @@
             const raw = v('dikj-raw');
             const t = v('dikj-t');
             const pr = v('dikj-pr');
+            const sexNorm = document.getElementById('dikj-sex').value;
+            const ageNorm = document.getElementById('dikj-age')?.value || '';
+            const sexLabel = {combined:'Kombiniert (alle Geschlechter)', m:'Jungen', w:'Mädchen'}[sexNorm];
 
-            if(raw === null && t === null) return alert('Bitte mindestens Rohwert oder T-Wert eingeben');
+            if(t === null) {
+                if(raw === null) return alert('Bitte T-Wert (oder wenigstens Rohwert) eingeben.');
+                if(!confirm('Kein T-Wert eingegeben – der T-Wert wird grob aus dem Rohwert geschätzt (nicht normgetreu). Für einen korrekten Befund bitte T-Wert aus dem DIKJ-Manual ablesen.\n\nTrotzdem fortfahren?')) return;
+            }
 
-            // Klassifikation basierend auf T-Wert
-            const tVal = t || (raw !== null ? Math.min(80, Math.max(20, 50 + (raw - 15) * 1.5)) : 50);
+            const tEstimated = (t === null);
+            const tVal = t !== null ? t : Math.min(80, Math.max(20, 50 + (raw - 15) * 1.5));
             const c = tVal < 60 ? 'normal' : tVal < 70 ? 'borderline' : 'clinical';
             const cText = {normal:'Unauffällig',borderline:'Leicht erhöht',clinical:'Klinisch auffällig'}[c];
 
@@ -3809,14 +3958,16 @@
                     </div>
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <p style="margin:0 0 0.75rem;font-size:0.9rem;"><strong>Normstichprobe:</strong> ${sexLabel}${ageNorm ? ` · Altersgruppe ${ageNorm} Jahre` : ''}</p>
                         <table class="gutachten-table">
                             <thead><tr><th>Kennwert</th><th>Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
                             <tbody>
                                 ${raw !== null ? `<tr><td>Rohwert</td><td><strong>${raw}</strong></td><td>0-52</td><td>-</td></tr>` : ''}
-                                <tr style="font-weight:700;background:var(--bg-input);"><td>T-Wert</td><td><strong>${Math.round(tVal)}</strong></td><td>T < 60</td><td class="${c}"><strong>${cText}</strong></td></tr>
+                                <tr style="font-weight:700;background:var(--bg-input);"><td>T-Wert${tEstimated ? ' <small style="font-weight:400;color:#b91c1c;">(geschätzt)</small>' : ''}</td><td><strong>${Math.round(tVal)}</strong></td><td>T < 60</td><td class="${c}"><strong>${cText}</strong></td></tr>
                                 ${pr !== null ? `<tr><td>Prozentrang</td><td>${pr}</td><td>-</td><td>-</td></tr>` : ''}
                             </tbody>
                         </table>
+                        ${tEstimated ? '<div class="gutachten-warning" style="margin-top:0.75rem;"><strong>Achtung:</strong> Der T-Wert wurde grob aus dem Rohwert linear geschätzt (nicht normgetreu, keine Alters-/Geschlechtsdifferenzierung). Für einen validen Befund bitte den T-Wert aus der Normtabelle des DIKJ-Manuals entnehmen.</div>' : ''}
                     </div>
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">3. Interpretation</h4>
@@ -4606,8 +4757,10 @@
 
             if(iqVal === null && !validSub.length) return alert('Bitte mindestens Gesamt-IQ oder Untertests eingeben');
 
-            const iq = iqVal || 100;
-            const c = iqClass(iq);
+            // IQ nur klassifizieren, wenn er wirklich eingegeben wurde.
+            // Wertpunkte → IQ-Umrechnung ist normabhängig und nicht rechnerisch abzubilden.
+            const iq = iqVal;
+            const c = iq !== null ? iqClass(iq) : null;
 
             const testLang = document.getElementById('sonr-testlang')?.value || 'Nonverbal';
             const instLang = document.getElementById('sonr-instlang')?.value || '';
@@ -4637,7 +4790,7 @@
                         <table class="gutachten-table">
                             <thead><tr><th>Skala</th><th>IQ-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
                             <tbody>
-                                <tr style="font-weight:700;"><td>SON-IQ (Gesamtwert)</td><td><strong>${iqVal}</strong></td><td>${prVal || c.pr}</td><td>${c.l}</td></tr>
+                                <tr style="font-weight:700;"><td>SON-IQ (Gesamtwert)</td><td><strong>${iqVal}</strong></td><td>${prVal !== null ? prVal : (c ? c.pr : '-')}</td><td>${c ? c.l : '-'}</td></tr>
                             </tbody>
                         </table>
                         ` : ''}
@@ -4658,7 +4811,8 @@
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">3. Interpretation</h4>
                         <div class="gutachten-text">
-                            ${iqVal ? `<p>Die Untersuchung der nonverbalen kognitiven Leistungsfähigkeit mittels SON-R ergibt einen <strong>SON-IQ von ${iqVal}</strong> (PR: ${prVal || c.pr}). Dieser Wert liegt im <strong>${c.l.toLowerCase()}en Bereich</strong>.</p>` : ''}
+                            ${iqVal !== null && c ? `<p>Die Untersuchung der nonverbalen kognitiven Leistungsfähigkeit mittels SON-R ergibt einen <strong>SON-IQ von ${iqVal}</strong> (PR: ${prVal !== null ? prVal : c.pr}). Dieser Wert liegt im <strong>${c.l.toLowerCase()}en Bereich</strong>.</p>` : ''}
+                            ${iqVal === null && validSub.length ? `<p>Der Gesamt-IQ wurde nicht eingegeben; die Einzelbefunde beruhen auf den eingegebenen Untertest-Wertpunkten. Für einen Gesamtwert bitte den SON-IQ aus dem Manual ergänzen.</p>` : ''}
                             ${iqVal >= 130 ? `<p>${pat.name} verfügt über <strong>weit überdurchschnittliche nonverbale kognitive Fähigkeiten</strong>.</p>` : ''}
                             ${iqVal >= 115 && iqVal < 130 ? `<p>${pat.name} verfügt über <strong>überdurchschnittliche nonverbale kognitive Fähigkeiten</strong>, die gute Voraussetzungen für visuell-räumliches Denken und Problemlösen darstellen.</p>` : ''}
                             ${iqVal >= 85 && iqVal < 115 ? `<p>${pat.name} verfügt über <strong>durchschnittliche nonverbale kognitive Fähigkeiten</strong>. Die sprachfreien intellektuellen Voraussetzungen entsprechen dem Erwartungswert für ${pronomen.sein} Altersgruppe.</p>` : ''}
@@ -4685,7 +4839,12 @@
                 </div>
             `;
 
-            const summaryItems = [{l:'SON-IQ',v:iqVal||'-',c:c.c,s:c.l}];
+            const summaryItems = iqVal !== null && c
+                ? [{l:'SON-IQ', v: iqVal, c: c.c, s: c.l}]
+                : validSub.slice(0, 4).map(([k,x]) => {
+                    const wp = wpClass(x);
+                    return {l: SONR_SUBTESTS[k].n, v: 'WP '+x, c: wp.c, s: wp.l};
+                });
             document.getElementById('sonr-results').innerHTML = `
                 <div class="results-header"><h3 class="results-title">Ergebnis SON-R</h3></div>
                 ${summary(summaryItems)}
