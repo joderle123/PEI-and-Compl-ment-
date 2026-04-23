@@ -1276,7 +1276,7 @@
         <div class="cdse-notice-inner">
             <span class="cdse-notice-icon">ℹ</span>
             <div class="cdse-notice-text">
-                <strong>Nutzungshinweis:</strong> Die Verwendung dieses Tools ist ausschließlich im Rahmen der Tätigkeit für das <strong>CDSE</strong> (Centre de Développement des compétences Scolaires et Éducatives) gestattet. Mit der Benutzung erklärt der/die Nutzer/in automatisch sein/ihr Einverständnis mit dieser Nutzungsbeschränkung sowie mit den internen Datenschutz- und Schweigepflicht-Vorgaben des CDSE.
+                <strong>Nutzungshinweis:</strong> Die Verwendung dieses Tools ist ausschließlich im Rahmen der Tätigkeit für das <strong>CDSE</strong> (Centre pour le Développement Socio-Émotionnel) gestattet. Mit der Benutzung erklärt der/die Nutzer/in automatisch sein/ihr Einverständnis mit dieser Nutzungsbeschränkung sowie mit den internen Datenschutz- und Schweigepflicht-Vorgaben des CDSE.
             </div>
             <button type="button" class="cdse-notice-close" onclick="dismissCdseNotice()" aria-label="Hinweis ausblenden" title="Für diese Sitzung ausblenden">×</button>
         </div>
@@ -1748,10 +1748,20 @@
                         </div>
                     </div>
                     <div class="form-section">
-                        <div class="form-section-title">Validitätsskalen <span class="form-hint">Rohwerte; nur erwähnt wenn &gt;2</span></div>
+                        <div class="form-section-title">1. Analyse des Antwortstils – Validitätsskalen</div>
+                        <p class="form-hint" style="margin-bottom:0.75rem;">Inkonsistenz-Index (II) sowie Positiver (PE) und Negativer Eindruck (NE) werden gemäß Conners-3-Manual separat ausgewertet.</p>
+
+                        <div class="form-section-title" style="font-size:0.88rem;margin-top:0.5rem;">1.1 Inkonsistenz-Index (II)</div>
                         <div class="form-grid">
-                            <div class="form-group"><label>PI – Inkonsistenzindex</label><input type="number" id="con-pi" min="0" max="20" placeholder="Rohwert"></div>
-                            <div class="form-group"><label>NI – Negativer/Positiver Eindruck</label><input type="number" id="con-ni" min="0" max="20" placeholder="Rohwert"></div>
+                            <div class="form-group"><label>A – Summe der absoluten Rohwert­differenzen ≥ 6?</label><select id="con-ii-a"><option value="">– nicht erfasst –</option><option value="ja">Ja</option><option value="nein">Nein</option></select></div>
+                            <div class="form-group"><label>B – ≥ 2 einzelne Rohwert­differenzen ≥ 2?</label><select id="con-ii-b"><option value="">– nicht erfasst –</option><option value="ja">Ja</option><option value="nein">Nein</option></select></div>
+                        </div>
+                        <p class="form-hint" style="margin-top:0.35rem;">Regel: <strong>A und B = „Ja"</strong> → Antworten möglicherweise inkonsistent. <strong>A oder B = „Nein"</strong> → Antworten weitgehend konsistent.</p>
+
+                        <div class="form-section-title" style="font-size:0.88rem;margin-top:1rem;">1.2 Positiver (PE) und Negativer Eindruck (NE)</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>PE – Positiver Eindruck (Rohwert)</label><input type="number" id="con-pe" min="0" max="6" placeholder="0-6"><span class="form-hint">≥ 2 → möglicherweise positiv beantwortet</span></div>
+                            <div class="form-group"><label>NE – Negativer Eindruck (Rohwert)</label><input type="number" id="con-ne" min="0" max="6" placeholder="0-6"><span class="form-hint">≥ 2 → möglicherweise negativ beantwortet</span></div>
                         </div>
                     </div>
                     <div class="form-section">
@@ -4445,9 +4455,15 @@
             const resp = document.querySelector('input[name="conners-resp"]:checked').value;
             const respText = {parent:'Elternurteil',teacher:'Lehrerurteil',self:'Selbsturteil'}[resp];
 
-            // Validitätsskalen (Rohwerte)
-            const piVal = v('con-pi');
-            const niVal = v('con-ni');
+            // Validitätsskalen (manual-konform)
+            // II (Inkonsistenz-Index): zwei Kriterien A und B; beide "Ja" → inkonsistent
+            const iiA = document.getElementById('con-ii-a')?.value || '';
+            const iiB = document.getElementById('con-ii-b')?.value || '';
+            const iiInconsistent = iiA === 'ja' && iiB === 'ja';
+            const iiConsistent = (iiA === 'nein' || iiB === 'nein');
+            // PE / NE: Rohwerte, ≥ 2 = auffällig
+            const peVal = v('con-pe');
+            const neVal = v('con-ne');
 
             // Conners 3 Inhaltsskalen
             const connersScales = {
@@ -4566,13 +4582,25 @@
                     </div>
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">2. Testergebnisse</h4>
-                        ${(piVal !== null && piVal > 2) || (niVal !== null && niVal > 2) ? `
+                        ${(iiA || iiB || peVal !== null || neVal !== null) ? `
+                        <p style="font-weight:bold;margin-bottom:0.5rem;">Validitätsskalen</p>
+                        <table class="gutachten-table" style="margin-bottom:0.75rem;">
+                            <thead><tr><th>Skala</th><th>Wert</th><th>Interpretation</th></tr></thead>
+                            <tbody>
+                                ${iiA || iiB ? `<tr><td>II – Inkonsistenz-Index</td><td>A: ${iiA || '–'} · B: ${iiB || '–'}</td><td class="${iiInconsistent ? 'clinical' : (iiConsistent ? 'normal' : '')}">${iiInconsistent ? 'Möglicherweise inkonsistent' : (iiConsistent ? 'Weitgehend konsistent' : 'Nicht vollständig erfasst')}</td></tr>` : ''}
+                                ${peVal !== null ? `<tr><td>PE – Positiver Eindruck</td><td>${peVal}</td><td class="${peVal >= 2 ? 'clinical' : 'normal'}">${peVal >= 2 ? 'Möglicherweise positiv beantwortet' : 'Weder pos. noch neg. auffällig'}</td></tr>` : ''}
+                                ${neVal !== null ? `<tr><td>NE – Negativer Eindruck</td><td>${neVal}</td><td class="${neVal >= 2 ? 'clinical' : 'normal'}">${neVal >= 2 ? 'Möglicherweise negativ beantwortet' : 'Weder pos. noch neg. auffällig'}</td></tr>` : ''}
+                            </tbody>
+                        </table>
+                        ${(iiInconsistent || (peVal !== null && peVal >= 2) || (neVal !== null && neVal >= 2)) ? `
                         <div class="gutachten-warning">
                             <strong>Hinweis zur Reliabilität der Antworten:</strong>
-                            ${piVal > 2 ? `Der Inkonsistenzindex (PI = ${piVal}) ist erhöht, was auf inkonsistentes Antwortverhalten hindeuten kann.` : ''}
-                            ${niVal > 2 ? `Der Index für Positiven Eindruck (NI = ${niVal}) ist erhöht, was auf eine Tendenz zu sozial erwünschtem Antwortverhalten hinweisen kann.` : ''}
+                            ${iiInconsistent ? 'Der Inkonsistenz-Index (II) zeigt auffällige Rohwert­differenzen zwischen vergleichbaren Items (Kriterium A und B beide „Ja") – die Antworten sind möglicherweise inkonsistent beantwortet worden. ' : ''}
+                            ${peVal !== null && peVal >= 2 ? `Der Positive-Eindruck-Index (PE = ${peVal}) ist ≥ 2 – es besteht der Verdacht auf sozial erwünschtes / beschönigendes Antwortverhalten. ` : ''}
+                            ${neVal !== null && neVal >= 2 ? `Der Negative-Eindruck-Index (NE = ${neVal}) ist ≥ 2 – es besteht der Verdacht auf übermäßig negative Darstellung. ` : ''}
                             Die Ergebnisse sollten vor diesem Hintergrund mit Vorsicht interpretiert werden.
                         </div>
+                        ` : ''}
                         ` : ''}
                         ${validConners.length ? `
                         <p style="font-weight:bold;margin-top:1rem;">Conners-Inhaltsskalen (${respText})</p>
