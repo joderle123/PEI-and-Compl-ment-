@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PsychoDiagnostik Pro</title>
+    <title>CDSE-Testing Tool</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%234f46e5' rx='20' width='100' height='100'/><text x='50' y='68' font-size='55' text-anchor='middle' fill='white'>Ψ</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        :root {
+        :root,
+        [data-theme="light"] {
             --bg: #f8fafc;
             --bg-card: #ffffff;
             --bg-card-hover: #f1f5f9;
@@ -32,6 +33,60 @@
             --gradient-1: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
             --gradient-2: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
         }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --bg-input: #0f172a;
+            --primary: #818cf8;
+            --primary-light: #a5b4fc;
+            --primary-glow: rgba(129, 140, 248, 0.3);
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.25);
+            --warning: #f59e0b;
+            --warning-glow: rgba(245, 158, 11, 0.25);
+            --danger: #f87171;
+            --danger-glow: rgba(248, 113, 113, 0.25);
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.25);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Dark-Mode: Feinschliff für Elemente mit hardkodierten hellen Farben */
+        [data-theme="dark"] .gutachten-confidential { color: #fca5a5; background: rgba(239,68,68,0.08); }
+        [data-theme="dark"] .admin-hinweise-header h4,
+        [data-theme="dark"] .admin-hinweise-toggle { color: #93c5fd; }
+        [data-theme="dark"] .admin-hinweise h5,
+        [data-theme="dark"] .admin-box-title,
+        [data-theme="dark"] .admin-time { color: #93c5fd; }
+        [data-theme="dark"] .admin-time { background: rgba(59,130,246,0.2); }
+        [data-theme="dark"] .admin-box { background: rgba(255,255,255,0.03); }
+        [data-theme="dark"] .gutachten-danger { background: rgba(239,68,68,0.12); color: #fecaca; }
+        [data-theme="dark"] .gutachten-danger strong { color: #fca5a5; }
+        [data-theme="dark"] .cdse-notice { background: linear-gradient(135deg, rgba(129,140,248,0.12) 0%, rgba(167,139,250,0.08) 100%); }
+
+        .safety-form-section {
+            border: 2px solid #fecaca;
+            background: #fef2f2;
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+        }
+        .safety-form-section .form-section-title { color: #991b1b; }
+        .safety-form-section .form-section-title .form-hint { color: #991b1b; }
+        [data-theme="dark"] .safety-form-section {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(248, 113, 113, 0.5);
+        }
+        [data-theme="dark"] .safety-form-section .form-section-title,
+        [data-theme="dark"] .safety-form-section .form-section-title .form-hint { color: #fecaca; }
+
+        /* Secondary explainer text (was color:#4a5568) */
+        [data-theme="dark"] .gutachten-section p[style*="#4a5568"],
+        [data-theme="dark"] .gutachten-section div[style*="#4a5568"],
+        [data-theme="dark"] .gutachten div[style*="#4a5568"] { color: var(--text-muted) !important; }
 
         body {
             font-family: 'Inter', -apple-system, sans-serif;
@@ -101,45 +156,133 @@
         }
 
         /* Navigation */
+        .cdse-notice {
+            background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(139,92,246,0.06) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 0.6rem 2rem;
+            font-size: 0.82rem;
+            color: var(--text);
+        }
+        .cdse-notice-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .cdse-notice-icon {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-top: 0.05rem;
+        }
+        .cdse-notice-text { flex: 1; line-height: 1.5; }
+        .cdse-notice-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.3rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 0.25rem;
+        }
+        .cdse-notice-close:hover { color: var(--text); }
+        .cdse-notice.hidden { display: none; }
+
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text);
+        }
+        .theme-toggle:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
         .nav {
-            padding: 1rem 2rem;
+            padding: 0.75rem 2rem 1rem;
             background: var(--bg);
             border-bottom: 1px solid var(--border);
-            overflow-x: auto;
         }
 
         .nav-content {
             max-width: 1400px;
             margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 0.75rem 1.25rem;
+        }
+
+        .nav-group {
+            min-width: 0;
+        }
+
+        .nav-group-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            padding-left: 0.25rem;
+        }
+
+        .nav-group-btns {
             display: flex;
-            gap: 0.5rem;
+            flex-wrap: wrap;
+            gap: 0.4rem;
         }
 
         .nav-btn {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 0.6rem;
-            padding: 0.75rem 1.25rem;
-            background: transparent;
-            border: 1px solid transparent;
-            border-radius: 12px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
+            gap: 0.4rem;
+            padding: 0.55rem 0.9rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 0.85rem;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             white-space: nowrap;
         }
 
         .nav-btn:hover {
-            background: var(--bg-card);
-            color: var(--text);
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         .nav-btn.active {
             background: var(--primary);
             color: white;
-            box-shadow: 0 4px 15px var(--primary-glow);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        @media (max-width: 600px) {
+            .nav { padding: 0.75rem 1rem; }
+            .nav-content { grid-template-columns: 1fr; gap: 0.5rem; }
+            .nav-group-label { font-size: 0.65rem; }
+            .nav-btn { font-size: 0.8rem; padding: 0.5rem 0.75rem; }
         }
 
         .nav-icon { font-size: 1.2rem; }
@@ -1120,29 +1263,60 @@
         <div class="header-content">
             <div class="logo">
                 <div class="logo-icon">Ψ</div>
-                <span class="logo-text">PsychoDiagnostik Pro</span>
+                <span class="logo-text">CDSE-Testing Tool</span>
             </div>
-            <div class="header-badge">
-                <span>🔒</span> DSGVO-konform
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Dark-Mode umschalten" title="Dark-Mode umschalten" onclick="toggleTheme()">🌙</button>
+                <div class="header-badge"><span>🔒</span> DSGVO-konform</div>
             </div>
         </div>
     </header>
 
+    <div class="cdse-notice" role="note" aria-label="Nutzungshinweis CDSE">
+        <div class="cdse-notice-inner">
+            <span class="cdse-notice-icon">ℹ</span>
+            <div class="cdse-notice-text">
+                <strong>Nutzungshinweis:</strong> Die Verwendung dieses Tools ist ausschließlich im Rahmen der Tätigkeit für das <strong>CDSE</strong> (Centre de Développement des compétences Scolaires et Éducatives) gestattet. Mit der Benutzung erklärt der/die Nutzer/in automatisch sein/ihr Einverständnis mit dieser Nutzungsbeschränkung sowie mit den internen Datenschutz- und Schweigepflicht-Vorgaben des CDSE.
+            </div>
+            <button type="button" class="cdse-notice-close" onclick="dismissCdseNotice()" aria-label="Hinweis ausblenden" title="Für diese Sitzung ausblenden">×</button>
+        </div>
+    </div>
+
     <nav class="nav">
         <div class="nav-content">
-            <button class="nav-btn active" data-section="sdq"><span class="nav-icon">📋</span> SDQ</button>
-            <button class="nav-btn" data-section="wisc"><span class="nav-icon">🧠</span> WISC-V</button>
-            <button class="nav-btn" data-section="cbcl"><span class="nav-icon">📊</span> CBCL</button>
-            <button class="nav-btn" data-section="disyps"><span class="nav-icon">🎯</span> DISYPS-III</button>
-            <button class="nav-btn" data-section="afs"><span class="nav-icon">💭</span> AFS</button>
-            <button class="nav-btn" data-section="d2r"><span class="nav-icon">🔍</span> d2-R</button>
-            <button class="nav-btn" data-section="dikj"><span class="nav-icon">😢</span> DIKJ</button>
-            <button class="nav-btn" data-section="conners"><span class="nav-icon">⚡</span> Conners-3</button>
-            <button class="nav-btn" data-section="feelkj"><span class="nav-icon">💗</span> FEEL-KJ</button>
-            <button class="nav-btn" data-section="cft"><span class="nav-icon">🧩</span> CFT 20-R</button>
-            <button class="nav-btn" data-section="vineland"><span class="nav-icon">🏠</span> Vineland-3</button>
-            <button class="nav-btn" data-section="sonr"><span class="nav-icon">🔷</span> SON-R</button>
-            <button class="nav-btn" data-section="kabc"><span class="nav-icon">🔶</span> K-ABC II</button>
+            <div class="nav-group">
+                <div class="nav-group-label">Screening / Verhalten</div>
+                <div class="nav-group-btns">
+                    <button class="nav-btn active" data-section="sdq"><span class="nav-icon">📋</span> SDQ</button>
+                    <button class="nav-btn" data-section="cbcl"><span class="nav-icon">📊</span> CBCL</button>
+                    <button class="nav-btn" data-section="conners"><span class="nav-icon">⚡</span> Conners-3</button>
+                    <button class="nav-btn" data-section="disyps"><span class="nav-icon">🎯</span> DISYPS-III</button>
+                </div>
+            </div>
+            <div class="nav-group">
+                <div class="nav-group-label">Intelligenz</div>
+                <div class="nav-group-btns">
+                    <button class="nav-btn" data-section="wisc"><span class="nav-icon">🧠</span> WISC-V</button>
+                    <button class="nav-btn" data-section="cft"><span class="nav-icon">🧩</span> CFT 20-R</button>
+                    <button class="nav-btn" data-section="sonr"><span class="nav-icon">🔷</span> SON-R</button>
+                    <button class="nav-btn" data-section="kabc"><span class="nav-icon">🔶</span> K-ABC II</button>
+                </div>
+            </div>
+            <div class="nav-group">
+                <div class="nav-group-label">Spezifische Bereiche</div>
+                <div class="nav-group-btns">
+                    <button class="nav-btn" data-section="afs"><span class="nav-icon">💭</span> AFS</button>
+                    <button class="nav-btn" data-section="dikj"><span class="nav-icon">😢</span> DIKJ</button>
+                    <button class="nav-btn" data-section="feelkj"><span class="nav-icon">💗</span> FEEL-KJ</button>
+                    <button class="nav-btn" data-section="d2r"><span class="nav-icon">🔍</span> d2-R</button>
+                </div>
+            </div>
+            <div class="nav-group">
+                <div class="nav-group-label">Adaptives Verhalten</div>
+                <div class="nav-group-btns">
+                    <button class="nav-btn" data-section="vineland"><span class="nav-icon">🏠</span> Vineland-3</button>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -1369,8 +1543,8 @@
                             </table>
                         </div>
                     </div>
-                    <div class="form-section" style="border:2px solid #fecaca;background:#fef2f2;border-radius:10px;padding:1rem 1.25rem;">
-                        <div class="form-section-title" style="color:#991b1b;">⚠ Kritische Einzelitems – verpflichtend zu prüfen <span class="form-hint" style="color:#991b1b;">Rohwert pro Item: 0 = nicht zutreffend, 1 = teilweise/manchmal, 2 = genau/häufig zutreffend</span></div>
+                    <div class="form-section safety-form-section">
+                        <div class="form-section-title">⚠ Kritische Einzelitems – verpflichtend zu prüfen <span class="form-hint">Rohwert pro Item: 0 = nicht zutreffend, 1 = teilweise/manchmal, 2 = genau/häufig zutreffend</span></div>
                         <div style="overflow-x:auto;">
                             <table style="width:100%;border-collapse:collapse;font-size:0.9rem;">
                                 <thead>
@@ -1538,8 +1712,8 @@
                             <div class="form-group"><label>Altersgruppe</label><select id="dikj-age"><option value="">– nicht angegeben –</option><option value="8-13">8–13 Jahre</option><option value="14-17">14–17 Jahre</option></select></div>
                         </div>
                     </div>
-                    <div class="form-section" style="border:2px solid #fecaca;background:#fef2f2;border-radius:10px;padding:1rem 1.25rem;">
-                        <div class="form-section-title" style="color:#991b1b;">⚠ Suizidalität – kritische Items <span class="form-hint" style="color:#991b1b;">Manual-konform verpflichtend zu prüfen</span></div>
+                    <div class="form-section safety-form-section">
+                        <div class="form-section-title">⚠ Suizidalität – kritische Items <span class="form-hint">Manual-konform verpflichtend zu prüfen</span></div>
                         <div class="form-grid">
                             <div class="form-group"><label>Item 9 – Suizidgedanken</label><select id="dikj-item9"><option value="">– nicht erfasst –</option><option value="0">0 – keine Suizidgedanken</option><option value="1">1 – Gedanken an Tod / sich etwas antun</option><option value="2">2 – konkrete Suizidabsicht / -plan</option></select><span class="form-hint">Rating 0–2 aus dem Fragebogen übertragen</span></div>
                             <div class="form-group"><label>Zusätzliche Suizid-Exploration</label><select id="dikj-suizid-expl"><option value="">– keine Angabe –</option><option value="keine">Keine Hinweise auf Suizidalität im Gespräch</option><option value="passiv">Passive Todeswünsche / Lebensüberdruss</option><option value="aktiv">Aktive Suizidgedanken ohne Plan</option><option value="konkret">Konkrete Absicht / Plan / Vorbereitung</option></select></div>
@@ -1918,6 +2092,39 @@
 
         const v = id => { const e = document.getElementById(id); return e?.value ? parseFloat(e.value) : null; };
         const vt = id => document.getElementById(id)?.value || '';
+
+        // Dark-Mode
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            const btn = document.getElementById('theme-toggle');
+            if(btn) btn.textContent = theme === 'dark' ? '☀' : '🌙';
+        }
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            const next = current === 'dark' ? 'light' : 'dark';
+            try { localStorage.setItem('cdse-theme', next); } catch(e) {}
+            applyTheme(next);
+        }
+        (function initTheme(){
+            let saved = 'light';
+            try { saved = localStorage.getItem('cdse-theme') || 'light'; } catch(e) {}
+            applyTheme(saved);
+        })();
+
+        // CDSE-Nutzungshinweis ausblenden (nur für aktuelle Sitzung via sessionStorage)
+        function dismissCdseNotice(){
+            const el = document.querySelector('.cdse-notice');
+            if(el) el.classList.add('hidden');
+            try { sessionStorage.setItem('cdse-notice-dismissed', '1'); } catch(e) {}
+        }
+        (function initCdseNotice(){
+            try {
+                if(sessionStorage.getItem('cdse-notice-dismissed')==='1') {
+                    const el = document.querySelector('.cdse-notice');
+                    if(el) el.classList.add('hidden');
+                }
+            } catch(e) {}
+        })();
 
         // Patientendaten abrufen
         function getPatient() {
