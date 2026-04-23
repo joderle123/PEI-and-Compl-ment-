@@ -1251,32 +1251,44 @@
                 </div>
                 <form id="cbcl-form" onsubmit="evaluateCBCL(event)">
                     <div class="form-section">
-                        <div class="form-section-title">Beurteiler</div>
+                        <div class="form-section-title">Version / Beurteiler</div>
                         <div class="radio-group">
-                            <div class="radio-btn"><input type="radio" name="cbcl-resp" id="cbcl-parent" value="parent" checked><label for="cbcl-parent">Eltern</label></div>
-                            <div class="radio-btn"><input type="radio" name="cbcl-resp" id="cbcl-teacher" value="teacher"><label for="cbcl-teacher">Lehrer</label></div>
-                            <div class="radio-btn"><input type="radio" name="cbcl-resp" id="cbcl-self" value="self"><label for="cbcl-self">Selbst</label></div>
+                            <div class="radio-btn"><input type="radio" name="cbcl-resp" id="cbcl-parent" value="parent" checked><label for="cbcl-parent">CBCL/6-18R (Eltern)</label></div>
+                            <div class="radio-btn"><input type="radio" name="cbcl-resp" id="cbcl-teacher" value="teacher"><label for="cbcl-teacher">TRF (Lehrer)</label></div>
+                            <div class="radio-btn"><input type="radio" name="cbcl-resp" id="cbcl-self" value="self"><label for="cbcl-self">YSR/11-18R (Selbst)</label></div>
+                        </div>
+                        <div class="form-hint" style="margin-top:0.5rem;">Jede Version verwendet eigene geschlechts-/altersspezifische Normen. T-Werte und Normbereiche sind identisch, aber die Rohwert-zu-T-Wert-Umrechnung unterscheidet sich.</div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Skalierungsart <span class="form-hint">Welche Werte wurden dem Manual entnommen?</span></div>
+                        <div class="radio-group">
+                            <div class="radio-btn"><input type="radio" name="cbcl-scale" id="cbcl-scale-t" value="t" checked><label for="cbcl-scale-t">T-Werte (M=50, SD=10)</label></div>
+                            <div class="radio-btn"><input type="radio" name="cbcl-scale" id="cbcl-scale-stanine" value="stanine"><label for="cbcl-scale-stanine">Stanine (1–9, z-standardisiert)</label></div>
+                        </div>
+                        <div class="form-hint" style="margin-top:0.5rem;">
+                            <strong>T-Wert:</strong> Übergeordnete Skalen: Grenz T≥60, Klinisch T≥64 · Syndromskalen: Grenz T≥65, Klinisch T≥70<br>
+                            <strong>Stanine:</strong> 1–3 unterdurchschnittlich, 4–6 durchschnittlich, 7 grenzwertig, 8–9 klinisch auffällig
                         </div>
                     </div>
                     <div class="form-section">
-                        <div class="form-section-title">Übergeordnete Skalen (T-Werte) <span class="form-hint">Grenz: T≥60 | Klinisch: T≥64</span></div>
+                        <div class="form-section-title">Übergeordnete Skalen (Bandbreiten)</div>
                         <div class="form-grid">
-                            <div class="form-group"><label>Internalisierend</label><input type="number" id="cbcl-int" min="30" max="100" placeholder="T-Wert"></div>
-                            <div class="form-group"><label>Externalisierend</label><input type="number" id="cbcl-ext" min="30" max="100" placeholder="T-Wert"></div>
-                            <div class="form-group"><label><strong>Gesamt</strong></label><input type="number" id="cbcl-tot" min="30" max="100" placeholder="T-Wert"></div>
+                            <div class="form-group"><label>INT – Internalisierend</label><input type="number" id="cbcl-int" min="1" max="100" placeholder="Wert"></div>
+                            <div class="form-group"><label>EXT – Externalisierend</label><input type="number" id="cbcl-ext" min="1" max="100" placeholder="Wert"></div>
+                            <div class="form-group"><label><strong>GES – Gesamtproblemwert</strong></label><input type="number" id="cbcl-tot" min="1" max="100" placeholder="Wert"></div>
                         </div>
                     </div>
                     <div class="form-section">
-                        <div class="form-section-title">Syndromskalen (T-Werte) <span class="form-hint">Grenz: T≥65 | Klinisch: T≥70</span></div>
+                        <div class="form-section-title">Syndromskalen</div>
                         <div class="form-grid">
-                            <div class="form-group"><label>Ängstlich/Depr.</label><input type="number" id="cbcl-anx" min="30" max="100" placeholder="T"></div>
-                            <div class="form-group"><label>Rückzüglich</label><input type="number" id="cbcl-wit" min="30" max="100" placeholder="T"></div>
-                            <div class="form-group"><label>Somatisch</label><input type="number" id="cbcl-som" min="30" max="100" placeholder="T"></div>
-                            <div class="form-group"><label>Soziale Probl.</label><input type="number" id="cbcl-soc" min="30" max="100" placeholder="T"></div>
-                            <div class="form-group"><label>Denkprobleme</label><input type="number" id="cbcl-tho" min="30" max="100" placeholder="T"></div>
-                            <div class="form-group"><label>Aufmerksamkeit</label><input type="number" id="cbcl-att" min="30" max="100" placeholder="T"></div>
-                            <div class="form-group"><label>Regelverletzend</label><input type="number" id="cbcl-rul" min="30" max="100" placeholder="T"></div>
-                            <div class="form-group"><label>Aggressiv</label><input type="number" id="cbcl-agg" min="30" max="100" placeholder="T"></div>
+                            <div class="form-group"><label>ÄD – Ängstlich/Depressiv</label><input type="number" id="cbcl-anx" min="1" max="100" placeholder="Wert"></div>
+                            <div class="form-group"><label>RD – Sozialer Rückzug/Depressiv</label><input type="number" id="cbcl-wit" min="1" max="100" placeholder="Wert"></div>
+                            <div class="form-group"><label>KB – Körperliche Beschwerden</label><input type="number" id="cbcl-som" min="1" max="100" placeholder="Wert"></div>
+                            <div class="form-group"><label>SP – Soziale Probleme</label><input type="number" id="cbcl-soc" min="1" max="100" placeholder="Wert"></div>
+                            <div class="form-group"><label>SD – Schizoid/Denkstörungen</label><input type="number" id="cbcl-tho" min="1" max="100" placeholder="Wert"></div>
+                            <div class="form-group"><label>AP – Aufmerksamkeitsprobleme</label><input type="number" id="cbcl-att" min="1" max="100" placeholder="Wert"></div>
+                            <div class="form-group"><label>DR – Dissoziales/Regelverletzendes Verhalten</label><input type="number" id="cbcl-rul" min="1" max="100" placeholder="Wert"></div>
+                            <div class="form-group"><label>AG – Aggressives Verhalten</label><input type="number" id="cbcl-agg" min="1" max="100" placeholder="Wert"></div>
                         </div>
                     </div>
                     <div class="btn-group">
@@ -1440,41 +1452,58 @@
                     <div class="form-section">
                         <div class="form-section-title">Validitätsskalen <span class="form-hint">Rohwerte; nur erwähnt wenn &gt;2</span></div>
                         <div class="form-grid">
-                            <div class="form-group"><label>Inkonsistenzindex (PI)</label><input type="number" id="con-pi" min="0" max="20" placeholder="Rohwert"></div>
-                            <div class="form-group"><label>Positiver Eindruck (NI)</label><input type="number" id="con-ni" min="0" max="20" placeholder="Rohwert"></div>
+                            <div class="form-group"><label>PI – Inkonsistenzindex</label><input type="number" id="con-pi" min="0" max="20" placeholder="Rohwert"></div>
+                            <div class="form-group"><label>NI – Negativer/Positiver Eindruck</label><input type="number" id="con-ni" min="0" max="20" placeholder="Rohwert"></div>
                         </div>
                     </div>
                     <div class="form-section">
-                        <div class="form-section-title">Conners-Inhaltsskalen (T-Werte) <span class="form-hint">T≥65 = auffällig | T≥70 = stark auffällig</span></div>
+                        <div class="form-section-title">Conners 3 Inhaltsskalen (T-Werte) <span class="form-hint">T≥65 = auffällig | T≥70 = stark auffällig</span></div>
                         <div class="form-grid">
-                            <div class="form-group"><label>Unaufmerksamkeit</label><input type="number" id="con-in" min="30" max="90" placeholder="T-Wert"></div>
-                            <div class="form-group"><label>Hyperaktivität/Impuls.</label><input type="number" id="con-hi" min="30" max="90" placeholder="T-Wert"></div>
-                            <div class="form-group"><label>Lernprobleme</label><input type="number" id="con-lp" min="30" max="90" placeholder="T-Wert"></div>
-                            <div class="form-group"><label>Exekutive Funktionen</label><input type="number" id="con-ef" min="30" max="90" placeholder="T-Wert"></div>
-                            <div class="form-group"><label>Aggression</label><input type="number" id="con-ag" min="30" max="90" placeholder="T-Wert"></div>
-                            <div class="form-group"><label>Peer-Beziehungen</label><input type="number" id="con-pr" min="30" max="90" placeholder="T-Wert"></div>
+                            <div class="form-group"><label>UA – Unaufmerksamkeit</label><input type="number" id="con-in" min="30" max="90" placeholder="T-Wert"></div>
+                            <div class="form-group"><label>HI – Hyperaktivität/Impulsivität</label><input type="number" id="con-hi" min="30" max="90" placeholder="T-Wert"></div>
+                            <div class="form-group"><label>LP – Lernprobleme</label><input type="number" id="con-lp" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Eltern-/Selbstbogen</span></div>
+                            <div class="form-group"><label>LP/EF – Lernprobl./Exek. Funkt.</label><input type="number" id="con-lpef" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Lehrerbogen (kombiniert)</span></div>
+                            <div class="form-group"><label>EF – Exekutive Funktionen</label><input type="number" id="con-ef" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Eltern-/Lehrerbogen</span></div>
+                            <div class="form-group"><label>AT – Aggressives Verhalten</label><input type="number" id="con-ag" min="30" max="90" placeholder="T-Wert"></div>
+                            <div class="form-group"><label>BG – Beziehungen zu Gleichaltrigen/Familie</label><input type="number" id="con-pr" min="30" max="90" placeholder="T-Wert"></div>
                         </div>
                     </div>
                     <div class="form-section">
-                        <div class="form-section-title">Zusätzliche Skalen (T-Werte) <span class="form-hint">Nur Text wenn auffällig</span></div>
+                        <div class="form-section-title">Screener-Items (SI) – nur Selbsturteil <span class="form-hint">T-Werte</span></div>
                         <div class="form-grid">
-                            <div class="form-group"><label>Ängstlichkeit</label><input type="number" id="con-anx" min="30" max="90" placeholder="T-Wert"></div>
-                            <div class="form-group"><label>Depression</label><input type="number" id="con-dep" min="30" max="90" placeholder="T-Wert"></div>
+                            <div class="form-group"><label>SI-Ä – Ängstlichkeit</label><input type="number" id="con-anx" min="30" max="90" placeholder="T-Wert"></div>
+                            <div class="form-group"><label>SI-D – Depression</label><input type="number" id="con-dep" min="30" max="90" placeholder="T-Wert"></div>
                         </div>
                     </div>
                     <div class="form-section">
-                        <div class="form-section-title">DSM-5-Skalen (T-Werte)</div>
+                        <div class="form-section-title">DSM-5 Symptomskalen (T-Werte)</div>
                         <div class="form-grid">
-                            <div class="form-group"><label>ADHS Unaufmerksam</label><input type="number" id="con-dsm-in" min="30" max="90" placeholder="T-Wert"></div>
-                            <div class="form-group"><label>ADHS Hyperaktiv-Imp.</label><input type="number" id="con-dsm-hi" min="30" max="90" placeholder="T-Wert"></div>
-                            <div class="form-group"><label>Sozialverhalten</label><input type="number" id="con-dsm-cd" min="30" max="90" placeholder="T-Wert"></div>
-                            <div class="form-group"><label>Oppositionell</label><input type="number" id="con-dsm-odd" min="30" max="90" placeholder="T-Wert"></div>
+                            <div class="form-group"><label>DSM-UA – ADHS Unaufmerksam</label><input type="number" id="con-dsm-in" min="30" max="90" placeholder="T-Wert"></div>
+                            <div class="form-group"><label>DSM-HI – ADHS Hyperakt.-Impulsiv</label><input type="number" id="con-dsm-hi" min="30" max="90" placeholder="T-Wert"></div>
+                            <div class="form-group"><label>DSM-K – Kombiniert (UA+HI)</label><input type="number" id="con-dsm-k" min="30" max="90" placeholder="T-Wert"></div>
+                            <div class="form-group"><label>DSM-SV – Störung Sozialverhalten</label><input type="number" id="con-dsm-cd" min="30" max="90" placeholder="T-Wert"></div>
+                            <div class="form-group"><label>DSM-OT – Oppositionelles Trotzverhalten</label><input type="number" id="con-dsm-odd" min="30" max="90" placeholder="T-Wert"></div>
                         </div>
                     </div>
                     <div class="form-section">
-                        <div class="form-section-title">ADHS-Index</div>
+                        <div class="form-section-title">ICD-10 Symptomskalen (T-Werte) <span class="form-hint">Hyperkinetische Störungen F90.x</span></div>
                         <div class="form-grid">
-                            <div class="form-group"><label><strong>Conners ADHS-Index</strong></label><input type="number" id="con-adhd" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Wahrscheinlichkeit ADHS</span></div>
+                            <div class="form-group"><label>ICD-AS – Einfache Aktivitäts-/Aufmerksamkeitsstörung</label><input type="number" id="con-icd-as" min="30" max="90" placeholder="T-Wert"><span class="form-hint">≈ F90.0</span></div>
+                            <div class="form-group"><label>ICD-SV – Störung des Sozialverhaltens</label><input type="number" id="con-icd-sv" min="30" max="90" placeholder="T-Wert"><span class="form-hint">DSM-SV + DSM-OT</span></div>
+                            <div class="form-group"><label>ICD-HKSV – Hyperkin. Störung Sozialverhalten</label><input type="number" id="con-icd-hksv" min="30" max="90" placeholder="T-Wert"><span class="form-hint">≈ F90.1 (ICD-AS + ICD-SV)</span></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Conners 3 Indices (T-Werte)</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label><strong>C3-AI – Conners 3 ADHS-Index</strong></label><input type="number" id="con-adhd" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Wahrscheinlichkeit ADHS</span></div>
+                            <div class="form-group"><label><strong>C3-GI – Conners 3 Global Index</strong></label><input type="number" id="con-gi" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Allgemeine Psychopathologie</span></div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="form-section-title">Kritische Items schwere Störung des Sozialverhaltens (KI) <span class="form-hint">Anzahl mit Rating ≥ 1</span></div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>KI – Kritische Items gesamt</label><input type="number" id="con-ki" min="0" max="7" placeholder="0-7"><span class="form-hint">Items 14,20,26,31,58,65,87</span></div>
                         </div>
                     </div>
                     <div class="btn-group">
@@ -3086,7 +3115,14 @@
             agg: {n:'Aggressives Verhalten', icd:'F91, F63'}
         };
 
-        function cbclClass(v,t) {
+        function cbclClass(v,t,scaleMode) {
+            if(scaleMode==='stanine'){
+                // Stanine (1-9): 1-3 unterdurchschn, 4-6 durchschn, 7 grenz, 8-9 klinisch
+                if(v<=6) return 'normal';
+                if(v===7) return 'borderline';
+                return 'clinical';
+            }
+            // T-Werte
             if(t==='bb') return v<60?'normal':v<64?'borderline':'clinical';
             return v<65?'normal':v<70?'borderline':'clinical';
         }
@@ -3099,7 +3135,12 @@
             e.preventDefault();
             const pat = getPatient();
             const resp = document.querySelector('input[name="cbcl-resp"]:checked').value;
-            const respText = {parent:'Elternurteil (CBCL)',teacher:'Lehrerurteil (TRF)',self:'Selbsturteil (YSR)'}[resp];
+            const scaleMode = document.querySelector('input[name="cbcl-scale"]:checked').value;
+            const respText = {parent:'CBCL/6-18R (Elternurteil)',teacher:'TRF (Lehrerurteil)',self:'YSR/11-18R (Selbsturteil)'}[resp];
+            const scaleText = scaleMode==='stanine' ? 'Stanine (1–9, z-standardisiert)' : 'T-Werte (M=50, SD=10)';
+            const valLabel = scaleMode==='stanine' ? 'Stanine' : 'T';
+            const bbNorm = scaleMode==='stanine' ? 'Stanine 1–6' : 'T < 60';
+            const synNorm = scaleMode==='stanine' ? 'Stanine 1–6' : 'T < 65';
 
             const bb = {int:v('cbcl-int'),ext:v('cbcl-ext'),tot:v('cbcl-tot')};
             const syn = {anx:v('cbcl-anx'),wit:v('cbcl-wit'),som:v('cbcl-som'),soc:v('cbcl-soc'),tho:v('cbcl-tho'),att:v('cbcl-att'),rul:v('cbcl-rul'),agg:v('cbcl-agg')};
@@ -3107,8 +3148,8 @@
             if(Object.values({...bb,...syn}).every(x=>x===null)) return alert('Mindestens ein Wert eingeben');
 
             const cBB = {}, cSyn = {};
-            Object.entries(bb).filter(([k,x])=>x!==null).forEach(([k,x])=>cBB[k]=cbclClass(x,'bb'));
-            Object.entries(syn).filter(([k,x])=>x!==null).forEach(([k,x])=>cSyn[k]=cbclClass(x,'syn'));
+            Object.entries(bb).filter(([k,x])=>x!==null).forEach(([k,x])=>cBB[k]=cbclClass(x,'bb',scaleMode));
+            Object.entries(syn).filter(([k,x])=>x!==null).forEach(([k,x])=>cSyn[k]=cbclClass(x,'syn',scaleMode));
 
             const synLabels = {anx:'Ängstlich',wit:'Rückzug',som:'Somatisch',soc:'Sozial',tho:'Denken',att:'Aufmerks.',rul:'Regeln',agg:'Aggressiv'};
             const bbLabels = {int:'Internalisierend',ext:'Externalisierend',tot:'Gesamtproblemwert'};
@@ -3123,21 +3164,21 @@
 
             if(bb.tot !== null) {
                 if(cBB.tot === 'normal') {
-                    interp = `Der Gesamtproblemwert (T=${bb.tot}) liegt im unauffälligen Bereich. ${pat.name} zeigt aus Sicht des Beurteilers keine bedeutsamen Verhaltensauffälligkeiten.`;
+                    interp = `Der Gesamtproblemwert (${valLabel}=${bb.tot}) liegt im unauffälligen Bereich. ${pat.name} zeigt aus Sicht des Beurteilers keine bedeutsamen Verhaltensauffälligkeiten.`;
                 } else if(cBB.tot === 'borderline') {
-                    interp = `Der Gesamtproblemwert (T=${bb.tot}) liegt im grenzwertigen Bereich und sollte im Verlauf beobachtet werden.`;
+                    interp = `Der Gesamtproblemwert (${valLabel}=${bb.tot}) liegt im grenzwertigen Bereich und sollte im Verlauf beobachtet werden.`;
                 } else {
-                    interp = `Der Gesamtproblemwert (T=${bb.tot}) liegt im klinisch auffälligen Bereich und weist auf eine erhöhte psychische Belastung hin.`;
+                    interp = `Der Gesamtproblemwert (${valLabel}=${bb.tot}) liegt im klinisch auffälligen Bereich und weist auf eine erhöhte psychische Belastung hin.`;
                 }
             }
 
             if(bb.int !== null && bb.ext !== null) {
                 if(cBB.int === 'clinical' && cBB.ext !== 'clinical') {
-                    interp += ` Das Profil zeigt vorwiegend internalisierende Probleme (T=${bb.int}), d.h. nach innen gerichtete Symptome wie Ängste, depressive Symptome oder Rückzugsverhalten.`;
+                    interp += ` Das Profil zeigt vorwiegend internalisierende Probleme (${valLabel}=${bb.int}), d.h. nach innen gerichtete Symptome wie Ängste, depressive Symptome oder Rückzugsverhalten.`;
                 } else if(cBB.ext === 'clinical' && cBB.int !== 'clinical') {
-                    interp += ` Das Profil zeigt vorwiegend externalisierende Probleme (T=${bb.ext}), d.h. nach außen gerichtete Symptome wie aggressives oder regelverletzendes Verhalten.`;
+                    interp += ` Das Profil zeigt vorwiegend externalisierende Probleme (${valLabel}=${bb.ext}), d.h. nach außen gerichtete Symptome wie aggressives oder regelverletzendes Verhalten.`;
                 } else if(cBB.int === 'clinical' && cBB.ext === 'clinical') {
-                    interp += ` Das Profil zeigt sowohl internalisierende (T=${bb.int}) als auch externalisierende Probleme (T=${bb.ext}), was auf eine komplexe Symptomatik hindeutet.`;
+                    interp += ` Das Profil zeigt sowohl internalisierende (${valLabel}=${bb.int}) als auch externalisierende Probleme (${valLabel}=${bb.ext}), was auf eine komplexe Symptomatik hindeutet.`;
                 }
             }
 
@@ -3175,27 +3216,34 @@
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
                         <div class="gutachten-text">
-                            <p>Die Child Behavior Checklist (CBCL; Achenbach & Rescorla, 2001) ist ein international weit verbreitetes Fragebogenverfahren zur Erfassung von Verhaltensauffälligkeiten und emotionalen Problemen bei Kindern und Jugendlichen. Das Verfahren liegt in verschiedenen Versionen vor: CBCL/6-18 (Elternurteil), TRF (Teacher Report Form) und YSR (Youth Self-Report).</p>
-                            <p>Die Ergebnisse werden als T-Werte (M=50, SD=10) dargestellt. Für die übergeordneten Skalen gilt: T&lt;60 = unauffällig, T 60-63 = grenzwertig, T≥64 = klinisch auffällig. Für Syndromskalen: T&lt;65 = unauffällig, T 65-69 = grenzwertig, T≥70 = klinisch auffällig.</p>
+                            <p>Die Child Behavior Checklist (CBCL; Achenbach & Rescorla, 2001; deutsche Fassung: Arbeitsgruppe Deutsche Child Behavior Checklist / Döpfner et al., 2014) ist ein international weit verbreitetes Fragebogenverfahren zur Erfassung von Verhaltensauffälligkeiten und emotionalen Problemen bei Kindern und Jugendlichen. Das Verfahren liegt in drei komplementären Versionen vor, die je eigene alters- und geschlechtsspezifische Normen verwenden:</p>
+                            <ul>
+                                <li><strong>CBCL/6-18R</strong> – Elternfragebogen (6–18 Jahre)</li>
+                                <li><strong>TRF</strong> – Teacher Report Form, Lehrerfragebogen (6–18 Jahre)</li>
+                                <li><strong>YSR/11-18R</strong> – Youth Self-Report, Selbsturteil (11–18 Jahre)</li>
+                            </ul>
+                            <p>Für die vorliegende Auswertung wurden <strong>${scaleText}</strong> verwendet. ${scaleMode==='stanine'
+                                ? 'Stanine-Werte sind z-standardisiert (M=5, SD=2) mit einem Wertebereich von 1 bis 9. Richtwerte: 1–3 unterdurchschnittlich, 4–6 durchschnittlich, 7 grenzwertig, 8–9 klinisch auffällig.'
+                                : 'T-Werte sind standardisiert mit M=50 und SD=10. Für die übergeordneten Skalen (Internalisierend, Externalisierend, Gesamt) gilt: T&lt;60 = unauffällig, T 60–63 = grenzwertig, T≥64 = klinisch auffällig. Für die Syndromskalen: T&lt;65 = unauffällig, T 65–69 = grenzwertig, T≥70 = klinisch auffällig.'}</p>
                             <p><strong>Verwendete Version:</strong> ${respText}</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">2. Testergebnisse</h4>
-                        <p style="font-weight:600;margin-bottom:1rem;">Übergeordnete Skalen</p>
+                        <p style="font-weight:600;margin-bottom:1rem;">Übergeordnete Skalen (Bandbreiten)</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>Skala</th><th>${valLabel}-Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
                             <tbody>
-                                ${validBB.map(([k,x])=>`<tr${k==='tot'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${bbLabels[k]}</td><td>${x}</td><td>T &lt; 60</td><td class="${cBB[k]}">${cbclClassText(cBB[k])}</td></tr>`).join('')}
+                                ${validBB.map(([k,x])=>`<tr${k==='tot'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${bbLabels[k]}</td><td>${x}</td><td>${bbNorm}</td><td class="${cBB[k]}">${cbclClassText(cBB[k])}</td></tr>`).join('')}
                             </tbody>
                         </table>
                         ${validSyn.length ? `
                         <p style="font-weight:600;margin:1.5rem 0 1rem;">Syndromskalen</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>Skala</th><th>${valLabel}-Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
                             <tbody>
-                                ${validSyn.map(([k,x])=>`<tr><td>${CBCL_SYN[k].n}</td><td>${x}</td><td>T &lt; 65</td><td class="${cSyn[k]}">${cbclClassText(cSyn[k])}</td></tr>`).join('')}
+                                ${validSyn.map(([k,x])=>`<tr><td>${CBCL_SYN[k].n}</td><td>${x}</td><td>${synNorm}</td><td class="${cSyn[k]}">${cbclClassText(cSyn[k])}</td></tr>`).join('')}
                             </tbody>
                         </table>` : ''}
                     </div>
@@ -3205,9 +3253,11 @@
                         <h4 class="gutachten-section-title">3. Grafische Darstellung</h4>
                         <div class="chart-container">
                             <div class="chart-title">Syndromskalen-Profil</div>
-                            ${chart(validSyn.map(([k])=>synLabels[k]),validSyn.map(([k,x])=>x),validSyn.map(([k])=>cSyn[k]),90)}
+                            ${chart(validSyn.map(([k])=>synLabels[k]),validSyn.map(([k,x])=>x),validSyn.map(([k])=>cSyn[k]),scaleMode==='stanine'?9:90)}
                             <div style="display:flex;justify-content:center;gap:2rem;margin-top:1rem;font-size:0.75rem;">
-                                <span>T&lt;65: unauffällig</span><span>T 65-69: grenzwertig</span><span>T≥70: klinisch</span>
+                                ${scaleMode==='stanine'
+                                    ? '<span>Stanine 1–6: unauffällig</span><span>Stanine 7: grenzwertig</span><span>Stanine 8–9: klinisch</span>'
+                                    : '<span>T&lt;65: unauffällig</span><span>T 65–69: grenzwertig</span><span>T≥70: klinisch</span>'}
                             </div>
                         </div>
                     </div>` : ''}
@@ -3254,8 +3304,8 @@
                 </div>
             `;
 
-            let html = `<div class="results-header"><h3 class="results-title">Ergebnis CBCL</h3></div>`;
-            html += summary(validBB.map(([k,x])=>({l:bbLabels[k],v:'T '+x,c:cBB[k],s:cbclClassText(cBB[k])})));
+            let html = `<div class="results-header"><h3 class="results-title">Ergebnis ${respText}</h3></div>`;
+            html += summary(validBB.map(([k,x])=>({l:bbLabels[k],v:valLabel+' '+x,c:cBB[k],s:cbclClassText(cBB[k])})));
             html += gutachten;
             html += `<div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
                     <button class="btn btn-primary" onclick="exportTestToWord('cbcl')">📝 Als Word exportieren (.doc)</button>
@@ -3852,37 +3902,54 @@
             const piVal = v('con-pi');
             const niVal = v('con-ni');
 
-            // Conners-Inhaltsskalen
+            // Conners 3 Inhaltsskalen
             const connersScales = {
-                in: {v:v('con-in'), n:'Unaufmerksamkeit'},
-                hi: {v:v('con-hi'), n:'Hyperaktivität/Impulsivität'},
-                lp: {v:v('con-lp'), n:'Lernprobleme'},
-                ef: {v:v('con-ef'), n:'Exekutive Funktionen'},
-                ag: {v:v('con-ag'), n:'Aggression'},
-                pr: {v:v('con-pr'), n:'Peer-Beziehungen'}
+                in: {v:v('con-in'), n:'UA – Unaufmerksamkeit'},
+                hi: {v:v('con-hi'), n:'HI – Hyperaktivität/Impulsivität'},
+                lp: {v:v('con-lp'), n:'LP – Lernprobleme'},
+                lpef: {v:v('con-lpef'), n:'LP/EF – Lernprobleme/Exekutive Funktionen'},
+                ef: {v:v('con-ef'), n:'EF – Exekutive Funktionen'},
+                ag: {v:v('con-ag'), n:'AT – Aggressives Verhalten'},
+                pr: {v:v('con-pr'), n:'BG – Beziehungen zu Gleichaltrigen/Familie'}
             };
 
-            // Zusätzliche Skalen
+            // Screener-Items (SI) - nur Selbsturteil
             const anxVal = v('con-anx');
             const depVal = v('con-dep');
 
-            // DSM-5-Skalen
+            // DSM-5 Symptomskalen
             const dsmScales = {
-                dsm_in: {v:v('con-dsm-in'), n:'ADHS Unaufmerksam'},
-                dsm_hi: {v:v('con-dsm-hi'), n:'ADHS Hyperaktiv-Impulsiv'},
-                dsm_cd: {v:v('con-dsm-cd'), n:'Störung des Sozialverhaltens'},
-                dsm_odd: {v:v('con-dsm-odd'), n:'Oppositionelles Trotzverhalten'}
+                dsm_in: {v:v('con-dsm-in'), n:'DSM-UA – ADHS Unaufmerksam'},
+                dsm_hi: {v:v('con-dsm-hi'), n:'DSM-HI – ADHS Hyperaktiv-Impulsiv'},
+                dsm_k: {v:v('con-dsm-k'), n:'DSM-K – Kombiniert (UA+HI)'},
+                dsm_cd: {v:v('con-dsm-cd'), n:'DSM-SV – Störung des Sozialverhaltens'},
+                dsm_odd: {v:v('con-dsm-odd'), n:'DSM-OT – Oppositionelles Trotzverhalten'}
             };
 
-            const adhdIndex = {adhd: {v:v('con-adhd'), n:'ADHS-Index'}};
+            // ICD-10 Symptomskalen
+            const icdScales = {
+                icd_as: {v:v('con-icd-as'), n:'ICD-AS – Einfache Aktivitäts-/Aufmerksamkeitsstörung (F90.0)'},
+                icd_sv: {v:v('con-icd-sv'), n:'ICD-SV – Störung des Sozialverhaltens'},
+                icd_hksv: {v:v('con-icd-hksv'), n:'ICD-HKSV – Hyperkin. Störung Sozialverhalten (F90.1)'}
+            };
+
+            // Conners 3 Indices
+            const indices = {
+                adhd: {v:v('con-adhd'), n:'C3-AI – Conners 3 ADHS-Index'},
+                gi: {v:v('con-gi'), n:'C3-GI – Conners 3 Global Index'}
+            };
+
+            // Kritische Items (Rohwert-Anzahl)
+            const kiVal = v('con-ki');
 
             // Alle Skalen zusammen für Kompatibilität
-            const scales = {...connersScales, ...dsmScales, ...adhdIndex};
+            const scales = {...connersScales, ...dsmScales, ...icdScales, ...indices};
 
             const validConners = Object.entries(connersScales).filter(([k,x])=>x.v!==null);
             const validDsm = Object.entries(dsmScales).filter(([k,x])=>x.v!==null);
-            const validAdhd = Object.entries(adhdIndex).filter(([k,x])=>x.v!==null);
-            const valid = [...validConners, ...validDsm, ...validAdhd];
+            const validIcd = Object.entries(icdScales).filter(([k,x])=>x.v!==null);
+            const validAdhd = Object.entries(indices).filter(([k,x])=>x.v!==null);
+            const valid = [...validConners, ...validDsm, ...validIcd, ...validAdhd];
             if(!valid.length) return alert('Bitte mindestens einen Wert eingeben');
 
             const c = {};
@@ -3945,15 +4012,37 @@
                             </tbody>
                         </table>
                         ` : ''}
-                        ${validDsm.length || validAdhd.length ? `
-                        <p style="font-weight:bold;margin-top:1rem;">DSM-5-Skalen und ADHS-Index</p>
+                        ${validDsm.length ? `
+                        <p style="font-weight:bold;margin-top:1rem;">DSM-5 Symptomskalen</p>
                         <table class="gutachten-table">
                             <thead><tr><th>Skala</th><th>T-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
                             <tbody>
                                 ${validDsm.map(([k,x])=>`<tr><td>${x.n}</td><td><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td>${cText(x.v)}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                        ` : ''}
+                        ${validIcd.length ? `
+                        <p style="font-weight:bold;margin-top:1rem;">ICD-10 Symptomskalen</p>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
+                                ${validIcd.map(([k,x])=>`<tr><td>${x.n}</td><td><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td>${cText(x.v)}</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                        ` : ''}
+                        ${validAdhd.length ? `
+                        <p style="font-weight:bold;margin-top:1rem;">Conners 3 Indices</p>
+                        <table class="gutachten-table">
+                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <tbody>
                                 ${validAdhd.map(([k,x])=>`<tr style="font-weight:700;"><td>${x.n}</td><td><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td>${cText(x.v)}</td></tr>`).join('')}
                             </tbody>
                         </table>
+                        ` : ''}
+                        ${kiVal !== null && kiVal > 0 ? `
+                        <div class="gutachten-warning" style="margin-top:1rem;">
+                            <strong>Kritische Items (KI):</strong> ${kiVal} von 7 kritischen Items zur schweren Störung des Sozialverhaltens wurden mit ≥1 bewertet (Items 14, 20, 26, 31, 58, 65, 87). ${kiVal >= 2 ? 'Dies weist auf ernsthafte Verhaltensauffälligkeiten hin und sollte klinisch abgeklärt werden.' : 'Eine weitere Exploration wird empfohlen.'}
+                        </div>
                         ` : ''}
                         <div style="margin-top:1rem;font-size:0.9em;color:#4a5568;">
                             <p><strong>Erläuterungen:</strong> T-Werte haben einen Mittelwert von 50 und eine Standardabweichung von 10. T-Werte ≥65 gelten als erhöht (auffällig), ≥70 als stark erhöht (deutlich auffällig). Der Prozentrang gibt an, wie viel Prozent der Gleichaltrigen niedrigere Werte erzielen.</p>
@@ -3962,26 +4051,38 @@
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">3. Interpretation</h4>
                         <div class="gutachten-text">
-                            ${scales.adhd.v ? `<p><strong>ADHS-Index:</strong> Der Conners ADHS-Index von ${scales.adhd.v} deutet auf eine ${adhdProb}e Wahrscheinlichkeit für das Vorliegen einer ADHS hin.</p>` : ''}
-                            ${scales.in.v && c.in !== 'normal' ? `<p><strong>Unaufmerksamkeit:</strong> Der erhöhte Wert (T=${scales.in.v}) weist auf bedeutsame Schwierigkeiten bei der Aufrechterhaltung der Aufmerksamkeit hin.</p>` : ''}
-                            ${scales.hi.v && c.hi !== 'normal' ? `<p><strong>Hyperaktivität/Impulsivität:</strong> Der erhöhte Wert (T=${scales.hi.v}) deutet auf übermäßige motorische Aktivität und/oder impulsives Verhalten hin.</p>` : ''}
-                            ${scales.ef.v && c.ef !== 'normal' ? `<p><strong>Exekutive Funktionen:</strong> Der erhöhte Wert (T=${scales.ef.v}) weist auf Schwierigkeiten bei Planung, Organisation und Selbstregulation hin.</p>` : ''}
-                            ${anxVal !== null && anxVal >= 65 ? `<p><strong>Ängstlichkeit:</strong> Der erhöhte Wert (T=${anxVal}) weist auf relevante Angstsymptome hin, die im Kontext einer ADHS-Abklärung differentialdiagnostisch berücksichtigt werden sollten.</p>` : ''}
-                            ${depVal !== null && depVal >= 65 ? `<p><strong>Depression:</strong> Der erhöhte Wert (T=${depVal}) deutet auf depressive Symptome hin, die komorbid oder differentialdiagnostisch relevant sein können.</p>` : ''}
+                            ${scales.adhd.v ? `<p><strong>C3-AI (ADHS-Index):</strong> Der Conners 3 ADHS-Index von T=${scales.adhd.v} deutet auf eine ${adhdProb}e Wahrscheinlichkeit für das Vorliegen einer ADHS hin.</p>` : ''}
+                            ${scales.gi.v && c.gi !== 'normal' ? `<p><strong>C3-GI (Global Index):</strong> Der Conners 3 Global Index von T=${scales.gi.v} weist auf eine allgemein erhöhte Psychopathologie / Verhaltensauffälligkeiten hin.</p>` : ''}
+                            ${scales.in.v && c.in !== 'normal' ? `<p><strong>UA (Unaufmerksamkeit):</strong> Der erhöhte Wert (T=${scales.in.v}) weist auf bedeutsame Schwierigkeiten bei der Aufrechterhaltung der Aufmerksamkeit hin.</p>` : ''}
+                            ${scales.hi.v && c.hi !== 'normal' ? `<p><strong>HI (Hyperaktivität/Impulsivität):</strong> Der erhöhte Wert (T=${scales.hi.v}) deutet auf übermäßige motorische Aktivität und/oder impulsives Verhalten hin.</p>` : ''}
+                            ${scales.ef.v && c.ef !== 'normal' ? `<p><strong>EF (Exekutive Funktionen):</strong> Der erhöhte Wert (T=${scales.ef.v}) weist auf Schwierigkeiten bei Planung, Organisation und Selbstregulation hin.</p>` : ''}
+                            ${scales.lpef.v && c.lpef !== 'normal' ? `<p><strong>LP/EF (Lernprobleme/Exekutive Funktionen):</strong> Der erhöhte Wert (T=${scales.lpef.v}) weist auf Lern- und exekutive Schwierigkeiten hin (kombinierte Skala des Lehrerbogens).</p>` : ''}
+                            ${scales.lp.v && c.lp !== 'normal' ? `<p><strong>LP (Lernprobleme):</strong> Der erhöhte Wert (T=${scales.lp.v}) weist auf schulische Lernschwierigkeiten hin.</p>` : ''}
+                            ${scales.ag.v && c.ag !== 'normal' ? `<p><strong>AT (Aggressives Verhalten):</strong> Der erhöhte Wert (T=${scales.ag.v}) weist auf erhöhte aggressive Verhaltensweisen hin.</p>` : ''}
+                            ${scales.pr.v && c.pr !== 'normal' ? `<p><strong>BG (Beziehungen):</strong> Der erhöhte Wert (T=${scales.pr.v}) weist auf Schwierigkeiten in Beziehungen zu Gleichaltrigen bzw. zur Familie hin.</p>` : ''}
+                            ${anxVal !== null && anxVal >= 65 ? `<p><strong>SI-Ä (Ängstlichkeit):</strong> Der erhöhte Wert (T=${anxVal}) weist auf relevante Angstsymptome hin, die im Kontext einer ADHS-Abklärung differentialdiagnostisch berücksichtigt werden sollten.</p>` : ''}
+                            ${depVal !== null && depVal >= 65 ? `<p><strong>SI-D (Depression):</strong> Der erhöhte Wert (T=${depVal}) deutet auf depressive Symptome hin, die komorbid oder differentialdiagnostisch relevant sein können.</p>` : ''}
                             ${valid.every(([k])=>c[k]==='normal') && !(anxVal >= 65) && !(depVal >= 65) ? `<p>Das Ergebnisprofil liegt im unauffälligen Bereich. Es ergeben sich keine Hinweise auf eine ADHS oder damit assoziierte Probleme.</p>` : ''}
-                            ${(c.adhd === 'clinical' || (c.in === 'clinical' && c.hi === 'clinical')) ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Die Befunde sprechen für eine hohe Wahrscheinlichkeit einer ADHS. Eine umfassende multimodale Diagnostik wird dringend empfohlen.</div>' : ''}
+                            ${(c.adhd === 'clinical' || c.icd_as === 'clinical' || c.icd_hksv === 'clinical' || (c.in === 'clinical' && c.hi === 'clinical')) ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Die Befunde sprechen für eine hohe Wahrscheinlichkeit einer ADHS. Eine umfassende multimodale Diagnostik wird dringend empfohlen.</div>' : ''}
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Diagnostische Einordnung</h4>
+                        <h4 class="gutachten-section-title">4. Diagnostische Einordnung (ICD-10)</h4>
                         <div class="gutachten-text">
-                            ${(c.adhd === 'clinical' || c.in === 'clinical' || c.hi === 'clinical') ? `
+                            ${c.icd_hksv === 'clinical' ? `
+                            <p>Die ICD-10-orientierten Skalen sind vereinbar mit einer <strong>Hyperkinetischen Störung des Sozialverhaltens</strong>:</p>
+                            <span class="icd-code">F90.1</span> Hyperkinetische Störung des Sozialverhaltens` :
+                            c.icd_as === 'clinical' ? `
+                            <p>Die ICD-10-orientierten Skalen sind vereinbar mit einer <strong>Einfachen Aktivitäts- und Aufmerksamkeitsstörung</strong>:</p>
+                            <span class="icd-code">F90.0</span> Einfache Aktivitäts- und Aufmerksamkeitsstörung` :
+                            (c.adhd === 'clinical' || c.in === 'clinical' || c.hi === 'clinical') ? `
                             <p>Die Ergebnisse sind vereinbar mit dem Vorliegen einer ADHS:</p>
                             <span class="icd-code">F90.0</span> Einfache Aktivitäts- und Aufmerksamkeitsstörung<br>
                             <span class="icd-code">F90.1</span> Hyperkinetische Störung des Sozialverhaltens` :
                             `<p>Es ergeben sich keine eindeutigen Hinweise auf eine ADHS.</p>`}
-                            ${(c.dsm_cd === 'clinical' || c.ag === 'clinical') ? `<br><span class="icd-code">F91.x</span> Störung des Sozialverhaltens` : ''}
+                            ${(c.icd_sv === 'clinical' || c.dsm_cd === 'clinical' || c.ag === 'clinical') ? `<br><span class="icd-code">F91.x</span> Störung des Sozialverhaltens` : ''}
                             ${c.dsm_odd === 'clinical' ? `<br><span class="icd-code">F91.3</span> Störung mit oppositionellem Trotzverhalten` : ''}
+                            ${kiVal !== null && kiVal >= 2 ? `<br><span class="icd-code">F91.1/F91.2</span> Störung des Sozialverhaltens (erwägen – erhöhte Anzahl kritischer Items)` : ''}
                         </div>
                     </div>
                     <div class="gutachten-section">
@@ -4023,7 +4124,7 @@
 
             document.getElementById('conners-results').innerHTML = `
                 <div class="results-header"><h3 class="results-title">Ergebnis Conners-3</h3></div>
-                ${summary(valid.slice(0,6).map(([k,x])=>({l:x.n.split('/')[0].substring(0,10),v:'T '+x.v,c:c[k],s:cText(x.v)})))}
+                ${summary(valid.slice(0,6).map(([k,x])=>({l:x.n.split(' – ')[0],v:'T '+x.v,c:c[k],s:cText(x.v)})))}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
                     <button class="btn btn-primary" onclick="exportTestToWord('conners')">📝 Als Word exportieren (.doc)</button>
