@@ -68,6 +68,25 @@
         [data-theme="dark"] .gutachten-danger strong { color: #fca5a5; }
         [data-theme="dark"] .cdse-notice { background: linear-gradient(135deg, rgba(129,140,248,0.12) 0%, rgba(167,139,250,0.08) 100%); }
 
+        /* Felder, die für den gewählten Beurteiler nicht vorgesehen sind */
+        .form-group.beurteiler-na {
+            opacity: 0.4;
+            position: relative;
+        }
+        .form-group.beurteiler-na input,
+        .form-group.beurteiler-na select { background: var(--bg-card-hover); }
+        .form-group.beurteiler-na::after {
+            content: "nicht in dieser Version";
+            position: absolute;
+            top: 0.4rem;
+            right: 0.6rem;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
         .safety-form-section {
             border: 2px solid #fecaca;
             background: #fef2f2;
@@ -1767,13 +1786,14 @@
                     <div class="form-section">
                         <div class="form-section-title">Conners 3 Inhaltsskalen (T-Werte) <span class="form-hint">T≥65 = auffällig | T≥70 = stark auffällig</span></div>
                         <div class="form-grid">
-                            <div class="form-group"><label>UA – Unaufmerksamkeit</label><input type="number" id="con-in" min="30" max="90" placeholder="T-Wert"></div>
-                            <div class="form-group"><label>HI – Hyperaktivität/Impulsivität</label><input type="number" id="con-hi" min="30" max="90" placeholder="T-Wert"></div>
-                            <div class="form-group"><label>LP – Lernprobleme</label><input type="number" id="con-lp" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Eltern-/Selbstbogen</span></div>
-                            <div class="form-group"><label>LP/EF – Lernprobl./Exek. Funkt.</label><input type="number" id="con-lpef" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Lehrerbogen (kombiniert)</span></div>
-                            <div class="form-group"><label>EF – Exekutive Funktionen</label><input type="number" id="con-ef" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Eltern-/Lehrerbogen</span></div>
-                            <div class="form-group"><label>AT – Aggressives Verhalten</label><input type="number" id="con-ag" min="30" max="90" placeholder="T-Wert"></div>
-                            <div class="form-group"><label>BG – Beziehungen zu Gleichaltrigen/Familie</label><input type="number" id="con-pr" min="30" max="90" placeholder="T-Wert"></div>
+                            <div class="form-group" data-beurteiler="parent teacher self"><label>UA – Unaufmerksamkeit</label><input type="number" id="con-in" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Eltern · Lehrer · Selbst</span></div>
+                            <div class="form-group" data-beurteiler="parent teacher self"><label>HI – Hyperaktivität/Impulsivität</label><input type="number" id="con-hi" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Eltern · Lehrer · Selbst</span></div>
+                            <div class="form-group" data-beurteiler="parent teacher self"><label>LP – Lernprobleme</label><input type="number" id="con-lp" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Eltern · Lehrer · Selbst</span></div>
+                            <div class="form-group" data-beurteiler="teacher"><label>LP/EF – Lernprobl./Exek. Funkt.</label><input type="number" id="con-lpef" min="30" max="90" placeholder="T-Wert"><span class="form-hint">nur Lehrerbogen (kombiniert)</span></div>
+                            <div class="form-group" data-beurteiler="parent teacher"><label>EF – Exekutive Funktionen</label><input type="number" id="con-ef" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Eltern · Lehrer (separat)</span></div>
+                            <div class="form-group" data-beurteiler="parent teacher self"><label>AT – Aggressivität/Trotz</label><input type="number" id="con-ag" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Eltern · Lehrer · Selbst</span></div>
+                            <div class="form-group" data-beurteiler="parent teacher"><label>BG – Beziehungen zu Gleichaltrigen</label><input type="number" id="con-pr" min="30" max="90" placeholder="T-Wert"><span class="form-hint">nur Eltern · Lehrer</span></div>
+                            <div class="form-group" data-beurteiler="self"><label>FB – Familienbeziehungen</label><input type="number" id="con-fb" min="30" max="90" placeholder="T-Wert"><span class="form-hint">nur Selbstbogen (Langversion)</span></div>
                         </div>
                     </div>
                     <div class="form-section">
@@ -2120,6 +2140,22 @@
             try { saved = localStorage.getItem('cdse-theme') || 'light'; } catch(e) {}
             applyTheme(saved);
         })();
+
+        // Conners-3: Inhaltsskalen-Felder je nach Beurteiler markieren (nicht hart entfernt – Werte bleiben erhalten)
+        function updateConnersFields() {
+            const checked = document.querySelector('input[name="conners-resp"]:checked');
+            if(!checked) return;
+            const resp = checked.value;
+            document.querySelectorAll('#conners-form .form-group[data-beurteiler]').forEach(grp => {
+                const allowed = (grp.dataset.beurteiler || '').split(/\s+/);
+                if(allowed.includes(resp)) grp.classList.remove('beurteiler-na');
+                else grp.classList.add('beurteiler-na');
+            });
+        }
+        document.addEventListener('change', e => {
+            if(e.target && e.target.name === 'conners-resp') updateConnersFields();
+        });
+        document.addEventListener('DOMContentLoaded', updateConnersFields);
 
         // CDSE-Nutzungshinweis ausblenden (nur für aktuelle Sitzung via sessionStorage)
         function dismissCdseNotice(){
@@ -4472,8 +4508,9 @@
                 lp: {v:v('con-lp'), n:'LP – Lernprobleme'},
                 lpef: {v:v('con-lpef'), n:'LP/EF – Lernprobleme/Exekutive Funktionen'},
                 ef: {v:v('con-ef'), n:'EF – Exekutive Funktionen'},
-                ag: {v:v('con-ag'), n:'AT – Aggressives Verhalten'},
-                pr: {v:v('con-pr'), n:'BG – Beziehungen zu Gleichaltrigen/Familie'}
+                ag: {v:v('con-ag'), n:'AT – Aggressivität/Trotz'},
+                pr: {v:v('con-pr'), n:'BG – Beziehungen zu Gleichaltrigen'},
+                fb: {v:v('con-fb'), n:'FB – Familienbeziehungen'}
             };
 
             // Screener-Items (SI) - nur Selbsturteil
@@ -4657,8 +4694,9 @@
                             ${scales.ef.v && c.ef !== 'normal' ? `<p><strong>EF (Exekutive Funktionen):</strong> Der erhöhte Wert (T=${scales.ef.v}) weist auf Schwierigkeiten bei Planung, Organisation und Selbstregulation hin.</p>` : ''}
                             ${scales.lpef.v && c.lpef !== 'normal' ? `<p><strong>LP/EF (Lernprobleme/Exekutive Funktionen):</strong> Der erhöhte Wert (T=${scales.lpef.v}) weist auf Lern- und exekutive Schwierigkeiten hin (kombinierte Skala des Lehrerbogens).</p>` : ''}
                             ${scales.lp.v && c.lp !== 'normal' ? `<p><strong>LP (Lernprobleme):</strong> Der erhöhte Wert (T=${scales.lp.v}) weist auf schulische Lernschwierigkeiten hin.</p>` : ''}
-                            ${scales.ag.v && c.ag !== 'normal' ? `<p><strong>AT (Aggressives Verhalten):</strong> Der erhöhte Wert (T=${scales.ag.v}) weist auf erhöhte aggressive Verhaltensweisen hin.</p>` : ''}
-                            ${scales.pr.v && c.pr !== 'normal' ? `<p><strong>BG (Beziehungen):</strong> Der erhöhte Wert (T=${scales.pr.v}) weist auf Schwierigkeiten in Beziehungen zu Gleichaltrigen bzw. zur Familie hin.</p>` : ''}
+                            ${scales.pr.v && c.pr !== 'normal' ? `<p><strong>BG (Beziehungen zu Gleichaltrigen):</strong> Der erhöhte Wert (T=${scales.pr.v}) weist auf Schwierigkeiten im Umgang mit Gleichaltrigen hin.</p>` : ''}
+                            ${scales.fb.v && c.fb !== 'normal' ? `<p><strong>FB (Familienbeziehungen):</strong> Der erhöhte Wert (T=${scales.fb.v}) weist auf Belastungen in den familiären Beziehungen hin (aus Selbstsicht).</p>` : ''}
+                            ${scales.ag.v && c.ag !== 'normal' ? `<p><strong>AT (Aggressivität/Trotz):</strong> Der erhöhte Wert (T=${scales.ag.v}) weist auf erhöhte aggressive und/oder oppositionelle Verhaltensweisen hin.</p>` : ''}
                             ${anxVal !== null && anxVal >= 65 ? `<p><strong>SI-Ä (Ängstlichkeit):</strong> Der erhöhte Wert (T=${anxVal}) weist auf relevante Angstsymptome hin, die im Kontext einer ADHS-Abklärung differentialdiagnostisch berücksichtigt werden sollten.</p>` : ''}
                             ${depVal !== null && depVal >= 65 ? `<p><strong>SI-D (Depression):</strong> Der erhöhte Wert (T=${depVal}) deutet auf depressive Symptome hin, die komorbid oder differentialdiagnostisch relevant sein können.</p>` : ''}
                             ${valid.every(([k])=>c[k]==='normal') && !(anxVal >= 65) && !(depVal >= 65) ? `<p>Das Ergebnisprofil liegt im unauffälligen Bereich. Es ergeben sich keine Hinweise auf eine ADHS oder damit assoziierte Probleme.</p>` : ''}
