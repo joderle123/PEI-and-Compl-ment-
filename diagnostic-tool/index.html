@@ -87,6 +87,23 @@
             font-weight: 600;
         }
 
+        .calc-helper {
+            background: linear-gradient(135deg, rgba(99,102,241,0.05) 0%, rgba(139,92,246,0.04) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.85rem 1.1rem !important;
+        }
+        .calc-helper > summary {
+            margin: 0 !important;
+            padding: 0.25rem 0;
+        }
+        .calc-helper[open] > summary {
+            margin-bottom: 0.5rem !important;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+        .calc-helper > summary::marker { color: var(--primary); }
+
         .safety-form-section {
             border: 2px solid #fecaca;
             background: #fef2f2;
@@ -1766,6 +1783,51 @@
                             <div class="radio-btn"><input type="radio" name="conners-resp" id="conners-self" value="self"><label for="conners-self">Selbst</label></div>
                         </div>
                     </div>
+
+                    <details class="form-section calc-helper">
+                        <summary class="form-section-title" style="cursor:pointer;list-style:revert;">🧮 Rechen-Helfer (optional) <span class="form-hint">Manual-konforme Hilfsrechnungen für Rohwerte – T-Werte werden weiterhin aus der Normtabelle des Manuals abgelesen</span></summary>
+
+                        <div style="margin-top:1rem;">
+                            <div class="form-section-title" style="font-size:0.88rem;margin-bottom:0.5rem;">A · Korrigierter Rohwert (bei fehlenden Items)</div>
+                            <p class="form-hint" style="margin-bottom:0.6rem;">Formel laut Manual: <em>korrigierter Rohwert = Skalen-Rohwert × Gesamtzahl Items ÷ Anzahl beantworteter Items</em>. Maximal erlaubte fehlende Items: UA 1, HI 2, LP 1, EF 1, AT 2, BG 1, FB 1, DSM-UA 1, DSM-HI 2, DSM-K 3, DSM-SV 2, DSM-OT 1, ICD-AS 2, ICD-SV 2, ICD-HKSV 4, C3-AI 1, C3-GI 1.</p>
+                            <div class="form-grid">
+                                <div class="form-group"><label>Rohwert (Summe der beantworteten Items)</label><input type="number" id="calc-raw" min="0" step="1" placeholder="z.B. 16"></div>
+                                <div class="form-group"><label>Gesamtzahl Items der Skala</label><input type="number" id="calc-total" min="1" step="1" placeholder="z.B. 10"></div>
+                                <div class="form-group"><label>Anzahl fehlender Items</label><input type="number" id="calc-missing" min="0" step="1" placeholder="0" value="0"></div>
+                                <div class="form-group" style="background:var(--bg-input);border-radius:10px;padding:0.6rem 0.8rem;">
+                                    <label style="margin-bottom:0.3rem;">→ Korrigierter Rohwert</label>
+                                    <div id="calc-result" style="font-size:1.4rem;font-weight:700;color:var(--primary);">–</div>
+                                    <span class="form-hint" id="calc-result-note">Diesen Wert in der Conners-3-Normtabelle nachschlagen, um den T-Wert zu erhalten.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:1.5rem;">
+                            <div class="form-section-title" style="font-size:0.88rem;margin-bottom:0.5rem;">B · Zusammengesetzte Rohwerte</div>
+                            <p class="form-hint" style="margin-bottom:0.6rem;">Aggregations-Skalen sind <em>Summen</em> ihrer Rohwerte. Achtung: T-Werte addieren sich <strong>nicht</strong> – die Summe wird hier nur auf Rohwert-Ebene gebildet; den T-Wert für die Summen-Skala separat in der Normtabelle nachschlagen.</p>
+                            <div class="form-grid">
+                                <div class="form-group"><label>DSM-UA Rohwert</label><input type="number" id="calc-dsm-ua" min="0" step="1"></div>
+                                <div class="form-group"><label>DSM-HI Rohwert</label><input type="number" id="calc-dsm-hi" min="0" step="1"></div>
+                                <div class="form-group" style="background:var(--bg-input);border-radius:10px;padding:0.6rem 0.8rem;">
+                                    <label style="margin-bottom:0.3rem;">→ DSM-K Rohwert</label>
+                                    <div id="calc-dsm-k" style="font-size:1.2rem;font-weight:700;color:var(--primary);">–</div>
+                                </div>
+                                <div class="form-group"><label>DSM-SV Rohwert</label><input type="number" id="calc-dsm-sv" min="0" step="1"></div>
+                                <div class="form-group"><label>DSM-OT Rohwert</label><input type="number" id="calc-dsm-ot" min="0" step="1"></div>
+                                <div class="form-group" style="background:var(--bg-input);border-radius:10px;padding:0.6rem 0.8rem;">
+                                    <label style="margin-bottom:0.3rem;">→ ICD-SV Rohwert</label>
+                                    <div id="calc-icd-sv" style="font-size:1.2rem;font-weight:700;color:var(--primary);">–</div>
+                                </div>
+                                <div class="form-group"><label>ICD-AS Rohwert</label><input type="number" id="calc-icd-as" min="0" step="1"></div>
+                                <div class="form-group" style="background:var(--bg-input);border-radius:10px;padding:0.6rem 0.8rem;grid-column:span 2;">
+                                    <label style="margin-bottom:0.3rem;">→ ICD-HKSV Rohwert</label>
+                                    <div id="calc-icd-hksv" style="font-size:1.2rem;font-weight:700;color:var(--primary);">–</div>
+                                    <span class="form-hint">= ICD-AS + ICD-SV (= DSM-SV + DSM-OT + ICD-AS)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
                     <div class="form-section">
                         <div class="form-section-title">1. Analyse des Antwortstils – Validitätsskalen</div>
                         <p class="form-hint" style="margin-bottom:0.75rem;">Inkonsistenz-Index (II) sowie Positiver (PE) und Negativer Eindruck (NE) werden gemäß Conners-3-Manual separat ausgewertet.</p>
@@ -2140,6 +2202,61 @@
             try { saved = localStorage.getItem('cdse-theme') || 'light'; } catch(e) {}
             applyTheme(saved);
         })();
+
+        // Conners-3: Rechen-Helfer (Rohwert-Korrektur + Skalen-Summen)
+        function updateConnersCalc() {
+            const num = id => {
+                const el = document.getElementById(id);
+                if(!el || el.value === '') return null;
+                const n = parseFloat(el.value);
+                return Number.isFinite(n) ? n : null;
+            };
+            const setText = (id, txt) => {
+                const el = document.getElementById(id);
+                if(el) el.textContent = txt;
+            };
+
+            // A · Korrigierter Rohwert
+            const raw = num('calc-raw'), total = num('calc-total'), missing = num('calc-missing') ?? 0;
+            const resultEl = document.getElementById('calc-result');
+            const noteEl = document.getElementById('calc-result-note');
+            if(raw !== null && total !== null && total > 0) {
+                const answered = total - missing;
+                if(answered <= 0) {
+                    setText('calc-result', '⚠');
+                    if(noteEl) noteEl.textContent = 'Anzahl beantworteter Items muss ≥ 1 sein.';
+                    if(resultEl) resultEl.style.color = 'var(--danger)';
+                } else {
+                    const corrected = raw * total / answered;
+                    const rounded = Math.round(corrected);
+                    setText('calc-result', missing > 0 ? `${rounded} (${corrected.toFixed(2)})` : `${raw}`);
+                    if(noteEl) {
+                        noteEl.textContent = missing > 0
+                            ? `Korrigierter Rohwert: ${raw} × ${total} ÷ ${answered} = ${corrected.toFixed(2)} (gerundet ${rounded}). Diesen Wert in der Normtabelle nachschlagen.`
+                            : 'Keine Korrektur nötig (keine fehlenden Items). Rohwert direkt in der Normtabelle nachschlagen.';
+                    }
+                    if(resultEl) resultEl.style.color = 'var(--primary)';
+                }
+            } else {
+                setText('calc-result', '–');
+                if(noteEl) noteEl.textContent = 'Diesen Wert in der Conners-3-Normtabelle nachschlagen, um den T-Wert zu erhalten.';
+                if(resultEl) resultEl.style.color = 'var(--primary)';
+            }
+
+            // B · Zusammengesetzte Rohwerte
+            const dsmUa = num('calc-dsm-ua'), dsmHi = num('calc-dsm-hi');
+            const dsmSv = num('calc-dsm-sv'), dsmOt = num('calc-dsm-ot');
+            const icdAs = num('calc-icd-as');
+            const dsmK = (dsmUa !== null && dsmHi !== null) ? dsmUa + dsmHi : null;
+            const icdSv = (dsmSv !== null && dsmOt !== null) ? dsmSv + dsmOt : null;
+            const icdHksv = (icdAs !== null && icdSv !== null) ? icdAs + icdSv : null;
+            setText('calc-dsm-k', dsmK !== null ? String(dsmK) : '–');
+            setText('calc-icd-sv', icdSv !== null ? String(icdSv) : '–');
+            setText('calc-icd-hksv', icdHksv !== null ? String(icdHksv) : '–');
+        }
+        document.addEventListener('input', e => {
+            if(e.target && typeof e.target.id === 'string' && e.target.id.startsWith('calc-')) updateConnersCalc();
+        });
 
         // Conners-3: Inhaltsskalen-Felder je nach Beurteiler markieren (nicht hart entfernt – Werte bleiben erhalten)
         function updateConnersFields() {
