@@ -2243,7 +2243,7 @@
             agreement_moderate:   {de:'Unterschiedlich', fr:'Différent', en:'Different'},
             agreement_agree:      {de:'Übereinstimmend', fr:'Concordant', en:'Concordant'},
             // Hint about partial translation
-            partial_translation:  {de:'', fr:'Note : les en-têtes et la structure sont traduits en français ; les paragraphes d\'interprétation détaillés restent actuellement en allemand.', en:'Note: headers and structure are translated to English; detailed interpretation paragraphs remain in German for now.'}
+            partial_translation:  {de:'', fr:'Note : la structure et les principales formulations d\'interprétation (SDQ, Conners-3, CBCL) sont traduites en français ; certains paragraphes spécifiques aux autres tests peuvent encore apparaître en allemand. La traduction complète des autres tests est en cours.', en:'Note: structural elements and the main interpretation building blocks (SDQ, Conners-3, CBCL) are translated to English; some test-specific paragraphs may still appear in German. Full translation of the remaining tests is in progress.'}
         };
         function t(key) {
             const e = I18N[key];
@@ -2254,6 +2254,11 @@
             if(!['de','fr','en'].includes(lang)) lang = 'de';
             LANG = lang;
             try { localStorage.setItem('cdse-report-lang', lang); } catch(e) {}
+            // Bereits sichtbare Befunde neu lokalisieren
+            document.querySelectorAll('.results.show').forEach(el => {
+                const orig = el.dataset.htmlDe;
+                if(orig) el.innerHTML = localize(orig);
+            });
         }
         (function initReportLang(){
             try {
@@ -2265,6 +2270,336 @@
                 if(sel) sel.value = LANG;
             });
         })();
+
+        // Lokalisierungs-Wörterbücher: Reihenfolge ist wichtig (längere Phrasen zuerst).
+        // Jeder Eintrag ist [regex, fr, en]. Die deutschen Originale werden dann ersetzt.
+        // Spezifische test-Übersetzungen werden später angehängt.
+        const LOCALIZE_RULES = [];
+
+        function addLocalizeRules(rules) {
+            // rules: Array von Objekten {de: string|RegExp, fr: string, en: string}
+            rules.forEach(r => {
+                const re = r.de instanceof RegExp ? r.de : new RegExp(escapeRegExp(r.de), 'g');
+                LOCALIZE_RULES.push({re, fr:r.fr, en:r.en});
+            });
+        }
+        function escapeRegExp(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+        function localize(html) {
+            if(LANG === 'de') return html;
+            let out = html;
+            for(const r of LOCALIZE_RULES) {
+                const repl = r[LANG];
+                if(repl !== undefined && repl !== null) {
+                    out = out.replace(r.re, repl);
+                }
+            }
+            return out;
+        }
+
+        // Wrapper: setzt innerHTML, speichert Original-DE für späteren Sprachwechsel und lokalisiert
+        function setLocalizedHTML(elementId, htmlDe) {
+            const el = document.getElementById(elementId);
+            if(!el) return;
+            el.dataset.htmlDe = htmlDe;
+            el.innerHTML = localize(htmlDe);
+        }
+
+        // Wird am Ende jeder evaluate*-Funktion aufgerufen.
+        // Liest das bereits gesetzte innerHTML (Deutsch), cached es als data-html-de
+        // und ersetzt es bei FR/EN durch die lokalisierte Version.
+        function showLocalizedResults(elementId) {
+            const el = document.getElementById(elementId);
+            if(!el) return;
+            const htmlDe = el.innerHTML;
+            el.dataset.htmlDe = htmlDe;
+            if(LANG !== 'de') el.innerHTML = localize(htmlDe);
+            el.classList.add('show');
+        }
+
+        // ─── Globale Strukturteile (alle Tests) ──────────────────────────────
+        addLocalizeRules([
+            // Section-Titel (mit Nummer beibehalten via $1)
+            {de: /(\d+)\. Testbeschreibung\b/g,                            fr: '$1. Description du test',                            en: '$1. Test description'},
+            {de: /(\d+)\. Testergebnisse pro Beurteiler\b/g,               fr: '$1. Résultats par évaluateur',                       en: '$1. Results per rater'},
+            {de: /(\d+)\. Testergebnisse\b/g,                              fr: '$1. Résultats du test',                              en: '$1. Test results'},
+            {de: /(\d+)\. Quantitative Testergebnisse\b/g,                 fr: '$1. Résultats quantitatifs',                         en: '$1. Quantitative results'},
+            {de: /(\d+)\. Cross-Informant-Vergleich\b/g,                   fr: '$1. Comparaison inter-informateurs',                 en: '$1. Cross-informant comparison'},
+            {de: /(\d+)\. Grafische Darstellung des Ergebnisprofils\b/g,   fr: '$1. Représentation graphique du profil',             en: '$1. Graphical profile representation'},
+            {de: /(\d+)\. Grafische Darstellung\b/g,                       fr: '$1. Représentation graphique',                       en: '$1. Graphical representation'},
+            {de: /(\d+)\. Interpretation der Ergebnisse\b/g,               fr: '$1. Interprétation des résultats',                   en: '$1. Interpretation of results'},
+            {de: /(\d+)\. Interpretation\b/g,                              fr: '$1. Interprétation',                                 en: '$1. Interpretation'},
+            {de: /(\d+)\. Diagnostische Einordnung nach ICD-10\/ICD-11\b/g, fr: '$1. Classification diagnostique selon CIM-10/CIM-11', en: '$1. Diagnostic classification per ICD-10/ICD-11'},
+            {de: /(\d+)\. Diagnostische Einordnung \(ICD-10\)\b/g,         fr: '$1. Classification diagnostique (CIM-10)',           en: '$1. Diagnostic classification (ICD-10)'},
+            {de: /(\d+)\. Diagnostische Einordnung\b/g,                    fr: '$1. Classification diagnostique',                    en: '$1. Diagnostic classification'},
+            {de: /(\d+)\. Differenzialdiagnostische Überlegungen\b/g,      fr: '$1. Considérations différentielles',                 en: '$1. Differential considerations'},
+            {de: /(\d+)\. Empfehlungen\b/g,                                fr: '$1. Recommandations',                                en: '$1. Recommendations'},
+            {de: /(\d+)\. Untersuchungsanlass und Fragestellung\b/g,       fr: '$1. Motif d\'examen et question diagnostique',       en: '$1. Reason for examination and clinical question'},
+            {de: /(\d+)\. Beschreibung des Testverfahrens\b/g,             fr: '$1. Description du test',                            en: '$1. Test description'},
+            {de: /(\d+)\. Verhaltensbeobachtung während der Testdurchführung\b/g, fr: '$1. Observation comportementale pendant le test', en: '$1. Behavioural observation during testing'},
+            {de: /(\d+)\. Zusammenfassung\b/g,                             fr: '$1. Synthèse',                                       en: '$1. Summary'},
+            // Spalten-Header
+            {de: /<th>Skala<\/th>/g,                fr: '<th>Échelle</th>',           en: '<th>Scale</th>'},
+            {de: /<th>Wert<\/th>/g,                 fr: '<th>Valeur</th>',            en: '<th>Value</th>'},
+            {de: /<th>Rohwert<\/th>/g,              fr: '<th>Score brut</th>',        en: '<th>Raw score</th>'},
+            {de: /<th>T-Wert<\/th>/g,               fr: '<th>Score T</th>',           en: '<th>T-score</th>'},
+            {de: /<th>Stanine<\/th>/g,              fr: '<th>Stanine</th>',           en: '<th>Stanine</th>'},
+            {de: /<th>Prozentrang<\/th>/g,          fr: '<th>Rang centile</th>',      en: '<th>Percentile rank</th>'},
+            {de: /<th>IQ-Wert<\/th>/g,              fr: '<th>QI</th>',                en: '<th>IQ</th>'},
+            {de: /<th>Wertpunkt<\/th>/g,            fr: '<th>Note pondérée</th>',     en: '<th>Scaled score</th>'},
+            {de: /<th>Kennwert<\/th>/g,             fr: '<th>Indicateur</th>',        en: '<th>Indicator</th>'},
+            {de: /<th>Normbereich<\/th>/g,          fr: '<th>Plage normale</th>',     en: '<th>Normal range</th>'},
+            {de: /<th>Klassifikation<\/th>/g,       fr: '<th>Classification</th>',    en: '<th>Classification</th>'},
+            {de: /<th>Bedeutung<\/th>/g,            fr: '<th>Signification</th>',     en: '<th>Meaning</th>'},
+            {de: /<th>Unauffällig<\/th>/g,          fr: '<th>Normal</th>',            en: '<th>Normal</th>'},
+            {de: /<th>Grenzwertig<\/th>/g,          fr: '<th>Limite</th>',            en: '<th>Borderline</th>'},
+            {de: /<th>Auffällig<\/th>/g,            fr: '<th>Cliniquement signif.</th>', en: '<th>Clinically signif.</th>'},
+            {de: /<th>Übereinstimmung<\/th>/g,      fr: '<th>Concordance</th>',       en: '<th>Agreement</th>'},
+            {de: /<th>Skala<\/th><th style="text-align:center;">/g, fr: '<th>Échelle</th><th style="text-align:center;">', en: '<th>Scale</th><th style="text-align:center;">'},
+            // Statuslabels in Tabellenzellen
+            {de: /<strong>Unauffällig<\/strong>/g,     fr: '<strong>Normal</strong>',           en: '<strong>Normal</strong>'},
+            {de: /<strong>Grenzwertig<\/strong>/g,     fr: '<strong>Limite</strong>',           en: '<strong>Borderline</strong>'},
+            {de: /<strong>Klinisch auffällig<\/strong>/g, fr: '<strong>Cliniquement significatif</strong>', en: '<strong>Clinically significant</strong>'},
+            // Häufige Warn-Präfixe
+            {de: /<strong>Wichtig:<\/strong>/g,                fr: '<strong>Important :</strong>',                  en: '<strong>Important:</strong>'},
+            {de: /<strong>Hinweis:<\/strong>/g,                fr: '<strong>Remarque :</strong>',                   en: '<strong>Note:</strong>'},
+            {de: /<strong>Achtung:<\/strong>/g,                fr: '<strong>Attention :</strong>',                  en: '<strong>Caution:</strong>'},
+            {de: /<strong>Klinische Relevanz:<\/strong>/g,     fr: '<strong>Pertinence clinique :</strong>',        en: '<strong>Clinical relevance:</strong>'},
+            {de: /<strong>Erläuterungen:<\/strong>/g,          fr: '<strong>Explications :</strong>',               en: '<strong>Explanations:</strong>'},
+            // Multi-Rater
+            {de: /Cross-Informant-Vergleich/g,                  fr: 'Comparaison inter-informateurs',                  en: 'Cross-informant comparison'},
+            {de: />Diskrepant</g,                               fr: '>Discordant<',                                    en: '>Discordant<'},
+            {de: />Unterschiedlich</g,                          fr: '>Différent<',                                     en: '>Different<'},
+            {de: />Übereinstimmend</g,                          fr: '>Concordant<',                                    en: '>Concordant<'},
+            {de: /Eingesetzte Version\(en\):/g,                 fr: 'Version(s) utilisée(s) :',                        en: 'Used version(s):'},
+            {de: /Übergeordnete Skalen \(Bandbreiten\)/g,       fr: 'Échelles globales (bandes)',                      en: 'Higher-order scales (bands)'},
+            {de: /Übergeordnete Skalen/g,                       fr: 'Échelles globales',                               en: 'Higher-order scales'},
+            {de: /Syndromskalen/g,                              fr: 'Échelles syndromiques',                           en: 'Syndrome scales'},
+            // Empfehlungs-Bullets (häufig wiederverwendet)
+            {de: /Klinisch-psychologische\/kinder- und jugendpsychiatrische Diagnostik empfohlen/g,
+             fr: 'Diagnostic clinique-psychologique / pédopsychiatrique recommandé',
+             en: 'Clinical psychological / child & adolescent psychiatric assessment recommended'},
+            {de: /Multiinformanten-Ansatz: Einbezug von Eltern, Lehrkräften und Selbsturteil/g,
+             fr: 'Approche multi-informateurs : intégration des parents, des enseignant·e·s et de l\'auto-évaluation',
+             en: 'Multi-informant approach: include parents, teachers and self-report'},
+            {de: /Verlaufsbeobachtung empfohlen/g,
+             fr: 'Suivi longitudinal recommandé',
+             en: 'Follow-up monitoring recommended'},
+            {de: /Bei Persistenz der Symptomatik vertiefte Diagnostik/g,
+             fr: 'En cas de persistance des symptômes, diagnostic approfondi',
+             en: 'If symptoms persist, conduct in-depth diagnostic assessment'},
+            {de: /Keine unmittelbare Intervention erforderlich/g,
+             fr: 'Aucune intervention immédiate nécessaire',
+             en: 'No immediate intervention required'},
+            {de: /Ggf\. Verlaufskontrolle bei Veränderungen/g,
+             fr: 'Réévaluation au besoin en cas de changements',
+             en: 'Re-assessment if changes occur'},
+            {de: /ADHS-spezifische Diagnostik \(z\.B\. DISYPS-III, Conners\)/g,
+             fr: 'Diagnostic spécifique au TDAH (p. ex. DISYPS-III, Conners)',
+             en: 'ADHD-specific diagnostics (e.g. DISYPS-III, Conners)'},
+            {de: /Exploration depressiver\/ängstlicher Symptomatik/g,
+             fr: 'Exploration des symptômes dépressifs / anxieux',
+             en: 'Exploration of depressive / anxiety symptoms'},
+            {de: /Abklärung von Störungen des Sozialverhaltens/g,
+             fr: 'Clarification des troubles du comportement social',
+             en: 'Clarification of conduct / oppositional disorders'},
+            {de: /Pädiatrische Abklärung zum Ausschluss organischer Ursachen/g,
+             fr: 'Bilan pédiatrique pour exclure des causes organiques',
+             en: 'Paediatric work-up to rule out organic causes'},
+            // Footer & Disclaimer (häufige Bausteine)
+            {de: /Wichtige Hinweise/g,                                fr: 'Remarques importantes',                                  en: 'Important notes'},
+            {de: /<strong>Gültigkeit:<\/strong>/g,                    fr: '<strong>Validité :</strong>',                            en: '<strong>Validity:</strong>'},
+            {de: /<strong>Vertraulichkeit:<\/strong>/g,               fr: '<strong>Confidentialité :</strong>',                     en: '<strong>Confidentiality:</strong>'},
+            // Häufige Wörter im Fließtext
+            {de: /\bunauffälligen Bereich\b/g,                        fr: 'plage normale',                                          en: 'normal range'},
+            {de: /\bgrenzwertigen Bereich\b/g,                        fr: 'plage limite',                                           en: 'borderline range'},
+            {de: /\bklinisch auffälligen Bereich\b/g,                 fr: 'plage cliniquement significative',                       en: 'clinically significant range'},
+            {de: /\b(Der|Die|Das)\s+erhöhte Wert\b/g,                 fr: 'La valeur élevée',                                       en: 'The elevated value'},
+            {de: /\bweist auf\b/g,                                    fr: 'indique',                                                en: 'indicates'},
+            {de: /\bdeutet auf\b/g,                                   fr: 'suggère',                                                en: 'suggests'},
+            {de: /\bhin\.\s/g,                                        fr: '. ',                                                     en: '. '},
+            {de: /\bDie Ergebnisse\b/g,                               fr: 'Les résultats',                                          en: 'The results'},
+            {de: /\bzeigen\b/g,                                       fr: 'montrent',                                               en: 'show'},
+            {de: /\bkeine bedeutsamen\b/g,                            fr: 'aucun',                                                  en: 'no significant'},
+            {de: /\bVerhaltensauffälligkeiten\b/g,                    fr: 'troubles du comportement',                               en: 'behavioural difficulties'},
+            {de: /\bder Beurteiler\b/g,                               fr: 'l\'évaluateur',                                          en: 'the rater'},
+            {de: /\baus Sicht\b/g,                                    fr: 'du point de vue',                                        en: 'from the perspective'},
+            // (Beurteiler, normaler/unauffälliger Bereich werden in Tests-spezifischen Regeln erweitert)
+        ]);
+
+        // ─── Bausteine für Interpretationssätze (alle Tests) ──────────────────
+        addLocalizeRules([
+            // Wertebezug + Bereich (lange Form gewinnt zuerst)
+            {de: /Mit einem Wert von (\d+) Punkten liegt ([^.<]+?) im unauffälligen Bereich/g,
+             fr: 'Avec un score de $1 points, $2 se situe dans la plage normale',
+             en: 'With a score of $1 points, $2 falls within the normal range'},
+            {de: /Mit einem Wert von (\d+) Punkten liegt ([^.<]+?) im grenzwertigen Bereich/g,
+             fr: 'Avec un score de $1 points, $2 se situe dans la plage limite',
+             en: 'With a score of $1 points, $2 falls within the borderline range'},
+            {de: /Mit einem Wert von (\d+) Punkten liegt ([^.<]+?) im klinisch auffälligen Bereich/g,
+             fr: 'Avec un score de $1 points, $2 se situe dans la plage cliniquement significative',
+             en: 'With a score of $1 points, $2 falls within the clinically significant range'},
+            {de: /Mit einem Wert von (\d+) Punkten zeigt ([^.<]+?) ein unauffälliges Verhalten/g,
+             fr: 'Avec un score de $1 points, $2 présente un comportement normal',
+             en: 'With a score of $1 points, $2 shows unremarkable behaviour'},
+            {de: /Mit einem Wert von (\d+) Punkten zeigt ([^.<]+?) unauffällige Peer-Beziehungen/g,
+             fr: 'Avec un score de $1 points, $2 présente des relations entre pairs normales',
+             en: 'With a score of $1 points, $2 shows unremarkable peer relations'},
+            {de: /Mit einem Wert von (\d+) Punkten zeigt ([^.<]+?) ein ausgeprägtes prosoziales Verhalten/g,
+             fr: 'Avec un score de $1 points, $2 manifeste un comportement prosocial marqué',
+             en: 'With a score of $1 points, $2 shows pronounced prosocial behaviour'},
+            {de: /Mit einem Wert von (\d+) Punkten liegt ([^.<]+?) im auffällig niedrigen Bereich/g,
+             fr: 'Avec un score de $1 points, $2 se situe dans la plage anormalement basse',
+             en: 'With a score of $1 points, $2 falls within an abnormally low range'},
+            // Skalen-Beschreibungen SDQ
+            {de: /Die Skala "Emotionale Probleme" erfasst Symptome wie Sorgen, Ängste, Niedergeschlagenheit und körperliche Beschwerden in Stresssituationen\./g,
+             fr: 'L\'échelle « Problèmes émotionnels » évalue les symptômes tels que les inquiétudes, l\'anxiété, la tristesse et les plaintes somatiques en situation de stress.',
+             en: 'The "Emotional Problems" scale assesses symptoms such as worries, anxiety, low mood and somatic complaints in stressful situations.'},
+            {de: /Die Skala "Verhaltensprobleme" erfasst oppositionelles, aggressives und regelverletzendes Verhalten\./g,
+             fr: 'L\'échelle « Problèmes de conduite » évalue les comportements oppositionnels, agressifs et transgressifs.',
+             en: 'The "Conduct Problems" scale assesses oppositional, aggressive and rule-breaking behaviour.'},
+            {de: /Die Skala "Hyperaktivität\/Unaufmerksamkeit" erfasst motorische Unruhe, Impulsivität und Konzentrationsschwierigkeiten\./g,
+             fr: 'L\'échelle « Hyperactivité/Inattention » évalue l\'agitation motrice, l\'impulsivité et les difficultés de concentration.',
+             en: 'The "Hyperactivity/Inattention" scale assesses motor restlessness, impulsivity and concentration difficulties.'},
+            {de: /Die Skala "Probleme mit Gleichaltrigen" erfasst die Qualität der Peer-Beziehungen, soziale Isolation und Viktimisierungserfahrungen\./g,
+             fr: 'L\'échelle « Problèmes avec les pairs » évalue la qualité des relations entre pairs, l\'isolement social et les expériences de victimisation.',
+             en: 'The "Peer Problems" scale assesses peer-relationship quality, social isolation and victimisation experiences.'},
+            {de: /Die Skala "Prosoziales Verhalten" erfasst positive Verhaltensweisen wie Hilfsbereitschaft, Rücksichtnahme und Empathie\./g,
+             fr: 'L\'échelle « Comportement prosocial » évalue les comportements positifs tels que l\'entraide, la prévenance et l\'empathie.',
+             en: 'The "Prosocial Behaviour" scale assesses positive behaviours such as helpfulness, consideration and empathy.'},
+            // Interpretations-Schlusssätze SDQ
+            {de: /Eine vertiefte diagnostische Abklärung emotionaler Störungen wird dringend empfohlen\./g,
+             fr: 'Un bilan diagnostique approfondi des troubles émotionnels est vivement recommandé.',
+             en: 'In-depth diagnostic assessment of emotional disorders is strongly recommended.'},
+            {de: /Eine umfassende ADHS-Diagnostik wird dringend empfohlen, um das Vorliegen einer Aufmerksamkeitsdefizit-\/Hyperaktivitätsstörung abzuklären\./g,
+             fr: 'Un bilan TDAH complet est vivement recommandé afin de clarifier la présence d\'un trouble du déficit de l\'attention/hyperactivité.',
+             en: 'A comprehensive ADHD assessment is strongly recommended to clarify the presence of attention-deficit/hyperactivity disorder.'},
+            {de: /Eine weiterführende Diagnostik hinsichtlich einer Störung des Sozialverhaltens sollte erfolgen\./g,
+             fr: 'Un bilan complémentaire concernant un trouble des conduites devrait être effectué.',
+             en: 'Further diagnostic assessment regarding conduct disorder should be conducted.'},
+            {de: /Eine weitere Beobachtung wird empfohlen\./g,
+             fr: 'Un suivi supplémentaire est recommandé.',
+             en: 'Further monitoring is recommended.'},
+            // SDQ – Gesamtinterpretation
+            {de: /Die Auswertung des SDQ auf Basis (.+?) ergibt einen Gesamtproblemwert von (\d+) Punkten\./g,
+             fr: 'L\'analyse du SDQ basée sur $1 donne un score total de difficultés de $2 points.',
+             en: 'The SDQ analysis based on $1 yields a total difficulties score of $2 points.'},
+            {de: /Dieser Wert liegt im <strong>unauffälligen Bereich<\/strong> der altersentsprechenden Normstichprobe\./g,
+             fr: 'Cette valeur se situe dans la <strong>plage normale</strong> par rapport à l\'échantillon normatif de l\'âge.',
+             en: 'This value falls within the <strong>normal range</strong> of the age-appropriate normative sample.'},
+            {de: /Dieser Wert liegt im <strong>grenzwertigen Bereich<\/strong> und befindet sich damit zwischen dem unauffälligen und dem klinisch auffälligen Bereich\./g,
+             fr: 'Cette valeur se situe dans la <strong>plage limite</strong>, c\'est-à-dire entre la plage normale et la plage cliniquement significative.',
+             en: 'This value falls within the <strong>borderline range</strong>, between the normal and the clinically significant ranges.'},
+            {de: /Dieser Wert liegt im <strong>klinisch auffälligen Bereich<\/strong> und überschreitet damit den Cut-off-Wert für eine erhöhte psychische Belastung deutlich\./g,
+             fr: 'Cette valeur se situe dans la <strong>plage cliniquement significative</strong> et dépasse nettement le seuil indiquant une charge psychique accrue.',
+             en: 'This value falls within the <strong>clinically significant range</strong> and clearly exceeds the cut-off for elevated psychological burden.'},
+            // Profilanalyse SDQ
+            {de: /<strong>Profilanalyse:<\/strong>/g,
+             fr: '<strong>Analyse du profil :</strong>',
+             en: '<strong>Profile analysis:</strong>'},
+            // Sektionstitel SDQ-spezifisch (Skalen-Untertitel)
+            {de: />Emotionale Probleme</g,            fr: '>Problèmes émotionnels<',                  en: '>Emotional Problems<'},
+            {de: />Verhaltensprobleme</g,             fr: '>Problèmes de conduite<',                  en: '>Conduct Problems<'},
+            {de: />Hyperaktivität\/Unaufmerksamkeit</g, fr: '>Hyperactivité/Inattention<',            en: '>Hyperactivity/Inattention<'},
+            {de: />Probleme mit Gleichaltrigen</g,    fr: '>Problèmes avec les pairs<',               en: '>Peer Problems<'},
+            {de: />Prosoziales Verhalten</g,          fr: '>Comportement prosocial<',                 en: '>Prosocial Behaviour<'},
+            {de: />Gesamtproblemwert</g,              fr: '>Score total des difficultés<',            en: '>Total Difficulties Score<'},
+            {de: />Internalisierende Symptome</g,     fr: '>Symptômes internalisés<',                 en: '>Internalising symptoms<'},
+            {de: />Externalisierende Symptome</g,     fr: '>Externalising symptoms<',                 en: '>Externalising symptoms<'},
+            // Häufige Phrasen über Tests
+            {de: /Die Befragung erfolgte mittels des standardisierten Fragebogens durch:/g,
+             fr: 'Le questionnaire standardisé a été rempli par :',
+             en: 'The standardised questionnaire was completed by:'},
+            {de: /<strong>Elternurteil<\/strong>/g,    fr: '<strong>Évaluation parentale</strong>',  en: '<strong>Parent rating</strong>'},
+            {de: /<strong>Lehrerurteil<\/strong>/g,    fr: '<strong>Évaluation enseignant·e</strong>', en: '<strong>Teacher rating</strong>'},
+            {de: /<strong>Selbsturteil<\/strong>/g,    fr: '<strong>Auto-évaluation</strong>',       en: '<strong>Self-report</strong>'},
+            // Eltern-Zusammenfassung Header
+            {de: /💝 Zusammenfassung für Eltern/g,    fr: '💝 Résumé à l\'attention des parents',   en: '💝 Summary for parents'},
+            {de: />Was bedeutet das Ergebnis\?</g,    fr: '>Que signifie ce résultat ?<',           en: '>What does this result mean?<'},
+            {de: />Was empfehlen wir Ihnen\?</g,      fr: '>Que vous recommandons-nous ?<',         en: '>What do we recommend?<'},
+            // Wichtige Hinweise (Footer)
+            {de: /Dieser Befundbericht dokumentiert die Ergebnisse eines standardisierten psychologischen Testverfahrens zu einem bestimmten Zeitpunkt\./g,
+             fr: 'Ce rapport documente les résultats d\'une procédure de test psychologique standardisée à un moment donné.',
+             en: 'This report documents the results of a standardised psychological test procedure at a specific point in time.'},
+            {de: /Die Ergebnisse können durch situative Faktoren \(Müdigkeit, Motivation, Tagesform\) beeinflusst sein und sollten im Kontext einer umfassenden klinischen Beurteilung interpretiert werden\./g,
+             fr: 'Les résultats peuvent être influencés par des facteurs situationnels (fatigue, motivation, forme du jour) et doivent être interprétés dans le cadre d\'une évaluation clinique globale.',
+             en: 'Results may be influenced by situational factors (fatigue, motivation, daily form) and should be interpreted in the context of a comprehensive clinical assessment.'},
+            // Ergebnis-Header
+            {de: /Ergebnis SDQ/g,        fr: 'Résultat SDQ',           en: 'SDQ result'},
+            {de: /Ergebnis WISC-V/g,     fr: 'Résultat WISC-V',        en: 'WISC-V result'},
+            {de: /Ergebnis CBCL/g,       fr: 'Résultat CBCL',          en: 'CBCL result'},
+            {de: /Ergebnis Conners-3/g,  fr: 'Résultat Conners-3',     en: 'Conners-3 result'},
+            {de: /Ergebnis DISYPS-III/g, fr: 'Résultat DISYPS-III',    en: 'DISYPS-III result'},
+            {de: /Ergebnis AFS/g,        fr: 'Résultat AFS',           en: 'AFS result'},
+            {de: /Ergebnis d2-R/g,       fr: 'Résultat d2-R',          en: 'd2-R result'},
+            {de: /Ergebnis DIKJ/g,       fr: 'Résultat DIKJ',          en: 'DIKJ result'},
+            {de: /Ergebnis FEEL-KJ/g,    fr: 'Résultat FEEL-KJ',       en: 'FEEL-KJ result'},
+            {de: /Ergebnis CFT 20-R/g,   fr: 'Résultat CFT 20-R',      en: 'CFT 20-R result'},
+            {de: /Ergebnis Vineland-3/g, fr: 'Résultat Vineland-3',    en: 'Vineland-3 result'},
+            {de: /Ergebnis SON-R/g,      fr: 'Résultat SON-R',         en: 'SON-R result'},
+            {de: /Ergebnis K-ABC II/g,   fr: 'Résultat K-ABC II',      en: 'K-ABC II result'},
+            // Word-Export-Button
+            {de: /📝 Als Word exportieren \(\.doc\)/g, fr: '📝 Exporter en Word (.doc)', en: '📝 Export as Word (.doc)'},
+        ]);
+
+        // ─── Conners-3 spezifische Interpretationsbausteine ─────────────────────
+        addLocalizeRules([
+            {de: /Die Conners-3 \(Conners, 2008; deutsche Fassung: Lidzba et al\., 2013\) ist ein multimodales Beurteilungssystem zur umfassenden Erfassung von ADHS und komorbiden Störungen bei Kindern und Jugendlichen von 6-18 Jahren\. Das Verfahren umfasst Eltern-, Lehrer- und Selbstbeurteilungsbögen\./g,
+             fr: 'Le Conners-3 (Conners, 2008 ; version allemande : Lidzba et al., 2013) est un système d\'évaluation multimodal pour le repérage approfondi du TDAH et des troubles comorbides chez les enfants et adolescents de 6 à 18 ans. La procédure comprend des questionnaires parents, enseignant·e·s et auto-évaluation.',
+             en: 'The Conners-3 (Conners, 2008; German version: Lidzba et al., 2013) is a multimodal rating system for the comprehensive assessment of ADHD and comorbid disorders in children and adolescents aged 6–18 years. It comprises parent, teacher and self-report forms.'},
+            {de: /Die Ergebnisse werden als T-Werte \(M=50, SD=10\) dargestellt\. T-Werte ≥65 gelten als erhöht, ≥70 als stark erhöht\./g,
+             fr: 'Les résultats sont présentés sous forme de scores T (M=50, ÉT=10). Les scores T ≥ 65 sont considérés comme élevés, ≥ 70 comme nettement élevés.',
+             en: 'Results are presented as T-scores (M=50, SD=10). T-scores ≥ 65 are considered elevated, ≥ 70 markedly elevated.'},
+            {de: /<strong>Informant:<\/strong>/g, fr: '<strong>Informateur :</strong>', en: '<strong>Informant:</strong>'},
+            {de: /<strong>C3-AI \(ADHS-Index\):<\/strong>/g, fr: '<strong>C3-AI (Indice TDAH) :</strong>', en: '<strong>C3-AI (ADHD Index):</strong>'},
+            {de: /<strong>C3-GI \(Global Index\):<\/strong>/g, fr: '<strong>C3-GI (Indice global) :</strong>', en: '<strong>C3-GI (Global Index):</strong>'},
+            {de: /<strong>UA \(Unaufmerksamkeit\):<\/strong>/g, fr: '<strong>IN (Inattention) :</strong>', en: '<strong>IN (Inattention):</strong>'},
+            {de: /<strong>HI \(Hyperaktivität\/Impulsivität\):<\/strong>/g, fr: '<strong>HI (Hyperactivité/Impulsivité) :</strong>', en: '<strong>HI (Hyperactivity/Impulsivity):</strong>'},
+            {de: /<strong>EF \(Exekutive Funktionen\):<\/strong>/g, fr: '<strong>FE (Fonctions exécutives) :</strong>', en: '<strong>EF (Executive Functioning):</strong>'},
+            {de: /<strong>LP \(Lernprobleme\):<\/strong>/g, fr: '<strong>PA (Problèmes d\'apprentissage) :</strong>', en: '<strong>LP (Learning Problems):</strong>'},
+            {de: /<strong>AT \(Aggressivität\/Trotz\):<\/strong>/g, fr: '<strong>AG (Agressivité/Opposition) :</strong>', en: '<strong>AG (Aggression/Defiance):</strong>'},
+            {de: /<strong>BG \(Beziehungen zu Gleichaltrigen\):<\/strong>/g, fr: '<strong>RP (Relations avec les pairs) :</strong>', en: '<strong>PR (Peer Relations):</strong>'},
+            {de: /<strong>FB \(Familienbeziehungen\):<\/strong>/g, fr: '<strong>RF (Relations familiales) :</strong>', en: '<strong>FR (Family Relations):</strong>'},
+            {de: /SICHERHEITS­HINWEIS – Stimmung \/ Angst \(Selbsturteil\)/g,
+             fr: 'AVERTISSEMENT DE SÉCURITÉ – Humeur / Anxiété (auto-évaluation)',
+             en: 'SAFETY WARNING – Mood / Anxiety (self-report)'},
+            {de: /SICHERHEITS­HINWEIS – Schwere Störung des Sozialverhaltens/g,
+             fr: 'AVERTISSEMENT DE SÉCURITÉ – Trouble grave du comportement social',
+             en: 'SAFETY WARNING – Severe conduct disturbance'},
+            {de: /Validitätsskalen/g, fr: 'Échelles de validité', en: 'Validity scales'},
+            {de: /DSM-5 Symptomskalen/g, fr: 'Échelles de symptômes DSM-5', en: 'DSM-5 symptom scales'},
+            {de: /ICD-10 Symptomskalen/g, fr: 'Échelles de symptômes CIM-10', en: 'ICD-10 symptom scales'},
+            {de: /Conners 3 Inhaltsskalen/g, fr: 'Échelles de contenu Conners 3', en: 'Conners 3 content scales'},
+            {de: /Conners 3 Indices/g, fr: 'Indices Conners 3', en: 'Conners 3 indices'},
+        ]);
+
+        // ─── CBCL spezifische Interpretationsbausteine ───────────────────────────
+        addLocalizeRules([
+            {de: /Die Child Behavior Checklist \(CBCL; Achenbach & Rescorla, 2001; deutsche Fassung: Arbeitsgruppe Deutsche Child Behavior Checklist \/ Döpfner et al\., 2014\) ist ein international weit verbreitetes Fragebogenverfahren zur Erfassung von Verhaltensauffälligkeiten und emotionalen Problemen bei Kindern und Jugendlichen\./g,
+             fr: 'La Child Behavior Checklist (CBCL ; Achenbach & Rescorla, 2001 ; version allemande : Arbeitsgruppe Deutsche Child Behavior Checklist / Döpfner et al., 2014) est un questionnaire largement utilisé à l\'international pour évaluer les troubles du comportement et les problèmes émotionnels chez les enfants et les adolescents.',
+             en: 'The Child Behavior Checklist (CBCL; Achenbach & Rescorla, 2001; German version: Arbeitsgruppe Deutsche Child Behavior Checklist / Döpfner et al., 2014) is an internationally widely-used questionnaire for assessing behavioural and emotional problems in children and adolescents.'},
+            {de: /SICHERHEITS­HINWEIS – Kritische CBCL-\/TRF-\/YSR-Items/g,
+             fr: 'AVERTISSEMENT DE SÉCURITÉ – Items critiques CBCL/TRF/YSR',
+             en: 'SAFETY WARNING – Critical CBCL/TRF/YSR items'},
+            {de: /Folgende sicherheitsrelevante Einzelitems wurden mit ≥ 1 bewertet:/g,
+             fr: 'Les items pertinents pour la sécurité suivants ont été cotés ≥ 1 :',
+             en: 'The following safety-relevant individual items were scored ≥ 1:'},
+            {de: /Verpflichtende vertiefte Exploration erforderlich:/g,
+             fr: 'Exploration approfondie obligatoire :',
+             en: 'Mandatory in-depth exploration required:'},
+            // CBCL Syndromskalen-Namen
+            {de: />Ängstlich\/Depressiv</g,            fr: '>Anxieux/Dépressif<',                en: '>Anxious/Depressed<'},
+            {de: />Rückzüglich\/Depressiv</g,          fr: '>Retrait/Dépressif<',                en: '>Withdrawn/Depressed<'},
+            {de: />Körperliche Beschwerden</g,         fr: '>Plaintes somatiques<',              en: '>Somatic Complaints<'},
+            {de: />Soziale Probleme</g,                fr: '>Problèmes sociaux<',                en: '>Social Problems<'},
+            {de: />Denkprobleme</g,                    fr: '>Troubles de la pensée<',            en: '>Thought Problems<'},
+            {de: />Aufmerksamkeitsprobleme</g,         fr: '>Problèmes d\'attention<',           en: '>Attention Problems<'},
+            {de: />Regelverletzendes Verhalten</g,     fr: '>Comportement transgressif<',        en: '>Rule-Breaking Behaviour<'},
+            {de: />Aggressives Verhalten</g,           fr: '>Comportement agressif<',            en: '>Aggressive Behaviour<'},
+            {de: />Internalisierend</g,                fr: '>Internalisé<',                      en: '>Internalising<'},
+            {de: />Externalisierend</g,                fr: '>Externalisé<',                      en: '>Externalising<'},
+            {de: />Gesamtproblemwert</g,               fr: '>Score total des problèmes<',        en: '>Total Problems Score<'},
+        ]);
 
         const RATER_LABEL = {parent:'Eltern', teacher:'Lehrer', self:'Selbst'};
         const RATER_COLOR = {parent:'#6366f1', teacher:'#10b981', self:'#f59e0b'};
@@ -3599,7 +3934,7 @@
                     <button class="btn btn-primary" onclick="exportTestToWord('sdq')">📝 Als Word exportieren (.doc)</button>
                 </div>
             `;
-            document.getElementById('sdq-results').classList.add('show');
+            showLocalizedResults('sdq-results');
             R.sdq = {d,c,tot,r,gutachten}; updateReport();
         }
 
@@ -3910,7 +4245,7 @@
                     <button class="btn btn-primary" onclick="exportTestToWord('wisc')">📝 Als Word exportieren (.doc)</button>
                 </div>
             `;
-            document.getElementById('wisc-results').classList.add('show');
+            showLocalizedResults('wisc-results');
             R.wisc = {idx,c,gutachten}; updateReport();
         }
 
@@ -4253,7 +4588,7 @@
                 </div>`;
 
             document.getElementById('cbcl-results').innerHTML = html;
-            document.getElementById('cbcl-results').classList.add('show');
+            showLocalizedResults('cbcl-results');
             R.cbcl = {raters, scaleMode, bb, syn, cBB, cSyn, gutachten}; updateReport();
         }
 
@@ -4421,7 +4756,7 @@
                     <button class="btn btn-primary" onclick="exportTestToWord('disyps')">📝 Als Word exportieren (.doc)</button>
                 </div>
             `;
-            document.getElementById('disyps-results').classList.add('show');
+            showLocalizedResults('disyps-results');
             R.disyps = {d,c,gutachten}; updateReport();
 
             // Multi-Rater-Speicher (FBB-Parent / FBB-Teacher / SBB → parent / teacher / self)
@@ -4584,7 +4919,7 @@
                     <button class="btn btn-primary" onclick="exportTestToWord('afs')">📝 Als Word exportieren (.doc)</button>
                 </div>
             `;
-            document.getElementById('afs-results').classList.add('show');
+            showLocalizedResults('afs-results');
             R.afs = {d,c,gutachten}; updateReport();
         }
 
@@ -4739,7 +5074,7 @@
                     <button class="btn btn-primary" onclick="exportTestToWord('d2r')">📝 Als Word exportieren (.doc)</button>
                 </div>
             `;
-            document.getElementById('d2r-results').classList.add('show');
+            showLocalizedResults('d2r-results');
             R.d2r = {d,c,gutachten}; updateReport();
         }
 
@@ -4876,7 +5211,7 @@
                     <button class="btn btn-primary" onclick="exportTestToWord('dikj')">📝 Als Word exportieren (.doc)</button>
                 </div>
             `;
-            document.getElementById('dikj-results').classList.add('show');
+            showLocalizedResults('dikj-results');
             R.dikj = {raw,t:tVal,c,gutachten}; updateReport();
         }
 
@@ -5167,7 +5502,7 @@
                     <button class="btn btn-primary" onclick="exportTestToWord('conners')">📝 Als Word exportieren (.doc)</button>
                 </div>
             `;
-            document.getElementById('conners-results').classList.add('show');
+            showLocalizedResults('conners-results');
             R.conners = {scales,c,gutachten}; updateReport();
 
             // Multi-Rater-Speicher: alle T-Wert-Skalen zusammenführen
@@ -5298,7 +5633,7 @@
                     <button class="btn btn-primary" onclick="exportTestToWord('feelkj')">📝 Als Word exportieren (.doc)</button>
                 </div>
             `;
-            document.getElementById('feelkj-results').classList.add('show');
+            showLocalizedResults('feelkj-results');
             R.feelkj = {adaptive,maladaptive,cAdapt,cMaladapt,gutachten}; updateReport();
         }
 
@@ -5406,7 +5741,7 @@
                     <button class="btn btn-primary" onclick="exportTestToWord('cft')">📝 Als Word exportieren (.doc)</button>
                 </div>
             `;
-            document.getElementById('cft-results').classList.add('show');
+            showLocalizedResults('cft-results');
             R.cft = {iq:iqVal,subtests,c,gutachten}; updateReport();
         }
 
@@ -5624,7 +5959,7 @@
                     <button class="btn btn-primary" onclick="exportTestToWord('vineland')">📝 Als Word exportieren (.doc)</button>
                 </div>
             `;
-            document.getElementById('vineland-results').classList.add('show');
+            showLocalizedResults('vineland-results');
             R.vineland = {abc:abcVal,domains:validDomains.map(([k,d])=>({k,...d,c:domainClasses[k]})),maladaptive,gutachten}; updateReport();
 
             // Multi-Rater-Speicher
@@ -5762,7 +6097,7 @@
                     <button class="btn btn-primary" onclick="exportTestToWord('sonr')">📝 Als Word exportieren (.doc)</button>
                 </div>
             `;
-            document.getElementById('sonr-results').classList.add('show');
+            showLocalizedResults('sonr-results');
             R.sonr = {iq:iqVal,pr:prVal,subtests,c,gutachten}; updateReport();
         }
 
@@ -5892,7 +6227,7 @@
                     <button class="btn btn-primary" onclick="exportTestToWord('kabc')">📝 Als Word exportieren (.doc)</button>
                 </div>
             `;
-            document.getElementById('kabc-results').classList.add('show');
+            showLocalizedResults('kabc-results');
             R.kabc = {idx,c,gutachten}; updateReport();
         }
 
