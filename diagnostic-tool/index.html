@@ -1371,6 +1371,14 @@
             <div class="report-options" style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
                 <div class="form-section-title" style="font-size:0.85rem;margin-bottom:0.5rem;">Berichtoptionen</div>
                 <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
+                    <label style="display:flex;align-items:center;gap:0.5rem;">
+                        <span style="font-size:0.9rem;">🌐 Berichtssprache:</span>
+                        <select id="report-lang" onchange="setReportLang(this.value)" style="padding:0.35rem 0.5rem;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);">
+                            <option value="de">Deutsch</option>
+                            <option value="fr">Français</option>
+                            <option value="en">English</option>
+                        </select>
+                    </label>
                     <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
                         <input type="checkbox" id="show-charts" style="width:16px;height:16px;">
                         <span style="font-size:0.9rem;">Visualisierungen</span>
@@ -1636,6 +1644,7 @@
                             <div class="radio-btn"><input type="radio" name="dis-resp" id="dis-sbb" value="sbb"><label for="dis-sbb">SBB – Selbst (ab 11 J.)</label></div>
                         </div>
                         <div class="form-hint" style="margin-top:0.5rem;">FBB = Fremdbeurteilungsbogen (Eltern/Lehrer) · SBB = Selbstbeurteilungsbogen. Eigene Normtabellen pro Version und Altersgruppe – bitte aus dem jeweiligen Manual ablesen.</div>
+                        <div id="disyps-rater-status" style="margin-top:0.75rem;"></div>
                     </div>
                     <div class="form-section">
                         <div class="form-section-title">ADHS-Skalen (Stanine 1-9) <span class="form-hint">7-9 = auffällig</span></div>
@@ -1660,6 +1669,7 @@
                     </div>
                 </form>
                 <div id="disyps-results" class="results"></div>
+                <div id="disyps-compare"></div>
             </div>
         </section>
 
@@ -1782,6 +1792,7 @@
                             <div class="radio-btn"><input type="radio" name="conners-resp" id="conners-teacher" value="teacher"><label for="conners-teacher">Lehrer</label></div>
                             <div class="radio-btn"><input type="radio" name="conners-resp" id="conners-self" value="self"><label for="conners-self">Selbst</label></div>
                         </div>
+                        <div id="conners-rater-status" style="margin-top:0.75rem;"></div>
                     </div>
 
                     <details class="form-section calc-helper">
@@ -1905,6 +1916,7 @@
                     </div>
                 </form>
                 <div id="conners-results" class="results"></div>
+                <div id="conners-compare"></div>
             </div>
         </section>
 
@@ -2017,6 +2029,7 @@
                             <div class="radio-btn"><input type="radio" name="vineland-resp" id="vineland-parent" value="parent" checked><label for="vineland-parent">Eltern/Bezugsperson</label></div>
                             <div class="radio-btn"><input type="radio" name="vineland-resp" id="vineland-teacher" value="teacher"><label for="vineland-teacher">Lehrer/Erzieher</label></div>
                         </div>
+                        <div id="vineland-rater-status" style="margin-top:0.75rem;"></div>
                     </div>
                     <div class="form-section">
                         <div class="form-section-title">Hauptdomänen (Standardwerte M=100, SD=15)</div>
@@ -2060,6 +2073,7 @@
                     </div>
                 </form>
                 <div id="vineland-results" class="results"></div>
+                <div id="vineland-compare"></div>
             </div>
         </section>
 
@@ -2177,6 +2191,194 @@
     <script>
         const R = {};
 
+        // Multi-Rater-Speicher: pro Test ein Objekt mit Beurteilern als Keys
+        // Wird bei jeder Auswertung gefüllt; Vergleich wird auf Knopfdruck gerendert.
+        const RATERS_DATA = {
+            conners:  {parent:null, teacher:null, self:null},
+            disyps:   {parent:null, teacher:null, self:null},
+            vineland: {parent:null, teacher:null}
+        };
+        // Mehrsprachige Berichte (DE/FR/EN). Strukturteile übersetzt; klinische Detailtexte vorerst Deutsch.
+        let LANG = 'de';
+        const I18N = {
+            // Header
+            title:                {de:'PSYCHOLOGISCHER BEFUNDBERICHT', fr:'RAPPORT PSYCHOLOGIQUE', en:'PSYCHOLOGICAL REPORT'},
+            confidential:         {de:'VERTRAULICH', fr:'CONFIDENTIEL', en:'CONFIDENTIAL'},
+            confidential_text:    {de:'Dieser Bericht enthält sensible personenbezogene Daten und unterliegt der ärztlichen/psychologischen Schweigepflicht.', fr:'Ce rapport contient des données personnelles sensibles et est soumis au secret professionnel médical/psychologique.', en:'This report contains sensitive personal data and is subject to medical/psychological professional confidentiality.'},
+            report_date:          {de:'Berichtsdatum', fr:'Date du rapport', en:'Report date'},
+            // Meta
+            meta_name:            {de:'Name/Chiffre', fr:'Nom/Code', en:'Name/code'},
+            meta_dob:             {de:'Geburtsdatum', fr:'Date de naissance', en:'Date of birth'},
+            meta_age:             {de:'Alter bei Testung', fr:'Âge lors du test', en:'Age at testing'},
+            meta_sex:             {de:'Geschlecht', fr:'Sexe', en:'Sex'},
+            meta_examdate:        {de:'Untersuchungsdatum', fr:'Date d\'examen', en:'Examination date'},
+            meta_examiner:        {de:'Untersucher/in', fr:'Examinateur/trice', en:'Examiner'},
+            // Sections
+            sec_test_desc:        {de:'Testbeschreibung', fr:'Description du test', en:'Test description'},
+            sec_results:          {de:'Testergebnisse', fr:'Résultats du test', en:'Test results'},
+            sec_interpretation:   {de:'Interpretation', fr:'Interprétation', en:'Interpretation'},
+            sec_diagnosis:        {de:'Diagnostische Einordnung', fr:'Classification diagnostique', en:'Diagnostic classification'},
+            sec_recommendations:  {de:'Empfehlungen', fr:'Recommandations', en:'Recommendations'},
+            sec_chart:            {de:'Grafische Darstellung', fr:'Représentation graphique', en:'Graphical representation'},
+            sec_diff_diag:        {de:'Differenzialdiagnostische Überlegungen', fr:'Considérations différentielles', en:'Differential diagnostic considerations'},
+            // Table headers
+            th_scale:             {de:'Skala', fr:'Échelle', en:'Scale'},
+            th_value:             {de:'Wert', fr:'Valeur', en:'Value'},
+            th_norm:              {de:'Normbereich', fr:'Plage normale', en:'Normal range'},
+            th_classification:    {de:'Klassifikation', fr:'Classification', en:'Classification'},
+            th_pr:                {de:'Prozentrang', fr:'Rang centile', en:'Percentile rank'},
+            th_meaning:           {de:'Bedeutung', fr:'Signification', en:'Meaning'},
+            // Status
+            status_normal:        {de:'Unauffällig', fr:'Normal', en:'Normal'},
+            status_borderline:    {de:'Grenzwertig', fr:'Limite', en:'Borderline'},
+            status_clinical:      {de:'Klinisch auffällig', fr:'Cliniquement significatif', en:'Clinically significant'},
+            // Warnings
+            safety_label:         {de:'SICHERHEITSHINWEIS', fr:'AVERTISSEMENT DE SÉCURITÉ', en:'SAFETY WARNING'},
+            // Multi-rater
+            rater_eltern:         {de:'Eltern', fr:'Parents', en:'Parents'},
+            rater_lehrer:         {de:'Lehrer', fr:'Enseignant·e', en:'Teacher'},
+            rater_selbst:         {de:'Selbst', fr:'Soi', en:'Self'},
+            cross_informant:      {de:'Cross-Informant-Vergleich', fr:'Comparaison inter-informateurs', en:'Cross-informant comparison'},
+            agreement_strong:     {de:'Diskrepant', fr:'Discordant', en:'Discordant'},
+            agreement_moderate:   {de:'Unterschiedlich', fr:'Différent', en:'Different'},
+            agreement_agree:      {de:'Übereinstimmend', fr:'Concordant', en:'Concordant'},
+            // Hint about partial translation
+            partial_translation:  {de:'', fr:'Note : les en-têtes et la structure sont traduits en français ; les paragraphes d\'interprétation détaillés restent actuellement en allemand.', en:'Note: headers and structure are translated to English; detailed interpretation paragraphs remain in German for now.'}
+        };
+        function t(key) {
+            const e = I18N[key];
+            if(!e) return key;
+            return e[LANG] ?? e.de ?? key;
+        }
+        function setReportLang(lang) {
+            if(!['de','fr','en'].includes(lang)) lang = 'de';
+            LANG = lang;
+            try { localStorage.setItem('cdse-report-lang', lang); } catch(e) {}
+        }
+        (function initReportLang(){
+            try {
+                const saved = localStorage.getItem('cdse-report-lang');
+                if(saved) LANG = saved;
+            } catch(e) {}
+            document.addEventListener('DOMContentLoaded', () => {
+                const sel = document.getElementById('report-lang');
+                if(sel) sel.value = LANG;
+            });
+        })();
+
+        const RATER_LABEL = {parent:'Eltern', teacher:'Lehrer', self:'Selbst'};
+        const RATER_COLOR = {parent:'#6366f1', teacher:'#10b981', self:'#f59e0b'};
+
+        function getSavedRaters(testKey) {
+            const data = RATERS_DATA[testKey] || {};
+            return Object.entries(data).filter(([k,v]) => v !== null);
+        }
+
+        function clearRaters(testKey) {
+            if(!RATERS_DATA[testKey]) return;
+            Object.keys(RATERS_DATA[testKey]).forEach(k => RATERS_DATA[testKey][k] = null);
+            renderMultiRaterStatus(testKey);
+            const cmp = document.getElementById(`${testKey}-compare`);
+            if(cmp) cmp.innerHTML = '';
+        }
+
+        // Status-Bar oben im Formular: zeigt gespeicherte Beurteiler + Aktionen
+        function renderMultiRaterStatus(testKey) {
+            const host = document.getElementById(`${testKey}-rater-status`);
+            if(!host) return;
+            const saved = getSavedRaters(testKey);
+            const all = Object.keys(RATERS_DATA[testKey]);
+            host.innerHTML = `
+                <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                    <strong style="font-size:0.85rem;">Gespeicherte Beurteiler:</strong>
+                    ${all.map(k => {
+                        const isSaved = saved.find(([sk]) => sk === k);
+                        return `<span style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.25rem 0.6rem;border-radius:14px;font-size:0.78rem;border:1px solid ${isSaved ? RATER_COLOR[k] : 'var(--border)'};${isSaved ? `background:${RATER_COLOR[k]};color:#fff;` : 'color:var(--text-muted);'}">${isSaved ? '✓ ' : ''}${RATER_LABEL[k]}</span>`;
+                    }).join('')}
+                    ${saved.length >= 2 ? `<button type="button" class="btn btn-primary" style="padding:0.4rem 0.85rem;font-size:0.82rem;" onclick="renderRaterComparison('${testKey}')">📊 Vergleich anzeigen (${saved.length})</button>` : ''}
+                    ${saved.length > 0 ? `<button type="button" class="btn btn-secondary" style="padding:0.4rem 0.85rem;font-size:0.82rem;" onclick="clearRaters('${testKey}')">Speicher zurücksetzen</button>` : ''}
+                </div>
+            `;
+        }
+
+        // Cross-Informant-Vergleichstabelle (generisch, basiert auf scaleSpec pro Test)
+        // testKey: 'conners' | 'disyps' | 'vineland'
+        // Jeder gespeicherte Beurteiler-Eintrag erwartet: { scaleType, values: {scaleKey: {v, c, label}} }
+        function renderRaterComparison(testKey) {
+            const saved = getSavedRaters(testKey);
+            if(saved.length < 2) return;
+            const host = document.getElementById(`${testKey}-compare`);
+            if(!host) return;
+
+            // Alle Skalen-Keys + Labels aus allen gespeicherten Datensätzen sammeln (Reihenfolge des ersten Datensatzes)
+            const allScaleKeys = [];
+            const labelMap = {};
+            saved.forEach(([rk, data]) => {
+                Object.entries(data.values).forEach(([k, v]) => {
+                    if(!allScaleKeys.includes(k)) allScaleKeys.push(k);
+                    if(!labelMap[k]) labelMap[k] = v.label;
+                });
+            });
+
+            // Header
+            const valueLabel = saved[0][1].valueLabel || 'T';
+            const diffThreshold = saved[0][1].diffThreshold ?? 10;
+            const unitName = saved[0][1].unitName || 'T-Punkte';
+
+            const rows = allScaleKeys.map(sk => {
+                const cells = saved.map(([rk, data]) => {
+                    const entry = data.values[sk];
+                    if(!entry || entry.v === null || entry.v === undefined) {
+                        return {raw:null, c:null};
+                    }
+                    return {raw: entry.v, c: entry.c};
+                });
+                const filled = cells.filter(c => c.raw !== null);
+                if(filled.length < 2) {
+                    // nur ein Wert, kein Vergleich – aber trotzdem zeigen
+                    return null;
+                }
+                const vals = filled.map(c => c.raw);
+                const spread = Math.max(...vals) - Math.min(...vals);
+                const cls = filled.map(c => c.c);
+                const hasClinAndNormal = cls.includes('clinical') && cls.includes('normal');
+                const flag = hasClinAndNormal ? 'strong' : (spread >= diffThreshold ? 'moderate' : 'agree');
+                const flagBadge = {
+                    strong:   '<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#fee2e2;color:#991b1b;font-weight:600;">Diskrepant</span>',
+                    moderate: '<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#fef3c7;color:#92400e;font-weight:600;">Unterschiedlich</span>',
+                    agree:    '<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#d1fae5;color:#065f46;font-weight:600;">Übereinstimmend</span>'
+                }[flag];
+                const cellHtml = saved.map(([rk], i) => {
+                    const cell = cells[i];
+                    if(cell.raw === null) return '<td style="text-align:center;color:#9ca3af;">–</td>';
+                    return `<td class="${cell.c||''}" style="text-align:center;">${valueLabel}=${cell.raw}</td>`;
+                }).join('');
+                return `<tr><td>${labelMap[sk]}</td>${cellHtml}<td style="text-align:center;">${spread}</td><td style="text-align:center;">${flagBadge}</td></tr>`;
+            }).filter(x => x);
+
+            if(rows.length === 0) {
+                host.innerHTML = `<div class="gutachten-warning">Keine gemeinsamen Skalen mit Werten in mehreren Beurteilungen gefunden.</div>`;
+                return;
+            }
+
+            host.innerHTML = `
+                <div class="gutachten" style="margin-top:1.5rem;">
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">Cross-Informant-Vergleich</h4>
+                        <p>Werte gegenübergestellt. Markierungen: <strong>Diskrepant</strong> (mind. ein Beurteiler klinisch, ein anderer normal), <strong>Unterschiedlich</strong> (Differenz ≥ ${diffThreshold} ${unitName}), <strong>Übereinstimmend</strong>.</p>
+                        <table class="gutachten-table" style="margin-top:0.75rem;">
+                            <thead>
+                                <tr><th>Skala</th>${saved.map(([rk]) => `<th style="text-align:center;color:${RATER_COLOR[rk]};">${RATER_LABEL[rk]}</th>`).join('')}<th style="text-align:center;">Δ</th><th style="text-align:center;">Übereinstimmung</th></tr>
+                            </thead>
+                            <tbody>${rows.join('')}</tbody>
+                        </table>
+                        <p style="margin-top:1rem;font-size:0.9em;color:#4a5568;"><strong>Hinweis:</strong> Diskrepanzen zwischen Informanten sind häufig und inhaltlich bedeutsam – sie können auf situationsspezifisches Verhalten hindeuten (z.B. nur in der Schule / nur zuhause / nur aus Selbstsicht). Starke Diskrepanzen sollten exploriert werden.</p>
+                    </div>
+                </div>
+            `;
+            host.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+
         // Navigation
         document.querySelectorAll('.nav-btn').forEach(b => b.addEventListener('click', () => {
             document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active'));
@@ -2275,7 +2477,12 @@
         document.addEventListener('change', e => {
             if(e.target && e.target.name === 'conners-resp') updateConnersFields();
         });
-        document.addEventListener('DOMContentLoaded', updateConnersFields);
+        document.addEventListener('DOMContentLoaded', () => {
+            updateConnersFields();
+            renderMultiRaterStatus('conners');
+            renderMultiRaterStatus('disyps');
+            renderMultiRaterStatus('vineland');
+        });
 
         // CDSE-Nutzungshinweis ausblenden (nur für aktuelle Sitzung via sessionStorage)
         function dismissCdseNotice(){
@@ -2353,24 +2560,31 @@
 
         // Gutachten-Header generieren
         function gutachtenHeader(testName, testFull, pat) {
-            const today = new Date().toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'numeric'});
+            const localeMap = {de:'de-DE', fr:'fr-FR', en:'en-GB'};
+            const locale = localeMap[LANG] || 'de-DE';
+            const today = new Date().toLocaleDateString(locale, {day:'2-digit',month:'2-digit',year:'numeric'});
+            const naLabel = LANG==='fr' ? '(non spécifié)' : LANG==='en' ? '(not specified)' : '(nicht angegeben)';
+            const ageUnitLabel = LANG==='fr' ? 'années;mois' : LANG==='en' ? 'years;months' : 'Jahre;Monate';
+            const ageSingleLabel = LANG==='fr' ? 'ans' : LANG==='en' ? 'years' : 'Jahre';
+            const partial = t('partial_translation');
             return `
                 <div class="gutachten-confidential">
-                    <strong>VERTRAULICH</strong> – Dieser Bericht enthält sensible personenbezogene Daten und unterliegt der ärztlichen/psychologischen Schweigepflicht.
+                    <strong>${t('confidential')}</strong> – ${t('confidential_text')}
                 </div>
                 <div class="gutachten-header">
-                    <div class="gutachten-title">PSYCHOLOGISCHER BEFUNDBERICHT</div>
+                    <div class="gutachten-title">${t('title')}</div>
                     <div class="gutachten-subtitle">${testName} – ${testFull}</div>
-                    <div class="gutachten-date">Berichtsdatum: ${today}</div>
+                    <div class="gutachten-date">${t('report_date')}: ${today}</div>
                 </div>
                 <div class="gutachten-meta">
-                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Name/Chiffre:</span><span class="gutachten-meta-value">${pat.name || '(nicht angegeben)'}</span></div>
-                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Geburtsdatum:</span><span class="gutachten-meta-value">${formatDate(pat.dob) || '(nicht angegeben)'}</span></div>
-                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Alter bei Testung:</span><span class="gutachten-meta-value">${pat.ageStr ? pat.ageStr + ' Jahre;Monate' : (pat.age ? pat.age + ' Jahre' : '(nicht angegeben)')}</span></div>
-                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Geschlecht:</span><span class="gutachten-meta-value">${sexText(pat.sex) || '(nicht angegeben)'}</span></div>
-                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Untersuchungsdatum:</span><span class="gutachten-meta-value">${formatDate(pat.date) || '(nicht angegeben)'}</span></div>
-                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Untersucher/in:</span><span class="gutachten-meta-value">${pat.examiner || '(nicht angegeben)'}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">${t('meta_name')}:</span><span class="gutachten-meta-value">${pat.name || naLabel}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">${t('meta_dob')}:</span><span class="gutachten-meta-value">${formatDate(pat.dob) || naLabel}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">${t('meta_age')}:</span><span class="gutachten-meta-value">${pat.ageStr && pat.ageMonths !== null ? pat.ageStr + ' ' + ageUnitLabel : (pat.age ? pat.age + ' ' + ageSingleLabel : naLabel)}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">${t('meta_sex')}:</span><span class="gutachten-meta-value">${sexText(pat.sex) || naLabel}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">${t('meta_examdate')}:</span><span class="gutachten-meta-value">${formatDate(pat.date) || naLabel}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">${t('meta_examiner')}:</span><span class="gutachten-meta-value">${pat.examiner || naLabel}</span></div>
                 </div>
+                ${partial ? `<div class="gutachten-warning" style="margin-top:0.5rem;font-size:0.85rem;"><strong>ℹ</strong> ${partial}</div>` : ''}
             `;
         }
 
@@ -4209,6 +4423,15 @@
             `;
             document.getElementById('disyps-results').classList.add('show');
             R.disyps = {d,c,gutachten}; updateReport();
+
+            // Multi-Rater-Speicher (FBB-Parent / FBB-Teacher / SBB → parent / teacher / self)
+            const raterKey = resp === 'fbb-parent' ? 'parent' : resp === 'fbb-teacher' ? 'teacher' : 'self';
+            const raterValues = {};
+            valid.forEach(([k,x]) => {
+                raterValues[k] = {v:x, c:c[k], label:DISYPS_SCALES[k].n};
+            });
+            RATERS_DATA.disyps[raterKey] = {values: raterValues, valueLabel:'Stanine', diffThreshold:2, unitName:'Stanine-Punkte'};
+            renderMultiRaterStatus('disyps');
         }
 
         // AFS
@@ -4946,6 +5169,19 @@
             `;
             document.getElementById('conners-results').classList.add('show');
             R.conners = {scales,c,gutachten}; updateReport();
+
+            // Multi-Rater-Speicher: alle T-Wert-Skalen zusammenführen
+            const raterValues = {};
+            Object.entries(scales).forEach(([k,x]) => {
+                if(x.v !== null) raterValues[k] = {v:x.v, c:c[k], label:x.n};
+            });
+            // Auch SI-Items für Eltern/Lehrer als qualitative Skala mitnehmen
+            if(!isSelf && anxItems !== null) raterValues['si_anx_items'] = {v:anxItems, c:(anxItems>=2?'clinical':'normal'), label:'SI-Ä Items (≥1)'};
+            if(!isSelf && depItems !== null) raterValues['si_dep_items'] = {v:depItems, c:(depItems>=2?'clinical':'normal'), label:'SI-D Items (≥1)'};
+            if(isSelf && anxVal !== null) raterValues['si_anx'] = {v:anxVal, c:(anxVal>=65?'clinical':anxVal>=60?'borderline':'normal'), label:'SI-Ä (T)'};
+            if(isSelf && depVal !== null) raterValues['si_dep'] = {v:depVal, c:(depVal>=65?'clinical':depVal>=60?'borderline':'normal'), label:'SI-D (T)'};
+            RATERS_DATA.conners[resp] = {values: raterValues, valueLabel:'T', diffThreshold:10, unitName:'T-Punkte'};
+            renderMultiRaterStatus('conners');
         }
 
         // FEEL-KJ
@@ -5390,6 +5626,16 @@
             `;
             document.getElementById('vineland-results').classList.add('show');
             R.vineland = {abc:abcVal,domains:validDomains.map(([k,d])=>({k,...d,c:domainClasses[k]})),maladaptive,gutachten}; updateReport();
+
+            // Multi-Rater-Speicher
+            const vineResp = document.querySelector('input[name="vineland-resp"]:checked')?.value || 'parent';
+            const raterValues = {};
+            if(abcVal !== null && abcClassFinal) raterValues['abc'] = {v:abcVal, c:abcClassFinal.c, label:'ABC – Adaptive Behavior Composite'};
+            validDomains.forEach(([k,d]) => {
+                raterValues[k] = {v:d.v, c:domainClasses[k].c, label:d.n};
+            });
+            RATERS_DATA.vineland[vineResp] = {values: raterValues, valueLabel:'SW', diffThreshold:15, unitName:'Standardwert-Punkte'};
+            renderMultiRaterStatus('vineland');
         }
 
         // SON-R
