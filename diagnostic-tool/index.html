@@ -1362,10 +1362,10 @@
             <div class="patient-info-title">📋 Patientendaten (für Gutachten)</div>
             <div class="patient-info-grid">
                 <div class="form-group"><label>Name / Chiffre</label><input type="text" id="pat-name" placeholder="z.B. Max M. oder Code"></div>
-                <div class="form-group"><label>Geburtsdatum</label><input type="date" id="pat-dob"></div>
-                <div class="form-group"><label>Alter (Jahre)</label><input type="number" id="pat-age" min="4" max="18" placeholder="4-18"></div>
+                <div class="form-group"><label>Geburtsdatum</label><input type="date" id="pat-dob" onchange="recalcAge()"></div>
+                <div class="form-group"><label>Alter (Jahre;Monate)</label><input type="text" id="pat-age" placeholder="z.B. 10;9" pattern="\d+(;\d+)?"><span class="form-hint">automatisch berechnet aus DOB & Untersuchungsdatum</span></div>
                 <div class="form-group"><label>Geschlecht</label><select id="pat-sex"><option value="">-</option><option value="m">männlich</option><option value="w">weiblich</option><option value="d">divers</option></select></div>
-                <div class="form-group"><label>Untersuchungsdatum</label><input type="date" id="pat-date"></div>
+                <div class="form-group"><label>Untersuchungsdatum</label><input type="date" id="pat-date" onchange="recalcAge()"></div>
                 <div class="form-group"><label>Untersucher/in</label><input type="text" id="pat-examiner" placeholder="Name"></div>
             </div>
             <div class="report-options" style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
@@ -1859,10 +1859,13 @@
                         </div>
                     </div>
                     <div class="form-section">
-                        <div class="form-section-title">Screener-Items (SI) – nur Selbsturteil <span class="form-hint">T-Werte</span></div>
+                        <div class="form-section-title">Screener Ängstlichkeit (SI-Ä) und Depression (SI-D)</div>
+                        <p class="form-hint" style="margin-bottom:0.6rem;">Selbsturteil: T-Werte aus Manual ablesen (eigene Skala). Eltern-/Lehrerurteil: Anzahl der mit ≥ 1 bewerteten kritischen Items eintragen (qualitative Inspektion gemäß Manual; keine eigenen T-Norms).</p>
                         <div class="form-grid">
-                            <div class="form-group"><label>SI-Ä – Ängstlichkeit</label><input type="number" id="con-anx" min="30" max="90" placeholder="T-Wert"></div>
-                            <div class="form-group"><label>SI-D – Depression</label><input type="number" id="con-dep" min="30" max="90" placeholder="T-Wert"></div>
+                            <div class="form-group" data-beurteiler="self"><label>SI-Ä – Ängstlichkeit (T-Wert)</label><input type="number" id="con-anx" min="30" max="90" placeholder="T-Wert"><span class="form-hint">nur Selbsturteil</span></div>
+                            <div class="form-group" data-beurteiler="self"><label>SI-D – Depression (T-Wert)</label><input type="number" id="con-dep" min="30" max="90" placeholder="T-Wert"><span class="form-hint">nur Selbsturteil</span></div>
+                            <div class="form-group" data-beurteiler="parent teacher"><label>SI-Ä – Anzahl auffällige Items (≥ 1)</label><input type="number" id="con-anx-items" min="0" max="20" placeholder="0-20"><span class="form-hint">Eltern · Lehrer · qualitativ</span></div>
+                            <div class="form-group" data-beurteiler="parent teacher"><label>SI-D – Anzahl auffällige Items (≥ 1)</label><input type="number" id="con-dep-items" min="0" max="20" placeholder="0-20"><span class="form-hint">Eltern · Lehrer · qualitativ</span></div>
                         </div>
                     </div>
                     <div class="form-section">
@@ -2289,12 +2292,43 @@
             } catch(e) {}
         })();
 
+        // Alter aus Geburtsdatum + Untersuchungsdatum berechnen (Format "Jahre;Monate")
+        function computeAgeYM(dobStr, refStr) {
+            if(!dobStr) return null;
+            const dob = new Date(dobStr);
+            const ref = refStr ? new Date(refStr) : new Date();
+            if(isNaN(dob.getTime()) || isNaN(ref.getTime())) return null;
+            let years = ref.getFullYear() - dob.getFullYear();
+            let months = ref.getMonth() - dob.getMonth();
+            if(ref.getDate() < dob.getDate()) months -= 1;
+            if(months < 0) { years -= 1; months += 12; }
+            if(years < 0) return null;
+            return {years, months, str: `${years};${months}`};
+        }
+        function recalcAge() {
+            const dob = vt('pat-dob');
+            const ref = vt('pat-date');
+            const a = computeAgeYM(dob, ref);
+            const inp = document.getElementById('pat-age');
+            if(a && inp) inp.value = a.str;
+        }
+
         // Patientendaten abrufen
         function getPatient() {
+            const ageStr = vt('pat-age');
+            // ageStr kann "10;9" oder "10" sein
+            const m = /^(\d+)(?:;(\d+))?$/.exec(ageStr.trim());
+            const ageYears = m ? parseInt(m[1]) : null;
+            const ageMonths = m && m[2] !== undefined ? parseInt(m[2]) : null;
+            const ageDisplay = ageYears !== null
+                ? (ageMonths !== null ? `${ageYears};${ageMonths}` : `${ageYears}`)
+                : '';
             return {
                 name: vt('pat-name') || '[Name nicht angegeben]',
                 dob: vt('pat-dob'),
-                age: v('pat-age'),
+                age: ageYears,
+                ageMonths,
+                ageStr: ageDisplay,
                 sex: vt('pat-sex'),
                 date: vt('pat-date') || new Date().toISOString().split('T')[0],
                 examiner: vt('pat-examiner') || '[Untersucher/in]'
@@ -2332,7 +2366,7 @@
                 <div class="gutachten-meta">
                     <div class="gutachten-meta-item"><span class="gutachten-meta-label">Name/Chiffre:</span><span class="gutachten-meta-value">${pat.name || '(nicht angegeben)'}</span></div>
                     <div class="gutachten-meta-item"><span class="gutachten-meta-label">Geburtsdatum:</span><span class="gutachten-meta-value">${formatDate(pat.dob) || '(nicht angegeben)'}</span></div>
-                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Alter bei Testung:</span><span class="gutachten-meta-value">${pat.age ? pat.age + ' Jahre' : '(nicht angegeben)'}</span></div>
+                    <div class="gutachten-meta-item"><span class="gutachten-meta-label">Alter bei Testung:</span><span class="gutachten-meta-value">${pat.ageStr ? pat.ageStr + ' Jahre;Monate' : (pat.age ? pat.age + ' Jahre' : '(nicht angegeben)')}</span></div>
                     <div class="gutachten-meta-item"><span class="gutachten-meta-label">Geschlecht:</span><span class="gutachten-meta-value">${sexText(pat.sex) || '(nicht angegeben)'}</span></div>
                     <div class="gutachten-meta-item"><span class="gutachten-meta-label">Untersuchungsdatum:</span><span class="gutachten-meta-value">${formatDate(pat.date) || '(nicht angegeben)'}</span></div>
                     <div class="gutachten-meta-item"><span class="gutachten-meta-label">Untersucher/in:</span><span class="gutachten-meta-value">${pat.examiner || '(nicht angegeben)'}</span></div>
@@ -3368,12 +3402,34 @@
             kli: {n:'Kognitiver Leistungsindex (KLI)', desc:'Erfasst kognitive Effizienz (Arbeitsgedächtnis und Verarbeitungsgeschwindigkeit)'}
         };
 
+        // Standard-Normal-CDF (Abramowitz & Stegun 7.1.26) – für PR-Berechnung
+        function normalCDF(z) {
+            const a1=0.254829592, a2=-0.284496736, a3=1.421413741, a4=-1.453152027, a5=1.061405429, p=0.3275911;
+            const sign = z < 0 ? -1 : 1;
+            const x = Math.abs(z) / Math.SQRT2;
+            const t = 1.0 / (1.0 + p * x);
+            const erf = 1.0 - ((((a5*t + a4)*t + a3)*t + a2)*t + a1) * t * Math.exp(-x*x);
+            return 0.5 * (1.0 + sign * erf);
+        }
+        // PR aus standardisiertem Wert (Mittelwert m, SD s)
+        function exactPR(value, mean, sd) {
+            const z = (value - mean) / sd;
+            const cdf = normalCDF(z) * 100;
+            if(cdf < 0.5) return '<1';
+            if(cdf > 99.5) return '>99';
+            return Math.round(cdf);
+        }
+        // PR speziell für IQ-Werte (M=100, SD=15)
+        function iqToPR(iq) { return exactPR(iq, 100, 15); }
+        // PR aus T-Wert (M=50, SD=10)
+        function tToPRExact(t) { return exactPR(t, 50, 10); }
+
         function iqClass(v) {
-            if(v>=130) return {l:'Weit überdurchschnittlich',c:'vhigh',pr:'>98'};
-            if(v>=115) return {l:'Überdurchschnittlich',c:'high',pr:'84-98'};
-            if(v>=85) return {l:'Durchschnittlich',c:'normal',pr:'16-84'};
-            if(v>=70) return {l:'Unterdurchschnittlich',c:'borderline',pr:'2-16'};
-            return {l:'Weit unterdurchschnittlich',c:'clinical',pr:'<2'};
+            if(v>=130) return {l:'Weit überdurchschnittlich',c:'vhigh',pr:iqToPR(v)};
+            if(v>=115) return {l:'Überdurchschnittlich',c:'high',pr:iqToPR(v)};
+            if(v>=85) return {l:'Durchschnittlich',c:'normal',pr:iqToPR(v)};
+            if(v>=70) return {l:'Unterdurchschnittlich',c:'borderline',pr:iqToPR(v)};
+            return {l:'Weit unterdurchschnittlich',c:'clinical',pr:iqToPR(v)};
         }
 
         function evaluateWISC(e) {
@@ -4630,9 +4686,12 @@
                 fb: {v:v('con-fb'), n:'FB – Familienbeziehungen'}
             };
 
-            // Screener-Items (SI) - nur Selbsturteil
+            // Screener-Items (SI)
+            // Selbsturteil: T-Werte (anxVal/depVal). Eltern/Lehrer: Anzahl auffällige Items.
             const anxVal = v('con-anx');
             const depVal = v('con-dep');
+            const anxItems = v('con-anx-items');
+            const depItems = v('con-dep-items');
 
             // DSM-5 Symptomskalen
             const dsmScales = {
@@ -4659,11 +4718,15 @@
             // Kritische Items (Rohwert-Anzahl)
             const kiVal = v('con-ki');
 
-            // Safety-Trigger: bei Selbsturteil erhöhte Depression/Angst → Suizidrisiko-Assessment
+            // Safety-Trigger
+            //   Selbsturteil: T-Werte ≥ 65 → Mood-Safety
+            //   Eltern/Lehrer: ≥ 2 auffällige Items (Angst od. Depression) → qualitativer Hinweis
             const isSelf = resp === 'self';
             const depElevated = depVal !== null && depVal >= 65;
             const depSevere = depVal !== null && depVal >= 70;
             const anxElevated = anxVal !== null && anxVal >= 65;
+            const depItemsElev = depItems !== null && depItems >= 2;
+            const anxItemsElev = anxItems !== null && anxItems >= 2;
             const kiSevere = kiVal !== null && kiVal >= 2;
             const needsMoodSafety = isSelf && (depElevated || anxElevated);
             const moodSafetyHtml = needsMoodSafety ? `
@@ -4672,6 +4735,11 @@
                     Im Selbsturteil sind die Screener-Items ${depElevated ? `<strong>Depression (SI-D, T=${depVal})</strong>` : ''}${depElevated && anxElevated ? ' und ' : ''}${anxElevated ? `<strong>Ängstlichkeit (SI-Ä, T=${anxVal})</strong>` : ''} erhöht. ${depSevere ? 'Der Depressions-Screener liegt im <em>stark erhöhten</em> Bereich (T ≥ 70).' : ''}
                     <br><br>
                     Ein <strong>strukturiertes Suizidrisiko-Assessment</strong> (z.B. C-SSRS, SIQ-JR) ist verpflichtend durchzuführen. Zusätzliche depressions-/angstspezifische Diagnostik (DIKJ, SCAS, BDI-II) wird empfohlen. Bei konkreter Gefährdung sofortige kinder- und jugendpsychiatrische Vorstellung.
+                </div>` : '';
+            const moodItemsHtml = (!isSelf && (depItemsElev || anxItemsElev)) ? `
+                <div class="gutachten-warning">
+                    <strong>Hinweis – Screener Ängstlichkeit/Depression (qualitativ)</strong><br>
+                    Aus ${respText} wurden ${anxItemsElev ? `<strong>${anxItems} Ängstlichkeits-Items</strong>` : ''}${anxItemsElev && depItemsElev ? ' und ' : ''}${depItemsElev ? `<strong>${depItems} Depressions-Items</strong>` : ''} mit ≥ 1 bewertet. Da Conners-3 für Eltern-/Lehrerbogen keine eigenen T-Norms für SI-Ä / SI-D bereitstellt, ist diese Auswertung qualitativ. <strong>Vertiefte Exploration depressiver/ängstlicher Symptomatik im Selbsturteil bzw. mit störungsspezifischen Verfahren (DIKJ, SCAS, CDI) wird empfohlen.</strong>
                 </div>` : '';
             const kiSafetyHtml = kiSevere ? `
                 <div class="gutachten-danger">
@@ -4696,19 +4764,8 @@
                 c[k] = x.v < 60 ? 'normal' : x.v < 65 ? 'borderline' : x.v < 70 ? 'clinical' : 'clinical';
             });
 
-            // T-Wert zu Prozentrang (Approximation)
-            const tToPR = t => {
-                if(t<=30) return '<2';
-                if(t<=35) return '~7';
-                if(t<=40) return '~16';
-                if(t<=45) return '~31';
-                if(t<=50) return '~50';
-                if(t<=55) return '~69';
-                if(t<=60) return '~84';
-                if(t<=65) return '~93';
-                if(t<=70) return '~98';
-                return '>98';
-            };
+            // T-Wert zu exaktem Prozentrang (Normal-CDF)
+            const tToPR = t => tToPRExact(t);
 
             const cText = val => val < 60 ? 'Durchschnittlich' : val < 65 ? 'Leicht erhöht' : val < 70 ? 'Erhöht' : 'Stark erhöht';
 
@@ -4725,6 +4782,7 @@
                 <div class="gutachten">
                     ${gutachtenHeader('Conners-3', 'Conners Skalen zu Aufmerksamkeit und Verhalten – 3. Auflage', pat)}
                     ${moodSafetyHtml}
+                    ${moodItemsHtml}
                     ${kiSafetyHtml}
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
@@ -4816,6 +4874,8 @@
                             ${scales.ag.v && c.ag !== 'normal' ? `<p><strong>AT (Aggressivität/Trotz):</strong> Der erhöhte Wert (T=${scales.ag.v}) weist auf erhöhte aggressive und/oder oppositionelle Verhaltensweisen hin.</p>` : ''}
                             ${anxVal !== null && anxVal >= 65 ? `<p><strong>SI-Ä (Ängstlichkeit):</strong> Der erhöhte Wert (T=${anxVal}) weist auf relevante Angstsymptome hin, die im Kontext einer ADHS-Abklärung differentialdiagnostisch berücksichtigt werden sollten.</p>` : ''}
                             ${depVal !== null && depVal >= 65 ? `<p><strong>SI-D (Depression):</strong> Der erhöhte Wert (T=${depVal}) deutet auf depressive Symptome hin, die komorbid oder differentialdiagnostisch relevant sein können.</p>` : ''}
+                            ${anxItems !== null && !isSelf ? `<p><strong>SI-Ä (Ängstlichkeit) – qualitativ:</strong> ${anxItems} Items wurden mit ≥ 1 bewertet${anxItemsElev ? '. Auffällig viele Items deuten auf relevante Angstsymptomatik hin – vertiefte Exploration empfohlen.' : '. Keine kritische Häufung.'}</p>` : ''}
+                            ${depItems !== null && !isSelf ? `<p><strong>SI-D (Depression) – qualitativ:</strong> ${depItems} Items wurden mit ≥ 1 bewertet${depItemsElev ? '. Auffällig viele Items deuten auf relevante depressive Symptomatik hin – vertiefte Exploration empfohlen.' : '. Keine kritische Häufung.'}</p>` : ''}
                             ${valid.every(([k])=>c[k]==='normal') && !(anxVal >= 65) && !(depVal >= 65) ? `<p>Das Ergebnisprofil liegt im unauffälligen Bereich. Es ergeben sich keine Hinweise auf eine ADHS oder damit assoziierte Probleme.</p>` : ''}
                             ${(c.adhd === 'clinical' || c.icd_as === 'clinical' || c.icd_hksv === 'clinical' || (c.in === 'clinical' && c.hi === 'clinical')) ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Die Befunde sprechen für eine hohe Wahrscheinlichkeit einer ADHS. Eine umfassende multimodale Diagnostik wird dringend empfohlen.</div>' : ''}
                         </div>
