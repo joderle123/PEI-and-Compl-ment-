@@ -2243,7 +2243,7 @@
             agreement_moderate:   {de:'Unterschiedlich', fr:'Différent', en:'Different'},
             agreement_agree:      {de:'Übereinstimmend', fr:'Concordant', en:'Concordant'},
             // Hint about partial translation
-            partial_translation:  {de:'', fr:'Note : la structure et les principales formulations d\'interprétation (SDQ, Conners-3, CBCL) sont traduites en français ; certains paragraphes spécifiques aux autres tests peuvent encore apparaître en allemand. La traduction complète des autres tests est en cours.', en:'Note: structural elements and the main interpretation building blocks (SDQ, Conners-3, CBCL) are translated to English; some test-specific paragraphs may still appear in German. Full translation of the remaining tests is in progress.'}
+            partial_translation:  {de:'', fr:'Note : la structure du rapport et les principales formulations d\'interprétation des 13 tests sont traduites en français. Certaines phrases narratives non couvertes par le dictionnaire de traduction peuvent encore apparaître en allemand.', en:'Note: report structure and the main interpretation building blocks of the 13 tests are translated to English. Some narrative sentences not covered by the translation dictionary may still appear in German.'}
         };
         function t(key) {
             const e = I18N[key];
@@ -2571,6 +2571,248 @@
             {de: /ICD-10 Symptomskalen/g, fr: 'Échelles de symptômes CIM-10', en: 'ICD-10 symptom scales'},
             {de: /Conners 3 Inhaltsskalen/g, fr: 'Échelles de contenu Conners 3', en: 'Conners 3 content scales'},
             {de: /Conners 3 Indices/g, fr: 'Indices Conners 3', en: 'Conners 3 indices'},
+        ]);
+
+        // ─── DIKJ Interpretationsbausteine ───────────────────────────────────────
+        addLocalizeRules([
+            {de: /Das DIKJ \(Stiensmeier-Pelster, Schürmann & Duda, 2014\) ist ein Selbstbeurteilungsverfahren zur Erfassung der Schwere einer depressiven Störung bei Kindern und Jugendlichen im Alter von 8-17 Jahren\. Es basiert auf dem Children's Depression Inventory \(CDI\) von Kovacs und umfasst 26 Items\./g,
+             fr: 'Le DIKJ (Stiensmeier-Pelster, Schürmann & Duda, 2014) est un instrument d\'auto-évaluation visant à évaluer la sévérité d\'un trouble dépressif chez les enfants et adolescents âgés de 8 à 17 ans. Il est basé sur le Children\'s Depression Inventory (CDI) de Kovacs et comprend 26 items.',
+             en: 'The DIKJ (Stiensmeier-Pelster, Schürmann & Duda, 2014) is a self-report instrument for assessing the severity of a depressive disorder in children and adolescents aged 8–17 years. It is based on Kovacs\' Children\'s Depression Inventory (CDI) and comprises 26 items.'},
+            {de: /Die Items erfassen kognitive, affektive und behaviorale Symptome einer Depression wie Traurigkeit, Hoffnungslosigkeit, Schuldgefühle, Appetitverlust, Schlafstörungen und sozialen Rückzug\./g,
+             fr: 'Les items évaluent les symptômes cognitifs, affectifs et comportementaux d\'une dépression tels que la tristesse, le désespoir, la culpabilité, la perte d\'appétit, les troubles du sommeil et le retrait social.',
+             en: 'The items assess cognitive, affective and behavioural symptoms of depression such as sadness, hopelessness, guilt, appetite loss, sleep disturbances and social withdrawal.'},
+            {de: /Der T-Wert von (\d+) liegt im unauffälligen Bereich\. ([^.<]+?) zeigt zum aktuellen Zeitpunkt keine Hinweise auf eine klinisch relevante depressive Symptomatik\. Das Ausmaß an negativen Kognitionen, Traurigkeit und depressiven Verhaltensweisen entspricht dem Durchschnitt der Altersgruppe\./g,
+             fr: 'Le score T de $1 se situe dans la plage normale. $2 ne montre actuellement aucun signe d\'une symptomatologie dépressive cliniquement pertinente. L\'intensité des cognitions négatives, de la tristesse et des comportements dépressifs correspond à la moyenne de la classe d\'âge.',
+             en: 'The T-score of $1 falls within the normal range. $2 currently shows no signs of clinically relevant depressive symptomatology. The level of negative cognitions, sadness and depressive behaviours matches the age-group average.'},
+            {de: /Der T-Wert von (\d+) liegt im leicht erhöhten Bereich\. ([^.<]+?) zeigt eine subklinische depressive Symptomatik, die zwar noch nicht das Ausmaß einer klinischen Depression erreicht, aber dennoch beachtet werden sollte\. Eine Verlaufsbeobachtung wird empfohlen\./g,
+             fr: 'Le score T de $1 se situe dans la plage légèrement élevée. $2 présente une symptomatologie dépressive infraclinique qui n\'atteint pas encore le seuil d\'une dépression clinique, mais qui mérite d\'être suivie. Un suivi longitudinal est recommandé.',
+             en: 'The T-score of $1 falls within the mildly elevated range. $2 shows subclinical depressive symptomatology that does not yet reach the threshold of clinical depression but warrants attention. Follow-up monitoring is recommended.'},
+            {de: /Der T-Wert von (\d+) liegt im klinisch auffälligen Bereich und weist auf eine bedeutsame depressive Symptomatik hin\. ([^.<]+?) berichtet über ein erhöhtes Maß an Traurigkeit, negativen Gedanken und\/oder Verhaltensänderungen, die einer weiteren Abklärung bedürfen\./g,
+             fr: 'Le score T de $1 se situe dans la plage cliniquement significative et indique une symptomatologie dépressive importante. $2 rapporte un niveau accru de tristesse, de pensées négatives et/ou de modifications comportementales qui nécessitent un bilan complémentaire.',
+             en: 'The T-score of $1 falls within the clinically significant range and indicates substantial depressive symptomatology. $2 reports increased sadness, negative thinking and/or behavioural changes requiring further assessment.'},
+            {de: /Bei Verdacht auf Depression sollte immer auch nach Suizidgedanken gefragt werden\. Eine kinder- und jugendpsychiatrische\/-psychotherapeutische Vorstellung wird dringend empfohlen\./g,
+             fr: 'Toute suspicion de dépression doit s\'accompagner d\'une exploration des idées suicidaires. Une consultation pédopsychiatrique/psychothérapeutique est vivement recommandée.',
+             en: 'Any suspected depression must always be accompanied by an exploration of suicidal ideation. A child & adolescent psychiatric/psychotherapeutic consultation is strongly recommended.'},
+            {de: /Die Ergebnisse sind vereinbar mit dem Vorliegen einer depressiven Episode nach ICD-10\/ICD-11:/g,
+             fr: 'Les résultats sont compatibles avec un épisode dépressif selon la CIM-10/CIM-11 :',
+             en: 'The results are consistent with a depressive episode per ICD-10/ICD-11:'},
+            {de: />Leichte depressive Episode</g, fr: '>Épisode dépressif léger<', en: '>Mild depressive episode<'},
+            {de: />Mittelgradige depressive Episode</g, fr: '>Épisode dépressif modéré<', en: '>Moderate depressive episode<'},
+            {de: />Schwere depressive Episode</g, fr: '>Épisode dépressif sévère<', en: '>Severe depressive episode<'},
+            {de: /Die Ergebnisse deuten auf eine subklinische depressive Verstimmung hin, die noch nicht die Kriterien einer depressiven Episode erfüllt\./g,
+             fr: 'Les résultats suggèrent une humeur dépressive infraclinique qui ne remplit pas encore les critères d\'un épisode dépressif.',
+             en: 'The results suggest a subclinical depressed mood that does not yet meet the criteria of a depressive episode.'},
+            {de: /Es ergeben sich keine Hinweise auf eine depressive Störung\./g,
+             fr: 'Aucun indice en faveur d\'un trouble dépressif n\'est mis en évidence.',
+             en: 'No indications of a depressive disorder are evident.'},
+            {de: /<strong>Dringende Empfehlung:<\/strong> Vorstellung bei Kinder- und Jugendpsychiater\/-psychotherapeut/g,
+             fr: '<strong>Recommandation urgente :</strong> consultation auprès d\'un·e pédopsychiatre/psychothérapeute',
+             en: '<strong>Urgent recommendation:</strong> consultation with a child & adolescent psychiatrist/psychotherapist'},
+            {de: /Abklärung von Suizidalität/g, fr: 'Évaluation de la suicidalité', en: 'Suicidality assessment'},
+            {de: /Vertiefte Diagnostik \(z\.B\. klinisches Interview, CDRS-R\)/g,
+             fr: 'Diagnostic approfondi (p. ex. entretien clinique, CDRS-R)',
+             en: 'In-depth diagnostic assessment (e.g. clinical interview, CDRS-R)'},
+            {de: /Einleitung einer Psychotherapie \(z\.B\. KVT, IPT-A\)/g,
+             fr: 'Mise en place d\'une psychothérapie (p. ex. TCC, IPT-A)',
+             en: 'Initiation of psychotherapy (e.g. CBT, IPT-A)'},
+            {de: /Einbezug der Familie in die Behandlung/g, fr: 'Implication de la famille dans le traitement', en: 'Family involvement in treatment'},
+            {de: /Niederschwellige Beratungsangebote prüfen/g, fr: 'Examiner des offres de conseil à bas seuil', en: 'Consider low-threshold counselling services'},
+            {de: /Bei Persistenz: vertiefte Diagnostik/g, fr: 'En cas de persistance : diagnostic approfondi', en: 'If persistent: in-depth assessment'},
+            {de: /Stärkung protektiver Faktoren/g, fr: 'Renforcement des facteurs protecteurs', en: 'Strengthening of protective factors'},
+            {de: /Keine spezifische Intervention erforderlich/g, fr: 'Aucune intervention spécifique requise', en: 'No specific intervention required'},
+            {de: /Bei Veränderungen erneute Diagnostik/g, fr: 'En cas de changements, nouvelle évaluation', en: 'Re-assessment if changes occur'},
+            {de: /SICHERHEITS­HINWEIS – Suizidalität/g, fr: 'AVERTISSEMENT DE SÉCURITÉ – Suicidalité', en: 'SAFETY WARNING – Suicidality'},
+            {de: /Es liegt eine <strong>akute Suizidgefährdung<\/strong> nahe\./g,
+             fr: 'Une <strong>mise en danger suicidaire aiguë</strong> est suggérée.',
+             en: 'An <strong>acute suicide risk</strong> is suggested.'},
+            {de: /Eine <strong>vertiefte Exploration der Suizidalität<\/strong> ist verpflichtend\./g,
+             fr: 'Une <strong>exploration approfondie de la suicidalité</strong> est obligatoire.',
+             en: 'A <strong>thorough exploration of suicidality</strong> is mandatory.'},
+            {de: />Item 9 – Suizidgedanken</g, fr: '>Item 9 – Idées suicidaires<', en: '>Item 9 – Suicidal ideation<'},
+            {de: />keine Suizidgedanken</g, fr: '>aucune idée suicidaire<', en: '>no suicidal ideation<'},
+            {de: />Gedanken an Tod \/ sich etwas antun</g, fr: '>idées de mort / se faire du mal<', en: '>thoughts of death / self-harm<'},
+            {de: />konkrete Suizidabsicht \/ -plan</g, fr: '>intention/plan suicidaire concret<', en: '>concrete suicidal intent / plan<'},
+            {de: />Akut</g, fr: '>Aigu<', en: '>Acute<'},
+            {de: /Normstichprobe:/g, fr: 'Échantillon normatif :', en: 'Normative sample:'},
+            {de: /Kombiniert \(alle Geschlechter\)/g, fr: 'Combiné (tous sexes confondus)', en: 'Combined (all sexes)'},
+            {de: />Jungen</g, fr: '>Garçons<', en: '>Boys<'},
+            {de: />Mädchen</g, fr: '>Filles<', en: '>Girls<'},
+            {de: /Altersgruppe ([0-9-]+) Jahre/g, fr: 'Tranche d\'âge $1 ans', en: 'Age group $1 years'},
+        ]);
+
+        // ─── DISYPS Interpretationsbausteine ─────────────────────────────────────
+        addLocalizeRules([
+            {de: /Der DISYPS-III \(Döpfner & Görtz-Dorten, 2017\) ist ein klinisches Diagnostiksystem zur Erfassung psychischer Störungen im Kindes- und Jugendalter\./g,
+             fr: 'Le DISYPS-III (Döpfner & Görtz-Dorten, 2017) est un système diagnostique clinique pour évaluer les troubles psychiques chez l\'enfant et l\'adolescent.',
+             en: 'The DISYPS-III (Döpfner & Görtz-Dorten, 2017) is a clinical diagnostic system for assessing mental disorders in children and adolescents.'},
+            {de: /Die vorliegenden Ergebnisse beziehen sich auf die Skalen zur Erfassung von ADHS-Symptomatik und Störungen des Sozialverhaltens \(SSV\)\./g,
+             fr: 'Les présents résultats concernent les échelles relatives au TDAH et aux troubles des conduites (SSV).',
+             en: 'The present results relate to the scales for ADHD symptomatology and conduct/disruptive behaviour disorders (SSV).'},
+            {de: /Die Ergebnisse werden als Stanine-Werte \(1-9\) dargestellt\. Stanine 1-4: unauffällig, Stanine 5-6: erhöht \(subklinisch\), Stanine 7-9: klinisch auffällig\./g,
+             fr: 'Les résultats sont présentés en stanines (1–9). Stanines 1–4 : normal ; 5–6 : élevé (infraclinique) ; 7–9 : cliniquement significatif.',
+             en: 'Results are reported as stanines (1–9). Stanines 1–4: normal; 5–6: elevated (subclinical); 7–9: clinically significant.'},
+            {de: /<strong>Verwendete Version:<\/strong> ([^.<]+?)\. Norm­tabellen und Cut-offs sind version- und altersspezifisch; FBB und SBB sind nicht direkt austauschbar\./g,
+             fr: '<strong>Version utilisée :</strong> $1. Les tables normatives et seuils sont spécifiques à la version et à l\'âge ; FBB et SBB ne sont pas directement interchangeables.',
+             en: '<strong>Version used:</strong> $1. Norm tables and cut-offs are version- and age-specific; FBB and SBB are not directly interchangeable.'},
+            {de: /Das Ergebnisprofil zeigt sowohl deutlich erhöhte ADHS-Symptome als auch auffällige Werte im Bereich des Sozialverhaltens\. Diese Kombination ist häufig und kann auf eine Hyperkinetische Störung des Sozialverhaltens \(F90\.1\) hinweisen\./g,
+             fr: 'Le profil montre à la fois des symptômes TDAH nettement élevés et des valeurs significatives dans le comportement social. Cette combinaison est fréquente et peut indiquer un trouble hyperkinétique des conduites (F90.1).',
+             en: 'The profile shows clearly elevated ADHD symptoms together with significant values in conduct behaviour. This combination is frequent and may indicate hyperkinetic conduct disorder (F90.1).'},
+            {de: /Das Ergebnisprofil zeigt klinisch relevante ADHS-Symptome/g,
+             fr: 'Le profil montre des symptômes TDAH cliniquement pertinents',
+             en: 'The profile shows clinically relevant ADHD symptoms'},
+            {de: /Das Ergebnisprofil zeigt auffällige Werte im Bereich des Sozialverhaltens\./g,
+             fr: 'Le profil montre des valeurs significatives dans le comportement social.',
+             en: 'The profile shows significant values in conduct behaviour.'},
+            {de: /Es zeigen sich grenzwertige Befunde in einzelnen Skalen\. Eine Verlaufsbeobachtung ist empfohlen\./g,
+             fr: 'Des résultats limites apparaissent sur certaines échelles. Un suivi longitudinal est recommandé.',
+             en: 'Borderline findings appear on individual scales. Follow-up monitoring is recommended.'},
+            {de: /Das Ergebnisprofil zeigt keine klinisch relevanten Auffälligkeiten im Bereich ADHS oder Störung des Sozialverhaltens\./g,
+             fr: 'Le profil ne montre aucune anomalie cliniquement pertinente concernant le TDAH ou les troubles des conduites.',
+             en: 'The profile shows no clinically relevant abnormalities concerning ADHD or conduct disorder.'},
+            {de: /Die Diagnosekriterien für ADHS erfordern neben der Symptomausprägung auch eine deutliche Beeinträchtigung in mehreren Lebensbereichen sowie einen Beginn vor dem 12\. Lebensjahr\./g,
+             fr: 'Les critères diagnostiques du TDAH exigent, outre l\'intensité des symptômes, une altération marquée dans plusieurs domaines de vie ainsi qu\'un début avant 12 ans.',
+             en: 'The diagnostic criteria for ADHD require, in addition to symptom severity, marked impairment across several life domains and an onset before the age of 12.'},
+            {de: /Multimodale ADHS-Diagnostik \(Anamnese, Verhaltensbeobachtung, weitere Fragebögen\)/g,
+             fr: 'Diagnostic TDAH multimodal (anamnèse, observation comportementale, questionnaires complémentaires)',
+             en: 'Multimodal ADHD assessment (history, behavioural observation, additional questionnaires)'},
+            {de: /Neuropsychologische Diagnostik \(Aufmerksamkeit, Exekutivfunktionen\)/g,
+             fr: 'Bilan neuropsychologique (attention, fonctions exécutives)',
+             en: 'Neuropsychological assessment (attention, executive functions)'},
+            {de: />FBB – Eltern</g, fr: '>FBB – Parents<', en: '>FBB – Parents<'},
+            {de: />FBB – Lehrer</g, fr: '>FBB – Enseignant·e<', en: '>FBB – Teacher<'},
+            {de: />SBB – Selbst \(ab 11 J\.\)</g, fr: '>SBB – Auto-évaluation (à partir de 11 ans)<', en: '>SBB – Self (from age 11)<'},
+            {de: />Unaufmerksamkeit</g, fr: '>Inattention<', en: '>Inattention<'},
+            {de: />Hyperaktivität</g, fr: '>Hyperactivité<', en: '>Hyperactivity<'},
+            {de: />Impulsivität</g, fr: '>Impulsivité<', en: '>Impulsivity<'},
+            {de: />ADHS-Gesamtwert</g, fr: '>Score total TDAH<', en: '>ADHD total score<'},
+            {de: />Oppositionelles Verhalten</g, fr: '>Comportement oppositionnel<', en: '>Oppositional behaviour<'},
+            {de: />Aggressiv-dissoziales Verhalten</g, fr: '>Comportement agressif-dissocial<', en: '>Aggressive-dissocial behaviour<'},
+            {de: />SSV-Gesamtwert</g, fr: '>Score total SSV<', en: '>SSV total score<'},
+            {de: /vorwiegend unaufmerksamer Präsentationstyp/g, fr: 'présentation à prédominance inattentive', en: 'predominantly inattentive presentation'},
+            {de: /vorwiegend hyperaktiv-impulsiver Präsentationstyp/g, fr: 'présentation à prédominance hyperactive-impulsive', en: 'predominantly hyperactive-impulsive presentation'},
+            {de: /kombinierter Präsentationstyp/g, fr: 'présentation combinée', en: 'combined presentation'},
+        ]);
+
+        // ─── AFS Interpretationsbausteine ────────────────────────────────────────
+        addLocalizeRules([
+            {de: /Der AFS \(Wieczerkowski et al\., 1981\) erfasst schulbezogene Ängste und Schulunlust bei Schülerinnen und Schülern\./g,
+             fr: 'L\'AFS (Wieczerkowski et al., 1981) évalue les peurs liées à l\'école et l\'aversion scolaire chez les élèves.',
+             en: 'The AFS (Wieczerkowski et al., 1981) assesses school-related fears and school dislike in students.'},
+            {de: />Prüfungsangst</g, fr: '>Anxiété d\'examen<', en: '>Test anxiety<'},
+            {de: />Manifeste Angst</g, fr: '>Anxiété manifeste<', en: '>Manifest anxiety<'},
+            {de: />Schulunlust</g, fr: '>Aversion scolaire<', en: '>School dislike<'},
+            {de: />Soziale Erwünschtheit</g, fr: '>Désirabilité sociale<', en: '>Social desirability<'},
+        ]);
+
+        // ─── d2-R Interpretationsbausteine ───────────────────────────────────────
+        addLocalizeRules([
+            {de: /Der d2-R \(Brickenkamp, Schmidt-Atzert & Liepmann, 2010\) ist ein standardisierter Aufmerksamkeits- und Konzentrationstest für Personen ab 9 Jahren\. Der Test erfasst die Fähigkeit zur fokussierten und selektiven Aufmerksamkeit unter Zeitdruck\./g,
+             fr: 'Le d2-R (Brickenkamp, Schmidt-Atzert & Liepmann, 2010) est un test standardisé d\'attention et de concentration pour les personnes à partir de 9 ans. Il évalue la capacité d\'attention focalisée et sélective sous pression temporelle.',
+             en: 'The d2-R (Brickenkamp, Schmidt-Atzert & Liepmann, 2010) is a standardised attention and concentration test for individuals aged 9 and above. It measures focused and selective attention under time pressure.'},
+            {de: /Hinweis: Bei Fehler \(F\), Fehlerprozent \(F%\) und Schwankungsbreite \(SB\) sind hohe Prozentränge ungünstig\./g,
+             fr: 'Remarque : pour les erreurs (F), le pourcentage d\'erreurs (F%) et l\'amplitude de variation (SB), des rangs centiles élevés sont défavorables.',
+             en: 'Note: for errors (F), error percentage (F%) and variability (SB), high percentile ranks are unfavourable.'},
+            {de: />Konzentrationsleistung \(KL\)</g, fr: '>Performance de concentration (KL)<', en: '>Concentration performance (KL)<'},
+            {de: />Bearbeitungsgeschwindigkeit-Ordnung \(BZO\)</g, fr: '>Vitesse de traitement ordonnée (BZO)<', en: '>Processing speed ordered (BZO)<'},
+            {de: />Fehler \(F\)</g, fr: '>Erreurs (F)<', en: '>Errors (F)<'},
+            {de: />Fehlerprozent \(F%\)</g, fr: '>Pourcentage d\'erreurs (F%)<', en: '>Error percentage (F%)<'},
+            {de: />Schwankungsbreite \(SB\)</g, fr: '>Amplitude de variation (SB)<', en: '>Variability (SB)<'},
+        ]);
+
+        // ─── Vineland Interpretationsbausteine ───────────────────────────────────
+        addLocalizeRules([
+            {de: /Der Vineland-3 \(Sparrow, Cicchetti & Saulnier, 2016\) ist ein Verfahren zur umfassenden Erfassung adaptiver Verhaltensweisen bei Kindern, Jugendlichen und Erwachsenen\./g,
+             fr: 'Le Vineland-3 (Sparrow, Cicchetti & Saulnier, 2016) est un instrument complet d\'évaluation des comportements adaptatifs chez l\'enfant, l\'adolescent et l\'adulte.',
+             en: 'The Vineland-3 (Sparrow, Cicchetti & Saulnier, 2016) is a comprehensive instrument for assessing adaptive behaviour in children, adolescents and adults.'},
+            {de: /Der Adaptive Behavior Composite \(ABC\) von <strong>(\d+)<\/strong>/g,
+             fr: 'Le score composite de comportement adaptatif (ABC) de <strong>$1</strong>',
+             en: 'The Adaptive Behavior Composite (ABC) of <strong>$1</strong>'},
+            {de: /Hauptdomänen \(Standardwerte M=100, SD=15\)/g, fr: 'Domaines principaux (scores standard M=100, ÉT=15)', en: 'Main domains (standard scores M=100, SD=15)'},
+            {de: />Kommunikation</g, fr: '>Communication<', en: '>Communication<'},
+            {de: />Alltagsfertigkeiten</g, fr: '>Compétences de la vie quotidienne<', en: '>Daily Living Skills<'},
+            {de: />Sozialisation</g, fr: '>Socialisation<', en: '>Socialisation<'},
+            {de: />Motorik</g, fr: '>Motricité<', en: '>Motor skills<'},
+            {de: />Adaptive Behavior Composite \(ABC\)</g, fr: '>Score composite (ABC)<', en: '>Adaptive Behavior Composite (ABC)<'},
+        ]);
+
+        // ─── FEEL-KJ Interpretationsbausteine ────────────────────────────────────
+        addLocalizeRules([
+            {de: /Der FEEL-KJ \(Grob & Smolenski, 2009\) erfasst die Emotionsregulation bei Kindern und Jugendlichen im Alter von 8-18 Jahren\./g,
+             fr: 'Le FEEL-KJ (Grob & Smolenski, 2009) évalue la régulation émotionnelle chez les enfants et adolescents âgés de 8 à 18 ans.',
+             en: 'The FEEL-KJ (Grob & Smolenski, 2009) assesses emotion regulation in children and adolescents aged 8–18 years.'},
+            {de: /Adaptive Strategien/g, fr: 'Stratégies adaptatives', en: 'Adaptive strategies'},
+            {de: /Maladaptive Strategien/g, fr: 'Stratégies inadaptées', en: 'Maladaptive strategies'},
+        ]);
+
+        // ─── CFT 20-R Interpretationsbausteine ───────────────────────────────────
+        addLocalizeRules([
+            {de: /Der CFT 20-R \(Weiß, 2006\) ist ein sprachfreier Intelligenztest\./g,
+             fr: 'Le CFT 20-R (Weiß, 2006) est un test d\'intelligence non verbal.',
+             en: 'The CFT 20-R (Weiß, 2006) is a non-verbal intelligence test.'},
+            {de: />Gesamt-IQ \(CFT 20-R\)</g, fr: '>QI total (CFT 20-R)<', en: '>Total IQ (CFT 20-R)<'},
+        ]);
+
+        // ─── SON-R Interpretationsbausteine ──────────────────────────────────────
+        addLocalizeRules([
+            {de: /Der SON-R \(Snijders-Oomen Non-verbaler Intelligenztest; Tellegen et al\.\) ist ein sprachfreier Intelligenztest für Kinder und Jugendliche\./g,
+             fr: 'Le SON-R (test d\'intelligence non verbal de Snijders-Oomen ; Tellegen et al.) est un test d\'intelligence non verbal pour enfants et adolescents.',
+             en: 'The SON-R (Snijders-Oomen Non-verbal Intelligence Test; Tellegen et al.) is a non-verbal intelligence test for children and adolescents.'},
+            {de: /Da der SON-R ein sprachfreier Test ist, bildet er kognitive Fähigkeiten unabhängig von Sprachkompetenzen ab\./g,
+             fr: 'Comme le SON-R est un test non verbal, il mesure les capacités cognitives indépendamment des compétences linguistiques.',
+             en: 'As the SON-R is a non-verbal test, it captures cognitive abilities independently of language skills.'},
+        ]);
+
+        // ─── K-ABC II Interpretationsbausteine ───────────────────────────────────
+        addLocalizeRules([
+            {de: /Die K-ABC II \(Kaufman & Kaufman, deutsche Adaptation Melchers & Melchers, 2015\) ist ein individuelles Intelligenz- und Lernfähigkeitstestverfahren für Kinder und Jugendliche im Alter von 3 bis 18 Jahren\./g,
+             fr: 'Le K-ABC II (Kaufman & Kaufman, adaptation allemande Melchers & Melchers, 2015) est un test individuel d\'intelligence et d\'aptitude à l\'apprentissage pour enfants et adolescents de 3 à 18 ans.',
+             en: 'The K-ABC II (Kaufman & Kaufman, German adaptation Melchers & Melchers, 2015) is an individual intelligence and learning-ability test for children and adolescents aged 3–18 years.'},
+            {de: />Sequenzielles Denken</g, fr: '>Pensée séquentielle<', en: '>Sequential processing<'},
+            {de: />Simultanes Denken</g, fr: '>Pensée simultanée<', en: '>Simultaneous processing<'},
+            {de: />Lernfähigkeit</g, fr: '>Capacité d\'apprentissage<', en: '>Learning ability<'},
+            {de: />Planungsfähigkeit</g, fr: '>Capacité de planification<', en: '>Planning ability<'},
+            {de: />Wissen</g, fr: '>Connaissances<', en: '>Knowledge<'},
+        ]);
+
+        // ─── WISC-V Interpretationsbausteine ─────────────────────────────────────
+        addLocalizeRules([
+            {de: /Die WISC-V \(Wechsler, 2014; deutsche Adaptation Petermann, 2017\) ist das international etablierte Verfahren zur Erfassung kognitiver Fähigkeiten bei Kindern und Jugendlichen von 6 bis 16 Jahren\./g,
+             fr: 'Le WISC-V (Wechsler, 2014 ; adaptation allemande Petermann, 2017) est l\'instrument internationalement établi pour évaluer les capacités cognitives des enfants et adolescents de 6 à 16 ans.',
+             en: 'The WISC-V (Wechsler, 2014; German adaptation Petermann, 2017) is the internationally established instrument for assessing cognitive abilities in children and adolescents aged 6–16 years.'},
+            {de: /Die Ergebnisse werden als IQ-Werte \(Mittelwert M=100, Standardabweichung SD=15\) dargestellt\./g,
+             fr: 'Les résultats sont exprimés en valeurs de QI (moyenne M=100, écart-type ÉT=15).',
+             en: 'Results are expressed as IQ scores (mean M=100, standard deviation SD=15).'},
+            {de: />Sprachverständnis \(SVI\)</g, fr: '>Compréhension verbale (SVI)<', en: '>Verbal Comprehension (VCI)<'},
+            {de: />Visuell-räumlich \(VRI\)</g, fr: '>Visuo-spatial (VRI)<', en: '>Visual-Spatial (VSI)<'},
+            {de: />Fluides Schlussfolgern \(FRI\)</g, fr: '>Raisonnement fluide (FRI)<', en: '>Fluid Reasoning (FRI)<'},
+            {de: />Arbeitsgedächtnis \(AMI\)</g, fr: '>Mémoire de travail (AMI)<', en: '>Working Memory (WMI)<'},
+            {de: />Verarbeitungsgeschwindigkeit \(VGI\)</g, fr: '>Vitesse de traitement (VGI)<', en: '>Processing Speed (PSI)<'},
+            {de: />Gesamt-IQ \(FSIQ\)</g, fr: '>QI total (FSIQ)<', en: '>Full-Scale IQ (FSIQ)<'},
+            {de: />Allgemeiner Fähigkeitsindex \(AFI\)</g, fr: '>Indice général d\'aptitude (AFI)<', en: '>General Ability Index (GAI)<'},
+            {de: />Kognitiver Leistungsindex \(KLI\)</g, fr: '>Indice de performance cognitive (KLI)<', en: '>Cognitive Proficiency Index (KLI)<'},
+            {de: />Nonverbaler Index \(NVI\)</g, fr: '>Indice non verbal (NVI)<', en: '>Nonverbal Index (NVI)<'},
+            // Klassifikationen (M=100, SD=15)
+            {de: /Weit überdurchschnittlich/g, fr: 'Très au-dessus de la moyenne', en: 'Well above average'},
+            {de: /Überdurchschnittlich/g, fr: 'Au-dessus de la moyenne', en: 'Above average'},
+            {de: /Durchschnittlich/g, fr: 'Moyenne', en: 'Average'},
+            {de: /Unterdurchschnittlich/g, fr: 'En dessous de la moyenne', en: 'Below average'},
+            {de: /Weit unterdurchschnittlich/g, fr: 'Très en dessous de la moyenne', en: 'Well below average'},
+        ]);
+
+        // ─── Diagnostische ICD-10/11-Codes – generische Beschriftungen ───────────
+        addLocalizeRules([
+            {de: />Einfache Aktivitäts- und Aufmerksamkeitsstörung</g,
+             fr: '>Trouble simple de l\'activité et de l\'attention<',
+             en: '>Simple activity and attention disorder<'},
+            {de: />Hyperkinetische Störung des Sozialverhaltens</g,
+             fr: '>Trouble hyperkinétique des conduites<',
+             en: '>Hyperkinetic conduct disorder<'},
+            {de: />Störung des Sozialverhaltens</g,
+             fr: '>Trouble des conduites<',
+             en: '>Conduct disorder<'},
+            {de: />Störung mit oppositionellem Trotzverhalten</g,
+             fr: '>Trouble oppositionnel avec provocation<',
+             en: '>Oppositional defiant disorder<'},
         ]);
 
         // ─── CBCL spezifische Interpretationsbausteine ───────────────────────────
