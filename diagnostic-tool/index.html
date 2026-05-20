@@ -1635,7 +1635,7 @@
                     </div>
                     <p class="card-subtitle">Diagnostik-System für psychische Störungen – ADHS und Sozialverhalten</p>
                 </div>
-                <form id="disyps-form" onsubmit="evaluateDISYPS(event)">
+                <form id="disyps-form" data-i18n-native="1" onsubmit="evaluateDISYPS(event)">
                     <div class="form-section">
                         <div class="form-section-title">Beurteiler / Fragebogenversion</div>
                         <div class="radio-group">
@@ -5773,146 +5773,239 @@
             agg: {n:'Aggressiv-dissoziales Verhalten', desc:'Regelverletzungen, Aggression'},
             ssv: {n:'SSV-Gesamtwert', desc:'Gesamtmaß für Störung des Sozialverhaltens'}
         };
+        function disypsScaleName(k) {
+            const fr = {ina:'Inattention',hyp:'Hyperactivité',imp:'Impulsivité',adhs:'Score total TDAH',opp:'Comportement oppositionnel',agg:'Comportement agressif-dissocial',ssv:'Score total TC'};
+            const en = {ina:'Inattention',hyp:'Hyperactivity',imp:'Impulsivity',adhs:'ADHD Total Score',opp:'Oppositional Behaviour',agg:'Aggressive-Dissocial Behaviour',ssv:'CD Total Score'};
+            return tt(DISYPS_SCALES[k].n, fr[k], en[k]);
+        }
+        function disypsScaleDesc(k) {
+            const fr = {
+                ina:'Difficultés à maintenir l\'attention',
+                hyp:'Activité motrice excessive',
+                imp:'Action précipitée sans tenir compte des conséquences',
+                adhs:'Mesure globale de la symptomatologie TDAH',
+                opp:'Résistance aux demandes, irritabilité',
+                agg:'Transgressions des règles, agression',
+                ssv:'Mesure globale du trouble des conduites'
+            };
+            const en = {
+                ina:'Difficulties maintaining attention',
+                hyp:'Excessive motor activity',
+                imp:'Impulsive action without considering consequences',
+                adhs:'Overall measure of ADHD symptomatology',
+                opp:'Resistance to demands, irritability',
+                agg:'Rule violations, aggression',
+                ssv:'Overall measure of Conduct Disorder'
+            };
+            return tt(DISYPS_SCALES[k].desc, fr[k], en[k]);
+        }
 
         function staClass(v) { return v<=4?'normal':v<=6?'borderline':'clinical'; }
-        function staText(c) { return {normal:'Unauffällig (Stanine 1-4)',borderline:'Erhöht (Stanine 5-6)',clinical:'Auffällig (Stanine 7-9)'}[c]; }
+        function staText(c) {
+            const de = {normal:'Unauffällig (Stanine 1-4)',borderline:'Erhöht (Stanine 5-6)',clinical:'Auffällig (Stanine 7-9)'};
+            const fr = {normal:'Normal (Stanine 1-4)',borderline:'Élevé (Stanine 5-6)',clinical:'Cliniquement significatif (Stanine 7-9)'};
+            const en = {normal:'Normal (Stanine 1-4)',borderline:'Elevated (Stanine 5-6)',clinical:'Clinically significant (Stanine 7-9)'};
+            return tt(de[c], fr[c], en[c]);
+        }
 
         function evaluateDISYPS(e) {
             e.preventDefault();
             const pat = getPatient();
             const resp = document.querySelector('input[name="dis-resp"]:checked')?.value || 'fbb-parent';
-            const respLabel = {
-                'fbb-parent':  'FBB – Elternurteil',
-                'fbb-teacher': 'FBB – Lehrerurteil',
-                'sbb':         'SBB – Selbsturteil'
-            }[resp];
+            const respLabel = tt(
+                {'fbb-parent':'FBB – Elternurteil','fbb-teacher':'FBB – Lehrerurteil','sbb':'SBB – Selbsturteil'}[resp],
+                {'fbb-parent':'FBB – Évaluation parentale','fbb-teacher':'FBB – Évaluation enseignant·e','sbb':'SBB – Auto-évaluation'}[resp],
+                {'fbb-parent':'FBB – Parent rating','fbb-teacher':'FBB – Teacher rating','sbb':'SBB – Self-report'}[resp]
+            );
             const d = {ina:v('dis-ina'),hyp:v('dis-hyp'),imp:v('dis-imp'),adhs:v('dis-adhs'),opp:v('dis-opp'),agg:v('dis-agg'),ssv:v('dis-ssv')};
             const valid = Object.entries(d).filter(([k,x])=>x!==null);
-            if(!valid.length) return alert('Mindestens ein Wert eingeben');
+            if(!valid.length) return alert(tt('Mindestens ein Wert eingeben','Veuillez saisir au moins une valeur','Please enter at least one value'));
 
             const c = {}; valid.forEach(([k,x])=>c[k]=staClass(x));
-            const labels = {ina:'Unaufmerks.',hyp:'Hyperaktiv.',imp:'Impulsiv.',adhs:'ADHS',opp:'Opposition.',agg:'Aggressiv',ssv:'SSV'};
+            const labels = {
+                ina: tt('Unaufmerks.','Inattention','Inattention'),
+                hyp: tt('Hyperaktiv.','Hyperact.','Hyperact.'),
+                imp: tt('Impulsiv.','Impulsiv.','Impulsiv.'),
+                adhs: tt('ADHS','TDAH','ADHD'),
+                opp: tt('Opposition.','Opposition','Opposition'),
+                agg: tt('Aggressiv','Agressif','Aggressive'),
+                ssv: tt('SSV','TC','CD')
+            };
 
-            // ADHS-Subtyp bestimmen
             let subtyp = '';
             if(d.adhs !== null && c.adhs === 'clinical') {
                 if(c.ina === 'clinical' && (c.hyp !== 'clinical' && c.imp !== 'clinical')) {
-                    subtyp = 'vorwiegend unaufmerksamer Präsentationstyp (F90.0)';
+                    subtyp = tt('vorwiegend unaufmerksamer Präsentationstyp (F90.0)','présentation à prédominance inattentive (F90.0)','predominantly inattentive presentation (F90.0)');
                 } else if((c.hyp === 'clinical' || c.imp === 'clinical') && c.ina !== 'clinical') {
-                    subtyp = 'vorwiegend hyperaktiv-impulsiver Präsentationstyp';
+                    subtyp = tt('vorwiegend hyperaktiv-impulsiver Präsentationstyp','présentation à prédominance hyperactive-impulsive','predominantly hyperactive-impulsive presentation');
                 } else if(c.ina === 'clinical' && (c.hyp === 'clinical' || c.imp === 'clinical')) {
-                    subtyp = 'kombinierter Präsentationstyp (F90.0)';
+                    subtyp = tt('kombinierter Präsentationstyp (F90.0)','présentation combinée (F90.0)','combined presentation (F90.0)');
                 }
             }
 
-            // Interpretation
-            // ADHS klinisch, wenn entweder der ADHS-Gesamtwert klinisch ist
-            // ODER mindestens zwei der drei Kernsymptom-Skalen (UA / HYP / IMP) klinisch sind
-            // (entspricht DSM-5-Kriterien für einen kombinierten bzw. eindeutigen Typ).
             let interp = '';
             const coreClin = [c.ina, c.hyp, c.imp].filter(x => x === 'clinical').length;
             const adhs_clin = c.adhs === 'clinical' || coreClin >= 2;
             const ssv_clin = c.ssv === 'clinical' || c.opp === 'clinical' || c.agg === 'clinical';
 
             if(adhs_clin && ssv_clin) {
-                interp = `Das Ergebnisprofil zeigt sowohl deutlich erhöhte ADHS-Symptome als auch auffällige Werte im Bereich des Sozialverhaltens. Diese Kombination ist häufig und kann auf eine Hyperkinetische Störung des Sozialverhaltens (F90.1) hinweisen.`;
+                interp = tt(
+                    'Das Ergebnisprofil zeigt sowohl deutlich erhöhte ADHS-Symptome als auch auffällige Werte im Bereich des Sozialverhaltens. Diese Kombination ist häufig und kann auf eine Hyperkinetische Störung des Sozialverhaltens (F90.1) hinweisen.',
+                    'Le profil de résultats montre à la fois des symptômes TDAH nettement élevés et des scores cliniquement significatifs dans les conduites. Cette combinaison est fréquente et peut évoquer un trouble hyperkinétique des conduites (F90.1).',
+                    'The result profile shows both clearly elevated ADHD symptoms and clinically significant scores in conduct. This combination is frequent and may indicate Hyperkinetic Conduct Disorder (F90.1).'
+                );
             } else if(adhs_clin) {
-                interp = `Das Ergebnisprofil zeigt klinisch relevante ADHS-Symptome${subtyp ? ` vom ${subtyp}` : ''}. Die Diagnosestellung erfordert eine multimodale Diagnostik unter Einbezug verschiedener Informationsquellen und Settings.`;
+                interp = tt(
+                    `Das Ergebnisprofil zeigt klinisch relevante ADHS-Symptome${subtyp ? ` vom ${subtyp}` : ''}. Die Diagnosestellung erfordert eine multimodale Diagnostik unter Einbezug verschiedener Informationsquellen und Settings.`,
+                    `Le profil de résultats montre des symptômes TDAH cliniquement pertinents${subtyp ? ` (${subtyp})` : ''}. La pose du diagnostic requiert un bilan multimodal intégrant différentes sources d'information et différents contextes.`,
+                    `The result profile shows clinically relevant ADHD symptoms${subtyp ? ` (${subtyp})` : ''}. Diagnosis requires multimodal assessment including various information sources and settings.`
+                );
             } else if(ssv_clin) {
-                interp = `Das Ergebnisprofil zeigt auffällige Werte im Bereich des Sozialverhaltens. Je nach Ausprägung sollte zwischen einer Störung des Sozialverhaltens mit oppositionellem, aufsässigem Verhalten (F91.3) und einer Störung des Sozialverhaltens (F91.x) differenziert werden.`;
+                interp = tt(
+                    'Das Ergebnisprofil zeigt auffällige Werte im Bereich des Sozialverhaltens. Je nach Ausprägung sollte zwischen einer Störung des Sozialverhaltens mit oppositionellem, aufsässigem Verhalten (F91.3) und einer Störung des Sozialverhaltens (F91.x) differenziert werden.',
+                    'Le profil de résultats montre des scores cliniquement significatifs dans les conduites. Selon l\'intensité, il convient de différencier entre un trouble oppositionnel avec provocation (F91.3) et un trouble des conduites (F91.x).',
+                    'The result profile shows clinically significant scores in conduct. Depending on severity, differentiate between Oppositional Defiant Disorder (F91.3) and Conduct Disorder (F91.x).'
+                );
             } else if(valid.some(([k])=>c[k]==='borderline')) {
-                interp = `Es zeigen sich grenzwertige Befunde in einzelnen Skalen. Eine Verlaufsbeobachtung ist empfohlen. Bei Persistenz oder Zunahme der Symptomatik sollte eine vertiefte Diagnostik erfolgen.`;
+                interp = tt(
+                    'Es zeigen sich grenzwertige Befunde in einzelnen Skalen. Eine Verlaufsbeobachtung ist empfohlen. Bei Persistenz oder Zunahme der Symptomatik sollte eine vertiefte Diagnostik erfolgen.',
+                    'Des résultats limites apparaissent sur certaines échelles. Un suivi évolutif est recommandé. En cas de persistance ou d\'aggravation des symptômes, un bilan approfondi devrait être réalisé.',
+                    'Borderline findings appear on individual scales. Follow-up monitoring is recommended. If symptoms persist or worsen, in-depth assessment should be conducted.'
+                );
             } else {
-                interp = `Das Ergebnisprofil zeigt keine klinisch relevanten Auffälligkeiten im Bereich ADHS oder Störung des Sozialverhaltens.`;
+                interp = tt(
+                    'Das Ergebnisprofil zeigt keine klinisch relevanten Auffälligkeiten im Bereich ADHS oder Störung des Sozialverhaltens.',
+                    'Le profil de résultats ne montre aucune anomalie cliniquement pertinente dans le domaine TDAH ou trouble des conduites.',
+                    'The result profile shows no clinically relevant abnormalities in ADHD or Conduct Disorder.'
+                );
             }
 
-            // Empfehlungen
+            const liD = txt => `<li>${txt}</li>`;
             let empf = '<ul class="gutachten-list">';
             if(adhs_clin) {
-                empf += '<li>Multimodale ADHS-Diagnostik (Anamnese, Verhaltensbeobachtung, weitere Fragebögen)</li>';
-                empf += '<li>Neuropsychologische Diagnostik (Aufmerksamkeit, Exekutivfunktionen)</li>';
-                empf += '<li>Einbezug von Eltern- und Lehrerurteil</li>';
-                empf += '<li>Ggf. organische Abklärung (Schilddrüse, EEG)</li>';
+                empf += liD(tt('Multimodale ADHS-Diagnostik (Anamnese, Verhaltensbeobachtung, weitere Fragebögen)','Bilan TDAH multimodal (anamnèse, observation comportementale, questionnaires complémentaires)','Multimodal ADHD assessment (anamnesis, behavioural observation, further questionnaires)'));
+                empf += liD(tt('Neuropsychologische Diagnostik (Aufmerksamkeit, Exekutivfunktionen)','Bilan neuropsychologique (attention, fonctions exécutives)','Neuropsychological assessment (attention, executive functions)'));
+                empf += liD(tt('Einbezug von Eltern- und Lehrerurteil','Inclusion des évaluations parentale et enseignant·e','Inclusion of parent and teacher ratings'));
+                empf += liD(tt('Ggf. organische Abklärung (Schilddrüse, EEG)','Le cas échéant, bilan organique (thyroïde, EEG)','Organic workup if needed (thyroid, EEG)'));
             }
             if(ssv_clin) {
-                empf += '<li>Exploration familiärer und sozialer Risikofaktoren</li>';
-                empf += '<li>Abklärung komorbider Störungen (ADHS, Emotion)</li>';
+                empf += liD(tt('Exploration familiärer und sozialer Risikofaktoren','Exploration des facteurs de risque familiaux et sociaux','Exploration of family and social risk factors'));
+                empf += liD(tt('Abklärung komorbider Störungen (ADHS, Emotion)','Bilan des troubles comorbides (TDAH, émotion)','Assessment of comorbid disorders (ADHD, emotional)'));
             }
             if(!adhs_clin && !ssv_clin) {
-                empf += '<li>Keine unmittelbare Intervention erforderlich</li>';
+                empf += liD(tt('Keine unmittelbare Intervention erforderlich','Aucune intervention immédiate requise','No immediate intervention required'));
             }
             empf += '</ul>';
 
             const gutachten = `
                 <div class="gutachten">
-                    ${gutachtenHeader('DISYPS-III', 'Diagnostik-System für psychische Störungen nach ICD-10/11 und DSM-5', pat)}
+                    ${gutachtenHeader('DISYPS-III', tt('Diagnostik-System für psychische Störungen nach ICD-10/11 und DSM-5','Système diagnostique des troubles psychiques selon CIM-10/11 et DSM-5','Diagnostic system for mental disorders per ICD-10/11 and DSM-5'), pat)}
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <h4 class="gutachten-section-title">${tt('1. Testbeschreibung','1. Description du test','1. Test description')}</h4>
                         <div class="gutachten-text">
-                            <p>Der DISYPS-III (Döpfner & Görtz-Dorten, 2017) ist ein klinisches Diagnostiksystem zur Erfassung psychischer Störungen im Kindes- und Jugendalter. Die vorliegenden Ergebnisse beziehen sich auf die Skalen zur Erfassung von ADHS-Symptomatik und Störungen des Sozialverhaltens (SSV).</p>
-                            <p>Die Ergebnisse werden als Stanine-Werte (1-9) dargestellt. Stanine 1-4: unauffällig, Stanine 5-6: erhöht (subklinisch), Stanine 7-9: klinisch auffällig.</p>
-                            <p><strong>Verwendete Version:</strong> ${respLabel}. Norm­tabellen und Cut-offs sind version- und altersspezifisch; FBB und SBB sind nicht direkt austauschbar.</p>
+                            <p>${tt(
+                                'Der DISYPS-III (Döpfner & Görtz-Dorten, 2017) ist ein klinisches Diagnostiksystem zur Erfassung psychischer Störungen im Kindes- und Jugendalter. Die vorliegenden Ergebnisse beziehen sich auf die Skalen zur Erfassung von ADHS-Symptomatik und Störungen des Sozialverhaltens (SSV).',
+                                'Le DISYPS-III (Döpfner & Görtz-Dorten, 2017) est un système diagnostique clinique pour l\'évaluation des troubles psychiques chez l\'enfant et l\'adolescent. Les résultats présentés portent sur les échelles d\'évaluation de la symptomatologie TDAH et du trouble des conduites (TC).',
+                                'The DISYPS-III (Döpfner & Görtz-Dorten, 2017) is a clinical diagnostic system for assessing mental disorders in children and adolescents. The present results relate to scales assessing ADHD symptomatology and Conduct Disorder (CD).'
+                            )}</p>
+                            <p>${tt(
+                                'Die Ergebnisse werden als Stanine-Werte (1-9) dargestellt. Stanine 1-4: unauffällig, Stanine 5-6: erhöht (subklinisch), Stanine 7-9: klinisch auffällig.',
+                                'Les résultats sont présentés en stanines (1-9). Stanines 1-4 : normal, 5-6 : élevé (sous-clinique), 7-9 : cliniquement significatif.',
+                                'Results are reported as stanines (1-9). Stanines 1-4: normal, 5-6: elevated (subclinical), 7-9: clinically significant.'
+                            )}</p>
+                            <p><strong>${tt('Verwendete Version:','Version utilisée :','Version used:')}</strong> ${respLabel}. ${tt(
+                                'Normtabellen und Cut-offs sind version- und altersspezifisch; FBB und SBB sind nicht direkt austauschbar.',
+                                'Les normes et seuils sont spécifiques à la version et à l\'âge ; FBB et SBB ne sont pas directement interchangeables.',
+                                'Norm tables and cut-offs are version- and age-specific; FBB and SBB are not directly interchangeable.'
+                            )}</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <h4 class="gutachten-section-title">${tt('2. Testergebnisse','2. Résultats','2. Test results')}</h4>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>Stanine</th><th>Beschreibung</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${tt('Skala','Échelle','Scale')}</th><th>Stanine</th><th>${tt('Beschreibung','Description','Description')}</th><th>${tt('Klassifikation','Classification','Classification')}</th></tr></thead>
                             <tbody>
-                                ${valid.map(([k,x])=>`<tr${k==='adhs'||k==='ssv'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${DISYPS_SCALES[k].n}</td><td>${x}</td><td>${DISYPS_SCALES[k].desc}</td><td class="${c[k]}">${staText(c[k])}</td></tr>`).join('')}
+                                ${valid.map(([k,x])=>`<tr${k==='adhs'||k==='ssv'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${disypsScaleName(k)}</td><td>${x}</td><td>${disypsScaleDesc(k)}</td><td class="${c[k]}">${staText(c[k])}</td></tr>`).join('')}
                             </tbody>
                         </table>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Grafische Darstellung</h4>
+                        <h4 class="gutachten-section-title">${tt('3. Grafische Darstellung','3. Représentation graphique','3. Graphical representation')}</h4>
                         <div class="chart-container">
                             ${chart(valid.map(([k])=>labels[k]),valid.map(([k,x])=>x),valid.map(([k])=>c[k]),9)}
                             <div style="display:flex;justify-content:center;gap:2rem;margin-top:1rem;font-size:0.75rem;">
-                                <span>1-4: unauffällig</span><span>5-6: erhöht</span><span>7-9: auffällig</span>
+                                ${tt('<span>1-4: unauffällig</span><span>5-6: erhöht</span><span>7-9: auffällig</span>','<span>1-4 : normal</span><span>5-6 : élevé</span><span>7-9 : cliniquement significatif</span>','<span>1-4: normal</span><span>5-6: elevated</span><span>7-9: clinically significant</span>')}
                             </div>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Interpretation</h4>
+                        <h4 class="gutachten-section-title">${tt('4. Interpretation','4. Interprétation','4. Interpretation')}</h4>
                         <div class="gutachten-text">
                             <p>${interp}</p>
-                            ${adhs_clin ? '<div class="gutachten-warning"><strong>Hinweis:</strong> Die Diagnosekriterien für ADHS erfordern neben der Symptomausprägung auch eine deutliche Beeinträchtigung in mehreren Lebensbereichen sowie einen Beginn vor dem 12. Lebensjahr.</div>' : ''}
+                            ${adhs_clin ? `<div class="gutachten-warning"><strong>${tt('Hinweis:','Note :','Note:')}</strong> ${tt(
+                                'Die Diagnosekriterien für ADHS erfordern neben der Symptomausprägung auch eine deutliche Beeinträchtigung in mehreren Lebensbereichen sowie einen Beginn vor dem 12. Lebensjahr.',
+                                'Les critères diagnostiques du TDAH exigent, au-delà de l\'intensité des symptômes, une altération significative dans plusieurs domaines de vie et un début avant l\'âge de 12 ans.',
+                                'In addition to symptom severity, ADHD diagnostic criteria require significant impairment in several life domains and onset before age 12.'
+                            )}</div>` : ''}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">5. Diagnostische Einordnung</h4>
+                        <h4 class="gutachten-section-title">${tt('5. Diagnostische Einordnung','5. Classification diagnostique','5. Diagnostic classification')}</h4>
                         <div class="gutachten-text">
-                            <p><strong>Relevante ICD-10 Diagnosen:</strong></p>
-                            ${adhs_clin ? '<span class="icd-code">F90.0</span> Einfache Aktivitäts- und Aufmerksamkeitsstörung<br>' : ''}
-                            ${adhs_clin && ssv_clin ? '<span class="icd-code">F90.1</span> Hyperkinetische Störung des Sozialverhaltens<br>' : ''}
-                            ${c.opp === 'clinical' ? '<span class="icd-code">F91.3</span> Störung des Sozialverhaltens mit oppositionellem, aufsässigem Verhalten<br>' : ''}
-                            ${c.agg === 'clinical' ? '<span class="icd-code">F91.x</span> Störung des Sozialverhaltens<br>' : ''}
-                            ${!adhs_clin && !ssv_clin ? '<span class="icd-code">Z03.2</span> Beobachtung – nicht bestätigt' : ''}
+                            <p><strong>${tt('Relevante ICD-10 Diagnosen:','Diagnostics CIM-10 pertinents :','Relevant ICD-10 diagnoses:')}</strong></p>
+                            ${adhs_clin ? `<span class="icd-code">F90.0</span> ${tt('Einfache Aktivitäts- und Aufmerksamkeitsstörung','Trouble simple de l\'activité et de l\'attention','Simple Activity and Attention Disorder')}<br>` : ''}
+                            ${adhs_clin && ssv_clin ? `<span class="icd-code">F90.1</span> ${tt('Hyperkinetische Störung des Sozialverhaltens','Trouble hyperkinétique des conduites','Hyperkinetic Conduct Disorder')}<br>` : ''}
+                            ${c.opp === 'clinical' ? `<span class="icd-code">F91.3</span> ${tt('Störung des Sozialverhaltens mit oppositionellem, aufsässigem Verhalten','Trouble oppositionnel avec provocation','Oppositional Defiant Disorder')}<br>` : ''}
+                            ${c.agg === 'clinical' ? `<span class="icd-code">F91.x</span> ${tt('Störung des Sozialverhaltens','Trouble des conduites','Conduct Disorder')}<br>` : ''}
+                            ${!adhs_clin && !ssv_clin ? `<span class="icd-code">Z03.2</span> ${tt('Beobachtung – nicht bestätigt','Observation – non confirmé','Observation – not confirmed')}` : ''}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">6. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">${tt('6. Empfehlungen','6. Recommandations','6. Recommendations')}</h4>
                         <div class="gutachten-text">${empf}</div>
                     </div>
 
                     ${elternZusammenfassung(
-                        'DISYPS-III (Fragebogen zu Aufmerksamkeit und Verhalten)',
+                        tt('DISYPS-III (Fragebogen zu Aufmerksamkeit und Verhalten)','DISYPS-III (questionnaire attention et comportement)','DISYPS-III (Attention & Behaviour questionnaire)'),
                         !adhs_clin && !ssv_clin
-                            ? `Die Ergebnisse zeigen keine auffälligen Werte für ADHS oder Verhaltensprobleme. ${pat.name} liegt in allen Bereichen im normalen Bereich im Vergleich zu Gleichaltrigen.`
+                            ? tt(
+                                `Die Ergebnisse zeigen keine auffälligen Werte für ADHS oder Verhaltensprobleme. ${pat.name} liegt in allen Bereichen im normalen Bereich im Vergleich zu Gleichaltrigen.`,
+                                `Les résultats ne montrent pas de scores notables pour le TDAH ni pour des problèmes comportementaux. ${pat.name} se situe dans la plage normale dans tous les domaines par rapport aux pairs.`,
+                                `The results show no notable scores for ADHD or behavioural problems. ${pat.name} falls within the normal range in all domains compared with peers.`
+                            )
                             : adhs_clin && !ssv_clin
-                                ? `Die Ergebnisse zeigen erhöhte Werte für Aufmerksamkeit und/oder Aktivität. Das bedeutet, dass ${pat.name} möglicherweise mehr Mühe hat, sich zu konzentrieren oder ruhig zu bleiben als andere Kinder. Das ist häufiger als viele denken - etwa 5% aller Kinder haben ähnliche Schwierigkeiten. Mit der richtigen Unterstützung können diese Kinder sehr erfolgreich sein.`
+                                ? tt(
+                                    `Die Ergebnisse zeigen erhöhte Werte für Aufmerksamkeit und/oder Aktivität. Das bedeutet, dass ${pat.name} möglicherweise mehr Mühe hat, sich zu konzentrieren oder ruhig zu bleiben als andere Kinder. Das ist häufiger als viele denken - etwa 5% aller Kinder haben ähnliche Schwierigkeiten. Mit der richtigen Unterstützung können diese Kinder sehr erfolgreich sein.`,
+                                    `Les résultats montrent des scores élevés pour l'attention et/ou l'activité. Cela signifie que ${pat.name} a possiblement plus de mal à se concentrer ou à rester calme que d'autres enfants. C'est plus fréquent qu'on ne le pense – environ 5% des enfants ont des difficultés similaires. Avec un soutien adapté, ces enfants peuvent très bien réussir.`,
+                                    `The results show elevated scores for attention and/or activity. This means ${pat.name} may find it harder to concentrate or stay calm than other children. This is more common than many think – about 5% of children have similar difficulties. With the right support, these children can do very well.`
+                                )
                                 : !adhs_clin && ssv_clin
-                                    ? `Die Ergebnisse zeigen erhöhte Werte im Bereich des Sozialverhaltens. ${pat.name} hat möglicherweise mehr Schwierigkeiten, Regeln zu befolgen oder mit Frustration umzugehen. Dies kann verschiedene Ursachen haben und ist mit professioneller Hilfe gut behandelbar.`
-                                    : `Die Ergebnisse zeigen sowohl erhöhte Werte für Aufmerksamkeit als auch für das Sozialverhalten. Diese Kombination kommt häufig vor. Mit einer genauen Diagnostik und passender Unterstützung können deutliche Verbesserungen erreicht werden.`,
+                                    ? tt(
+                                        `Die Ergebnisse zeigen erhöhte Werte im Bereich des Sozialverhaltens. ${pat.name} hat möglicherweise mehr Schwierigkeiten, Regeln zu befolgen oder mit Frustration umzugehen. Dies kann verschiedene Ursachen haben und ist mit professioneller Hilfe gut behandelbar.`,
+                                        `Les résultats montrent des scores élevés dans le domaine des conduites. ${pat.name} a possiblement plus de difficultés à respecter les règles ou à gérer la frustration. Les causes peuvent être multiples et un traitement professionnel donne de bons résultats.`,
+                                        `The results show elevated scores in conduct. ${pat.name} may have more difficulty following rules or dealing with frustration. Causes vary and the condition responds well to professional help.`
+                                    )
+                                    : tt(
+                                        'Die Ergebnisse zeigen sowohl erhöhte Werte für Aufmerksamkeit als auch für das Sozialverhalten. Diese Kombination kommt häufig vor. Mit einer genauen Diagnostik und passender Unterstützung können deutliche Verbesserungen erreicht werden.',
+                                        'Les résultats montrent à la fois des scores élevés pour l\'attention et pour les conduites. Cette combinaison est fréquente. Avec un bilan précis et un soutien adapté, on peut obtenir de nettes améliorations.',
+                                        'The results show elevated scores for both attention and conduct. This combination is frequent. With precise assessment and appropriate support, marked improvements can be achieved.'
+                                    ),
                         !adhs_clin && !ssv_clin
-                            ? ['Keine spezielle Maßnahme erforderlich', 'Bleiben Sie aufmerksam für Veränderungen']
-                            : ['Vereinbaren Sie einen Termin zur ausführlichen Diagnostik', 'Eine genaue Abklärung hilft, die passende Unterstützung zu finden', 'ADHS und Verhaltensprobleme sind gut behandelbar']
+                            ? [
+                                tt('Keine spezielle Maßnahme erforderlich','Aucune mesure particulière requise','No special measure required'),
+                                tt('Bleiben Sie aufmerksam für Veränderungen','Restez attentif·ve aux changements','Stay alert to changes')
+                              ]
+                            : [
+                                tt('Vereinbaren Sie einen Termin zur ausführlichen Diagnostik','Prenez rendez-vous pour un bilan détaillé','Schedule an appointment for a detailed assessment'),
+                                tt('Eine genaue Abklärung hilft, die passende Unterstützung zu finden','Un bilan précis aide à trouver le soutien adapté','Precise assessment helps find the appropriate support'),
+                                tt('ADHS und Verhaltensprobleme sind gut behandelbar','Le TDAH et les troubles du comportement se traitent bien','ADHD and behavioural problems are treatable')
+                              ]
                     )}
 
                     ${gutachtenFooter()}
@@ -5920,11 +6013,11 @@
             `;
 
             document.getElementById('disyps-results').innerHTML = `
-                <div class="results-header"><h3 class="results-title">Ergebnis DISYPS-III</h3></div>
-                ${summary(valid.map(([k,x])=>({l:labels[k],v:'ST '+x,c:c[k],s:S[c[k]]})))}
+                <div class="results-header"><h3 class="results-title">${tt('Ergebnis DISYPS-III','Résultat DISYPS-III','DISYPS-III result')}</h3></div>
+                ${summary(valid.map(([k,x])=>({l:labels[k],v:'ST '+x,c:c[k],s:statusLabel(c[k])})))}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
-                    <button class="btn btn-primary" onclick="exportTestToWord('disyps')">📝 Als Word exportieren (.doc)</button>
+                    <button class="btn btn-primary" onclick="exportTestToWord('disyps')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
                 </div>
             `;
             showLocalizedResults('disyps-results');
