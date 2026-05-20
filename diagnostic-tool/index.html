@@ -5689,17 +5689,44 @@
                     </div>
 
                     ${elternZusammenfassung(
-                        'CBCL (Fragebogen zum Verhalten von Kindern und Jugendlichen)',
+                        tt(
+                            'CBCL (Fragebogen zum Verhalten von Kindern und Jugendlichen)',
+                            'CBCL (questionnaire sur le comportement des enfants et adolescents)',
+                            'CBCL (Child Behavior Checklist – questionnaire on behaviour of children and adolescents)'
+                        ),
                         cBB.tot === 'normal'
-                            ? `Die Ergebnisse zeigen, dass Ihr Kind aus Sicht des Beurteilenden keine auffälligen Verhaltens- oder emotionalen Probleme hat. Das ist ein positives Ergebnis! ${pat.name} scheint sich insgesamt gut zu entwickeln.`
+                            ? tt(
+                                `Die Ergebnisse zeigen, dass Ihr Kind aus Sicht des Beurteilenden keine auffälligen Verhaltens- oder emotionalen Probleme hat. Das ist ein positives Ergebnis! ${pat.name} scheint sich insgesamt gut zu entwickeln.`,
+                                `Les résultats montrent que, du point de vue de la personne évaluatrice, votre enfant ne présente pas de problèmes comportementaux ou émotionnels notables. C'est un résultat positif ! ${pat.name} semble se développer globalement bien.`,
+                                `The results show that, from the rater's perspective, your child does not present notable behavioural or emotional problems. This is a positive result! ${pat.name} appears to be developing well overall.`
+                            )
                             : cBB.tot === 'borderline'
-                                ? `Die Ergebnisse zeigen einige Bereiche, die im grenzwertigen Bereich liegen. Das bedeutet, dass es leichte Auffälligkeiten gibt, die beobachtet werden sollten, aber noch keine dringende Sorge darstellen.`
-                                : `Die Ergebnisse zeigen erhöhte Werte in einigen Bereichen. ${cBB.int === 'clinical' ? 'Ihr Kind scheint vermehrt mit inneren Sorgen, Ängsten oder Traurigkeit zu kämpfen. ' : ''}${cBB.ext === 'clinical' ? 'Es gibt Hinweise auf Schwierigkeiten bei der Verhaltenssteuerung oder im Umgang mit anderen. ' : ''}Diese Ergebnisse bedeuten nicht, dass Ihr Kind "krank" ist, aber sie zeigen, dass professionelle Unterstützung hilfreich sein könnte.`,
+                                ? tt(
+                                    'Die Ergebnisse zeigen einige Bereiche, die im grenzwertigen Bereich liegen. Das bedeutet, dass es leichte Auffälligkeiten gibt, die beobachtet werden sollten, aber noch keine dringende Sorge darstellen.',
+                                    'Les résultats indiquent quelques domaines situés dans la plage limite. Cela signifie qu\'il existe de légères anomalies à surveiller, sans constituer pour autant une préoccupation urgente.',
+                                    'The results indicate some domains in the borderline range. This means there are mild anomalies to monitor, but they do not yet constitute an urgent concern.'
+                                )
+                                : tt(
+                                    `Die Ergebnisse zeigen erhöhte Werte in einigen Bereichen. ${cBB.int === 'clinical' ? 'Ihr Kind scheint vermehrt mit inneren Sorgen, Ängsten oder Traurigkeit zu kämpfen. ' : ''}${cBB.ext === 'clinical' ? 'Es gibt Hinweise auf Schwierigkeiten bei der Verhaltenssteuerung oder im Umgang mit anderen. ' : ''}Diese Ergebnisse bedeuten nicht, dass Ihr Kind "krank" ist, aber sie zeigen, dass professionelle Unterstützung hilfreich sein könnte.`,
+                                    `Les résultats indiquent des scores élevés dans certains domaines. ${cBB.int === 'clinical' ? 'Votre enfant semble lutter davantage avec des soucis intérieurs, de l\'anxiété ou de la tristesse. ' : ''}${cBB.ext === 'clinical' ? 'Il existe des indications de difficultés de régulation du comportement ou dans les rapports avec les autres. ' : ''}Ces résultats ne signifient pas que votre enfant est « malade », mais montrent qu\'un soutien professionnel pourrait être utile.`,
+                                    `The results show elevated scores in some domains. ${cBB.int === 'clinical' ? 'Your child appears to struggle more with inner worries, anxiety or sadness. ' : ''}${cBB.ext === 'clinical' ? 'There are indications of difficulties with behavioural regulation or dealing with others. ' : ''}These results do not mean your child is "ill", but they show that professional support could be helpful.`
+                                ),
                         cBB.tot === 'normal'
-                            ? ['Bleiben Sie im Gespräch mit Ihrem Kind', 'Achten Sie weiterhin auf Veränderungen']
+                            ? [
+                                tt('Bleiben Sie im Gespräch mit Ihrem Kind','Continuez à dialoguer avec votre enfant','Stay in conversation with your child'),
+                                tt('Achten Sie weiterhin auf Veränderungen','Restez attentif·ve aux changements','Continue to look out for changes')
+                              ]
                             : cBB.tot === 'borderline'
-                                ? ['Beobachten Sie die weitere Entwicklung', 'Sprechen Sie offen mit Ihrem Kind', 'Bei Verschlechterung: Beratung aufsuchen']
-                                : ['Vereinbaren Sie einen Beratungstermin', 'Eine ausführliche Diagnostik kann helfen, die Ursachen zu verstehen', 'Unterstützung durch Fachpersonen kann sehr hilfreich sein']
+                                ? [
+                                    tt('Beobachten Sie die weitere Entwicklung','Observez la suite de l\'évolution','Monitor further development'),
+                                    tt('Sprechen Sie offen mit Ihrem Kind','Parlez ouvertement avec votre enfant','Speak openly with your child'),
+                                    tt('Bei Verschlechterung: Beratung aufsuchen','En cas d\'aggravation : consulter','If symptoms worsen: seek counselling')
+                                  ]
+                                : [
+                                    tt('Vereinbaren Sie einen Beratungstermin','Prenez rendez-vous pour un entretien','Schedule a consultation'),
+                                    tt('Eine ausführliche Diagnostik kann helfen, die Ursachen zu verstehen','Un bilan détaillé peut aider à comprendre les causes','A detailed assessment can help understand the causes'),
+                                    tt('Unterstützung durch Fachpersonen kann sehr hilfreich sein','Le soutien de professionnel·le·s peut être très utile','Support from professionals can be very helpful')
+                                  ]
                     )}
 
                     ${gutachtenFooter()}
