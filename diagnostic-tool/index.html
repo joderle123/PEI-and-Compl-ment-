@@ -1784,7 +1784,7 @@
                     </div>
                     <p class="card-subtitle">Conners Skalen zur Aufmerksamkeit und Verhalten – ADHS-Diagnostik 6-18 Jahre</p>
                 </div>
-                <form id="conners-form" onsubmit="evaluateConners(event)">
+                <form id="conners-form" data-i18n-native="1" onsubmit="evaluateConners(event)">
                     <div class="form-section">
                         <div class="form-section-title">Beurteiler</div>
                         <div class="radio-group">
@@ -6391,57 +6391,52 @@
             e.preventDefault();
             const pat = getPatient();
             const resp = document.querySelector('input[name="conners-resp"]:checked').value;
-            const respText = {parent:'Elternurteil',teacher:'Lehrerurteil',self:'Selbsturteil'}[resp];
+            const respText = tt(
+                {parent:'Elternurteil',teacher:'Lehrerurteil',self:'Selbsturteil'}[resp],
+                {parent:'évaluation parentale',teacher:'évaluation enseignant·e',self:'auto-évaluation'}[resp],
+                {parent:'parent rating',teacher:'teacher rating',self:'self-report'}[resp]
+            );
 
-            // Validitätsskalen (manual-konform)
-            // II (Inkonsistenz-Index): zwei Kriterien A und B; beide "Ja" → inkonsistent
             const iiA = document.getElementById('con-ii-a')?.value || '';
             const iiB = document.getElementById('con-ii-b')?.value || '';
             const iiInconsistent = iiA === 'ja' && iiB === 'ja';
             const iiConsistent = (iiA === 'nein' || iiB === 'nein');
-            // PE / NE: Rohwerte, ≥ 2 = auffällig
             const peVal = v('con-pe');
             const neVal = v('con-ne');
 
-            // Conners 3 Inhaltsskalen
             const connersScales = {
-                in: {v:v('con-in'), n:'UA – Unaufmerksamkeit'},
-                hi: {v:v('con-hi'), n:'HI – Hyperaktivität/Impulsivität'},
-                lp: {v:v('con-lp'), n:'LP – Lernprobleme'},
-                lpef: {v:v('con-lpef'), n:'LP/EF – Lernprobleme/Exekutive Funktionen'},
-                ef: {v:v('con-ef'), n:'EF – Exekutive Funktionen'},
-                ag: {v:v('con-ag'), n:'AT – Aggressivität/Trotz'},
-                pr: {v:v('con-pr'), n:'BG – Beziehungen zu Gleichaltrigen'},
-                fb: {v:v('con-fb'), n:'FB – Familienbeziehungen'}
+                in:   {v:v('con-in'),   n:tt('UA – Unaufmerksamkeit','IN – Inattention','IN – Inattention')},
+                hi:   {v:v('con-hi'),   n:tt('HI – Hyperaktivität/Impulsivität','HI – Hyperactivité/Impulsivité','HI – Hyperactivity/Impulsivity')},
+                lp:   {v:v('con-lp'),   n:tt('LP – Lernprobleme','PA – Problèmes d\'apprentissage','LP – Learning Problems')},
+                lpef: {v:v('con-lpef'), n:tt('LP/EF – Lernprobleme/Exekutive Funktionen','PA/FE – Problèmes d\'apprentissage / fonctions exécutives','LP/EF – Learning Problems / Executive Functions')},
+                ef:   {v:v('con-ef'),   n:tt('EF – Exekutive Funktionen','FE – Fonctions exécutives','EF – Executive Functions')},
+                ag:   {v:v('con-ag'),   n:tt('AT – Aggressivität/Trotz','AG – Agressivité/Opposition','AG – Aggression/Defiance')},
+                pr:   {v:v('con-pr'),   n:tt('BG – Beziehungen zu Gleichaltrigen','RP – Relations avec les pairs','PR – Peer Relations')},
+                fb:   {v:v('con-fb'),   n:tt('FB – Familienbeziehungen','RF – Relations familiales','FR – Family Relations')}
             };
 
-            // Screener-Items (SI)
-            // Selbsturteil: T-Werte (anxVal/depVal). Eltern/Lehrer: Anzahl auffällige Items.
             const anxVal = v('con-anx');
             const depVal = v('con-dep');
             const anxItems = v('con-anx-items');
             const depItems = v('con-dep-items');
 
-            // DSM-5 Symptomskalen
             const dsmScales = {
-                dsm_in: {v:v('con-dsm-in'), n:'DSM-UA – ADHS Unaufmerksam'},
-                dsm_hi: {v:v('con-dsm-hi'), n:'DSM-HI – ADHS Hyperaktiv-Impulsiv'},
-                dsm_k: {v:v('con-dsm-k'), n:'DSM-K – Kombiniert (UA+HI)'},
-                dsm_cd: {v:v('con-dsm-cd'), n:'DSM-SV – Störung des Sozialverhaltens'},
-                dsm_odd: {v:v('con-dsm-odd'), n:'DSM-OT – Oppositionelles Trotzverhalten'}
+                dsm_in:  {v:v('con-dsm-in'),  n:tt('DSM-UA – ADHS Unaufmerksam','DSM-IN – TDAH Inattention','DSM-IN – ADHD Inattentive')},
+                dsm_hi:  {v:v('con-dsm-hi'),  n:tt('DSM-HI – ADHS Hyperaktiv-Impulsiv','DSM-HI – TDAH Hyperactif-Impulsif','DSM-HI – ADHD Hyperactive-Impulsive')},
+                dsm_k:   {v:v('con-dsm-k'),   n:tt('DSM-K – Kombiniert (UA+HI)','DSM-C – Combiné (IN+HI)','DSM-C – Combined (IN+HI)')},
+                dsm_cd:  {v:v('con-dsm-cd'),  n:tt('DSM-SV – Störung des Sozialverhaltens','DSM-TC – Trouble des conduites','DSM-CD – Conduct Disorder')},
+                dsm_odd: {v:v('con-dsm-odd'), n:tt('DSM-OT – Oppositionelles Trotzverhalten','DSM-TOP – Trouble oppositionnel avec provocation','DSM-ODD – Oppositional Defiant Disorder')}
             };
 
-            // ICD-10 Symptomskalen
             const icdScales = {
-                icd_as: {v:v('con-icd-as'), n:'ICD-AS – Einfache Aktivitäts-/Aufmerksamkeitsstörung (F90.0)'},
-                icd_sv: {v:v('con-icd-sv'), n:'ICD-SV – Störung des Sozialverhaltens'},
-                icd_hksv: {v:v('con-icd-hksv'), n:'ICD-HKSV – Hyperkin. Störung Sozialverhalten (F90.1)'}
+                icd_as:   {v:v('con-icd-as'),   n:tt('ICD-AS – Einfache Aktivitäts-/Aufmerksamkeitsstörung (F90.0)','CIM-AS – Trouble simple de l\'activité et de l\'attention (F90.0)','ICD-AS – Simple Activity/Attention Disorder (F90.0)')},
+                icd_sv:   {v:v('con-icd-sv'),   n:tt('ICD-SV – Störung des Sozialverhaltens','CIM-TC – Trouble des conduites','ICD-CD – Conduct Disorder')},
+                icd_hksv: {v:v('con-icd-hksv'), n:tt('ICD-HKSV – Hyperkin. Störung Sozialverhalten (F90.1)','CIM-HCT – Trouble hyperkinétique des conduites (F90.1)','ICD-HCD – Hyperkinetic Conduct Disorder (F90.1)')}
             };
 
-            // Conners 3 Indices
             const indices = {
-                adhd: {v:v('con-adhd'), n:'C3-AI – Conners 3 ADHS-Index'},
-                gi: {v:v('con-gi'), n:'C3-GI – Conners 3 Global Index'}
+                adhd: {v:v('con-adhd'), n:tt('C3-AI – Conners 3 ADHS-Index','C3-AI – Indice TDAH Conners 3','C3-AI – Conners 3 ADHD Index')},
+                gi:   {v:v('con-gi'),   n:tt('C3-GI – Conners 3 Global Index','C3-GI – Indice global Conners 3','C3-GI – Conners 3 Global Index')}
             };
 
             // Kritische Items (Rohwert-Anzahl)
@@ -6458,24 +6453,45 @@
             const anxItemsElev = anxItems !== null && anxItems >= 2;
             const kiSevere = kiVal !== null && kiVal >= 2;
             const needsMoodSafety = isSelf && (depElevated || anxElevated);
+            const andLabel = tt(' und ',' et ',' and ');
             const moodSafetyHtml = needsMoodSafety ? `
                 <div class="gutachten-danger">
-                    <strong>SICHERHEITS­HINWEIS – Stimmung / Angst (Selbsturteil)</strong><br>
-                    Im Selbsturteil sind die Screener-Items ${depElevated ? `<strong>Depression (SI-D, T=${depVal})</strong>` : ''}${depElevated && anxElevated ? ' und ' : ''}${anxElevated ? `<strong>Ängstlichkeit (SI-Ä, T=${anxVal})</strong>` : ''} erhöht. ${depSevere ? 'Der Depressions-Screener liegt im <em>stark erhöhten</em> Bereich (T ≥ 70).' : ''}
+                    <strong>${tt('SICHERHEITSHINWEIS – Stimmung / Angst (Selbsturteil)','AVERTISSEMENT DE SÉCURITÉ – Humeur / anxiété (auto-évaluation)','SAFETY WARNING – Mood / anxiety (self-report)')}</strong><br>
+                    ${tt(
+                        `Im Selbsturteil sind die Screener-Items ${depElevated ? `<strong>Depression (SI-D, T=${depVal})</strong>` : ''}${depElevated && anxElevated ? ' und ' : ''}${anxElevated ? `<strong>Ängstlichkeit (SI-Ä, T=${anxVal})</strong>` : ''} erhöht. ${depSevere ? 'Der Depressions-Screener liegt im <em>stark erhöhten</em> Bereich (T ≥ 70).' : ''}`,
+                        `Dans l'auto-évaluation, les items de dépistage ${depElevated ? `<strong>Dépression (SI-D, T=${depVal})</strong>` : ''}${depElevated && anxElevated ? ' et ' : ''}${anxElevated ? `<strong>Anxiété (SI-A, T=${anxVal})</strong>` : ''} sont élevés. ${depSevere ? 'Le screener Dépression se situe dans la plage <em>fortement élevée</em> (T ≥ 70).' : ''}`,
+                        `In the self-report, the screener items ${depElevated ? `<strong>Depression (SI-D, T=${depVal})</strong>` : ''}${depElevated && anxElevated ? ' and ' : ''}${anxElevated ? `<strong>Anxiety (SI-A, T=${anxVal})</strong>` : ''} are elevated. ${depSevere ? 'The Depression screener is in the <em>severely elevated</em> range (T ≥ 70).' : ''}`
+                    )}
                     <br><br>
-                    Ein <strong>strukturiertes Suizidrisiko-Assessment</strong> (z.B. C-SSRS, SIQ-JR) ist verpflichtend durchzuführen. Zusätzliche depressions-/angstspezifische Diagnostik (DIKJ, SCAS, BDI-II) wird empfohlen. Bei konkreter Gefährdung sofortige kinder- und jugendpsychiatrische Vorstellung.
+                    ${tt(
+                        'Ein <strong>strukturiertes Suizidrisiko-Assessment</strong> (z.B. C-SSRS, SIQ-JR) ist verpflichtend durchzuführen. Zusätzliche depressions-/angstspezifische Diagnostik (DIKJ, SCAS, BDI-II) wird empfohlen. Bei konkreter Gefährdung sofortige kinder- und jugendpsychiatrische Vorstellung.',
+                        'Une <strong>évaluation structurée du risque suicidaire</strong> (p. ex. C-SSRS, SIQ-JR) est obligatoire. Un bilan complémentaire spécifique à la dépression/anxiété (DIKJ, SCAS, BDI-II) est recommandé. En cas de risque concret, présentation pédopsychiatrique immédiate.',
+                        'A <strong>structured suicide-risk assessment</strong> (e.g. C-SSRS, SIQ-JR) is mandatory. Additional depression- / anxiety-specific assessment (DIKJ, SCAS, BDI-II) is recommended. In case of concrete risk, immediate child & adolescent psychiatric review.'
+                    )}
                 </div>` : '';
             const moodItemsHtml = (!isSelf && (depItemsElev || anxItemsElev)) ? `
                 <div class="gutachten-warning">
-                    <strong>Hinweis – Screener Ängstlichkeit/Depression (qualitativ)</strong><br>
-                    Aus ${respText} wurden ${anxItemsElev ? `<strong>${anxItems} Ängstlichkeits-Items</strong>` : ''}${anxItemsElev && depItemsElev ? ' und ' : ''}${depItemsElev ? `<strong>${depItems} Depressions-Items</strong>` : ''} mit ≥ 1 bewertet. Da Conners-3 für Eltern-/Lehrerbogen keine eigenen T-Norms für SI-Ä / SI-D bereitstellt, ist diese Auswertung qualitativ. <strong>Vertiefte Exploration depressiver/ängstlicher Symptomatik im Selbsturteil bzw. mit störungsspezifischen Verfahren (DIKJ, SCAS, CDI) wird empfohlen.</strong>
+                    <strong>${tt('Hinweis – Screener Ängstlichkeit/Depression (qualitativ)','Note – Dépistage anxiété/dépression (qualitatif)','Note – Anxiety/depression screener (qualitative)')}</strong><br>
+                    ${tt(
+                        `Aus ${respText} wurden ${anxItemsElev ? `<strong>${anxItems} Ängstlichkeits-Items</strong>` : ''}${anxItemsElev && depItemsElev ? ' und ' : ''}${depItemsElev ? `<strong>${depItems} Depressions-Items</strong>` : ''} mit ≥ 1 bewertet. Da Conners-3 für Eltern-/Lehrerbogen keine eigenen T-Norms für SI-Ä / SI-D bereitstellt, ist diese Auswertung qualitativ. <strong>Vertiefte Exploration depressiver/ängstlicher Symptomatik im Selbsturteil bzw. mit störungsspezifischen Verfahren (DIKJ, SCAS, CDI) wird empfohlen.</strong>`,
+                        `Dans ${respText}, ${anxItemsElev ? `<strong>${anxItems} items d'anxiété</strong>` : ''}${anxItemsElev && depItemsElev ? ' et ' : ''}${depItemsElev ? `<strong>${depItems} items de dépression</strong>` : ''} ont été cotés ≥ 1. Comme Conners-3 ne fournit pas de normes T propres pour SI-A / SI-D dans les questionnaires parent/enseignant·e, cette analyse reste qualitative. <strong>Une exploration approfondie de la symptomatologie dépressive/anxieuse via l'auto-évaluation ou via des procédures spécifiques (DIKJ, SCAS, CDI) est recommandée.</strong>`,
+                        `From the ${respText}, ${anxItemsElev ? `<strong>${anxItems} anxiety items</strong>` : ''}${anxItemsElev && depItemsElev ? ' and ' : ''}${depItemsElev ? `<strong>${depItems} depression items</strong>` : ''} were scored ≥ 1. Conners-3 does not provide separate T-norms for SI-A / SI-D in the parent/teacher forms, so this analysis is qualitative. <strong>In-depth exploration of depressive/anxious symptoms via self-report or disorder-specific procedures (DIKJ, SCAS, CDI) is recommended.</strong>`
+                    )}
                 </div>` : '';
             const kiSafetyHtml = kiSevere ? `
                 <div class="gutachten-danger">
-                    <strong>SICHERHEITS­HINWEIS – Schwere Störung des Sozialverhaltens</strong><br>
-                    ${kiVal} von 7 kritischen Items (Items 14, 20, 26, 31, 58, 65, 87) wurden mit ≥ 1 bewertet. Dies weist auf ernsthafte antisoziale bzw. aggressive Verhaltensweisen hin (z.B. Waffengebrauch, Tierquälerei, Feuerlegen, sexuelle Gewalt, Einbruch).
+                    <strong>${tt('SICHERHEITSHINWEIS – Schwere Störung des Sozialverhaltens','AVERTISSEMENT DE SÉCURITÉ – Trouble grave des conduites','SAFETY WARNING – Severe Conduct Disorder')}</strong><br>
+                    ${tt(
+                        `${kiVal} von 7 kritischen Items (Items 14, 20, 26, 31, 58, 65, 87) wurden mit ≥ 1 bewertet. Dies weist auf ernsthafte antisoziale bzw. aggressive Verhaltensweisen hin (z.B. Waffengebrauch, Tierquälerei, Feuerlegen, sexuelle Gewalt, Einbruch).`,
+                        `${kiVal} items critiques sur 7 (items 14, 20, 26, 31, 58, 65, 87) ont été cotés ≥ 1. Cela indique des comportements antisociaux ou agressifs sérieux (p. ex. usage d'arme, cruauté envers les animaux, incendie, violences sexuelles, cambriolage).`,
+                        `${kiVal} of 7 critical items (items 14, 20, 26, 31, 58, 65, 87) were scored ≥ 1. This indicates serious antisocial or aggressive behaviour (e.g. use of weapons, cruelty to animals, fire-setting, sexual violence, burglary).`
+                    )}
                     <br><br>
-                    Dringende klinische Abklärung von <strong>Fremdgefährdung</strong>, Kindeswohlgefährdung und ggf. Einbezug von Jugendhilfe / ASD erforderlich.
+                    ${tt(
+                        'Dringende klinische Abklärung von <strong>Fremdgefährdung</strong>, Kindeswohlgefährdung und ggf. Einbezug von Jugendhilfe / ASD erforderlich.',
+                        'Bilan clinique urgent du <strong>risque pour autrui</strong> et de la mise en danger de l\'enfant ; le cas échéant, implication de la protection de l\'enfance / services sociaux.',
+                        'Urgent clinical assessment of <strong>risk to others</strong>, child welfare endangerment, and where appropriate involvement of youth-welfare / social services required.'
+                    )}
                 </div>` : '';
 
             // Alle Skalen zusammen für Kompatibilität
@@ -6486,25 +6502,29 @@
             const validIcd = Object.entries(icdScales).filter(([k,x])=>x.v!==null);
             const validAdhd = Object.entries(indices).filter(([k,x])=>x.v!==null);
             const valid = [...validConners, ...validDsm, ...validIcd, ...validAdhd];
-            if(!valid.length) return alert('Bitte mindestens einen Wert eingeben');
+            if(!valid.length) return alert(tt('Bitte mindestens einen Wert eingeben','Veuillez saisir au moins une valeur','Please enter at least one value'));
 
             const c = {};
             valid.forEach(([k,x]) => {
                 c[k] = x.v < 60 ? 'normal' : x.v < 65 ? 'borderline' : x.v < 70 ? 'clinical' : 'clinical';
             });
 
-            // T-Wert zu exaktem Prozentrang (Normal-CDF)
             const tToPR = t => tToPRExact(t);
 
-            const cText = val => val < 60 ? 'Durchschnittlich' : val < 65 ? 'Leicht erhöht' : val < 70 ? 'Erhöht' : 'Stark erhöht';
+            const cText = val => val < 60
+                ? tt('Durchschnittlich','Moyen','Average')
+                : val < 65
+                    ? tt('Leicht erhöht','Légèrement élevé','Slightly elevated')
+                    : val < 70
+                        ? tt('Erhöht','Élevé','Elevated')
+                        : tt('Stark erhöht','Fortement élevé','Severely elevated');
 
-            // ADHS-Wahrscheinlichkeit
             let adhdProb = '';
             if(scales.adhd.v) {
-                if(scales.adhd.v >= 70) adhdProb = 'sehr hoch';
-                else if(scales.adhd.v >= 65) adhdProb = 'hoch';
-                else if(scales.adhd.v >= 60) adhdProb = 'moderat erhöht';
-                else adhdProb = 'gering';
+                if(scales.adhd.v >= 70)      adhdProb = tt('sehr hoch','très élevée','very high');
+                else if(scales.adhd.v >= 65) adhdProb = tt('hoch','élevée','high');
+                else if(scales.adhd.v >= 60) adhdProb = tt('moderat erhöht','modérément élevée','moderately elevated');
+                else                          adhdProb = tt('gering','faible','low');
             }
 
             const gutachten = `
