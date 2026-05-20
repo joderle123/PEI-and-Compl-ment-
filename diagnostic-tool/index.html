@@ -4702,61 +4702,117 @@
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">6. Diagnostische Einordnung nach ICD-10/ICD-11</h4>
+                        <h4 class="gutachten-section-title">${tt(
+                            '6. Diagnostische Einordnung nach ICD-10/ICD-11',
+                            '6. Classification diagnostique selon CIM-10/CIM-11',
+                            '6. Diagnostic classification per ICD-10/ICD-11'
+                        )}</h4>
                         <div class="gutachten-text">
-                            <p>Basierend auf dem vorliegenden Ergebnisprofil ergeben sich folgende diagnostische Überlegungen. Es ist zu betonen, dass der SDQ als Screening-Instrument keine Diagnosen stellen kann, sondern lediglich Hinweise auf mögliche Störungsbilder liefert, die im Rahmen einer umfassenden klinischen Diagnostik weiter abgeklärt werden müssen.</p>
-                            ${c.em === 'clinical' ? `<div class="gutachten-highlight"><strong>Emotionale Störungen:</strong> Der erhöhte Wert auf der Skala Emotionale Probleme ist vereinbar mit dem Vorliegen einer emotionalen Störung des Kindesalters (ICD-10: F93.x), einer Angststörung (F40.x, F41.x) oder einer depressiven Episode (F32.x). Eine vertiefte Angst- und Depressionsdiagnostik wird empfohlen.<br><span class="icd-code">F93.x</span><span class="icd-code">F40.x</span><span class="icd-code">F41.x</span><span class="icd-code">F32.x</span></div>` : ''}
-                            ${c.co === 'clinical' ? `<div class="gutachten-highlight"><strong>Störungen des Sozialverhaltens:</strong> Der erhöhte Wert auf der Skala Verhaltensprobleme ist vereinbar mit dem Vorliegen einer Störung des Sozialverhaltens (ICD-10: F91.x) oder einer Störung mit oppositionellem Trotzverhalten (F91.3). Die Symptomatik sollte hinsichtlich Beginn, Dauer und situativer Generalisiertheit weiter exploriert werden.<br><span class="icd-code">F91.x</span><span class="icd-code">F91.3</span></div>` : ''}
-                            ${c.hy === 'clinical' ? `<div class="gutachten-highlight"><strong>Hyperkinetische Störungen:</strong> Der erhöhte Wert auf der Skala Hyperaktivität/Unaufmerksamkeit ist vereinbar mit dem Vorliegen einer Aufmerksamkeitsdefizit-/Hyperaktivitätsstörung (ICD-10: F90.x). Eine multimodale ADHS-Diagnostik unter Einbezug verschiedener Informationsquellen und Settings wird dringend empfohlen.<br><span class="icd-code">F90.0</span><span class="icd-code">F90.1</span></div>` : ''}
-                            ${c.pe === 'clinical' ? `<div class="gutachten-highlight"><strong>Soziale Funktionsstörungen:</strong> Der erhöhte Wert auf der Skala Probleme mit Gleichaltrigen kann auf verschiedene Störungsbilder hinweisen: Soziale Phobie (F40.1), Bindungsstörungen (F94.x), oder Autismus-Spektrum-Störungen (F84.x). Eine differenzierte Abklärung sozialer Kompetenzen und möglicher Entwicklungsstörungen wird empfohlen.<br><span class="icd-code">F40.1</span><span class="icd-code">F94.x</span><span class="icd-code">F84.x</span></div>` : ''}
-                            ${c.tot === 'normal' ? `<p>Bei unauffälligem Gesamtprofil ergeben sich derzeit keine spezifischen diagnostischen Hinweise auf das Vorliegen einer psychischen Störung. Der Befund ist am ehesten vereinbar mit einer normalen psychischen Entwicklung.</p><span class="icd-code">Z03.2</span> Beobachtung bei Verdacht auf psychische Störung – ausgeschlossen` : ''}
+                            <p>${tt(
+                                'Basierend auf dem vorliegenden Ergebnisprofil ergeben sich folgende diagnostische Überlegungen. Es ist zu betonen, dass der SDQ als Screening-Instrument keine Diagnosen stellen kann, sondern lediglich Hinweise auf mögliche Störungsbilder liefert, die im Rahmen einer umfassenden klinischen Diagnostik weiter abgeklärt werden müssen.',
+                                'Sur la base du profil de résultats, les considérations diagnostiques suivantes se dégagent. Il convient de souligner que le SDQ, en tant qu\'instrument de dépistage, ne peut poser de diagnostic mais fournit uniquement des indications sur des troubles possibles à clarifier dans le cadre d\'un bilan clinique complet.',
+                                'Based on the current profile, the following diagnostic considerations arise. It must be emphasised that the SDQ, as a screening instrument, cannot establish diagnoses but only points to possible disorders to be clarified through a comprehensive clinical assessment.'
+                            )}</p>
+                            ${c.em === 'clinical' ? `<div class="gutachten-highlight"><strong>${tt('Emotionale Störungen:', 'Troubles émotionnels :', 'Emotional disorders:')}</strong> ${tt(
+                                'Der erhöhte Wert auf der Skala Emotionale Probleme ist vereinbar mit dem Vorliegen einer emotionalen Störung des Kindesalters (ICD-10: F93.x), einer Angststörung (F40.x, F41.x) oder einer depressiven Episode (F32.x). Eine vertiefte Angst- und Depressionsdiagnostik wird empfohlen.',
+                                'La valeur élevée à l\'échelle Problèmes émotionnels est compatible avec un trouble émotionnel de l\'enfance (CIM-10 : F93.x), un trouble anxieux (F40.x, F41.x) ou un épisode dépressif (F32.x). Un bilan approfondi d\'anxiété et de dépression est recommandé.',
+                                'The elevated score on the Emotional Problems scale is consistent with a childhood emotional disorder (ICD-10: F93.x), an anxiety disorder (F40.x, F41.x) or a depressive episode (F32.x). In-depth anxiety and depression assessment is recommended.'
+                            )}<br><span class="icd-code">F93.x</span> <span class="icd-code">F40.x</span> <span class="icd-code">F41.x</span> <span class="icd-code">F32.x</span></div>` : ''}
+                            ${c.co === 'clinical' ? `<div class="gutachten-highlight"><strong>${tt('Störungen des Sozialverhaltens:', 'Troubles des conduites :', 'Conduct disorders:')}</strong> ${tt(
+                                'Der erhöhte Wert auf der Skala Verhaltensprobleme ist vereinbar mit dem Vorliegen einer Störung des Sozialverhaltens (ICD-10: F91.x) oder einer Störung mit oppositionellem Trotzverhalten (F91.3). Die Symptomatik sollte hinsichtlich Beginn, Dauer und situativer Generalisiertheit weiter exploriert werden.',
+                                'La valeur élevée à l\'échelle Problèmes de conduite est compatible avec un trouble des conduites (CIM-10 : F91.x) ou un trouble oppositionnel avec provocation (F91.3). La symptomatologie doit être explorée davantage en termes de début, de durée et de généralisation situationnelle.',
+                                'The elevated score on the Conduct Problems scale is consistent with a conduct disorder (ICD-10: F91.x) or an oppositional defiant disorder (F91.3). Symptomatology should be further explored regarding onset, duration and situational generalisation.'
+                            )}<br><span class="icd-code">F91.x</span> <span class="icd-code">F91.3</span></div>` : ''}
+                            ${c.hy === 'clinical' ? `<div class="gutachten-highlight"><strong>${tt('Hyperkinetische Störungen:', 'Troubles hyperkinétiques :', 'Hyperkinetic disorders:')}</strong> ${tt(
+                                'Der erhöhte Wert auf der Skala Hyperaktivität/Unaufmerksamkeit ist vereinbar mit dem Vorliegen einer Aufmerksamkeitsdefizit-/Hyperaktivitätsstörung (ICD-10: F90.x). Eine multimodale ADHS-Diagnostik unter Einbezug verschiedener Informationsquellen und Settings wird dringend empfohlen.',
+                                'La valeur élevée à l\'échelle Hyperactivité/Inattention est compatible avec un trouble du déficit de l\'attention/hyperactivité (CIM-10 : F90.x). Un bilan TDAH multimodal incluant différentes sources d\'information et différents contextes est vivement recommandé.',
+                                'The elevated score on the Hyperactivity/Inattention scale is consistent with attention-deficit/hyperactivity disorder (ICD-10: F90.x). A multimodal ADHD assessment including various information sources and settings is strongly recommended.'
+                            )}<br><span class="icd-code">F90.0</span> <span class="icd-code">F90.1</span></div>` : ''}
+                            ${c.pe === 'clinical' ? `<div class="gutachten-highlight"><strong>${tt('Soziale Funktionsstörungen:', 'Troubles du fonctionnement social :', 'Social functional impairments:')}</strong> ${tt(
+                                'Der erhöhte Wert auf der Skala Probleme mit Gleichaltrigen kann auf verschiedene Störungsbilder hinweisen: Soziale Phobie (F40.1), Bindungsstörungen (F94.x), oder Autismus-Spektrum-Störungen (F84.x). Eine differenzierte Abklärung sozialer Kompetenzen und möglicher Entwicklungsstörungen wird empfohlen.',
+                                'La valeur élevée à l\'échelle Problèmes avec les pairs peut évoquer divers tableaux : phobie sociale (F40.1), troubles de l\'attachement (F94.x) ou troubles du spectre autistique (F84.x). Un bilan différencié des compétences sociales et de troubles du développement éventuels est recommandé.',
+                                'The elevated score on the Peer Problems scale may indicate several conditions: social phobia (F40.1), attachment disorders (F94.x) or autism spectrum disorders (F84.x). A differentiated assessment of social competencies and possible developmental disorders is recommended.'
+                            )}<br><span class="icd-code">F40.1</span> <span class="icd-code">F94.x</span> <span class="icd-code">F84.x</span></div>` : ''}
+                            ${c.tot === 'normal' ? `<p>${tt(
+                                'Bei unauffälligem Gesamtprofil ergeben sich derzeit keine spezifischen diagnostischen Hinweise auf das Vorliegen einer psychischen Störung. Der Befund ist am ehesten vereinbar mit einer normalen psychischen Entwicklung.',
+                                'Avec un profil global sans particularité, aucune indication diagnostique spécifique de trouble psychique n\'apparaît actuellement. Le résultat est le plus compatible avec un développement psychique normal.',
+                                'With an unremarkable overall profile, no specific diagnostic indications of a mental disorder are currently evident. The finding is most consistent with normal psychological development.'
+                            )}</p><span class="icd-code">Z03.2</span> ${tt('Beobachtung bei Verdacht auf psychische Störung – ausgeschlossen', 'Observation pour suspicion de trouble psychique – exclue', 'Observation for suspected mental disorder – ruled out')}` : ''}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">7. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">${tt('7. Empfehlungen', '7. Recommandations', '7. Recommendations')}</h4>
                         <div class="gutachten-text">
                             ${c.tot === 'normal' ? `
-                                <p>Auf Basis der vorliegenden Screening-Ergebnisse ergibt sich derzeit kein unmittelbarer Interventionsbedarf. Folgende Empfehlungen werden dennoch ausgesprochen:</p>
+                                <p>${tt(
+                                    'Auf Basis der vorliegenden Screening-Ergebnisse ergibt sich derzeit kein unmittelbarer Interventionsbedarf. Folgende Empfehlungen werden dennoch ausgesprochen:',
+                                    'Sur la base des résultats de dépistage actuels, aucune intervention immédiate n\'est nécessaire. Les recommandations suivantes sont néanmoins formulées :',
+                                    'Based on the current screening results, no immediate intervention is required. The following recommendations are nevertheless made:'
+                                )}</p>
                                 <ul class="gutachten-list">
-                                    <li>Aufrechterhaltung der protektiven Faktoren und Ressourcen</li>
-                                    <li>Erneute Screening-Untersuchung bei Veränderungen des psychischen Befindens oder bei Auftreten neuer Belastungsfaktoren</li>
-                                    <li>Bei schulischen oder familiären Schwierigkeiten: niederschwellige Beratungsangebote in Anspruch nehmen</li>
+                                    <li>${tt('Aufrechterhaltung der protektiven Faktoren und Ressourcen','Maintien des facteurs protecteurs et des ressources','Maintenance of protective factors and resources')}</li>
+                                    <li>${tt('Erneute Screening-Untersuchung bei Veränderungen des psychischen Befindens oder bei Auftreten neuer Belastungsfaktoren','Nouvel examen de dépistage en cas de changement de l\'état psychique ou d\'apparition de nouveaux facteurs de stress','Repeat screening if psychological functioning changes or new stress factors emerge')}</li>
+                                    <li>${tt('Bei schulischen oder familiären Schwierigkeiten: niederschwellige Beratungsangebote in Anspruch nehmen','En cas de difficultés scolaires ou familiales : recourir à des offres de conseil à bas seuil','For school or family difficulties: use low-threshold counselling services')}</li>
                                 </ul>
                             ` : c.tot === 'borderline' ? `
-                                <p>Die grenzwertigen Befunde erfordern eine aufmerksame Beobachtung und ggf. präventive Maßnahmen. Folgende Empfehlungen werden ausgesprochen:</p>
+                                <p>${tt(
+                                    'Die grenzwertigen Befunde erfordern eine aufmerksame Beobachtung und ggf. präventive Maßnahmen. Folgende Empfehlungen werden ausgesprochen:',
+                                    'Les résultats limites requièrent un suivi attentif et, le cas échéant, des mesures préventives. Les recommandations suivantes sont formulées :',
+                                    'The borderline findings require attentive monitoring and, where appropriate, preventive measures. The following recommendations are made:'
+                                )}</p>
                                 <ul class="gutachten-list">
-                                    <li>Engmaschige Verlaufsbeobachtung durch Eltern und Lehrkräfte</li>
-                                    <li>Erneute Screening-Untersuchung in 3-6 Monaten zur Verlaufskontrolle</li>
-                                    <li>Bei Zunahme der Symptomatik: vertiefte psychodiagnostische Abklärung</li>
-                                    <li>Ggf. präventive Beratung für Eltern zu Erziehungsstrategien und emotionaler Unterstützung</li>
-                                    <li>Prüfung schulischer Unterstützungsmaßnahmen bei Bedarf</li>
+                                    <li>${tt('Engmaschige Verlaufsbeobachtung durch Eltern und Lehrkräfte','Suivi rapproché par les parents et les enseignant·e·s','Close monitoring by parents and teachers')}</li>
+                                    <li>${tt('Erneute Screening-Untersuchung in 3-6 Monaten zur Verlaufskontrolle','Nouvel examen de dépistage dans 3 à 6 mois à titre de suivi','Repeat screening in 3–6 months as follow-up')}</li>
+                                    <li>${tt('Bei Zunahme der Symptomatik: vertiefte psychodiagnostische Abklärung','En cas d\'aggravation des symptômes : bilan psychodiagnostique approfondi','If symptoms worsen: in-depth psychodiagnostic assessment')}</li>
+                                    <li>${tt('Ggf. präventive Beratung für Eltern zu Erziehungsstrategien und emotionaler Unterstützung','Le cas échéant, conseil parental préventif sur les stratégies éducatives et le soutien émotionnel','If applicable, preventive parental counselling on parenting strategies and emotional support')}</li>
+                                    <li>${tt('Prüfung schulischer Unterstützungsmaßnahmen bei Bedarf','Examen de mesures de soutien scolaire si nécessaire','Review of school support measures if needed')}</li>
                                 </ul>
                             ` : `
-                                <p>Die klinisch auffälligen Befunde erfordern eine umgehende vertiefte Diagnostik und ggf. therapeutische Intervention. Folgende Empfehlungen werden dringend ausgesprochen:</p>
+                                <p>${tt(
+                                    'Die klinisch auffälligen Befunde erfordern eine umgehende vertiefte Diagnostik und ggf. therapeutische Intervention. Folgende Empfehlungen werden dringend ausgesprochen:',
+                                    'Les résultats cliniquement significatifs imposent un bilan approfondi rapide et, le cas échéant, une intervention thérapeutique. Les recommandations suivantes sont vivement formulées :',
+                                    'The clinically significant findings call for prompt in-depth diagnostic assessment and, where appropriate, therapeutic intervention. The following recommendations are strongly expressed:'
+                                )}</p>
                                 <ul class="gutachten-list">
-                                    <li><strong>Umgehende Vorstellung</strong> in einer kinder- und jugendpsychiatrischen/-psychotherapeutischen Einrichtung oder bei einem approbierten Kinder- und Jugendlichenpsychotherapeuten</li>
-                                    <li>Durchführung einer umfassenden psychodiagnostischen Untersuchung mit störungsspezifischen Verfahren</li>
-                                    ${c.em === 'clinical' ? '<li>Spezifische Angst- und Depressionsdiagnostik (z.B. SCARED, DIKJ, AFS)</li>' : ''}
-                                    ${c.hy === 'clinical' ? '<li>Multimodale ADHS-Diagnostik inkl. Aufmerksamkeitstests, Fremdbeurteilung und Verhaltensbeobachtung</li>' : ''}
-                                    ${c.co === 'clinical' ? '<li>Vertiefte Diagnostik von Störungen des Sozialverhaltens und Exploration familiärer Risikofaktoren</li>' : ''}
-                                    ${c.pe === 'clinical' ? '<li>Soziale Kompetenzdiagnostik und ggf. Abklärung von Autismus-Spektrum-Störungen</li>' : ''}
-                                    <li>Einbezug aller relevanten Informationsquellen (Eltern, Lehrkräfte, Kind selbst)</li>
-                                    <li>Prüfung therapeutischer Interventionen nach Abschluss der Diagnostik</li>
-                                    <li>Beratung der Eltern zu unterstützenden Maßnahmen im häuslichen Umfeld</li>
-                                    <li>Abstimmung mit Schule zu möglichen Unterstützungsmaßnahmen</li>
+                                    <li>${tt(
+                                        '<strong>Umgehende Vorstellung</strong> in einer kinder- und jugendpsychiatrischen/-psychotherapeutischen Einrichtung oder bei einem approbierten Kinder- und Jugendlichenpsychotherapeuten',
+                                        '<strong>Consultation rapide</strong> auprès d\'un service de pédopsychiatrie/psychothérapie ou d\'un·e psychothérapeute pour enfants et adolescents agréé·e',
+                                        '<strong>Prompt referral</strong> to a child & adolescent psychiatric/psychotherapeutic service or to a licensed child & adolescent psychotherapist'
+                                    )}</li>
+                                    <li>${tt('Durchführung einer umfassenden psychodiagnostischen Untersuchung mit störungsspezifischen Verfahren','Réalisation d\'un bilan psychodiagnostique complet avec des procédures spécifiques aux troubles','Comprehensive psychodiagnostic assessment with disorder-specific procedures')}</li>
+                                    ${c.em === 'clinical' ? `<li>${tt('Spezifische Angst- und Depressionsdiagnostik (z.B. SCARED, DIKJ, AFS)','Diagnostic spécifique d\'anxiété et de dépression (p. ex. SCARED, DIKJ, AFS)','Specific anxiety and depression assessment (e.g. SCARED, DIKJ, AFS)')}</li>` : ''}
+                                    ${c.hy === 'clinical' ? `<li>${tt('Multimodale ADHS-Diagnostik inkl. Aufmerksamkeitstests, Fremdbeurteilung und Verhaltensbeobachtung','Diagnostic TDAH multimodal incluant tests d\'attention, hétéro-évaluation et observation comportementale','Multimodal ADHD assessment including attention tests, third-party rating and behavioural observation')}</li>` : ''}
+                                    ${c.co === 'clinical' ? `<li>${tt('Vertiefte Diagnostik von Störungen des Sozialverhaltens und Exploration familiärer Risikofaktoren','Bilan approfondi des troubles des conduites et exploration des facteurs de risque familiaux','In-depth assessment of conduct disorders and exploration of family risk factors')}</li>` : ''}
+                                    ${c.pe === 'clinical' ? `<li>${tt('Soziale Kompetenzdiagnostik und ggf. Abklärung von Autismus-Spektrum-Störungen','Bilan des compétences sociales et, le cas échéant, clarification de troubles du spectre autistique','Social-competence assessment and, if appropriate, autism-spectrum-disorder clarification')}</li>` : ''}
+                                    <li>${tt('Einbezug aller relevanten Informationsquellen (Eltern, Lehrkräfte, Kind selbst)','Implication de toutes les sources d\'information pertinentes (parents, enseignant·e·s, enfant lui-même)','Inclusion of all relevant information sources (parents, teachers, the child themselves)')}</li>
+                                    <li>${tt('Prüfung therapeutischer Interventionen nach Abschluss der Diagnostik','Examen des interventions thérapeutiques à l\'issue du bilan','Review of therapeutic interventions after completion of diagnostics')}</li>
+                                    <li>${tt('Beratung der Eltern zu unterstützenden Maßnahmen im häuslichen Umfeld','Conseil aux parents concernant les mesures de soutien dans l\'environnement familial','Parental counselling regarding supportive measures in the home environment')}</li>
+                                    <li>${tt('Abstimmung mit Schule zu möglichen Unterstützungsmaßnahmen','Concertation avec l\'école sur d\'éventuelles mesures de soutien','Coordination with the school regarding possible support measures')}</li>
                                 </ul>
                             `}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">8. Zusammenfassung</h4>
+                        <h4 class="gutachten-section-title">${tt('8. Zusammenfassung', '8. Synthèse', '8. Summary')}</h4>
                         <div class="gutachten-text">
-                            <p>${pat.name} (${pat.age ? pat.age + ' Jahre' : 'Alter nicht angegeben'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) wurde am ${formatDate(pat.date)} mittels des SDQ (${RESP_TEXT[r]}) untersucht. Der Gesamtproblemwert von ${tot} Punkten liegt im <strong>${c.tot === 'normal' ? 'unauffälligen' : c.tot === 'borderline' ? 'grenzwertigen' : 'klinisch auffälligen'}</strong> Bereich.</p>
+                            <p>${tt(
+                                `${pat.name} (${pat.age ? pat.age + ' Jahre' : 'Alter nicht angegeben'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) wurde am ${formatDate(pat.date)} mittels des SDQ (${respLabel(r)}) untersucht. Der Gesamtproblemwert von ${tot} Punkten liegt im <strong>${c.tot === 'normal' ? 'unauffälligen' : c.tot === 'borderline' ? 'grenzwertigen' : 'klinisch auffälligen'}</strong> Bereich.`,
+                                `${pat.name} (${pat.age ? pat.age + ' ans' : 'âge non spécifié'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) a été évalué·e le ${formatDate(pat.date)} au moyen du SDQ (${respLabel(r)}). Le score total des difficultés de ${tot} points se situe dans la plage <strong>${c.tot === 'normal' ? 'normale' : c.tot === 'borderline' ? 'limite' : 'cliniquement significative'}</strong>.`,
+                                `${pat.name} (${pat.age ? pat.age + ' years' : 'age not specified'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) was assessed on ${formatDate(pat.date)} using the SDQ (${respLabel(r)}). The Total Difficulties Score of ${tot} points falls within the <strong>${c.tot === 'normal' ? 'normal' : c.tot === 'borderline' ? 'borderline' : 'clinically significant'}</strong> range.`
+                            )}</p>
                             ${c.tot === 'normal' ?
-                                `<p>Es ergeben sich derzeit keine Hinweise auf das Vorliegen einer klinisch relevanten psychischen Störung. Die psychische Entwicklung erscheint weitgehend unauffällig.</p>` :
-                                `<p>Die Ergebnisse weisen auf eine erhöhte psychische Belastung hin. ${c.tot === 'clinical' ? 'Eine umgehende vertiefte diagnostische Abklärung wird dringend empfohlen.' : 'Eine weitere Beobachtung und ggf. vertiefte Diagnostik wird empfohlen.'}</p>`
+                                `<p>${tt(
+                                    'Es ergeben sich derzeit keine Hinweise auf das Vorliegen einer klinisch relevanten psychischen Störung. Die psychische Entwicklung erscheint weitgehend unauffällig.',
+                                    'Aucune indication d\'un trouble psychique cliniquement pertinent n\'apparaît actuellement. Le développement psychique semble largement sans particularité.',
+                                    'No indications of a clinically relevant mental disorder are currently evident. Psychological development appears largely unremarkable.'
+                                )}</p>` :
+                                `<p>${tt(
+                                    `Die Ergebnisse weisen auf eine erhöhte psychische Belastung hin. ${c.tot === 'clinical' ? 'Eine umgehende vertiefte diagnostische Abklärung wird dringend empfohlen.' : 'Eine weitere Beobachtung und ggf. vertiefte Diagnostik wird empfohlen.'}`,
+                                    `Les résultats indiquent une charge psychique accrue. ${c.tot === 'clinical' ? 'Un bilan diagnostique approfondi rapide est vivement recommandé.' : 'Un suivi supplémentaire et, le cas échéant, un bilan approfondi sont recommandés.'}`,
+                                    `The results indicate elevated psychological burden. ${c.tot === 'clinical' ? 'Prompt in-depth diagnostic assessment is strongly recommended.' : 'Further monitoring and, if appropriate, in-depth assessment are recommended.'}`
+                                )}</p>`
                             }
                         </div>
                     </div>
