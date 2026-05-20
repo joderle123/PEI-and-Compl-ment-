@@ -6285,18 +6285,32 @@
             su: {n:'Schulunlust (SU)', desc:'Abneigung gegen Schule, mangelnde Motivation', icd:'F93.0'},
             se: {n:'Soziale Erwünschtheit (SE)', desc:'Tendenz zu sozial erwünschtem Antwortverhalten', icd:'-'}
         };
+        function afsScaleName(k) {
+            const fr = {pa:'Anxiété de performance (PA)',ma:'Anxiété manifeste (MA)',su:'Désintérêt scolaire (DS)',se:'Désirabilité sociale (DS)'};
+            const en = {pa:'Test Anxiety (TA)',ma:'Manifest Anxiety (MA)',su:'School Aversion (SA)',se:'Social Desirability (SD)'};
+            return tt(AFS_SCALES[k].n, fr[k], en[k]);
+        }
+        function afsScaleDesc(k) {
+            const fr = {pa:'Anxiété et inconfort en situations d\'examen et de performance',ma:'Anxiété générale, symptômes végétatifs',su:'Aversion pour l\'école, manque de motivation',se:'Tendance aux réponses socialement désirables'};
+            const en = {pa:'Anxiety and discomfort in test and performance situations',ma:'General anxiety, vegetative symptoms',su:'School aversion, lack of motivation',se:'Tendency to socially desirable response style'};
+            return tt(AFS_SCALES[k].desc, fr[k], en[k]);
+        }
 
         function evaluateAFS(e) {
             e.preventDefault();
             const pat = getPatient();
             const d = {pa:v('afs-pa'),ma:v('afs-ma'),su:v('afs-su'),se:v('afs-se')};
             const valid = Object.entries(d).filter(([k,x])=>x!==null);
-            if(!valid.length) return alert('Mindestens ein Wert eingeben');
+            if(!valid.length) return alert(tt('Mindestens ein Wert eingeben','Veuillez saisir au moins une valeur','Please enter at least one value'));
 
             const c = {}; valid.forEach(([k,x])=>c[k]=staClass(x));
-            const labels = {pa:'Prüfungsangst',ma:'Man. Angst',su:'Schulunlust',se:'Soz. Erw.'};
+            const labels = {
+                pa: tt('Prüfungsangst','Anx. examens','Test Anx.'),
+                ma: tt('Man. Angst','Anx. manifeste','Manif. Anx.'),
+                su: tt('Schulunlust','Désintérêt','Sch. Aversion'),
+                se: tt('Soz. Erw.','Désirabilité','Soc. Desir.')
+            };
 
-            // Interpretation
             let interp = '';
             const pa_clin = c.pa === 'clinical';
             const ma_clin = c.ma === 'clinical';
@@ -6304,116 +6318,191 @@
             const se_clin = c.se === 'clinical';
 
             if(pa_clin && ma_clin) {
-                interp = `${pat.name} zeigt sowohl eine ausgeprägte Prüfungsangst (Stanine ${d.pa}) als auch eine erhöhte allgemeine Ängstlichkeit (Stanine ${d.ma}). Diese Kombination deutet auf eine generalisierte schulbezogene Angstproblematik hin, die über spezifische Leistungssituationen hinausgeht.`;
+                interp = tt(
+                    `${pat.name} zeigt sowohl eine ausgeprägte Prüfungsangst (Stanine ${d.pa}) als auch eine erhöhte allgemeine Ängstlichkeit (Stanine ${d.ma}). Diese Kombination deutet auf eine generalisierte schulbezogene Angstproblematik hin, die über spezifische Leistungssituationen hinausgeht.`,
+                    `${pat.name} montre à la fois une anxiété de performance marquée (Stanine ${d.pa}) et une anxiété générale élevée (Stanine ${d.ma}). Cette combinaison évoque une problématique anxieuse scolaire généralisée, allant au-delà des situations de performance spécifiques.`,
+                    `${pat.name} shows both pronounced test anxiety (Stanine ${d.pa}) and elevated general anxiety (Stanine ${d.ma}). This combination suggests generalised school-related anxiety extending beyond specific performance situations.`
+                );
             } else if(pa_clin) {
-                interp = `${pat.name} zeigt eine ausgeprägte Prüfungsangst (Stanine ${d.pa}). Diese spezifische Angst in Leistungssituationen kann die schulische Leistungsfähigkeit erheblich beeinträchtigen, auch wenn die tatsächlichen kognitiven Fähigkeiten ausreichend sind.`;
+                interp = tt(
+                    `${pat.name} zeigt eine ausgeprägte Prüfungsangst (Stanine ${d.pa}). Diese spezifische Angst in Leistungssituationen kann die schulische Leistungsfähigkeit erheblich beeinträchtigen, auch wenn die tatsächlichen kognitiven Fähigkeiten ausreichend sind.`,
+                    `${pat.name} montre une anxiété de performance marquée (Stanine ${d.pa}). Cette anxiété spécifique en situation de performance peut altérer notablement le rendement scolaire, même si les capacités cognitives réelles sont suffisantes.`,
+                    `${pat.name} shows pronounced test anxiety (Stanine ${d.pa}). This specific anxiety in performance situations can substantially impair academic performance even when actual cognitive abilities are adequate.`
+                );
             } else if(ma_clin) {
-                interp = `${pat.name} zeigt eine erhöhte allgemeine Ängstlichkeit (Stanine ${d.ma}), die sich in körperlichen Symptomen und Anspannung manifestieren kann. Diese generalisierte Angstneigung sollte weiter abgeklärt werden.`;
+                interp = tt(
+                    `${pat.name} zeigt eine erhöhte allgemeine Ängstlichkeit (Stanine ${d.ma}), die sich in körperlichen Symptomen und Anspannung manifestieren kann. Diese generalisierte Angstneigung sollte weiter abgeklärt werden.`,
+                    `${pat.name} montre une anxiété générale élevée (Stanine ${d.ma}), pouvant se manifester par des symptômes corporels et de la tension. Cette tendance anxieuse généralisée devrait être explorée davantage.`,
+                    `${pat.name} shows elevated general anxiety (Stanine ${d.ma}), which may manifest as somatic symptoms and tension. This generalised anxiety tendency should be further investigated.`
+                );
             } else if(valid.every(([k])=>c[k]==='normal')) {
-                interp = `${pat.name} zeigt keine auffälligen schulbezogenen Ängste oder Motivationsprobleme. Das Angstprofil liegt im Normbereich.`;
+                interp = tt(
+                    `${pat.name} zeigt keine auffälligen schulbezogenen Ängste oder Motivationsprobleme. Das Angstprofil liegt im Normbereich.`,
+                    `${pat.name} ne montre pas d'anxiété scolaire notable ni de problèmes motivationnels. Le profil anxieux se situe dans la plage normale.`,
+                    `${pat.name} shows no notable school-related anxiety or motivational problems. The anxiety profile is within the normal range.`
+                );
             }
 
             if(su_clin) {
-                interp += ` Zusätzlich besteht eine deutlich erhöhte Schulunlust (Stanine ${d.su}), die auf motivationale Schwierigkeiten und eine negative Einstellung zur Schule hindeutet.`;
+                interp += ' ' + tt(
+                    `Zusätzlich besteht eine deutlich erhöhte Schulunlust (Stanine ${d.su}), die auf motivationale Schwierigkeiten und eine negative Einstellung zur Schule hindeutet.`,
+                    `S'y ajoute un désintérêt scolaire nettement élevé (Stanine ${d.su}), indiquant des difficultés motivationnelles et une attitude négative envers l'école.`,
+                    `In addition, school aversion is clearly elevated (Stanine ${d.su}), indicating motivational difficulties and a negative attitude towards school.`
+                );
             }
 
             if(se_clin) {
-                interp += ` Die erhöhte soziale Erwünschtheit (Stanine ${d.se}) sollte bei der Interpretation berücksichtigt werden – möglicherweise wurden Probleme in anderen Skalen unterschätzt.`;
+                interp += ' ' + tt(
+                    `Die erhöhte soziale Erwünschtheit (Stanine ${d.se}) sollte bei der Interpretation berücksichtigt werden – möglicherweise wurden Probleme in anderen Skalen unterschätzt.`,
+                    `La désirabilité sociale élevée (Stanine ${d.se}) doit être prise en compte dans l'interprétation – les problèmes sur d'autres échelles peuvent avoir été sous-estimés.`,
+                    `The elevated social desirability (Stanine ${d.se}) should be considered in interpretation – problems on other scales may have been underestimated.`
+                );
             } else if(d.se !== null && d.se <= 2) {
-                interp += ` Die niedrige soziale Erwünschtheit spricht für ein offenes Antwortverhalten und erhöht die Validität der übrigen Skalen.`;
+                interp += ' ' + tt(
+                    'Die niedrige soziale Erwünschtheit spricht für ein offenes Antwortverhalten und erhöht die Validität der übrigen Skalen.',
+                    'La faible désirabilité sociale plaide pour un mode de réponse franc et renforce la validité des autres échelles.',
+                    'Low social desirability supports an open response style and increases the validity of the other scales.'
+                );
             }
 
-            // Empfehlungen
+            const liA = txt => `<li>${txt}</li>`;
             let empf = '<ul class="gutachten-list">';
             if(pa_clin) {
-                empf += '<li>Prüfungsangsttraining/-intervention</li>';
-                empf += '<li>Entspannungsverfahren (PMR, Atemtechniken)</li>';
-                empf += '<li>Kognitive Umstrukturierung dysfunktionaler Leistungsgedanken</li>';
+                empf += liA(tt('Prüfungsangsttraining/-intervention','Entraînement / intervention sur l\'anxiété de performance','Test-anxiety training / intervention'));
+                empf += liA(tt('Entspannungsverfahren (PMR, Atemtechniken)','Techniques de relaxation (RMP, respiration)','Relaxation techniques (PMR, breathing)'));
+                empf += liA(tt('Kognitive Umstrukturierung dysfunktionaler Leistungsgedanken','Restructuration cognitive des pensées dysfonctionnelles liées à la performance','Cognitive restructuring of dysfunctional performance thoughts'));
             }
             if(ma_clin) {
-                empf += '<li>Vertiefte Angstdiagnostik (z.B. SCARED, PHOKI)</li>';
-                empf += '<li>Ggf. kinder- und jugendpsychiatrische Vorstellung</li>';
+                empf += liA(tt('Vertiefte Angstdiagnostik (z.B. SCARED, PHOKI)','Bilan anxieux approfondi (p. ex. SCARED, PHOKI)','In-depth anxiety assessment (e.g. SCARED, PHOKI)'));
+                empf += liA(tt('Ggf. kinder- und jugendpsychiatrische Vorstellung','Le cas échéant, présentation pédopsychiatrique','Child & adolescent psychiatric review if appropriate'));
             }
             if(su_clin) {
-                empf += '<li>Exploration schulischer Belastungsfaktoren</li>';
-                empf += '<li>Leistungsdiagnostik zum Ausschluss von Überforderung</li>';
-                empf += '<li>Motivationsförderung</li>';
+                empf += liA(tt('Exploration schulischer Belastungsfaktoren','Exploration des facteurs de stress scolaire','Exploration of school-related stress factors'));
+                empf += liA(tt('Leistungsdiagnostik zum Ausschluss von Überforderung','Bilan de compétences pour exclure une surcharge','Performance assessment to rule out overload'));
+                empf += liA(tt('Motivationsförderung','Soutien à la motivation','Motivation support'));
             }
             if(!pa_clin && !ma_clin && !su_clin) {
-                empf += '<li>Keine spezifische Intervention erforderlich</li>';
+                empf += liA(tt('Keine spezifische Intervention erforderlich','Aucune intervention spécifique requise','No specific intervention required'));
             }
             empf += '</ul>';
 
             const gutachten = `
                 <div class="gutachten">
-                    ${gutachtenHeader('AFS', 'Angstfragebogen für Schüler', pat)}
+                    ${gutachtenHeader('AFS', tt('Angstfragebogen für Schüler','Questionnaire d\'anxiété pour élèves','Anxiety Questionnaire for Students'), pat)}
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <h4 class="gutachten-section-title">${tt('1. Testbeschreibung','1. Description du test','1. Test description')}</h4>
                         <div class="gutachten-text">
-                            <p>Der AFS (Wieczerkowski et al., 1981) ist ein etabliertes Selbstbeurteilungsverfahren zur Erfassung schulbezogener Ängste bei Schülerinnen und Schülern der Klassen 3-10. Der Fragebogen umfasst vier Skalen: Prüfungsangst (PA), Manifeste Angst (MA), Schulunlust (SU) und Soziale Erwünschtheit (SE).</p>
-                            <p>Die Ergebnisse werden als Stanine-Werte (1-9) dargestellt. Stanine 1-4: unauffällig, Stanine 5-6: leicht erhöht, Stanine 7-9: deutlich erhöht/auffällig.</p>
+                            <p>${tt(
+                                'Der AFS (Wieczerkowski et al., 1981) ist ein etabliertes Selbstbeurteilungsverfahren zur Erfassung schulbezogener Ängste bei Schülerinnen und Schülern der Klassen 3-10. Der Fragebogen umfasst vier Skalen: Prüfungsangst (PA), Manifeste Angst (MA), Schulunlust (SU) und Soziale Erwünschtheit (SE).',
+                                'L\'AFS (Wieczerkowski et al., 1981) est un instrument d\'auto-évaluation établi pour évaluer les anxiétés scolaires chez les élèves des classes 3 à 10. Le questionnaire comporte quatre échelles : Anxiété de performance (PA), Anxiété manifeste (MA), Désintérêt scolaire (DS) et Désirabilité sociale (DS).',
+                                'The AFS (Wieczerkowski et al., 1981) is an established self-report instrument for school-related anxieties in students grades 3-10. The questionnaire comprises four scales: Test Anxiety (TA), Manifest Anxiety (MA), School Aversion (SA) and Social Desirability (SD).'
+                            )}</p>
+                            <p>${tt(
+                                'Die Ergebnisse werden als Stanine-Werte (1-9) dargestellt. Stanine 1-4: unauffällig, Stanine 5-6: leicht erhöht, Stanine 7-9: deutlich erhöht/auffällig.',
+                                'Les résultats sont présentés en stanines (1-9). Stanines 1-4 : normal, 5-6 : légèrement élevé, 7-9 : nettement élevé / cliniquement significatif.',
+                                'Results are reported as stanines (1-9). Stanines 1-4: normal, 5-6: slightly elevated, 7-9: clearly elevated / clinically significant.'
+                            )}</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <h4 class="gutachten-section-title">${tt('2. Testergebnisse','2. Résultats','2. Test results')}</h4>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>Stanine</th><th>Bedeutung</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${tt('Skala','Échelle','Scale')}</th><th>Stanine</th><th>${tt('Bedeutung','Signification','Meaning')}</th><th>${tt('Klassifikation','Classification','Classification')}</th></tr></thead>
                             <tbody>
-                                ${valid.map(([k,x])=>`<tr><td>${AFS_SCALES[k].n}</td><td>${x}</td><td>${AFS_SCALES[k].desc}</td><td class="${c[k]}">${staText(c[k])}</td></tr>`).join('')}
+                                ${valid.map(([k,x])=>`<tr><td>${afsScaleName(k)}</td><td>${x}</td><td>${afsScaleDesc(k)}</td><td class="${c[k]}">${staText(c[k])}</td></tr>`).join('')}
                             </tbody>
                         </table>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Grafische Darstellung</h4>
+                        <h4 class="gutachten-section-title">${tt('3. Grafische Darstellung','3. Représentation graphique','3. Graphical representation')}</h4>
                         <div class="chart-container">
                             ${chart(valid.map(([k])=>labels[k]),valid.map(([k,x])=>x),valid.map(([k])=>c[k]),9)}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Interpretation</h4>
+                        <h4 class="gutachten-section-title">${tt('4. Interpretation','4. Interprétation','4. Interpretation')}</h4>
                         <div class="gutachten-text">
                             <p>${interp}</p>
-                            ${(pa_clin || ma_clin) ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Erhöhte Angstwerte können die schulische Leistungsfähigkeit und das Wohlbefinden erheblich beeinträchtigen.</div>' : ''}
+                            ${(pa_clin || ma_clin) ? `<div class="gutachten-warning"><strong>${tt('Klinische Relevanz:','Pertinence clinique :','Clinical relevance:')}</strong> ${tt(
+                                'Erhöhte Angstwerte können die schulische Leistungsfähigkeit und das Wohlbefinden erheblich beeinträchtigen.',
+                                'Des scores anxieux élevés peuvent altérer notablement le rendement scolaire et le bien-être.',
+                                'Elevated anxiety scores can substantially impair academic performance and well-being.'
+                            )}</div>` : ''}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">5. Diagnostische Einordnung</h4>
+                        <h4 class="gutachten-section-title">${tt('5. Diagnostische Einordnung','5. Classification diagnostique','5. Diagnostic classification')}</h4>
                         <div class="gutachten-text">
-                            <p><strong>Relevante ICD-10 Diagnosen:</strong></p>
-                            ${pa_clin ? '<span class="icd-code">F40.2</span> Spezifische Phobien (Prüfungsangst)<br><span class="icd-code">F93.0</span> Emotionale Störung mit Trennungsangst<br>' : ''}
-                            ${ma_clin ? '<span class="icd-code">F41.1</span> Generalisierte Angststörung<br><span class="icd-code">F93.8</span> Sonstige emotionale Störungen des Kindesalters<br>' : ''}
-                            ${!pa_clin && !ma_clin ? '<span class="icd-code">Z03.2</span> Beobachtung – nicht bestätigt' : ''}
+                            <p><strong>${tt('Relevante ICD-10 Diagnosen:','Diagnostics CIM-10 pertinents :','Relevant ICD-10 diagnoses:')}</strong></p>
+                            ${pa_clin ? `<span class="icd-code">F40.2</span> ${tt('Spezifische Phobien (Prüfungsangst)','Phobies spécifiques (anxiété de performance)','Specific phobias (test anxiety)')}<br><span class="icd-code">F93.0</span> ${tt('Emotionale Störung mit Trennungsangst','Trouble émotionnel avec anxiété de séparation','Emotional disorder with separation anxiety')}<br>` : ''}
+                            ${ma_clin ? `<span class="icd-code">F41.1</span> ${tt('Generalisierte Angststörung','Trouble d\'anxiété généralisée','Generalised anxiety disorder')}<br><span class="icd-code">F93.8</span> ${tt('Sonstige emotionale Störungen des Kindesalters','Autres troubles émotionnels de l\'enfance','Other emotional disorders of childhood')}<br>` : ''}
+                            ${!pa_clin && !ma_clin ? `<span class="icd-code">Z03.2</span> ${tt('Beobachtung – nicht bestätigt','Observation – non confirmé','Observation – not confirmed')}` : ''}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">6. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">${tt('6. Empfehlungen','6. Recommandations','6. Recommendations')}</h4>
                         <div class="gutachten-text">${empf}</div>
                     </div>
 
                     ${elternZusammenfassung(
-                        'AFS (Angstfragebogen für Schüler)',
+                        tt('AFS (Angstfragebogen für Schüler)','AFS (questionnaire d\'anxiété pour élèves)','AFS (Anxiety Questionnaire for Students)'),
                         !pa_clin && !ma_clin && !su_clin
-                            ? `Die Ergebnisse zeigen, dass ${pat.name} keine auffällige Schulangst oder übermäßige allgemeine Ängstlichkeit hat. Das Verhältnis zur Schule und zu Prüfungssituationen scheint im normalen Bereich zu liegen.`
+                            ? tt(
+                                `Die Ergebnisse zeigen, dass ${pat.name} keine auffällige Schulangst oder übermäßige allgemeine Ängstlichkeit hat. Das Verhältnis zur Schule und zu Prüfungssituationen scheint im normalen Bereich zu liegen.`,
+                                `Les résultats montrent que ${pat.name} ne présente pas d'anxiété scolaire notable ni d'anxiété générale excessive. Le rapport à l'école et aux situations d'évaluation semble dans la plage normale.`,
+                                `The results show that ${pat.name} has no notable school anxiety or excessive general anxiety. The relationship to school and test situations appears within the normal range.`
+                            )
                             : pa_clin && !ma_clin
-                                ? `${pat.name} zeigt erhöhte Prüfungsangst. Das bedeutet, dass ${pat.name} sich in Testsituationen und bei Klassenarbeiten besonders unwohl fühlt - obwohl die Fähigkeiten vielleicht völlig ausreichend sind. Diese spezifische Angst ist weit verbreitet und kann gut behandelt werden.`
+                                ? tt(
+                                    `${pat.name} zeigt erhöhte Prüfungsangst. Das bedeutet, dass ${pat.name} sich in Testsituationen und bei Klassenarbeiten besonders unwohl fühlt - obwohl die Fähigkeiten vielleicht völlig ausreichend sind. Diese spezifische Angst ist weit verbreitet und kann gut behandelt werden.`,
+                                    `${pat.name} présente une anxiété de performance élevée. Cela signifie que ${pat.name} se sent particulièrement mal à l'aise lors des contrôles et des examens, même si les capacités sont possiblement tout à fait suffisantes. Cette anxiété spécifique est très répandue et se traite bien.`,
+                                    `${pat.name} shows elevated test anxiety. This means ${pat.name} feels particularly uncomfortable in test and classroom-assessment situations, even when abilities may be entirely adequate. This specific anxiety is very common and treatable.`
+                                )
                                 : ma_clin && !pa_clin
-                                    ? `${pat.name} zeigt eine erhöhte allgemeine Ängstlichkeit. Das kann sich durch körperliche Symptome wie Bauchschmerzen, Herzrasen oder Nervosität zeigen. Es ist wichtig, die Ursachen zu verstehen und Ihr Kind dabei zu unterstützen, mit diesen Gefühlen umzugehen.`
+                                    ? tt(
+                                        `${pat.name} zeigt eine erhöhte allgemeine Ängstlichkeit. Das kann sich durch körperliche Symptome wie Bauchschmerzen, Herzrasen oder Nervosität zeigen. Es ist wichtig, die Ursachen zu verstehen und Ihr Kind dabei zu unterstützen, mit diesen Gefühlen umzugehen.`,
+                                        `${pat.name} présente une anxiété générale élevée. Cela peut se manifester par des symptômes corporels comme des maux de ventre, des palpitations ou de la nervosité. Il est important de comprendre les causes et d'aider votre enfant à gérer ces émotions.`,
+                                        `${pat.name} shows elevated general anxiety. This can manifest as physical symptoms like stomach aches, palpitations or nervousness. It is important to understand the causes and support your child in dealing with these feelings.`
+                                    )
                                     : pa_clin && ma_clin
-                                        ? `${pat.name} zeigt sowohl erhöhte Prüfungsangst als auch eine erhöhte allgemeine Ängstlichkeit. Diese Kombination kann den Schulalltag deutlich belasten. Die gute Nachricht: Angststörungen bei Kindern können sehr effektiv behandelt werden.`
-                                        : `${pat.name} zeigt erhöhte Schulunlust. Die Motivation für schulische Aktivitäten ist derzeit gering. Die Ursachen können vielfältig sein - von Überforderung bis Unterforderung, von sozialen Problemen bis zu familiären Belastungen.`,
+                                        ? tt(
+                                            `${pat.name} zeigt sowohl erhöhte Prüfungsangst als auch eine erhöhte allgemeine Ängstlichkeit. Diese Kombination kann den Schulalltag deutlich belasten. Die gute Nachricht: Angststörungen bei Kindern können sehr effektiv behandelt werden.`,
+                                            `${pat.name} présente à la fois une anxiété de performance et une anxiété générale élevées. Cette combinaison peut peser nettement sur le quotidien scolaire. La bonne nouvelle : les troubles anxieux chez l'enfant se traitent très efficacement.`,
+                                            `${pat.name} shows both elevated test anxiety and elevated general anxiety. This combination can substantially burden daily school life. The good news: anxiety disorders in children are very effectively treatable.`
+                                        )
+                                        : tt(
+                                            `${pat.name} zeigt erhöhte Schulunlust. Die Motivation für schulische Aktivitäten ist derzeit gering. Die Ursachen können vielfältig sein - von Überforderung bis Unterforderung, von sozialen Problemen bis zu familiären Belastungen.`,
+                                            `${pat.name} présente un désintérêt scolaire élevé. La motivation pour les activités scolaires est actuellement faible. Les causes peuvent être multiples – de la surcharge à la sous-stimulation, des problèmes sociaux aux tensions familiales.`,
+                                            `${pat.name} shows elevated school aversion. Motivation for school activities is currently low. Causes can be varied – from overload to under-stimulation, from social problems to family strain.`
+                                        ),
                         !pa_clin && !ma_clin && !su_clin
-                            ? ['Weiterhin eine positive Einstellung zur Schule fördern', 'Erfolge anerkennen und loben']
+                            ? [
+                                tt('Weiterhin eine positive Einstellung zur Schule fördern','Continuer à favoriser une attitude positive envers l\'école','Continue to foster a positive attitude towards school'),
+                                tt('Erfolge anerkennen und loben','Reconnaître et féliciter les réussites','Recognise and praise successes')
+                              ]
                             : pa_clin
-                                ? ['Vermeiden Sie Leistungsdruck vor Prüfungen', 'Entspannungstechniken können helfen', 'Bei anhaltenden Problemen: Schulpsychologische Beratung']
+                                ? [
+                                    tt('Vermeiden Sie Leistungsdruck vor Prüfungen','Évitez la pression de performance avant les examens','Avoid performance pressure before tests'),
+                                    tt('Entspannungstechniken können helfen','Les techniques de relaxation peuvent aider','Relaxation techniques can help'),
+                                    tt('Bei anhaltenden Problemen: Schulpsychologische Beratung','En cas de problèmes persistants : conseil psychologique scolaire','If problems persist: school psychology counselling')
+                                  ]
                                 : ma_clin
-                                    ? ['Schaffen Sie Routinen und Sicherheit', 'Nehmen Sie die Ängste ernst, ohne sie zu verstärken', 'Eine Beratung kann sehr hilfreich sein']
-                                    : ['Suchen Sie das Gespräch mit Ihrem Kind', 'Klären Sie mögliche Ursachen (Überforderung, Konflikte?)', 'Kontaktieren Sie bei Bedarf die Schule']
+                                    ? [
+                                        tt('Schaffen Sie Routinen und Sicherheit','Établissez des routines et de la sécurité','Establish routines and security'),
+                                        tt('Nehmen Sie die Ängste ernst, ohne sie zu verstärken','Prenez les peurs au sérieux sans les renforcer','Take the fears seriously without reinforcing them'),
+                                        tt('Eine Beratung kann sehr hilfreich sein','Un conseil professionnel peut être très utile','Professional counselling can be very helpful')
+                                      ]
+                                    : [
+                                        tt('Suchen Sie das Gespräch mit Ihrem Kind','Cherchez le dialogue avec votre enfant','Seek conversation with your child'),
+                                        tt('Klären Sie mögliche Ursachen (Überforderung, Konflikte?)','Clarifiez les causes possibles (surcharge, conflits ?)','Clarify possible causes (overload, conflicts?)'),
+                                        tt('Kontaktieren Sie bei Bedarf die Schule','Contactez l\'école si nécessaire','Contact the school if needed')
+                                      ]
                     )}
 
                     ${gutachtenFooter()}
@@ -6421,11 +6510,11 @@
             `;
 
             document.getElementById('afs-results').innerHTML = `
-                <div class="results-header"><h3 class="results-title">Ergebnis AFS</h3></div>
-                ${summary(valid.map(([k,x])=>({l:labels[k],v:'ST '+x,c:c[k],s:S[c[k]]})))}
+                <div class="results-header"><h3 class="results-title">${tt('Ergebnis AFS','Résultat AFS','AFS result')}</h3></div>
+                ${summary(valid.map(([k,x])=>({l:labels[k],v:'ST '+x,c:c[k],s:statusLabel(c[k])})))}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
-                    <button class="btn btn-primary" onclick="exportTestToWord('afs')">📝 Als Word exportieren (.doc)</button>
+                    <button class="btn btn-primary" onclick="exportTestToWord('afs')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
                 </div>
             `;
             showLocalizedResults('afs-results');
