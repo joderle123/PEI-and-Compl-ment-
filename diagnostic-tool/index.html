@@ -4244,6 +4244,14 @@
         });
 
         const S = { normal: 'Unauffällig', borderline: 'Grenzwertig', clinical: 'Auffällig' };
+        // i18n-aware Status-Label
+        function statusLabel(cls) {
+            return tt(
+                {normal:'Unauffällig', borderline:'Grenzwertig', clinical:'Klinisch auffällig'}[cls] || cls,
+                {normal:'Normal', borderline:'Limite', clinical:'Cliniquement significatif'}[cls] || cls,
+                {normal:'Normal', borderline:'Borderline', clinical:'Clinically significant'}[cls] || cls
+            );
+        }
 
         // SDQ
         const SDQ_N = {
@@ -4452,19 +4460,30 @@
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Quantitative Testergebnisse</h4>
+                        <h4 class="gutachten-section-title">${tt('3. Quantitative Testergebnisse', '3. Résultats quantitatifs', '3. Quantitative results')}</h4>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>Rohwert</th><th>Unauffällig</th><th>Grenzwertig</th><th>Auffällig</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr>
+                                <th>${tt('Skala', 'Échelle', 'Scale')}</th>
+                                <th>${tt('Rohwert', 'Score brut', 'Raw score')}</th>
+                                <th>${tt('Unauffällig', 'Normal', 'Normal')}</th>
+                                <th>${tt('Grenzwertig', 'Limite', 'Borderline')}</th>
+                                <th>${tt('Auffällig', 'Clin. signif.', 'Clin. signif.')}</th>
+                                <th>${tt('Klassifikation', 'Classification', 'Classification')}</th>
+                            </tr></thead>
                             <tbody>
-                                <tr><td>Emotionale Probleme</td><td><strong>${d.em}</strong></td><td>0-${SDQ_N[r].em[0]}</td><td>${SDQ_N[r].em[0]+1}-${SDQ_N[r].em[1]}</td><td>${SDQ_N[r].em[1]+1}-10</td><td class="${c.em}"><strong>${S[c.em]}</strong></td></tr>
-                                <tr><td>Verhaltensprobleme</td><td><strong>${d.co}</strong></td><td>0-${SDQ_N[r].co[0]}</td><td>${SDQ_N[r].co[0]+1}-${SDQ_N[r].co[1]}</td><td>${SDQ_N[r].co[1]+1}-10</td><td class="${c.co}"><strong>${S[c.co]}</strong></td></tr>
-                                <tr><td>Hyperaktivität/Unaufmerksamkeit</td><td><strong>${d.hy}</strong></td><td>0-${SDQ_N[r].hy[0]}</td><td>${SDQ_N[r].hy[0]+1}-${SDQ_N[r].hy[1]}</td><td>${SDQ_N[r].hy[1]+1}-10</td><td class="${c.hy}"><strong>${S[c.hy]}</strong></td></tr>
-                                <tr><td>Probleme mit Gleichaltrigen</td><td><strong>${d.pe}</strong></td><td>0-${SDQ_N[r].pe[0]}</td><td>${SDQ_N[r].pe[0]+1}-${SDQ_N[r].pe[1]}</td><td>${SDQ_N[r].pe[1]+1}-10</td><td class="${c.pe}"><strong>${S[c.pe]}</strong></td></tr>
-                                <tr><td>Prosoziales Verhalten</td><td><strong>${d.pr}</strong></td><td>${SDQ_N[r].pr[0]}-10</td><td>${SDQ_N[r].pr[1]}-${SDQ_N[r].pr[0]-1}</td><td>0-${SDQ_N[r].pr[1]-1}</td><td class="${c.pr}"><strong>${S[c.pr]}</strong></td></tr>
-                                <tr style="background:var(--bg-input);"><td><strong>Gesamtproblemwert</strong></td><td><strong>${tot}</strong></td><td>0-${SDQ_N[r].tot[0]}</td><td>${SDQ_N[r].tot[0]+1}-${SDQ_N[r].tot[1]}</td><td>${SDQ_N[r].tot[1]+1}-40</td><td class="${c.tot}"><strong>${S[c.tot]}</strong></td></tr>
+                                <tr><td>${tt('Emotionale Probleme', 'Problèmes émotionnels', 'Emotional Problems')}</td><td><strong>${d.em}</strong></td><td>0-${SDQ_N[r].em[0]}</td><td>${SDQ_N[r].em[0]+1}-${SDQ_N[r].em[1]}</td><td>${SDQ_N[r].em[1]+1}-10</td><td class="${c.em}"><strong>${statusLabel(c.em)}</strong></td></tr>
+                                <tr><td>${tt('Verhaltensprobleme', 'Problèmes de conduite', 'Conduct Problems')}</td><td><strong>${d.co}</strong></td><td>0-${SDQ_N[r].co[0]}</td><td>${SDQ_N[r].co[0]+1}-${SDQ_N[r].co[1]}</td><td>${SDQ_N[r].co[1]+1}-10</td><td class="${c.co}"><strong>${statusLabel(c.co)}</strong></td></tr>
+                                <tr><td>${tt('Hyperaktivität/Unaufmerksamkeit', 'Hyperactivité/Inattention', 'Hyperactivity/Inattention')}</td><td><strong>${d.hy}</strong></td><td>0-${SDQ_N[r].hy[0]}</td><td>${SDQ_N[r].hy[0]+1}-${SDQ_N[r].hy[1]}</td><td>${SDQ_N[r].hy[1]+1}-10</td><td class="${c.hy}"><strong>${statusLabel(c.hy)}</strong></td></tr>
+                                <tr><td>${tt('Probleme mit Gleichaltrigen', 'Problèmes avec les pairs', 'Peer Problems')}</td><td><strong>${d.pe}</strong></td><td>0-${SDQ_N[r].pe[0]}</td><td>${SDQ_N[r].pe[0]+1}-${SDQ_N[r].pe[1]}</td><td>${SDQ_N[r].pe[1]+1}-10</td><td class="${c.pe}"><strong>${statusLabel(c.pe)}</strong></td></tr>
+                                <tr><td>${tt('Prosoziales Verhalten', 'Comportement prosocial', 'Prosocial Behaviour')}</td><td><strong>${d.pr}</strong></td><td>${SDQ_N[r].pr[0]}-10</td><td>${SDQ_N[r].pr[1]}-${SDQ_N[r].pr[0]-1}</td><td>0-${SDQ_N[r].pr[1]-1}</td><td class="${c.pr}"><strong>${statusLabel(c.pr)}</strong></td></tr>
+                                <tr style="background:var(--bg-input);"><td><strong>${tt('Gesamtproblemwert', 'Score total des difficultés', 'Total Difficulties Score')}</strong></td><td><strong>${tot}</strong></td><td>0-${SDQ_N[r].tot[0]}</td><td>${SDQ_N[r].tot[0]+1}-${SDQ_N[r].tot[1]}</td><td>${SDQ_N[r].tot[1]+1}-40</td><td class="${c.tot}"><strong>${statusLabel(c.tot)}</strong></td></tr>
                             </tbody>
                         </table>
-                        <p style="margin-top:1rem;"><strong>Summenwerte:</strong> Internalisierende Symptome (EM+PE): ${intern} | Externalisierende Symptome (VP+HY): ${extern}</p>
+                        <p style="margin-top:1rem;">${tt(
+                            `<strong>Summenwerte:</strong> Internalisierende Symptome (EM+PE): ${intern} | Externalisierende Symptome (VP+HY): ${extern}`,
+                            `<strong>Sommes :</strong> symptômes internalisés (EM+PE) : ${intern} | symptômes externalisés (VP+HY) : ${extern}`,
+                            `<strong>Sums:</strong> internalising symptoms (EM+PE): ${intern} | externalising symptoms (VP+HY): ${extern}`
+                        )}</p>
                         ${impactHasAny ? `
                         <p style="font-weight:600;margin:1.5rem 0 0.5rem;">Impact Supplement – funktionelle Beeinträchtigung</p>
                         <table class="gutachten-table">
