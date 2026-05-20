@@ -5636,39 +5636,55 @@
 
                     ${validSyn.length ? `
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">${raterKeys.length >= 2 ? '4' : '3'}. Grafische Darstellung${raterKeys.length >= 2 ? ` (${CBCL_RATERS[primary].short})` : ''}</h4>
+                        <h4 class="gutachten-section-title">${raterKeys.length >= 2 ? '4' : '3'}. ${tt('Grafische Darstellung','Représentation graphique','Graphical representation')}${raterKeys.length >= 2 ? ` (${cbclRaterShort(primary)})` : ''}</h4>
                         <div class="chart-container">
-                            <div class="chart-title">Syndromskalen-Profil${raterKeys.length >= 2 ? ` – ${CBCL_RATERS[primary].full}` : ''}</div>
+                            <div class="chart-title">${tt('Syndromskalen-Profil','Profil des échelles syndromiques','Syndrome scales profile')}${raterKeys.length >= 2 ? ` – ${cbclRaterFull(primary)}` : ''}</div>
                             ${chart(validSyn.map(([k])=>synLabels[k]),validSyn.map(([k,x])=>x),validSyn.map(([k])=>cSyn[k]),scaleMode==='stanine'?9:90)}
                             <div style="display:flex;justify-content:center;gap:2rem;margin-top:1rem;font-size:0.75rem;">
                                 ${scaleMode==='stanine'
-                                    ? '<span>Stanine 1–6: unauffällig</span><span>Stanine 7: grenzwertig</span><span>Stanine 8–9: klinisch</span>'
-                                    : '<span>T&lt;65: unauffällig</span><span>T 65–69: grenzwertig</span><span>T≥70: klinisch</span>'}
+                                    ? tt(
+                                        '<span>Stanine 1–6: unauffällig</span><span>Stanine 7: grenzwertig</span><span>Stanine 8–9: klinisch</span>',
+                                        '<span>Stanines 1–6 : normal</span><span>Stanine 7 : limite</span><span>Stanines 8–9 : clinique</span>',
+                                        '<span>Stanines 1–6: normal</span><span>Stanine 7: borderline</span><span>Stanines 8–9: clinical</span>'
+                                    )
+                                    : tt(
+                                        '<span>T&lt;65: unauffällig</span><span>T 65–69: grenzwertig</span><span>T≥70: klinisch</span>',
+                                        '<span>T&lt;65 : normal</span><span>T 65–69 : limite</span><span>T≥70 : clinique</span>',
+                                        '<span>T&lt;65: normal</span><span>T 65–69: borderline</span><span>T≥70: clinical</span>'
+                                    )}
                             </div>
                         </div>
                     </div>` : ''}
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">${raterKeys.length >= 2 ? '5' : '4'}. Interpretation${raterKeys.length >= 2 ? ` (${CBCL_RATERS[primary].short})` : ''}</h4>
+                        <h4 class="gutachten-section-title">${raterKeys.length >= 2 ? '5' : '4'}. ${tt('Interpretation','Interprétation','Interpretation')}${raterKeys.length >= 2 ? ` (${cbclRaterShort(primary)})` : ''}</h4>
                         <div class="gutachten-text">
                             <p>${interp}</p>
-                            ${clinSyn.length ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Die erhöhten Syndromskalen weisen auf spezifische Problembereiche hin, die einer weiteren Abklärung bedürfen.</div>' : ''}
+                            ${clinSyn.length ? `<div class="gutachten-warning"><strong>${tt('Klinische Relevanz:','Pertinence clinique :','Clinical relevance:')}</strong> ${tt(
+                                'Die erhöhten Syndromskalen weisen auf spezifische Problembereiche hin, die einer weiteren Abklärung bedürfen.',
+                                'Les échelles syndromiques élevées signalent des domaines problématiques spécifiques nécessitant un bilan complémentaire.',
+                                'The elevated syndrome scales point to specific problem areas requiring further assessment.'
+                            )}</div>` : ''}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">${raterKeys.length >= 2 ? '6' : '5'}. Differenzialdiagnostische Überlegungen</h4>
+                        <h4 class="gutachten-section-title">${raterKeys.length >= 2 ? '6' : '5'}. ${tt('Differenzialdiagnostische Überlegungen','Considérations différentielles','Differential-diagnostic considerations')}</h4>
                         <div class="gutachten-text">
-                            <p>Basierend auf den auffälligen Syndromskalen sollten folgende Störungsbilder differenzialdiagnostisch abgeklärt werden:</p>
+                            <p>${tt(
+                                'Basierend auf den auffälligen Syndromskalen sollten folgende Störungsbilder differenzialdiagnostisch abgeklärt werden:',
+                                'Sur la base des échelles syndromiques cliniquement significatives, les tableaux suivants devraient être explorés à titre différentiel :',
+                                'Based on the clinically significant syndrome scales, the following conditions should be considered differentially:'
+                            )}</p>
                             <ul class="gutachten-list">
-                                ${validSyn.filter(([k])=>cSyn[k]==='clinical').map(([k])=>`<li><strong>${CBCL_SYN[k].n}:</strong> ${CBCL_SYN[k].icd}</li>`).join('') || '<li>Bei unauffälligem Profil keine spezifischen Hinweise</li>'}
+                                ${validSyn.filter(([k])=>cSyn[k]==='clinical').map(([k])=>`<li><strong>${cbclSynName(k)}:</strong> ${CBCL_SYN[k].icd}</li>`).join('') || `<li>${tt('Bei unauffälligem Profil keine spezifischen Hinweise','Profil normal – pas d\'indication spécifique','Normal profile – no specific indications')}</li>`}
                             </ul>
-                            ${icdCodes.size ? `<p style="margin-top:1rem;"><strong>Relevante ICD-10 Codes:</strong></p>${Array.from(icdCodes).map(c=>`<span class="icd-code">${c}</span>`).join('')}` : ''}
+                            ${icdCodes.size ? `<p style="margin-top:1rem;"><strong>${tt('Relevante ICD-10 Codes:','Codes CIM-10 pertinents :','Relevant ICD-10 codes:')}</strong></p>${Array.from(icdCodes).map(c=>`<span class="icd-code">${c}</span>`).join('')}` : ''}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">${raterKeys.length >= 2 ? '7' : '6'}. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">${raterKeys.length >= 2 ? '7' : '6'}. ${tt('Empfehlungen','Recommandations','Recommendations')}</h4>
                         <div class="gutachten-text">${empf}</div>
                     </div>
 
