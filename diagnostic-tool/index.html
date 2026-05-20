@@ -4328,7 +4328,11 @@
 
             const labels = ['Emotional','Verhalten','Hyperaktiv.','Peer','Prosozial'];
             const keys = ['em','co','hy','pe','pr'];
-            const respFull = {parent:'der Eltern',teacher:'der Lehrkraft',self:'des Kindes/Jugendlichen selbst'}[r];
+            const respFull = tt(
+                {parent:'der Eltern',teacher:'der Lehrkraft',self:'des Kindes/Jugendlichen selbst'}[r],
+                {parent:'des parents',teacher:'de l\'enseignant·e',self:'de l\'enfant/adolescent·e lui-même/elle-même'}[r],
+                {parent:'the parents',teacher:'the teacher',self:'the child/adolescent themselves'}[r]
+            );
             const pronomen = pat.sex === 'w' ? {er:'sie',sein:'ihr',ihm:'ihr',den:'die'} : {er:'er',sein:'sein',ihm:'ihm',den:'den'};
 
             // Ausführliche Skalenbeschreibungen
@@ -4364,32 +4368,80 @@
             let gesamtInterp = '';
             if(c.tot === 'normal') {
                 gesamtInterp = `
-                    <p>Die Auswertung des SDQ auf Basis ${respFull} ergibt einen Gesamtproblemwert von ${tot} Punkten. Dieser Wert liegt im <strong>unauffälligen Bereich</strong> der altersentsprechenden Normstichprobe.</p>
-                    <p>${pat.name} zeigt zum aktuellen Zeitpunkt aus der Perspektive ${respFull} keine klinisch bedeutsamen psychischen Auffälligkeiten. Das Ergebnisprofil spricht für eine weitgehend unbelastete psychische Entwicklung. Die erfassten Bereiche emotionale Regulation, Verhaltenssteuerung, Aufmerksamkeit und soziale Integration liegen im Normbereich.</p>
-                    <p>Es ist zu beachten, dass der SDQ als Screening-Instrument konzipiert ist und eine Momentaufnahme darstellt. Subklinische Belastungen oder situative Schwierigkeiten werden möglicherweise nicht vollständig erfasst. Bei zukünftigen Veränderungen im Verhalten oder emotionalen Befinden sollte eine erneute Einschätzung erfolgen.</p>
+                    <p>${tt(
+                        `Die Auswertung des SDQ auf Basis ${respFull} ergibt einen Gesamtproblemwert von ${tot} Punkten. Dieser Wert liegt im <strong>unauffälligen Bereich</strong> der altersentsprechenden Normstichprobe.`,
+                        `L'analyse du SDQ basée sur l'évaluation ${respFull} donne un score total des difficultés de ${tot} points. Cette valeur se situe dans la <strong>plage normale</strong> par rapport à l'échantillon normatif de l'âge.`,
+                        `The SDQ analysis based on the ${respFull} report yields a Total Difficulties Score of ${tot} points. This value falls within the <strong>normal range</strong> of the age-appropriate normative sample.`
+                    )}</p>
+                    <p>${tt(
+                        `${pat.name} zeigt zum aktuellen Zeitpunkt aus der Perspektive ${respFull} keine klinisch bedeutsamen psychischen Auffälligkeiten. Das Ergebnisprofil spricht für eine weitgehend unbelastete psychische Entwicklung. Die erfassten Bereiche emotionale Regulation, Verhaltenssteuerung, Aufmerksamkeit und soziale Integration liegen im Normbereich.`,
+                        `Du point de vue ${respFull}, ${pat.name} ne présente actuellement aucune anomalie psychique cliniquement significative. Le profil de résultats parle en faveur d'un développement psychique largement non perturbé. Les domaines évalués – régulation émotionnelle, régulation comportementale, attention et intégration sociale – se situent dans la plage normale.`,
+                        `From the perspective of ${respFull}, ${pat.name} currently shows no clinically meaningful psychological abnormalities. The result profile speaks for a largely unburdened psychological development. The assessed domains – emotional regulation, behavioural regulation, attention and social integration – fall within the normal range.`
+                    )}</p>
+                    <p>${tt(
+                        `Es ist zu beachten, dass der SDQ als Screening-Instrument konzipiert ist und eine Momentaufnahme darstellt. Subklinische Belastungen oder situative Schwierigkeiten werden möglicherweise nicht vollständig erfasst. Bei zukünftigen Veränderungen im Verhalten oder emotionalen Befinden sollte eine erneute Einschätzung erfolgen.`,
+                        `Il convient de noter que le SDQ est conçu comme un instrument de dépistage et constitue un instantané. Des charges infracliniques ou des difficultés situationnelles peuvent ne pas être pleinement détectées. Toute modification future du comportement ou de l'état émotionnel justifierait une nouvelle évaluation.`,
+                        `Note that the SDQ is designed as a screening instrument and represents a snapshot. Subclinical burdens or situational difficulties may not be fully captured. If future changes in behaviour or emotional state occur, re-assessment is warranted.`
+                    )}</p>
                 `;
             } else if(c.tot === 'borderline') {
                 gesamtInterp = `
-                    <p>Die Auswertung des SDQ auf Basis ${respFull} ergibt einen Gesamtproblemwert von ${tot} Punkten. Dieser Wert liegt im <strong>grenzwertigen Bereich</strong> und befindet sich damit zwischen dem unauffälligen und dem klinisch auffälligen Bereich.</p>
-                    <p>Dieses Ergebnis deutet auf eine subklinische psychische Belastung hin, die zwar noch nicht das Ausmaß einer manifesten Störung erreicht, jedoch aufmerksam beobachtet werden sollte. ${pat.name} zeigt in einzelnen Bereichen Auffälligkeiten, die ${pronomen.sein}e psychosoziale Anpassung beeinträchtigen könnten.</p>
-                    <p>Es wird empfohlen, die weitere Entwicklung engmaschig zu beobachten und bei Persistenz oder Zunahme der Symptomatik eine vertiefte diagnostische Abklärung durchzuführen. Der Einbezug weiterer Informationsquellen (z.B. anderer Beurteiler, Verhaltensbeobachtung) kann zur Validierung der Befunde beitragen.</p>
+                    <p>${tt(
+                        `Die Auswertung des SDQ auf Basis ${respFull} ergibt einen Gesamtproblemwert von ${tot} Punkten. Dieser Wert liegt im <strong>grenzwertigen Bereich</strong> und befindet sich damit zwischen dem unauffälligen und dem klinisch auffälligen Bereich.`,
+                        `L'analyse du SDQ basée sur l'évaluation ${respFull} donne un score total des difficultés de ${tot} points. Cette valeur se situe dans la <strong>plage limite</strong>, entre la plage normale et la plage cliniquement significative.`,
+                        `The SDQ analysis based on the ${respFull} report yields a Total Difficulties Score of ${tot} points. This value falls within the <strong>borderline range</strong>, between the normal and the clinically significant ranges.`
+                    )}</p>
+                    <p>${tt(
+                        `Dieses Ergebnis deutet auf eine subklinische psychische Belastung hin, die zwar noch nicht das Ausmaß einer manifesten Störung erreicht, jedoch aufmerksam beobachtet werden sollte. ${pat.name} zeigt in einzelnen Bereichen Auffälligkeiten, die ${pronomen.sein}e psychosoziale Anpassung beeinträchtigen könnten.`,
+                        `Ce résultat suggère une charge psychique infraclinique qui n'atteint pas encore l'ampleur d'un trouble manifeste, mais qui devrait être suivie attentivement. ${pat.name} présente dans certains domaines des anomalies susceptibles d'altérer son adaptation psychosociale.`,
+                        `This result suggests a subclinical psychological burden that does not yet reach the magnitude of a manifest disorder but should be monitored carefully. ${pat.name} shows anomalies in individual domains that may impair their psychosocial adaptation.`
+                    )}</p>
+                    <p>${tt(
+                        `Es wird empfohlen, die weitere Entwicklung engmaschig zu beobachten und bei Persistenz oder Zunahme der Symptomatik eine vertiefte diagnostische Abklärung durchzuführen. Der Einbezug weiterer Informationsquellen (z.B. anderer Beurteiler, Verhaltensbeobachtung) kann zur Validierung der Befunde beitragen.`,
+                        `Il est recommandé de suivre étroitement l'évolution et, en cas de persistance ou d'aggravation des symptômes, d'effectuer un bilan diagnostique approfondi. L'intégration d'autres sources d'information (p. ex. autres évaluateurs, observation comportementale) peut contribuer à la validation des résultats.`,
+                        `Close monitoring of further development is recommended and, in case of persistence or worsening of symptoms, an in-depth diagnostic assessment should be conducted. Inclusion of additional information sources (e.g. other raters, behavioural observation) can help validate the findings.`
+                    )}</p>
                 `;
             } else {
                 gesamtInterp = `
-                    <p>Die Auswertung des SDQ auf Basis ${respFull} ergibt einen Gesamtproblemwert von ${tot} Punkten. Dieser Wert liegt im <strong>klinisch auffälligen Bereich</strong> und überschreitet damit den Cut-off-Wert für eine erhöhte psychische Belastung deutlich.</p>
-                    <p>Dieses Ergebnis weist auf eine signifikante psychische Belastung hin, die mit hoher Wahrscheinlichkeit die psychosoziale Anpassung und das Wohlbefinden von ${pat.name} beeinträchtigt. Die erhöhten Werte erfordern eine umgehende vertiefte diagnostische Abklärung, um das Vorliegen einer oder mehrerer psychischer Störungen zu prüfen.</p>
-                    <p>Der SDQ als Screening-Instrument kann keine Diagnose stellen, liefert jedoch wichtige Hinweise auf Problembereiche, die im Rahmen einer umfassenden klinischen Diagnostik weiter exploriert werden müssen. Der Einbezug verschiedener Informationsquellen und standardisierter diagnostischer Verfahren ist dringend indiziert.</p>
+                    <p>${tt(
+                        `Die Auswertung des SDQ auf Basis ${respFull} ergibt einen Gesamtproblemwert von ${tot} Punkten. Dieser Wert liegt im <strong>klinisch auffälligen Bereich</strong> und überschreitet damit den Cut-off-Wert für eine erhöhte psychische Belastung deutlich.`,
+                        `L'analyse du SDQ basée sur l'évaluation ${respFull} donne un score total des difficultés de ${tot} points. Cette valeur se situe dans la <strong>plage cliniquement significative</strong> et dépasse nettement le seuil indiquant une charge psychique accrue.`,
+                        `The SDQ analysis based on the ${respFull} report yields a Total Difficulties Score of ${tot} points. This value falls within the <strong>clinically significant range</strong> and clearly exceeds the cut-off for elevated psychological burden.`
+                    )}</p>
+                    <p>${tt(
+                        `Dieses Ergebnis weist auf eine signifikante psychische Belastung hin, die mit hoher Wahrscheinlichkeit die psychosoziale Anpassung und das Wohlbefinden von ${pat.name} beeinträchtigt. Die erhöhten Werte erfordern eine umgehende vertiefte diagnostische Abklärung, um das Vorliegen einer oder mehrerer psychischer Störungen zu prüfen.`,
+                        `Ce résultat indique une charge psychique significative qui altère vraisemblablement l'adaptation psychosociale et le bien-être de ${pat.name}. Les scores élevés requièrent un bilan diagnostique approfondi rapide afin de vérifier la présence d'un ou plusieurs troubles psychiques.`,
+                        `This result indicates significant psychological burden likely to impair the psychosocial adaptation and well-being of ${pat.name}. The elevated scores require prompt in-depth diagnostic assessment to check for the presence of one or more mental disorders.`
+                    )}</p>
+                    <p>${tt(
+                        `Der SDQ als Screening-Instrument kann keine Diagnose stellen, liefert jedoch wichtige Hinweise auf Problembereiche, die im Rahmen einer umfassenden klinischen Diagnostik weiter exploriert werden müssen. Der Einbezug verschiedener Informationsquellen und standardisierter diagnostischer Verfahren ist dringend indiziert.`,
+                        `En tant qu'instrument de dépistage, le SDQ ne peut établir de diagnostic mais fournit des indications importantes sur des domaines problématiques à explorer dans le cadre d'un bilan clinique complet. L'intégration de plusieurs sources d'information et de procédures diagnostiques standardisées est vivement indiquée.`,
+                        `As a screening tool, the SDQ cannot establish a diagnosis but provides important indications of problem areas to be further explored within a comprehensive clinical assessment. Inclusion of multiple information sources and standardised diagnostic procedures is strongly indicated.`
+                    )}</p>
                 `;
             }
 
             // Internalisierend vs. Externalisierend
             let profilText = '';
             if(intern > extern + 3) {
-                profilText = `<p><strong>Profilanalyse:</strong> Das Ergebnisprofil zeigt eine Betonung internalisierender Symptome (Summe: ${intern}) gegenüber externalisierenden Symptomen (Summe: ${extern}). Dies deutet darauf hin, dass eventuelle Schwierigkeiten sich eher nach innen richten (z.B. Ängste, Sorgen, sozialer Rückzug) als nach außen (z.B. aggressives oder regelverletzendes Verhalten). Internalisierende Störungen werden häufig übersehen, da sie weniger störend für die Umgebung sind.</p>`;
+                profilText = `<p>${tt(
+                    `<strong>Profilanalyse:</strong> Das Ergebnisprofil zeigt eine Betonung internalisierender Symptome (Summe: ${intern}) gegenüber externalisierenden Symptomen (Summe: ${extern}). Dies deutet darauf hin, dass eventuelle Schwierigkeiten sich eher nach innen richten (z.B. Ängste, Sorgen, sozialer Rückzug) als nach außen (z.B. aggressives oder regelverletzendes Verhalten). Internalisierende Störungen werden häufig übersehen, da sie weniger störend für die Umgebung sind.`,
+                    `<strong>Analyse du profil :</strong> le profil de résultats montre une prédominance des symptômes internalisés (somme : ${intern}) par rapport aux symptômes externalisés (somme : ${extern}). Cela suggère que les difficultés éventuelles se manifestent plutôt vers l'intérieur (p. ex. anxiété, inquiétude, retrait social) que vers l'extérieur (p. ex. comportement agressif ou transgressif). Les troubles internalisés sont souvent négligés car ils dérangent moins l'entourage.`,
+                    `<strong>Profile analysis:</strong> the result profile shows a predominance of internalising symptoms (sum: ${intern}) over externalising symptoms (sum: ${extern}). This suggests that any difficulties are directed inward (e.g. anxieties, worries, social withdrawal) rather than outward (e.g. aggressive or rule-breaking behaviour). Internalising disorders are often overlooked because they are less disruptive to the environment.`
+                )}</p>`;
             } else if(extern > intern + 3) {
-                profilText = `<p><strong>Profilanalyse:</strong> Das Ergebnisprofil zeigt eine Betonung externalisierender Symptome (Summe: ${extern}) gegenüber internalisierenden Symptomen (Summe: ${intern}). Dies deutet darauf hin, dass eventuelle Schwierigkeiten sich eher nach außen richten (z.B. Unruhe, impulsives oder aggressives Verhalten). Externalisierende Verhaltensweisen fallen in der Regel schneller auf und führen häufiger zu Konflikten mit der Umwelt.</p>`;
+                profilText = `<p>${tt(
+                    `<strong>Profilanalyse:</strong> Das Ergebnisprofil zeigt eine Betonung externalisierender Symptome (Summe: ${extern}) gegenüber internalisierenden Symptomen (Summe: ${intern}). Dies deutet darauf hin, dass eventuelle Schwierigkeiten sich eher nach außen richten (z.B. Unruhe, impulsives oder aggressives Verhalten). Externalisierende Verhaltensweisen fallen in der Regel schneller auf und führen häufiger zu Konflikten mit der Umwelt.`,
+                    `<strong>Analyse du profil :</strong> le profil de résultats montre une prédominance des symptômes externalisés (somme : ${extern}) par rapport aux symptômes internalisés (somme : ${intern}). Cela suggère que les difficultés éventuelles se manifestent plutôt vers l'extérieur (p. ex. agitation, comportement impulsif ou agressif). Les comportements externalisés se remarquent généralement plus rapidement et entraînent plus souvent des conflits avec l'entourage.`,
+                    `<strong>Profile analysis:</strong> the result profile shows a predominance of externalising symptoms (sum: ${extern}) over internalising symptoms (sum: ${intern}). This suggests that any difficulties are directed outward (e.g. restlessness, impulsive or aggressive behaviour). Externalising behaviours are typically more easily noticed and more often lead to conflicts with the environment.`
+                )}</p>`;
             } else {
-                profilText = `<p><strong>Profilanalyse:</strong> Das Verhältnis von internalisierenden (Summe: ${intern}) zu externalisierenden Symptomen (Summe: ${extern}) ist relativ ausgeglichen. Es zeigt sich keine eindeutige Betonung einer der beiden Symptomgruppen.</p>`;
+                profilText = `<p>${tt(
+                    `<strong>Profilanalyse:</strong> Das Verhältnis von internalisierenden (Summe: ${intern}) zu externalisierenden Symptomen (Summe: ${extern}) ist relativ ausgeglichen. Es zeigt sich keine eindeutige Betonung einer der beiden Symptomgruppen.`,
+                    `<strong>Analyse du profil :</strong> le rapport entre symptômes internalisés (somme : ${intern}) et externalisés (somme : ${extern}) est relativement équilibré. Aucune prédominance claire d'un des deux groupes de symptômes n'apparaît.`,
+                    `<strong>Profile analysis:</strong> the ratio of internalising (sum: ${intern}) to externalising (sum: ${extern}) symptoms is relatively balanced. No clear predominance of either symptom group is evident.`
+                )}</p>`;
             }
 
             const gutachten = `
@@ -4541,19 +4593,39 @@
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Grafische Darstellung des Ergebnisprofils</h4>
+                        <h4 class="gutachten-section-title">${tt(
+                            '4. Grafische Darstellung des Ergebnisprofils',
+                            '4. Représentation graphique du profil',
+                            '4. Graphical profile representation'
+                        )}</h4>
                         <div class="chart-container">${chart(labels,keys.map(k=>d[k]),keys.map(k=>c[k]),10)}</div>
-                        <p style="text-align:center;margin-top:1rem;font-size:0.85rem;color:var(--text-muted);">Grün = Unauffällig | Orange = Grenzwertig | Rot = Klinisch auffällig</p>
+                        <p style="text-align:center;margin-top:1rem;font-size:0.85rem;color:var(--text-muted);">${tt(
+                            'Grün = Unauffällig | Orange = Grenzwertig | Rot = Klinisch auffällig',
+                            'Vert = Normal | Orange = Limite | Rouge = Cliniquement significatif',
+                            'Green = Normal | Orange = Borderline | Red = Clinically significant'
+                        )}</p>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">5. Interpretation der Ergebnisse</h4>
+                        <h4 class="gutachten-section-title">${tt(
+                            '5. Interpretation der Ergebnisse',
+                            '5. Interprétation des résultats',
+                            '5. Interpretation of results'
+                        )}</h4>
                         <div class="gutachten-text">
-                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">5.1 Gesamtbeurteilung</h5>
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">${tt(
+                                '5.1 Gesamtbeurteilung',
+                                '5.1 Évaluation globale',
+                                '5.1 Overall assessment'
+                            )}</h5>
                             ${gesamtInterp}
                             ${profilText}
 
-                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">5.2 Ergebnisse der einzelnen Skalen</h5>
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">${tt(
+                                '5.2 Ergebnisse der einzelnen Skalen',
+                                '5.2 Résultats par échelle',
+                                '5.2 Scale-by-scale results'
+                            )}</h5>
                             <p>${skalaTexte.em[c.em]}</p>
                             <p>${skalaTexte.co[c.co]}</p>
                             <p>${skalaTexte.hy[c.hy]}</p>
