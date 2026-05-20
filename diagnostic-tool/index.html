@@ -4350,7 +4350,10 @@
             // Mehrsprachige Pronomen (FR/EN); fallback auf neutral wenn sex nicht angegeben
             const isF = pat.sex === 'w';
             const PR_FR = isF ? {sub:'elle', poss:'sa', pos:'son'} : {sub:'il', poss:'son', pos:'son'};
-            const PR_EN = isF ? {sub:'she', poss:'her', obj:'her'} : pat.sex === 'm' ? {sub:'he', poss:'his', obj:'him'} : {sub:'they', poss:'their', obj:'them'};
+            // verbBe: "is/are" · verbS: 3rd-person-singular "-s" suffix (empty for singular-they)
+            const PR_EN = isF                ? {sub:'she',  poss:'her',   obj:'her',  verbBe:'is',  verbS:'s'}
+                        : pat.sex === 'm'    ? {sub:'he',   poss:'his',   obj:'him',  verbBe:'is',  verbS:'s'}
+                        :                      {sub:'they', poss:'their', obj:'them', verbBe:'are', verbS:''};
             const SubFR = PR_FR.sub.charAt(0).toUpperCase() + PR_FR.sub.slice(1);
             const SubEN = PR_EN.sub.charAt(0).toUpperCase() + PR_EN.sub.slice(1);
             const SubDE = pronomen.er.charAt(0).toUpperCase() + pronomen.er.slice(1);
@@ -4378,7 +4381,7 @@
                     normal: tt(
                         `Die Skala "Verhaltensprobleme" erfasst oppositionelles, aggressives und regelverletzendes Verhalten. Mit einem Wert von ${d.co} Punkten zeigt ${pat.name} ein unauffälliges Verhalten im Bereich der Verhaltensregulation. ${SubDE} scheint in der Lage zu sein, ${pronomen.sein} Verhalten angemessen zu steuern und soziale Regeln einzuhalten.`,
                         `L'échelle « Problèmes de conduite » évalue les comportements oppositionnels, agressifs et transgressifs. Avec un score de ${d.co} points, ${pat.name} présente un comportement non problématique en matière de régulation comportementale. ${SubFR} semble capable de réguler ${PR_FR.pos} comportement de manière adéquate et de respecter les règles sociales.`,
-                        `The "Conduct Problems" scale assesses oppositional, aggressive and rule-breaking behaviour. With a score of ${d.co} points, ${pat.name} shows unremarkable behavioural regulation. ${SubEN} appears able to regulate ${PR_EN.poss} behaviour appropriately and to follow social rules.`
+                        `The "Conduct Problems" scale assesses oppositional, aggressive and rule-breaking behaviour. With a score of ${d.co} points, ${pat.name} shows unremarkable behavioural regulation. ${SubEN} appear${PR_EN.verbS} able to regulate ${PR_EN.poss} behaviour appropriately and to follow social rules.`
                     ),
                     borderline: tt(
                         `Die Skala "Verhaltensprobleme" erfasst oppositionelles, aggressives und regelverletzendes Verhalten. Mit einem Wert von ${d.co} Punkten liegt ${pat.name} im grenzwertigen Bereich. Es können gelegentlich Schwierigkeiten in der Verhaltenssteuerung auftreten, die jedoch situationsabhängig sein können und noch nicht das Ausmaß einer Verhaltensstörung erreichen.`,
@@ -4395,7 +4398,7 @@
                     normal: tt(
                         `Die Skala "Hyperaktivität/Unaufmerksamkeit" erfasst motorische Unruhe, Impulsivität und Konzentrationsschwierigkeiten. Mit einem Wert von ${d.hy} Punkten liegt ${pat.name} im unauffälligen Bereich. ${SubDE} zeigt eine altersangemessene Aufmerksamkeitsspanne und Aktivitätsniveau.`,
                         `L'échelle « Hyperactivité/Inattention » évalue l'agitation motrice, l'impulsivité et les difficultés de concentration. Avec un score de ${d.hy} points, ${pat.name} se situe dans la plage normale. ${SubFR} présente une capacité attentionnelle et un niveau d'activité conformes à son âge.`,
-                        `The "Hyperactivity/Inattention" scale assesses motor restlessness, impulsivity and concentration difficulties. With a score of ${d.hy} points, ${pat.name} falls within the normal range. ${SubEN} shows an age-appropriate attention span and activity level.`
+                        `The "Hyperactivity/Inattention" scale assesses motor restlessness, impulsivity and concentration difficulties. With a score of ${d.hy} points, ${pat.name} falls within the normal range. ${SubEN} show${PR_EN.verbS} an age-appropriate attention span and activity level.`
                     ),
                     borderline: tt(
                         `Die Skala "Hyperaktivität/Unaufmerksamkeit" erfasst motorische Unruhe, Impulsivität und Konzentrationsschwierigkeiten. Mit einem Wert von ${d.hy} Punkten liegt ${pat.name} im grenzwertigen Bereich. Es können situativ erhöhte Unruhe oder Konzentrationsschwierigkeiten auftreten, die jedoch nicht zwangsläufig auf eine ADHS hindeuten.`,
@@ -4412,7 +4415,7 @@
                     normal: tt(
                         `Die Skala "Probleme mit Gleichaltrigen" erfasst die Qualität der Peer-Beziehungen, soziale Isolation und Viktimisierungserfahrungen. Mit einem Wert von ${d.pe} Punkten zeigt ${pat.name} unauffällige Peer-Beziehungen. ${SubDE} scheint gut in die Gruppe Gleichaltriger integriert zu sein und über angemessene soziale Kompetenzen zu verfügen.`,
                         `L'échelle « Problèmes avec les pairs » évalue la qualité des relations entre pairs, l'isolement social et les expériences de victimisation. Avec un score de ${d.pe} points, ${pat.name} présente des relations entre pairs sans particularité. ${SubFR} semble bien intégré·e dans son groupe de pairs et disposer de compétences sociales adéquates.`,
-                        `The "Peer Problems" scale assesses peer-relationship quality, social isolation and victimisation experiences. With a score of ${d.pe} points, ${pat.name} shows unremarkable peer relations. ${SubEN} appears well-integrated in the peer group and to have appropriate social competencies.`
+                        `The "Peer Problems" scale assesses peer-relationship quality, social isolation and victimisation experiences. With a score of ${d.pe} points, ${pat.name} shows unremarkable peer relations. ${SubEN} appear${PR_EN.verbS} well-integrated in the peer group and to have appropriate social competencies.`
                     ),
                     borderline: tt(
                         `Die Skala "Probleme mit Gleichaltrigen" erfasst die Qualität der Peer-Beziehungen, soziale Isolation und Viktimisierungserfahrungen. Mit einem Wert von ${d.pe} Punkten liegt ${pat.name} im grenzwertigen Bereich. Es können leichte Schwierigkeiten im Kontakt mit Gleichaltrigen bestehen, etwa eine Tendenz zum Einzelgänger-Dasein oder gelegentliche Konflikte.`,
@@ -4429,7 +4432,7 @@
                     normal: tt(
                         `Die Skala "Prosoziales Verhalten" erfasst positive Verhaltensweisen wie Hilfsbereitschaft, Rücksichtnahme und Empathie. Mit einem Wert von ${d.pr} Punkten zeigt ${pat.name} ein ausgeprägtes prosoziales Verhalten. ${SubDE} ist hilfsbereit, rücksichtsvoll gegenüber anderen und zeigt Mitgefühl, wenn jemand verletzt oder traurig ist.`,
                         `L'échelle « Comportement prosocial » évalue les comportements positifs tels que l'entraide, la prévenance et l'empathie. Avec un score de ${d.pr} points, ${pat.name} manifeste un comportement prosocial marqué. ${SubFR} est serviable, prévenant·e envers les autres et montre de l'empathie lorsque quelqu'un est blessé ou triste.`,
-                        `The "Prosocial Behaviour" scale assesses positive behaviours such as helpfulness, consideration and empathy. With a score of ${d.pr} points, ${pat.name} shows pronounced prosocial behaviour. ${SubEN} is helpful, considerate toward others and shows empathy when someone is hurt or sad.`
+                        `The "Prosocial Behaviour" scale assesses positive behaviours such as helpfulness, consideration and empathy. With a score of ${d.pr} points, ${pat.name} shows pronounced prosocial behaviour. ${SubEN} ${PR_EN.verbBe} helpful, considerate toward others and show${PR_EN.verbS} empathy when someone is hurt or sad.`
                     ),
                     borderline: tt(
                         `Die Skala "Prosoziales Verhalten" erfasst positive Verhaltensweisen wie Hilfsbereitschaft, Rücksichtnahme und Empathie. Mit einem Wert von ${d.pr} Punkten liegt ${pat.name} im grenzwertigen Bereich. Das prosoziale Verhalten könnte etwas weniger ausgeprägt sein als bei Gleichaltrigen, was auf Entwicklungsverzögerungen oder situative Faktoren zurückzuführen sein kann.`,
