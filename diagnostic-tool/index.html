@@ -5273,7 +5273,9 @@
             e.preventDefault();
             const pat = getPatient();
             const scaleMode = document.querySelector('input[name="cbcl-scale"]:checked').value;
-            const scaleText = scaleMode==='stanine' ? 'Stanine (1–9, z-standardisiert)' : 'T-Werte (M=50, SD=10)';
+            const scaleText = scaleMode==='stanine'
+                ? tt('Stanine (1–9, z-standardisiert)','Stanines (1–9, z-standardisés)','Stanines (1–9, z-standardised)')
+                : tt('T-Werte (M=50, SD=10)','Scores T (M=50, ET=10)','T-scores (M=50, SD=10)');
             const valLabel = scaleMode==='stanine' ? 'Stanine' : 'T';
             const bbNorm = scaleMode==='stanine' ? 'Stanine 1–6' : 'T < 60';
             const synNorm = scaleMode==='stanine' ? 'Stanine 1–6' : 'T < 65';
@@ -5494,18 +5496,34 @@
                     ${gutachtenHeader('CBCL/TRF/YSR', 'Child Behavior Checklist – Achenbach System', pat)}
                     ${criticalAlertHtml}
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <h4 class="gutachten-section-title">${tt('1. Testbeschreibung','1. Description du test','1. Test description')}</h4>
                         <div class="gutachten-text">
-                            <p>Die Child Behavior Checklist (CBCL; Achenbach & Rescorla, 2001; deutsche Fassung: Arbeitsgruppe Deutsche Child Behavior Checklist / Döpfner et al., 2014) ist ein international weit verbreitetes Fragebogenverfahren zur Erfassung von Verhaltensauffälligkeiten und emotionalen Problemen bei Kindern und Jugendlichen. Das Verfahren liegt in drei komplementären Versionen vor, die je eigene alters- und geschlechtsspezifische Normen verwenden:</p>
+                            <p>${tt(
+                                'Die Child Behavior Checklist (CBCL; Achenbach & Rescorla, 2001; deutsche Fassung: Arbeitsgruppe Deutsche Child Behavior Checklist / Döpfner et al., 2014) ist ein international weit verbreitetes Fragebogenverfahren zur Erfassung von Verhaltensauffälligkeiten und emotionalen Problemen bei Kindern und Jugendlichen. Das Verfahren liegt in drei komplementären Versionen vor, die je eigene alters- und geschlechtsspezifische Normen verwenden:',
+                                'La Child Behavior Checklist (CBCL ; Achenbach & Rescorla, 2001 ; version allemande : Arbeitsgruppe Deutsche Child Behavior Checklist / Döpfner et al., 2014) est un questionnaire largement utilisé à l\'international pour évaluer les troubles du comportement et les problèmes émotionnels chez les enfants et les adolescents. Le procédé existe en trois versions complémentaires utilisant chacune des normes spécifiques selon l\'âge et le sexe :',
+                                'The Child Behavior Checklist (CBCL; Achenbach & Rescorla, 2001; German version: Arbeitsgruppe Deutsche Child Behavior Checklist / Döpfner et al., 2014) is an internationally widely-used questionnaire for assessing behavioural and emotional problems in children and adolescents. The procedure exists in three complementary versions, each using its own age- and sex-specific norms:'
+                            )}</p>
                             <ul>
-                                <li><strong>CBCL/6-18R</strong> – Elternfragebogen (6–18 Jahre)</li>
-                                <li><strong>TRF</strong> – Teacher Report Form, Lehrerfragebogen (6–18 Jahre)</li>
-                                <li><strong>YSR/11-18R</strong> – Youth Self-Report, Selbsturteil (11–18 Jahre)</li>
+                                <li><strong>CBCL/6-18R</strong> – ${tt('Elternfragebogen (6–18 Jahre)','Questionnaire parental (6–18 ans)','Parent questionnaire (6–18 years)')}</li>
+                                <li><strong>TRF</strong> – ${tt('Teacher Report Form, Lehrerfragebogen (6–18 Jahre)','Teacher Report Form, questionnaire enseignant·e (6–18 ans)','Teacher Report Form (6–18 years)')}</li>
+                                <li><strong>YSR/11-18R</strong> – ${tt('Youth Self-Report, Selbsturteil (11–18 Jahre)','Youth Self-Report, auto-évaluation (11–18 ans)','Youth Self-Report (11–18 years)')}</li>
                             </ul>
-                            <p>Für die vorliegende Auswertung wurden <strong>${scaleText}</strong> verwendet. ${scaleMode==='stanine'
-                                ? 'Stanine-Werte sind z-standardisiert (M=5, SD=2) mit einem Wertebereich von 1 bis 9. Richtwerte: 1–3 unterdurchschnittlich, 4–6 durchschnittlich, 7 grenzwertig, 8–9 klinisch auffällig.'
-                                : 'T-Werte sind standardisiert mit M=50 und SD=10. Für die übergeordneten Skalen (Internalisierend, Externalisierend, Gesamt) gilt: T&lt;60 = unauffällig, T 60–63 = grenzwertig, T≥64 = klinisch auffällig. Für die Syndromskalen: T&lt;65 = unauffällig, T 65–69 = grenzwertig, T≥70 = klinisch auffällig.'}</p>
-                            <p><strong>Eingesetzte Version(en):</strong> ${raterKeys.map(r=>CBCL_RATERS[r].full).join(' · ')}</p>
+                            <p>${tt(
+                                `Für die vorliegende Auswertung wurden <strong>${scaleText}</strong> verwendet.`,
+                                `La présente analyse utilise des <strong>${scaleText}</strong>.`,
+                                `The present analysis uses <strong>${scaleText}</strong>.`
+                            )} ${scaleMode==='stanine'
+                                ? tt(
+                                    'Stanine-Werte sind z-standardisiert (M=5, SD=2) mit einem Wertebereich von 1 bis 9. Richtwerte: 1–3 unterdurchschnittlich, 4–6 durchschnittlich, 7 grenzwertig, 8–9 klinisch auffällig.',
+                                    'Les stanines sont z-standardisés (M=5, ET=2) avec une plage de 1 à 9. Valeurs indicatives : 1–3 sous la moyenne, 4–6 moyenne, 7 limite, 8–9 cliniquement significatif.',
+                                    'Stanines are z-standardised (M=5, SD=2) on a 1–9 range. Reference: 1–3 below average, 4–6 average, 7 borderline, 8–9 clinically significant.'
+                                )
+                                : tt(
+                                    'T-Werte sind standardisiert mit M=50 und SD=10. Für die übergeordneten Skalen (Internalisierend, Externalisierend, Gesamt) gilt: T&lt;60 = unauffällig, T 60–63 = grenzwertig, T≥64 = klinisch auffällig. Für die Syndromskalen: T&lt;65 = unauffällig, T 65–69 = grenzwertig, T≥70 = klinisch auffällig.',
+                                    'Les scores T sont standardisés avec M=50 et ET=10. Pour les échelles globales (Internalisé, Externalisé, Total) : T&lt;60 = normal, T 60–63 = limite, T≥64 = cliniquement significatif. Pour les échelles syndromiques : T&lt;65 = normal, T 65–69 = limite, T≥70 = cliniquement significatif.',
+                                    'T-scores are standardised with M=50 and SD=10. For the broad-band scales (Internalising, Externalising, Total): T&lt;60 = normal, T 60–63 = borderline, T≥64 = clinically significant. For the syndrome scales: T&lt;65 = normal, T 65–69 = borderline, T≥70 = clinically significant.'
+                                )}</p>
+                            <p><strong>${tt('Eingesetzte Version(en):','Version(s) utilisée(s) :','Version(s) used:')}</strong> ${raterKeys.map(r=>cbclRaterFull(r)).join(' · ')}</p>
                         </div>
                     </div>
 
