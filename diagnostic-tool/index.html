@@ -3507,20 +3507,32 @@
             return `
                 <div class="gutachten-footer">
                     <div class="gutachten-disclaimer">
-                        <h4 style="margin-bottom:0.75rem;color:var(--primary-light);">Wichtige Hinweise</h4>
-                        <p><strong>Gültigkeit:</strong> Dieser Befundbericht dokumentiert die Ergebnisse eines standardisierten psychologischen Testverfahrens zu einem bestimmten Zeitpunkt. Die Ergebnisse können durch situative Faktoren (Müdigkeit, Motivation, Tagesform) beeinflusst sein und sollten im Kontext einer umfassenden klinischen Beurteilung interpretiert werden.</p>
-                        <p><strong>Keine Diagnosestellung:</strong> Dieser Bericht ersetzt keine umfassende klinische Diagnostik durch eine/n approbierte/n Psychologische/n Psychotherapeut/in oder Facharzt/Fachärztin für Kinder- und Jugendpsychiatrie. Die genannten ICD-Codes dienen der differenzialdiagnostischen Orientierung und stellen keine Diagnosen dar.</p>
-                        <p><strong>Datenschutz:</strong> Dieser Bericht enthält sensible personenbezogene Gesundheitsdaten und ist vertraulich zu behandeln. Die Weitergabe an Dritte bedarf der ausdrücklichen Einwilligung der Sorgeberechtigten.</p>
+                        <h4 style="margin-bottom:0.75rem;color:var(--primary-light);">${tt('Wichtige Hinweise', 'Remarques importantes', 'Important notes')}</h4>
+                        <p><strong>${tt('Gültigkeit:', 'Validité :', 'Validity:')}</strong> ${tt(
+                            'Dieser Befundbericht dokumentiert die Ergebnisse eines standardisierten psychologischen Testverfahrens zu einem bestimmten Zeitpunkt. Die Ergebnisse können durch situative Faktoren (Müdigkeit, Motivation, Tagesform) beeinflusst sein und sollten im Kontext einer umfassenden klinischen Beurteilung interpretiert werden.',
+                            'Ce rapport documente les résultats d\'une procédure de test psychologique standardisée à un moment donné. Les résultats peuvent être influencés par des facteurs situationnels (fatigue, motivation, forme du jour) et doivent être interprétés dans le cadre d\'une évaluation clinique globale.',
+                            'This report documents the results of a standardised psychological test procedure at a specific point in time. Results may be influenced by situational factors (fatigue, motivation, daily form) and should be interpreted within the context of a comprehensive clinical assessment.'
+                        )}</p>
+                        <p><strong>${tt('Keine Diagnosestellung:', 'Pas de diagnostic posé :', 'No diagnosis made:')}</strong> ${tt(
+                            'Dieser Bericht ersetzt keine umfassende klinische Diagnostik durch eine/n approbierte/n Psychologische/n Psychotherapeut/in oder Facharzt/Fachärztin für Kinder- und Jugendpsychiatrie. Die genannten ICD-Codes dienen der differenzialdiagnostischen Orientierung und stellen keine Diagnosen dar.',
+                            'Ce rapport ne remplace pas un bilan clinique complet réalisé par un·e psychothérapeute agréé·e ou un·e médecin spécialiste en pédopsychiatrie. Les codes CIM mentionnés servent à l\'orientation différentielle et ne constituent pas des diagnostics.',
+                            'This report does not replace a comprehensive clinical assessment by a licensed psychotherapist or a child & adolescent psychiatrist. The cited ICD codes serve differential-diagnostic orientation only and do not constitute diagnoses.'
+                        )}</p>
+                        <p><strong>${tt('Datenschutz:', 'Protection des données :', 'Data protection:')}</strong> ${tt(
+                            'Dieser Bericht enthält sensible personenbezogene Gesundheitsdaten und ist vertraulich zu behandeln. Die Weitergabe an Dritte bedarf der ausdrücklichen Einwilligung der Sorgeberechtigten.',
+                            'Ce rapport contient des données personnelles de santé sensibles et doit être traité de manière confidentielle. Toute transmission à des tiers nécessite le consentement explicite des titulaires de l\'autorité parentale.',
+                            'This report contains sensitive personal health data and must be treated confidentially. Any disclosure to third parties requires the explicit consent of the legal guardians.'
+                        )}</p>
                     </div>
                     <div class="gutachten-signature">
                         <div class="gutachten-signature-box">
-                            <div class="signature-label">Ort, Datum</div>
+                            <div class="signature-label">${tt('Ort, Datum', 'Lieu, date', 'Place, date')}</div>
                             <div class="signature-line">_______________________________</div>
                         </div>
                         <div class="gutachten-signature-box">
-                            <div class="signature-label">Unterschrift / Stempel</div>
+                            <div class="signature-label">${tt('Unterschrift / Stempel', 'Signature / cachet', 'Signature / stamp')}</div>
                             <div class="signature-line">_______________________________</div>
-                            <div class="signature-name">(Name, Qualifikation)</div>
+                            <div class="signature-name">${tt('(Name, Qualifikation)', '(Nom, qualification)', '(Name, qualification)')}</div>
                         </div>
                     </div>
                 </div>
