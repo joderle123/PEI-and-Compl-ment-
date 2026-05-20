@@ -6789,116 +6789,200 @@
             const pr = v('dikj-pr');
             const sexNorm = document.getElementById('dikj-sex').value;
             const ageNorm = document.getElementById('dikj-age')?.value || '';
-            const sexLabel = {combined:'Kombiniert (alle Geschlechter)', m:'Jungen', w:'Mädchen'}[sexNorm];
+            const sexLabel = tt(
+                {combined:'Kombiniert (alle Geschlechter)', m:'Jungen', w:'Mädchen'}[sexNorm],
+                {combined:'Combiné (tous genres)', m:'Garçons', w:'Filles'}[sexNorm],
+                {combined:'Combined (all genders)', m:'Boys', w:'Girls'}[sexNorm]
+            );
             const item9Raw = document.getElementById('dikj-item9')?.value || '';
             const item9 = item9Raw === '' ? null : parseInt(item9Raw);
             const suizidExpl = document.getElementById('dikj-suizid-expl')?.value || '';
-            const suizidExplText = {keine:'Keine Hinweise auf Suizidalität im Gespräch',passiv:'Passive Todeswünsche / Lebensüberdruss',aktiv:'Aktive Suizidgedanken ohne Plan',konkret:'Konkrete Absicht / Plan / Vorbereitung'}[suizidExpl] || '';
+            const suizidExplText = tt(
+                {keine:'Keine Hinweise auf Suizidalität im Gespräch',passiv:'Passive Todeswünsche / Lebensüberdruss',aktiv:'Aktive Suizidgedanken ohne Plan',konkret:'Konkrete Absicht / Plan / Vorbereitung'}[suizidExpl] || '',
+                {keine:'Aucune indication de suicidalité dans l\'entretien',passiv:'Idées passives de mort / lassitude de vivre',aktiv:'Idées suicidaires actives sans plan',konkret:'Intention concrète / plan / préparation'}[suizidExpl] || '',
+                {keine:'No indications of suicidality in interview',passiv:'Passive death wishes / weariness of life',aktiv:'Active suicidal thoughts without plan',konkret:'Concrete intent / plan / preparation'}[suizidExpl] || ''
+            );
 
             if(t === null) {
-                if(raw === null) return alert('Bitte T-Wert (oder wenigstens Rohwert) eingeben.');
-                if(!confirm('Kein T-Wert eingegeben – der T-Wert wird grob aus dem Rohwert geschätzt (nicht normgetreu). Für einen korrekten Befund bitte T-Wert aus dem DIKJ-Manual ablesen.\n\nTrotzdem fortfahren?')) return;
+                if(raw === null) return alert(tt('Bitte T-Wert (oder wenigstens Rohwert) eingeben.','Veuillez saisir un score T (ou au moins un score brut).','Please enter a T-score (or at least a raw score).'));
+                if(!confirm(tt(
+                    'Kein T-Wert eingegeben – der T-Wert wird grob aus dem Rohwert geschätzt (nicht normgetreu). Für einen korrekten Befund bitte T-Wert aus dem DIKJ-Manual ablesen.\n\nTrotzdem fortfahren?',
+                    'Aucun score T saisi – le score T sera estimé grossièrement à partir du score brut (non conforme aux normes). Pour un bilan correct, lire le score T dans le manuel DIKJ.\n\nContinuer quand même ?',
+                    'No T-score entered – the T-score will be roughly estimated from the raw score (not norm-true). For a valid finding, please read the T-score from the DIKJ manual.\n\nContinue anyway?'
+                ))) return;
             }
 
             const tEstimated = (t === null);
             const tVal = t !== null ? t : Math.min(80, Math.max(20, 50 + (raw - 15) * 1.5));
 
-            // Suizidalitäts-Safety-Check (unabhängig vom Gesamt-T-Wert)
             const suizidAlert = (item9 !== null && item9 >= 1) || suizidExpl === 'passiv' || suizidExpl === 'aktiv' || suizidExpl === 'konkret';
             const suizidAkut = item9 === 2 || suizidExpl === 'konkret';
+            const item9Labels = [
+                tt('keine Suizidgedanken','aucune idée suicidaire','no suicidal thoughts'),
+                tt('Gedanken an Tod / sich etwas antun','pensées de mort / de se faire du mal','thoughts of death / of harming self'),
+                tt('konkrete Suizidabsicht / -plan','intention / plan suicidaire concret','concrete suicidal intent / plan')
+            ];
             const suizidAlertHtml = suizidAlert ? `
                 <div class="gutachten-danger">
-                    <strong>SICHERHEITS­HINWEIS – Suizidalität</strong><br>
-                    ${item9 !== null ? `DIKJ-Item 9 wurde mit <strong>${item9}</strong> beantwortet (${['keine Suizidgedanken','Gedanken an Tod / sich etwas antun','konkrete Suizidabsicht / -plan'][item9]}).` : ''}
-                    ${suizidExplText ? `<br>Exploration: <strong>${suizidExplText}</strong>.` : ''}
+                    <strong>${tt('SICHERHEITSHINWEIS – Suizidalität','AVERTISSEMENT DE SÉCURITÉ – Suicidalité','SAFETY WARNING – Suicidality')}</strong><br>
+                    ${item9 !== null ? tt(
+                        `DIKJ-Item 9 wurde mit <strong>${item9}</strong> beantwortet (${item9Labels[item9]}).`,
+                        `L'item 9 du DIKJ a été coté <strong>${item9}</strong> (${item9Labels[item9]}).`,
+                        `DIKJ item 9 was scored <strong>${item9}</strong> (${item9Labels[item9]}).`
+                    ) : ''}
+                    ${suizidExplText ? `<br>${tt('Exploration:','Exploration :','Exploration:')} <strong>${suizidExplText}</strong>.` : ''}
                     <br><br>
                     ${suizidAkut
-                        ? 'Es liegt eine <strong>akute Suizidgefährdung</strong> nahe. <strong>Sofortiges strukturiertes Suizidrisiko-Assessment</strong> (z.B. C-SSRS) und umgehende kinder- und jugendpsychiatrische Vorstellung erforderlich. Sicherheit des Kindes muss gewährleistet werden (No-Suicide-Contract/Notfallplan, ggf. stationäre Einweisung nach § 1631b BGB prüfen).'
-                        : 'Eine <strong>vertiefte Exploration der Suizidalität</strong> ist verpflichtend. Strukturiertes Suizidrisiko-Assessment (C-SSRS o.ä.), Abklärung von Risikofaktoren (Pläne, Mittel, Frühere Versuche, Impulsivität) und Sicherheitsplan erstellen.'}
+                        ? tt(
+                            'Es liegt eine <strong>akute Suizidgefährdung</strong> nahe. <strong>Sofortiges strukturiertes Suizidrisiko-Assessment</strong> (z.B. C-SSRS) und umgehende kinder- und jugendpsychiatrische Vorstellung erforderlich. Sicherheit des Kindes muss gewährleistet werden (No-Suicide-Contract/Notfallplan, ggf. stationäre Einweisung nach § 1631b BGB prüfen).',
+                            'Un <strong>risque suicidaire aigu</strong> est probable. <strong>Évaluation structurée du risque suicidaire immédiate</strong> (p. ex. C-SSRS) et présentation pédopsychiatrique en urgence requises. La sécurité de l\'enfant doit être garantie (contrat de non-suicide / plan d\'urgence, envisager une hospitalisation).',
+                            'An <strong>acute suicide risk</strong> is likely. <strong>Immediate structured suicide-risk assessment</strong> (e.g. C-SSRS) and urgent child & adolescent psychiatric review required. The child\'s safety must be ensured (no-suicide contract / emergency plan, consider inpatient admission).'
+                        )
+                        : tt(
+                            'Eine <strong>vertiefte Exploration der Suizidalität</strong> ist verpflichtend. Strukturiertes Suizidrisiko-Assessment (C-SSRS o.ä.), Abklärung von Risikofaktoren (Pläne, Mittel, Frühere Versuche, Impulsivität) und Sicherheitsplan erstellen.',
+                            'Une <strong>exploration approfondie de la suicidalité</strong> est obligatoire. Évaluation structurée du risque (C-SSRS ou équivalent), clarification des facteurs de risque (plans, moyens, antécédents, impulsivité) et plan de sécurité à établir.',
+                            'An <strong>in-depth exploration of suicidality</strong> is mandatory. Structured suicide-risk assessment (C-SSRS or similar), clarification of risk factors (plans, means, prior attempts, impulsivity), and safety plan required.'
+                        )}
                 </div>` : '';
             const c = tVal < 60 ? 'normal' : tVal < 70 ? 'borderline' : 'clinical';
-            const cText = {normal:'Unauffällig',borderline:'Leicht erhöht',clinical:'Klinisch auffällig'}[c];
+            const cText = tt(
+                {normal:'Unauffällig',borderline:'Leicht erhöht',clinical:'Klinisch auffällig'}[c],
+                {normal:'Normal',borderline:'Légèrement élevé',clinical:'Cliniquement significatif'}[c],
+                {normal:'Normal',borderline:'Slightly elevated',clinical:'Clinically significant'}[c]
+            );
 
             const gutachten = `
                 <div class="gutachten">
-                    ${gutachtenHeader('DIKJ', 'Depressions-Inventar für Kinder und Jugendliche', pat)}
+                    ${gutachtenHeader('DIKJ', tt('Depressions-Inventar für Kinder und Jugendliche','Inventaire de dépression pour enfants et adolescents','Depression Inventory for Children and Adolescents'), pat)}
                     ${suizidAlertHtml}
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <h4 class="gutachten-section-title">${tt('1. Testbeschreibung','1. Description du test','1. Test description')}</h4>
                         <div class="gutachten-text">
-                            <p>Das DIKJ (Stiensmeier-Pelster, Schürmann & Duda, 2014) ist ein Selbstbeurteilungsverfahren zur Erfassung der Schwere einer depressiven Störung bei Kindern und Jugendlichen im Alter von 8-17 Jahren. Es basiert auf dem Children's Depression Inventory (CDI) von Kovacs und umfasst 26 Items.</p>
-                            <p>Die Items erfassen kognitive, affektive und behaviorale Symptome einer Depression wie Traurigkeit, Hoffnungslosigkeit, Schuldgefühle, Appetitverlust, Schlafstörungen und sozialen Rückzug.</p>
+                            <p>${tt(
+                                'Das DIKJ (Stiensmeier-Pelster, Schürmann & Duda, 2014) ist ein Selbstbeurteilungsverfahren zur Erfassung der Schwere einer depressiven Störung bei Kindern und Jugendlichen im Alter von 8-17 Jahren. Es basiert auf dem Children\'s Depression Inventory (CDI) von Kovacs und umfasst 26 Items.',
+                                'Le DIKJ (Stiensmeier-Pelster, Schürmann & Duda, 2014) est un instrument d\'auto-évaluation pour mesurer la sévérité d\'un trouble dépressif chez les enfants et adolescents de 8 à 17 ans. Il s\'appuie sur le Children\'s Depression Inventory (CDI) de Kovacs et comporte 26 items.',
+                                'The DIKJ (Stiensmeier-Pelster, Schürmann & Duda, 2014) is a self-report instrument measuring the severity of depressive disorder in children and adolescents aged 8-17 years. It is based on Kovacs\' Children\'s Depression Inventory (CDI) and comprises 26 items.'
+                            )}</p>
+                            <p>${tt(
+                                'Die Items erfassen kognitive, affektive und behaviorale Symptome einer Depression wie Traurigkeit, Hoffnungslosigkeit, Schuldgefühle, Appetitverlust, Schlafstörungen und sozialen Rückzug.',
+                                'Les items couvrent des symptômes cognitifs, affectifs et comportementaux de la dépression : tristesse, désespoir, culpabilité, perte d\'appétit, troubles du sommeil et retrait social.',
+                                'Items cover cognitive, affective and behavioural symptoms of depression: sadness, hopelessness, guilt, appetite loss, sleep disturbance and social withdrawal.'
+                            )}</p>
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
-                        <p style="margin:0 0 0.75rem;font-size:0.9rem;"><strong>Normstichprobe:</strong> ${sexLabel}${ageNorm ? ` · Altersgruppe ${ageNorm} Jahre` : ''}</p>
+                        <h4 class="gutachten-section-title">${tt('2. Testergebnisse','2. Résultats','2. Test results')}</h4>
+                        <p style="margin:0 0 0.75rem;font-size:0.9rem;"><strong>${tt('Normstichprobe:','Échantillon normatif :','Normative sample:')}</strong> ${sexLabel}${ageNorm ? tt(` · Altersgruppe ${ageNorm} Jahre`,` · Groupe d'âge ${ageNorm} ans`,` · Age group ${ageNorm} years`) : ''}</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Kennwert</th><th>Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${tt('Kennwert','Indice','Index')}</th><th>${tt('Wert','Valeur','Value')}</th><th>${tt('Normbereich','Plage normative','Normative range')}</th><th>${tt('Klassifikation','Classification','Classification')}</th></tr></thead>
                             <tbody>
-                                ${raw !== null ? `<tr><td>Rohwert</td><td><strong>${raw}</strong></td><td>0-52</td><td>-</td></tr>` : ''}
-                                <tr style="font-weight:700;background:var(--bg-input);"><td>T-Wert${tEstimated ? ' <small style="font-weight:400;color:#b91c1c;">(geschätzt)</small>' : ''}</td><td><strong>${Math.round(tVal)}</strong></td><td>T < 60</td><td class="${c}"><strong>${cText}</strong></td></tr>
-                                ${pr !== null ? `<tr><td>Prozentrang</td><td>${pr}</td><td>-</td><td>-</td></tr>` : ''}
-                                ${item9 !== null ? `<tr${item9>=1?' class="clinical"':''}><td>Item 9 – Suizidgedanken</td><td><strong>${item9}</strong></td><td>0</td><td>${item9===0?'Unauffällig':(item9===1?'Auffällig':'Akut')}</td></tr>` : ''}
+                                ${raw !== null ? `<tr><td>${tt('Rohwert','Score brut','Raw score')}</td><td><strong>${raw}</strong></td><td>0-52</td><td>-</td></tr>` : ''}
+                                <tr style="font-weight:700;background:var(--bg-input);"><td>${tt('T-Wert','Score T','T-score')}${tEstimated ? ` <small style="font-weight:400;color:#b91c1c;">(${tt('geschätzt','estimé','estimated')})</small>` : ''}</td><td><strong>${Math.round(tVal)}</strong></td><td>T < 60</td><td class="${c}"><strong>${cText}</strong></td></tr>
+                                ${pr !== null ? `<tr><td>${tt('Prozentrang','Rang centile','Percentile rank')}</td><td>${pr}</td><td>-</td><td>-</td></tr>` : ''}
+                                ${item9 !== null ? `<tr${item9>=1?' class="clinical"':''}><td>${tt('Item 9 – Suizidgedanken','Item 9 – Idées suicidaires','Item 9 – Suicidal thoughts')}</td><td><strong>${item9}</strong></td><td>0</td><td>${item9===0?tt('Unauffällig','Normal','Normal'):(item9===1?tt('Auffällig','Notable','Notable'):tt('Akut','Aigu','Acute'))}</td></tr>` : ''}
                             </tbody>
                         </table>
-                        ${tEstimated ? '<div class="gutachten-warning" style="margin-top:0.75rem;"><strong>Achtung:</strong> Der T-Wert wurde grob aus dem Rohwert linear geschätzt (nicht normgetreu, keine Alters-/Geschlechtsdifferenzierung). Für einen validen Befund bitte den T-Wert aus der Normtabelle des DIKJ-Manuals entnehmen.</div>' : ''}
+                        ${tEstimated ? `<div class="gutachten-warning" style="margin-top:0.75rem;"><strong>${tt('Achtung:','Attention :','Caution:')}</strong> ${tt(
+                            'Der T-Wert wurde grob aus dem Rohwert linear geschätzt (nicht normgetreu, keine Alters-/Geschlechtsdifferenzierung). Für einen validen Befund bitte den T-Wert aus der Normtabelle des DIKJ-Manuals entnehmen.',
+                            'Le score T a été estimé grossièrement à partir du score brut (non conforme aux normes, sans différenciation âge/sexe). Pour un bilan valide, lire le score T dans le manuel DIKJ.',
+                            'The T-score was roughly estimated from the raw score (not norm-true, no age/sex differentiation). For a valid finding, read the T-score from the DIKJ manual.'
+                        )}</div>` : ''}
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Interpretation</h4>
+                        <h4 class="gutachten-section-title">${tt('3. Interpretation','3. Interprétation','3. Interpretation')}</h4>
                         <div class="gutachten-text">
-                            ${c === 'normal' ? `<p>Der T-Wert von ${Math.round(tVal)} liegt im unauffälligen Bereich. ${pat.name} zeigt zum aktuellen Zeitpunkt keine Hinweise auf eine klinisch relevante depressive Symptomatik. Das Ausmaß an negativen Kognitionen, Traurigkeit und depressiven Verhaltensweisen entspricht dem Durchschnitt der Altersgruppe.</p>` : ''}
-                            ${c === 'borderline' ? `<p>Der T-Wert von ${Math.round(tVal)} liegt im leicht erhöhten Bereich. ${pat.name} zeigt eine subklinische depressive Symptomatik, die zwar noch nicht das Ausmaß einer klinischen Depression erreicht, aber dennoch beachtet werden sollte. Eine Verlaufsbeobachtung wird empfohlen.</p>` : ''}
-                            ${c === 'clinical' ? `<p>Der T-Wert von ${Math.round(tVal)} liegt im klinisch auffälligen Bereich und weist auf eine bedeutsame depressive Symptomatik hin. ${pat.name} berichtet über ein erhöhtes Maß an Traurigkeit, negativen Gedanken und/oder Verhaltensänderungen, die einer weiteren Abklärung bedürfen.</p><div class="gutachten-warning"><strong>Wichtig:</strong> Bei Verdacht auf Depression sollte immer auch nach Suizidgedanken gefragt werden. Eine kinder- und jugendpsychiatrische/-psychotherapeutische Vorstellung wird dringend empfohlen.</div>` : ''}
+                            ${c === 'normal' ? `<p>${tt(
+                                `Der T-Wert von ${Math.round(tVal)} liegt im unauffälligen Bereich. ${pat.name} zeigt zum aktuellen Zeitpunkt keine Hinweise auf eine klinisch relevante depressive Symptomatik. Das Ausmaß an negativen Kognitionen, Traurigkeit und depressiven Verhaltensweisen entspricht dem Durchschnitt der Altersgruppe.`,
+                                `Le score T de ${Math.round(tVal)} se situe dans la plage normale. ${pat.name} ne présente actuellement aucune indication de symptomatologie dépressive cliniquement pertinente. L'intensité des cognitions négatives, de la tristesse et des comportements dépressifs correspond à la moyenne du groupe d'âge.`,
+                                `The T-score of ${Math.round(tVal)} falls within the normal range. ${pat.name} currently shows no indications of clinically relevant depressive symptomatology. The extent of negative cognitions, sadness and depressive behaviours matches the age-group average.`
+                            )}</p>` : ''}
+                            ${c === 'borderline' ? `<p>${tt(
+                                `Der T-Wert von ${Math.round(tVal)} liegt im leicht erhöhten Bereich. ${pat.name} zeigt eine subklinische depressive Symptomatik, die zwar noch nicht das Ausmaß einer klinischen Depression erreicht, aber dennoch beachtet werden sollte. Eine Verlaufsbeobachtung wird empfohlen.`,
+                                `Le score T de ${Math.round(tVal)} se situe dans la plage légèrement élevée. ${pat.name} présente une symptomatologie dépressive subclinique, n'atteignant pas encore le seuil d'une dépression clinique mais qui doit être suivie. Un suivi évolutif est recommandé.`,
+                                `The T-score of ${Math.round(tVal)} falls in the slightly elevated range. ${pat.name} shows subclinical depressive symptomatology that does not yet reach clinical depression level but should be monitored. Follow-up monitoring is recommended.`
+                            )}</p>` : ''}
+                            ${c === 'clinical' ? `<p>${tt(
+                                `Der T-Wert von ${Math.round(tVal)} liegt im klinisch auffälligen Bereich und weist auf eine bedeutsame depressive Symptomatik hin. ${pat.name} berichtet über ein erhöhtes Maß an Traurigkeit, negativen Gedanken und/oder Verhaltensänderungen, die einer weiteren Abklärung bedürfen.`,
+                                `Le score T de ${Math.round(tVal)} se situe dans la plage cliniquement significative et indique une symptomatologie dépressive marquée. ${pat.name} rapporte un niveau élevé de tristesse, de pensées négatives et/ou de modifications comportementales nécessitant un bilan approfondi.`,
+                                `The T-score of ${Math.round(tVal)} falls in the clinically significant range and indicates substantial depressive symptomatology. ${pat.name} reports elevated sadness, negative thoughts and/or behavioural changes that require further assessment.`
+                            )}</p><div class="gutachten-warning"><strong>${tt('Wichtig:','Important :','Important:')}</strong> ${tt(
+                                'Bei Verdacht auf Depression sollte immer auch nach Suizidgedanken gefragt werden. Eine kinder- und jugendpsychiatrische/-psychotherapeutische Vorstellung wird dringend empfohlen.',
+                                'En cas de suspicion de dépression, il convient toujours d\'évaluer les idées suicidaires. Une présentation pédopsychiatrique / psychothérapeutique est vivement recommandée.',
+                                'When depression is suspected, suicidal thoughts should always be assessed. A child & adolescent psychiatric / psychotherapeutic referral is strongly recommended.'
+                            )}</div>` : ''}
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Diagnostische Einordnung</h4>
+                        <h4 class="gutachten-section-title">${tt('4. Diagnostische Einordnung','4. Classification diagnostique','4. Diagnostic classification')}</h4>
                         <div class="gutachten-text">
-                            ${c === 'clinical' ? `<p>Die Ergebnisse sind vereinbar mit dem Vorliegen einer depressiven Episode nach ICD-10/ICD-11:</p>
-                            <span class="icd-code">F32.0</span> Leichte depressive Episode<br>
-                            <span class="icd-code">F32.1</span> Mittelgradige depressive Episode<br>
-                            <span class="icd-code">F32.2</span> Schwere depressive Episode` :
-                            c === 'borderline' ? `<p>Die Ergebnisse deuten auf eine subklinische depressive Verstimmung hin, die noch nicht die Kriterien einer depressiven Episode erfüllt.</p>
-                            <span class="icd-code">F32.9</span> Depressive Episode, nicht näher bezeichnet (bei Persistenz)` :
-                            `<p>Es ergeben sich keine Hinweise auf eine depressive Störung.</p>`}
+                            ${c === 'clinical' ? `<p>${tt('Die Ergebnisse sind vereinbar mit dem Vorliegen einer depressiven Episode nach ICD-10/ICD-11:','Les résultats sont compatibles avec un épisode dépressif selon la CIM-10/CIM-11 :','The results are consistent with a depressive episode per ICD-10/ICD-11:')}</p>
+                            <span class="icd-code">F32.0</span> ${tt('Leichte depressive Episode','Épisode dépressif léger','Mild depressive episode')}<br>
+                            <span class="icd-code">F32.1</span> ${tt('Mittelgradige depressive Episode','Épisode dépressif moyen','Moderate depressive episode')}<br>
+                            <span class="icd-code">F32.2</span> ${tt('Schwere depressive Episode','Épisode dépressif sévère','Severe depressive episode')}` :
+                            c === 'borderline' ? `<p>${tt('Die Ergebnisse deuten auf eine subklinische depressive Verstimmung hin, die noch nicht die Kriterien einer depressiven Episode erfüllt.','Les résultats évoquent une humeur dépressive sous-clinique ne remplissant pas encore les critères d\'un épisode dépressif.','The results suggest subclinical depressive mood not yet meeting depressive-episode criteria.')}</p>
+                            <span class="icd-code">F32.9</span> ${tt('Depressive Episode, nicht näher bezeichnet (bei Persistenz)','Épisode dépressif, sans précision (en cas de persistance)','Depressive episode, unspecified (if persistent)')}` :
+                            `<p>${tt('Es ergeben sich keine Hinweise auf eine depressive Störung.','Aucune indication de trouble dépressif.','No indications of a depressive disorder.')}</p>`}
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">5. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">${tt('5. Empfehlungen','5. Recommandations','5. Recommendations')}</h4>
                         <div class="gutachten-text">
                             <ul class="gutachten-list">
                                 ${c === 'clinical' ? `
-                                    <li><strong>Dringende Empfehlung:</strong> Vorstellung bei Kinder- und Jugendpsychiater/-psychotherapeut</li>
-                                    <li>Abklärung von Suizidalität</li>
-                                    <li>Vertiefte Diagnostik (z.B. klinisches Interview, CDRS-R)</li>
-                                    <li>Einleitung einer Psychotherapie (z.B. KVT, IPT-A)</li>
-                                    <li>Einbezug der Familie in die Behandlung</li>
+                                    <li><strong>${tt('Dringende Empfehlung:','Recommandation urgente :','Urgent recommendation:')}</strong> ${tt('Vorstellung bei Kinder- und Jugendpsychiater/-psychotherapeut','Présentation à un·e pédopsychiatre / pédopsychothérapeute','Referral to child & adolescent psychiatrist / psychotherapist')}</li>
+                                    <li>${tt('Abklärung von Suizidalität','Évaluation de la suicidalité','Suicidality assessment')}</li>
+                                    <li>${tt('Vertiefte Diagnostik (z.B. klinisches Interview, CDRS-R)','Bilan approfondi (p. ex. entretien clinique, CDRS-R)','In-depth assessment (e.g. clinical interview, CDRS-R)')}</li>
+                                    <li>${tt('Einleitung einer Psychotherapie (z.B. KVT, IPT-A)','Mise en place d\'une psychothérapie (p. ex. TCC, IPT-A)','Initiation of psychotherapy (e.g. CBT, IPT-A)')}</li>
+                                    <li>${tt('Einbezug der Familie in die Behandlung','Implication de la famille dans le traitement','Family involvement in treatment')}</li>
                                 ` : c === 'borderline' ? `
-                                    <li>Verlaufsbeobachtung empfohlen</li>
-                                    <li>Niederschwellige Beratungsangebote prüfen</li>
-                                    <li>Bei Persistenz: vertiefte Diagnostik</li>
-                                    <li>Stärkung protektiver Faktoren</li>
+                                    <li>${tt('Verlaufsbeobachtung empfohlen','Suivi évolutif recommandé','Follow-up monitoring recommended')}</li>
+                                    <li>${tt('Niederschwellige Beratungsangebote prüfen','Examiner les offres de conseil à bas seuil','Consider low-threshold counselling options')}</li>
+                                    <li>${tt('Bei Persistenz: vertiefte Diagnostik','En cas de persistance : bilan approfondi','If persistent: in-depth assessment')}</li>
+                                    <li>${tt('Stärkung protektiver Faktoren','Renforcement des facteurs protecteurs','Strengthening protective factors')}</li>
                                 ` : `
-                                    <li>Keine spezifische Intervention erforderlich</li>
-                                    <li>Bei Veränderungen erneute Diagnostik</li>
+                                    <li>${tt('Keine spezifische Intervention erforderlich','Aucune intervention spécifique requise','No specific intervention required')}</li>
+                                    <li>${tt('Bei Veränderungen erneute Diagnostik','En cas de changements, nouveau bilan','In case of changes, repeat assessment')}</li>
                                 `}
                             </ul>
                         </div>
                     </div>
 
                     ${elternZusammenfassung(
-                        'DIKJ (Fragebogen zu Stimmung und Gefühlen)',
+                        tt('DIKJ (Fragebogen zu Stimmung und Gefühlen)','DIKJ (questionnaire sur l\'humeur et les émotions)','DIKJ (Mood & Emotions Questionnaire)'),
                         c === 'normal'
-                            ? `${pat.name} zeigt keine Hinweise auf depressive Symptome. Die Stimmung und das emotionale Befinden scheinen im normalen Bereich zu liegen. Das ist ein gutes Zeichen für das psychische Wohlbefinden Ihres Kindes.`
+                            ? tt(
+                                `${pat.name} zeigt keine Hinweise auf depressive Symptome. Die Stimmung und das emotionale Befinden scheinen im normalen Bereich zu liegen. Das ist ein gutes Zeichen für das psychische Wohlbefinden Ihres Kindes.`,
+                                `${pat.name} ne présente aucune indication de symptômes dépressifs. L'humeur et l'état émotionnel semblent dans la plage normale. C'est un bon signe pour le bien-être psychique de votre enfant.`,
+                                `${pat.name} shows no indications of depressive symptoms. Mood and emotional state appear within the normal range. This is a good sign for your child's psychological well-being.`
+                            )
                             : c === 'borderline'
-                                ? `${pat.name} zeigt leicht erhöhte Werte, die auf eine vorübergehende Niedergestimmtheit hindeuten könnten. Dies muss nicht bedeuten, dass Ihr Kind depressiv ist - Stimmungsschwankungen sind in der Jugend normal. Dennoch sollten Sie aufmerksam bleiben.`
-                                : `${pat.name} zeigt erhöhte Werte für depressive Symptome wie Traurigkeit, negative Gedanken oder Antriebslosigkeit. Depression bei Kindern und Jugendlichen ist behandelbar - je früher Hilfe gesucht wird, desto besser. Bitte nehmen Sie diese Ergebnisse ernst.`,
+                                ? tt(
+                                    `${pat.name} zeigt leicht erhöhte Werte, die auf eine vorübergehende Niedergestimmtheit hindeuten könnten. Dies muss nicht bedeuten, dass Ihr Kind depressiv ist - Stimmungsschwankungen sind in der Jugend normal. Dennoch sollten Sie aufmerksam bleiben.`,
+                                    `${pat.name} présente des scores légèrement élevés pouvant indiquer une humeur abaissée passagère. Cela ne signifie pas nécessairement que votre enfant est déprimé·e – les variations d'humeur sont normales à l'adolescence. Restez néanmoins attentif·ve.`,
+                                    `${pat.name} shows slightly elevated scores that may indicate transient low mood. This does not necessarily mean your child is depressed – mood fluctuations are normal in adolescence. Nonetheless, stay attentive.`
+                                )
+                                : tt(
+                                    `${pat.name} zeigt erhöhte Werte für depressive Symptome wie Traurigkeit, negative Gedanken oder Antriebslosigkeit. Depression bei Kindern und Jugendlichen ist behandelbar - je früher Hilfe gesucht wird, desto besser. Bitte nehmen Sie diese Ergebnisse ernst.`,
+                                    `${pat.name} présente des scores élevés pour des symptômes dépressifs tels que tristesse, pensées négatives ou perte d'élan. La dépression chez l'enfant et l'adolescent se traite – plus tôt on cherche de l'aide, mieux c'est. Veuillez prendre ces résultats au sérieux.`,
+                                    `${pat.name} shows elevated scores for depressive symptoms such as sadness, negative thoughts or loss of drive. Depression in children and adolescents is treatable – the earlier help is sought, the better. Please take these results seriously.`
+                                ),
                         c === 'normal'
-                            ? ['Weiterhin auf das Wohlbefinden achten', 'Offene Gespräche über Gefühle fördern']
+                            ? [
+                                tt('Weiterhin auf das Wohlbefinden achten','Continuer à veiller au bien-être','Continue to monitor well-being'),
+                                tt('Offene Gespräche über Gefühle fördern','Favoriser des conversations ouvertes sur les émotions','Encourage open conversations about feelings')
+                              ]
                             : c === 'borderline'
-                                ? ['Beobachten Sie die weitere Entwicklung', 'Sprechen Sie offen mit Ihrem Kind', 'Bei anhaltender Niedergeschlagenheit: Beratung aufsuchen']
-                                : ['Vereinbaren Sie zeitnah einen Termin bei einem Kinder- und Jugendpsychotherapeuten', 'Depression ist gut behandelbar', 'Zeigen Sie Verständnis und vermeiden Sie Vorwürfe', 'Bei Äußerungen über Hoffnungslosigkeit oder Suizidgedanken: sofort professionelle Hilfe suchen']
+                                ? [
+                                    tt('Beobachten Sie die weitere Entwicklung','Observez la suite de l\'évolution','Monitor further development'),
+                                    tt('Sprechen Sie offen mit Ihrem Kind','Parlez ouvertement avec votre enfant','Speak openly with your child'),
+                                    tt('Bei anhaltender Niedergeschlagenheit: Beratung aufsuchen','En cas d\'humeur abaissée persistante : consulter','If low mood persists: seek counselling')
+                                  ]
+                                : [
+                                    tt('Vereinbaren Sie zeitnah einen Termin bei einem Kinder- und Jugendpsychotherapeuten','Prenez rapidement rendez-vous avec un·e pédopsychothérapeute','Schedule an appointment with a child & adolescent psychotherapist soon'),
+                                    tt('Depression ist gut behandelbar','La dépression se traite bien','Depression is treatable'),
+                                    tt('Zeigen Sie Verständnis und vermeiden Sie Vorwürfe','Faites preuve de compréhension et évitez les reproches','Show understanding and avoid reproach'),
+                                    tt('Bei Äußerungen über Hoffnungslosigkeit oder Suizidgedanken: sofort professionelle Hilfe suchen','En cas d\'expression de désespoir ou d\'idées suicidaires : chercher immédiatement une aide professionnelle','If hopelessness or suicidal thoughts are expressed: seek professional help immediately')
+                                  ]
                     )}
 
                     ${gutachtenFooter()}
@@ -6906,11 +6990,11 @@
             `;
 
             document.getElementById('dikj-results').innerHTML = `
-                <div class="results-header"><h3 class="results-title">Ergebnis DIKJ</h3></div>
-                ${summary([{l:'T-Wert',v:Math.round(tVal),c:c,s:cText}])}
+                <div class="results-header"><h3 class="results-title">${tt('Ergebnis DIKJ','Résultat DIKJ','DIKJ result')}</h3></div>
+                ${summary([{l:tt('T-Wert','Score T','T-score'),v:Math.round(tVal),c:c,s:cText}])}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
-                    <button class="btn btn-primary" onclick="exportTestToWord('dikj')">📝 Als Word exportieren (.doc)</button>
+                    <button class="btn btn-primary" onclick="exportTestToWord('dikj')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
                 </div>
             `;
             showLocalizedResults('dikj-results');
