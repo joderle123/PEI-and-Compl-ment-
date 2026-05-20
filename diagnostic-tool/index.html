@@ -2250,6 +2250,11 @@
             if(!e) return key;
             return e[LANG] ?? e.de ?? key;
         }
+        // 3-Sprachen-Picker für Narrativ-Sätze direkt im Template-Literal.
+        // Vermeidet die Reihenfolge-Konflikte des Regex-localize() vollständig.
+        function tt(de, fr, en) {
+            return LANG === 'fr' ? (fr ?? de) : LANG === 'en' ? (en ?? de) : de;
+        }
         function setReportLang(lang) {
             if(!['de','fr','en'].includes(lang)) lang = 'de';
             LANG = lang;
