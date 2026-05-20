@@ -5733,14 +5733,16 @@
                 </div>
             `;
 
+            const ergebnisLabel = tt('Ergebnis','Résultat','Result');
             const resultsTitle = raterKeys.length >= 2
-                ? `Ergebnis CBCL – Multi-Informant (${raterKeys.map(r=>CBCL_RATERS[r].short).join(' · ')})`
-                : `Ergebnis ${respText}`;
+                ? `${ergebnisLabel} CBCL – ${tt('Multi-Informant','Multi-informant','Multi-informant')} (${raterKeys.map(r=>cbclRaterShort(r)).join(' · ')})`
+                : `${ergebnisLabel} ${respText}`;
 
             // Summary-Karten: GES pro Beurteiler als Schnellüberblick
+            const gesShort = tt('GES','TOT','TOT');
             const summaryCards = raterKeys
                 .filter(r => raters[r].bb.tot !== null)
-                .map(r => ({l: CBCL_RATERS[r].short + ' – GES', v: valLabel+' '+raters[r].bb.tot, c: raters[r].cBB.tot, s: cbclClassText(raters[r].cBB.tot)}));
+                .map(r => ({l: cbclRaterShort(r) + ' – ' + gesShort, v: valLabel+' '+raters[r].bb.tot, c: raters[r].cBB.tot, s: cbclClassText(raters[r].cBB.tot)}));
             const summaryContent = summaryCards.length
                 ? summary(summaryCards)
                 : summary(validBB.map(([k,x])=>({l:bbLabels[k],v:valLabel+' '+x,c:cBB[k],s:cbclClassText(cBB[k])})));
@@ -5749,7 +5751,7 @@
             html += summaryContent;
             html += gutachten;
             html += `<div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
-                    <button class="btn btn-primary" onclick="exportTestToWord('cbcl')">📝 Als Word exportieren (.doc)</button>
+                    <button class="btn btn-primary" onclick="exportTestToWord('cbcl')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
                 </div>`;
 
             document.getElementById('cbcl-results').innerHTML = html;
