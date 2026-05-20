@@ -8313,6 +8313,27 @@
             pln: {n:'Planung/Gf', desc:'Fluides Denken und Problemlösen'},
             wis: {n:'Wissen/Gc', desc:'Kristalline Fähigkeiten und erworbenes Wissen'}
         };
+        function kabcName(k) {
+            const fr = {
+                fki:'Indice Fluide-Cristallisé (FKI)',
+                nvi:'Indice Non Verbal (NVI)',
+                seq:'Séquentiel/Gsm',
+                sim:'Simultané/Gv',
+                lrn:'Apprentissage/Glr',
+                pln:'Planification/Gf',
+                wis:'Connaissances/Gc'
+            };
+            const en = {
+                fki:'Fluid-Crystallized Index (FCI)',
+                nvi:'Nonverbal Index (NVI)',
+                seq:'Sequential/Gsm',
+                sim:'Simultaneous/Gv',
+                lrn:'Learning/Glr',
+                pln:'Planning/Gf',
+                wis:'Knowledge/Gc'
+            };
+            return tt(KABC_NAMES[k].n, fr[k], en[k]);
+        }
 
         function evaluateKABC(e) {
             e.preventDefault();
@@ -8325,7 +8346,7 @@
                 pln:{v:v('kabc-pln')},wis:{v:v('kabc-wis')}
             };
             const valid = Object.entries(idx).filter(([k,x])=>x.v!==null);
-            if(!valid.length) return alert('Bitte mindestens einen Wert eingeben');
+            if(!valid.length) return alert(tt('Bitte mindestens einen Wert eingeben','Veuillez saisir au moins une valeur','Please enter at least one value'));
 
             const c = {}; valid.forEach(([k,x])=>c[k]=iqClass(x.v));
 
@@ -8343,71 +8364,97 @@
                     ${gutachtenHeader('K-ABC II', 'Kaufman Assessment Battery for Children – Second Edition', pat)}
 
                     <div class="gutachten-meta" style="margin-top:0;">
-                        ${testLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Testsprache:</span> <span class="gutachten-meta-value">${testLang}</span></div>` : ''}
-                        ${instLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Instruktionssprache:</span> <span class="gutachten-meta-value">${instLang}</span></div>` : ''}
-                        ${motherLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Muttersprache:</span> <span class="gutachten-meta-value">${motherLang}</span></div>` : ''}
+                        ${testLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">${tt('Testsprache:','Langue du test :','Test language:')}</span> <span class="gutachten-meta-value">${testLang}</span></div>` : ''}
+                        ${instLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">${tt('Instruktionssprache:','Langue d\'instruction :','Instruction language:')}</span> <span class="gutachten-meta-value">${instLang}</span></div>` : ''}
+                        ${motherLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">${tt('Muttersprache:','Langue maternelle :','Mother tongue:')}</span> <span class="gutachten-meta-value">${motherLang}</span></div>` : ''}
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <h4 class="gutachten-section-title">${tt('1. Testbeschreibung','1. Description du test','1. Test description')}</h4>
                         <div class="gutachten-text">
-                            <p>Die K-ABC II (Kaufman & Kaufman, 2004; deutsche Fassung: Melchers & Melchers, 2015) ist ein Individualtest zur Erfassung kognitiver Fähigkeiten von Kindern und Jugendlichen im Alter von 3 bis 18 Jahren. Das Verfahren basiert auf dem Cattell-Horn-Carroll (CHC) Modell und dem neuropsychologischen Modell von Luria.</p>
-                            <p>Die K-ABC II bietet einen Fluid-Kristallinen Index (FKI) als umfassendes Maß der kognitiven Leistungsfähigkeit sowie einen Nonverbalen Index (NVI) für die sprachfreie Einschätzung. Fünf Indexskalen erfassen spezifische kognitive Bereiche.</p>
+                            <p>${tt(
+                                'Die K-ABC II (Kaufman & Kaufman, 2004; deutsche Fassung: Melchers & Melchers, 2015) ist ein Individualtest zur Erfassung kognitiver Fähigkeiten von Kindern und Jugendlichen im Alter von 3 bis 18 Jahren. Das Verfahren basiert auf dem Cattell-Horn-Carroll (CHC) Modell und dem neuropsychologischen Modell von Luria.',
+                                'La K-ABC II (Kaufman & Kaufman, 2004 ; version allemande : Melchers & Melchers, 2015) est un test individuel d\'évaluation des capacités cognitives chez les enfants et adolescents de 3 à 18 ans. Il s\'appuie sur le modèle Cattell-Horn-Carroll (CHC) et le modèle neuropsychologique de Luria.',
+                                'The K-ABC II (Kaufman & Kaufman, 2004; German version: Melchers & Melchers, 2015) is an individual cognitive-ability test for children and adolescents aged 3 to 18 years. It is based on the Cattell-Horn-Carroll (CHC) model and Luria\'s neuropsychological model.'
+                            )}</p>
+                            <p>${tt(
+                                'Die K-ABC II bietet einen Fluid-Kristallinen Index (FKI) als umfassendes Maß der kognitiven Leistungsfähigkeit sowie einen Nonverbalen Index (NVI) für die sprachfreie Einschätzung. Fünf Indexskalen erfassen spezifische kognitive Bereiche.',
+                                'La K-ABC II offre un Indice Fluide-Cristallisé (FKI) comme mesure globale et un Indice Non Verbal (NVI) pour l\'évaluation non verbale. Cinq échelles d\'indices couvrent des domaines cognitifs spécifiques.',
+                                'The K-ABC II provides a Fluid-Crystallized Index (FCI) as an overall measure and a Nonverbal Index (NVI) for language-free assessment. Five index scales cover specific cognitive domains.'
+                            )}</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <h4 class="gutachten-section-title">${tt('2. Testergebnisse','2. Résultats','2. Test results')}</h4>
                         ${globals.length ? `
-                        <p style="font-weight:bold;">Globalskalen:</p>
+                        <p style="font-weight:bold;">${tt('Globalskalen:','Échelles globales :','Global scales:')}</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>Standardwert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${tt('Skala','Échelle','Scale')}</th><th>${tt('Standardwert','Score standard','Standard score')}</th><th>${tt('Prozentrang','Rang centile','Percentile rank')}</th><th>${tt('Klassifikation','Classification','Classification')}</th></tr></thead>
                             <tbody>
-                                ${globals.map(([k,x])=>`<tr style="font-weight:700;"><td>${KABC_NAMES[k].n}</td><td><strong>${x.v}</strong></td><td>${c[k].pr}</td><td>${c[k].l}</td></tr>`).join('')}
+                                ${globals.map(([k,x])=>`<tr style="font-weight:700;"><td>${kabcName(k)}</td><td><strong>${x.v}</strong></td><td>${c[k].pr}</td><td>${c[k].l}</td></tr>`).join('')}
                             </tbody>
                         </table>
                         ` : ''}
                         ${indices.length ? `
-                        <p style="font-weight:bold;margin-top:1rem;">Indexskalen:</p>
+                        <p style="font-weight:bold;margin-top:1rem;">${tt('Indexskalen:','Échelles d\'indices :','Index scales:')}</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>Standardwert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${tt('Skala','Échelle','Scale')}</th><th>${tt('Standardwert','Score standard','Standard score')}</th><th>${tt('Prozentrang','Rang centile','Percentile rank')}</th><th>${tt('Klassifikation','Classification','Classification')}</th></tr></thead>
                             <tbody>
-                                ${indices.map(([k,x])=>`<tr><td>${KABC_NAMES[k].n}</td><td><strong>${x.v}</strong></td><td>${c[k].pr}</td><td>${c[k].l}</td></tr>`).join('')}
+                                ${indices.map(([k,x])=>`<tr><td>${kabcName(k)}</td><td><strong>${x.v}</strong></td><td>${c[k].pr}</td><td>${c[k].l}</td></tr>`).join('')}
                             </tbody>
                         </table>
                         ` : ''}
                         <div style="margin-top:1rem;font-size:0.9em;color:#4a5568;">
-                            <p><strong>Erläuterungen:</strong> Standardwerte haben einen Mittelwert von 100 und eine Standardabweichung von 15. Der Durchschnittsbereich umfasst Werte von 85–114 (Prozentrang 16–84). Werte ab 115 gelten als überdurchschnittlich, Werte unter 85 als unterdurchschnittlich.</p>
+                            <p><strong>${tt('Erläuterungen:','Explications :','Explanations:')}</strong> ${tt(
+                                'Standardwerte haben einen Mittelwert von 100 und eine Standardabweichung von 15. Der Durchschnittsbereich umfasst Werte von 85–114 (Prozentrang 16–84). Werte ab 115 gelten als überdurchschnittlich, Werte unter 85 als unterdurchschnittlich.',
+                                'Les scores standards ont une moyenne de 100 et un écart-type de 15. La plage moyenne couvre 85–114 (rang centile 16–84). Les valeurs ≥ 115 sont supérieures, < 85 inférieures.',
+                                'Standard scores have mean 100 and SD 15. The average range covers 85–114 (PR 16–84). Values ≥ 115 are above average; < 85 are below average.'
+                            )}</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Interpretation</h4>
+                        <h4 class="gutachten-section-title">${tt('3. Interpretation','3. Interprétation','3. Interpretation')}</h4>
                         <div class="gutachten-text">
-                            ${mainIQ ? `<p>Die Untersuchung mittels K-ABC II ergibt einen <strong>${idx.fki.v ? 'Fluid-Kristallinen Index (FKI)' : 'Nonverbalen Index (NVI)'} von ${mainIQ}</strong> (PR: ${mainC.pr}). Dieser Wert liegt im <strong>${mainC.l.toLowerCase()}en Bereich</strong>.</p>` : ''}
-                            ${mainIQ >= 115 ? `<p>${pat.name} verfügt über <strong>überdurchschnittliche kognitive Fähigkeiten</strong>.</p>` : ''}
-                            ${mainIQ >= 85 && mainIQ < 115 ? `<p>${pat.name} verfügt über <strong>durchschnittliche kognitive Fähigkeiten</strong>.</p>` : ''}
-                            ${mainIQ < 85 && mainIQ >= 70 ? `<p>${pat.name} zeigt <strong>unterdurchschnittliche kognitive Fähigkeiten</strong>.</p>` : ''}
-                            ${mainIQ < 70 ? `<p>${pat.name} zeigt <strong>deutlich unterdurchschnittliche kognitive Fähigkeiten</strong>. Eine umfassende Entwicklungsdiagnostik wird empfohlen.</p>` : ''}
+                            ${mainIQ ? `<p>${tt(
+                                `Die Untersuchung mittels K-ABC II ergibt einen <strong>${idx.fki.v ? 'Fluid-Kristallinen Index (FKI)' : 'Nonverbalen Index (NVI)'} von ${mainIQ}</strong> (PR: ${mainC.pr}). Dieser Wert liegt im <strong>${mainC.l.toLowerCase()}en Bereich</strong>.`,
+                                `L'évaluation par la K-ABC II donne un <strong>${idx.fki.v ? 'Indice Fluide-Cristallisé (FKI)' : 'Indice Non Verbal (NVI)'} de ${mainIQ}</strong> (RC : ${mainC.pr}). Cette valeur se situe dans la plage <strong>${mainC.l.toLowerCase()}</strong>.`,
+                                `Assessment via K-ABC II yields a <strong>${idx.fki.v ? 'Fluid-Crystallized Index (FCI)' : 'Nonverbal Index (NVI)'} of ${mainIQ}</strong> (PR: ${mainC.pr}). This value falls in the <strong>${mainC.l.toLowerCase()}</strong> range.`
+                            )}</p>` : ''}
+                            ${mainIQ >= 115 ? `<p>${tt(`${pat.name} verfügt über <strong>überdurchschnittliche kognitive Fähigkeiten</strong>.`,`${pat.name} dispose de <strong>capacités cognitives supérieures</strong>.`,`${pat.name} has <strong>above-average cognitive abilities</strong>.`)}</p>` : ''}
+                            ${mainIQ >= 85 && mainIQ < 115 ? `<p>${tt(`${pat.name} verfügt über <strong>durchschnittliche kognitive Fähigkeiten</strong>.`,`${pat.name} dispose de <strong>capacités cognitives moyennes</strong>.`,`${pat.name} has <strong>average cognitive abilities</strong>.`)}</p>` : ''}
+                            ${mainIQ < 85 && mainIQ >= 70 ? `<p>${tt(`${pat.name} zeigt <strong>unterdurchschnittliche kognitive Fähigkeiten</strong>.`,`${pat.name} montre des <strong>capacités cognitives inférieures</strong>.`,`${pat.name} shows <strong>below-average cognitive abilities</strong>.`)}</p>` : ''}
+                            ${mainIQ < 70 ? `<p>${tt(`${pat.name} zeigt <strong>deutlich unterdurchschnittliche kognitive Fähigkeiten</strong>. Eine umfassende Entwicklungsdiagnostik wird empfohlen.`,`${pat.name} montre des <strong>capacités cognitives nettement inférieures</strong>. Un bilan développemental complet est recommandé.`,`${pat.name} shows <strong>clearly below-average cognitive abilities</strong>. A comprehensive developmental assessment is recommended.`)}</p>` : ''}
                             ${indices.length >= 2 ? (() => {
                                 const iVals = indices.map(([k,x])=>x.v);
                                 const diff = Math.max(...iVals) - Math.min(...iVals);
                                 const maxI = indices.reduce((a,b)=>a[1].v>b[1].v?a:b);
                                 const minI = indices.reduce((a,b)=>a[1].v<b[1].v?a:b);
-                                return diff >= 15 ? `<p><strong>Profilanalyse:</strong> Es zeigt sich eine bedeutsame Diskrepanz von ${diff} Punkten zwischen dem stärksten Bereich (${KABC_NAMES[maxI[0]].n}: ${maxI[1].v}) und dem schwächsten Bereich (${KABC_NAMES[minI[0]].n}: ${minI[1].v}).</p>` : `<p>Das kognitive Profil ist weitgehend homogen.</p>`;
+                                return diff >= 15
+                                    ? `<p><strong>${tt('Profilanalyse:','Analyse du profil :','Profile analysis:')}</strong> ${tt(
+                                        `Es zeigt sich eine bedeutsame Diskrepanz von ${diff} Punkten zwischen dem stärksten Bereich (${kabcName(maxI[0])}: ${maxI[1].v}) und dem schwächsten Bereich (${kabcName(minI[0])}: ${minI[1].v}).`,
+                                        `Une discordance significative de ${diff} points apparaît entre le domaine le plus fort (${kabcName(maxI[0])} : ${maxI[1].v}) et le plus faible (${kabcName(minI[0])} : ${minI[1].v}).`,
+                                        `A significant discrepancy of ${diff} points appears between the strongest domain (${kabcName(maxI[0])}: ${maxI[1].v}) and the weakest (${kabcName(minI[0])}: ${minI[1].v}).`
+                                    )}</p>`
+                                    : `<p>${tt('Das kognitive Profil ist weitgehend homogen.','Le profil cognitif est largement homogène.','The cognitive profile is largely homogeneous.')}</p>`;
                             })() : ''}
-                            ${idx.fki.v && idx.nvi.v && Math.abs(idx.fki.v - idx.nvi.v) >= 10 ? `<p>Die Differenz von ${Math.abs(idx.fki.v - idx.nvi.v)} Punkten zwischen FKI (${idx.fki.v}) und NVI (${idx.nvi.v}) deutet darauf hin, dass ${idx.nvi.v > idx.fki.v ? 'nonverbale Fähigkeiten stärker ausgeprägt sind als sprachgebundene' : 'sprachgebundene Fähigkeiten die nonverbalen Fähigkeiten übersteigen'}.</p>` : ''}
+                            ${idx.fki.v && idx.nvi.v && Math.abs(idx.fki.v - idx.nvi.v) >= 10 ? `<p>${tt(
+                                `Die Differenz von ${Math.abs(idx.fki.v - idx.nvi.v)} Punkten zwischen FKI (${idx.fki.v}) und NVI (${idx.nvi.v}) deutet darauf hin, dass ${idx.nvi.v > idx.fki.v ? 'nonverbale Fähigkeiten stärker ausgeprägt sind als sprachgebundene' : 'sprachgebundene Fähigkeiten die nonverbalen Fähigkeiten übersteigen'}.`,
+                                `La différence de ${Math.abs(idx.fki.v - idx.nvi.v)} points entre FKI (${idx.fki.v}) et NVI (${idx.nvi.v}) suggère que ${idx.nvi.v > idx.fki.v ? 'les capacités non verbales sont plus développées que les capacités verbales' : 'les capacités verbales dépassent les capacités non verbales'}.`,
+                                `The difference of ${Math.abs(idx.fki.v - idx.nvi.v)} points between FCI (${idx.fki.v}) and NVI (${idx.nvi.v}) suggests that ${idx.nvi.v > idx.fki.v ? 'nonverbal abilities are more developed than language-based abilities' : 'language-based abilities exceed nonverbal abilities'}.`
+                            )}</p>` : ''}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">${tt('4. Empfehlungen','4. Recommandations','4. Recommendations')}</h4>
                         <div class="gutachten-text">
                             <ul class="gutachten-list">
-                                ${mainIQ >= 130 ? '<li>Begabungsförderung und Enrichment-Maßnahmen</li>' : ''}
-                                ${mainIQ < 85 ? '<li>Gezielte Förderung in den identifizierten Schwächebereichen</li>' : ''}
-                                ${mainIQ < 70 ? '<li>Prüfung eines sonderpädagogischen Förderbedarfs</li><li>Umfassende Entwicklungsdiagnostik</li>' : ''}
-                                <li>Integration der Ergebnisse mit weiteren diagnostischen Befunden</li>
+                                ${mainIQ >= 130 ? `<li>${tt('Begabungsförderung und Enrichment-Maßnahmen','Soutien aux enfants à haut potentiel et mesures d\'enrichissement','Gifted support and enrichment measures')}</li>` : ''}
+                                ${mainIQ < 85 ? `<li>${tt('Gezielte Förderung in den identifizierten Schwächebereichen','Soutien ciblé dans les domaines de faiblesse identifiés','Targeted support in identified weak areas')}</li>` : ''}
+                                ${mainIQ < 70 ? `<li>${tt('Prüfung eines sonderpädagogischen Förderbedarfs','Examen de besoins éducatifs particuliers','Review of special educational needs')}</li><li>${tt('Umfassende Entwicklungsdiagnostik','Bilan développemental complet','Comprehensive developmental assessment')}</li>` : ''}
+                                <li>${tt('Integration der Ergebnisse mit weiteren diagnostischen Befunden','Intégration avec d\'autres résultats diagnostiques','Integration of results with other diagnostic findings')}</li>
                             </ul>
                         </div>
                     </div>
@@ -8417,16 +8464,16 @@
             `;
 
             const summaryItems = [];
-            if(idx.fki.v) summaryItems.push({l:'FKI',v:idx.fki.v,c:c.fki.c,s:c.fki.l});
+            if(idx.fki.v) summaryItems.push({l:tt('FKI','FKI','FCI'),v:idx.fki.v,c:c.fki.c,s:c.fki.l});
             if(idx.nvi.v) summaryItems.push({l:'NVI',v:idx.nvi.v,c:c.nvi.c,s:c.nvi.l});
-            indices.forEach(([k,x])=>summaryItems.push({l:KABC_NAMES[k].n.split('/')[0],v:x.v,c:c[k].c,s:c[k].l}));
+            indices.forEach(([k,x])=>summaryItems.push({l:kabcName(k).split('/')[0],v:x.v,c:c[k].c,s:c[k].l}));
 
             document.getElementById('kabc-results').innerHTML = `
-                <div class="results-header"><h3 class="results-title">Ergebnis K-ABC II</h3></div>
+                <div class="results-header"><h3 class="results-title">${tt('Ergebnis K-ABC II','Résultat K-ABC II','K-ABC II result')}</h3></div>
                 ${summary(summaryItems)}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
-                    <button class="btn btn-primary" onclick="exportTestToWord('kabc')">📝 Als Word exportieren (.doc)</button>
+                    <button class="btn btn-primary" onclick="exportTestToWord('kabc')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
                 </div>
             `;
             showLocalizedResults('kabc-results');
