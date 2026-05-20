@@ -4296,7 +4296,12 @@
             };
             const impactAny      = readSel('sdq-impact-any');
             const impactDurRaw   = document.getElementById('sdq-impact-dur')?.value || '';
-            const impactDurText  = {lt1:'< 1 Monat', '1-5':'1–5 Monate', '6-12':'6–12 Monate', gt12:'> 1 Jahr'}[impactDurRaw] || '';
+            const impactDurText  = {
+                lt1:    tt('< 1 Monat',     '< 1 mois',     '< 1 month'),
+                '1-5':  tt('1–5 Monate',    '1–5 mois',     '1–5 months'),
+                '6-12': tt('6–12 Monate',   '6–12 mois',    '6–12 months'),
+                gt12:   tt('> 1 Jahr',      '> 1 an',       '> 1 year')
+            }[impactDurRaw] || '';
             const impactDistress = readSel('sdq-impact-distress');
             const impactHome     = readSel('sdq-impact-home');
             const impactFriends  = readSel('sdq-impact-friends');
@@ -4314,7 +4319,11 @@
             if(impactParts.some(x => x !== null) && impactAny !== null && impactAny >= 1) {
                 impactScore = impactParts.reduce((s,x)=> s + (x||0), 0);
                 impactClassif = impactScore <= 0 ? 'normal' : impactScore === 1 ? 'borderline' : 'clinical';
-                impactClassText = {normal:'Unauffällig', borderline:'Grenzwertig', clinical:'Klinisch relevante Beeinträchtigung'}[impactClassif];
+                impactClassText = {
+                    normal:     tt('Unauffällig',                       'Normal',                                       'Normal'),
+                    borderline: tt('Grenzwertig',                       'Limite',                                       'Borderline'),
+                    clinical:   tt('Klinisch relevante Beeinträchtigung','Altération cliniquement pertinente',           'Clinically relevant impairment')
+                }[impactClassif];
             }
 
             const labels = ['Emotional','Verhalten','Hyperaktiv.','Peer','Prosozial'];
@@ -4485,23 +4494,49 @@
                             `<strong>Sums:</strong> internalising symptoms (EM+PE): ${intern} | externalising symptoms (VP+HY): ${extern}`
                         )}</p>
                         ${impactHasAny ? `
-                        <p style="font-weight:600;margin:1.5rem 0 0.5rem;">Impact Supplement – funktionelle Beeinträchtigung</p>
+                        <p style="font-weight:600;margin:1.5rem 0 0.5rem;">${tt(
+                            'Impact Supplement – funktionelle Beeinträchtigung',
+                            'Supplément Impact – altération fonctionnelle',
+                            'Impact Supplement – functional impairment'
+                        )}</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Bereich</th><th>Wert</th><th>Bedeutung</th></tr></thead>
+                            <thead><tr>
+                                <th>${tt('Bereich', 'Domaine', 'Domain')}</th>
+                                <th>${tt('Wert', 'Valeur', 'Value')}</th>
+                                <th>${tt('Bedeutung', 'Signification', 'Meaning')}</th>
+                            </tr></thead>
                             <tbody>
-                                ${impactAny !== null ? `<tr><td>Schwierigkeiten insgesamt</td><td><strong>${impactAny}</strong></td><td>${['keine','leicht','deutlich','massiv'][impactAny]}</td></tr>` : ''}
-                                ${impactDurText ? `<tr><td>Dauer</td><td><strong>${impactDurText}</strong></td><td>-</td></tr>` : ''}
-                                ${impactDistress !== null ? `<tr><td>Belastung des Kindes</td><td><strong>${impactDistress}</strong></td><td>${['gar nicht','ein wenig','ziemlich','massiv'][impactDistress]}</td></tr>` : ''}
-                                ${impactHome !== null ? `<tr><td>Beeinträchtigung zu Hause</td><td><strong>${impactHome}</strong></td><td>-</td></tr>` : ''}
-                                ${impactFriends !== null ? `<tr><td>Freundschaften</td><td><strong>${impactFriends}</strong></td><td>-</td></tr>` : ''}
-                                ${impactClass !== null ? `<tr><td>Unterricht / Arbeit</td><td><strong>${impactClass}</strong></td><td>-</td></tr>` : ''}
-                                ${impactLeisure !== null ? `<tr><td>Freizeit</td><td><strong>${impactLeisure}</strong></td><td>-</td></tr>` : ''}
-                                ${impactBurden !== null ? `<tr><td>Belastung anderer durch das Kind</td><td><strong>${impactBurden}</strong></td><td>-</td></tr>` : ''}
-                                ${impactScore !== null ? `<tr style="font-weight:700;background:var(--bg-input);"><td>Impact Score (Summe)</td><td><strong>${impactScore}</strong></td><td class="${impactClassif}">${impactClassText}</td></tr>` : ''}
+                                ${impactAny !== null ? `<tr><td>${tt('Schwierigkeiten insgesamt','Difficultés globales','Overall difficulties')}</td><td><strong>${impactAny}</strong></td><td>${[
+                                    tt('keine','aucune','none'),
+                                    tt('leicht','légère','mild'),
+                                    tt('deutlich','marquée','marked'),
+                                    tt('massiv','massive','severe')
+                                ][impactAny]}</td></tr>` : ''}
+                                ${impactDurText ? `<tr><td>${tt('Dauer','Durée','Duration')}</td><td><strong>${impactDurText}</strong></td><td>-</td></tr>` : ''}
+                                ${impactDistress !== null ? `<tr><td>${tt('Belastung des Kindes','Détresse de l\'enfant','Child distress')}</td><td><strong>${impactDistress}</strong></td><td>${[
+                                    tt('gar nicht','pas du tout','not at all'),
+                                    tt('ein wenig','un peu','a little'),
+                                    tt('ziemlich','plutôt','quite a lot'),
+                                    tt('massiv','massive','severe')
+                                ][impactDistress]}</td></tr>` : ''}
+                                ${impactHome !== null ? `<tr><td>${tt('Beeinträchtigung zu Hause','Altération à la maison','Impairment at home')}</td><td><strong>${impactHome}</strong></td><td>-</td></tr>` : ''}
+                                ${impactFriends !== null ? `<tr><td>${tt('Freundschaften','Amitiés','Friendships')}</td><td><strong>${impactFriends}</strong></td><td>-</td></tr>` : ''}
+                                ${impactClass !== null ? `<tr><td>${tt('Unterricht / Arbeit','Cours / travail','Schoolwork / work')}</td><td><strong>${impactClass}</strong></td><td>-</td></tr>` : ''}
+                                ${impactLeisure !== null ? `<tr><td>${tt('Freizeit','Loisirs','Leisure')}</td><td><strong>${impactLeisure}</strong></td><td>-</td></tr>` : ''}
+                                ${impactBurden !== null ? `<tr><td>${tt('Belastung anderer durch das Kind','Charge pour les autres','Burden on others')}</td><td><strong>${impactBurden}</strong></td><td>-</td></tr>` : ''}
+                                ${impactScore !== null ? `<tr style="font-weight:700;background:var(--bg-input);"><td>${tt('Impact Score (Summe)','Score Impact (somme)','Impact Score (sum)')}</td><td><strong>${impactScore}</strong></td><td class="${impactClassif}">${impactClassText}</td></tr>` : ''}
                             </tbody>
                         </table>
-                        <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-muted);">Impact-Score-Cut-offs (Goodman): 0 = unauffällig · 1 = grenzwertig · ≥ 2 = klinisch bedeutsame Beeinträchtigung. Ein niedriger Gesamtproblemwert bei hohem Impact spricht für hohe subjektive Belastung trotz geringer beobachtbarer Symptome.</p>
-                        ${impactClassif === 'clinical' ? '<div class="gutachten-warning" style="margin-top:0.75rem;"><strong>Klinisch bedeutsame funktionelle Beeinträchtigung:</strong> Der Impact-Score weist auf eine relevante Beeinträchtigung des Alltagsfunktionierens hin – unabhängig von der Symptomintensität ist eine vertiefte diagnostische Abklärung und Interventionsplanung indiziert.</div>' : ''}
+                        <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-muted);">${tt(
+                            'Impact-Score-Cut-offs (Goodman): 0 = unauffällig · 1 = grenzwertig · ≥ 2 = klinisch bedeutsame Beeinträchtigung. Ein niedriger Gesamtproblemwert bei hohem Impact spricht für hohe subjektive Belastung trotz geringer beobachtbarer Symptome.',
+                            'Seuils Impact (Goodman) : 0 = normal · 1 = limite · ≥ 2 = altération cliniquement significative. Un score total faible avec un Impact élevé indique une forte charge subjective malgré peu de symptômes observables.',
+                            'Impact-score cut-offs (Goodman): 0 = unremarkable · 1 = borderline · ≥ 2 = clinically significant impairment. A low Total Difficulties Score with high Impact indicates high subjective burden despite few observable symptoms.'
+                        )}</p>
+                        ${impactClassif === 'clinical' ? `<div class="gutachten-warning" style="margin-top:0.75rem;"><strong>${tt('Klinisch bedeutsame funktionelle Beeinträchtigung:','Altération fonctionnelle cliniquement significative :','Clinically significant functional impairment:')}</strong> ${tt(
+                            'Der Impact-Score weist auf eine relevante Beeinträchtigung des Alltagsfunktionierens hin – unabhängig von der Symptomintensität ist eine vertiefte diagnostische Abklärung und Interventionsplanung indiziert.',
+                            'Le score Impact indique une altération significative du fonctionnement quotidien – indépendamment de l\'intensité des symptômes, un bilan diagnostique approfondi et une planification d\'intervention sont indiqués.',
+                            'The Impact score indicates a meaningful impairment of everyday functioning – regardless of symptom intensity, in-depth diagnostic assessment and intervention planning are indicated.'
+                        )}</div>` : ''}
                         ` : ''}
                     </div>
 
