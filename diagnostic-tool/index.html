@@ -5079,82 +5079,149 @@
 
                     ${(testLang || instLang || motherLang || alphaLang) ? `
                     <div class="gutachten-meta" style="margin-top:0;">
-                        ${testLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Testsprache:</span> <span class="gutachten-meta-value">${testLang}</span></div>` : ''}
-                        ${instLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Instruktionssprache:</span> <span class="gutachten-meta-value">${instLang}</span></div>` : ''}
-                        ${motherLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Muttersprache:</span> <span class="gutachten-meta-value">${motherLang}</span></div>` : ''}
-                        ${alphaLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Alphabetisierungssprache:</span> <span class="gutachten-meta-value">${alphaLang}</span></div>` : ''}
+                        ${testLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">${tt('Testsprache:','Langue du test :','Test language:')}</span> <span class="gutachten-meta-value">${testLang}</span></div>` : ''}
+                        ${instLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">${tt('Instruktionssprache:','Langue d\'instruction :','Instruction language:')}</span> <span class="gutachten-meta-value">${instLang}</span></div>` : ''}
+                        ${motherLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">${tt('Muttersprache:','Langue maternelle :','Mother tongue:')}</span> <span class="gutachten-meta-value">${motherLang}</span></div>` : ''}
+                        ${alphaLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">${tt('Alphabetisierungssprache:','Langue d\'alphabétisation :','Literacy language:')}</span> <span class="gutachten-meta-value">${alphaLang}</span></div>` : ''}
                     </div>
                     ` : ''}
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Untersuchungsanlass und Fragestellung</h4>
+                        <h4 class="gutachten-section-title">${tt('1. Untersuchungsanlass und Fragestellung','1. Motif d\'examen et question diagnostique','1. Reason for examination and clinical question')}</h4>
                         <div class="gutachten-text">
-                            <p>Im Rahmen der psychodiagnostischen Untersuchung wurde die WISC-V (Wechsler Intelligence Scale for Children – Fifth Edition) zur Erfassung der kognitiven Leistungsfähigkeit eingesetzt. Die Untersuchung dient der Einschätzung der allgemeinen intellektuellen Fähigkeiten sowie der Identifikation kognitiver Stärken und Schwächen, die für schulische Förderung und Interventionsplanung relevant sind.</p>
+                            <p>${tt(
+                                'Im Rahmen der psychodiagnostischen Untersuchung wurde die WISC-V (Wechsler Intelligence Scale for Children – Fifth Edition) zur Erfassung der kognitiven Leistungsfähigkeit eingesetzt. Die Untersuchung dient der Einschätzung der allgemeinen intellektuellen Fähigkeiten sowie der Identifikation kognitiver Stärken und Schwächen, die für schulische Förderung und Interventionsplanung relevant sind.',
+                                'Dans le cadre du bilan psychodiagnostique, la WISC-V (Wechsler Intelligence Scale for Children – Fifth Edition) a été utilisée pour évaluer le fonctionnement cognitif. Le bilan vise à estimer les capacités intellectuelles générales et à identifier les forces et faiblesses cognitives pertinentes pour la planification du soutien scolaire et des interventions.',
+                                'As part of the psychodiagnostic assessment, the WISC-V (Wechsler Intelligence Scale for Children – Fifth Edition) was administered to assess cognitive functioning. The assessment aims to estimate general intellectual abilities and identify cognitive strengths and weaknesses relevant to educational support and intervention planning.'
+                            )}</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Beschreibung des Testverfahrens</h4>
+                        <h4 class="gutachten-section-title">${tt('2. Beschreibung des Testverfahrens','2. Description du test','2. Test description')}</h4>
                         <div class="gutachten-text">
-                            <p>Die WISC-V (Wechsler, 2014; deutsche Adaptation: Petermann, 2017) ist das international am weitesten verbreitete und am besten validierte Individualverfahren zur Erfassung der kognitiven Fähigkeiten von Kindern und Jugendlichen im Alter von 6;0 bis 16;11 Jahren. Das Verfahren erfasst sowohl die allgemeine kognitive Leistungsfähigkeit als auch spezifische kognitive Fähigkeiten.</p>
-                            <p>Die WISC-V umfasst 15 Untertests, aus denen fünf Primärindizes und ein Gesamt-IQ gebildet werden:</p>
+                            <p>${tt(
+                                'Die WISC-V (Wechsler, 2014; deutsche Adaptation: Petermann, 2017) ist das international am weitesten verbreitete und am besten validierte Individualverfahren zur Erfassung der kognitiven Fähigkeiten von Kindern und Jugendlichen im Alter von 6;0 bis 16;11 Jahren. Das Verfahren erfasst sowohl die allgemeine kognitive Leistungsfähigkeit als auch spezifische kognitive Fähigkeiten.',
+                                'La WISC-V (Wechsler, 2014 ; adaptation allemande : Petermann, 2017) est l\'épreuve individuelle la plus diffusée et la mieux validée au niveau international pour évaluer les capacités cognitives des enfants et adolescents âgés de 6;0 à 16;11 ans. Elle évalue à la fois le fonctionnement cognitif général et des capacités cognitives spécifiques.',
+                                'The WISC-V (Wechsler, 2014; German adaptation: Petermann, 2017) is the most widely used and best-validated individual measure of cognitive abilities for children and adolescents aged 6;0 to 16;11 years. It assesses both general cognitive functioning and specific cognitive abilities.'
+                            )}</p>
+                            <p>${tt(
+                                'Die WISC-V umfasst 15 Untertests, aus denen fünf Primärindizes und ein Gesamt-IQ gebildet werden:',
+                                'La WISC-V comprend 15 subtests à partir desquels cinq indices primaires et un QI Total sont construits :',
+                                'The WISC-V comprises 15 subtests from which five primary indices and a Full Scale IQ are derived:'
+                            )}</p>
                             <ul class="gutachten-list">
-                                <li><strong>Sprachverständnisindex (SVI):</strong> Erfasst kristalline Intelligenz, sprachliche Begriffsbildung, verbales Schlussfolgern und erworbenes Wissen. Untertests: Gemeinsamkeiten finden, Wortschatz-Test.</li>
-                                <li><strong>Visuell-räumlicher Index (VRI):</strong> Erfasst visuell-räumliche Verarbeitung und die Analyse räumlicher Beziehungen. Untertests: Mosaik-Test, Visuelle Puzzles.</li>
-                                <li><strong>Index Fluides Schlussfolgern (FRI):</strong> Erfasst fluide Intelligenz, induktives und quantitatives Schlussfolgern. Untertests: Matrizen-Test, Waagen.</li>
-                                <li><strong>Arbeitsgedächtnisindex (AMI):</strong> Erfasst die Kapazität des Arbeitsgedächtnisses und die Aufmerksamkeitssteuerung. Untertests: Zahlen nachsprechen, Bilder-Folgen.</li>
-                                <li><strong>Verarbeitungsgeschwindigkeitsindex (VGI):</strong> Erfasst die Geschwindigkeit der kognitiven Verarbeitung und graphomotorische Koordination. Untertests: Zahlen-Symbol-Test, Symbol-Suche.</li>
+                                <li><strong>${wiscIndexName('vci')}:</strong> ${tt('Erfasst kristalline Intelligenz, sprachliche Begriffsbildung, verbales Schlussfolgern und erworbenes Wissen.','Évalue l\'intelligence cristallisée, la formation de concepts verbaux, le raisonnement verbal et les connaissances acquises.','Assesses crystallised intelligence, verbal concept formation, verbal reasoning and acquired knowledge.')}</li>
+                                <li><strong>${wiscIndexName('vsi')}:</strong> ${tt('Erfasst visuell-räumliche Verarbeitung und die Analyse räumlicher Beziehungen.','Évalue le traitement visuo-spatial et l\'analyse des relations spatiales.','Assesses visual-spatial processing and analysis of spatial relations.')}</li>
+                                <li><strong>${wiscIndexName('fri')}:</strong> ${tt('Erfasst fluide Intelligenz, induktives und quantitatives Schlussfolgern.','Évalue l\'intelligence fluide, le raisonnement inductif et quantitatif.','Assesses fluid intelligence, inductive and quantitative reasoning.')}</li>
+                                <li><strong>${wiscIndexName('wmi')}:</strong> ${tt('Erfasst die Kapazität des Arbeitsgedächtnisses und die Aufmerksamkeitssteuerung.','Évalue la capacité de mémoire de travail et le contrôle de l\'attention.','Assesses working-memory capacity and attentional control.')}</li>
+                                <li><strong>${wiscIndexName('psi')}:</strong> ${tt('Erfasst die Geschwindigkeit der kognitiven Verarbeitung und graphomotorische Koordination.','Évalue la vitesse de traitement cognitif et la coordination graphomotrice.','Assesses cognitive processing speed and graphomotor coordination.')}</li>
                             </ul>
-                            <p>Die Ergebnisse werden als IQ-Werte mit einem Mittelwert von 100 und einer Standardabweichung von 15 angegeben.</p>
+                            <p>${tt(
+                                'Die Ergebnisse werden als IQ-Werte mit einem Mittelwert von 100 und einer Standardabweichung von 15 angegeben.',
+                                'Les résultats sont exprimés en scores QI avec une moyenne de 100 et un écart-type de 15.',
+                                'Results are reported as IQ scores with a mean of 100 and a standard deviation of 15.'
+                            )}</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Verhaltensbeobachtung während der Testdurchführung</h4>
+                        <h4 class="gutachten-section-title">${tt('3. Verhaltensbeobachtung während der Testdurchführung','3. Observation comportementale pendant le test','3. Behavioural observation during testing')}</h4>
                         <div class="gutachten-text">
-                            <p>${pat.name} zeigte sich während der Testdurchführung kooperativ und bemühte sich erkennbar um gute Leistungen. Die Arbeitshaltung war ${fsiq >= 100 ? 'konzentriert und ausdauernd' : 'angemessen, wobei bei längeren Aufgaben gelegentlich Ermüdungszeichen zu beobachten waren'}. Die Ergebnisse können als valide Schätzung der aktuellen kognitiven Leistungsfähigkeit angesehen werden.</p>
-                            <p><em>Hinweis: Diese Verhaltensbeobachtung ist standardisiert formuliert. Für eine individuelle Beschreibung sollten die tatsächlichen Beobachtungen während der Testdurchführung dokumentiert werden.</em></p>
+                            <p>${tt(
+                                `${pat.name} zeigte sich während der Testdurchführung kooperativ und bemühte sich erkennbar um gute Leistungen. Die Arbeitshaltung war ${fsiq >= 100 ? 'konzentriert und ausdauernd' : 'angemessen, wobei bei längeren Aufgaben gelegentlich Ermüdungszeichen zu beobachten waren'}. Die Ergebnisse können als valide Schätzung der aktuellen kognitiven Leistungsfähigkeit angesehen werden.`,
+                                `${pat.name} s'est montré·e coopératif·ve pendant la passation et a visiblement cherché à bien faire. L'attitude de travail était ${fsiq >= 100 ? 'concentrée et persévérante' : 'adéquate, avec quelques signes de fatigue lors des tâches plus longues'}. Les résultats peuvent être considérés comme une estimation valide du fonctionnement cognitif actuel.`,
+                                `${pat.name} was cooperative during testing and visibly tried to perform well. Work attitude was ${fsiq >= 100 ? 'focused and persistent' : 'adequate, with occasional signs of fatigue on longer tasks'}. The results can be considered a valid estimate of current cognitive functioning.`
+                            )}</p>
+                            <p><em>${tt(
+                                'Hinweis: Diese Verhaltensbeobachtung ist standardisiert formuliert. Für eine individuelle Beschreibung sollten die tatsächlichen Beobachtungen während der Testdurchführung dokumentiert werden.',
+                                'Note : cette observation comportementale est formulée de manière standardisée. Pour une description individualisée, les observations réelles pendant la passation devraient être documentées.',
+                                'Note: this behavioural observation is phrased in a standardised way. For an individualised description, the actual observations during testing should be documented.'
+                            )}</em></p>
                         </div>
                     </div>
 
+                    ${(() => {
+                        const thIdx = tt('Index','Indice','Index');
+                        const thIQ  = tt('IQ-Wert','Score QI','IQ score');
+                        const thPR  = tt('Prozentrang','Rang centile','Percentile rank');
+                        const thCl  = tt('Klassifikation','Classification','Classification');
+                        return `
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Quantitative Testergebnisse</h4>
+                        <h4 class="gutachten-section-title">${tt('4. Quantitative Testergebnisse','4. Résultats quantitatifs','4. Quantitative test results')}</h4>
                         <table class="gutachten-table">
-                            <thead><tr><th>Index</th><th>IQ-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${thIdx}</th><th>${thIQ}</th><th>${thPR}</th><th>${thCl}</th></tr></thead>
                             <tbody>
-                                ${valid.filter(([k])=>primaryKeys.includes(k)||k==='fsiq').map(([k,x])=>`<tr${k==='fsiq'?' style="font-weight:700;"':''}><td>${WISC_NAMES[k].n}</td><td><strong>${x.v}</strong></td><td>${c[k].pr}</td><td>${c[k].l}</td></tr>`).join('')}
+                                ${valid.filter(([k])=>primaryKeys.includes(k)||k==='fsiq').map(([k,x])=>`<tr${k==='fsiq'?' style="font-weight:700;"':''}><td>${wiscIndexName(k)}</td><td><strong>${x.v}</strong></td><td>${c[k].pr}</td><td>${c[k].l}</td></tr>`).join('')}
                             </tbody>
                         </table>
                         ${supplementary.length ? `
-                        <p style="margin-top:1rem;font-weight:bold;">Zusätzliche Indizes:</p>
+                        <p style="margin-top:1rem;font-weight:bold;">${tt('Zusätzliche Indizes:','Indices supplémentaires :','Supplementary indices:')}</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Index</th><th>IQ-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${thIdx}</th><th>${thIQ}</th><th>${thPR}</th><th>${thCl}</th></tr></thead>
                             <tbody>
-                                ${supplementary.map(([k,x])=>`<tr><td>${WISC_NAMES[k].n}</td><td><strong>${x.v}</strong></td><td>${c[k].pr}</td><td>${c[k].l}</td></tr>`).join('')}
+                                ${supplementary.map(([k,x])=>`<tr><td>${wiscIndexName(k)}</td><td><strong>${x.v}</strong></td><td>${c[k].pr}</td><td>${c[k].l}</td></tr>`).join('')}
                             </tbody>
                         </table>
                         ` : ''}
                         <div style="margin-top:1rem;font-size:0.9em;color:#4a5568;">
-                            <p><strong>Erläuterungen:</strong> Die IQ-Werte haben einen Mittelwert von 100 und eine Standardabweichung von 15. Der Prozentrang gibt an, wie viel Prozent der Gleichaltrigen einen niedrigeren Wert erzielt haben. Ein IQ von 100 entspricht dem Durchschnitt (Prozentrang 50). Der Durchschnittsbereich umfasst IQ-Werte von 85 bis 114 (Prozentrang 16–84). Werte ab 115 gelten als überdurchschnittlich, Werte unter 85 als unterdurchschnittlich.</p>
+                            <p><strong>${tt('Erläuterungen:','Explications :','Explanations:')}</strong> ${tt(
+                                'Die IQ-Werte haben einen Mittelwert von 100 und eine Standardabweichung von 15. Der Prozentrang gibt an, wie viel Prozent der Gleichaltrigen einen niedrigeren Wert erzielt haben. Ein IQ von 100 entspricht dem Durchschnitt (Prozentrang 50). Der Durchschnittsbereich umfasst IQ-Werte von 85 bis 114 (Prozentrang 16–84). Werte ab 115 gelten als überdurchschnittlich, Werte unter 85 als unterdurchschnittlich.',
+                                'Les scores QI ont une moyenne de 100 et un écart-type de 15. Le rang centile indique le pourcentage de pairs ayant obtenu un score inférieur. Un QI de 100 correspond à la moyenne (rang centile 50). La plage moyenne s\'étend de 85 à 114 (rang centile 16–84). Les scores ≥ 115 sont supérieurs, les scores < 85 inférieurs.',
+                                'IQ scores have mean 100 and SD 15. The percentile rank indicates the proportion of peers scoring lower. IQ 100 = average (PR 50). The average range covers IQ 85-114 (PR 16-84). Scores ≥ 115 are above average; scores < 85 are below average.'
+                            )}</p>
                         </div>
-                        ${indices.length >= 2 ? `<p style="margin-top:1rem;"><strong>Profilstreuung:</strong> Die Differenz zwischen dem höchsten (${maxIdx ? WISC_NAMES[maxIdx[0]].n.split('(')[0].trim() : '-'}: ${maxIdx ? maxIdx[1].v : '-'}) und niedrigsten Index (${minIdx ? WISC_NAMES[minIdx[0]].n.split('(')[0].trim() : '-'}: ${minIdx ? minIdx[1].v : '-'}) beträgt ${diff} IQ-Punkte. ${diff >= 23 ? 'Diese Streuung ist statistisch signifikant und klinisch bedeutsam.' : diff >= 15 ? 'Diese Streuung ist moderat.' : 'Das Profil ist homogen.'}</p>` : ''}
-                    </div>
+                        ${indices.length >= 2 ? `<p style="margin-top:1rem;"><strong>${tt('Profilstreuung:','Dispersion du profil :','Profile spread:')}</strong> ${tt(
+                            `Die Differenz zwischen dem höchsten (${maxIdx ? wiscIndexName(maxIdx[0]).split('(')[0].trim() : '-'}: ${maxIdx ? maxIdx[1].v : '-'}) und niedrigsten Index (${minIdx ? wiscIndexName(minIdx[0]).split('(')[0].trim() : '-'}: ${minIdx ? minIdx[1].v : '-'}) beträgt ${diff} IQ-Punkte. ${diff >= 23 ? 'Diese Streuung ist statistisch signifikant und klinisch bedeutsam.' : diff >= 15 ? 'Diese Streuung ist moderat.' : 'Das Profil ist homogen.'}`,
+                            `La différence entre l'indice le plus élevé (${maxIdx ? wiscIndexName(maxIdx[0]).split('(')[0].trim() : '-'} : ${maxIdx ? maxIdx[1].v : '-'}) et le plus bas (${minIdx ? wiscIndexName(minIdx[0]).split('(')[0].trim() : '-'} : ${minIdx ? minIdx[1].v : '-'}) est de ${diff} points QI. ${diff >= 23 ? 'Cette dispersion est statistiquement significative et cliniquement pertinente.' : diff >= 15 ? 'Cette dispersion est modérée.' : 'Le profil est homogène.'}`,
+                            `The difference between the highest (${maxIdx ? wiscIndexName(maxIdx[0]).split('(')[0].trim() : '-'}: ${maxIdx ? maxIdx[1].v : '-'}) and lowest index (${minIdx ? wiscIndexName(minIdx[0]).split('(')[0].trim() : '-'}: ${minIdx ? minIdx[1].v : '-'}) is ${diff} IQ points. ${diff >= 23 ? 'This spread is statistically significant and clinically meaningful.' : diff >= 15 ? 'This spread is moderate.' : 'The profile is homogeneous.'}`
+                        )}</p>` : ''}
+                    </div>`;
+                    })()}
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">5. Interpretation der Ergebnisse</h4>
+                        <h4 class="gutachten-section-title">${tt('5. Interpretation der Ergebnisse','5. Interprétation des résultats','5. Interpretation of results')}</h4>
                         <div class="gutachten-text">
-                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">5.1 Allgemeine kognitive Leistungsfähigkeit</h5>
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">${tt('5.1 Allgemeine kognitive Leistungsfähigkeit','5.1 Fonctionnement cognitif général','5.1 General cognitive functioning')}</h5>
                             ${fsiq ? `
-                                <p>Die Untersuchung der kognitiven Leistungsfähigkeit mittels WISC-V ergibt einen <strong>Gesamt-IQ von ${fsiq}</strong> (95%-Konfidenzintervall: ${Math.round(fsiq*0.95)}-${Math.round(fsiq*1.05)}). Dieser Wert liegt im <strong>${c.fsiq.l.toLowerCase()}en Bereich</strong> und entspricht einem Prozentrang von ${c.fsiq.pr}. Dies bedeutet, dass ${pat.name} ${fsiq >= 100 ? `besser abschneidet als etwa ${c.fsiq.pr.includes('>') ? 'mehr als 98' : c.fsiq.pr.split('-')[0]}% der Gleichaltrigen` : `von etwa ${100-parseInt(c.fsiq.pr.split('-')[1] || c.fsiq.pr.replace('<',''))}% der Gleichaltrigen übertroffen wird`}.</p>
-                                ${fsiq >= 130 ? `<p>${pat.name} verfügt über eine <strong>weit überdurchschnittliche intellektuelle Begabung</strong>, die im Bereich der intellektuellen Hochbegabung liegt (IQ ≥ 130). Diese außergewöhnlichen kognitiven Fähigkeiten stellen ein besonderes Potenzial dar, das durch geeignete Förderung und Forderung optimal entfaltet werden sollte. Hochbegabte Kinder haben oft besondere Bedürfnisse hinsichtlich der Lernumgebung und können bei mangelnder Passung Unterforderungssymptome zeigen.</p>` : ''}
-                                ${fsiq >= 115 && fsiq < 130 ? `<p>${pat.name} verfügt über <strong>überdurchschnittliche kognitive Fähigkeiten</strong>. ${pronomen.er.charAt(0).toUpperCase() + pronomen.er.slice(1)} ist in der Lage, komplexe Zusammenhänge gut zu erfassen und verfügt über gute Voraussetzungen für anspruchsvolle schulische Anforderungen. Die kognitiven Ressourcen erlauben es ${pronomen.ihm}, neue Lerninhalte schneller zu verstehen als viele Gleichaltrige.</p>` : ''}
-                                ${fsiq >= 85 && fsiq < 115 ? `<p>${pat.name} verfügt über <strong>durchschnittliche kognitive Fähigkeiten</strong>, die eine solide Grundlage für schulisches Lernen darstellen. Die intellektuellen Voraussetzungen entsprechen dem Erwartungswert für ${pronomen.sein} Altersgruppe. Schulische Anforderungen im Regelschulbereich sollten grundsätzlich bewältigt werden können.</p>` : ''}
-                                ${fsiq >= 70 && fsiq < 85 ? `<p>${pat.name} zeigt <strong>unterdurchschnittliche kognitive Fähigkeiten</strong>, die im Bereich der Lernbehinderung liegen (IQ 70-84). Dies bedeutet, dass ${pronomen.er} mehr Zeit und Unterstützung benötigt, um Lerninhalte zu erfassen. Schulische Anforderungen können eine erhöhte Anstrengung erfordern, und es sollte geprüft werden, ob Unterstützungsmaßnahmen (z.B. Nachteilsausgleich, Förderunterricht) indiziert sind.</p>` : ''}
-                                ${fsiq < 70 ? `<p>${pat.name} zeigt <strong>deutlich unterdurchschnittliche kognitive Fähigkeiten</strong> (IQ < 70). Dieser Befund ist vereinbar mit dem Vorliegen einer Intelligenzminderung nach ICD-10/ICD-11. Für die Diagnosestellung ist zusätzlich zur intellektuellen Beeinträchtigung eine Einschränkung der adaptiven Fähigkeiten erforderlich. Eine umfassende Entwicklungsdiagnostik sowie die Prüfung eines sonderpädagogischen Förderbedarfs werden dringend empfohlen.</p>` : ''}
-                                ${diff >= 23 ? `<p><strong>Wichtiger Hinweis zur Profilstreuung:</strong> Die erhebliche Diskrepanz von ${diff} IQ-Punkten zwischen den Indizes schränkt die Aussagekraft des Gesamt-IQ ein. Bei einem derart heterogenen Profil sollte der Gesamt-IQ nicht als alleiniger Indikator der kognitiven Leistungsfähigkeit interpretiert werden. Die einzelnen Indizes liefern differenziertere Informationen über spezifische kognitive Stärken und Schwächen.</p>` : ''}
-                            ` : '<p>Es wurde kein Gesamt-IQ erfasst. Die Interpretation basiert auf den vorliegenden Indexwerten.</p>'}
+                                <p>${tt(
+                                    `Die Untersuchung der kognitiven Leistungsfähigkeit mittels WISC-V ergibt einen <strong>Gesamt-IQ von ${fsiq}</strong> (95%-Konfidenzintervall: ${Math.round(fsiq*0.95)}-${Math.round(fsiq*1.05)}). Dieser Wert liegt im <strong>${c.fsiq.l.toLowerCase()}en Bereich</strong> und entspricht einem Prozentrang von ${c.fsiq.pr}.`,
+                                    `L'évaluation du fonctionnement cognitif par la WISC-V donne un <strong>QI Total de ${fsiq}</strong> (intervalle de confiance à 95% : ${Math.round(fsiq*0.95)}-${Math.round(fsiq*1.05)}). Cette valeur se situe dans la <strong>plage ${c.fsiq.l.toLowerCase()}e</strong> et correspond à un rang centile de ${c.fsiq.pr}.`,
+                                    `The cognitive assessment via WISC-V yields a <strong>Full Scale IQ of ${fsiq}</strong> (95% confidence interval: ${Math.round(fsiq*0.95)}-${Math.round(fsiq*1.05)}). This value falls within the <strong>${c.fsiq.l.toLowerCase()} range</strong> and corresponds to a percentile rank of ${c.fsiq.pr}.`
+                                )}</p>
+                                ${fsiq >= 130 ? `<p>${tt(
+                                    `${pat.name} verfügt über eine <strong>weit überdurchschnittliche intellektuelle Begabung</strong>, die im Bereich der intellektuellen Hochbegabung liegt (IQ ≥ 130). Diese außergewöhnlichen kognitiven Fähigkeiten stellen ein besonderes Potenzial dar, das durch geeignete Förderung und Forderung optimal entfaltet werden sollte. Hochbegabte Kinder haben oft besondere Bedürfnisse hinsichtlich der Lernumgebung und können bei mangelnder Passung Unterforderungssymptome zeigen.`,
+                                    `${pat.name} présente une <strong>aptitude intellectuelle très supérieure</strong> se situant dans la plage du haut potentiel intellectuel (QI ≥ 130). Ces capacités cognitives exceptionnelles constituent un potentiel particulier qui devrait être développé de manière optimale par un soutien et un challenge adaptés. Les enfants à haut potentiel ont souvent des besoins particuliers concernant l'environnement d'apprentissage et peuvent montrer des signes de sous-stimulation en l'absence d'adaptation.`,
+                                    `${pat.name} shows <strong>very superior intellectual ability</strong> in the gifted range (IQ ≥ 130). These exceptional cognitive abilities represent a particular potential that should be developed optimally through appropriate support and challenge. Gifted children often have special needs regarding the learning environment and may show under-stimulation symptoms without adequate fit.`
+                                )}</p>` : ''}
+                                ${fsiq >= 115 && fsiq < 130 ? `<p>${tt(
+                                    `${pat.name} verfügt über <strong>überdurchschnittliche kognitive Fähigkeiten</strong>. ${pronomen.er.charAt(0).toUpperCase() + pronomen.er.slice(1)} ist in der Lage, komplexe Zusammenhänge gut zu erfassen und verfügt über gute Voraussetzungen für anspruchsvolle schulische Anforderungen. Die kognitiven Ressourcen erlauben es ${pronomen.ihm}, neue Lerninhalte schneller zu verstehen als viele Gleichaltrige.`,
+                                    `${pat.name} présente des <strong>capacités cognitives supérieures</strong>. ${pat.sex === 'w' ? 'Elle est capable' : 'Il est capable'} de saisir des relations complexes et dispose de bonnes bases pour des exigences scolaires élevées. Les ressources cognitives ${pat.sex === 'w' ? 'lui' : 'lui'} permettent de comprendre de nouveaux contenus plus rapidement que beaucoup de pairs.`,
+                                    `${pat.name} shows <strong>above-average cognitive abilities</strong>. ${pat.sex === 'w' ? 'She' : pat.sex === 'm' ? 'He' : 'They'} ${pat.sex && pat.sex !== '' ? 'is' : 'are'} able to grasp complex relationships well and ${pat.sex && pat.sex !== '' ? 'has' : 'have'} good foundations for demanding school requirements. The cognitive resources allow ${pat.sex === 'w' ? 'her' : pat.sex === 'm' ? 'him' : 'them'} to understand new content faster than many peers.`
+                                )}</p>` : ''}
+                                ${fsiq >= 85 && fsiq < 115 ? `<p>${tt(
+                                    `${pat.name} verfügt über <strong>durchschnittliche kognitive Fähigkeiten</strong>, die eine solide Grundlage für schulisches Lernen darstellen. Die intellektuellen Voraussetzungen entsprechen dem Erwartungswert für ${pronomen.sein} Altersgruppe. Schulische Anforderungen im Regelschulbereich sollten grundsätzlich bewältigt werden können.`,
+                                    `${pat.name} présente des <strong>capacités cognitives moyennes</strong>, constituant une base solide pour l'apprentissage scolaire. Les prérequis intellectuels correspondent à la valeur attendue pour ${pat.sex === 'w' ? 'sa' : 'son'} groupe d'âge. Les exigences de l'enseignement ordinaire devraient en principe pouvoir être satisfaites.`,
+                                    `${pat.name} shows <strong>average cognitive abilities</strong>, providing a solid foundation for school learning. The intellectual prerequisites match the expected value for ${pat.sex === 'w' ? 'her' : pat.sex === 'm' ? 'his' : 'their'} age group. Mainstream school requirements should generally be manageable.`
+                                )}</p>` : ''}
+                                ${fsiq >= 70 && fsiq < 85 ? `<p>${tt(
+                                    `${pat.name} zeigt <strong>unterdurchschnittliche kognitive Fähigkeiten</strong>, die im Bereich der Lernbehinderung liegen (IQ 70-84). Dies bedeutet, dass ${pronomen.er} mehr Zeit und Unterstützung benötigt, um Lerninhalte zu erfassen. Schulische Anforderungen können eine erhöhte Anstrengung erfordern, und es sollte geprüft werden, ob Unterstützungsmaßnahmen (z.B. Nachteilsausgleich, Förderunterricht) indiziert sind.`,
+                                    `${pat.name} montre des <strong>capacités cognitives inférieures</strong> se situant dans la plage des difficultés d'apprentissage (QI 70-84). Cela signifie qu'${pat.sex === 'w' ? 'elle' : 'il'} a besoin de plus de temps et de soutien pour assimiler les contenus. Les exigences scolaires peuvent demander un effort accru, et il convient d'envisager des mesures de soutien (p. ex. aménagements, soutien pédagogique).`,
+                                    `${pat.name} shows <strong>below-average cognitive abilities</strong> in the learning-difficulty range (IQ 70-84). This means ${pat.sex === 'w' ? 'she' : pat.sex === 'm' ? 'he' : 'they'} need${pat.sex && pat.sex !== '' ? 's' : ''} more time and support to grasp content. School requirements may require increased effort, and support measures (e.g. accommodations, remedial teaching) should be considered.`
+                                )}</p>` : ''}
+                                ${fsiq < 70 ? `<p>${tt(
+                                    `${pat.name} zeigt <strong>deutlich unterdurchschnittliche kognitive Fähigkeiten</strong> (IQ < 70). Dieser Befund ist vereinbar mit dem Vorliegen einer Intelligenzminderung nach ICD-10/ICD-11. Für die Diagnosestellung ist zusätzlich zur intellektuellen Beeinträchtigung eine Einschränkung der adaptiven Fähigkeiten erforderlich. Eine umfassende Entwicklungsdiagnostik sowie die Prüfung eines sonderpädagogischen Förderbedarfs werden dringend empfohlen.`,
+                                    `${pat.name} montre des <strong>capacités cognitives nettement inférieures</strong> (QI < 70). Ce résultat est compatible avec la présence d'une déficience intellectuelle selon la CIM-10/CIM-11. Le diagnostic nécessite, outre la déficience intellectuelle, une limitation des capacités adaptatives. Un bilan développemental complet ainsi qu'une évaluation des besoins éducatifs spécifiques sont vivement recommandés.`,
+                                    `${pat.name} shows <strong>clearly below-average cognitive abilities</strong> (IQ < 70). This finding is consistent with the presence of intellectual disability per ICD-10/ICD-11. Diagnosis requires, in addition to intellectual impairment, a limitation of adaptive abilities. A comprehensive developmental assessment and special-educational-needs review are strongly recommended.`
+                                )}</p>` : ''}
+                                ${diff >= 23 ? `<p><strong>${tt('Wichtiger Hinweis zur Profilstreuung:','Note importante sur la dispersion du profil :','Important note on profile spread:')}</strong> ${tt(
+                                    `Die erhebliche Diskrepanz von ${diff} IQ-Punkten zwischen den Indizes schränkt die Aussagekraft des Gesamt-IQ ein. Bei einem derart heterogenen Profil sollte der Gesamt-IQ nicht als alleiniger Indikator der kognitiven Leistungsfähigkeit interpretiert werden. Die einzelnen Indizes liefern differenziertere Informationen über spezifische kognitive Stärken und Schwächen.`,
+                                    `La discordance importante de ${diff} points QI entre les indices limite la portée du QI Total. Avec un profil aussi hétérogène, le QI Total ne devrait pas être interprété comme indicateur unique du fonctionnement cognitif. Les indices individuels fournissent des informations plus différenciées sur les forces et faiblesses cognitives spécifiques.`,
+                                    `The substantial discrepancy of ${diff} IQ points between indices limits the informativeness of the Full Scale IQ. With such a heterogeneous profile, the FSIQ should not be interpreted as the sole indicator of cognitive functioning. The individual indices provide more differentiated information on specific cognitive strengths and weaknesses.`
+                                )}</p>` : ''}
+                            ` : `<p>${tt('Es wurde kein Gesamt-IQ erfasst. Die Interpretation basiert auf den vorliegenden Indexwerten.','Aucun QI Total n\'a été obtenu. L\'interprétation repose sur les indices disponibles.','No Full Scale IQ was obtained. Interpretation is based on the available index scores.')}</p>`}
 
-                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">5.2 Spezifische kognitive Funktionen</h5>
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">${tt('5.2 Spezifische kognitive Funktionen','5.2 Fonctions cognitives spécifiques','5.2 Specific cognitive functions')}</h5>
                             ${idx.vci.v ? indexBeschreibungen.vci : ''}
                             ${idx.vsi.v ? indexBeschreibungen.vsi : ''}
                             ${idx.fri.v ? indexBeschreibungen.fri : ''}
@@ -5162,121 +5229,201 @@
                             ${idx.psi.v ? indexBeschreibungen.psi : ''}
 
                             ${supplementary.length ? `
-                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">5.3 Zusätzliche Indizes</h5>
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">${tt('5.3 Zusätzliche Indizes','5.3 Indices supplémentaires','5.3 Supplementary indices')}</h5>
                             ${idx.nvi.v ? indexBeschreibungen.nvi : ''}
                             ${idx.gai.v ? indexBeschreibungen.gai : ''}
                             ${idx.kli.v ? indexBeschreibungen.kli : ''}
                             ` : ''}
 
                             ${staerken.length || schwaechen.length ? `
-                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">${supplementary.length ? '5.4' : '5.3'} Stärken-Schwächen-Analyse</h5>
-                            ${staerken.length ? `<div class="gutachten-highlight"><strong>Relative Stärken:</strong> ${pat.name} zeigt überdurchschnittliche Fähigkeiten im Bereich: ${staerken.map(([k])=>WISC_NAMES[k].n).join(', ')}. Diese Stärken können als Ressourcen für schulisches Lernen und Kompensation eventueller Schwächen genutzt werden.</div>` : ''}
-                            ${schwaechen.length ? `<div class="gutachten-warning"><strong>Relative Schwächen:</strong> Unterdurchschnittliche Leistungen zeigen sich im Bereich: ${schwaechen.map(([k])=>WISC_NAMES[k].n).join(', ')}. Diese Schwächen sollten bei der Förderplanung berücksichtigt werden und könnten gezielte Unterstützung erfordern.</div>` : ''}
+                            <h5 style="margin:1.5rem 0 1rem;color:var(--primary-light);">${supplementary.length ? '5.4' : '5.3'} ${tt('Stärken-Schwächen-Analyse','Analyse forces / faiblesses','Strengths / weaknesses analysis')}</h5>
+                            ${staerken.length ? `<div class="gutachten-highlight"><strong>${tt('Relative Stärken:','Forces relatives :','Relative strengths:')}</strong> ${tt(
+                                `${pat.name} zeigt überdurchschnittliche Fähigkeiten im Bereich: ${staerken.map(([k])=>wiscIndexName(k)).join(', ')}. Diese Stärken können als Ressourcen für schulisches Lernen und Kompensation eventueller Schwächen genutzt werden.`,
+                                `${pat.name} montre des capacités supérieures dans le domaine : ${staerken.map(([k])=>wiscIndexName(k)).join(', ')}. Ces forces peuvent servir de ressources pour l'apprentissage scolaire et la compensation d'éventuelles faiblesses.`,
+                                `${pat.name} shows above-average abilities in: ${staerken.map(([k])=>wiscIndexName(k)).join(', ')}. These strengths can be leveraged as resources for school learning and compensation of any weaknesses.`
+                            )}</div>` : ''}
+                            ${schwaechen.length ? `<div class="gutachten-warning"><strong>${tt('Relative Schwächen:','Faiblesses relatives :','Relative weaknesses:')}</strong> ${tt(
+                                `Unterdurchschnittliche Leistungen zeigen sich im Bereich: ${schwaechen.map(([k])=>wiscIndexName(k)).join(', ')}. Diese Schwächen sollten bei der Förderplanung berücksichtigt werden und könnten gezielte Unterstützung erfordern.`,
+                                `Des performances inférieures apparaissent dans le domaine : ${schwaechen.map(([k])=>wiscIndexName(k)).join(', ')}. Ces faiblesses devraient être prises en compte dans la planification du soutien et pourraient nécessiter un appui ciblé.`,
+                                `Below-average performance appears in: ${schwaechen.map(([k])=>wiscIndexName(k)).join(', ')}. These weaknesses should be considered in support planning and may require targeted intervention.`
+                            )}</div>` : ''}
                             ` : ''}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">6. Diagnostische Einordnung nach ICD-10/ICD-11</h4>
+                        <h4 class="gutachten-section-title">${tt('6. Diagnostische Einordnung nach ICD-10/ICD-11','6. Classification diagnostique selon CIM-10/CIM-11','6. Diagnostic classification per ICD-10/ICD-11')}</h4>
                         <div class="gutachten-text">
                             ${fsiq && fsiq < 70 ? `
-                                <p>Die Ergebnisse der Intelligenzdiagnostik sind vereinbar mit dem Vorliegen einer <strong>Intelligenzminderung</strong> nach ICD-10 (F70-F79) bzw. ICD-11 (Disorders of intellectual development). Der Schweregrad richtet sich nach dem IQ-Wert:</p>
+                                <p>${tt(
+                                    'Die Ergebnisse der Intelligenzdiagnostik sind vereinbar mit dem Vorliegen einer <strong>Intelligenzminderung</strong> nach ICD-10 (F70-F79) bzw. ICD-11 (Disorders of intellectual development). Der Schweregrad richtet sich nach dem IQ-Wert:',
+                                    'Les résultats du bilan intellectuel sont compatibles avec une <strong>déficience intellectuelle</strong> selon CIM-10 (F70-F79) ou CIM-11 (Disorders of intellectual development). La sévérité dépend du QI :',
+                                    'The intellectual assessment results are consistent with an <strong>intellectual disability</strong> per ICD-10 (F70-F79) or ICD-11 (Disorders of intellectual development). Severity depends on the IQ:'
+                                )}</p>
                                 <ul class="gutachten-list">
-                                    <li>IQ 50-69: Leichte Intelligenzminderung (F70)</li>
-                                    <li>IQ 35-49: Mittelgradige Intelligenzminderung (F71)</li>
-                                    <li>IQ 20-34: Schwere Intelligenzminderung (F72)</li>
-                                    <li>IQ <20: Schwerste Intelligenzminderung (F73)</li>
+                                    <li>${tt('IQ 50-69: Leichte Intelligenzminderung (F70)','QI 50-69 : Déficience intellectuelle légère (F70)','IQ 50-69: Mild intellectual disability (F70)')}</li>
+                                    <li>${tt('IQ 35-49: Mittelgradige Intelligenzminderung (F71)','QI 35-49 : Déficience intellectuelle moyenne (F71)','IQ 35-49: Moderate intellectual disability (F71)')}</li>
+                                    <li>${tt('IQ 20-34: Schwere Intelligenzminderung (F72)','QI 20-34 : Déficience intellectuelle grave (F72)','IQ 20-34: Severe intellectual disability (F72)')}</li>
+                                    <li>${tt('IQ <20: Schwerste Intelligenzminderung (F73)','QI <20 : Déficience intellectuelle profonde (F73)','IQ <20: Profound intellectual disability (F73)')}</li>
                                 </ul>
-                                <p><strong>Wichtig:</strong> Die Diagnose einer Intelligenzminderung erfordert neben dem IQ-Kriterium auch den Nachweis von Defiziten in der adaptiven Funktionsfähigkeit (konzeptuelle, soziale und praktische Fähigkeiten), die vor dem 18. Lebensjahr aufgetreten sind.</p>
-                                <span class="icd-code">F70-F79</span> Intelligenzminderung
+                                <p><strong>${tt('Wichtig:','Important :','Important:')}</strong> ${tt(
+                                    'Die Diagnose einer Intelligenzminderung erfordert neben dem IQ-Kriterium auch den Nachweis von Defiziten in der adaptiven Funktionsfähigkeit (konzeptuelle, soziale und praktische Fähigkeiten), die vor dem 18. Lebensjahr aufgetreten sind.',
+                                    'Le diagnostic de déficience intellectuelle exige, outre le critère QI, la mise en évidence de déficits dans le fonctionnement adaptatif (capacités conceptuelles, sociales et pratiques), apparus avant 18 ans.',
+                                    'Diagnosis of intellectual disability requires, in addition to the IQ criterion, demonstration of deficits in adaptive functioning (conceptual, social and practical skills) with onset before age 18.'
+                                )}</p>
+                                <span class="icd-code">F70-F79</span> ${tt('Intelligenzminderung','Déficience intellectuelle','Intellectual disability')}
                             ` : ''}
                             ${fsiq && fsiq >= 70 && fsiq < 85 ? `
-                                <p>Die intellektuelle Leistungsfähigkeit liegt im <strong>Grenzbereich</strong> (IQ 70-84), der früher als "Lernbehinderung" bezeichnet wurde. Dieser Bereich entspricht keiner Intelligenzminderung im klinischen Sinne (ICD-10: F7x), kann jedoch mit Lernschwierigkeiten einhergehen und erfordert häufig individuelle Fördermaßnahmen.</p>
-                                <span class="icd-code">Z55</span> Probleme in Zusammenhang mit der Erziehung und Alphabetisierung
+                                <p>${tt(
+                                    'Die intellektuelle Leistungsfähigkeit liegt im <strong>Grenzbereich</strong> (IQ 70-84), der früher als "Lernbehinderung" bezeichnet wurde. Dieser Bereich entspricht keiner Intelligenzminderung im klinischen Sinne (ICD-10: F7x), kann jedoch mit Lernschwierigkeiten einhergehen und erfordert häufig individuelle Fördermaßnahmen.',
+                                    'Le fonctionnement intellectuel se situe dans la <strong>plage limite</strong> (QI 70-84), anciennement appelée « difficultés d\'apprentissage ». Cette plage ne correspond pas à une déficience intellectuelle au sens clinique (CIM-10 : F7x), mais peut s\'accompagner de difficultés d\'apprentissage et nécessite souvent un soutien individualisé.',
+                                    'Intellectual functioning falls within the <strong>borderline range</strong> (IQ 70-84), formerly termed "learning difficulty". This range does not correspond to clinical intellectual disability (ICD-10: F7x), but may involve learning difficulties and often requires individualised support.'
+                                )}</p>
+                                <span class="icd-code">Z55</span> ${tt('Probleme in Zusammenhang mit der Erziehung und Alphabetisierung','Problèmes liés à l\'éducation et l\'alphabétisation','Problems related to education and literacy')}
                             ` : ''}
                             ${fsiq && fsiq >= 85 ? `
-                                <p>Die intellektuelle Leistungsfähigkeit liegt im ${fsiq >= 130 ? 'weit überdurchschnittlichen' : fsiq >= 115 ? 'überdurchschnittlichen' : 'durchschnittlichen'} Bereich. Es ergeben sich <strong>keine Hinweise auf eine intellektuelle Beeinträchtigung</strong>. ${fsiq >= 130 ? 'Die Ergebnisse sind vereinbar mit einer intellektuellen Hochbegabung.' : ''}</p>
+                                <p>${tt(
+                                    `Die intellektuelle Leistungsfähigkeit liegt im ${fsiq >= 130 ? 'weit überdurchschnittlichen' : fsiq >= 115 ? 'überdurchschnittlichen' : 'durchschnittlichen'} Bereich. Es ergeben sich <strong>keine Hinweise auf eine intellektuelle Beeinträchtigung</strong>. ${fsiq >= 130 ? 'Die Ergebnisse sind vereinbar mit einer intellektuellen Hochbegabung.' : ''}`,
+                                    `Le fonctionnement intellectuel se situe dans la plage ${fsiq >= 130 ? 'très supérieure' : fsiq >= 115 ? 'supérieure' : 'moyenne'}. <strong>Aucune indication d'altération intellectuelle</strong>. ${fsiq >= 130 ? 'Les résultats sont compatibles avec un haut potentiel intellectuel.' : ''}`,
+                                    `Intellectual functioning falls in the ${fsiq >= 130 ? 'very superior' : fsiq >= 115 ? 'above-average' : 'average'} range. <strong>No indication of intellectual impairment</strong>. ${fsiq >= 130 ? 'Results are consistent with intellectual giftedness.' : ''}`
+                                )}</p>
                             ` : ''}
                             ${(c.wmi?.c === 'clinical' || c.psi?.c === 'clinical') && fsiq >= 85 ? `
-                                <p><strong>Hinweis:</strong> Bei durchschnittlicher Gesamtintelligenz mit selektiven Defiziten im Arbeitsgedächtnis und/oder der Verarbeitungsgeschwindigkeit sollte differenzialdiagnostisch an eine Aufmerksamkeitsdefizit-/Hyperaktivitätsstörung (ADHS, F90.x) gedacht werden.</p>
+                                <p><strong>${tt('Hinweis:','Note :','Note:')}</strong> ${tt(
+                                    'Bei durchschnittlicher Gesamtintelligenz mit selektiven Defiziten im Arbeitsgedächtnis und/oder der Verarbeitungsgeschwindigkeit sollte differenzialdiagnostisch an eine Aufmerksamkeitsdefizit-/Hyperaktivitätsstörung (ADHS, F90.x) gedacht werden.',
+                                    'En cas d\'intelligence globale moyenne avec déficits sélectifs en mémoire de travail et/ou vitesse de traitement, un diagnostic différentiel TDAH (F90.x) devrait être envisagé.',
+                                    'With average overall intelligence and selective deficits in working memory and/or processing speed, ADHD (F90.x) should be considered differentially.'
+                                )}</p>
                             ` : ''}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">7. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">${tt('7. Empfehlungen','7. Recommandations','7. Recommendations')}</h4>
                         <div class="gutachten-text">
                             ${fsiq && fsiq >= 130 ? `
-                                <p>Aufgrund der festgestellten intellektuellen Hochbegabung werden folgende Maßnahmen empfohlen:</p>
+                                <p>${tt('Aufgrund der festgestellten intellektuellen Hochbegabung werden folgende Maßnahmen empfohlen:','Compte tenu du haut potentiel intellectuel identifié, les mesures suivantes sont recommandées :','Given the identified intellectual giftedness, the following measures are recommended:')}</p>
                                 <ul class="gutachten-list">
-                                    <li>Prüfung von <strong>Enrichment-Maßnahmen</strong> (Vertiefung und Erweiterung der Lerninhalte)</li>
-                                    <li>Ggf. <strong>Akzeleration</strong> (vorzeitige Einschulung, Überspringen einer Klasse) nach individueller Prüfung</li>
-                                    <li>Angebote zur <strong>kognitiven Förderung</strong> (AGs, Wettbewerbe, Mentoring)</li>
-                                    <li>Beratung zu Begabtenförderungsprogrammen</li>
-                                    <li>Aufmerksamkeit für mögliche <strong>Unterforderungssymptome</strong> (Langeweile, Verhaltensauffälligkeiten, Underachievement)</li>
+                                    <li>${tt('Prüfung von <strong>Enrichment-Maßnahmen</strong> (Vertiefung und Erweiterung der Lerninhalte)','Examen de <strong>mesures d\'enrichissement</strong> (approfondissement et élargissement des contenus)','Consideration of <strong>enrichment measures</strong> (deepening and broadening of content)')}</li>
+                                    <li>${tt('Ggf. <strong>Akzeleration</strong> (vorzeitige Einschulung, Überspringen einer Klasse) nach individueller Prüfung','Le cas échéant, <strong>accélération</strong> (entrée scolaire anticipée, saut de classe) après examen individuel','If appropriate, <strong>acceleration</strong> (early enrolment, grade skipping) after individual review')}</li>
+                                    <li>${tt('Angebote zur <strong>kognitiven Förderung</strong> (AGs, Wettbewerbe, Mentoring)','Offres de <strong>soutien cognitif</strong> (clubs, concours, mentorat)','Offers for <strong>cognitive support</strong> (clubs, competitions, mentoring)')}</li>
+                                    <li>${tt('Beratung zu Begabtenförderungsprogrammen','Conseil sur les programmes de soutien aux enfants à haut potentiel','Counselling on gifted-support programmes')}</li>
+                                    <li>${tt('Aufmerksamkeit für mögliche <strong>Unterforderungssymptome</strong> (Langeweile, Verhaltensauffälligkeiten, Underachievement)','Vigilance face à d\'éventuels <strong>signes de sous-stimulation</strong> (ennui, troubles du comportement, underachievement)','Attention to possible <strong>under-stimulation symptoms</strong> (boredom, behavioural problems, underachievement)')}</li>
                                 </ul>
                             ` : fsiq && fsiq < 70 ? `
-                                <p>Aufgrund der festgestellten deutlich unterdurchschnittlichen kognitiven Leistungsfähigkeit werden folgende Maßnahmen dringend empfohlen:</p>
+                                <p>${tt('Aufgrund der festgestellten deutlich unterdurchschnittlichen kognitiven Leistungsfähigkeit werden folgende Maßnahmen dringend empfohlen:','Compte tenu du fonctionnement cognitif nettement inférieur identifié, les mesures suivantes sont vivement recommandées :','Given the clearly below-average cognitive functioning identified, the following measures are strongly recommended:')}</p>
                                 <ul class="gutachten-list">
-                                    <li><strong>Umfassende Entwicklungsdiagnostik</strong> zur Abklärung adaptiver Fähigkeiten</li>
-                                    <li>Prüfung eines <strong>sonderpädagogischen Förderbedarfs</strong> im Förderschwerpunkt geistige Entwicklung oder Lernen</li>
-                                    <li>Medizinische Abklärung möglicher <strong>organischer Ursachen</strong></li>
-                                    <li>Einleitung geeigneter <strong>Fördermaßnahmen</strong> entsprechend dem individuellen Entwicklungsstand</li>
-                                    <li>Beratung der Familie zu Unterstützungsmöglichkeiten und Entlastungsangeboten</li>
+                                    <li>${tt('<strong>Umfassende Entwicklungsdiagnostik</strong> zur Abklärung adaptiver Fähigkeiten','<strong>Bilan développemental complet</strong> pour évaluer les capacités adaptatives','<strong>Comprehensive developmental assessment</strong> to evaluate adaptive abilities')}</li>
+                                    <li>${tt('Prüfung eines <strong>sonderpädagogischen Förderbedarfs</strong> im Förderschwerpunkt geistige Entwicklung oder Lernen','Examen de <strong>besoins éducatifs particuliers</strong> dans le domaine du développement intellectuel ou des apprentissages','Review of <strong>special educational needs</strong> in intellectual-development or learning domains')}</li>
+                                    <li>${tt('Medizinische Abklärung möglicher <strong>organischer Ursachen</strong>','Bilan médical de possibles <strong>causes organiques</strong>','Medical workup of possible <strong>organic causes</strong>')}</li>
+                                    <li>${tt('Einleitung geeigneter <strong>Fördermaßnahmen</strong> entsprechend dem individuellen Entwicklungsstand','Mise en place de <strong>mesures de soutien</strong> adaptées au niveau développemental individuel','Initiation of appropriate <strong>support measures</strong> matching the individual developmental level')}</li>
+                                    <li>${tt('Beratung der Familie zu Unterstützungsmöglichkeiten und Entlastungsangeboten','Conseil à la famille sur les possibilités de soutien et de répit','Family counselling on support options and respite services')}</li>
                                 </ul>
                             ` : fsiq && fsiq < 85 ? `
-                                <p>Aufgrund der unterdurchschnittlichen kognitiven Leistungsfähigkeit werden folgende Maßnahmen empfohlen:</p>
+                                <p>${tt('Aufgrund der unterdurchschnittlichen kognitiven Leistungsfähigkeit werden folgende Maßnahmen empfohlen:','Compte tenu du fonctionnement cognitif inférieur, les mesures suivantes sont recommandées :','Given the below-average cognitive functioning, the following measures are recommended:')}</p>
                                 <ul class="gutachten-list">
-                                    <li><strong>Lernstandsdiagnostik</strong> zur Identifikation spezifischer Lernlücken</li>
-                                    <li>Prüfung von <strong>Nachteilsausgleich</strong> (z.B. Zeitverlängerung, reduzierte Aufgabenmenge)</li>
-                                    <li>Ggf. Prüfung eines <strong>sonderpädagogischen Förderbedarfs</strong> im Bereich Lernen</li>
-                                    <li><strong>Individuelle Förderung</strong> mit angepasstem Anforderungsniveau</li>
-                                    <li>Stärkung des <strong>Selbstwertgefühls</strong> durch Erfolgserlebnisse in Stärkebereichen</li>
+                                    <li>${tt('<strong>Lernstandsdiagnostik</strong> zur Identifikation spezifischer Lernlücken','<strong>Bilan des acquis scolaires</strong> pour identifier des lacunes spécifiques','<strong>Learning-status assessment</strong> to identify specific learning gaps')}</li>
+                                    <li>${tt('Prüfung von <strong>Nachteilsausgleich</strong> (z.B. Zeitverlängerung, reduzierte Aufgabenmenge)','Examen d\'<strong>aménagements</strong> (p. ex. tiers-temps, réduction du nombre de tâches)','Consideration of <strong>accommodations</strong> (e.g. extra time, reduced workload)')}</li>
+                                    <li>${tt('Ggf. Prüfung eines <strong>sonderpädagogischen Förderbedarfs</strong> im Bereich Lernen','Le cas échéant, examen de <strong>besoins éducatifs particuliers</strong> en apprentissage','If appropriate, review of <strong>special educational needs</strong> in learning')}</li>
+                                    <li>${tt('<strong>Individuelle Förderung</strong> mit angepasstem Anforderungsniveau','<strong>Soutien individualisé</strong> avec niveau d\'exigence adapté','<strong>Individualised support</strong> with adjusted demand level')}</li>
+                                    <li>${tt('Stärkung des <strong>Selbstwertgefühls</strong> durch Erfolgserlebnisse in Stärkebereichen','Renforcement de l\'<strong>estime de soi</strong> par des expériences de réussite dans les domaines de force','Strengthening of <strong>self-esteem</strong> through success experiences in strength areas')}</li>
                                 </ul>
                             ` : `
-                                <p>Aufgrund der ${fsiq >= 115 ? 'überdurchschnittlichen' : 'durchschnittlichen'} kognitiven Leistungsfähigkeit werden folgende Maßnahmen empfohlen:</p>
+                                <p>${tt(
+                                    `Aufgrund der ${fsiq >= 115 ? 'überdurchschnittlichen' : 'durchschnittlichen'} kognitiven Leistungsfähigkeit werden folgende Maßnahmen empfohlen:`,
+                                    `Compte tenu du fonctionnement cognitif ${fsiq >= 115 ? 'supérieur' : 'moyen'}, les mesures suivantes sont recommandées :`,
+                                    `Given the ${fsiq >= 115 ? 'above-average' : 'average'} cognitive functioning, the following measures are recommended:`
+                                )}</p>
                                 <ul class="gutachten-list">
-                                    ${schwaechen.length ? `<li><strong>Gezielte Förderung</strong> in den Bereichen: ${schwaechen.map(([k])=>WISC_NAMES[k].n).join(', ')}</li>` : ''}
-                                    ${staerken.length ? `<li><strong>Nutzung der Stärken</strong> (${staerken.map(([k])=>WISC_NAMES[k].n).join(', ')}) als Ressource für das Lernen</li>` : ''}
-                                    ${(c.wmi?.c === 'clinical' || c.wmi?.c === 'borderline') ? '<li><strong>Arbeitsgedächtnistraining</strong> (z.B. computergestützte Programme)</li>' : ''}
-                                    ${(c.psi?.c === 'clinical' || c.psi?.c === 'borderline') ? '<li>Prüfung von <strong>Zeitverlängerung</strong> bei Klassenarbeiten</li>' : ''}
-                                    <li>Integration der Ergebnisse mit schulischen Leistungsdaten</li>
-                                    ${(c.wmi?.c === 'clinical' || c.psi?.c === 'clinical') ? '<li><strong>ADHS-Diagnostik</strong> bei Verdacht auf Aufmerksamkeitsprobleme</li>' : ''}
+                                    ${schwaechen.length ? `<li><strong>${tt('Gezielte Förderung','Soutien ciblé','Targeted support')}</strong> ${tt('in den Bereichen:','dans les domaines :','in:')} ${schwaechen.map(([k])=>wiscIndexName(k)).join(', ')}</li>` : ''}
+                                    ${staerken.length ? `<li><strong>${tt('Nutzung der Stärken','Mobilisation des forces','Leveraging strengths')}</strong> (${staerken.map(([k])=>wiscIndexName(k)).join(', ')}) ${tt('als Ressource für das Lernen','comme ressource d\'apprentissage','as a learning resource')}</li>` : ''}
+                                    ${(c.wmi?.c === 'clinical' || c.wmi?.c === 'borderline') ? `<li><strong>${tt('Arbeitsgedächtnistraining','Entraînement de la mémoire de travail','Working-memory training')}</strong> ${tt('(z.B. computergestützte Programme)','(p. ex. programmes informatisés)','(e.g. computer-based programmes)')}</li>` : ''}
+                                    ${(c.psi?.c === 'clinical' || c.psi?.c === 'borderline') ? `<li>${tt('Prüfung von <strong>Zeitverlängerung</strong> bei Klassenarbeiten','Examen d\'un <strong>tiers-temps</strong> lors des contrôles','Consideration of <strong>extra time</strong> on classroom tests')}</li>` : ''}
+                                    <li>${tt('Integration der Ergebnisse mit schulischen Leistungsdaten','Intégration des résultats aux données scolaires','Integration of results with school performance data')}</li>
+                                    ${(c.wmi?.c === 'clinical' || c.psi?.c === 'clinical') ? `<li><strong>${tt('ADHS-Diagnostik','Bilan TDAH','ADHD assessment')}</strong> ${tt('bei Verdacht auf Aufmerksamkeitsprobleme','en cas de suspicion de problèmes d\'attention','if attention problems are suspected')}</li>` : ''}
                                 </ul>
                             `}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">8. Zusammenfassung</h4>
+                        <h4 class="gutachten-section-title">${tt('8. Zusammenfassung','8. Synthèse','8. Summary')}</h4>
                         <div class="gutachten-text">
-                            <p>${pat.name} (${pat.age ? pat.age + ' Jahre' : 'Alter nicht angegeben'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) wurde am ${formatDate(pat.date)} mittels WISC-V untersucht. ${fsiq ? `Der Gesamt-IQ von <strong>${fsiq}</strong> liegt im <strong>${c.fsiq.l.toLowerCase()}en Bereich</strong> (PR ${c.fsiq.pr}).` : 'Es wurden einzelne Indexwerte erhoben.'}</p>
-                            ${fsiq >= 130 ? `<p>Die Ergebnisse sind vereinbar mit einer intellektuellen Hochbegabung. Eine entsprechende Förderung wird empfohlen.</p>` : ''}
-                            ${fsiq >= 85 && fsiq < 130 ? `<p>Die intellektuelle Leistungsfähigkeit liegt im ${fsiq >= 115 ? 'überdurchschnittlichen' : 'durchschnittlichen'} Bereich. Es ergeben sich keine Hinweise auf kognitive Beeinträchtigungen.</p>` : ''}
-                            ${fsiq >= 70 && fsiq < 85 ? `<p>Die intellektuelle Leistungsfähigkeit liegt im unterdurchschnittlichen Bereich (unterdurchschnittlicher Bereich mit möglichem Förderbedarf). Unterstützungsmaßnahmen werden empfohlen.</p>` : ''}
-                            ${fsiq < 70 ? `<p>Die Ergebnisse sind vereinbar mit einer Intelligenzminderung. Eine umfassende Entwicklungsdiagnostik und die Prüfung sonderpädagogischer Fördermaßnahmen werden dringend empfohlen.</p>` : ''}
-                            ${diff >= 23 ? `<p>Das kognitive Profil ist heterogen (Streuung: ${diff} IQ-Punkte), sodass die Einzelindizes mehr Aussagekraft besitzen als der Gesamt-IQ.</p>` : ''}
+                            <p>${tt(
+                                `${pat.name} (${pat.age ? pat.age + ' Jahre' : 'Alter nicht angegeben'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) wurde am ${formatDate(pat.date)} mittels WISC-V untersucht. ${fsiq ? `Der Gesamt-IQ von <strong>${fsiq}</strong> liegt im <strong>${c.fsiq.l.toLowerCase()}en Bereich</strong> (PR ${c.fsiq.pr}).` : 'Es wurden einzelne Indexwerte erhoben.'}`,
+                                `${pat.name} (${pat.age ? pat.age + ' ans' : 'âge non précisé'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) a été évalué·e le ${formatDate(pat.date)} au moyen de la WISC-V. ${fsiq ? `Le QI Total de <strong>${fsiq}</strong> se situe dans la plage <strong>${c.fsiq.l.toLowerCase()}e</strong> (RC ${c.fsiq.pr}).` : 'Des indices individuels ont été obtenus.'}`,
+                                `${pat.name} (${pat.age ? pat.age + ' years' : 'age not specified'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) was assessed on ${formatDate(pat.date)} using the WISC-V. ${fsiq ? `The Full Scale IQ of <strong>${fsiq}</strong> falls within the <strong>${c.fsiq.l.toLowerCase()} range</strong> (PR ${c.fsiq.pr}).` : 'Individual index scores were obtained.'}`
+                            )}</p>
+                            ${fsiq >= 130 ? `<p>${tt('Die Ergebnisse sind vereinbar mit einer intellektuellen Hochbegabung. Eine entsprechende Förderung wird empfohlen.','Les résultats sont compatibles avec un haut potentiel intellectuel. Un soutien adapté est recommandé.','The results are consistent with intellectual giftedness. Appropriate support is recommended.')}</p>` : ''}
+                            ${fsiq >= 85 && fsiq < 130 ? `<p>${tt(
+                                `Die intellektuelle Leistungsfähigkeit liegt im ${fsiq >= 115 ? 'überdurchschnittlichen' : 'durchschnittlichen'} Bereich. Es ergeben sich keine Hinweise auf kognitive Beeinträchtigungen.`,
+                                `Le fonctionnement intellectuel se situe dans la plage ${fsiq >= 115 ? 'supérieure' : 'moyenne'}. Aucune indication d'altération cognitive.`,
+                                `Intellectual functioning falls in the ${fsiq >= 115 ? 'above-average' : 'average'} range. No indication of cognitive impairment.`
+                            )}</p>` : ''}
+                            ${fsiq >= 70 && fsiq < 85 ? `<p>${tt('Die intellektuelle Leistungsfähigkeit liegt im unterdurchschnittlichen Bereich (unterdurchschnittlicher Bereich mit möglichem Förderbedarf). Unterstützungsmaßnahmen werden empfohlen.','Le fonctionnement intellectuel se situe dans la plage inférieure (plage inférieure avec besoin de soutien possible). Des mesures de soutien sont recommandées.','Intellectual functioning falls in the below-average range (with possible support need). Support measures are recommended.')}</p>` : ''}
+                            ${fsiq < 70 ? `<p>${tt('Die Ergebnisse sind vereinbar mit einer Intelligenzminderung. Eine umfassende Entwicklungsdiagnostik und die Prüfung sonderpädagogischer Fördermaßnahmen werden dringend empfohlen.','Les résultats sont compatibles avec une déficience intellectuelle. Un bilan développemental complet et l\'examen de mesures éducatives spécialisées sont vivement recommandés.','The results are consistent with intellectual disability. A comprehensive developmental assessment and review of special-educational measures are strongly recommended.')}</p>` : ''}
+                            ${diff >= 23 ? `<p>${tt(
+                                `Das kognitive Profil ist heterogen (Streuung: ${diff} IQ-Punkte), sodass die Einzelindizes mehr Aussagekraft besitzen als der Gesamt-IQ.`,
+                                `Le profil cognitif est hétérogène (dispersion : ${diff} points QI), de sorte que les indices individuels sont plus informatifs que le QI Total.`,
+                                `The cognitive profile is heterogeneous (spread: ${diff} IQ points), so the individual indices are more informative than the Full Scale IQ.`
+                            )}</p>` : ''}
                         </div>
                     </div>
 
                     ${elternZusammenfassung(
-                        'WISC-V (Intelligenztest für Kinder)',
+                        tt('WISC-V (Intelligenztest für Kinder)','WISC-V (test d\'intelligence pour enfants)','WISC-V (intelligence test for children)'),
                         fsiq >= 130
-                            ? `Ihr Kind zeigt weit überdurchschnittliche geistige Fähigkeiten. Das bedeutet, dass ${pat.name} im Vergleich zu Gleichaltrigen besonders schnell lernt und komplexe Zusammenhänge sehr gut versteht. Dies ist eine besondere Stärke, die gefördert werden sollte.`
+                            ? tt(
+                                `Ihr Kind zeigt weit überdurchschnittliche geistige Fähigkeiten. Das bedeutet, dass ${pat.name} im Vergleich zu Gleichaltrigen besonders schnell lernt und komplexe Zusammenhänge sehr gut versteht. Dies ist eine besondere Stärke, die gefördert werden sollte.`,
+                                `Votre enfant présente des capacités intellectuelles très supérieures. Cela signifie que ${pat.name} apprend particulièrement vite par rapport aux pairs et comprend très bien des relations complexes. C'est une force particulière qui devrait être soutenue.`,
+                                `Your child shows very superior intellectual abilities. This means ${pat.name} learns particularly quickly compared with peers and understands complex relationships very well. This is a particular strength that should be supported.`
+                            )
                             : fsiq >= 115
-                                ? `Ihr Kind zeigt überdurchschnittliche geistige Fähigkeiten. ${pat.name} lernt schneller als die meisten Gleichaltrigen und kann komplexe Aufgaben gut bewältigen. Das ist ein sehr gutes Ergebnis!`
+                                ? tt(
+                                    `Ihr Kind zeigt überdurchschnittliche geistige Fähigkeiten. ${pat.name} lernt schneller als die meisten Gleichaltrigen und kann komplexe Aufgaben gut bewältigen. Das ist ein sehr gutes Ergebnis!`,
+                                    `Votre enfant présente des capacités intellectuelles supérieures. ${pat.name} apprend plus vite que la plupart des pairs et gère bien les tâches complexes. C'est un très bon résultat !`,
+                                    `Your child shows above-average intellectual abilities. ${pat.name} learns faster than most peers and handles complex tasks well. This is a very good result!`
+                                )
                                 : fsiq >= 85
-                                    ? `Ihr Kind zeigt durchschnittliche geistige Fähigkeiten - genau wie die Mehrheit aller Kinder. ${pat.name} kann dem Unterricht gut folgen und die schulischen Anforderungen bewältigen. ${staerken.length ? 'Besondere Stärken zeigen sich in: ' + staerken.map(([k])=>WISC_NAMES[k].n.split(' ')[0]).join(', ') + '. ' : ''}${schwaechen.length ? 'Etwas mehr Unterstützung könnte helfen bei: ' + schwaechen.map(([k])=>WISC_NAMES[k].n.split(' ')[0]).join(', ') + '.' : ''}`
+                                    ? tt(
+                                        `Ihr Kind zeigt durchschnittliche geistige Fähigkeiten - genau wie die Mehrheit aller Kinder. ${pat.name} kann dem Unterricht gut folgen und die schulischen Anforderungen bewältigen. ${staerken.length ? 'Besondere Stärken zeigen sich in: ' + staerken.map(([k])=>wiscIndexName(k).split(' ')[0]).join(', ') + '. ' : ''}${schwaechen.length ? 'Etwas mehr Unterstützung könnte helfen bei: ' + schwaechen.map(([k])=>wiscIndexName(k).split(' ')[0]).join(', ') + '.' : ''}`,
+                                        `Votre enfant présente des capacités intellectuelles moyennes – comme la majorité des enfants. ${pat.name} peut bien suivre les cours et faire face aux exigences scolaires. ${staerken.length ? 'Forces particulières dans : ' + staerken.map(([k])=>wiscIndexName(k).split(' ')[0]).join(', ') + '. ' : ''}${schwaechen.length ? 'Un peu plus de soutien pourrait aider dans : ' + schwaechen.map(([k])=>wiscIndexName(k).split(' ')[0]).join(', ') + '.' : ''}`,
+                                        `Your child shows average intellectual abilities – just like the majority of children. ${pat.name} can follow lessons well and manage school requirements. ${staerken.length ? 'Particular strengths in: ' + staerken.map(([k])=>wiscIndexName(k).split(' ')[0]).join(', ') + '. ' : ''}${schwaechen.length ? 'A bit more support could help in: ' + schwaechen.map(([k])=>wiscIndexName(k).split(' ')[0]).join(', ') + '.' : ''}`
+                                    )
                                     : fsiq >= 70
-                                        ? `Ihr Kind zeigt unterdurchschnittliche Ergebnisse im Vergleich zu Gleichaltrigen. Das bedeutet nicht, dass ${pat.name} "dumm" ist - es bedeutet, dass ${pronomen.er} mehr Zeit und Unterstützung beim Lernen braucht als andere Kinder. Mit der richtigen Förderung können viele Kinder große Fortschritte machen.`
-                                        : `Die Ergebnisse zeigen, dass Ihr Kind besondere Unterstützung beim Lernen benötigt. Es ist wichtig, dass ${pat.name} die richtige Förderung erhält, um ${pronomen.sein}e persönlichen Stärken zu entwickeln und Erfolgserlebnisse zu haben.`,
+                                        ? tt(
+                                            `Ihr Kind zeigt unterdurchschnittliche Ergebnisse im Vergleich zu Gleichaltrigen. Das bedeutet nicht, dass ${pat.name} "dumm" ist - es bedeutet, dass ${pronomen.er} mehr Zeit und Unterstützung beim Lernen braucht als andere Kinder. Mit der richtigen Förderung können viele Kinder große Fortschritte machen.`,
+                                            `Votre enfant présente des résultats inférieurs par rapport aux pairs. Cela ne veut pas dire que ${pat.name} est « peu intelligent·e » – cela veut dire qu'${pat.sex === 'w' ? 'elle' : 'il'} a besoin de plus de temps et de soutien pour apprendre. Avec un soutien adapté, beaucoup d'enfants font de grands progrès.`,
+                                            `Your child shows below-average results compared with peers. This does not mean ${pat.name} is "not smart" – it means ${pat.sex === 'w' ? 'she' : pat.sex === 'm' ? 'he' : 'they'} need${pat.sex && pat.sex !== '' ? 's' : ''} more time and support when learning. With appropriate support, many children make great progress.`
+                                        )
+                                        : tt(
+                                            `Die Ergebnisse zeigen, dass Ihr Kind besondere Unterstützung beim Lernen benötigt. Es ist wichtig, dass ${pat.name} die richtige Förderung erhält, um ${pronomen.sein}e persönlichen Stärken zu entwickeln und Erfolgserlebnisse zu haben.`,
+                                            `Les résultats montrent que votre enfant a besoin d'un soutien particulier pour apprendre. Il est important que ${pat.name} bénéficie du soutien adapté pour développer ses forces personnelles et vivre des expériences de réussite.`,
+                                            `The results show that your child needs special support for learning. It is important that ${pat.name} receives appropriate support to develop personal strengths and have success experiences.`
+                                        ),
                         fsiq >= 130
-                            ? ['Sprechen Sie mit der Schule über Begabtenförderung', 'Bieten Sie zusätzliche Herausforderungen an (AGs, Wettbewerbe)', 'Achten Sie auf Anzeichen von Langeweile oder Unterforderung']
+                            ? [
+                                tt('Sprechen Sie mit der Schule über Begabtenförderung','Parlez avec l\'école du soutien aux enfants à haut potentiel','Speak with the school about gifted support'),
+                                tt('Bieten Sie zusätzliche Herausforderungen an (AGs, Wettbewerbe)','Proposez des défis supplémentaires (clubs, concours)','Offer additional challenges (clubs, competitions)'),
+                                tt('Achten Sie auf Anzeichen von Langeweile oder Unterforderung','Restez attentif·ve aux signes d\'ennui ou de sous-stimulation','Watch for signs of boredom or under-stimulation')
+                              ]
                             : fsiq >= 85
                                 ? (schwaechen.length
-                                    ? ['Nutzen Sie die Stärken Ihres Kindes zum Lernen', 'Gezielte Förderung in Bereichen, die schwerer fallen', 'Regelmäßige Gespräche mit der Klassenlehrerin/dem Klassenlehrer']
-                                    : ['Fördern Sie weiterhin die natürliche Neugier Ihres Kindes', 'Loben Sie Anstrengung, nicht nur Ergebnisse'])
-                                : ['Lassen Sie sich ausführlich beraten', 'Prüfen Sie Möglichkeiten der individuellen Förderung', 'Informieren Sie die Schule über die Ergebnisse', 'Stärken Sie das Selbstwertgefühl Ihres Kindes']
+                                    ? [
+                                        tt('Nutzen Sie die Stärken Ihres Kindes zum Lernen','Mobilisez les forces de votre enfant pour apprendre','Use your child\'s strengths for learning'),
+                                        tt('Gezielte Förderung in Bereichen, die schwerer fallen','Soutien ciblé dans les domaines plus difficiles','Targeted support in more challenging areas'),
+                                        tt('Regelmäßige Gespräche mit der Klassenlehrerin/dem Klassenlehrer','Échanges réguliers avec l\'enseignant·e','Regular conversations with the class teacher')
+                                      ]
+                                    : [
+                                        tt('Fördern Sie weiterhin die natürliche Neugier Ihres Kindes','Continuez à soutenir la curiosité naturelle de votre enfant','Continue to foster your child\'s natural curiosity'),
+                                        tt('Loben Sie Anstrengung, nicht nur Ergebnisse','Félicitez l\'effort, pas seulement les résultats','Praise effort, not just outcomes')
+                                      ])
+                                : [
+                                    tt('Lassen Sie sich ausführlich beraten','Faites-vous conseiller en détail','Seek detailed counselling'),
+                                    tt('Prüfen Sie Möglichkeiten der individuellen Förderung','Examinez les possibilités de soutien individualisé','Explore options for individualised support'),
+                                    tt('Informieren Sie die Schule über die Ergebnisse','Informez l\'école des résultats','Inform the school of the results'),
+                                    tt('Stärken Sie das Selbstwertgefühl Ihres Kindes','Renforcez l\'estime de soi de votre enfant','Strengthen your child\'s self-esteem')
+                                  ]
                     )}
 
                     ${gutachtenFooter()}
@@ -5284,11 +5431,11 @@
             `;
 
             document.getElementById('wisc-results').innerHTML = `
-                <div class="results-header"><h3 class="results-title">Ergebnis WISC-V</h3></div>
-                ${summary(valid.map(([k,x])=>({l:k==='fsiq'?'Gesamt-IQ':WISC_NAMES[k].n.split(' ')[0],v:x.v,c:c[k].c,s:c[k].l})))}
+                <div class="results-header"><h3 class="results-title">${tt('Ergebnis WISC-V','Résultat WISC-V','WISC-V result')}</h3></div>
+                ${summary(valid.map(([k,x])=>({l:k==='fsiq'?tt('Gesamt-IQ','QI Total','Full Scale IQ'):wiscIndexName(k).split(' ')[0],v:x.v,c:c[k].c,s:c[k].l})))}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
-                    <button class="btn btn-primary" onclick="exportTestToWord('wisc')">📝 Als Word exportieren (.doc)</button>
+                    <button class="btn btn-primary" onclick="exportTestToWord('wisc')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
                 </div>
             `;
             showLocalizedResults('wisc-results');
