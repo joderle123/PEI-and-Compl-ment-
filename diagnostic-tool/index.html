@@ -5288,7 +5288,11 @@
             });
 
             const raterKeys = Object.keys(raters);
-            if(raterKeys.length === 0) return alert('Bitte mindestens einen Wert für mindestens einen Beurteiler eingeben.');
+            if(raterKeys.length === 0) return alert(tt(
+                'Bitte mindestens einen Wert für mindestens einen Beurteiler eingeben.',
+                'Veuillez saisir au moins une valeur pour au moins un·e évaluateur·trice.',
+                'Please enter at least one value for at least one rater.'
+            ));
 
             // Kritische Items aggregieren über alle Beurteiler
             const criticalItems = [];
