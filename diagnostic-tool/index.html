@@ -5439,20 +5439,53 @@
             });
 
             // Empfehlungen
+            const li = txt => `<li>${txt}</li>`;
             let empf = '<ul class="gutachten-list">';
             if(cBB.tot === 'clinical' || clinSyn.length > 0) {
-                empf += '<li>Klinisch-psychologische/kinder- und jugendpsychiatrische Diagnostik empfohlen</li>';
-                if(cSyn.anx === 'clinical' || cSyn.wit === 'clinical') empf += '<li>Exploration depressiver/ängstlicher Symptomatik</li>';
-                if(cSyn.att === 'clinical') empf += '<li>ADHS-spezifische Diagnostik (z.B. DISYPS-III, Conners)</li>';
-                if(cSyn.agg === 'clinical' || cSyn.rul === 'clinical') empf += '<li>Abklärung von Störungen des Sozialverhaltens</li>';
-                if(cSyn.som === 'clinical') empf += '<li>Pädiatrische Abklärung zum Ausschluss organischer Ursachen</li>';
-                empf += '<li>Multiinformanten-Ansatz: Einbezug von Eltern, Lehrkräften und Selbsturteil</li>';
+                empf += li(tt(
+                    'Klinisch-psychologische/kinder- und jugendpsychiatrische Diagnostik empfohlen',
+                    'Bilan clinique-psychologique / pédopsychiatrique recommandé',
+                    'Clinical-psychological / child & adolescent psychiatric assessment recommended'
+                ));
+                if(cSyn.anx === 'clinical' || cSyn.wit === 'clinical') empf += li(tt(
+                    'Exploration depressiver/ängstlicher Symptomatik',
+                    'Exploration de la symptomatologie dépressive/anxieuse',
+                    'Exploration of depressive/anxious symptomatology'
+                ));
+                if(cSyn.att === 'clinical') empf += li(tt(
+                    'ADHS-spezifische Diagnostik (z.B. DISYPS-III, Conners)',
+                    'Bilan spécifique TDAH (p. ex. DISYPS-III, Conners)',
+                    'ADHD-specific assessment (e.g. DISYPS-III, Conners)'
+                ));
+                if(cSyn.agg === 'clinical' || cSyn.rul === 'clinical') empf += li(tt(
+                    'Abklärung von Störungen des Sozialverhaltens',
+                    'Bilan des troubles des conduites',
+                    'Assessment of conduct disorders'
+                ));
+                if(cSyn.som === 'clinical') empf += li(tt(
+                    'Pädiatrische Abklärung zum Ausschluss organischer Ursachen',
+                    'Bilan pédiatrique afin d\'exclure des causes organiques',
+                    'Paediatric assessment to rule out organic causes'
+                ));
+                empf += li(tt(
+                    'Multiinformanten-Ansatz: Einbezug von Eltern, Lehrkräften und Selbsturteil',
+                    'Approche multi-informant : intégration des parents, enseignant·e·s et auto-évaluation',
+                    'Multi-informant approach: include parents, teachers and self-report'
+                ));
             } else if(cBB.tot === 'borderline' || bordSyn.length > 0) {
-                empf += '<li>Verlaufsbeobachtung empfohlen</li>';
-                empf += '<li>Bei Persistenz der Symptomatik vertiefte Diagnostik</li>';
+                empf += li(tt('Verlaufsbeobachtung empfohlen','Suivi évolutif recommandé','Follow-up monitoring recommended'));
+                empf += li(tt(
+                    'Bei Persistenz der Symptomatik vertiefte Diagnostik',
+                    'En cas de persistance des symptômes, bilan approfondi',
+                    'If symptoms persist, in-depth assessment'
+                ));
             } else {
-                empf += '<li>Keine unmittelbare Intervention erforderlich</li>';
-                empf += '<li>Ggf. Verlaufskontrolle bei Veränderungen</li>';
+                empf += li(tt('Keine unmittelbare Intervention erforderlich','Aucune intervention immédiate requise','No immediate intervention required'));
+                empf += li(tt(
+                    'Ggf. Verlaufskontrolle bei Veränderungen',
+                    'Le cas échéant, contrôle évolutif en cas de changements',
+                    'Follow-up control in case of changes if needed'
+                ));
             }
             empf += '</ul>';
 
