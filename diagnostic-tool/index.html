@@ -4923,6 +4923,14 @@
             };
             return tt(WISC_NAMES[k].n, fr[k], en[k]);
         }
+        // Short label used in summary cards (full names share "Indice" prefix in FR
+        // and split-on-space yields generic words in DE, hence dedicated abbreviations).
+        function wiscShortLabel(k) {
+            const de = {vci:'SVI',vsi:'VRI',fri:'FRI',wmi:'AMI',psi:'VGI',fsiq:'Gesamt-IQ',nvi:'NVI',gai:'AFI',kli:'KLI'};
+            const fr = {vci:'ICV',vsi:'IVS',fri:'IRF',wmi:'IMT',psi:'IVT',fsiq:'QI Total',nvi:'INV',gai:'IAG',kli:'ICC'};
+            const en = {vci:'VCI',vsi:'VSI',fri:'FRI',wmi:'WMI',psi:'PSI',fsiq:'FSIQ',nvi:'NVI',gai:'GAI',kli:'CPI'};
+            return tt(de[k], fr[k], en[k]);
+        }
 
         // Standard-Normal-CDF (Abramowitz & Stegun 7.1.26) – für PR-Berechnung
         function normalCDF(z) {
@@ -5005,7 +5013,7 @@
                         tt('altersgemäß entwickelte sprachliche Fähigkeiten','des capacités verbales correspondant à l\'âge','age-appropriate verbal abilities'),
                         tt('Schwierigkeiten im Bereich der sprachlichen Begriffsbildung, die sich auf das schulische Lernen auswirken können','des difficultés dans la formation des concepts verbaux pouvant affecter l\'apprentissage scolaire','difficulties in verbal concept formation that may affect school learning'));
                     const add = v < 90 ? ' ' + tt('Eine logopädische Abklärung sowie sprachliche Förderung könnten indiziert sein.','Un bilan orthophonique et un soutien linguistique pourraient être indiqués.','Speech-language assessment and language support may be indicated.') : '';
-                    return `<p><strong>${wiscIndexName('vci')} = ${v || '-'}:</strong> ${tt('Dieser Index erfasst die sprachliche Begriffsbildung, das verbale Schlussfolgern sowie erworbenes Wissen.','Cet indice évalue la formation de concepts verbaux, le raisonnement verbal et les connaissances acquises.','This index assesses verbal concept formation, verbal reasoning and acquired knowledge.')} ${tt(`Ein ${lvl} Wert in diesem Bereich deutet auf ${expl}.`,`Un score ${lvl} dans ce domaine indique ${expl}.`,`A ${lvl} score in this area indicates ${expl}.`)}${add}</p>`;
+                    return `<p><strong>${wiscIndexName('vci')} = ${v || '-'}:</strong> ${tt('Dieser Index erfasst die sprachliche Begriffsbildung, das verbale Schlussfolgern sowie erworbenes Wissen.','Cet indice évalue la formation de concepts verbaux, le raisonnement verbal et les connaissances acquises.','This index assesses verbal concept formation, verbal reasoning and acquired knowledge.')} ${tt(`Ein ${lvl} Wert in diesem Bereich deutet auf ${expl}.`,`Un score ${lvl} dans ce domaine indique ${expl}.`,`Performance in the ${lvl} range indicates ${expl}.`)}${add}</p>`;
                 })(),
                 vsi: (() => {
                     const v = idx.vsi.v;
@@ -5186,7 +5194,7 @@
                             ${fsiq ? `
                                 <p>${tt(
                                     `Die Untersuchung der kognitiven Leistungsfähigkeit mittels WISC-V ergibt einen <strong>Gesamt-IQ von ${fsiq}</strong> (95%-Konfidenzintervall: ${Math.round(fsiq*0.95)}-${Math.round(fsiq*1.05)}). Dieser Wert liegt im <strong>${c.fsiq.l.toLowerCase()}en Bereich</strong> und entspricht einem Prozentrang von ${c.fsiq.pr}.`,
-                                    `L'évaluation du fonctionnement cognitif par la WISC-V donne un <strong>QI Total de ${fsiq}</strong> (intervalle de confiance à 95% : ${Math.round(fsiq*0.95)}-${Math.round(fsiq*1.05)}). Cette valeur se situe dans la <strong>plage ${c.fsiq.l.toLowerCase()}e</strong> et correspond à un rang centile de ${c.fsiq.pr}.`,
+                                    `L'évaluation du fonctionnement cognitif par la WISC-V donne un <strong>QI Total de ${fsiq}</strong> (intervalle de confiance à 95% : ${Math.round(fsiq*0.95)}-${Math.round(fsiq*1.05)}). Ce résultat correspond à la classification <strong>${c.fsiq.l}</strong> et à un rang centile de ${c.fsiq.pr}.`,
                                     `The cognitive assessment via WISC-V yields a <strong>Full Scale IQ of ${fsiq}</strong> (95% confidence interval: ${Math.round(fsiq*0.95)}-${Math.round(fsiq*1.05)}). This value falls within the <strong>${c.fsiq.l.toLowerCase()} range</strong> and corresponds to a percentile rank of ${c.fsiq.pr}.`
                                 )}</p>
                                 ${fsiq >= 130 ? `<p>${tt(
@@ -5351,7 +5359,7 @@
                         <div class="gutachten-text">
                             <p>${tt(
                                 `${pat.name} (${pat.age ? pat.age + ' Jahre' : 'Alter nicht angegeben'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) wurde am ${formatDate(pat.date)} mittels WISC-V untersucht. ${fsiq ? `Der Gesamt-IQ von <strong>${fsiq}</strong> liegt im <strong>${c.fsiq.l.toLowerCase()}en Bereich</strong> (PR ${c.fsiq.pr}).` : 'Es wurden einzelne Indexwerte erhoben.'}`,
-                                `${pat.name} (${pat.age ? pat.age + ' ans' : 'âge non précisé'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) a été évalué·e le ${formatDate(pat.date)} au moyen de la WISC-V. ${fsiq ? `Le QI Total de <strong>${fsiq}</strong> se situe dans la plage <strong>${c.fsiq.l.toLowerCase()}e</strong> (RC ${c.fsiq.pr}).` : 'Des indices individuels ont été obtenus.'}`,
+                                `${pat.name} (${pat.age ? pat.age + ' ans' : 'âge non précisé'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) a été évalué·e le ${formatDate(pat.date)} au moyen de la WISC-V. ${fsiq ? `Le QI Total de <strong>${fsiq}</strong> correspond à la classification <strong>${c.fsiq.l}</strong> (RC ${c.fsiq.pr}).` : 'Des indices individuels ont été obtenus.'}`,
                                 `${pat.name} (${pat.age ? pat.age + ' years' : 'age not specified'}${pat.sex ? ', ' + sexText(pat.sex) : ''}) was assessed on ${formatDate(pat.date)} using the WISC-V. ${fsiq ? `The Full Scale IQ of <strong>${fsiq}</strong> falls within the <strong>${c.fsiq.l.toLowerCase()} range</strong> (PR ${c.fsiq.pr}).` : 'Individual index scores were obtained.'}`
                             )}</p>
                             ${fsiq >= 130 ? `<p>${tt('Die Ergebnisse sind vereinbar mit einer intellektuellen Hochbegabung. Eine entsprechende Förderung wird empfohlen.','Les résultats sont compatibles avec un haut potentiel intellectuel. Un soutien adapté est recommandé.','The results are consistent with intellectual giftedness. Appropriate support is recommended.')}</p>` : ''}
@@ -5386,9 +5394,9 @@
                                 )
                                 : fsiq >= 85
                                     ? tt(
-                                        `Ihr Kind zeigt durchschnittliche geistige Fähigkeiten - genau wie die Mehrheit aller Kinder. ${pat.name} kann dem Unterricht gut folgen und die schulischen Anforderungen bewältigen. ${staerken.length ? 'Besondere Stärken zeigen sich in: ' + staerken.map(([k])=>wiscIndexName(k).split(' ')[0]).join(', ') + '. ' : ''}${schwaechen.length ? 'Etwas mehr Unterstützung könnte helfen bei: ' + schwaechen.map(([k])=>wiscIndexName(k).split(' ')[0]).join(', ') + '.' : ''}`,
-                                        `Votre enfant présente des capacités intellectuelles moyennes – comme la majorité des enfants. ${pat.name} peut bien suivre les cours et faire face aux exigences scolaires. ${staerken.length ? 'Forces particulières dans : ' + staerken.map(([k])=>wiscIndexName(k).split(' ')[0]).join(', ') + '. ' : ''}${schwaechen.length ? 'Un peu plus de soutien pourrait aider dans : ' + schwaechen.map(([k])=>wiscIndexName(k).split(' ')[0]).join(', ') + '.' : ''}`,
-                                        `Your child shows average intellectual abilities – just like the majority of children. ${pat.name} can follow lessons well and manage school requirements. ${staerken.length ? 'Particular strengths in: ' + staerken.map(([k])=>wiscIndexName(k).split(' ')[0]).join(', ') + '. ' : ''}${schwaechen.length ? 'A bit more support could help in: ' + schwaechen.map(([k])=>wiscIndexName(k).split(' ')[0]).join(', ') + '.' : ''}`
+                                        `Ihr Kind zeigt durchschnittliche geistige Fähigkeiten - genau wie die Mehrheit aller Kinder. ${pat.name} kann dem Unterricht gut folgen und die schulischen Anforderungen bewältigen. ${staerken.length ? 'Besondere Stärken zeigen sich in: ' + staerken.map(([k])=>wiscShortLabel(k)).join(', ') + '. ' : ''}${schwaechen.length ? 'Etwas mehr Unterstützung könnte helfen bei: ' + schwaechen.map(([k])=>wiscShortLabel(k)).join(', ') + '.' : ''}`,
+                                        `Votre enfant présente des capacités intellectuelles moyennes – comme la majorité des enfants. ${pat.name} peut bien suivre les cours et faire face aux exigences scolaires. ${staerken.length ? 'Forces particulières dans : ' + staerken.map(([k])=>wiscShortLabel(k)).join(', ') + '. ' : ''}${schwaechen.length ? 'Un peu plus de soutien pourrait aider dans : ' + schwaechen.map(([k])=>wiscShortLabel(k)).join(', ') + '.' : ''}`,
+                                        `Your child shows average intellectual abilities – just like the majority of children. ${pat.name} can follow lessons well and manage school requirements. ${staerken.length ? 'Particular strengths in: ' + staerken.map(([k])=>wiscShortLabel(k)).join(', ') + '. ' : ''}${schwaechen.length ? 'A bit more support could help in: ' + schwaechen.map(([k])=>wiscShortLabel(k)).join(', ') + '.' : ''}`
                                     )
                                     : fsiq >= 70
                                         ? tt(
@@ -5432,7 +5440,7 @@
 
             document.getElementById('wisc-results').innerHTML = `
                 <div class="results-header"><h3 class="results-title">${tt('Ergebnis WISC-V','Résultat WISC-V','WISC-V result')}</h3></div>
-                ${summary(valid.map(([k,x])=>({l:k==='fsiq'?tt('Gesamt-IQ','QI Total','Full Scale IQ'):wiscIndexName(k).split(' ')[0],v:x.v,c:c[k].c,s:c[k].l})))}
+                ${summary(valid.map(([k,x])=>({l:wiscShortLabel(k),v:x.v,c:c[k].c,s:c[k].l})))}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
                     <button class="btn btn-primary" onclick="exportTestToWord('wisc')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
@@ -7966,7 +7974,7 @@
                         <div class="gutachten-text">
                             ${abcVal ? `<p>${tt(
                                 `Der Adaptive Behavior Composite (ABC) von <strong>${abcVal}</strong> (PR: ${abcPr || abcClassFinal.pr}) zeigt, dass ${pat.name} insgesamt <strong>${abcClassFinal.l.toLowerCase()}e</strong> adaptive Fähigkeiten aufweist.`,
-                                `L'Adaptive Behavior Composite (ABC) de <strong>${abcVal}</strong> (RC : ${abcPr || abcClassFinal.pr}) montre que ${pat.name} présente globalement des capacités adaptatives <strong>${abcClassFinal.l.toLowerCase()}es</strong>.`,
+                                `L'Adaptive Behavior Composite (ABC) de <strong>${abcVal}</strong> (RC : ${abcPr || abcClassFinal.pr}) indique que ${pat.name} présente globalement des capacités adaptatives correspondant à la classification <strong>${abcClassFinal.l}</strong>.`,
                                 `The Adaptive Behavior Composite (ABC) of <strong>${abcVal}</strong> (PR: ${abcPr || abcClassFinal.pr}) shows that ${pat.name} has overall <strong>${abcClassFinal.l.toLowerCase()}</strong> adaptive abilities.`
                             )}</p>` : ''}
                             ${abcVal && abcVal < 70 ? `<p>${tt(
