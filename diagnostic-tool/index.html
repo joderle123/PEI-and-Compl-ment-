@@ -6529,27 +6529,52 @@
             fp: {n:'Fehlerprozent (F%)', desc:'Fehleranteil an bearbeiteten Zeichen – Sorgfalt', inv:true},
             sb: {n:'Schwankungsbreite (SB)', desc:'Gleichmäßigkeit der Leistung über die Zeit', inv:true}
         };
+        function d2rScaleName(k) {
+            const fr = {kl:'Performance de concentration (KL)',bz:'Vitesse de traitement-ordre (BZO)',f:'Erreurs (F)',fp:'Pourcentage d\'erreurs (F%)',sb:'Amplitude de variation (SB)'};
+            const en = {kl:'Concentration Performance (KL)',bz:'Processing Speed–Order (BZO)',f:'Errors (F)',fp:'Error Percentage (F%)',sb:'Variability Range (SB)'};
+            return tt(D2R_SCALES[k].n, fr[k], en[k]);
+        }
+        function d2rScaleDesc(k) {
+            const fr = {kl:'Qualité de la performance de concentration – indice principal',bz:'Vitesse de travail corrigée des omissions – indice central de tempo',f:'Nombre total d\'erreurs',fp:'Proportion d\'erreurs sur les items traités – soin',sb:'Régularité de la performance dans le temps'};
+            const en = {kl:'Quality of concentration performance – main index',bz:'Work speed adjusted for omissions – central tempo index',f:'Total error count',fp:'Error proportion of processed items – carefulness',sb:'Consistency of performance over time'};
+            return tt(D2R_SCALES[k].desc, fr[k], en[k]);
+        }
 
         function prClass(v) { return v>=16?'normal':v>=7?'borderline':'clinical'; }
-        function prClassInv(v) { return v<=84?'normal':v<=93?'borderline':'clinical'; } // Für inverse Skalen (F, F%, SB)
-        function prText(c) { return {normal:'Durchschnittlich (PR ≥16)',borderline:'Unterdurchschnittlich (PR 7-15)',clinical:'Weit unterdurchschnittlich (PR <7)'}[c]; }
-        function prTextInv(c) { return {normal:'Durchschnittlich (PR ≤84)',borderline:'Erhöht (PR 85-93)',clinical:'Deutlich erhöht (PR >93)'}[c]; }
+        function prClassInv(v) { return v<=84?'normal':v<=93?'borderline':'clinical'; }
+        function prText(c) {
+            const de = {normal:'Durchschnittlich (PR ≥16)',borderline:'Unterdurchschnittlich (PR 7-15)',clinical:'Weit unterdurchschnittlich (PR <7)'};
+            const fr = {normal:'Moyen (RC ≥16)',borderline:'Inférieur (RC 7-15)',clinical:'Très inférieur (RC <7)'};
+            const en = {normal:'Average (PR ≥16)',borderline:'Below average (PR 7-15)',clinical:'Very low (PR <7)'};
+            return tt(de[c], fr[c], en[c]);
+        }
+        function prTextInv(c) {
+            const de = {normal:'Durchschnittlich (PR ≤84)',borderline:'Erhöht (PR 85-93)',clinical:'Deutlich erhöht (PR >93)'};
+            const fr = {normal:'Moyen (RC ≤84)',borderline:'Élevé (RC 85-93)',clinical:'Nettement élevé (RC >93)'};
+            const en = {normal:'Average (PR ≤84)',borderline:'Elevated (PR 85-93)',clinical:'Clearly elevated (PR >93)'};
+            return tt(de[c], fr[c], en[c]);
+        }
 
         function evaluateD2R(e) {
             e.preventDefault();
             const pat = getPatient();
             const d = {kl:v('d2r-kl'),bz:v('d2r-bz'),f:v('d2r-f'),fp:v('d2r-fp'),sb:v('d2r-sb')};
             const valid = Object.entries(d).filter(([k,x])=>x!==null);
-            if(!valid.length) return alert('Mindestens ein Wert eingeben');
+            if(!valid.length) return alert(tt('Mindestens ein Wert eingeben','Veuillez saisir au moins une valeur','Please enter at least one value'));
 
             const c = {};
             valid.forEach(([k,x])=>{
                 c[k] = D2R_SCALES[k].inv ? prClassInv(x) : prClass(x);
             });
 
-            const labels = {kl:'KL',bz:'Tempo',f:'Fehler',fp:'F%',sb:'Schwank.'};
+            const labels = {
+                kl: tt('KL','KL','KL'),
+                bz: tt('Tempo','Tempo','Speed'),
+                f:  tt('Fehler','Erreurs','Errors'),
+                fp: tt('F%','F%','F%'),
+                sb: tt('Schwank.','Variab.','Var.')
+            };
 
-            // Interpretation
             let interp = '';
             const kl_low = c.kl === 'clinical' || c.kl === 'borderline';
             const tempo_low = c.bz === 'clinical' || c.bz === 'borderline';
@@ -6558,106 +6583,185 @@
 
             if(d.kl !== null) {
                 if(c.kl === 'normal') {
-                    interp = `Die Konzentrationsleistung (KL = PR ${d.kl}) liegt im durchschnittlichen Bereich. ${pat.name} zeigt eine altersgerechte Fähigkeit zur fokussierten Aufmerksamkeit unter Zeitdruck.`;
+                    interp = tt(
+                        `Die Konzentrationsleistung (KL = PR ${d.kl}) liegt im durchschnittlichen Bereich. ${pat.name} zeigt eine altersgerechte Fähigkeit zur fokussierten Aufmerksamkeit unter Zeitdruck.`,
+                        `La performance de concentration (KL = RC ${d.kl}) se situe dans la plage moyenne. ${pat.name} montre une capacité d'attention focalisée sous pression temporelle correspondant à son âge.`,
+                        `Concentration performance (KL = PR ${d.kl}) is in the average range. ${pat.name} shows age-appropriate focused attention under time pressure.`
+                    );
                 } else if(c.kl === 'borderline') {
-                    interp = `Die Konzentrationsleistung (KL = PR ${d.kl}) liegt im unterdurchschnittlichen Bereich. Dies kann auf Schwierigkeiten bei der Aufrechterhaltung der Konzentration hindeuten.`;
+                    interp = tt(
+                        `Die Konzentrationsleistung (KL = PR ${d.kl}) liegt im unterdurchschnittlichen Bereich. Dies kann auf Schwierigkeiten bei der Aufrechterhaltung der Konzentration hindeuten.`,
+                        `La performance de concentration (KL = RC ${d.kl}) se situe dans la plage inférieure. Cela peut indiquer des difficultés à maintenir la concentration.`,
+                        `Concentration performance (KL = PR ${d.kl}) is below average. This may indicate difficulties maintaining concentration.`
+                    );
                 } else {
-                    interp = `Die Konzentrationsleistung (KL = PR ${d.kl}) liegt deutlich unter dem Altersdurchschnitt. Dies weist auf relevante Aufmerksamkeits- und Konzentrationsdefizite hin.`;
+                    interp = tt(
+                        `Die Konzentrationsleistung (KL = PR ${d.kl}) liegt deutlich unter dem Altersdurchschnitt. Dies weist auf relevante Aufmerksamkeits- und Konzentrationsdefizite hin.`,
+                        `La performance de concentration (KL = RC ${d.kl}) est nettement inférieure à la moyenne d'âge. Cela indique des déficits attentionnels et de concentration significatifs.`,
+                        `Concentration performance (KL = PR ${d.kl}) is clearly below age average. This indicates significant attention and concentration deficits.`
+                    );
                 }
             }
 
-            // Profil-Analyse
             if(tempo_low && !fehler_high) {
-                interp += ` Das Tempo ist reduziert bei akzeptabler Genauigkeit – dies spricht für einen langsamen, aber sorgfältigen Arbeitsstil.`;
+                interp += ' ' + tt(
+                    'Das Tempo ist reduziert bei akzeptabler Genauigkeit – dies spricht für einen langsamen, aber sorgfältigen Arbeitsstil.',
+                    'Le tempo est réduit avec une précision acceptable – cela suggère un style de travail lent mais soigneux.',
+                    'Speed is reduced with acceptable accuracy – this suggests a slow but careful work style.'
+                );
             } else if(!tempo_low && fehler_high) {
-                interp += ` Das Tempo ist angemessen, aber die Fehlerrate ist erhöht – dies deutet auf einen impulsiven, wenig sorgfältigen Arbeitsstil hin.`;
+                interp += ' ' + tt(
+                    'Das Tempo ist angemessen, aber die Fehlerrate ist erhöht – dies deutet auf einen impulsiven, wenig sorgfältigen Arbeitsstil hin.',
+                    'Le tempo est adéquat mais le taux d\'erreur est élevé – cela suggère un style de travail impulsif et peu soigneux.',
+                    'Speed is adequate but the error rate is elevated – this suggests an impulsive, careless work style.'
+                );
             } else if(tempo_low && fehler_high) {
-                interp += ` Sowohl Tempo als auch Genauigkeit sind beeinträchtigt, was auf generelle Aufmerksamkeitsdefizite hindeutet.`;
+                interp += ' ' + tt(
+                    'Sowohl Tempo als auch Genauigkeit sind beeinträchtigt, was auf generelle Aufmerksamkeitsdefizite hindeutet.',
+                    'Le tempo et la précision sont tous deux altérés, ce qui évoque des déficits attentionnels généraux.',
+                    'Both speed and accuracy are impaired, suggesting general attention deficits.'
+                );
             }
 
             if(schwank_high) {
-                interp += ` Die erhöhte Schwankungsbreite (PR ${d.sb}) zeigt eine inkonsistente Leistung über die Testzeit, was auf Ermüdungseffekte oder Aufmerksamkeitsfluktuationen hinweisen kann.`;
+                interp += ' ' + tt(
+                    `Die erhöhte Schwankungsbreite (PR ${d.sb}) zeigt eine inkonsistente Leistung über die Testzeit, was auf Ermüdungseffekte oder Aufmerksamkeitsfluktuationen hinweisen kann.`,
+                    `L'amplitude de variation élevée (RC ${d.sb}) montre une performance inconsistante au cours du test, pouvant indiquer des effets de fatigue ou des fluctuations attentionnelles.`,
+                    `The elevated variability (PR ${d.sb}) shows inconsistent performance over test time, potentially indicating fatigue effects or attention fluctuations.`
+                );
             }
 
-            // Empfehlungen
+            const liD2 = txt => `<li>${txt}</li>`;
             let empf = '<ul class="gutachten-list">';
             if(kl_low || fehler_high) {
-                empf += '<li>Vertiefte ADHS-Diagnostik empfohlen (Fragebögen, Anamnese)</li>';
-                empf += '<li>Neuropsychologische Untersuchung der Exekutivfunktionen</li>';
-                if(fehler_high) empf += '<li>Training von Selbstkontrolle und Sorgfalt</li>';
-                if(tempo_low) empf += '<li>Prüfung von Nachteilsausgleich (Zeitverlängerung)</li>';
+                empf += liD2(tt('Vertiefte ADHS-Diagnostik empfohlen (Fragebögen, Anamnese)','Bilan TDAH approfondi recommandé (questionnaires, anamnèse)','In-depth ADHD assessment recommended (questionnaires, anamnesis)'));
+                empf += liD2(tt('Neuropsychologische Untersuchung der Exekutivfunktionen','Bilan neuropsychologique des fonctions exécutives','Neuropsychological assessment of executive functions'));
+                if(fehler_high) empf += liD2(tt('Training von Selbstkontrolle und Sorgfalt','Entraînement du contrôle de soi et du soin','Training of self-control and carefulness'));
+                if(tempo_low)   empf += liD2(tt('Prüfung von Nachteilsausgleich (Zeitverlängerung)','Examen d\'aménagements (tiers-temps)','Consideration of accommodations (extra time)'));
             }
             if(schwank_high) {
-                empf += '<li>Abklärung von Ermüdbarkeit und Ausdauer</li>';
+                empf += liD2(tt('Abklärung von Ermüdbarkeit und Ausdauer','Bilan de la fatigabilité et de l\'endurance','Assessment of fatigability and endurance'));
             }
             if(!kl_low && !fehler_high) {
-                empf += '<li>Keine spezifische Intervention erforderlich</li>';
-                empf += '<li>Aufmerksamkeitsfunktionen im Normbereich</li>';
+                empf += liD2(tt('Keine spezifische Intervention erforderlich','Aucune intervention spécifique requise','No specific intervention required'));
+                empf += liD2(tt('Aufmerksamkeitsfunktionen im Normbereich','Fonctions attentionnelles dans la norme','Attention functions in normal range'));
             }
             empf += '</ul>';
 
             const gutachten = `
                 <div class="gutachten">
-                    ${gutachtenHeader('d2-R', 'Aufmerksamkeits- und Konzentrationstest – Revision', pat)}
+                    ${gutachtenHeader('d2-R', tt('Aufmerksamkeits- und Konzentrationstest – Revision','Test d\'attention et de concentration – Révision','Attention and Concentration Test – Revision'), pat)}
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <h4 class="gutachten-section-title">${tt('1. Testbeschreibung','1. Description du test','1. Test description')}</h4>
                         <div class="gutachten-text">
-                            <p>Der d2-R (Brickenkamp, Schmidt-Atzert & Liepmann, 2010) ist ein standardisierter Aufmerksamkeits- und Konzentrationstest für Personen ab 9 Jahren. Der Test erfasst die Fähigkeit zur fokussierten und selektiven Aufmerksamkeit unter Zeitdruck.</p>
-                            <p>Die beiden zentralen Kennwerte sind die <strong>Konzentrationsleistung (KL)</strong> – die Tempo und Sorgfalt zu einem Index integriert – und die <strong>Bearbeitungsgeschwindigkeit-Ordnung (BZO)</strong>, die das reine Arbeitstempo bereinigt um Auslassungsfehler abbildet. Ergänzt werden diese durch Gesamtfehler (F), Fehlerprozent (F%) und Schwankungsbreite (SB). Die Ergebnisse werden als Prozentränge (PR) angegeben. PR 16-84: Durchschnitt, PR 7-15 bzw. 85-93: leicht unter-/überdurchschnittlich, PR &lt;7 bzw. &gt;93: deutlich abweichend.</p>
+                            <p>${tt(
+                                'Der d2-R (Brickenkamp, Schmidt-Atzert & Liepmann, 2010) ist ein standardisierter Aufmerksamkeits- und Konzentrationstest für Personen ab 9 Jahren. Der Test erfasst die Fähigkeit zur fokussierten und selektiven Aufmerksamkeit unter Zeitdruck.',
+                                'Le d2-R (Brickenkamp, Schmidt-Atzert & Liepmann, 2010) est un test standardisé d\'attention et de concentration pour personnes à partir de 9 ans. Il évalue la capacité d\'attention focalisée et sélective sous pression temporelle.',
+                                'The d2-R (Brickenkamp, Schmidt-Atzert & Liepmann, 2010) is a standardised attention and concentration test for individuals from age 9. It assesses focused and selective attention under time pressure.'
+                            )}</p>
+                            <p>${tt(
+                                'Die beiden zentralen Kennwerte sind die <strong>Konzentrationsleistung (KL)</strong> – die Tempo und Sorgfalt zu einem Index integriert – und die <strong>Bearbeitungsgeschwindigkeit-Ordnung (BZO)</strong>, die das reine Arbeitstempo bereinigt um Auslassungsfehler abbildet. Ergänzt werden diese durch Gesamtfehler (F), Fehlerprozent (F%) und Schwankungsbreite (SB). Die Ergebnisse werden als Prozentränge (PR) angegeben. PR 16-84: Durchschnitt, PR 7-15 bzw. 85-93: leicht unter-/überdurchschnittlich, PR &lt;7 bzw. &gt;93: deutlich abweichend.',
+                                'Les deux indices centraux sont la <strong>Performance de concentration (KL)</strong> – qui intègre vitesse et soin – et la <strong>Vitesse de traitement-ordre (BZO)</strong>, qui reflète le tempo pur corrigé des omissions. S\'y ajoutent les Erreurs totales (F), le Pourcentage d\'erreurs (F%) et l\'Amplitude de variation (SB). Les résultats sont rapportés en rangs centiles (RC). RC 16-84 : moyen, RC 7-15 ou 85-93 : légèrement inférieur/supérieur, RC <7 ou >93 : nettement déviant.',
+                                'The two central indices are <strong>Concentration Performance (KL)</strong> – integrating speed and carefulness – and <strong>Processing Speed–Order (BZO)</strong>, which reflects pure work tempo adjusted for omissions. These are complemented by Total Errors (F), Error Percentage (F%) and Variability Range (SB). Results are reported as percentile ranks (PR). PR 16-84: average, PR 7-15 or 85-93: slightly below/above average, PR <7 or >93: clearly deviant.'
+                            )}</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <h4 class="gutachten-section-title">${tt('2. Testergebnisse','2. Résultats','2. Test results')}</h4>
                         <table class="gutachten-table">
-                            <thead><tr><th>Kennwert</th><th>Prozentrang</th><th>Bedeutung</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${tt('Kennwert','Indice','Index')}</th><th>${tt('Prozentrang','Rang centile','Percentile rank')}</th><th>${tt('Bedeutung','Signification','Meaning')}</th><th>${tt('Klassifikation','Classification','Classification')}</th></tr></thead>
                             <tbody>
-                                ${valid.map(([k,x])=>`<tr${k==='kl'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${D2R_SCALES[k].n}</td><td>PR ${x}</td><td>${D2R_SCALES[k].desc}</td><td class="${c[k]}">${D2R_SCALES[k].inv ? prTextInv(c[k]) : prText(c[k])}</td></tr>`).join('')}
+                                ${valid.map(([k,x])=>`<tr${k==='kl'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${d2rScaleName(k)}</td><td>PR ${x}</td><td>${d2rScaleDesc(k)}</td><td class="${c[k]}">${D2R_SCALES[k].inv ? prTextInv(c[k]) : prText(c[k])}</td></tr>`).join('')}
                             </tbody>
                         </table>
-                        <p style="margin-top:1rem;font-size:0.85rem;color:var(--text-muted);">Hinweis: Bei Fehler (F), Fehlerprozent (F%) und Schwankungsbreite (SB) sind hohe Prozentränge ungünstig.</p>
+                        <p style="margin-top:1rem;font-size:0.85rem;color:var(--text-muted);">${tt(
+                            'Hinweis: Bei Fehler (F), Fehlerprozent (F%) und Schwankungsbreite (SB) sind hohe Prozentränge ungünstig.',
+                            'Note : pour Erreurs (F), Pourcentage d\'erreurs (F%) et Amplitude (SB), des rangs centiles élevés sont défavorables.',
+                            'Note: for Errors (F), Error Percentage (F%) and Variability (SB), high percentile ranks are unfavourable.'
+                        )}</p>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Interpretation</h4>
+                        <h4 class="gutachten-section-title">${tt('3. Interpretation','3. Interprétation','3. Interpretation')}</h4>
                         <div class="gutachten-text">
                             <p>${interp}</p>
-                            ${kl_low ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Unterdurchschnittliche Konzentrationsleistung kann schulische und alltägliche Anforderungen beeinträchtigen.</div>' : ''}
-                            ${fehler_high && !kl_low ? '<div class="gutachten-highlight"><strong>Hinweis:</strong> Erhöhte Fehlerrate bei durchschnittlichem Tempo kann auf Impulsivität hindeuten.</div>' : ''}
+                            ${kl_low ? `<div class="gutachten-warning"><strong>${tt('Klinische Relevanz:','Pertinence clinique :','Clinical relevance:')}</strong> ${tt(
+                                'Unterdurchschnittliche Konzentrationsleistung kann schulische und alltägliche Anforderungen beeinträchtigen.',
+                                'Une performance de concentration inférieure peut altérer les exigences scolaires et quotidiennes.',
+                                'Below-average concentration performance can impair school and daily-life demands.'
+                            )}</div>` : ''}
+                            ${fehler_high && !kl_low ? `<div class="gutachten-highlight"><strong>${tt('Hinweis:','Note :','Note:')}</strong> ${tt(
+                                'Erhöhte Fehlerrate bei durchschnittlichem Tempo kann auf Impulsivität hindeuten.',
+                                'Un taux d\'erreur élevé avec un tempo moyen peut indiquer une impulsivité.',
+                                'An elevated error rate with average speed may indicate impulsivity.'
+                            )}</div>` : ''}
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Diagnostische Einordnung</h4>
+                        <h4 class="gutachten-section-title">${tt('4. Diagnostische Einordnung','4. Classification diagnostique','4. Diagnostic classification')}</h4>
                         <div class="gutachten-text">
-                            <p>Der d2-R misst selektive Aufmerksamkeit, die bei verschiedenen Störungsbildern beeinträchtigt sein kann:</p>
+                            <p>${tt(
+                                'Der d2-R misst selektive Aufmerksamkeit, die bei verschiedenen Störungsbildern beeinträchtigt sein kann:',
+                                'Le d2-R mesure l\'attention sélective, pouvant être altérée dans divers tableaux :',
+                                'The d2-R measures selective attention, which can be impaired in various conditions:'
+                            )}</p>
                             ${kl_low || fehler_high ? `
-                                <span class="icd-code">F90.0</span> ADHS (Aufmerksamkeitsdefizit)<br>
-                                <span class="icd-code">F90.1</span> Hyperkinetische Störung des Sozialverhaltens<br>
-                                <span class="icd-code">R41.8</span> Sonstige Symptome, die die kognitiven Funktionen betreffen
-                            ` : '<p>Bei unauffälligem Profil keine spezifischen diagnostischen Hinweise.</p>'}
-                            <p style="margin-top:1rem;"><strong>Wichtig:</strong> Der d2-R allein erlaubt keine ADHS-Diagnose. Er erfasst nur einen Aspekt der Aufmerksamkeit und sollte im Kontext weiterer Diagnostik interpretiert werden.</p>
+                                <span class="icd-code">F90.0</span> ${tt('ADHS (Aufmerksamkeitsdefizit)','TDAH (déficit attentionnel)','ADHD (Attention Deficit)')}<br>
+                                <span class="icd-code">F90.1</span> ${tt('Hyperkinetische Störung des Sozialverhaltens','Trouble hyperkinétique des conduites','Hyperkinetic Conduct Disorder')}<br>
+                                <span class="icd-code">R41.8</span> ${tt('Sonstige Symptome, die die kognitiven Funktionen betreffen','Autres symptômes touchant les fonctions cognitives','Other symptoms affecting cognitive functions')}
+                            ` : `<p>${tt('Bei unauffälligem Profil keine spezifischen diagnostischen Hinweise.','Profil normal – pas d\'indication diagnostique spécifique.','Normal profile – no specific diagnostic indications.')}</p>`}
+                            <p style="margin-top:1rem;"><strong>${tt('Wichtig:','Important :','Important:')}</strong> ${tt(
+                                'Der d2-R allein erlaubt keine ADHS-Diagnose. Er erfasst nur einen Aspekt der Aufmerksamkeit und sollte im Kontext weiterer Diagnostik interpretiert werden.',
+                                'Le d2-R seul ne permet pas un diagnostic TDAH. Il évalue uniquement un aspect de l\'attention et devrait être interprété dans le contexte d\'un bilan plus large.',
+                                'The d2-R alone does not allow ADHD diagnosis. It assesses only one aspect of attention and should be interpreted within a broader diagnostic context.'
+                            )}</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">5. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">${tt('5. Empfehlungen','5. Recommandations','5. Recommendations')}</h4>
                         <div class="gutachten-text">${empf}</div>
                     </div>
 
                     ${elternZusammenfassung(
-                        'd2-R (Konzentrationstest)',
+                        tt('d2-R (Konzentrationstest)','d2-R (test de concentration)','d2-R (concentration test)'),
                         !kl_low && !tempo_low && !fehler_high
-                            ? `${pat.name} zeigt eine gute Konzentrationsfähigkeit. Die Leistung bei dieser anspruchsvollen Aufgabe entspricht dem Durchschnitt oder liegt darüber. Das bedeutet, dass Ihr Kind in der Lage ist, auch bei monotonen Aufgaben aufmerksam zu bleiben und sorgfältig zu arbeiten.`
+                            ? tt(
+                                `${pat.name} zeigt eine gute Konzentrationsfähigkeit. Die Leistung bei dieser anspruchsvollen Aufgabe entspricht dem Durchschnitt oder liegt darüber. Das bedeutet, dass Ihr Kind in der Lage ist, auch bei monotonen Aufgaben aufmerksam zu bleiben und sorgfältig zu arbeiten.`,
+                                `${pat.name} montre une bonne capacité de concentration. La performance à cette tâche exigeante correspond à la moyenne ou se situe au-dessus. Cela signifie que votre enfant peut rester attentif·ve et travailler soigneusement même lors de tâches monotones.`,
+                                `${pat.name} shows good concentration ability. Performance on this demanding task matches the average or is above. This means your child is able to stay attentive and work carefully even on monotonous tasks.`
+                            )
                             : kl_low && !fehler_high
-                                ? `${pat.name} zeigt eine unterdurchschnittliche Konzentrationsleistung. Das bedeutet, dass es schwerer fällt, bei dieser Art von Aufgabe aufmerksam und schnell zu arbeiten. Dies kann verschiedene Ursachen haben - von Müdigkeit am Testtag bis zu grundlegenden Aufmerksamkeitsproblemen.`
+                                ? tt(
+                                    `${pat.name} zeigt eine unterdurchschnittliche Konzentrationsleistung. Das bedeutet, dass es schwerer fällt, bei dieser Art von Aufgabe aufmerksam und schnell zu arbeiten. Dies kann verschiedene Ursachen haben - von Müdigkeit am Testtag bis zu grundlegenden Aufmerksamkeitsproblemen.`,
+                                    `${pat.name} montre une performance de concentration inférieure. Cela signifie qu'il est plus difficile pour ${pat.name} de travailler attentivement et rapidement sur ce type de tâche. Les causes peuvent être diverses – de la fatigue le jour du test à des problèmes attentionnels fondamentaux.`,
+                                    `${pat.name} shows below-average concentration performance. This means it is harder for ${pat.name} to work attentively and quickly on this type of task. Causes can vary – from fatigue on test day to fundamental attention problems.`
+                                )
                                 : fehler_high && !tempo_low
-                                    ? `${pat.name} arbeitet zwar schnell, macht dabei aber mehr Fehler als üblich. Dies kann ein Hinweis auf Impulsivität sein - also die Tendenz, zu schnell zu antworten, ohne genau hinzuschauen. Mit gezieltem Training kann die Sorgfalt verbessert werden.`
-                                    : `${pat.name} zeigt Schwierigkeiten sowohl beim Arbeitstempo als auch bei der Sorgfalt. Die Konzentrationsleistung liegt unter dem Durchschnitt. Dies sollte weiter abgeklärt werden, da verschiedene Ursachen möglich sind.`,
+                                    ? tt(
+                                        `${pat.name} arbeitet zwar schnell, macht dabei aber mehr Fehler als üblich. Dies kann ein Hinweis auf Impulsivität sein - also die Tendenz, zu schnell zu antworten, ohne genau hinzuschauen. Mit gezieltem Training kann die Sorgfalt verbessert werden.`,
+                                        `${pat.name} travaille rapidement, mais commet plus d'erreurs que d'habitude. Cela peut indiquer une impulsivité – tendance à répondre trop vite sans bien regarder. Avec un entraînement ciblé, le soin peut s'améliorer.`,
+                                        `${pat.name} works quickly but makes more errors than usual. This may indicate impulsivity – the tendency to answer too quickly without looking carefully. With targeted training, carefulness can improve.`
+                                    )
+                                    : tt(
+                                        `${pat.name} zeigt Schwierigkeiten sowohl beim Arbeitstempo als auch bei der Sorgfalt. Die Konzentrationsleistung liegt unter dem Durchschnitt. Dies sollte weiter abgeklärt werden, da verschiedene Ursachen möglich sind.`,
+                                        `${pat.name} montre des difficultés tant au niveau du tempo que du soin. La performance de concentration est inférieure à la moyenne. Cela devrait être exploré davantage, car plusieurs causes sont possibles.`,
+                                        `${pat.name} shows difficulties both with work tempo and carefulness. Concentration performance is below average. This should be further investigated as various causes are possible.`
+                                    ),
                         !kl_low && !fehler_high
-                            ? ['Die Konzentrationsfähigkeit ist gut', 'Weiterhin auf ausreichend Schlaf und Pausen achten']
-                            : ['Ein einzelner Test gibt keine endgültige Antwort', 'Bei Verdacht auf ADHS: umfassende Diagnostik empfohlen', 'Konzentrationsübungen können hilfreich sein', 'Achten Sie auf ausreichend Schlaf und Bewegung']
+                            ? [
+                                tt('Die Konzentrationsfähigkeit ist gut','La capacité de concentration est bonne','Concentration ability is good'),
+                                tt('Weiterhin auf ausreichend Schlaf und Pausen achten','Continuer à veiller à un sommeil et des pauses suffisants','Continue to ensure adequate sleep and breaks')
+                              ]
+                            : [
+                                tt('Ein einzelner Test gibt keine endgültige Antwort','Un seul test ne donne pas de réponse définitive','A single test does not give a definitive answer'),
+                                tt('Bei Verdacht auf ADHS: umfassende Diagnostik empfohlen','En cas de suspicion de TDAH : bilan complet recommandé','If ADHD is suspected: comprehensive assessment recommended'),
+                                tt('Konzentrationsübungen können hilfreich sein','Des exercices de concentration peuvent aider','Concentration exercises can help'),
+                                tt('Achten Sie auf ausreichend Schlaf und Bewegung','Veillez à un sommeil et une activité physique suffisants','Ensure adequate sleep and physical activity')
+                              ]
                     )}
 
                     ${gutachtenFooter()}
@@ -6665,11 +6769,11 @@
             `;
 
             document.getElementById('d2r-results').innerHTML = `
-                <div class="results-header"><h3 class="results-title">Ergebnis d2-R</h3></div>
-                ${summary(valid.map(([k,x])=>({l:labels[k],v:'PR '+x,c:c[k],s:c[k]==='normal'?'Durchschn.':c[k]==='borderline'?'Unter':'Weit unter'})))}
+                <div class="results-header"><h3 class="results-title">${tt('Ergebnis d2-R','Résultat d2-R','d2-R result')}</h3></div>
+                ${summary(valid.map(([k,x])=>({l:labels[k],v:'PR '+x,c:c[k],s:c[k]==='normal'?tt('Durchschn.','Moyen','Average'):c[k]==='borderline'?tt('Unter','Inférieur','Below'):tt('Weit unter','Très inférieur','Very low')})))}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
-                    <button class="btn btn-primary" onclick="exportTestToWord('d2r')">📝 Als Word exportieren (.doc)</button>
+                    <button class="btn btn-primary" onclick="exportTestToWord('d2r')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
                 </div>
             `;
             showLocalizedResults('d2r-results');
