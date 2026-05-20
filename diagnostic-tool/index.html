@@ -3637,11 +3637,23 @@
             if (!showElternSummary()) return '';
             return `
                 <div class="eltern-zusammenfassung">
-                    <h4>Zusammenfassung für Eltern und Erziehungsberechtigte</h4>
-                    <p><strong>Was wurde untersucht?</strong> Mit dem ${testname} haben wir untersucht, wie es Ihrem Kind in bestimmten Bereichen geht. Dieser Test wird weltweit eingesetzt und gibt uns wichtige Hinweise.</p>
-                    <p><strong>Was zeigen die Ergebnisse?</strong> ${befund}</p>
-                    ${empfehlungen ? `<p><strong>Was empfehlen wir?</strong></p><ul>${empfehlungen.map(e => `<li>${e}</li>`).join('')}</ul>` : ''}
-                    <p style="margin-top:1rem;font-size:0.9rem;color:var(--text-muted);">Bei Fragen zu diesen Ergebnissen wenden Sie sich bitte an die untersuchende Fachperson, die Ihnen die Befunde gerne persönlich erläutert.</p>
+                    <h4>${tt(
+                        'Zusammenfassung für Eltern und Erziehungsberechtigte',
+                        'Résumé à l\'attention des parents / responsables légaux',
+                        'Summary for parents and legal guardians'
+                    )}</h4>
+                    <p><strong>${tt('Was wurde untersucht?', 'Qu\'a-t-on examiné ?', 'What was assessed?')}</strong> ${tt(
+                        `Mit dem ${testname} haben wir untersucht, wie es Ihrem Kind in bestimmten Bereichen geht. Dieser Test wird weltweit eingesetzt und gibt uns wichtige Hinweise.`,
+                        `Au moyen du ${testname}, nous avons examiné comment votre enfant se situe dans certains domaines. Ce test est utilisé dans le monde entier et nous fournit des indications importantes.`,
+                        `Using the ${testname} we assessed how your child is doing in specific domains. This test is used worldwide and provides important indications.`
+                    )}</p>
+                    <p><strong>${tt('Was zeigen die Ergebnisse?', 'Que montrent les résultats ?', 'What do the results show?')}</strong> ${befund}</p>
+                    ${empfehlungen ? `<p><strong>${tt('Was empfehlen wir?', 'Que recommandons-nous ?', 'What do we recommend?')}</strong></p><ul>${empfehlungen.map(e => `<li>${e}</li>`).join('')}</ul>` : ''}
+                    <p style="margin-top:1rem;font-size:0.9rem;color:var(--text-muted);">${tt(
+                        'Bei Fragen zu diesen Ergebnissen wenden Sie sich bitte an die untersuchende Fachperson, die Ihnen die Befunde gerne persönlich erläutert.',
+                        'Pour toute question concernant ces résultats, veuillez vous adresser à la personne professionnelle ayant réalisé l\'examen, qui vous expliquera volontiers les résultats en personne.',
+                        'For any questions regarding these results, please contact the examining professional, who will gladly explain the findings in person.'
+                    )}</p>
                 </div>
             `;
         }
