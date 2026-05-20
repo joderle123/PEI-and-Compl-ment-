@@ -2022,7 +2022,7 @@
                     </div>
                     <p class="card-subtitle">Vineland Adaptive Behavior Scales – Alltagskompetenzen und adaptives Verhalten 0-90 Jahre</p>
                 </div>
-                <form id="vineland-form" onsubmit="evaluateVineland(event)">
+                <form id="vineland-form" data-i18n-native="1" onsubmit="evaluateVineland(event)">
                     <div class="form-section">
                         <div class="form-section-title">Beurteiler</div>
                         <div class="radio-group">
@@ -7419,54 +7419,54 @@
             const pat = getPatient();
             const pronomen = pat.sex === 'w' ? {er:'sie',sein:'ihr',ihm:'ihr',den:'die'} : {er:'er',sein:'sein',ihm:'ihm',den:'den'};
             const resp = document.querySelector('input[name="vineland-resp"]:checked').value;
-            const respText = {parent:'der Eltern/Bezugsperson',teacher:'der Lehrkraft/Erzieher/in'}[resp];
+            const respText = tt(
+                {parent:'der Eltern/Bezugsperson',teacher:'der Lehrkraft/Erzieher/in'}[resp],
+                {parent:'des parents / aidants',teacher:'de l\'enseignant·e / éducateur·trice'}[resp],
+                {parent:'the parents / caregivers',teacher:'the teacher / educator'}[resp]
+            );
 
-            // Hauptdomänen (Standardwerte M=100, SD=15)
             const domains = {
-                com: {v:v('vin-com'), n:'Kommunikation', desc:'Sprachverständnis, Ausdruck, Schriftsprache'},
-                dls: {v:v('vin-dls'), n:'Alltagsfertigkeiten', desc:'Selbstversorgung, Haushalt, Orientierung'},
-                soc: {v:v('vin-soc'), n:'Sozialisation', desc:'Beziehungen, Spiel, Bewältigung'},
-                mot: {v:v('vin-mot'), n:'Motorik', desc:'Grob- und Feinmotorik'}
+                com: {v:v('vin-com'), n:tt('Kommunikation','Communication','Communication'), desc:tt('Sprachverständnis, Ausdruck, Schriftsprache','Compréhension, expression, écrit','Receptive, expressive, written language')},
+                dls: {v:v('vin-dls'), n:tt('Alltagsfertigkeiten','Compétences quotidiennes','Daily Living Skills'), desc:tt('Selbstversorgung, Haushalt, Orientierung','Autonomie personnelle, ménage, orientation','Personal care, household, community')},
+                soc: {v:v('vin-soc'), n:tt('Sozialisation','Socialisation','Socialisation'), desc:tt('Beziehungen, Spiel, Bewältigung','Relations, jeu, adaptation','Relationships, play, coping')},
+                mot: {v:v('vin-mot'), n:tt('Motorik','Motricité','Motor Skills'), desc:tt('Grob- und Feinmotorik','Motricité globale et fine','Gross and fine motor skills')}
             };
 
             const abc = v('vin-abc');
             const abcPr = v('vin-abc-pr');
 
-            // Subdomänen (v-Skalenwerte M=15, SD=3)
             const subdomains = {
-                rec: {v:v('vin-rec'), n:'Rezeptiv', parent:'com'},
-                exp: {v:v('vin-exp'), n:'Expressiv', parent:'com'},
-                wri: {v:v('vin-wri'), n:'Schriftlich', parent:'com'},
-                per: {v:v('vin-per'), n:'Persönlich', parent:'dls'},
-                dom: {v:v('vin-dom'), n:'Haushalt', parent:'dls'},
-                cmm: {v:v('vin-cmm'), n:'Gemeinschaft', parent:'dls'},
-                int: {v:v('vin-int'), n:'Beziehungen', parent:'soc'},
-                play: {v:v('vin-play'), n:'Spiel/Freizeit', parent:'soc'},
-                cop: {v:v('vin-cop'), n:'Coping', parent:'soc'}
+                rec:  {v:v('vin-rec'),  n:tt('Rezeptiv','Réceptif','Receptive'), parent:'com'},
+                exp:  {v:v('vin-exp'),  n:tt('Expressiv','Expressif','Expressive'), parent:'com'},
+                wri:  {v:v('vin-wri'),  n:tt('Schriftlich','Écrit','Written'), parent:'com'},
+                per:  {v:v('vin-per'),  n:tt('Persönlich','Personnel','Personal'), parent:'dls'},
+                dom:  {v:v('vin-dom'),  n:tt('Haushalt','Ménage','Domestic'), parent:'dls'},
+                cmm:  {v:v('vin-cmm'),  n:tt('Gemeinschaft','Communauté','Community'), parent:'dls'},
+                int:  {v:v('vin-int'),  n:tt('Beziehungen','Relations','Interpersonal'), parent:'soc'},
+                play: {v:v('vin-play'), n:tt('Spiel/Freizeit','Jeu/loisirs','Play / Leisure'), parent:'soc'},
+                cop:  {v:v('vin-cop'),  n:tt('Coping','Adaptation','Coping'), parent:'soc'}
             };
 
             const maladaptive = v('vin-mal');
 
             const validDomains = Object.entries(domains).filter(([k,d])=>d.v!==null);
-            if(!abc && validDomains.length === 0) return alert('Bitte mindestens den ABC-Gesamtwert oder Domänenwerte eingeben');
+            if(!abc && validDomains.length === 0) return alert(tt('Bitte mindestens den ABC-Gesamtwert oder Domänenwerte eingeben','Veuillez saisir au moins le score ABC ou des scores de domaine','Please enter at least the ABC composite or domain scores'));
 
-            // Klassifikation für Standardwerte (M=100, SD=15)
             const classifyStandard = (val) => {
-                if(val >= 130) return {l:'Weit überdurchschnittlich', c:'vhigh', pr:'≥98'};
-                if(val >= 115) return {l:'Überdurchschnittlich', c:'high', pr:'84-97'};
-                if(val >= 85) return {l:'Durchschnittlich', c:'normal', pr:'16-84'};
-                if(val >= 70) return {l:'Unterdurchschnittlich', c:'borderline', pr:'3-15'};
-                if(val >= 50) return {l:'Niedrig', c:'clinical', pr:'1-2'};
-                return {l:'Sehr niedrig', c:'clinical', pr:'<1'};
+                if(val >= 130) return {l:tt('Weit überdurchschnittlich','Très supérieur','Very superior'), c:'vhigh', pr:'≥98'};
+                if(val >= 115) return {l:tt('Überdurchschnittlich','Supérieur','Above average'), c:'high', pr:'84-97'};
+                if(val >= 85)  return {l:tt('Durchschnittlich','Moyen','Average'), c:'normal', pr:'16-84'};
+                if(val >= 70)  return {l:tt('Unterdurchschnittlich','Inférieur','Below average'), c:'borderline', pr:'3-15'};
+                if(val >= 50)  return {l:tt('Niedrig','Bas','Low'), c:'clinical', pr:'1-2'};
+                return {l:tt('Sehr niedrig','Très bas','Very low'), c:'clinical', pr:'<1'};
             };
 
-            // Klassifikation für v-Skalenwerte (M=15, SD=3)
             const classifyVScale = (val) => {
-                if(val >= 21) return {l:'Weit überdurchschnittlich', c:'vhigh'};
-                if(val >= 18) return {l:'Überdurchschnittlich', c:'high'};
-                if(val >= 12) return {l:'Durchschnittlich', c:'normal'};
-                if(val >= 9) return {l:'Unterdurchschnittlich', c:'borderline'};
-                return {l:'Niedrig', c:'clinical'};
+                if(val >= 21) return {l:tt('Weit überdurchschnittlich','Très supérieur','Very superior'), c:'vhigh'};
+                if(val >= 18) return {l:tt('Überdurchschnittlich','Supérieur','Above average'), c:'high'};
+                if(val >= 12) return {l:tt('Durchschnittlich','Moyen','Average'), c:'normal'};
+                if(val >= 9)  return {l:tt('Unterdurchschnittlich','Inférieur','Below average'), c:'borderline'};
+                return {l:tt('Niedrig','Bas','Low'), c:'clinical'};
             };
 
             const abcClass = abc ? classifyStandard(abc) : null;
@@ -7490,125 +7490,215 @@
                 <div class="gutachten">
                     ${gutachtenHeader('Vineland-3', 'Vineland Adaptive Behavior Scales – Third Edition', pat)}
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <h4 class="gutachten-section-title">${tt('1. Testbeschreibung','1. Description du test','1. Test description')}</h4>
                         <div class="gutachten-text">
-                            <p>Die Vineland Adaptive Behavior Scales (Vineland-3; Sparrow, Cicchetti & Saulnier, 2016; deutsche Fassung: 2020) sind ein standardisiertes Verfahren zur Erfassung adaptiver Verhaltenskompetenzen. Im Gegensatz zu Intelligenztests messen die Vineland-Skalen nicht das kognitive Potenzial, sondern das tatsächlich gezeigte Verhalten im Alltag.</p>
-                            <p>Das Verfahren erfasst vier Hauptdomänen: Kommunikation (rezeptiv, expressiv, schriftlich), Alltagsfertigkeiten (persönlich, häuslich, gemeinschaftlich), Sozialisation (zwischenmenschliche Beziehungen, Spiel und Freizeit, Bewältigungsstrategien) sowie Motorik (Grob- und Feinmotorik). Aus diesen Domänen wird der Adaptive Behavior Composite (ABC) als Gesamtmaß berechnet.</p>
-                            <p>Die Datenerhebung erfolgte mittels ${resp === 'parent' ? 'Elterninterview' : 'Lehrereinschätzung'} (${respText}).</p>
+                            <p>${tt(
+                                'Die Vineland Adaptive Behavior Scales (Vineland-3; Sparrow, Cicchetti & Saulnier, 2016; deutsche Fassung: 2020) sind ein standardisiertes Verfahren zur Erfassung adaptiver Verhaltenskompetenzen. Im Gegensatz zu Intelligenztests messen die Vineland-Skalen nicht das kognitive Potenzial, sondern das tatsächlich gezeigte Verhalten im Alltag.',
+                                'Les Vineland Adaptive Behavior Scales (Vineland-3 ; Sparrow, Cicchetti & Saulnier, 2016 ; version allemande : 2020) constituent un instrument standardisé pour évaluer les compétences adaptatives. Contrairement aux tests d\'intelligence, l\'échelle Vineland mesure non pas le potentiel cognitif mais le comportement effectivement manifesté au quotidien.',
+                                'The Vineland Adaptive Behavior Scales (Vineland-3; Sparrow, Cicchetti & Saulnier, 2016; German version: 2020) are a standardised instrument for assessing adaptive behaviour competencies. Unlike IQ tests, the Vineland measures not cognitive potential but the behaviour actually shown in daily life.'
+                            )}</p>
+                            <p>${tt(
+                                'Das Verfahren erfasst vier Hauptdomänen: Kommunikation (rezeptiv, expressiv, schriftlich), Alltagsfertigkeiten (persönlich, häuslich, gemeinschaftlich), Sozialisation (zwischenmenschliche Beziehungen, Spiel und Freizeit, Bewältigungsstrategien) sowie Motorik (Grob- und Feinmotorik). Aus diesen Domänen wird der Adaptive Behavior Composite (ABC) als Gesamtmaß berechnet.',
+                                'L\'instrument couvre quatre domaines principaux : Communication (réceptif, expressif, écrit), Compétences quotidiennes (personnel, ménager, communautaire), Socialisation (relations, jeu / loisirs, adaptation) et Motricité (globale et fine). À partir de ces domaines, l\'Adaptive Behavior Composite (ABC) est calculé comme indice global.',
+                                'The procedure covers four main domains: Communication (receptive, expressive, written), Daily Living Skills (personal, domestic, community), Socialisation (interpersonal, play/leisure, coping) and Motor Skills (gross and fine). The Adaptive Behavior Composite (ABC) is derived as the overall measure.'
+                            )}</p>
+                            <p>${tt(
+                                `Die Datenerhebung erfolgte mittels ${resp === 'parent' ? 'Elterninterview' : 'Lehrereinschätzung'} (${respText}).`,
+                                `Les données ont été recueillies par ${resp === 'parent' ? 'entretien parental' : 'évaluation enseignant·e'} (${respText}).`,
+                                `Data were collected via ${resp === 'parent' ? 'parent interview' : 'teacher rating'} (${respText}).`
+                            )}</p>
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <h4 class="gutachten-section-title">${tt('2. Testergebnisse','2. Résultats','2. Test results')}</h4>
                         <div class="gutachten-text">
-                            <p>Die Ergebnisse werden als Standardwerte (M=100, SD=15) berichtet. Werte zwischen 85 und 115 gelten als durchschnittlich.</p>
+                            <p>${tt(
+                                'Die Ergebnisse werden als Standardwerte (M=100, SD=15) berichtet. Werte zwischen 85 und 115 gelten als durchschnittlich.',
+                                'Les résultats sont rapportés en scores standards (M=100, ET=15). Les valeurs entre 85 et 115 sont considérées comme moyennes.',
+                                'Results are reported as standard scores (M=100, SD=15). Values between 85 and 115 are considered average.'
+                            )}</p>
                         </div>
                         <table class="gutachten-table">
-                            <thead><tr><th>Domäne</th><th>Standardwert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${tt('Domäne','Domaine','Domain')}</th><th>${tt('Standardwert','Score standard','Standard score')}</th><th>${tt('Prozentrang','Rang centile','Percentile rank')}</th><th>${tt('Klassifikation','Classification','Classification')}</th></tr></thead>
                             <tbody>
-                                ${abcVal ? `<tr style="font-weight:700;background:var(--bg-input);"><td><strong>Adaptive Behavior Composite (ABC)</strong></td><td><strong>${abcVal}</strong></td><td>${abcPr || abcClassFinal.pr}</td><td class="${abcClassFinal.c}"><strong>${abcClassFinal.l}</strong></td></tr>` : ''}
+                                ${abcVal ? `<tr style="font-weight:700;background:var(--bg-input);"><td><strong>${tt('Adaptive Behavior Composite (ABC)','Adaptive Behavior Composite (ABC)','Adaptive Behavior Composite (ABC)')}</strong></td><td><strong>${abcVal}</strong></td><td>${abcPr || abcClassFinal.pr}</td><td class="${abcClassFinal.c}"><strong>${abcClassFinal.l}</strong></td></tr>` : ''}
                                 ${validDomains.map(([k,d]) => `<tr><td>${d.n}</td><td>${d.v}</td><td>${domainClasses[k].pr}</td><td class="${domainClasses[k].c}">${domainClasses[k].l}</td></tr>`).join('')}
                             </tbody>
                         </table>
                         ${validSubdomains.length > 0 ? `
-                            <p style="margin-top:1.5rem;"><strong>Subdomänen (v-Skalenwerte, M=15, SD=3):</strong></p>
+                            <p style="margin-top:1.5rem;"><strong>${tt('Subdomänen (v-Skalenwerte, M=15, SD=3):','Sous-domaines (scores en notes v, M=15, ET=3) :','Subdomains (v-scale scores, M=15, SD=3):')}</strong></p>
                             <table class="gutachten-table">
-                                <thead><tr><th>Subdomäne</th><th>v-Wert</th><th>Klassifikation</th></tr></thead>
+                                <thead><tr><th>${tt('Subdomäne','Sous-domaine','Subdomain')}</th><th>${tt('v-Wert','Score v','v-score')}</th><th>${tt('Klassifikation','Classification','Classification')}</th></tr></thead>
                                 <tbody>
                                     ${validSubdomains.map(([k,s]) => `<tr><td>${s.n} (${domains[s.parent]?.n || s.parent})</td><td>${s.v}</td><td class="${classifyVScale(s.v).c}">${classifyVScale(s.v).l}</td></tr>`).join('')}
                                 </tbody>
                             </table>
                         ` : ''}
                         ${maladaptive ? `
-                            <p style="margin-top:1.5rem;"><strong>Maladaptives Verhalten:</strong></p>
+                            <p style="margin-top:1.5rem;"><strong>${tt('Maladaptives Verhalten:','Comportement maladaptatif :','Maladaptive behaviour:')}</strong></p>
                             <table class="gutachten-table">
-                                <thead><tr><th>Skala</th><th>v-Wert</th><th>Interpretation</th></tr></thead>
+                                <thead><tr><th>${tt('Skala','Échelle','Scale')}</th><th>${tt('v-Wert','Score v','v-score')}</th><th>${tt('Interpretation','Interprétation','Interpretation')}</th></tr></thead>
                                 <tbody>
-                                    <tr><td>Maladaptiver Verhaltensindex</td><td>${maladaptive}</td><td class="${maladaptive >= 18 ? 'clinical' : maladaptive >= 15 ? 'borderline' : 'normal'}">${maladaptive >= 21 ? 'Stark erhöht' : maladaptive >= 18 ? 'Erhöht' : maladaptive >= 15 ? 'Leicht erhöht' : 'Durchschnittlich'}</td></tr>
+                                    <tr><td>${tt('Maladaptiver Verhaltensindex','Indice de comportement maladaptatif','Maladaptive Behaviour Index')}</td><td>${maladaptive}</td><td class="${maladaptive >= 18 ? 'clinical' : maladaptive >= 15 ? 'borderline' : 'normal'}">${maladaptive >= 21 ? tt('Stark erhöht','Fortement élevé','Severely elevated') : maladaptive >= 18 ? tt('Erhöht','Élevé','Elevated') : maladaptive >= 15 ? tt('Leicht erhöht','Légèrement élevé','Slightly elevated') : tt('Durchschnittlich','Moyen','Average')}</td></tr>
                                 </tbody>
                             </table>
                         ` : ''}
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Interpretation</h4>
+                        <h4 class="gutachten-section-title">${tt('3. Interpretation','3. Interprétation','3. Interpretation')}</h4>
                         <div class="gutachten-text">
-                            ${abcVal ? `<p>Der Adaptive Behavior Composite (ABC) von <strong>${abcVal}</strong> (PR: ${abcPr || abcClassFinal.pr}) zeigt, dass ${pat.name} insgesamt <strong>${abcClassFinal.l.toLowerCase()}e</strong> adaptive Fähigkeiten aufweist.</p>` : ''}
-                            ${abcVal && abcVal < 70 ? `<p>Das Gesamtniveau des adaptiven Verhaltens liegt deutlich unter dem Durchschnitt Gleichaltriger. Dies bedeutet, dass ${pat.name} im Alltag erheblich mehr Unterstützung benötigt als andere Kinder/Jugendliche ${pronomen.sein}es Alters.</p>` : ''}
-                            ${abcVal && abcVal >= 70 && abcVal < 85 ? `<p>Das adaptive Verhalten liegt im unterdurchschnittlichen Bereich. ${pat.name} zeigt in einigen Alltagsbereichen Entwicklungsrückstände und benötigt möglicherweise gezielte Förderung.</p>` : ''}
-                            ${abcVal && abcVal >= 85 && abcVal <= 115 ? `<p>Das adaptive Verhalten entspricht dem altersgemäßen Durchschnitt. ${pat.name} bewältigt alltägliche Anforderungen angemessen.</p>` : ''}
-                            ${abcVal && abcVal > 115 ? `<p>Das adaptive Verhalten liegt über dem Durchschnitt. ${pat.name} zeigt besonders gute Alltagskompetenzen.</p>` : ''}
+                            ${abcVal ? `<p>${tt(
+                                `Der Adaptive Behavior Composite (ABC) von <strong>${abcVal}</strong> (PR: ${abcPr || abcClassFinal.pr}) zeigt, dass ${pat.name} insgesamt <strong>${abcClassFinal.l.toLowerCase()}e</strong> adaptive Fähigkeiten aufweist.`,
+                                `L'Adaptive Behavior Composite (ABC) de <strong>${abcVal}</strong> (RC : ${abcPr || abcClassFinal.pr}) montre que ${pat.name} présente globalement des capacités adaptatives <strong>${abcClassFinal.l.toLowerCase()}es</strong>.`,
+                                `The Adaptive Behavior Composite (ABC) of <strong>${abcVal}</strong> (PR: ${abcPr || abcClassFinal.pr}) shows that ${pat.name} has overall <strong>${abcClassFinal.l.toLowerCase()}</strong> adaptive abilities.`
+                            )}</p>` : ''}
+                            ${abcVal && abcVal < 70 ? `<p>${tt(
+                                `Das Gesamtniveau des adaptiven Verhaltens liegt deutlich unter dem Durchschnitt Gleichaltriger. Dies bedeutet, dass ${pat.name} im Alltag erheblich mehr Unterstützung benötigt als andere Kinder/Jugendliche ${pronomen.sein}es Alters.`,
+                                `Le niveau global du comportement adaptatif est nettement inférieur à la moyenne des pairs. Cela signifie que ${pat.name} a besoin de beaucoup plus de soutien au quotidien que les autres enfants/adolescents de ${pat.sex === 'w' ? 'son' : 'son'} âge.`,
+                                `Overall adaptive behaviour is clearly below the peer average. This means ${pat.name} needs substantially more daily support than other children/adolescents of the same age.`
+                            )}</p>` : ''}
+                            ${abcVal && abcVal >= 70 && abcVal < 85 ? `<p>${tt(
+                                `Das adaptive Verhalten liegt im unterdurchschnittlichen Bereich. ${pat.name} zeigt in einigen Alltagsbereichen Entwicklungsrückstände und benötigt möglicherweise gezielte Förderung.`,
+                                `Le comportement adaptatif se situe dans la plage inférieure. ${pat.name} montre des retards développementaux dans certains domaines quotidiens et nécessite possiblement un soutien ciblé.`,
+                                `Adaptive behaviour falls in the below-average range. ${pat.name} shows developmental delays in some daily-life areas and may need targeted support.`
+                            )}</p>` : ''}
+                            ${abcVal && abcVal >= 85 && abcVal <= 115 ? `<p>${tt(
+                                `Das adaptive Verhalten entspricht dem altersgemäßen Durchschnitt. ${pat.name} bewältigt alltägliche Anforderungen angemessen.`,
+                                `Le comportement adaptatif correspond à la moyenne d'âge. ${pat.name} gère les exigences quotidiennes de manière adéquate.`,
+                                `Adaptive behaviour matches the age-appropriate average. ${pat.name} manages daily demands adequately.`
+                            )}</p>` : ''}
+                            ${abcVal && abcVal > 115 ? `<p>${tt(
+                                `Das adaptive Verhalten liegt über dem Durchschnitt. ${pat.name} zeigt besonders gute Alltagskompetenzen.`,
+                                `Le comportement adaptatif est au-dessus de la moyenne. ${pat.name} montre des compétences quotidiennes particulièrement bonnes.`,
+                                `Adaptive behaviour is above average. ${pat.name} shows particularly good daily-living skills.`
+                            )}</p>` : ''}
 
                             ${validDomains.length >= 2 && weakest && strongest && strongest.v - weakest.v >= 15 ? `
-                                <p><strong>Profilanalyse:</strong> Es zeigt sich ein heterogenes Profil mit einer Differenz von ${strongest.v - weakest.v} Punkten zwischen der stärksten Domäne (${strongest.n}: ${strongest.v}) und der schwächsten Domäne (${weakest.n}: ${weakest.v}). Dies deutet auf bereichsspezifische Stärken und Schwächen hin.</p>
+                                <p><strong>${tt('Profilanalyse:','Analyse du profil :','Profile analysis:')}</strong> ${tt(
+                                    `Es zeigt sich ein heterogenes Profil mit einer Differenz von ${strongest.v - weakest.v} Punkten zwischen der stärksten Domäne (${strongest.n}: ${strongest.v}) und der schwächsten Domäne (${weakest.n}: ${weakest.v}). Dies deutet auf bereichsspezifische Stärken und Schwächen hin.`,
+                                    `Profil hétérogène avec une différence de ${strongest.v - weakest.v} points entre le domaine le plus fort (${strongest.n} : ${strongest.v}) et le plus faible (${weakest.n} : ${weakest.v}). Cela indique des forces et faiblesses spécifiques par domaine.`,
+                                    `Heterogeneous profile with a difference of ${strongest.v - weakest.v} points between the strongest (${strongest.n}: ${strongest.v}) and weakest domain (${weakest.n}: ${weakest.v}). This indicates domain-specific strengths and weaknesses.`
+                                )}</p>
                                 <ul class="gutachten-list">
-                                    <li><strong>Relative Stärke:</strong> ${strongest.n} (${strongest.desc})</li>
-                                    <li><strong>Relativer Förderbedarf:</strong> ${weakest.n} (${weakest.desc})</li>
+                                    <li><strong>${tt('Relative Stärke:','Force relative :','Relative strength:')}</strong> ${strongest.n} (${strongest.desc})</li>
+                                    <li><strong>${tt('Relativer Förderbedarf:','Besoin de soutien relatif :','Relative support need:')}</strong> ${weakest.n} (${weakest.desc})</li>
                                 </ul>
                             ` : validDomains.length >= 2 ? `
-                                <p><strong>Profilanalyse:</strong> Das Profil ist relativ homogen. Die adaptiven Fähigkeiten sind über die verschiedenen Bereiche hinweg gleichmäßig entwickelt.</p>
+                                <p><strong>${tt('Profilanalyse:','Analyse du profil :','Profile analysis:')}</strong> ${tt(
+                                    'Das Profil ist relativ homogen. Die adaptiven Fähigkeiten sind über die verschiedenen Bereiche hinweg gleichmäßig entwickelt.',
+                                    'Le profil est relativement homogène. Les capacités adaptatives sont uniformément développées dans les différents domaines.',
+                                    'The profile is relatively homogeneous. Adaptive abilities are evenly developed across domains.'
+                                )}</p>
                             ` : ''}
 
-                            ${maladaptive && maladaptive >= 18 ? `<p><strong>Maladaptives Verhalten:</strong> Der erhöhte Index für maladaptives Verhalten (v=${maladaptive}) weist auf problematische Verhaltensweisen hin, die die Alltagsfunktion beeinträchtigen können.</p>` : ''}
+                            ${maladaptive && maladaptive >= 18 ? `<p><strong>${tt('Maladaptives Verhalten:','Comportement maladaptatif :','Maladaptive behaviour:')}</strong> ${tt(
+                                `Der erhöhte Index für maladaptives Verhalten (v=${maladaptive}) weist auf problematische Verhaltensweisen hin, die die Alltagsfunktion beeinträchtigen können.`,
+                                `L'indice élevé de comportement maladaptatif (v=${maladaptive}) signale des comportements problématiques pouvant altérer le fonctionnement quotidien.`,
+                                `The elevated maladaptive-behaviour index (v=${maladaptive}) indicates problematic behaviours that may impair daily functioning.`
+                            )}</p>` : ''}
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Diagnostische Einordnung</h4>
+                        <h4 class="gutachten-section-title">${tt('4. Diagnostische Einordnung','4. Classification diagnostique','4. Diagnostic classification')}</h4>
                         <div class="gutachten-text">
                             ${abcVal && abcVal < 70 ? `
-                                <p>Die Ergebnisse zeigen eine signifikante Beeinträchtigung adaptiver Funktionen, die für die Diagnose einer intellektuellen Beeinträchtigung relevant ist. Nach ICD-11/DSM-5 ist neben unterdurchschnittlicher Intelligenz auch eine Beeinträchtigung adaptiver Fähigkeiten erforderlich.</p>
-                                <span class="icd-code">6A00</span> Störungen der Intelligenzentwicklung (ICD-11)
-                                <p style="margin-top:1rem;">Der Schweregrad richtet sich primär nach dem adaptiven Funktionsniveau:</p>
+                                <p>${tt(
+                                    'Die Ergebnisse zeigen eine signifikante Beeinträchtigung adaptiver Funktionen, die für die Diagnose einer intellektuellen Beeinträchtigung relevant ist. Nach ICD-11/DSM-5 ist neben unterdurchschnittlicher Intelligenz auch eine Beeinträchtigung adaptiver Fähigkeiten erforderlich.',
+                                    'Les résultats montrent une altération significative des fonctions adaptatives, pertinente pour le diagnostic de déficience intellectuelle. Selon CIM-11/DSM-5, une intelligence inférieure à la moyenne et une altération des capacités adaptatives sont toutes deux requises.',
+                                    'The results show a significant impairment of adaptive functions, relevant for the diagnosis of intellectual disability. Per ICD-11/DSM-5, both below-average intelligence and impairment of adaptive abilities are required.'
+                                )}</p>
+                                <span class="icd-code">6A00</span> ${tt('Störungen der Intelligenzentwicklung (ICD-11)','Troubles du développement intellectuel (CIM-11)','Disorders of intellectual development (ICD-11)')}
+                                <p style="margin-top:1rem;">${tt('Der Schweregrad richtet sich primär nach dem adaptiven Funktionsniveau:','La sévérité dépend principalement du niveau de fonctionnement adaptatif :','Severity is primarily based on adaptive functioning level:')}</p>
                                 <ul class="gutachten-list">
-                                    ${abcVal >= 55 && abcVal < 70 ? '<li><strong>Leichte Beeinträchtigung:</strong> Unterstützung in einzelnen Bereichen erforderlich</li>' : ''}
-                                    ${abcVal >= 40 && abcVal < 55 ? '<li><strong>Mittelgradige Beeinträchtigung:</strong> Umfassende Unterstützung in vielen Bereichen erforderlich</li>' : ''}
-                                    ${abcVal < 40 ? '<li><strong>Schwere/Schwerste Beeinträchtigung:</strong> Intensive Betreuung in allen Lebensbereichen erforderlich</li>' : ''}
+                                    ${abcVal >= 55 && abcVal < 70 ? `<li><strong>${tt('Leichte Beeinträchtigung:','Légère :','Mild:')}</strong> ${tt('Unterstützung in einzelnen Bereichen erforderlich','Soutien requis dans certains domaines','Support required in some areas')}</li>` : ''}
+                                    ${abcVal >= 40 && abcVal < 55 ? `<li><strong>${tt('Mittelgradige Beeinträchtigung:','Modérée :','Moderate:')}</strong> ${tt('Umfassende Unterstützung in vielen Bereichen erforderlich','Soutien étendu requis dans de nombreux domaines','Extensive support required in many areas')}</li>` : ''}
+                                    ${abcVal < 40 ? `<li><strong>${tt('Schwere/Schwerste Beeinträchtigung:','Sévère / Profonde :','Severe / Profound:')}</strong> ${tt('Intensive Betreuung in allen Lebensbereichen erforderlich','Prise en charge intensive requise dans tous les domaines de vie','Intensive care required in all life areas')}</li>` : ''}
                                 </ul>
                             ` : abcVal && abcVal >= 70 && abcVal < 85 ? `
-                                <p>Die adaptiven Fähigkeiten liegen im unterdurchschnittlichen, aber nicht beeinträchtigten Bereich. Dies kann auf eine allgemeine Entwicklungsverzögerung oder spezifische Förderbedarfe hindeuten.</p>
+                                <p>${tt(
+                                    'Die adaptiven Fähigkeiten liegen im unterdurchschnittlichen, aber nicht beeinträchtigten Bereich. Dies kann auf eine allgemeine Entwicklungsverzögerung oder spezifische Förderbedarfe hindeuten.',
+                                    'Les capacités adaptatives se situent dans la plage inférieure mais non pathologique. Cela peut indiquer un retard développemental général ou des besoins de soutien spécifiques.',
+                                    'Adaptive abilities fall in the below-average but non-impaired range. This may indicate general developmental delay or specific support needs.'
+                                )}</p>
                             ` : `
-                                <p>Die adaptiven Fähigkeiten liegen im Normalbereich. Es ergeben sich keine Hinweise auf eine klinisch relevante Beeinträchtigung der Alltagskompetenzen.</p>
+                                <p>${tt(
+                                    'Die adaptiven Fähigkeiten liegen im Normalbereich. Es ergeben sich keine Hinweise auf eine klinisch relevante Beeinträchtigung der Alltagskompetenzen.',
+                                    'Les capacités adaptatives se situent dans la plage normale. Aucune indication d\'altération cliniquement pertinente des compétences quotidiennes.',
+                                    'Adaptive abilities fall in the normal range. No clinically relevant impairment of daily-living skills.'
+                                )}</p>
                             `}
 
                             ${domains.soc?.v && domains.soc.v < 70 && domains.com?.v && domains.com.v < 85 ? `
-                                <p style="margin-top:1rem;"><strong>Hinweis:</strong> Die Kombination aus deutlichen Einschränkungen in Sozialisation und Kommunikation sollte differenzialdiagnostisch an eine Autismus-Spektrum-Störung denken lassen.</p>
-                                <span class="icd-code">6A02</span> Autismus-Spektrum-Störung (abzuklären)
+                                <p style="margin-top:1rem;"><strong>${tt('Hinweis:','Note :','Note:')}</strong> ${tt(
+                                    'Die Kombination aus deutlichen Einschränkungen in Sozialisation und Kommunikation sollte differenzialdiagnostisch an eine Autismus-Spektrum-Störung denken lassen.',
+                                    'La combinaison de limitations marquées en socialisation et communication doit faire envisager différentiellement un trouble du spectre autistique.',
+                                    'The combination of marked limitations in socialisation and communication should prompt differential consideration of an autism spectrum disorder.'
+                                )}</p>
+                                <span class="icd-code">6A02</span> ${tt('Autismus-Spektrum-Störung (abzuklären)','Trouble du spectre autistique (à clarifier)','Autism Spectrum Disorder (to clarify)')}
                             ` : ''}
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">5. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">${tt('5. Empfehlungen','5. Recommandations','5. Recommendations')}</h4>
                         <div class="gutachten-text">
                             <ul class="gutachten-list">
                                 ${abcVal && abcVal < 70 ? `
-                                    <li>Ergänzende Intelligenzdiagnostik zur Abklärung einer intellektuellen Beeinträchtigung</li>
-                                    <li>Heilpädagogische Förderung der Alltagskompetenzen</li>
-                                    <li>Prüfung von Eingliederungshilfe nach SGB IX</li>
-                                    <li>Elternberatung zu Förderstrategien im Alltag</li>
+                                    <li>${tt('Ergänzende Intelligenzdiagnostik zur Abklärung einer intellektuellen Beeinträchtigung','Bilan intellectuel complémentaire pour clarifier une déficience intellectuelle','Complementary intellectual assessment to clarify intellectual disability')}</li>
+                                    <li>${tt('Heilpädagogische Förderung der Alltagskompetenzen','Soutien pédagogique spécialisé des compétences quotidiennes','Special-educational support of daily-living skills')}</li>
+                                    <li>${tt('Prüfung von Eingliederungshilfe nach SGB IX','Examen d\'aides à l\'inclusion','Review of disability support entitlements')}</li>
+                                    <li>${tt('Elternberatung zu Förderstrategien im Alltag','Conseil aux parents sur les stratégies de soutien au quotidien','Parental counselling on daily support strategies')}</li>
                                 ` : abcVal && abcVal < 85 ? `
-                                    <li>Gezielte Förderung der identifizierten Schwachbereiche</li>
-                                    <li>Training von Alltagsfertigkeiten (Activities of Daily Living)</li>
-                                    <li>Beratung der Eltern zu entwicklungsfördernden Maßnahmen</li>
+                                    <li>${tt('Gezielte Förderung der identifizierten Schwachbereiche','Soutien ciblé des domaines de faiblesse identifiés','Targeted support of identified weak areas')}</li>
+                                    <li>${tt('Training von Alltagsfertigkeiten (Activities of Daily Living)','Entraînement des compétences quotidiennes (Activities of Daily Living)','Training of daily-living skills (Activities of Daily Living)')}</li>
+                                    <li>${tt('Beratung der Eltern zu entwicklungsfördernden Maßnahmen','Conseil parental sur les mesures favorisant le développement','Parental counselling on development-supporting measures')}</li>
                                 ` : `
-                                    <li>Keine spezifische Intervention aufgrund des adaptiven Verhaltens erforderlich</li>
+                                    <li>${tt('Keine spezifische Intervention aufgrund des adaptiven Verhaltens erforderlich','Aucune intervention spécifique requise sur la base du comportement adaptatif','No specific intervention required based on adaptive behaviour')}</li>
                                 `}
-                                ${weakest && domainClasses[Object.entries(domains).find(([k,d])=>d===weakest)?.[0]]?.c !== 'normal' ? `<li>Besondere Aufmerksamkeit für den Bereich ${weakest.n}</li>` : ''}
-                                ${maladaptive && maladaptive >= 18 ? '<li>Verhaltenstherapeutische Intervention bei maladaptiven Verhaltensweisen</li>' : ''}
-                                <li>Integration mit weiteren diagnostischen Befunden (Intelligenz, Verhalten)</li>
+                                ${weakest && domainClasses[Object.entries(domains).find(([k,d])=>d===weakest)?.[0]]?.c !== 'normal' ? `<li>${tt(`Besondere Aufmerksamkeit für den Bereich ${weakest.n}`,`Attention particulière pour le domaine ${weakest.n}`,`Special attention to the ${weakest.n} domain`)}</li>` : ''}
+                                ${maladaptive && maladaptive >= 18 ? `<li>${tt('Verhaltenstherapeutische Intervention bei maladaptiven Verhaltensweisen','Intervention de thérapie comportementale pour les comportements maladaptatifs','Behavioural-therapy intervention for maladaptive behaviours')}</li>` : ''}
+                                <li>${tt('Integration mit weiteren diagnostischen Befunden (Intelligenz, Verhalten)','Intégration avec d\'autres résultats diagnostiques (intelligence, comportement)','Integration with other diagnostic findings (intelligence, behaviour)')}</li>
                             </ul>
                         </div>
                     </div>
 
                     ${elternZusammenfassung(
-                        'Vineland-3 (Alltagskompetenzen)',
+                        tt('Vineland-3 (Alltagskompetenzen)','Vineland-3 (compétences quotidiennes)','Vineland-3 (adaptive daily-living skills)'),
                         abcVal && abcVal < 70
-                            ? `Der Vineland-Test misst, wie gut ${pat.name} alltägliche Dinge selbstständig erledigen kann - zum Beispiel sich anziehen, mit anderen kommunizieren oder sich in der Umgebung zurechtfinden. Die Ergebnisse zeigen, dass Ihr Kind in diesen Bereichen deutlich mehr Unterstützung braucht als andere Gleichaltrige. Das ist wichtig zu wissen, damit die richtige Hilfe organisiert werden kann.`
+                            ? tt(
+                                `Der Vineland-Test misst, wie gut ${pat.name} alltägliche Dinge selbstständig erledigen kann - zum Beispiel sich anziehen, mit anderen kommunizieren oder sich in der Umgebung zurechtfinden. Die Ergebnisse zeigen, dass Ihr Kind in diesen Bereichen deutlich mehr Unterstützung braucht als andere Gleichaltrige. Das ist wichtig zu wissen, damit die richtige Hilfe organisiert werden kann.`,
+                                `Le test Vineland mesure dans quelle mesure ${pat.name} peut faire seul·e des choses quotidiennes – par exemple s'habiller, communiquer ou se repérer dans l'environnement. Les résultats montrent que votre enfant a besoin de bien plus de soutien dans ces domaines que les pairs. C'est important à savoir pour organiser l'aide appropriée.`,
+                                `The Vineland measures how well ${pat.name} can independently do everyday things – e.g. dressing, communicating, finding the way around. Results show your child needs much more support in these areas than peers. This is important to know so the right help can be arranged.`
+                            )
                             : abcVal && abcVal < 85
-                                ? `Der Vineland-Test misst Alltagsfertigkeiten - also wie selbstständig ${pat.name} alltägliche Dinge erledigt. Die Ergebnisse zeigen, dass Ihr Kind in einigen Bereichen noch etwas Unterstützung braucht, um den Anschluss an Gleichaltrige zu halten. Mit gezielter Förderung können diese Fähigkeiten aber gut entwickelt werden.`
-                                : `Der Vineland-Test misst, wie gut ${pat.name} alltägliche Aufgaben bewältigt. Die Ergebnisse zeigen, dass die Alltagskompetenzen Ihres Kindes altersgemäß entwickelt sind. ${pat.name} kann sich angemessen versorgen, kommunizieren und soziale Situationen meistern.`,
+                                ? tt(
+                                    `Der Vineland-Test misst Alltagsfertigkeiten - also wie selbstständig ${pat.name} alltägliche Dinge erledigt. Die Ergebnisse zeigen, dass Ihr Kind in einigen Bereichen noch etwas Unterstützung braucht, um den Anschluss an Gleichaltrige zu halten. Mit gezielter Förderung können diese Fähigkeiten aber gut entwickelt werden.`,
+                                    `Le test Vineland mesure les compétences quotidiennes – à quel point ${pat.name} fait seul·e des choses du quotidien. Les résultats montrent que votre enfant a besoin d'un peu de soutien dans certains domaines pour suivre ses pairs. Avec un soutien ciblé, ces compétences peuvent bien se développer.`,
+                                    `The Vineland measures daily-living skills – how independently ${pat.name} manages everyday tasks. Results show your child needs some support in certain areas to keep up with peers. With targeted support these skills can develop well.`
+                                )
+                                : tt(
+                                    `Der Vineland-Test misst, wie gut ${pat.name} alltägliche Aufgaben bewältigt. Die Ergebnisse zeigen, dass die Alltagskompetenzen Ihres Kindes altersgemäß entwickelt sind. ${pat.name} kann sich angemessen versorgen, kommunizieren und soziale Situationen meistern.`,
+                                    `Le test Vineland mesure comment ${pat.name} gère les tâches quotidiennes. Les résultats montrent que les compétences quotidiennes de votre enfant sont développées de manière adéquate pour son âge. ${pat.name} peut prendre soin de soi, communiquer et gérer des situations sociales.`,
+                                    `The Vineland measures how well ${pat.name} handles daily tasks. Results show your child's daily-living skills are age-appropriately developed. ${pat.name} can take care of self, communicate and manage social situations.`
+                                ),
                         abcVal && abcVal < 70
-                            ? ['Lassen Sie sich ausführlich beraten', 'Fragen Sie nach Eingliederungshilfe', 'Üben Sie Alltagsfertigkeiten in kleinen Schritten', 'Feiern Sie jeden Fortschritt']
+                            ? [
+                                tt('Lassen Sie sich ausführlich beraten','Faites-vous conseiller en détail','Seek detailed counselling'),
+                                tt('Fragen Sie nach Eingliederungshilfe','Renseignez-vous sur les aides à l\'inclusion','Inquire about disability support'),
+                                tt('Üben Sie Alltagsfertigkeiten in kleinen Schritten','Entraînez les compétences quotidiennes par petites étapes','Practise daily-living skills in small steps'),
+                                tt('Feiern Sie jeden Fortschritt','Célébrez chaque progrès','Celebrate every progress')
+                              ]
                             : abcVal && abcVal < 85
-                                ? ['Üben Sie Alltagsfertigkeiten spielerisch', 'Geben Sie klare Anweisungen in einfacher Sprache', 'Lassen Sie Ihr Kind möglichst viel selbst machen', 'Seien Sie geduldig - Fortschritte brauchen Zeit']
-                                : ['Die Alltagskompetenzen sind gut entwickelt', 'Fördern Sie die Selbstständigkeit weiter', 'Loben Sie eigenständiges Handeln']
+                                ? [
+                                    tt('Üben Sie Alltagsfertigkeiten spielerisch','Entraînez les compétences quotidiennes de manière ludique','Practise daily-living skills playfully'),
+                                    tt('Geben Sie klare Anweisungen in einfacher Sprache','Donnez des consignes claires en langage simple','Give clear instructions in simple language'),
+                                    tt('Lassen Sie Ihr Kind möglichst viel selbst machen','Laissez votre enfant faire le plus possible par soi-même','Let your child do as much as possible alone'),
+                                    tt('Seien Sie geduldig - Fortschritte brauchen Zeit','Soyez patient·e – les progrès prennent du temps','Be patient – progress takes time')
+                                  ]
+                                : [
+                                    tt('Die Alltagskompetenzen sind gut entwickelt','Les compétences quotidiennes sont bien développées','Daily-living skills are well developed'),
+                                    tt('Fördern Sie die Selbstständigkeit weiter','Continuez à favoriser l\'autonomie','Continue to foster independence'),
+                                    tt('Loben Sie eigenständiges Handeln','Félicitez les actions autonomes','Praise independent action')
+                                  ]
                     )}
 
                     ${gutachtenFooter()}
@@ -7616,15 +7706,15 @@
             `;
 
             const summaryItems = [];
-            if(abcVal) summaryItems.push({l:'ABC Gesamtwert',v:abcVal,c:abcClassFinal.c,s:abcClassFinal.l});
+            if(abcVal) summaryItems.push({l:tt('ABC Gesamtwert','ABC Total','ABC Total'),v:abcVal,c:abcClassFinal.c,s:abcClassFinal.l});
             validDomains.forEach(([k,d]) => summaryItems.push({l:d.n,v:d.v,c:domainClasses[k].c,s:domainClasses[k].l}));
 
             document.getElementById('vineland-results').innerHTML = `
-                <div class="results-header"><h3 class="results-title">Ergebnis Vineland-3</h3></div>
+                <div class="results-header"><h3 class="results-title">${tt('Ergebnis Vineland-3','Résultat Vineland-3','Vineland-3 result')}</h3></div>
                 ${summary(summaryItems)}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
-                    <button class="btn btn-primary" onclick="exportTestToWord('vineland')">📝 Als Word exportieren (.doc)</button>
+                    <button class="btn btn-primary" onclick="exportTestToWord('vineland')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
                 </div>
             `;
             showLocalizedResults('vineland-results');
