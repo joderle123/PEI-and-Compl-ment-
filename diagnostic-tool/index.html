@@ -1409,7 +1409,7 @@
                     </div>
                     <p class="card-subtitle">Strengths and Difficulties Questionnaire – Screening für Kinder 4-17 Jahre</p>
                 </div>
-                <form id="sdq-form" onsubmit="evaluateSDQ(event)">
+                <form id="sdq-form" data-i18n-native="1" onsubmit="evaluateSDQ(event)">
                     <div class="form-section">
                         <div class="form-section-title">Beurteiler</div>
                         <div class="radio-group">
@@ -4254,6 +4254,14 @@
 
         const SDQ_LABELS = {em:'Emotionale Probleme',co:'Verhaltensprobleme',hy:'Hyperaktivität/Unaufmerksamkeit',pe:'Probleme mit Gleichaltrigen',pr:'Prosoziales Verhalten'};
         const RESP_TEXT = {parent:'Elternurteil',teacher:'Lehrerurteil',self:'Selbsturteil'};
+        // i18n-aware Beurteiler-Label
+        function respLabel(r) {
+            return tt(
+                {parent:'Elternurteil',teacher:'Lehrerurteil',self:'Selbsturteil'}[r] || r,
+                {parent:'Évaluation parentale',teacher:'Évaluation enseignant·e',self:'Auto-évaluation'}[r] || r,
+                {parent:'Parent rating',teacher:'Teacher rating',self:'Self-report'}[r] || r
+            );
+        }
 
         function sdqClass(k,val,r) {
             const n = SDQ_N[r][k];
@@ -4372,26 +4380,74 @@
                     ${gutachtenHeader('SDQ', 'Strengths and Difficulties Questionnaire', pat)}
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Untersuchungsanlass und Fragestellung</h4>
+                        <h4 class="gutachten-section-title">${tt(
+                            '1. Untersuchungsanlass und Fragestellung',
+                            '1. Motif d\'examen et question diagnostique',
+                            '1. Reason for examination and clinical question'
+                        )}</h4>
                         <div class="gutachten-text">
-                            <p>Im Rahmen der psychodiagnostischen Untersuchung wurde der Strengths and Difficulties Questionnaire (SDQ) als Screening-Instrument zur Erfassung von Verhaltensauffälligkeiten und psychischen Belastungen eingesetzt. Der SDQ dient der orientierenden Einschätzung des psychischen Befindens und soll Hinweise auf mögliche Problembereiche liefern, die einer vertieften diagnostischen Abklärung bedürfen.</p>
-                            <p>Die Befragung erfolgte mittels des standardisierten Fragebogens durch: <strong>${RESP_TEXT[r]}</strong>.</p>
+                            <p>${tt(
+                                'Im Rahmen der psychodiagnostischen Untersuchung wurde der Strengths and Difficulties Questionnaire (SDQ) als Screening-Instrument zur Erfassung von Verhaltensauffälligkeiten und psychischen Belastungen eingesetzt. Der SDQ dient der orientierenden Einschätzung des psychischen Befindens und soll Hinweise auf mögliche Problembereiche liefern, die einer vertieften diagnostischen Abklärung bedürfen.',
+                                'Dans le cadre du bilan psychodiagnostique, le Strengths and Difficulties Questionnaire (SDQ) a été utilisé comme instrument de dépistage pour évaluer les troubles du comportement et la charge psychique. Le SDQ permet une estimation orientative de l\'état psychique et fournit des indications sur les domaines problématiques nécessitant un bilan diagnostique approfondi.',
+                                'As part of the psychodiagnostic assessment, the Strengths and Difficulties Questionnaire (SDQ) was administered as a screening instrument to detect behavioural and emotional difficulties. The SDQ provides an orienting estimate of psychological functioning and points to problem areas warranting in-depth diagnostic assessment.'
+                            )}</p>
+                            <p>${tt(
+                                `Die Befragung erfolgte mittels des standardisierten Fragebogens durch: <strong>${respLabel(r)}</strong>.`,
+                                `Le questionnaire standardisé a été rempli par : <strong>${respLabel(r)}</strong>.`,
+                                `The standardised questionnaire was completed by: <strong>${respLabel(r)}</strong>.`
+                            )}</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Beschreibung des Testverfahrens</h4>
+                        <h4 class="gutachten-section-title">${tt(
+                            '2. Beschreibung des Testverfahrens',
+                            '2. Description du test',
+                            '2. Test description'
+                        )}</h4>
                         <div class="gutachten-text">
-                            <p>Der SDQ (Strengths and Difficulties Questionnaire; Goodman, 1997; deutsche Fassung: Klasen et al., 2000) ist ein international weit verbreitetes und psychometrisch gut validiertes Screening-Instrument zur Erfassung von Verhaltensauffälligkeiten und -stärken bei Kindern und Jugendlichen im Alter von 4 bis 17 Jahren. Das Verfahren ist von der Weltgesundheitsorganisation (WHO) empfohlen und in über 80 Sprachen verfügbar.</p>
-                            <p>Der Fragebogen umfasst 25 Items, die auf einer dreistufigen Skala (0 = nicht zutreffend, 1 = teilweise zutreffend, 2 = eindeutig zutreffend) beantwortet werden. Die Items verteilen sich auf fünf Subskalen mit je fünf Items:</p>
+                            <p>${tt(
+                                'Der SDQ (Strengths and Difficulties Questionnaire; Goodman, 1997; deutsche Fassung: Klasen et al., 2000) ist ein international weit verbreitetes und psychometrisch gut validiertes Screening-Instrument zur Erfassung von Verhaltensauffälligkeiten und -stärken bei Kindern und Jugendlichen im Alter von 4 bis 17 Jahren. Das Verfahren ist von der Weltgesundheitsorganisation (WHO) empfohlen und in über 80 Sprachen verfügbar.',
+                                'Le SDQ (Strengths and Difficulties Questionnaire ; Goodman, 1997 ; version allemande : Klasen et al., 2000) est un instrument de dépistage internationalement répandu et bien validé sur le plan psychométrique, destiné à évaluer les difficultés comportementales et les ressources chez les enfants et adolescents âgés de 4 à 17 ans. Il est recommandé par l\'Organisation mondiale de la santé (OMS) et disponible dans plus de 80 langues.',
+                                'The SDQ (Strengths and Difficulties Questionnaire; Goodman, 1997; German version: Klasen et al., 2000) is an internationally widespread and psychometrically well-validated screening instrument for assessing behavioural difficulties and strengths in children and adolescents aged 4–17 years. It is recommended by the World Health Organization (WHO) and available in over 80 languages.'
+                            )}</p>
+                            <p>${tt(
+                                'Der Fragebogen umfasst 25 Items, die auf einer dreistufigen Skala (0 = nicht zutreffend, 1 = teilweise zutreffend, 2 = eindeutig zutreffend) beantwortet werden. Die Items verteilen sich auf fünf Subskalen mit je fünf Items:',
+                                'Le questionnaire comprend 25 items cotés sur une échelle à trois niveaux (0 = ne s\'applique pas, 1 = s\'applique partiellement, 2 = s\'applique tout à fait). Les items se répartissent sur cinq sous-échelles de cinq items chacune :',
+                                'The questionnaire comprises 25 items rated on a three-point scale (0 = not true, 1 = somewhat true, 2 = certainly true). The items are distributed across five subscales of five items each:'
+                            )}</p>
                             <ul class="gutachten-list">
-                                <li><strong>Emotionale Probleme (EM):</strong> Erfasst Symptome von Ängstlichkeit, Niedergeschlagenheit, körperliche Beschwerden in Stresssituationen und übermäßige Sorgen.</li>
-                                <li><strong>Verhaltensprobleme (VP):</strong> Erfasst oppositionelles, aggressives und dissoziales Verhalten wie Wutausbrüche, Ungehorsam und Lügen.</li>
-                                <li><strong>Hyperaktivität/Unaufmerksamkeit (HY):</strong> Erfasst motorische Unruhe, Impulsivität, Ablenkbarkeit und mangelnde Ausdauer.</li>
-                                <li><strong>Probleme mit Gleichaltrigen (PE):</strong> Erfasst soziale Isolation, mangelnde Peer-Beziehungen, Viktimisierung und Bevorzugung von Erwachsenen.</li>
-                                <li><strong>Prosoziales Verhalten (PR):</strong> Erfasst positive Verhaltensweisen wie Hilfsbereitschaft, Rücksichtnahme, Teilen und Trösten.</li>
+                                <li><strong>${tt('Emotionale Probleme (EM):', 'Problèmes émotionnels (EM) :', 'Emotional Problems (EM):')}</strong> ${tt(
+                                    'Erfasst Symptome von Ängstlichkeit, Niedergeschlagenheit, körperliche Beschwerden in Stresssituationen und übermäßige Sorgen.',
+                                    'évalue les symptômes d\'anxiété, de tristesse, les plaintes somatiques en situation de stress et les inquiétudes excessives.',
+                                    'assesses symptoms of anxiety, low mood, stress-related somatic complaints and excessive worries.'
+                                )}</li>
+                                <li><strong>${tt('Verhaltensprobleme (VP):', 'Problèmes de conduite (VP) :', 'Conduct Problems (VP):')}</strong> ${tt(
+                                    'Erfasst oppositionelles, aggressives und dissoziales Verhalten wie Wutausbrüche, Ungehorsam und Lügen.',
+                                    'évalue les comportements oppositionnels, agressifs et dissociaux tels que les colères, la désobéissance et le mensonge.',
+                                    'assesses oppositional, aggressive and dissocial behaviour such as tantrums, disobedience and lying.'
+                                )}</li>
+                                <li><strong>${tt('Hyperaktivität/Unaufmerksamkeit (HY):', 'Hyperactivité/Inattention (HY) :', 'Hyperactivity/Inattention (HY):')}</strong> ${tt(
+                                    'Erfasst motorische Unruhe, Impulsivität, Ablenkbarkeit und mangelnde Ausdauer.',
+                                    'évalue l\'agitation motrice, l\'impulsivité, la distractibilité et le manque de persévérance.',
+                                    'assesses motor restlessness, impulsivity, distractibility and lack of perseverance.'
+                                )}</li>
+                                <li><strong>${tt('Probleme mit Gleichaltrigen (PE):', 'Problèmes avec les pairs (PE) :', 'Peer Problems (PE):')}</strong> ${tt(
+                                    'Erfasst soziale Isolation, mangelnde Peer-Beziehungen, Viktimisierung und Bevorzugung von Erwachsenen.',
+                                    'évalue l\'isolement social, le manque de relations entre pairs, la victimisation et la préférence pour les adultes.',
+                                    'assesses social isolation, poor peer relations, victimisation and preference for adults.'
+                                )}</li>
+                                <li><strong>${tt('Prosoziales Verhalten (PR):', 'Comportement prosocial (PR) :', 'Prosocial Behaviour (PR):')}</strong> ${tt(
+                                    'Erfasst positive Verhaltensweisen wie Hilfsbereitschaft, Rücksichtnahme, Teilen und Trösten.',
+                                    'évalue les comportements positifs tels que l\'entraide, la prévenance, le partage et le réconfort.',
+                                    'assesses positive behaviours such as helpfulness, consideration, sharing and comforting.'
+                                )}</li>
                             </ul>
-                            <p>Aus den ersten vier Skalen wird ein <strong>Gesamtproblemwert</strong> (Summe: 0-40) gebildet. Die Skala Prosoziales Verhalten wird separat ausgewertet, da sie Stärken und nicht Probleme erfasst. Die Normierung erfolgte anhand repräsentativer deutscher Stichproben mit separaten Normwerten für Eltern-, Lehrer- und Selbsturteil.</p>
+                            <p>${tt(
+                                'Aus den ersten vier Skalen wird ein <strong>Gesamtproblemwert</strong> (Summe: 0-40) gebildet. Die Skala Prosoziales Verhalten wird separat ausgewertet, da sie Stärken und nicht Probleme erfasst. Die Normierung erfolgte anhand repräsentativer deutscher Stichproben mit separaten Normwerten für Eltern-, Lehrer- und Selbsturteil.',
+                                'Les quatre premières échelles forment un <strong>score total des difficultés</strong> (somme : 0–40). L\'échelle de comportement prosocial est analysée séparément car elle évalue des ressources et non des problèmes. L\'étalonnage repose sur des échantillons normatifs allemands représentatifs avec des normes distinctes pour l\'évaluation parentale, enseignante et l\'auto-évaluation.',
+                                'The first four scales yield a <strong>Total Difficulties Score</strong> (sum: 0–40). The Prosocial Behaviour scale is analysed separately as it captures strengths rather than problems. Norming is based on representative German samples with separate norms for parent, teacher and self-report.'
+                            )}</p>
                         </div>
                     </div>
 
