@@ -3446,14 +3446,14 @@
                 ? (ageMonths !== null ? `${ageYears};${ageMonths}` : `${ageYears}`)
                 : '';
             return {
-                name: vt('pat-name') || '[Name nicht angegeben]',
+                name: vt('pat-name') || tt('[Name nicht angegeben]','[Nom non précisé]','[Name not specified]'),
                 dob: vt('pat-dob'),
                 age: ageYears,
                 ageMonths,
                 ageStr: ageDisplay,
                 sex: vt('pat-sex'),
                 date: vt('pat-date') || new Date().toISOString().split('T')[0],
-                examiner: vt('pat-examiner') || '[Untersucher/in]'
+                examiner: vt('pat-examiner') || tt('[Untersucher/in]','[Examinateur/trice]','[Examiner]')
             };
         }
 
