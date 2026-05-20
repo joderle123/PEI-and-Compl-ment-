@@ -2332,7 +2332,12 @@
             if(!el) return;
             const htmlDe = el.innerHTML;
             el.dataset.htmlDe = htmlDe;
-            if(LANG !== 'de') el.innerHTML = localize(htmlDe);
+            // Wenn das zugehörige Formular bereits nativ in der aktuellen Sprache rendert,
+            // den Regex-Localize-Pass komplett überspringen (vermeidet Doppel-Übersetzung).
+            const testKey = elementId.replace(/-results$/, '');
+            const form = document.getElementById(testKey + '-form');
+            const isNative = form && form.dataset.i18nNative === '1';
+            if(LANG !== 'de' && !isNative) el.innerHTML = localize(htmlDe);
             el.classList.add('show');
         }
 
@@ -6971,7 +6976,13 @@
                     </style>
                 </head>
                 <body>
-                    ${localize(R[testKey].gutachten)}
+                    ${(() => {
+                        const form = document.getElementById(testKey + '-form');
+                        const isNative = form && form.dataset.i18nNative === '1';
+                        // Refactored Tests: Gutachten ist bereits in der aktiven Sprache gerendert
+                        // Nicht refactored: durch Regex-Localize jagen
+                        return isNative ? R[testKey].gutachten : localize(R[testKey].gutachten);
+                    })()}
                 </body>
                 </html>
             `;
