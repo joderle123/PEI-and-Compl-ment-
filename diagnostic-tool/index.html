@@ -7651,11 +7651,18 @@
             const iq = v('cft-iq');
             const pr = v('cft-pr');
             const subtests = {rf:v('cft-rf'),kl:v('cft-kl'),ma:v('cft-ma'),to:v('cft-to'),ws:v('cft-ws'),zf:v('cft-zf')};
-            const subtestLabels = {rf:'Reihen fortsetzen',kl:'Klassifikationen',ma:'Matrizen',to:'Topologien',ws:'Wortschatz',zf:'Zahlenfolgen'};
+            const subtestLabels = {
+                rf: tt('Reihen fortsetzen','Suites','Series Continuation'),
+                kl: tt('Klassifikationen','Classifications','Classifications'),
+                ma: tt('Matrizen','Matrices','Matrices'),
+                to: tt('Topologien','Topologies','Topologies'),
+                ws: tt('Wortschatz','Vocabulaire','Vocabulary'),
+                zf: tt('Zahlenfolgen','Suites de chiffres','Number Series')
+            };
 
             const validSub = Object.entries(subtests).filter(([k,x])=>x!==null);
 
-            if(iq === null && !validSub.length) return alert('Bitte mindestens Gesamt-IQ oder Untertests eingeben');
+            if(iq === null && !validSub.length) return alert(tt('Bitte mindestens Gesamt-IQ oder Untertests eingeben','Veuillez saisir au moins le QI Total ou des subtests','Please enter at least the overall IQ or subtests'));
 
             const iqVal = iq || (validSub.length ? Math.round(validSub.reduce((sum,[k,x])=>sum+x,0)/validSub.length) : 100);
             const c = iqClass(iqVal);
@@ -7664,75 +7671,147 @@
                 <div class="gutachten">
                     ${gutachtenHeader('CFT 20-R', 'Culture Fair Intelligence Test – Revision', pat)}
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <h4 class="gutachten-section-title">${tt('1. Testbeschreibung','1. Description du test','1. Test description')}</h4>
                         <div class="gutachten-text">
-                            <p>Der CFT 20-R (Weiß, 2006) ist ein sprachfreier Intelligenztest zur Erfassung der fluiden Intelligenz (Grundintelligenz) bei Personen von 8,5-60 Jahren. Das Verfahren misst die Fähigkeit, figurale Beziehungen und formal-logische Denkprobleme zu erkennen und zu verarbeiten.</p>
-                            <p>Der Test besteht aus vier Untertests: Reihen fortsetzen, Klassifikationen, Matrizen und Topologien. Optional können die Ergänzungstests Wortschatz und Zahlenfolgen durchgeführt werden.</p>
-                            <p>Der CFT 20-R gilt als kulturfairer Test, da er weitgehend unabhängig von sprachlichen und kulturellen Einflüssen ist.</p>
+                            <p>${tt(
+                                'Der CFT 20-R (Weiß, 2006) ist ein sprachfreier Intelligenztest zur Erfassung der fluiden Intelligenz (Grundintelligenz) bei Personen von 8,5-60 Jahren. Das Verfahren misst die Fähigkeit, figurale Beziehungen und formal-logische Denkprobleme zu erkennen und zu verarbeiten.',
+                                'Le CFT 20-R (Weiß, 2006) est un test d\'intelligence non verbal pour évaluer l\'intelligence fluide (intelligence de base) chez les personnes de 8,5 à 60 ans. Il mesure la capacité à reconnaître et traiter des relations figurales et des problèmes logico-formels.',
+                                'The CFT 20-R (Weiß, 2006) is a language-free intelligence test for assessing fluid intelligence (basic intelligence) in individuals aged 8.5-60 years. It measures the ability to recognise and process figural relations and formal-logical problems.'
+                            )}</p>
+                            <p>${tt(
+                                'Der Test besteht aus vier Untertests: Reihen fortsetzen, Klassifikationen, Matrizen und Topologien. Optional können die Ergänzungstests Wortschatz und Zahlenfolgen durchgeführt werden.',
+                                'Le test comprend quatre subtests : Suites, Classifications, Matrices et Topologies. En option, les subtests complémentaires Vocabulaire et Suites de chiffres peuvent être administrés.',
+                                'The test comprises four subtests: Series Continuation, Classifications, Matrices and Topologies. Optionally, the supplementary subtests Vocabulary and Number Series can be administered.'
+                            )}</p>
+                            <p>${tt(
+                                'Der CFT 20-R gilt als kulturfairer Test, da er weitgehend unabhängig von sprachlichen und kulturellen Einflüssen ist.',
+                                'Le CFT 20-R est considéré comme culturellement équitable, car il est largement indépendant des influences linguistiques et culturelles.',
+                                'The CFT 20-R is considered culture-fair as it is largely independent of language and cultural influences.'
+                            )}</p>
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <h4 class="gutachten-section-title">${tt('2. Testergebnisse','2. Résultats','2. Test results')}</h4>
                         <table class="gutachten-table">
-                            <thead><tr><th>Kennwert</th><th>IQ-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${tt('Kennwert','Indice','Index')}</th><th>${tt('IQ-Wert','Score QI','IQ score')}</th><th>${tt('Prozentrang','Rang centile','Percentile rank')}</th><th>${tt('Klassifikation','Classification','Classification')}</th></tr></thead>
                             <tbody>
-                                <tr style="font-weight:700;background:var(--bg-input);"><td>Gesamt-IQ (CFT 20-R)</td><td><strong>${iqVal}</strong></td><td>${pr || c.pr}</td><td class="${c.c}"><strong>${c.l}</strong></td></tr>
+                                <tr style="font-weight:700;background:var(--bg-input);"><td>${tt('Gesamt-IQ (CFT 20-R)','QI Total (CFT 20-R)','Full Scale IQ (CFT 20-R)')}</td><td><strong>${iqVal}</strong></td><td>${pr || c.pr}</td><td class="${c.c}"><strong>${c.l}</strong></td></tr>
                                 ${validSub.map(([k,x])=>`<tr><td>${subtestLabels[k]}</td><td>${x}</td><td>${iqClass(x).pr}</td><td class="${iqClass(x).c}">${iqClass(x).l}</td></tr>`).join('')}
                             </tbody>
                         </table>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Interpretation</h4>
+                        <h4 class="gutachten-section-title">${tt('3. Interpretation','3. Interprétation','3. Interpretation')}</h4>
                         <div class="gutachten-text">
-                            <p>Die Untersuchung der sprachfreien Grundintelligenz mittels CFT 20-R ergibt einen <strong>IQ von ${iqVal}</strong> (Prozentrang: ${pr || c.pr}). Dies entspricht einem <strong>${c.l.toLowerCase()}en Niveau</strong> der fluiden Intelligenz.</p>
-                            ${iqVal >= 130 ? `<p>${pat.name} zeigt eine weit überdurchschnittliche Grundintelligenz, die unabhängig von sprachlichen Einflüssen besteht. Dies spricht für ein hohes kognitives Potenzial.</p>` : ''}
-                            ${iqVal >= 85 && iqVal < 130 ? `<p>Die fluide Intelligenz liegt im ${iqVal >= 115 ? 'überdurchschnittlichen' : 'durchschnittlichen'} Bereich. ${pat.name} verfügt über angemessene Fähigkeiten im Bereich des schlussfolgernden Denkens.</p>` : ''}
-                            ${iqVal < 85 ? `<p>Die fluide Intelligenz liegt im unterdurchschnittlichen Bereich. Dies kann das Lernen und die Problemlösefähigkeit beeinträchtigen.</p>` : ''}
-                            ${validSub.length >= 2 ? `<p><strong>Profilanalyse:</strong> ${Math.max(...validSub.map(([k,x])=>x)) - Math.min(...validSub.map(([k,x])=>x)) >= 15 ? 'Es zeigt sich eine erhöhte Streuung zwischen den Untertests, was auf spezifische Stärken und Schwächen hindeutet.' : 'Das Untertestprofil ist relativ homogen.'}</p>` : ''}
+                            <p>${tt(
+                                `Die Untersuchung der sprachfreien Grundintelligenz mittels CFT 20-R ergibt einen <strong>IQ von ${iqVal}</strong> (Prozentrang: ${pr || c.pr}). Dies entspricht einem <strong>${c.l.toLowerCase()}en Niveau</strong> der fluiden Intelligenz.`,
+                                `L'évaluation de l'intelligence fluide par le CFT 20-R donne un <strong>QI de ${iqVal}</strong> (rang centile : ${pr || c.pr}). Cela correspond à un niveau <strong>${c.l.toLowerCase()}</strong> d'intelligence fluide.`,
+                                `Assessment of fluid intelligence via the CFT 20-R yields an <strong>IQ of ${iqVal}</strong> (percentile rank: ${pr || c.pr}). This corresponds to a <strong>${c.l.toLowerCase()}</strong> level of fluid intelligence.`
+                            )}</p>
+                            ${iqVal >= 130 ? `<p>${tt(
+                                `${pat.name} zeigt eine weit überdurchschnittliche Grundintelligenz, die unabhängig von sprachlichen Einflüssen besteht. Dies spricht für ein hohes kognitives Potenzial.`,
+                                `${pat.name} montre une intelligence fluide très supérieure, indépendante des influences linguistiques. Cela indique un fort potentiel cognitif.`,
+                                `${pat.name} shows very superior fluid intelligence, independent of language influences. This indicates strong cognitive potential.`
+                            )}</p>` : ''}
+                            ${iqVal >= 85 && iqVal < 130 ? `<p>${tt(
+                                `Die fluide Intelligenz liegt im ${iqVal >= 115 ? 'überdurchschnittlichen' : 'durchschnittlichen'} Bereich. ${pat.name} verfügt über angemessene Fähigkeiten im Bereich des schlussfolgernden Denkens.`,
+                                `L'intelligence fluide se situe dans la plage ${iqVal >= 115 ? 'supérieure' : 'moyenne'}. ${pat.name} dispose de capacités adéquates en raisonnement.`,
+                                `Fluid intelligence is in the ${iqVal >= 115 ? 'above-average' : 'average'} range. ${pat.name} has adequate reasoning abilities.`
+                            )}</p>` : ''}
+                            ${iqVal < 85 ? `<p>${tt(
+                                'Die fluide Intelligenz liegt im unterdurchschnittlichen Bereich. Dies kann das Lernen und die Problemlösefähigkeit beeinträchtigen.',
+                                'L\'intelligence fluide se situe dans la plage inférieure. Cela peut affecter l\'apprentissage et la résolution de problèmes.',
+                                'Fluid intelligence is in the below-average range. This may affect learning and problem-solving.'
+                            )}</p>` : ''}
+                            ${validSub.length >= 2 ? `<p><strong>${tt('Profilanalyse:','Analyse du profil :','Profile analysis:')}</strong> ${Math.max(...validSub.map(([k,x])=>x)) - Math.min(...validSub.map(([k,x])=>x)) >= 15 ? tt(
+                                'Es zeigt sich eine erhöhte Streuung zwischen den Untertests, was auf spezifische Stärken und Schwächen hindeutet.',
+                                'Une dispersion accrue entre subtests apparaît, indiquant des forces et faiblesses spécifiques.',
+                                'Increased spread between subtests appears, indicating specific strengths and weaknesses.'
+                            ) : tt(
+                                'Das Untertestprofil ist relativ homogen.',
+                                'Le profil des subtests est relativement homogène.',
+                                'The subtest profile is relatively homogeneous.'
+                            )}</p>` : ''}
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Diagnostische Einordnung</h4>
+                        <h4 class="gutachten-section-title">${tt('4. Diagnostische Einordnung','4. Classification diagnostique','4. Diagnostic classification')}</h4>
                         <div class="gutachten-text">
-                            ${iqVal < 70 ? `<p>Die Ergebnisse sind vereinbar mit einer intellektuellen Beeinträchtigung. Zur Diagnosestellung ist eine umfassende Diagnostik inkl. adaptiver Fähigkeiten erforderlich.</p>
-                            <span class="icd-code">F70-F79</span> Intelligenzminderung` :
-                            iqVal >= 130 ? `<p>Die Ergebnisse sind vereinbar mit einer intellektuellen Hochbegabung im Bereich der fluiden Intelligenz.</p>` :
-                            `<p>Die Grundintelligenz liegt im ${iqVal >= 85 ? 'Normalbereich' : 'Grenzbereich'}. ${iqVal < 85 ? 'Bei Diskrepanz zu einem sprachbasierten IQ-Test könnte eine spezifische Sprachentwicklungsstörung vorliegen.' : ''}</p>`}
+                            ${iqVal < 70 ? `<p>${tt(
+                                'Die Ergebnisse sind vereinbar mit einer intellektuellen Beeinträchtigung. Zur Diagnosestellung ist eine umfassende Diagnostik inkl. adaptiver Fähigkeiten erforderlich.',
+                                'Les résultats sont compatibles avec une déficience intellectuelle. Un bilan complet incluant les capacités adaptatives est requis pour poser le diagnostic.',
+                                'The results are consistent with intellectual disability. A comprehensive assessment including adaptive abilities is required for diagnosis.'
+                            )}</p>
+                            <span class="icd-code">F70-F79</span> ${tt('Intelligenzminderung','Déficience intellectuelle','Intellectual disability')}` :
+                            iqVal >= 130 ? `<p>${tt('Die Ergebnisse sind vereinbar mit einer intellektuellen Hochbegabung im Bereich der fluiden Intelligenz.','Les résultats sont compatibles avec un haut potentiel intellectuel dans le domaine de l\'intelligence fluide.','The results are consistent with intellectual giftedness in fluid intelligence.')}</p>` :
+                            `<p>${tt(
+                                `Die Grundintelligenz liegt im ${iqVal >= 85 ? 'Normalbereich' : 'Grenzbereich'}. ${iqVal < 85 ? 'Bei Diskrepanz zu einem sprachbasierten IQ-Test könnte eine spezifische Sprachentwicklungsstörung vorliegen.' : ''}`,
+                                `L'intelligence de base se situe dans la plage ${iqVal >= 85 ? 'normale' : 'limite'}. ${iqVal < 85 ? 'En cas de discordance avec un test QI verbal, un trouble spécifique du langage est à envisager.' : ''}`,
+                                `Basic intelligence is in the ${iqVal >= 85 ? 'normal' : 'borderline'} range. ${iqVal < 85 ? 'A discrepancy with a language-based IQ test may indicate a specific language disorder.' : ''}`
+                            )}</p>`}
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">5. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">${tt('5. Empfehlungen','5. Recommandations','5. Recommendations')}</h4>
                         <div class="gutachten-text">
                             <ul class="gutachten-list">
                                 ${iqVal < 85 ? `
-                                    <li>Ergänzende Diagnostik mit sprachbasiertem Test (z.B. WISC-V) zum Profilvergleich</li>
-                                    <li>Förderdiagnostik zur Planung von Unterstützungsmaßnahmen</li>
-                                    <li>Prüfung von Nachteilsausgleich</li>
+                                    <li>${tt('Ergänzende Diagnostik mit sprachbasiertem Test (z.B. WISC-V) zum Profilvergleich','Bilan complémentaire avec test verbal (p. ex. WISC-V) pour comparaison de profils','Complementary assessment with a language-based test (e.g. WISC-V) for profile comparison')}</li>
+                                    <li>${tt('Förderdiagnostik zur Planung von Unterstützungsmaßnahmen','Bilan pédagogique pour planifier les mesures de soutien','Support assessment to plan intervention measures')}</li>
+                                    <li>${tt('Prüfung von Nachteilsausgleich','Examen d\'aménagements','Consideration of accommodations')}</li>
                                 ` : iqVal >= 130 ? `
-                                    <li>Prüfung von Begabtenfördermaßnahmen</li>
-                                    <li>Ggf. Akzeleration oder Enrichment</li>
+                                    <li>${tt('Prüfung von Begabtenfördermaßnahmen','Examen de mesures pour enfants à haut potentiel','Review of gifted-support measures')}</li>
+                                    <li>${tt('Ggf. Akzeleration oder Enrichment','Le cas échéant, accélération ou enrichissement','If appropriate, acceleration or enrichment')}</li>
                                 ` : `
-                                    <li>Keine spezifische Intervention aufgrund der Intelligenzdiagnostik erforderlich</li>
+                                    <li>${tt('Keine spezifische Intervention aufgrund der Intelligenzdiagnostik erforderlich','Aucune intervention spécifique requise sur la base du bilan intellectuel','No specific intervention required based on intellectual assessment')}</li>
                                 `}
-                                <li>Integration mit weiteren diagnostischen Befunden</li>
+                                <li>${tt('Integration mit weiteren diagnostischen Befunden','Intégration avec d\'autres résultats diagnostiques','Integration with other diagnostic findings')}</li>
                             </ul>
                         </div>
                     </div>
 
                     ${elternZusammenfassung(
-                        'CFT 20-R (Sprachfreier Intelligenztest)',
+                        tt('CFT 20-R (Sprachfreier Intelligenztest)','CFT 20-R (test d\'intelligence non verbal)','CFT 20-R (language-free intelligence test)'),
                         iqVal >= 130
-                            ? `${pat.name} zeigt im sprachfreien Intelligenztest eine weit überdurchschnittliche Leistung. Das bedeutet: Unabhängig von Sprache und Schulwissen kann Ihr Kind Muster erkennen und logisch denken wie nur etwa 2% aller Gleichaltrigen. Das ist eine besondere Begabung, die gefördert werden sollte.`
+                            ? tt(
+                                `${pat.name} zeigt im sprachfreien Intelligenztest eine weit überdurchschnittliche Leistung. Das bedeutet: Unabhängig von Sprache und Schulwissen kann Ihr Kind Muster erkennen und logisch denken wie nur etwa 2% aller Gleichaltrigen. Das ist eine besondere Begabung, die gefördert werden sollte.`,
+                                `${pat.name} montre une performance très supérieure au test d'intelligence non verbal. Cela signifie : indépendamment du langage et des connaissances scolaires, votre enfant peut reconnaître des patterns et raisonner logiquement comme seulement 2% des pairs. C'est un don particulier à soutenir.`,
+                                `${pat.name} shows very superior performance on the language-free intelligence test. This means: independent of language and school knowledge, your child can recognise patterns and reason logically like only about 2% of peers. This is a particular gift to be supported.`
+                            )
                             : iqVal >= 115
-                                ? `${pat.name} zeigt überdurchschnittliche Fähigkeiten im logischen Denken - unabhängig von Sprache und Schulwissen. Das ist ein sehr gutes Ergebnis und zeigt, dass Ihr Kind komplexe Aufgaben gut bewältigen kann.`
+                                ? tt(
+                                    `${pat.name} zeigt überdurchschnittliche Fähigkeiten im logischen Denken - unabhängig von Sprache und Schulwissen. Das ist ein sehr gutes Ergebnis und zeigt, dass Ihr Kind komplexe Aufgaben gut bewältigen kann.`,
+                                    `${pat.name} montre des capacités supérieures de raisonnement logique – indépendamment du langage et des connaissances scolaires. C'est un très bon résultat indiquant que votre enfant peut bien gérer des tâches complexes.`,
+                                    `${pat.name} shows above-average logical-reasoning ability – independent of language and school knowledge. This is a very good result showing your child can handle complex tasks well.`
+                                )
                                 : iqVal >= 85
-                                    ? `${pat.name} zeigt durchschnittliche Fähigkeiten im logischen Denken - genau wie die meisten Kinder. Das bedeutet: Die geistigen Grundfähigkeiten sind völlig normal entwickelt. Dieser Test misst nur einen Teil der Intelligenz - Kreativität, soziale Fähigkeiten oder praktisches Geschick werden hier nicht erfasst.`
-                                    : `${pat.name} zeigt unterdurchschnittliche Werte in diesem sprachfreien Test. Das bedeutet, dass abstrakte Denkaufgaben schwerer fallen als anderen Gleichaltrigen. Wichtig zu wissen: Dieser Test misst nur einen Teil der Fähigkeiten. Viele Menschen mit niedrigeren Testwerten sind in anderen Bereichen sehr erfolgreich.`,
+                                    ? tt(
+                                        `${pat.name} zeigt durchschnittliche Fähigkeiten im logischen Denken - genau wie die meisten Kinder. Das bedeutet: Die geistigen Grundfähigkeiten sind völlig normal entwickelt. Dieser Test misst nur einen Teil der Intelligenz - Kreativität, soziale Fähigkeiten oder praktisches Geschick werden hier nicht erfasst.`,
+                                        `${pat.name} montre des capacités moyennes de raisonnement logique – comme la plupart des enfants. Cela signifie : les capacités intellectuelles de base sont normalement développées. Ce test ne mesure qu'une partie de l'intelligence – la créativité, les compétences sociales ou l'habileté pratique ne sont pas évaluées ici.`,
+                                        `${pat.name} shows average logical-reasoning ability – like most children. This means basic intellectual abilities are normally developed. This test measures only one part of intelligence – creativity, social skills or practical aptitude are not assessed here.`
+                                    )
+                                    : tt(
+                                        `${pat.name} zeigt unterdurchschnittliche Werte in diesem sprachfreien Test. Das bedeutet, dass abstrakte Denkaufgaben schwerer fallen als anderen Gleichaltrigen. Wichtig zu wissen: Dieser Test misst nur einen Teil der Fähigkeiten. Viele Menschen mit niedrigeren Testwerten sind in anderen Bereichen sehr erfolgreich.`,
+                                        `${pat.name} montre des scores inférieurs à ce test non verbal. Cela signifie que les tâches de pensée abstraite sont plus difficiles que pour d'autres pairs. Important à savoir : ce test ne mesure qu'une partie des compétences. Beaucoup de personnes ayant des scores plus bas réussissent très bien dans d'autres domaines.`,
+                                        `${pat.name} shows below-average scores on this language-free test. This means abstract thinking tasks are harder than for other peers. Important to know: this test measures only part of abilities. Many people with lower test scores are very successful in other areas.`
+                                    ),
                         iqVal >= 130
-                            ? ['Sprechen Sie mit der Schule über Begabtenförderung', 'Bieten Sie geistige Herausforderungen (Rätsel, Strategiespiele)', 'Achten Sie darauf, dass Ihr Kind sich nicht langweilt']
+                            ? [
+                                tt('Sprechen Sie mit der Schule über Begabtenförderung','Parlez avec l\'école du soutien aux enfants à haut potentiel','Speak with the school about gifted support'),
+                                tt('Bieten Sie geistige Herausforderungen (Rätsel, Strategiespiele)','Proposez des défis intellectuels (énigmes, jeux de stratégie)','Offer intellectual challenges (puzzles, strategy games)'),
+                                tt('Achten Sie darauf, dass Ihr Kind sich nicht langweilt','Veillez à ce que votre enfant ne s\'ennuie pas','Watch that your child does not get bored')
+                              ]
                             : iqVal >= 85
-                                ? ['Die kognitiven Fähigkeiten sind gut entwickelt', 'Fördern Sie die individuellen Interessen Ihres Kindes']
-                                : ['Lassen Sie sich ausführlich beraten', 'Sprechen Sie mit der Schule über mögliche Unterstützung', 'Stärken Sie das Selbstbewusstsein Ihres Kindes', 'Jedes Kind hat Stärken - helfen Sie, diese zu entdecken']
+                                ? [
+                                    tt('Die kognitiven Fähigkeiten sind gut entwickelt','Les capacités cognitives sont bien développées','Cognitive abilities are well developed'),
+                                    tt('Fördern Sie die individuellen Interessen Ihres Kindes','Soutenez les intérêts individuels de votre enfant','Support your child\'s individual interests')
+                                  ]
+                                : [
+                                    tt('Lassen Sie sich ausführlich beraten','Faites-vous conseiller en détail','Seek detailed counselling'),
+                                    tt('Sprechen Sie mit der Schule über mögliche Unterstützung','Parlez avec l\'école d\'un éventuel soutien','Speak with the school about possible support'),
+                                    tt('Stärken Sie das Selbstbewusstsein Ihres Kindes','Renforcez la confiance en soi de votre enfant','Strengthen your child\'s self-confidence'),
+                                    tt('Jedes Kind hat Stärken - helfen Sie, diese zu entdecken','Chaque enfant a des forces – aidez à les découvrir','Every child has strengths – help discover them')
+                                  ]
                     )}
 
                     ${gutachtenFooter()}
@@ -7740,11 +7819,11 @@
             `;
 
             document.getElementById('cft-results').innerHTML = `
-                <div class="results-header"><h3 class="results-title">Ergebnis CFT 20-R</h3></div>
-                ${summary([{l:'Gesamt-IQ',v:iqVal,c:c.c,s:c.l}])}
+                <div class="results-header"><h3 class="results-title">${tt('Ergebnis CFT 20-R','Résultat CFT 20-R','CFT 20-R result')}</h3></div>
+                ${summary([{l:tt('Gesamt-IQ','QI Total','Full Scale IQ'),v:iqVal,c:c.c,s:c.l}])}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
-                    <button class="btn btn-primary" onclick="exportTestToWord('cft')">📝 Als Word exportieren (.doc)</button>
+                    <button class="btn btn-primary" onclick="exportTestToWord('cft')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
                 </div>
             `;
             showLocalizedResults('cft-results');
