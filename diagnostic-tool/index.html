@@ -7477,90 +7477,151 @@
             const validMaladapt = Object.entries(maladaptive).filter(([k,x])=>x!==null);
 
             if(!validAdapt.length && !validMaladapt.length && sekundar.adapt===null && sekundar.maladapt===null)
-                return alert('Bitte mindestens einen Wert eingeben');
+                return alert(tt('Bitte mindestens einen Wert eingeben','Veuillez saisir au moins une valeur','Please enter at least one value'));
 
-            const adaptLabels = {ph:'Problemlösen',ze:'Zerstreuung',sa:'Stimmung anheben',ak:'Akzeptieren',ve:'Vergessen',ub:'Umbewerten',kp:'Kogn. Problemlösen'};
-            const maladaptLabels = {au:'Aufgeben',av:'Aggression',rz:'Rückzug',sw:'Selbstabwertung',ps:'Perseveration'};
+            const adaptLabels = {
+                ph: tt('Problemlösen','Résolution de problèmes','Problem-solving'),
+                ze: tt('Zerstreuung','Diversion','Distraction'),
+                sa: tt('Stimmung anheben','Élever l\'humeur','Mood enhancement'),
+                ak: tt('Akzeptieren','Accepter','Acceptance'),
+                ve: tt('Vergessen','Oublier','Forgetting'),
+                ub: tt('Umbewerten','Réévaluer','Reappraisal'),
+                kp: tt('Kogn. Problemlösen','Résolution cognitive','Cognitive problem-solving')
+            };
+            const maladaptLabels = {
+                au: tt('Aufgeben','Abandon','Giving up'),
+                av: tt('Aggression','Agression','Aggression'),
+                rz: tt('Rückzug','Retrait','Withdrawal'),
+                sw: tt('Selbstabwertung','Auto-dévalorisation','Self-devaluation'),
+                ps: tt('Perseveration','Persévération','Perseveration')
+            };
 
-            // Klassifikation: Adaptive = niedrig ist schlecht, Maladaptive = hoch ist schlecht
             const cAdapt = {};
             validAdapt.forEach(([k,x])=> cAdapt[k] = x >= 45 ? 'normal' : x >= 40 ? 'borderline' : 'clinical');
 
             const cMaladapt = {};
             validMaladapt.forEach(([k,x])=> cMaladapt[k] = x <= 55 ? 'normal' : x <= 60 ? 'borderline' : 'clinical');
 
-            const cAdaptText = val => val >= 45 ? 'Durchschnittlich' : val >= 40 ? 'Leicht unterdurchschn.' : 'Unterdurchschnittlich';
-            const cMaladaptText = val => val <= 55 ? 'Durchschnittlich' : val <= 60 ? 'Leicht erhöht' : 'Erhöht';
+            const cAdaptText    = val => val >= 45 ? tt('Durchschnittlich','Moyen','Average') : val >= 40 ? tt('Leicht unterdurchschn.','Légèrement inférieur','Slightly below average') : tt('Unterdurchschnittlich','Inférieur','Below average');
+            const cMaladaptText = val => val <= 55 ? tt('Durchschnittlich','Moyen','Average') : val <= 60 ? tt('Leicht erhöht','Légèrement élevé','Slightly elevated') : tt('Erhöht','Élevé','Elevated');
 
             const gutachten = `
                 <div class="gutachten">
-                    ${gutachtenHeader('FEEL-KJ', 'Fragebogen zur Erhebung der Emotionsregulation bei Kindern und Jugendlichen', pat)}
+                    ${gutachtenHeader('FEEL-KJ', tt('Fragebogen zur Erhebung der Emotionsregulation bei Kindern und Jugendlichen','Questionnaire d\'évaluation de la régulation émotionnelle chez les enfants et adolescents','Emotion Regulation Questionnaire for Children and Adolescents'), pat)}
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <h4 class="gutachten-section-title">${tt('1. Testbeschreibung','1. Description du test','1. Test description')}</h4>
                         <div class="gutachten-text">
-                            <p>Der FEEL-KJ (Grob & Smolenski, 2009) erfasst Emotionsregulationsstrategien bei Kindern und Jugendlichen von 10-20 Jahren. Das Verfahren unterscheidet zwischen adaptiven (funktionalen) und maladaptiven (dysfunktionalen) Strategien im Umgang mit negativen Emotionen wie Angst, Trauer und Wut.</p>
-                            <p><strong>Adaptive Strategien</strong> helfen bei der Bewältigung negativer Emotionen (z.B. Problemlösen, Umbewerten). <strong>Maladaptive Strategien</strong> verstärken oder verlängern negative Emotionen (z.B. Selbstabwertung, Rückzug).</p>
+                            <p>${tt(
+                                'Der FEEL-KJ (Grob & Smolenski, 2009) erfasst Emotionsregulationsstrategien bei Kindern und Jugendlichen von 10-20 Jahren. Das Verfahren unterscheidet zwischen adaptiven (funktionalen) und maladaptiven (dysfunktionalen) Strategien im Umgang mit negativen Emotionen wie Angst, Trauer und Wut.',
+                                'Le FEEL-KJ (Grob & Smolenski, 2009) évalue les stratégies de régulation émotionnelle chez les enfants et adolescents de 10 à 20 ans. L\'instrument distingue entre stratégies adaptatives (fonctionnelles) et maladaptatives (dysfonctionnelles) face aux émotions négatives comme la peur, la tristesse et la colère.',
+                                'The FEEL-KJ (Grob & Smolenski, 2009) assesses emotion-regulation strategies in children and adolescents aged 10-20 years. It distinguishes between adaptive (functional) and maladaptive (dysfunctional) strategies when dealing with negative emotions such as fear, sadness and anger.'
+                            )}</p>
+                            <p>${tt(
+                                '<strong>Adaptive Strategien</strong> helfen bei der Bewältigung negativer Emotionen (z.B. Problemlösen, Umbewerten). <strong>Maladaptive Strategien</strong> verstärken oder verlängern negative Emotionen (z.B. Selbstabwertung, Rückzug).',
+                                '<strong>Les stratégies adaptatives</strong> aident à gérer les émotions négatives (p. ex. résolution de problèmes, réévaluation). <strong>Les stratégies maladaptatives</strong> renforcent ou prolongent les émotions négatives (p. ex. auto-dévalorisation, retrait).',
+                                '<strong>Adaptive strategies</strong> help cope with negative emotions (e.g. problem-solving, reappraisal). <strong>Maladaptive strategies</strong> intensify or prolong negative emotions (e.g. self-devaluation, withdrawal).'
+                            )}</p>
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <h4 class="gutachten-section-title">${tt('2. Testergebnisse','2. Résultats','2. Test results')}</h4>
                         ${validAdapt.length ? `
-                        <p style="font-weight:600;margin-bottom:0.5rem;">Adaptive Strategien (T < 40 = unterdurchschnittlich)</p>
+                        <p style="font-weight:600;margin-bottom:0.5rem;">${tt('Adaptive Strategien (T < 40 = unterdurchschnittlich)','Stratégies adaptatives (T < 40 = inférieur)','Adaptive strategies (T < 40 = below average)')}</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${tt('Skala','Échelle','Scale')}</th><th>${tt('T-Wert','Score T','T-score')}</th><th>${tt('Klassifikation','Classification','Classification')}</th></tr></thead>
                             <tbody>
                                 ${validAdapt.map(([k,x])=>`<tr><td>${adaptLabels[k]}</td><td><strong>${x}</strong></td><td class="${cAdapt[k]}">${cAdaptText(x)}</td></tr>`).join('')}
-                                ${sekundar.adapt ? `<tr style="font-weight:700;background:var(--bg-input);"><td>Adaptive Strategien Gesamt</td><td><strong>${sekundar.adapt}</strong></td><td class="${sekundar.adapt>=45?'normal':sekundar.adapt>=40?'borderline':'clinical'}">${cAdaptText(sekundar.adapt)}</td></tr>` : ''}
+                                ${sekundar.adapt ? `<tr style="font-weight:700;background:var(--bg-input);"><td>${tt('Adaptive Strategien Gesamt','Stratégies adaptatives — Total','Adaptive Strategies Total')}</td><td><strong>${sekundar.adapt}</strong></td><td class="${sekundar.adapt>=45?'normal':sekundar.adapt>=40?'borderline':'clinical'}">${cAdaptText(sekundar.adapt)}</td></tr>` : ''}
                             </tbody>
                         </table>` : ''}
                         ${validMaladapt.length ? `
-                        <p style="font-weight:600;margin:1rem 0 0.5rem;">Maladaptive Strategien (T > 60 = erhöht)</p>
+                        <p style="font-weight:600;margin:1rem 0 0.5rem;">${tt('Maladaptive Strategien (T > 60 = erhöht)','Stratégies maladaptatives (T > 60 = élevé)','Maladaptive strategies (T > 60 = elevated)')}</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${tt('Skala','Échelle','Scale')}</th><th>${tt('T-Wert','Score T','T-score')}</th><th>${tt('Klassifikation','Classification','Classification')}</th></tr></thead>
                             <tbody>
                                 ${validMaladapt.map(([k,x])=>`<tr><td>${maladaptLabels[k]}</td><td><strong>${x}</strong></td><td class="${cMaladapt[k]}">${cMaladaptText(x)}</td></tr>`).join('')}
-                                ${sekundar.maladapt ? `<tr style="font-weight:700;background:var(--bg-input);"><td>Maladaptive Strategien Gesamt</td><td><strong>${sekundar.maladapt}</strong></td><td class="${sekundar.maladapt<=55?'normal':sekundar.maladapt<=60?'borderline':'clinical'}">${cMaladaptText(sekundar.maladapt)}</td></tr>` : ''}
+                                ${sekundar.maladapt ? `<tr style="font-weight:700;background:var(--bg-input);"><td>${tt('Maladaptive Strategien Gesamt','Stratégies maladaptatives — Total','Maladaptive Strategies Total')}</td><td><strong>${sekundar.maladapt}</strong></td><td class="${sekundar.maladapt<=55?'normal':sekundar.maladapt<=60?'borderline':'clinical'}">${cMaladaptText(sekundar.maladapt)}</td></tr>` : ''}
                             </tbody>
                         </table>` : ''}
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Interpretation</h4>
+                        <h4 class="gutachten-section-title">${tt('3. Interpretation','3. Interprétation','3. Interpretation')}</h4>
                         <div class="gutachten-text">
-                            <p>${pat.name} zeigt folgendes Profil der Emotionsregulation:</p>
-                            ${validAdapt.some(([k])=>cAdapt[k]==='clinical') ? `<div class="gutachten-warning"><strong>Defizite bei adaptiven Strategien:</strong> ${validAdapt.filter(([k])=>cAdapt[k]==='clinical').map(([k])=>adaptLabels[k]).join(', ')}. Diese Defizite können die Bewältigung negativer Emotionen erschweren.</div>` : ''}
-                            ${validMaladapt.some(([k])=>cMaladapt[k]==='clinical') ? `<div class="gutachten-warning"><strong>Erhöhte maladaptive Strategien:</strong> ${validMaladapt.filter(([k])=>cMaladapt[k]==='clinical').map(([k])=>maladaptLabels[k]).join(', ')}. Der verstärkte Einsatz dieser Strategien kann zur Aufrechterhaltung negativer Emotionen beitragen.</div>` : ''}
-                            ${validAdapt.every(([k])=>cAdapt[k]==='normal') && validMaladapt.every(([k])=>cMaladapt[k]==='normal') ? '<p>Das Emotionsregulationsprofil liegt im Normbereich. Es zeigen sich keine auffälligen Defizite bei adaptiven Strategien und keine übermäßige Nutzung maladaptiver Strategien.</p>' : ''}
+                            <p>${tt(
+                                `${pat.name} zeigt folgendes Profil der Emotionsregulation:`,
+                                `${pat.name} présente le profil de régulation émotionnelle suivant :`,
+                                `${pat.name} shows the following emotion-regulation profile:`
+                            )}</p>
+                            ${validAdapt.some(([k])=>cAdapt[k]==='clinical') ? `<div class="gutachten-warning"><strong>${tt('Defizite bei adaptiven Strategien:','Déficits dans les stratégies adaptatives :','Deficits in adaptive strategies:')}</strong> ${validAdapt.filter(([k])=>cAdapt[k]==='clinical').map(([k])=>adaptLabels[k]).join(', ')}. ${tt(
+                                'Diese Defizite können die Bewältigung negativer Emotionen erschweren.',
+                                'Ces déficits peuvent rendre plus difficile la gestion des émotions négatives.',
+                                'These deficits can make coping with negative emotions more difficult.'
+                            )}</div>` : ''}
+                            ${validMaladapt.some(([k])=>cMaladapt[k]==='clinical') ? `<div class="gutachten-warning"><strong>${tt('Erhöhte maladaptive Strategien:','Stratégies maladaptatives élevées :','Elevated maladaptive strategies:')}</strong> ${validMaladapt.filter(([k])=>cMaladapt[k]==='clinical').map(([k])=>maladaptLabels[k]).join(', ')}. ${tt(
+                                'Der verstärkte Einsatz dieser Strategien kann zur Aufrechterhaltung negativer Emotionen beitragen.',
+                                'L\'utilisation accrue de ces stratégies peut contribuer au maintien d\'émotions négatives.',
+                                'Increased use of these strategies can contribute to maintaining negative emotions.'
+                            )}</div>` : ''}
+                            ${validAdapt.every(([k])=>cAdapt[k]==='normal') && validMaladapt.every(([k])=>cMaladapt[k]==='normal') ? `<p>${tt(
+                                'Das Emotionsregulationsprofil liegt im Normbereich. Es zeigen sich keine auffälligen Defizite bei adaptiven Strategien und keine übermäßige Nutzung maladaptiver Strategien.',
+                                'Le profil de régulation émotionnelle se situe dans la plage normale. Aucun déficit notable dans les stratégies adaptatives ni utilisation excessive de stratégies maladaptatives.',
+                                'The emotion-regulation profile is within the normal range. No notable deficits in adaptive strategies or excessive use of maladaptive strategies.'
+                            )}</p>` : ''}
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">${tt('4. Empfehlungen','4. Recommandations','4. Recommendations')}</h4>
                         <div class="gutachten-text">
                             <ul class="gutachten-list">
                                 ${(validAdapt.some(([k])=>cAdapt[k]==='clinical') || validMaladapt.some(([k])=>cMaladapt[k]==='clinical')) ? `
-                                    <li>Emotionsregulationstraining (z.B. STARK, Gefühle im Griff)</li>
-                                    <li>Förderung adaptiver Strategien (Problemlösen, Umbewerten)</li>
-                                    <li>Reduktion maladaptiver Strategien (Selbstabwertung, Grübeln)</li>
-                                    <li>Bei ausgeprägten Defiziten: Psychotherapie</li>
+                                    <li>${tt('Emotionsregulationstraining (z.B. STARK, Gefühle im Griff)','Entraînement à la régulation émotionnelle (p. ex. programmes structurés)','Emotion-regulation training (e.g. STARK, structured programmes)')}</li>
+                                    <li>${tt('Förderung adaptiver Strategien (Problemlösen, Umbewerten)','Renforcement des stratégies adaptatives (résolution de problèmes, réévaluation)','Strengthening adaptive strategies (problem-solving, reappraisal)')}</li>
+                                    <li>${tt('Reduktion maladaptiver Strategien (Selbstabwertung, Grübeln)','Réduction des stratégies maladaptatives (auto-dévalorisation, rumination)','Reduction of maladaptive strategies (self-devaluation, rumination)')}</li>
+                                    <li>${tt('Bei ausgeprägten Defiziten: Psychotherapie','En cas de déficits marqués : psychothérapie','For pronounced deficits: psychotherapy')}</li>
                                 ` : `
-                                    <li>Keine spezifische Intervention erforderlich</li>
-                                    <li>Emotionsregulationskompetenzen weiter stärken</li>
+                                    <li>${tt('Keine spezifische Intervention erforderlich','Aucune intervention spécifique requise','No specific intervention required')}</li>
+                                    <li>${tt('Emotionsregulationskompetenzen weiter stärken','Continuer à renforcer les compétences de régulation émotionnelle','Continue strengthening emotion-regulation skills')}</li>
                                 `}
                             </ul>
                         </div>
                     </div>
 
                     ${elternZusammenfassung(
-                        'FEEL-KJ (Fragebogen zur Emotionsregulation)',
+                        tt('FEEL-KJ (Fragebogen zur Emotionsregulation)','FEEL-KJ (questionnaire de régulation émotionnelle)','FEEL-KJ (Emotion Regulation Questionnaire)'),
                         validAdapt.every(([k])=>cAdapt[k]==='normal') && validMaladapt.every(([k])=>cMaladapt[k]==='normal')
-                            ? `${pat.name} zeigt gute Fähigkeiten im Umgang mit negativen Gefühlen. Wenn Ihr Kind traurig, wütend oder ängstlich ist, kann es verschiedene hilfreiche Strategien einsetzen, um sich wieder besser zu fühlen. Das ist eine wichtige Fähigkeit für das ganze Leben.`
+                            ? tt(
+                                `${pat.name} zeigt gute Fähigkeiten im Umgang mit negativen Gefühlen. Wenn Ihr Kind traurig, wütend oder ängstlich ist, kann es verschiedene hilfreiche Strategien einsetzen, um sich wieder besser zu fühlen. Das ist eine wichtige Fähigkeit für das ganze Leben.`,
+                                `${pat.name} montre de bonnes capacités à gérer les émotions négatives. Quand votre enfant est triste, en colère ou anxieux·se, il/elle peut utiliser différentes stratégies utiles pour se sentir mieux. C'est une compétence importante pour toute la vie.`,
+                                `${pat.name} shows good skills in dealing with negative emotions. When your child is sad, angry or anxious, they can use various helpful strategies to feel better. This is an important lifelong skill.`
+                            )
                             : validAdapt.some(([k])=>cAdapt[k]==='clinical') && !validMaladapt.some(([k])=>cMaladapt[k]==='clinical')
-                                ? `${pat.name} zeigt Schwierigkeiten bei der Anwendung hilfreicher Strategien im Umgang mit negativen Gefühlen. Das bedeutet: Wenn Ihr Kind traurig oder wütend ist, fehlen möglicherweise gute Werkzeuge, um damit umzugehen. Diese Fähigkeiten können aber erlernt werden!`
+                                ? tt(
+                                    `${pat.name} zeigt Schwierigkeiten bei der Anwendung hilfreicher Strategien im Umgang mit negativen Gefühlen. Das bedeutet: Wenn Ihr Kind traurig oder wütend ist, fehlen möglicherweise gute Werkzeuge, um damit umzugehen. Diese Fähigkeiten können aber erlernt werden!`,
+                                    `${pat.name} présente des difficultés à appliquer des stratégies utiles face aux émotions négatives. Cela signifie : quand votre enfant est triste ou en colère, il lui manque possiblement de bons outils pour y faire face. Ces compétences peuvent toutefois s'apprendre !`,
+                                    `${pat.name} shows difficulties applying helpful strategies when dealing with negative emotions. This means: when your child is sad or angry, they may lack good tools to cope. These skills can be learned!`
+                                )
                                 : !validAdapt.some(([k])=>cAdapt[k]==='clinical') && validMaladapt.some(([k])=>cMaladapt[k]==='clinical')
-                                    ? `${pat.name} neigt dazu, mit negativen Gefühlen auf eine Weise umzugehen, die die Situation verschlechtern kann - zum Beispiel durch Grübeln, Selbstvorwürfe oder Rückzug. Das Gute: Mit Unterstützung kann Ihr Kind lernen, bessere Strategien anzuwenden.`
-                                    : `${pat.name} zeigt sowohl Defizite bei hilfreichen Strategien als auch eine erhöhte Nutzung von Strategien, die die Situation verschlechtern können. Ein gezieltes Emotionstraining kann hier sehr hilfreich sein.`,
+                                    ? tt(
+                                        `${pat.name} neigt dazu, mit negativen Gefühlen auf eine Weise umzugehen, die die Situation verschlechtern kann - zum Beispiel durch Grübeln, Selbstvorwürfe oder Rückzug. Das Gute: Mit Unterstützung kann Ihr Kind lernen, bessere Strategien anzuwenden.`,
+                                        `${pat.name} tend à gérer les émotions négatives d'une manière pouvant aggraver la situation – par exemple par la rumination, les auto-reproches ou le retrait. La bonne nouvelle : avec un soutien, votre enfant peut apprendre à utiliser de meilleures stratégies.`,
+                                        `${pat.name} tends to handle negative emotions in ways that may worsen the situation – e.g. through rumination, self-blame or withdrawal. The good news: with support, your child can learn to apply better strategies.`
+                                    )
+                                    : tt(
+                                        `${pat.name} zeigt sowohl Defizite bei hilfreichen Strategien als auch eine erhöhte Nutzung von Strategien, die die Situation verschlechtern können. Ein gezieltes Emotionstraining kann hier sehr hilfreich sein.`,
+                                        `${pat.name} présente à la fois des déficits dans les stratégies utiles et un recours accru aux stratégies pouvant aggraver la situation. Un entraînement émotionnel ciblé peut être très utile ici.`,
+                                        `${pat.name} shows both deficits in helpful strategies and increased use of strategies that can worsen the situation. Targeted emotion training can be very helpful here.`
+                                    ),
                         validAdapt.every(([k])=>cAdapt[k]==='normal') && validMaladapt.every(([k])=>cMaladapt[k]==='normal')
-                            ? ['Emotionsregulation weiter stärken', 'Über Gefühle sprechen normalisieren']
-                            : ['Emotionsregulationstraining kann helfen, bessere Strategien zu lernen', 'Sprechen Sie offen über Gefühle - alle Gefühle sind erlaubt', 'Seien Sie selbst ein Vorbild im Umgang mit Emotionen', 'Bei Bedarf: Psychotherapie kann sehr hilfreich sein']
+                            ? [
+                                tt('Emotionsregulation weiter stärken','Continuer à renforcer la régulation émotionnelle','Continue strengthening emotion regulation'),
+                                tt('Über Gefühle sprechen normalisieren','Normaliser le fait de parler des émotions','Normalise talking about feelings')
+                              ]
+                            : [
+                                tt('Emotionsregulationstraining kann helfen, bessere Strategien zu lernen','L\'entraînement à la régulation émotionnelle peut aider à apprendre de meilleures stratégies','Emotion-regulation training can help learn better strategies'),
+                                tt('Sprechen Sie offen über Gefühle - alle Gefühle sind erlaubt','Parlez ouvertement des émotions – toutes les émotions sont permises','Speak openly about feelings – all feelings are allowed'),
+                                tt('Seien Sie selbst ein Vorbild im Umgang mit Emotionen','Soyez vous-même un modèle dans la gestion des émotions','Be a role model yourself in handling emotions'),
+                                tt('Bei Bedarf: Psychotherapie kann sehr hilfreich sein','Si nécessaire : la psychothérapie peut être très utile','If needed: psychotherapy can be very helpful')
+                              ]
                     )}
 
                     ${gutachtenFooter()}
@@ -7568,14 +7629,14 @@
             `;
 
             document.getElementById('feelkj-results').innerHTML = `
-                <div class="results-header"><h3 class="results-title">Ergebnis FEEL-KJ</h3></div>
+                <div class="results-header"><h3 class="results-title">${tt('Ergebnis FEEL-KJ','Résultat FEEL-KJ','FEEL-KJ result')}</h3></div>
                 ${summary([
-                    ...(sekundar.adapt ? [{l:'Adaptiv',v:'T '+sekundar.adapt,c:sekundar.adapt>=45?'normal':sekundar.adapt>=40?'borderline':'clinical',s:cAdaptText(sekundar.adapt)}] : []),
-                    ...(sekundar.maladapt ? [{l:'Maladaptiv',v:'T '+sekundar.maladapt,c:sekundar.maladapt<=55?'normal':sekundar.maladapt<=60?'borderline':'clinical',s:cMaladaptText(sekundar.maladapt)}] : [])
+                    ...(sekundar.adapt ? [{l:tt('Adaptiv','Adaptatif','Adaptive'),v:'T '+sekundar.adapt,c:sekundar.adapt>=45?'normal':sekundar.adapt>=40?'borderline':'clinical',s:cAdaptText(sekundar.adapt)}] : []),
+                    ...(sekundar.maladapt ? [{l:tt('Maladaptiv','Maladaptatif','Maladaptive'),v:'T '+sekundar.maladapt,c:sekundar.maladapt<=55?'normal':sekundar.maladapt<=60?'borderline':'clinical',s:cMaladaptText(sekundar.maladapt)}] : [])
                 ])}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
-                    <button class="btn btn-primary" onclick="exportTestToWord('feelkj')">📝 Als Word exportieren (.doc)</button>
+                    <button class="btn btn-primary" onclick="exportTestToWord('feelkj')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
                 </div>
             `;
             showLocalizedResults('feelkj-results');
