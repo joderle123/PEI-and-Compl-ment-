@@ -4818,17 +4818,40 @@
                     </div>
 
                     ${elternZusammenfassung(
-                        'SDQ (Fragebogen zu Stärken und Schwächen)',
+                        tt('SDQ (Fragebogen zu Stärken und Schwächen)','SDQ (Questionnaire des forces et difficultés)','SDQ (Strengths and Difficulties Questionnaire)'),
                         c.tot === 'normal'
-                            ? `Die Ergebnisse zeigen, dass Ihr Kind derzeit keine auffälligen Schwierigkeiten in den untersuchten Bereichen hat. Das ist ein gutes Zeichen! ${pat.name} scheint emotional stabil zu sein, kommt gut mit Gleichaltrigen aus und zeigt ein angemessenes Verhalten.`
+                            ? tt(
+                                `Die Ergebnisse zeigen, dass Ihr Kind derzeit keine auffälligen Schwierigkeiten in den untersuchten Bereichen hat. Das ist ein gutes Zeichen! ${pat.name} scheint emotional stabil zu sein, kommt gut mit Gleichaltrigen aus und zeigt ein angemessenes Verhalten.`,
+                                `Les résultats montrent que votre enfant ne présente actuellement aucune difficulté notable dans les domaines évalués. C'est un bon signe ! ${pat.name} semble émotionnellement stable, s'entend bien avec les pairs et présente un comportement adéquat.`,
+                                `The results show that your child currently has no notable difficulties in the assessed domains. That is a good sign! ${pat.name} appears emotionally stable, gets along well with peers and shows appropriate behaviour.`
+                            )
                             : c.tot === 'borderline'
-                                ? `Die Ergebnisse zeigen einige Bereiche, in denen Ihr Kind leichte Schwierigkeiten haben könnte. Das bedeutet nicht, dass etwas "falsch" ist - viele Kinder zeigen solche Werte zeitweise. Es ist jedoch sinnvoll, diese Bereiche im Auge zu behalten und bei Bedarf Unterstützung anzubieten.`
-                                : `Die Ergebnisse zeigen, dass Ihr Kind in einigen Bereichen Unterstützung benötigen könnte. ${c.em === 'clinical' ? 'Es scheint vermehrt Sorgen oder Ängste zu haben. ' : ''}${c.hy === 'clinical' ? 'Es fällt ihm schwer, ruhig zu bleiben oder sich zu konzentrieren. ' : ''}${c.co === 'clinical' ? 'Es gibt Schwierigkeiten bei der Verhaltenssteuerung. ' : ''}${c.pe === 'clinical' ? 'Der Kontakt zu Gleichaltrigen fällt schwer. ' : ''}Dies ist kein Grund zur Panik, aber wir empfehlen, professionelle Hilfe in Anspruch zu nehmen.`,
+                                ? tt(
+                                    `Die Ergebnisse zeigen einige Bereiche, in denen Ihr Kind leichte Schwierigkeiten haben könnte. Das bedeutet nicht, dass etwas "falsch" ist - viele Kinder zeigen solche Werte zeitweise. Es ist jedoch sinnvoll, diese Bereiche im Auge zu behalten und bei Bedarf Unterstützung anzubieten.`,
+                                    `Les résultats montrent quelques domaines dans lesquels votre enfant pourrait présenter de légères difficultés. Cela ne signifie pas qu'il y a un « problème » – de nombreux enfants présentent temporairement de tels scores. Il est néanmoins judicieux de garder ces domaines à l'œil et d'offrir un soutien si nécessaire.`,
+                                    `The results show some domains where your child may have mild difficulties. This does not mean that something is "wrong" – many children temporarily show such scores. It is, however, sensible to keep these areas in view and to offer support if needed.`
+                                )
+                                : tt(
+                                    `Die Ergebnisse zeigen, dass Ihr Kind in einigen Bereichen Unterstützung benötigen könnte. ${c.em === 'clinical' ? 'Es scheint vermehrt Sorgen oder Ängste zu haben. ' : ''}${c.hy === 'clinical' ? 'Es fällt ihm schwer, ruhig zu bleiben oder sich zu konzentrieren. ' : ''}${c.co === 'clinical' ? 'Es gibt Schwierigkeiten bei der Verhaltenssteuerung. ' : ''}${c.pe === 'clinical' ? 'Der Kontakt zu Gleichaltrigen fällt schwer. ' : ''}Dies ist kein Grund zur Panik, aber wir empfehlen, professionelle Hilfe in Anspruch zu nehmen.`,
+                                    `Les résultats montrent que votre enfant pourrait avoir besoin de soutien dans certains domaines. ${c.em === 'clinical' ? 'Il/elle semble présenter davantage d\'inquiétudes ou de peurs. ' : ''}${c.hy === 'clinical' ? 'Il/elle a du mal à rester calme ou à se concentrer. ' : ''}${c.co === 'clinical' ? 'Des difficultés de régulation du comportement sont observées. ' : ''}${c.pe === 'clinical' ? 'Les contacts avec les pairs sont difficiles. ' : ''}Cela n'est pas une raison de paniquer, mais nous recommandons de solliciter une aide professionnelle.`,
+                                    `The results show that your child may need support in some areas. ${c.em === 'clinical' ? 'They appear to have increased worries or fears. ' : ''}${c.hy === 'clinical' ? 'They find it hard to stay calm or to concentrate. ' : ''}${c.co === 'clinical' ? 'There are difficulties with behavioural regulation. ' : ''}${c.pe === 'clinical' ? 'Contact with peers is difficult. ' : ''}This is no cause for panic, but we recommend seeking professional help.`
+                                ),
                         c.tot === 'normal'
-                            ? ['Achten Sie weiterhin auf das Wohlbefinden Ihres Kindes', 'Bei Veränderungen im Verhalten oder der Stimmung wenden Sie sich an uns']
+                            ? [
+                                tt('Achten Sie weiterhin auf das Wohlbefinden Ihres Kindes','Continuez à veiller au bien-être de votre enfant','Continue to attend to your child\'s well-being'),
+                                tt('Bei Veränderungen im Verhalten oder der Stimmung wenden Sie sich an uns','En cas de changement de comportement ou d\'humeur, n\'hésitez pas à nous contacter','If you notice changes in behaviour or mood, please contact us')
+                              ]
                             : c.tot === 'borderline'
-                                ? ['Beobachten Sie, wie sich die Situation entwickelt', 'Sprechen Sie mit Ihrem Kind über seine Gefühle', 'Bei Verschlechterung vereinbaren Sie einen Beratungstermin']
-                                : ['Vereinbaren Sie zeitnah einen Termin zur ausführlichen Besprechung', 'Ziehen Sie eine Vorstellung bei einem Kinder- und Jugendpsychologen in Betracht', 'Sprechen Sie mit der Schule über mögliche Unterstützung']
+                                ? [
+                                    tt('Beobachten Sie, wie sich die Situation entwickelt','Observez comment la situation évolue','Observe how the situation evolves'),
+                                    tt('Sprechen Sie mit Ihrem Kind über seine Gefühle','Parlez avec votre enfant de ses émotions','Talk with your child about their feelings'),
+                                    tt('Bei Verschlechterung vereinbaren Sie einen Beratungstermin','En cas de dégradation, prenez un rendez-vous de conseil','If things worsen, schedule a counselling appointment')
+                                  ]
+                                : [
+                                    tt('Vereinbaren Sie zeitnah einen Termin zur ausführlichen Besprechung','Prenez rapidement rendez-vous pour un entretien détaillé','Schedule a detailed consultation soon'),
+                                    tt('Ziehen Sie eine Vorstellung bei einem Kinder- und Jugendpsychologen in Betracht','Envisagez une consultation chez un·e psychologue pour enfants et adolescents','Consider a consultation with a child & adolescent psychologist'),
+                                    tt('Sprechen Sie mit der Schule über mögliche Unterstützung','Parlez avec l\'école d\'éventuelles mesures de soutien','Speak with the school about possible support')
+                                  ]
                     )}
 
                     ${gutachtenFooter()}
@@ -4836,11 +4859,11 @@
             `;
 
             document.getElementById('sdq-results').innerHTML = `
-                <div class="results-header"><h3 class="results-title">Ergebnis SDQ</h3></div>
-                ${summary([{l:'Gesamt',v:tot,c:c.tot,s:S[c.tot]},...keys.map(k=>({l:labels[keys.indexOf(k)],v:d[k],c:c[k],s:S[c[k]]}))])}
+                <div class="results-header"><h3 class="results-title">${tt('Ergebnis SDQ','Résultat SDQ','SDQ result')}</h3></div>
+                ${summary([{l:tt('Gesamt','Total','Total'),v:tot,c:c.tot,s:statusLabel(c.tot)},...keys.map(k=>({l:labels[keys.indexOf(k)],v:d[k],c:c[k],s:statusLabel(c[k])}))])}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
-                    <button class="btn btn-primary" onclick="exportTestToWord('sdq')">📝 Als Word exportieren (.doc)</button>
+                    <button class="btn btn-primary" onclick="exportTestToWord('sdq')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
                 </div>
             `;
             showLocalizedResults('sdq-results');
