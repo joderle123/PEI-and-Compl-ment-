@@ -4282,7 +4282,7 @@
             const pat = getPatient();
             const r = document.querySelector('input[name="sdq-resp"]:checked').value;
             const d = {em:v('sdq-em'),co:v('sdq-co'),hy:v('sdq-hy'),pe:v('sdq-pe'),pr:v('sdq-pr')};
-            if(Object.values(d).some(x=>x===null)) return alert('Bitte alle Felder ausfüllen');
+            if(Object.values(d).some(x=>x===null)) return alert(tt('Bitte alle Felder ausfüllen','Veuillez remplir tous les champs','Please fill in all fields'));
 
             const tot = d.em+d.co+d.hy+d.pe;
             const c = {}; Object.keys(d).forEach(k=>c[k]=sdqClass(k,d[k],r)); c.tot=sdqClass('tot',tot,r);
