@@ -1463,7 +1463,7 @@
                     </div>
                     <p class="card-subtitle">Wechsler Intelligence Scale for Children – Kognitive Fähigkeiten 6-16 Jahre</p>
                 </div>
-                <form id="wisc-form" onsubmit="evaluateWISC(event)">
+                <form id="wisc-form" data-i18n-native="1" onsubmit="evaluateWISC(event)">
                     <div class="form-section">
                         <div class="form-section-title">Primärindizes (M=100, SD=15)</div>
                         <div class="form-grid">
@@ -4898,6 +4898,31 @@
             gai: {n:'Allgemeiner Fähigkeitsindex (AFI)', desc:'Erfasst allgemeine kognitive Fähigkeiten ohne Arbeitsgedächtnis und Verarbeitungsgeschwindigkeit'},
             kli: {n:'Kognitiver Leistungsindex (KLI)', desc:'Erfasst kognitive Effizienz (Arbeitsgedächtnis und Verarbeitungsgeschwindigkeit)'}
         };
+        function wiscIndexName(k) {
+            const fr = {
+                vci:'Indice de compréhension verbale (ICV)',
+                vsi:'Indice visuo-spatial (IVS)',
+                fri:'Indice de raisonnement fluide (IRF)',
+                wmi:'Indice de mémoire de travail (IMT)',
+                psi:'Indice de vitesse de traitement (IVT)',
+                fsiq:'QI Total (QIT)',
+                nvi:'Indice non verbal (INV)',
+                gai:'Indice d\'aptitude générale (IAG)',
+                kli:'Indice de compétence cognitive (ICC)'
+            };
+            const en = {
+                vci:'Verbal Comprehension Index (VCI)',
+                vsi:'Visual Spatial Index (VSI)',
+                fri:'Fluid Reasoning Index (FRI)',
+                wmi:'Working Memory Index (WMI)',
+                psi:'Processing Speed Index (PSI)',
+                fsiq:'Full Scale IQ (FSIQ)',
+                nvi:'Nonverbal Index (NVI)',
+                gai:'General Ability Index (GAI)',
+                kli:'Cognitive Proficiency Index (CPI)'
+            };
+            return tt(WISC_NAMES[k].n, fr[k], en[k]);
+        }
 
         // Standard-Normal-CDF (Abramowitz & Stegun 7.1.26) – für PR-Berechnung
         function normalCDF(z) {
@@ -4922,11 +4947,12 @@
         function tToPRExact(t) { return exactPR(t, 50, 10); }
 
         function iqClass(v) {
-            if(v>=130) return {l:'Weit überdurchschnittlich',c:'vhigh',pr:iqToPR(v)};
-            if(v>=115) return {l:'Überdurchschnittlich',c:'high',pr:iqToPR(v)};
-            if(v>=85) return {l:'Durchschnittlich',c:'normal',pr:iqToPR(v)};
-            if(v>=70) return {l:'Unterdurchschnittlich',c:'borderline',pr:iqToPR(v)};
-            return {l:'Weit unterdurchschnittlich',c:'clinical',pr:iqToPR(v)};
+            const lab = (de, fr, en) => tt(de, fr, en);
+            if(v>=130) return {l:lab('Weit überdurchschnittlich','Très supérieur','Very superior'),c:'vhigh',pr:iqToPR(v)};
+            if(v>=115) return {l:lab('Überdurchschnittlich','Supérieur','Above average'),c:'high',pr:iqToPR(v)};
+            if(v>=85)  return {l:lab('Durchschnittlich','Moyen','Average'),c:'normal',pr:iqToPR(v)};
+            if(v>=70)  return {l:lab('Unterdurchschnittlich','Inférieur','Below average'),c:'borderline',pr:iqToPR(v)};
+            return {l:lab('Weit unterdurchschnittlich','Très inférieur','Very low'),c:'clinical',pr:iqToPR(v)};
         }
 
         function evaluateWISC(e) {
@@ -4938,7 +4964,7 @@
                 nvi:{v:v('wisc-nvi')},gai:{v:v('wisc-gai')},kli:{v:v('wisc-kli')}
             };
             const valid = Object.entries(idx).filter(([k,x])=>x.v!==null);
-            if(!valid.length) return alert('Mindestens ein Wert eingeben');
+            if(!valid.length) return alert(tt('Mindestens ein Wert eingeben','Veuillez saisir au moins une valeur','Please enter at least one value'));
 
             const c = {}; valid.forEach(([k,x])=>c[k]=iqClass(x.v));
             const pronomen = pat.sex === 'w' ? {er:'sie',sein:'ihr',ihm:'ihr',seine:'ihre'} : {er:'er',sein:'sein',ihm:'ihm',seine:'seine'};
@@ -4963,16 +4989,88 @@
             const schwaechen = indices.filter(([k,x])=>x.v<85);
             const fsiq = idx.fsiq.v;
 
-            // Ausführliche Index-Beschreibungen
+            // Ausführliche Index-Beschreibungen (DE/FR/EN)
+            // Helper: pick 3 strings based on a 3-tier classification of v
+            const tier = (v, hi, lo) => v >= hi ? 'high' : v >= lo ? 'mid' : 'low';
+            const pickTier = (v, hi, lo, hiS, midS, loS) => ({high:hiS, mid:midS, low:loS}[tier(v, hi, lo)]);
             const indexBeschreibungen = {
-                vci: `<p><strong>Sprachverständnisindex (SVI = ${idx.vci.v || '-'}):</strong> Dieser Index erfasst die sprachliche Begriffsbildung, das verbale Schlussfolgern sowie erworbenes Wissen. Ein ${idx.vci.v >= 110 ? 'überdurchschnittlicher' : idx.vci.v >= 90 ? 'durchschnittlicher' : 'unterdurchschnittlicher'} Wert in diesem Bereich deutet auf ${idx.vci.v >= 110 ? 'gut entwickelte verbale Fähigkeiten hin, die eine Stärke im sprachlichen Denken und der verbalen Ausdrucksfähigkeit repräsentieren' : idx.vci.v >= 90 ? 'altersgemäß entwickelte sprachliche Fähigkeiten' : 'Schwierigkeiten im Bereich der sprachlichen Begriffsbildung, die sich auf das schulische Lernen auswirken können'}. ${idx.vci.v < 90 ? 'Eine logopädische Abklärung sowie sprachliche Förderung könnten indiziert sein.' : ''}</p>`,
-                vsi: `<p><strong>Visuell-räumlicher Index (VRI = ${idx.vsi.v || '-'}):</strong> Dieser Index misst die visuell-räumliche Verarbeitung und die Fähigkeit, räumliche Beziehungen zu analysieren und visuelle Stimuli zu konstruieren. ${pat.name} zeigt ${idx.vsi.v >= 110 ? 'überdurchschnittliche Fähigkeiten in der räumlichen Vorstellung und visuellen Analyse, was eine relative Stärke darstellt' : idx.vsi.v >= 90 ? 'altersgemäße visuell-räumliche Fähigkeiten' : 'Schwierigkeiten in der visuell-räumlichen Verarbeitung, die sich auf Fächer wie Geometrie, Kunst oder technisches Zeichnen auswirken können'}.</p>`,
-                fri: `<p><strong>Index Fluides Schlussfolgern (FRI = ${idx.fri.v || '-'}):</strong> Dieser Index erfasst die Fähigkeit zum induktiven und deduktiven Schlussfolgern sowie zum quantitativen Denken – Fähigkeiten, die relativ unabhängig von erworbenem Wissen sind. ${pat.name} zeigt ${idx.fri.v >= 110 ? 'überdurchschnittliche Fähigkeiten im logischen Denken und Problemlösen, was auf ein hohes Potenzial für abstraktes Denken hindeutet' : idx.fri.v >= 90 ? 'altersgemäße Fähigkeiten im logischen Schlussfolgern' : 'Schwierigkeiten im abstrakten und logischen Denken, die sich auf mathematische und naturwissenschaftliche Fächer auswirken können'}.</p>`,
-                wmi: `<p><strong>Arbeitsgedächtnisindex (AMI = ${idx.wmi.v || '-'}):</strong> Dieser Index misst die Fähigkeit, Informationen kurzfristig im Gedächtnis zu halten und mental zu manipulieren. Das Arbeitsgedächtnis ist zentral für schulisches Lernen, Kopfrechnen und das Befolgen komplexer Anweisungen. ${pat.name} zeigt ${idx.wmi.v >= 110 ? 'eine überdurchschnittliche Arbeitsgedächtniskapazität, was das Lernen und die Informationsverarbeitung erleichtert' : idx.wmi.v >= 90 ? 'eine altersgemäße Arbeitsgedächtniskapazität' : 'Einschränkungen der Arbeitsgedächtniskapazität, die sich auf das Behalten von Anweisungen, Kopfrechnen und das Lernen neuer Inhalte auswirken können'}. ${idx.wmi.v < 85 ? 'Bei Arbeitsgedächtnisdefiziten sollte eine ADHS-Diagnostik erwogen werden, da Aufmerksamkeitsprobleme häufig mit reduzierten AMI-Werten einhergehen.' : ''}</p>`,
-                psi: `<p><strong>Verarbeitungsgeschwindigkeitsindex (VGI = ${idx.psi.v || '-'}):</strong> Dieser Index erfasst die Geschwindigkeit der Informationsverarbeitung und die graphomotorische Geschwindigkeit. Er ist relevant für zeitgebundene Aufgaben und effizientes Arbeiten. ${pat.name} zeigt ${idx.psi.v >= 110 ? 'eine überdurchschnittliche Verarbeitungsgeschwindigkeit, was effizientes Arbeiten unter Zeitdruck ermöglicht' : idx.psi.v >= 90 ? 'eine altersgemäße Verarbeitungsgeschwindigkeit' : 'eine reduzierte Verarbeitungsgeschwindigkeit, die sich auf zeitgebundene Aufgaben und die Bewältigung des Schulalltags auswirken kann'}. ${idx.psi.v < 85 ? 'Bei reduzierter Verarbeitungsgeschwindigkeit sollten Nachteilsausgleiche (z.B. Zeitverlängerung bei Prüfungen) geprüft werden.' : ''}</p>`,
-                nvi: `<p><strong>Nonverbaler Index (NVI = ${idx.nvi.v || '-'}):</strong> Dieser Index erfasst nonverbale kognitive Fähigkeiten unabhängig von sprachlichen Kompetenzen. Er ist besonders relevant bei Kindern mit Sprachentwicklungsauffälligkeiten oder bei mehrsprachig aufwachsenden Kindern. ${pat.name} zeigt ${idx.nvi.v >= 115 ? 'überdurchschnittliche nonverbale kognitive Fähigkeiten' : idx.nvi.v >= 85 ? 'altersgemäße nonverbale kognitive Fähigkeiten' : 'Schwierigkeiten im nonverbalen kognitiven Bereich'}.</p>`,
-                gai: `<p><strong>Allgemeiner Fähigkeitsindex (AFI = ${idx.gai.v || '-'}):</strong> Der AFI fasst den Sprachverständnisindex, den Visuell-räumlichen Index und den Index Fluides Schlussfolgern zusammen. Er bietet eine Einschätzung der allgemeinen kognitiven Fähigkeiten, die weniger durch Arbeitsgedächtnis und Verarbeitungsgeschwindigkeit beeinflusst wird als der Gesamt-IQ. ${idx.gai.v && idx.fsiq.v && Math.abs(idx.gai.v - idx.fsiq.v) >= 10 ? `Die Differenz von ${Math.abs(idx.gai.v - idx.fsiq.v)} Punkten zum Gesamt-IQ (${idx.fsiq.v}) deutet darauf hin, dass ${idx.gai.v > idx.fsiq.v ? 'kognitive Effizienz (Arbeitsgedächtnis/Verarbeitungsgeschwindigkeit) die Gesamtleistung nach unten beeinflusst' : 'kognitive Effizienz die Gesamtleistung zusätzlich stützt'}.` : ''}</p>`,
-                kli: `<p><strong>Kognitiver Leistungsindex (KLI = ${idx.kli.v || '-'}):</strong> Der KLI fasst Arbeitsgedächtnisindex und Verarbeitungsgeschwindigkeitsindex zusammen und bildet damit die kognitive Effizienz ab. ${pat.name} zeigt ${idx.kli.v >= 115 ? 'eine überdurchschnittliche kognitive Effizienz' : idx.kli.v >= 85 ? 'eine altersgemäße kognitive Effizienz' : 'eine eingeschränkte kognitive Effizienz, die das schulische Leistungsvermögen beeinträchtigen kann'}.</p>`
+                vci: (() => {
+                    const v = idx.vci.v;
+                    const lvl = pickTier(v, 110, 90,
+                        tt('überdurchschnittlicher','supérieur','above average'),
+                        tt('durchschnittlicher','moyen','average'),
+                        tt('unterdurchschnittlicher','inférieur','below average'));
+                    const expl = pickTier(v, 110, 90,
+                        tt('gut entwickelte verbale Fähigkeiten hin, die eine Stärke im sprachlichen Denken und der verbalen Ausdrucksfähigkeit repräsentieren','de bonnes capacités verbales, représentant une force dans la pensée verbale et l\'expression','well-developed verbal abilities, representing a strength in verbal reasoning and expression'),
+                        tt('altersgemäß entwickelte sprachliche Fähigkeiten','des capacités verbales correspondant à l\'âge','age-appropriate verbal abilities'),
+                        tt('Schwierigkeiten im Bereich der sprachlichen Begriffsbildung, die sich auf das schulische Lernen auswirken können','des difficultés dans la formation des concepts verbaux pouvant affecter l\'apprentissage scolaire','difficulties in verbal concept formation that may affect school learning'));
+                    const add = v < 90 ? ' ' + tt('Eine logopädische Abklärung sowie sprachliche Förderung könnten indiziert sein.','Un bilan orthophonique et un soutien linguistique pourraient être indiqués.','Speech-language assessment and language support may be indicated.') : '';
+                    return `<p><strong>${wiscIndexName('vci')} = ${v || '-'}:</strong> ${tt('Dieser Index erfasst die sprachliche Begriffsbildung, das verbale Schlussfolgern sowie erworbenes Wissen.','Cet indice évalue la formation de concepts verbaux, le raisonnement verbal et les connaissances acquises.','This index assesses verbal concept formation, verbal reasoning and acquired knowledge.')} ${tt(`Ein ${lvl} Wert in diesem Bereich deutet auf ${expl}.`,`Un score ${lvl} dans ce domaine indique ${expl}.`,`A ${lvl} score in this area indicates ${expl}.`)}${add}</p>`;
+                })(),
+                vsi: (() => {
+                    const v = idx.vsi.v;
+                    const expl = pickTier(v, 110, 90,
+                        tt('überdurchschnittliche Fähigkeiten in der räumlichen Vorstellung und visuellen Analyse, was eine relative Stärke darstellt','des capacités supérieures en représentation spatiale et analyse visuelle, ce qui constitue une force relative','above-average abilities in spatial visualisation and visual analysis, representing a relative strength'),
+                        tt('altersgemäße visuell-räumliche Fähigkeiten','des capacités visuo-spatiales correspondant à l\'âge','age-appropriate visual-spatial abilities'),
+                        tt('Schwierigkeiten in der visuell-räumlichen Verarbeitung, die sich auf Fächer wie Geometrie, Kunst oder technisches Zeichnen auswirken können','des difficultés en traitement visuo-spatial pouvant affecter des matières comme la géométrie, l\'art ou le dessin technique','difficulties in visual-spatial processing that may affect subjects like geometry, art or technical drawing'));
+                    return `<p><strong>${wiscIndexName('vsi')} = ${v || '-'}:</strong> ${tt(`Dieser Index misst die visuell-räumliche Verarbeitung und die Fähigkeit, räumliche Beziehungen zu analysieren und visuelle Stimuli zu konstruieren. ${pat.name} zeigt ${expl}.`,`Cet indice mesure le traitement visuo-spatial et la capacité à analyser les relations spatiales et à construire des stimuli visuels. ${pat.name} montre ${expl}.`,`This index measures visual-spatial processing and the ability to analyse spatial relations and construct visual stimuli. ${pat.name} shows ${expl}.`)}</p>`;
+                })(),
+                fri: (() => {
+                    const v = idx.fri.v;
+                    const expl = pickTier(v, 110, 90,
+                        tt('überdurchschnittliche Fähigkeiten im logischen Denken und Problemlösen, was auf ein hohes Potenzial für abstraktes Denken hindeutet','des capacités supérieures de raisonnement logique et de résolution de problèmes, suggérant un fort potentiel de pensée abstraite','above-average abilities in logical reasoning and problem-solving, suggesting strong potential for abstract thinking'),
+                        tt('altersgemäße Fähigkeiten im logischen Schlussfolgern','des capacités de raisonnement logique correspondant à l\'âge','age-appropriate logical reasoning abilities'),
+                        tt('Schwierigkeiten im abstrakten und logischen Denken, die sich auf mathematische und naturwissenschaftliche Fächer auswirken können','des difficultés en raisonnement abstrait et logique pouvant affecter les matières mathématiques et scientifiques','difficulties in abstract and logical reasoning that may affect mathematical and scientific subjects'));
+                    return `<p><strong>${wiscIndexName('fri')} = ${v || '-'}:</strong> ${tt(`Dieser Index erfasst die Fähigkeit zum induktiven und deduktiven Schlussfolgern sowie zum quantitativen Denken – Fähigkeiten, die relativ unabhängig von erworbenem Wissen sind. ${pat.name} zeigt ${expl}.`,`Cet indice évalue la capacité de raisonnement inductif et déductif et la pensée quantitative – des capacités relativement indépendantes des connaissances acquises. ${pat.name} montre ${expl}.`,`This index assesses inductive and deductive reasoning and quantitative thinking – abilities relatively independent of acquired knowledge. ${pat.name} shows ${expl}.`)}</p>`;
+                })(),
+                wmi: (() => {
+                    const v = idx.wmi.v;
+                    const expl = pickTier(v, 110, 90,
+                        tt('eine überdurchschnittliche Arbeitsgedächtniskapazität, was das Lernen und die Informationsverarbeitung erleichtert','une capacité supérieure de mémoire de travail, facilitant l\'apprentissage et le traitement de l\'information','above-average working memory capacity, facilitating learning and information processing'),
+                        tt('eine altersgemäße Arbeitsgedächtniskapazität','une capacité de mémoire de travail correspondant à l\'âge','age-appropriate working memory capacity'),
+                        tt('Einschränkungen der Arbeitsgedächtniskapazität, die sich auf das Behalten von Anweisungen, Kopfrechnen und das Lernen neuer Inhalte auswirken können','des limitations de la capacité de mémoire de travail pouvant affecter la rétention des consignes, le calcul mental et l\'apprentissage de nouveaux contenus','working memory capacity limitations that may affect retaining instructions, mental arithmetic and learning new content'));
+                    const add = v < 85 ? ' ' + tt('Bei Arbeitsgedächtnisdefiziten sollte eine ADHS-Diagnostik erwogen werden, da Aufmerksamkeitsprobleme häufig mit reduzierten AMI-Werten einhergehen.','En cas de déficits de mémoire de travail, un bilan TDAH devrait être envisagé, car les problèmes attentionnels accompagnent souvent une baisse de l\'IMT.','In case of working-memory deficits, ADHD assessment should be considered, as attention problems often accompany reduced WMI scores.') : '';
+                    return `<p><strong>${wiscIndexName('wmi')} = ${v || '-'}:</strong> ${tt(`Dieser Index misst die Fähigkeit, Informationen kurzfristig im Gedächtnis zu halten und mental zu manipulieren. Das Arbeitsgedächtnis ist zentral für schulisches Lernen, Kopfrechnen und das Befolgen komplexer Anweisungen. ${pat.name} zeigt ${expl}.`,`Cet indice mesure la capacité à maintenir des informations en mémoire à court terme et à les manipuler mentalement. La mémoire de travail est centrale pour l'apprentissage scolaire, le calcul mental et le suivi de consignes complexes. ${pat.name} montre ${expl}.`,`This index measures the ability to hold information in short-term memory and mentally manipulate it. Working memory is central to school learning, mental arithmetic and following complex instructions. ${pat.name} shows ${expl}.`)}${add}</p>`;
+                })(),
+                psi: (() => {
+                    const v = idx.psi.v;
+                    const expl = pickTier(v, 110, 90,
+                        tt('eine überdurchschnittliche Verarbeitungsgeschwindigkeit, was effizientes Arbeiten unter Zeitdruck ermöglicht','une vitesse de traitement supérieure, permettant un travail efficace sous pression temporelle','above-average processing speed, enabling efficient work under time pressure'),
+                        tt('eine altersgemäße Verarbeitungsgeschwindigkeit','une vitesse de traitement correspondant à l\'âge','age-appropriate processing speed'),
+                        tt('eine reduzierte Verarbeitungsgeschwindigkeit, die sich auf zeitgebundene Aufgaben und die Bewältigung des Schulalltags auswirken kann','une vitesse de traitement réduite pouvant affecter les tâches chronométrées et la gestion du quotidien scolaire','reduced processing speed that may affect timed tasks and daily school functioning'));
+                    const add = v < 85 ? ' ' + tt('Bei reduzierter Verarbeitungsgeschwindigkeit sollten Nachteilsausgleiche (z.B. Zeitverlängerung bei Prüfungen) geprüft werden.','En cas de vitesse de traitement réduite, des aménagements (p. ex. tiers-temps aux examens) devraient être envisagés.','In case of reduced processing speed, accommodations (e.g. extra exam time) should be considered.') : '';
+                    return `<p><strong>${wiscIndexName('psi')} = ${v || '-'}:</strong> ${tt(`Dieser Index erfasst die Geschwindigkeit der Informationsverarbeitung und die graphomotorische Geschwindigkeit. Er ist relevant für zeitgebundene Aufgaben und effizientes Arbeiten. ${pat.name} zeigt ${expl}.`,`Cet indice évalue la vitesse de traitement de l'information et la vitesse graphomotrice. Il est pertinent pour les tâches chronométrées et le travail efficace. ${pat.name} montre ${expl}.`,`This index assesses information-processing speed and graphomotor speed. It is relevant for timed tasks and efficient work. ${pat.name} shows ${expl}.`)}${add}</p>`;
+                })(),
+                nvi: (() => {
+                    const v = idx.nvi.v;
+                    const expl = pickTier(v, 115, 85,
+                        tt('überdurchschnittliche nonverbale kognitive Fähigkeiten','des capacités cognitives non verbales supérieures','above-average nonverbal cognitive abilities'),
+                        tt('altersgemäße nonverbale kognitive Fähigkeiten','des capacités cognitives non verbales correspondant à l\'âge','age-appropriate nonverbal cognitive abilities'),
+                        tt('Schwierigkeiten im nonverbalen kognitiven Bereich','des difficultés dans le domaine cognitif non verbal','difficulties in the nonverbal cognitive domain'));
+                    return `<p><strong>${wiscIndexName('nvi')} = ${v || '-'}:</strong> ${tt(`Dieser Index erfasst nonverbale kognitive Fähigkeiten unabhängig von sprachlichen Kompetenzen. Er ist besonders relevant bei Kindern mit Sprachentwicklungsauffälligkeiten oder bei mehrsprachig aufwachsenden Kindern. ${pat.name} zeigt ${expl}.`,`Cet indice évalue les capacités cognitives non verbales, indépendamment des compétences langagières. Il est particulièrement pertinent pour les enfants avec troubles du langage ou en environnement plurilingue. ${pat.name} montre ${expl}.`,`This index assesses nonverbal cognitive abilities independent of language. It is particularly relevant for children with language disorders or multilingual upbringing. ${pat.name} shows ${expl}.`)}</p>`;
+                })(),
+                gai: (() => {
+                    const v = idx.gai.v;
+                    const diffPart = (v && idx.fsiq.v && Math.abs(v - idx.fsiq.v) >= 10)
+                        ? ' ' + tt(
+                            `Die Differenz von ${Math.abs(v - idx.fsiq.v)} Punkten zum Gesamt-IQ (${idx.fsiq.v}) deutet darauf hin, dass ${v > idx.fsiq.v ? 'kognitive Effizienz (Arbeitsgedächtnis/Verarbeitungsgeschwindigkeit) die Gesamtleistung nach unten beeinflusst' : 'kognitive Effizienz die Gesamtleistung zusätzlich stützt'}.`,
+                            `La différence de ${Math.abs(v - idx.fsiq.v)} points avec le QI Total (${idx.fsiq.v}) suggère que ${v > idx.fsiq.v ? 'l\'efficience cognitive (mémoire de travail / vitesse de traitement) pèse à la baisse sur la performance globale' : 'l\'efficience cognitive soutient en plus la performance globale'}.`,
+                            `The difference of ${Math.abs(v - idx.fsiq.v)} points from the Full Scale IQ (${idx.fsiq.v}) suggests that ${v > idx.fsiq.v ? 'cognitive proficiency (working memory / processing speed) is pulling overall performance down' : 'cognitive proficiency is additionally supporting overall performance'}.`
+                        ) : '';
+                    return `<p><strong>${wiscIndexName('gai')} = ${v || '-'}:</strong> ${tt(
+                        'Der AFI fasst den Sprachverständnisindex, den Visuell-räumlichen Index und den Index Fluides Schlussfolgern zusammen. Er bietet eine Einschätzung der allgemeinen kognitiven Fähigkeiten, die weniger durch Arbeitsgedächtnis und Verarbeitungsgeschwindigkeit beeinflusst wird als der Gesamt-IQ.',
+                        'L\'IAG combine l\'ICV, l\'IVS et l\'IRF. Il fournit une estimation des capacités cognitives générales moins influencée par la mémoire de travail et la vitesse de traitement que le QI Total.',
+                        'The GAI combines VCI, VSI and FRI. It provides an estimate of general cognitive ability less influenced by working memory and processing speed than the Full Scale IQ.'
+                    )}${diffPart}</p>`;
+                })(),
+                kli: (() => {
+                    const v = idx.kli.v;
+                    const expl = pickTier(v, 115, 85,
+                        tt('eine überdurchschnittliche kognitive Effizienz','une efficience cognitive supérieure','above-average cognitive proficiency'),
+                        tt('eine altersgemäße kognitive Effizienz','une efficience cognitive correspondant à l\'âge','age-appropriate cognitive proficiency'),
+                        tt('eine eingeschränkte kognitive Effizienz, die das schulische Leistungsvermögen beeinträchtigen kann','une efficience cognitive limitée pouvant affecter le rendement scolaire','reduced cognitive proficiency that may affect school performance'));
+                    return `<p><strong>${wiscIndexName('kli')} = ${v || '-'}:</strong> ${tt(`Der KLI fasst Arbeitsgedächtnisindex und Verarbeitungsgeschwindigkeitsindex zusammen und bildet damit die kognitive Effizienz ab. ${pat.name} zeigt ${expl}.`,`L'ICC combine l'IMT et l'IVT et reflète ainsi l'efficience cognitive. ${pat.name} montre ${expl}.`,`The CPI combines WMI and PSI and thus reflects cognitive proficiency. ${pat.name} shows ${expl}.`)}</p>`;
+                })()
             };
 
             const gutachten = `
