@@ -5291,25 +5291,49 @@
             // Kritische Items aggregieren über alle Beurteiler
             const criticalItems = [];
             raterKeys.forEach(r => {
-                const meta = CBCL_RATERS[r];
                 if(raters[r].crit.i18 !== null && raters[r].crit.i18 >= 1) {
-                    criticalItems.push({rater: meta.short, item: 18, label: 'Selbstverletzung (absichtlich)', score: raters[r].crit.i18});
+                    criticalItems.push({
+                        rater: cbclRaterShort(r), item: 18,
+                        label: tt('Selbstverletzung (absichtlich)','Automutilation (intentionnelle)','Self-harm (intentional)'),
+                        score: raters[r].crit.i18
+                    });
                 }
                 if(raters[r].crit.i91 !== null && raters[r].crit.i91 >= 1) {
-                    criticalItems.push({rater: meta.short, item: 91, label: 'Gedanken, sich das Leben zu nehmen', score: raters[r].crit.i91});
+                    criticalItems.push({
+                        rater: cbclRaterShort(r), item: 91,
+                        label: tt('Gedanken, sich das Leben zu nehmen','Pensées suicidaires','Thoughts of ending one\'s own life'),
+                        score: raters[r].crit.i91
+                    });
                 }
             });
             const anyCritAcute = criticalItems.some(ci => ci.score === 2);
+            const itemLabel = tt('Item','Item','Item');
             const criticalAlertHtml = criticalItems.length ? `
                 <div class="gutachten-danger">
-                    <strong>SICHERHEITS­HINWEIS – Kritische CBCL-/TRF-/YSR-Items</strong><br>
-                    Folgende sicherheitsrelevante Einzelitems wurden mit ≥ 1 bewertet:
+                    <strong>${tt(
+                        'SICHERHEITSHINWEIS – Kritische CBCL-/TRF-/YSR-Items',
+                        'AVERTISSEMENT DE SÉCURITÉ – Items critiques CBCL/TRF/YSR',
+                        'SAFETY WARNING – Critical CBCL/TRF/YSR items'
+                    )}</strong><br>
+                    ${tt(
+                        'Folgende sicherheitsrelevante Einzelitems wurden mit ≥ 1 bewertet:',
+                        'Les items pertinents pour la sécurité suivants ont été cotés ≥ 1 :',
+                        'The following safety-relevant individual items were scored ≥ 1:'
+                    )}
                     <ul style="margin:0.5rem 0 0.5rem 1.25rem;">
-                        ${criticalItems.map(ci => `<li><strong>Item ${ci.item}</strong> (${ci.label}) – ${ci.rater}: <strong>${ci.score}</strong></li>`).join('')}
+                        ${criticalItems.map(ci => `<li><strong>${itemLabel} ${ci.item}</strong> (${ci.label}) – ${ci.rater}: <strong>${ci.score}</strong></li>`).join('')}
                     </ul>
                     ${anyCritAcute
-                        ? '<strong>Ein Item wurde mit 2 („trifft genau zu / oft zutreffend") beantwortet – dies weist auf eine <em>akute</em> Selbst- bzw. Fremdgefährdung hin.</strong> Sofortiges strukturiertes Suizidrisiko-/Selbstverletzungs-Assessment (z.B. C-SSRS), umgehende kinder- und jugendpsychiatrische Vorstellung, Sicherheitsplan, ggf. stationäre Einweisung prüfen.'
-                        : 'Verpflichtende vertiefte Exploration erforderlich: Suizidalität / nicht-suizidales selbstverletzendes Verhalten (NSSV) strukturiert abklären, Auslöser und Risikofaktoren klären, Sicherheitsplan erstellen.'}
+                        ? tt(
+                            '<strong>Ein Item wurde mit 2 („trifft genau zu / oft zutreffend") beantwortet – dies weist auf eine <em>akute</em> Selbst- bzw. Fremdgefährdung hin.</strong> Sofortiges strukturiertes Suizidrisiko-/Selbstverletzungs-Assessment (z.B. C-SSRS), umgehende kinder- und jugendpsychiatrische Vorstellung, Sicherheitsplan, ggf. stationäre Einweisung prüfen.',
+                            '<strong>Un item a été coté 2 (« s\'applique tout à fait / souvent vrai ») – cela indique un risque <em>aigu</em> pour soi ou pour autrui.</strong> Réaliser immédiatement une évaluation structurée du risque suicidaire / d\'automutilation (p. ex. C-SSRS), présentation pédopsychiatrique en urgence, plan de sécurité, envisager une hospitalisation.',
+                            '<strong>One item was scored 2 ("certainly true / often applicable") – this indicates an <em>acute</em> risk of harm to self or others.</strong> Immediate structured suicide-risk / self-harm assessment (e.g. C-SSRS), urgent child & adolescent psychiatric review, safety plan, consider inpatient admission.'
+                        )
+                        : tt(
+                            'Verpflichtende vertiefte Exploration erforderlich: Suizidalität / nicht-suizidales selbstverletzendes Verhalten (NSSV) strukturiert abklären, Auslöser und Risikofaktoren klären, Sicherheitsplan erstellen.',
+                            'Exploration approfondie obligatoire : évaluer de manière structurée la suicidalité / les comportements auto-agressifs non suicidaires (NSSI), clarifier les déclencheurs et les facteurs de risque, établir un plan de sécurité.',
+                            'Mandatory in-depth exploration required: structured assessment of suicidality / non-suicidal self-injury (NSSI), clarify triggers and risk factors, create safety plan.'
+                        )}
                 </div>` : '';
 
             // Pro Beurteiler Klassifizierung berechnen
