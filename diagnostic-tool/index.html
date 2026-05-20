@@ -5568,9 +5568,15 @@
                     ${raterKeys.length >= 2 ? (() => {
                         const bbKeys = ['int','ext','tot'];
                         const synKeys = Object.keys(CBCL_SYN);
-                        const bbRowLabels = {int:'INT – Internalisierend', ext:'EXT – Externalisierend', tot:'GES – Gesamtproblemwert'};
+                        const bbRowLabels = {
+                            int: `INT – ${tt('Internalisierend','Internalisé','Internalising')}`,
+                            ext: `EXT – ${tt('Externalisierend','Externalisé','Externalising')}`,
+                            tot: `${tt('GES','TOT','TOT')} – ${tt('Gesamtproblemwert','Score total des problèmes','Total Problems Score')}`
+                        };
                         const diffThreshold = scaleMode==='stanine' ? 2 : 10;
-                        // Helfer: eine Vergleichszeile pro Skala bauen
+                        const flagDiscrepant   = tt('Diskrepant','Discordant','Discrepant');
+                        const flagDifferent    = tt('Unterschiedlich','Différent','Different');
+                        const flagAgree        = tt('Übereinstimmend','Concordant','Agreeing');
                         const compareRow = (key, type) => {
                             const values = raterKeys.map(r => type==='bb' ? raters[r].bb[key] : raters[r].syn[key]);
                             const classes = raterKeys.map((r,i) => {
@@ -5578,16 +5584,16 @@
                                 return type==='bb' ? raters[r].cBB[key] : raters[r].cSyn[key];
                             });
                             const filled = values.filter(x=>x!==null);
-                            if(filled.length < 2) return null; // nur ein Wert -> kein Vergleich
+                            if(filled.length < 2) return null;
                             const spread = Math.max(...filled) - Math.min(...filled);
                             const hasClinAndNormal = classes.includes('clinical') && classes.includes('normal');
                             const flag = hasClinAndNormal ? 'strong' : (spread >= diffThreshold ? 'moderate' : 'agree');
                             const flagBadge = {
-                                strong:   '<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#fee2e2;color:#991b1b;font-weight:600;">Diskrepant</span>',
-                                moderate: '<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#fef3c7;color:#92400e;font-weight:600;">Unterschiedlich</span>',
-                                agree:    '<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#d1fae5;color:#065f46;font-weight:600;">Übereinstimmend</span>'
+                                strong:   `<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#fee2e2;color:#991b1b;font-weight:600;">${flagDiscrepant}</span>`,
+                                moderate: `<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#fef3c7;color:#92400e;font-weight:600;">${flagDifferent}</span>`,
+                                agree:    `<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#d1fae5;color:#065f46;font-weight:600;">${flagAgree}</span>`
                             }[flag];
-                            const label = type==='bb' ? bbRowLabels[key] : CBCL_SYN[key].n;
+                            const label = type==='bb' ? bbRowLabels[key] : cbclSynName(key);
                             const cells = raterKeys.map((r,i) => {
                                 if(values[i]===null) return '<td style="text-align:center;color:#9ca3af;">–</td>';
                                 const c = classes[i];
@@ -5598,19 +5604,32 @@
                         const bbRows  = bbKeys.map(k=>compareRow(k,'bb')).filter(x=>x).join('');
                         const synRows = synKeys.map(k=>compareRow(k,'syn')).filter(x=>x).join('');
                         if(!bbRows && !synRows) return '';
+                        const unitName = valLabel === 'Stanine'
+                            ? tt('Stanine-Punkte','points stanine','stanine points')
+                            : tt('T-Punkte','points T','T-points');
+                        const titleBB     = tt('Übergeordnete Skalen','Échelles globales','Broad-band scales');
+                        const titleSyn    = tt('Syndromskalen','Échelles syndromiques','Syndrome scales');
                         return `
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Cross-Informant-Vergleich</h4>
+                        <h4 class="gutachten-section-title">${tt('3. Cross-Informant-Vergleich','3. Comparaison entre évaluateurs·trices','3. Cross-informant comparison')}</h4>
                         <div class="gutachten-text">
-                            <p>Die folgende Übersicht stellt die Einschätzungen der verschiedenen Beurteiler direkt gegenüber. Unterschiede werden markiert als <strong>Diskrepant</strong> (einer klinisch, ein anderer normal), <strong>Unterschiedlich</strong> (Differenz ≥ ${diffThreshold} ${valLabel === 'Stanine' ? 'Stanine-Punkte' : 'T-Punkte'}) oder <strong>Übereinstimmend</strong>.</p>
+                            <p>${tt(
+                                `Die folgende Übersicht stellt die Einschätzungen der verschiedenen Beurteiler direkt gegenüber. Unterschiede werden markiert als <strong>${flagDiscrepant}</strong> (einer klinisch, ein anderer normal), <strong>${flagDifferent}</strong> (Differenz ≥ ${diffThreshold} ${unitName}) oder <strong>${flagAgree}</strong>.`,
+                                `Le tableau suivant compare directement les évaluations des différent·e·s évaluateurs·trices. Les écarts sont signalés comme <strong>${flagDiscrepant}</strong> (l'un·e clinique, l'autre normal), <strong>${flagDifferent}</strong> (différence ≥ ${diffThreshold} ${unitName}) ou <strong>${flagAgree}</strong>.`,
+                                `The following overview directly compares the assessments of the different raters. Differences are flagged as <strong>${flagDiscrepant}</strong> (one clinical, another normal), <strong>${flagDifferent}</strong> (difference ≥ ${diffThreshold} ${unitName}) or <strong>${flagAgree}</strong>.`
+                            )}</p>
                             <table class="gutachten-table" style="margin-top:0.75rem;">
-                                <thead><tr><th>Skala</th>${raterKeys.map(r=>`<th style="text-align:center;">${CBCL_RATERS[r].short}</th>`).join('')}<th style="text-align:center;">Δ</th><th style="text-align:center;">Übereinstimmung</th></tr></thead>
+                                <thead><tr><th>${tt('Skala','Échelle','Scale')}</th>${raterKeys.map(r=>`<th style="text-align:center;">${cbclRaterShort(r)}</th>`).join('')}<th style="text-align:center;">Δ</th><th style="text-align:center;">${tt('Übereinstimmung','Concordance','Agreement')}</th></tr></thead>
                                 <tbody>
-                                    ${bbRows ? `<tr style="background:var(--bg-input);"><td colspan="${raterKeys.length+3}" style="font-weight:600;">Übergeordnete Skalen</td></tr>${bbRows}` : ''}
-                                    ${synRows ? `<tr style="background:var(--bg-input);"><td colspan="${raterKeys.length+3}" style="font-weight:600;">Syndromskalen</td></tr>${synRows}` : ''}
+                                    ${bbRows ? `<tr style="background:var(--bg-input);"><td colspan="${raterKeys.length+3}" style="font-weight:600;">${titleBB}</td></tr>${bbRows}` : ''}
+                                    ${synRows ? `<tr style="background:var(--bg-input);"><td colspan="${raterKeys.length+3}" style="font-weight:600;">${titleSyn}</td></tr>${synRows}` : ''}
                                 </tbody>
                             </table>
-                            <p style="margin-top:1rem;font-size:0.9em;color:#4a5568;"><strong>Hinweis:</strong> Diskrepanzen zwischen Informanten sind häufig und inhaltlich bedeutsam – sie können auf <em>situationsspezifisches</em> Verhalten hindeuten (z.B. Symptome nur in der Schule / nur zuhause / nur aus Selbstsicht). Starke Diskrepanzen sollten exploriert werden.</p>
+                            <p style="margin-top:1rem;font-size:0.9em;color:#4a5568;"><strong>${tt('Hinweis:','Note :','Note:')}</strong> ${tt(
+                                'Diskrepanzen zwischen Informanten sind häufig und inhaltlich bedeutsam – sie können auf <em>situationsspezifisches</em> Verhalten hindeuten (z.B. Symptome nur in der Schule / nur zuhause / nur aus Selbstsicht). Starke Diskrepanzen sollten exploriert werden.',
+                                'Les écarts entre informants sont fréquents et porteurs de sens – ils peuvent indiquer un comportement <em>spécifique à la situation</em> (p. ex. symptômes uniquement à l\'école / à la maison / dans la perception de soi). Les écarts importants devraient être explorés.',
+                                'Discrepancies between informants are common and meaningful – they may indicate <em>situation-specific</em> behaviour (e.g. symptoms only at school / only at home / only in self-perception). Strong discrepancies should be explored.'
+                            )}</p>
                         </div>
                     </div>`;
                     })() : ''}
