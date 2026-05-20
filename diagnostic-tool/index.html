@@ -2259,10 +2259,24 @@
             if(!['de','fr','en'].includes(lang)) lang = 'de';
             LANG = lang;
             try { localStorage.setItem('cdse-report-lang', lang); } catch(e) {}
-            // Bereits sichtbare Befunde neu lokalisieren
+            // Strategie 1 (für refactored Tests mit data-i18n-native="1"):
+            //   Jedes sichtbare Ergebnis erneut über das zugehörige Formular generieren,
+            //   damit der Bericht direkt in der neuen Sprache gebaut wird (saubere Wortstellung).
+            // Strategie 2 (Fallback für noch nicht refactored Tests):
+            //   Original-DE HTML aus data-htmlDe nehmen und durch localize() schicken.
             document.querySelectorAll('.results.show').forEach(el => {
-                const orig = el.dataset.htmlDe;
-                if(orig) el.innerHTML = localize(orig);
+                const resultsId = el.id;
+                if(!resultsId) return;
+                const testKey = resultsId.replace(/-results$/, '');
+                const form = document.getElementById(testKey + '-form');
+                if(form && form.dataset.i18nNative === '1') {
+                    // Refactored: erneut auswerten in neuer Sprache
+                    try { form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', {cancelable:true, bubbles:true})); } catch(e) {}
+                } else {
+                    // Nicht refactored: Original-DE durch Regex-Localize jagen
+                    const orig = el.dataset.htmlDe;
+                    if(orig) el.innerHTML = localize(orig);
+                }
             });
         }
         (function initReportLang(){
