@@ -5528,33 +5528,41 @@
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Testergebnisse pro Beurteiler</h4>
-                        ${raterKeys.map(r => {
-                            const d = raters[r];
-                            const meta = CBCL_RATERS[r];
-                            const vBB  = Object.entries(d.bb).filter(([k,x])=>x!==null);
-                            const vSyn = Object.entries(d.syn).filter(([k,x])=>x!==null);
-                            return `
-                            <div style="margin-bottom:1.5rem;padding:0.75rem 1rem;border-left:4px solid ${meta.color};background:rgba(99,102,241,0.03);border-radius:4px;">
-                                <p style="font-weight:700;margin:0 0 0.75rem;color:${meta.color};">${meta.full}</p>
-                                ${vBB.length ? `
-                                <p style="font-weight:600;margin:0.5rem 0;">Übergeordnete Skalen</p>
-                                <table class="gutachten-table">
-                                    <thead><tr><th>Skala</th><th>${valLabel}-Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
-                                    <tbody>
-                                        ${vBB.map(([k,x])=>`<tr${k==='tot'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${bbLabels[k]}</td><td>${x}</td><td>${bbNorm}</td><td class="${d.cBB[k]}">${cbclClassText(d.cBB[k])}</td></tr>`).join('')}
-                                    </tbody>
-                                </table>` : ''}
-                                ${vSyn.length ? `
-                                <p style="font-weight:600;margin:0.75rem 0 0.5rem;">Syndromskalen</p>
-                                <table class="gutachten-table">
-                                    <thead><tr><th>Skala</th><th>${valLabel}-Wert</th><th>Normbereich</th><th>Klassifikation</th></tr></thead>
-                                    <tbody>
-                                        ${vSyn.map(([k,x])=>`<tr><td>${CBCL_SYN[k].n}</td><td>${x}</td><td>${synNorm}</td><td class="${d.cSyn[k]}">${cbclClassText(d.cSyn[k])}</td></tr>`).join('')}
-                                    </tbody>
-                                </table>` : ''}
-                            </div>`;
-                        }).join('')}
+                        <h4 class="gutachten-section-title">${tt('2. Testergebnisse pro Beurteiler','2. Résultats par évaluateur·trice','2. Test results per rater')}</h4>
+                        ${(() => {
+                            const thScale     = tt('Skala','Échelle','Scale');
+                            const thScore     = `${valLabel}${tt('-Wert','','-score')}`;
+                            const thNorm      = tt('Normbereich','Plage normative','Normative range');
+                            const thClassif   = tt('Klassifikation','Classification','Classification');
+                            const titleBB     = tt('Übergeordnete Skalen','Échelles globales','Broad-band scales');
+                            const titleSyn    = tt('Syndromskalen','Échelles syndromiques','Syndrome scales');
+                            return raterKeys.map(r => {
+                                const d = raters[r];
+                                const meta = CBCL_RATERS[r];
+                                const vBB  = Object.entries(d.bb).filter(([k,x])=>x!==null);
+                                const vSyn = Object.entries(d.syn).filter(([k,x])=>x!==null);
+                                return `
+                                <div style="margin-bottom:1.5rem;padding:0.75rem 1rem;border-left:4px solid ${meta.color};background:rgba(99,102,241,0.03);border-radius:4px;">
+                                    <p style="font-weight:700;margin:0 0 0.75rem;color:${meta.color};">${cbclRaterFull(r)}</p>
+                                    ${vBB.length ? `
+                                    <p style="font-weight:600;margin:0.5rem 0;">${titleBB}</p>
+                                    <table class="gutachten-table">
+                                        <thead><tr><th>${thScale}</th><th>${thScore}</th><th>${thNorm}</th><th>${thClassif}</th></tr></thead>
+                                        <tbody>
+                                            ${vBB.map(([k,x])=>`<tr${k==='tot'?' style="font-weight:700;background:var(--bg-input);"':''}><td>${bbLabels[k]}</td><td>${x}</td><td>${bbNorm}</td><td class="${d.cBB[k]}">${cbclClassText(d.cBB[k])}</td></tr>`).join('')}
+                                        </tbody>
+                                    </table>` : ''}
+                                    ${vSyn.length ? `
+                                    <p style="font-weight:600;margin:0.75rem 0 0.5rem;">${titleSyn}</p>
+                                    <table class="gutachten-table">
+                                        <thead><tr><th>${thScale}</th><th>${thScore}</th><th>${thNorm}</th><th>${thClassif}</th></tr></thead>
+                                        <tbody>
+                                            ${vSyn.map(([k,x])=>`<tr><td>${cbclSynName(k)}</td><td>${x}</td><td>${synNorm}</td><td class="${d.cSyn[k]}">${cbclClassText(d.cSyn[k])}</td></tr>`).join('')}
+                                        </tbody>
+                                    </table>` : ''}
+                                </div>`;
+                            }).join('');
+                        })()}
                     </div>
 
                     ${raterKeys.length >= 2 ? (() => {
