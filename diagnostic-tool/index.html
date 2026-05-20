@@ -4339,6 +4339,13 @@
                 {parent:'des parents',teacher:'de l\'enseignant·e',self:'de l\'enfant/adolescent·e lui-même/elle-même'}[r],
                 {parent:'the parents',teacher:'the teacher',self:'the child/adolescent themselves'}[r]
             );
+            // Possessive form for EN templates like "based on ${respFullPoss} report"
+            // (DE/FR mirror respFull since they use genitive constructions)
+            const respFullPoss = tt(
+                {parent:'der Eltern',teacher:'der Lehrkraft',self:'des Kindes/Jugendlichen selbst'}[r],
+                {parent:'des parents',teacher:'de l\'enseignant·e',self:'de l\'enfant/adolescent·e lui-même/elle-même'}[r],
+                {parent:"the parents'",teacher:"the teacher's",self:"the child/adolescent's own"}[r]
+            );
             const pronomen = pat.sex === 'w' ? {er:'sie',sein:'ihr',ihm:'ihr',den:'die'} : {er:'er',sein:'sein',ihm:'ihm',den:'den'};
             // Mehrsprachige Pronomen (FR/EN); fallback auf neutral wenn sex nicht angegeben
             const isF = pat.sex === 'w';
@@ -4444,7 +4451,7 @@
                     <p>${tt(
                         `Die Auswertung des SDQ auf Basis ${respFull} ergibt einen Gesamtproblemwert von ${tot} Punkten. Dieser Wert liegt im <strong>unauffälligen Bereich</strong> der altersentsprechenden Normstichprobe.`,
                         `L'analyse du SDQ basée sur l'évaluation ${respFull} donne un score total des difficultés de ${tot} points. Cette valeur se situe dans la <strong>plage normale</strong> par rapport à l'échantillon normatif de l'âge.`,
-                        `The SDQ analysis based on the ${respFull} report yields a Total Difficulties Score of ${tot} points. This value falls within the <strong>normal range</strong> of the age-appropriate normative sample.`
+                        `The SDQ analysis based on ${respFullPoss} report yields a Total Difficulties Score of ${tot} points. This value falls within the <strong>normal range</strong> of the age-appropriate normative sample.`
                     )}</p>
                     <p>${tt(
                         `${pat.name} zeigt zum aktuellen Zeitpunkt aus der Perspektive ${respFull} keine klinisch bedeutsamen psychischen Auffälligkeiten. Das Ergebnisprofil spricht für eine weitgehend unbelastete psychische Entwicklung. Die erfassten Bereiche emotionale Regulation, Verhaltenssteuerung, Aufmerksamkeit und soziale Integration liegen im Normbereich.`,
@@ -4462,7 +4469,7 @@
                     <p>${tt(
                         `Die Auswertung des SDQ auf Basis ${respFull} ergibt einen Gesamtproblemwert von ${tot} Punkten. Dieser Wert liegt im <strong>grenzwertigen Bereich</strong> und befindet sich damit zwischen dem unauffälligen und dem klinisch auffälligen Bereich.`,
                         `L'analyse du SDQ basée sur l'évaluation ${respFull} donne un score total des difficultés de ${tot} points. Cette valeur se situe dans la <strong>plage limite</strong>, entre la plage normale et la plage cliniquement significative.`,
-                        `The SDQ analysis based on the ${respFull} report yields a Total Difficulties Score of ${tot} points. This value falls within the <strong>borderline range</strong>, between the normal and the clinically significant ranges.`
+                        `The SDQ analysis based on ${respFullPoss} report yields a Total Difficulties Score of ${tot} points. This value falls within the <strong>borderline range</strong>, between the normal and the clinically significant ranges.`
                     )}</p>
                     <p>${tt(
                         `Dieses Ergebnis deutet auf eine subklinische psychische Belastung hin, die zwar noch nicht das Ausmaß einer manifesten Störung erreicht, jedoch aufmerksam beobachtet werden sollte. ${pat.name} zeigt in einzelnen Bereichen Auffälligkeiten, die ${pronomen.sein}e psychosoziale Anpassung beeinträchtigen könnten.`,
@@ -4480,7 +4487,7 @@
                     <p>${tt(
                         `Die Auswertung des SDQ auf Basis ${respFull} ergibt einen Gesamtproblemwert von ${tot} Punkten. Dieser Wert liegt im <strong>klinisch auffälligen Bereich</strong> und überschreitet damit den Cut-off-Wert für eine erhöhte psychische Belastung deutlich.`,
                         `L'analyse du SDQ basée sur l'évaluation ${respFull} donne un score total des difficultés de ${tot} points. Cette valeur se situe dans la <strong>plage cliniquement significative</strong> et dépasse nettement le seuil indiquant une charge psychique accrue.`,
-                        `The SDQ analysis based on the ${respFull} report yields a Total Difficulties Score of ${tot} points. This value falls within the <strong>clinically significant range</strong> and clearly exceeds the cut-off for elevated psychological burden.`
+                        `The SDQ analysis based on ${respFullPoss} report yields a Total Difficulties Score of ${tot} points. This value falls within the <strong>clinically significant range</strong> and clearly exceeds the cut-off for elevated psychological burden.`
                     )}</p>
                     <p>${tt(
                         `Dieses Ergebnis weist auf eine signifikante psychische Belastung hin, die mit hoher Wahrscheinlichkeit die psychosoziale Anpassung und das Wohlbefinden von ${pat.name} beeinträchtigt. Die erhöhten Werte erfordern eine umgehende vertiefte diagnostische Abklärung, um das Vorliegen einer oder mehrerer psychischer Störungen zu prüfen.`,
