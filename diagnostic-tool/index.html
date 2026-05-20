@@ -6529,71 +6529,97 @@
 
             const gutachten = `
                 <div class="gutachten">
-                    ${gutachtenHeader('Conners-3', 'Conners Skalen zu Aufmerksamkeit und Verhalten – 3. Auflage', pat)}
+                    ${gutachtenHeader('Conners-3', tt('Conners Skalen zu Aufmerksamkeit und Verhalten – 3. Auflage','Échelles Conners de l\'attention et du comportement – 3e édition','Conners Attention & Behaviour Scales – 3rd edition'), pat)}
                     ${moodSafetyHtml}
                     ${moodItemsHtml}
                     ${kiSafetyHtml}
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <h4 class="gutachten-section-title">${tt('1. Testbeschreibung','1. Description du test','1. Test description')}</h4>
                         <div class="gutachten-text">
-                            <p>Die Conners-3 (Conners, 2008; deutsche Fassung: Lidzba et al., 2013) ist ein multimodales Beurteilungssystem zur umfassenden Erfassung von ADHS und komorbiden Störungen bei Kindern und Jugendlichen von 6-18 Jahren. Das Verfahren umfasst Eltern-, Lehrer- und Selbstbeurteilungsbögen.</p>
-                            <p>Die Ergebnisse werden als T-Werte (M=50, SD=10) dargestellt. T-Werte ≥65 gelten als erhöht, ≥70 als stark erhöht.</p>
-                            <p><strong>Informant:</strong> ${respText}</p>
+                            <p>${tt(
+                                'Die Conners-3 (Conners, 2008; deutsche Fassung: Lidzba et al., 2013) ist ein multimodales Beurteilungssystem zur umfassenden Erfassung von ADHS und komorbiden Störungen bei Kindern und Jugendlichen von 6-18 Jahren. Das Verfahren umfasst Eltern-, Lehrer- und Selbstbeurteilungsbögen.',
+                                'Le Conners-3 (Conners, 2008 ; version allemande : Lidzba et al., 2013) est un système d\'évaluation multimodal destiné à l\'évaluation complète du TDAH et des troubles comorbides chez les enfants et adolescents de 6 à 18 ans. Le procédé comprend des questionnaires parental, enseignant·e et auto-évaluation.',
+                                'The Conners-3 (Conners, 2008; German version: Lidzba et al., 2013) is a multimodal rating system for the comprehensive assessment of ADHD and comorbid disorders in children and adolescents aged 6-18 years. It comprises parent, teacher and self-report forms.'
+                            )}</p>
+                            <p>${tt(
+                                'Die Ergebnisse werden als T-Werte (M=50, SD=10) dargestellt. T-Werte ≥65 gelten als erhöht, ≥70 als stark erhöht.',
+                                'Les résultats sont présentés en scores T (M=50, ET=10). Les scores T ≥65 sont considérés comme élevés, ≥70 comme fortement élevés.',
+                                'Results are reported as T-scores (M=50, SD=10). T-scores ≥65 are considered elevated, ≥70 severely elevated.'
+                            )}</p>
+                            <p><strong>${tt('Informant:','Informant :','Informant:')}</strong> ${respText}</p>
                         </div>
                     </div>
+                    ${(() => {
+                        const thScale     = tt('Skala','Échelle','Scale');
+                        const thScore     = tt('T-Wert','Score T','T-score');
+                        const thPR        = tt('Prozentrang','Rang centile','Percentile rank');
+                        const thClassif   = tt('Klassifikation','Classification','Classification');
+                        return `
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <h4 class="gutachten-section-title">${tt('2. Testergebnisse','2. Résultats','2. Test results')}</h4>
                         ${(iiA || iiB || peVal !== null || neVal !== null) ? `
-                        <p style="font-weight:bold;margin-bottom:0.5rem;">Validitätsskalen</p>
+                        <p style="font-weight:bold;margin-bottom:0.5rem;">${tt('Validitätsskalen','Échelles de validité','Validity scales')}</p>
                         <table class="gutachten-table" style="margin-bottom:0.75rem;">
-                            <thead><tr><th>Skala</th><th>Wert</th><th>Interpretation</th></tr></thead>
+                            <thead><tr><th>${thScale}</th><th>${tt('Wert','Valeur','Value')}</th><th>${tt('Interpretation','Interprétation','Interpretation')}</th></tr></thead>
                             <tbody>
-                                ${iiA || iiB ? `<tr><td>II – Inkonsistenz-Index</td><td>A: ${iiA || '–'} · B: ${iiB || '–'}</td><td class="${iiInconsistent ? 'clinical' : (iiConsistent ? 'normal' : '')}">${iiInconsistent ? 'Möglicherweise inkonsistent' : (iiConsistent ? 'Weitgehend konsistent' : 'Nicht vollständig erfasst')}</td></tr>` : ''}
-                                ${peVal !== null ? `<tr><td>PE – Positiver Eindruck</td><td>${peVal}</td><td class="${peVal >= 2 ? 'clinical' : 'normal'}">${peVal >= 2 ? 'Möglicherweise positiv beantwortet' : 'Weder pos. noch neg. auffällig'}</td></tr>` : ''}
-                                ${neVal !== null ? `<tr><td>NE – Negativer Eindruck</td><td>${neVal}</td><td class="${neVal >= 2 ? 'clinical' : 'normal'}">${neVal >= 2 ? 'Möglicherweise negativ beantwortet' : 'Weder pos. noch neg. auffällig'}</td></tr>` : ''}
+                                ${iiA || iiB ? `<tr><td>${tt('II – Inkonsistenz-Index','II – Indice d\'inconsistance','II – Inconsistency Index')}</td><td>A: ${iiA || '–'} · B: ${iiB || '–'}</td><td class="${iiInconsistent ? 'clinical' : (iiConsistent ? 'normal' : '')}">${iiInconsistent ? tt('Möglicherweise inkonsistent','Possiblement inconsistant','Possibly inconsistent') : (iiConsistent ? tt('Weitgehend konsistent','Globalement consistant','Largely consistent') : tt('Nicht vollständig erfasst','Pas entièrement renseigné','Not fully recorded'))}</td></tr>` : ''}
+                                ${peVal !== null ? `<tr><td>${tt('PE – Positiver Eindruck','PE – Impression positive','PE – Positive Impression')}</td><td>${peVal}</td><td class="${peVal >= 2 ? 'clinical' : 'normal'}">${peVal >= 2 ? tt('Möglicherweise positiv beantwortet','Réponses possiblement positivement biaisées','Possibly answered in positive direction') : tt('Weder pos. noch neg. auffällig','Ni positivement ni négativement biaisé','Neither positive nor negative bias')}</td></tr>` : ''}
+                                ${neVal !== null ? `<tr><td>${tt('NE – Negativer Eindruck','NE – Impression négative','NE – Negative Impression')}</td><td>${neVal}</td><td class="${neVal >= 2 ? 'clinical' : 'normal'}">${neVal >= 2 ? tt('Möglicherweise negativ beantwortet','Réponses possiblement négativement biaisées','Possibly answered in negative direction') : tt('Weder pos. noch neg. auffällig','Ni positivement ni négativement biaisé','Neither positive nor negative bias')}</td></tr>` : ''}
                             </tbody>
                         </table>
                         ${(iiInconsistent || (peVal !== null && peVal >= 2) || (neVal !== null && neVal >= 2)) ? `
                         <div class="gutachten-warning">
-                            <strong>Hinweis zur Reliabilität der Antworten:</strong>
-                            ${iiInconsistent ? 'Der Inkonsistenz-Index (II) zeigt auffällige Rohwert­differenzen zwischen vergleichbaren Items (Kriterium A und B beide „Ja") – die Antworten sind möglicherweise inkonsistent beantwortet worden. ' : ''}
-                            ${peVal !== null && peVal >= 2 ? `Der Positive-Eindruck-Index (PE = ${peVal}) ist ≥ 2 – es besteht der Verdacht auf sozial erwünschtes / beschönigendes Antwortverhalten. ` : ''}
-                            ${neVal !== null && neVal >= 2 ? `Der Negative-Eindruck-Index (NE = ${neVal}) ist ≥ 2 – es besteht der Verdacht auf übermäßig negative Darstellung. ` : ''}
-                            Die Ergebnisse sollten vor diesem Hintergrund mit Vorsicht interpretiert werden.
+                            <strong>${tt('Hinweis zur Reliabilität der Antworten:','Note sur la fiabilité des réponses :','Note on response reliability:')}</strong>
+                            ${iiInconsistent ? tt(
+                                'Der Inkonsistenz-Index (II) zeigt auffällige Rohwertdifferenzen zwischen vergleichbaren Items (Kriterium A und B beide „Ja") – die Antworten sind möglicherweise inkonsistent beantwortet worden. ',
+                                'L\'indice d\'inconsistance (II) montre des écarts importants entre items comparables (critères A et B tous deux « oui ») – les réponses ont possiblement été données de manière inconsistante. ',
+                                'The Inconsistency Index (II) shows substantial raw-score differences between comparable items (both criteria A and B "yes") – responses may have been given inconsistently. '
+                            ) : ''}
+                            ${peVal !== null && peVal >= 2 ? tt(
+                                `Der Positive-Eindruck-Index (PE = ${peVal}) ist ≥ 2 – es besteht der Verdacht auf sozial erwünschtes / beschönigendes Antwortverhalten. `,
+                                `L'indice d'impression positive (PE = ${peVal}) est ≥ 2 – on suspecte un mode de réponse socialement désirable / minimisant. `,
+                                `The Positive Impression Index (PE = ${peVal}) is ≥ 2 – socially desirable / minimising response style is suspected. `
+                            ) : ''}
+                            ${neVal !== null && neVal >= 2 ? tt(
+                                `Der Negative-Eindruck-Index (NE = ${neVal}) ist ≥ 2 – es besteht der Verdacht auf übermäßig negative Darstellung. `,
+                                `L'indice d'impression négative (NE = ${neVal}) est ≥ 2 – on suspecte une présentation exagérément négative. `,
+                                `The Negative Impression Index (NE = ${neVal}) is ≥ 2 – overly negative presentation is suspected. `
+                            ) : ''}
+                            ${tt('Die Ergebnisse sollten vor diesem Hintergrund mit Vorsicht interpretiert werden.','Les résultats doivent dès lors être interprétés avec prudence.','Results should therefore be interpreted with caution.')}
                         </div>
                         ` : ''}
                         ` : ''}
                         ${validConners.length ? `
-                        <p style="font-weight:bold;margin-top:1rem;">Conners-Inhaltsskalen (${respText})</p>
+                        <p style="font-weight:bold;margin-top:1rem;">${tt('Conners-Inhaltsskalen','Échelles de contenu Conners','Conners content scales')} (${respText})</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${thScale}</th><th>${thScore}</th><th>${thPR}</th><th>${thClassif}</th></tr></thead>
                             <tbody>
                                 ${validConners.map(([k,x])=>`<tr><td>${x.n}</td><td><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td>${cText(x.v)}</td></tr>`).join('')}
                             </tbody>
                         </table>
                         ` : ''}
                         ${validDsm.length ? `
-                        <p style="font-weight:bold;margin-top:1rem;">DSM-5 Symptomskalen</p>
+                        <p style="font-weight:bold;margin-top:1rem;">${tt('DSM-5 Symptomskalen','Échelles symptomatiques DSM-5','DSM-5 symptom scales')}</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${thScale}</th><th>${thScore}</th><th>${thPR}</th><th>${thClassif}</th></tr></thead>
                             <tbody>
                                 ${validDsm.map(([k,x])=>`<tr><td>${x.n}</td><td><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td>${cText(x.v)}</td></tr>`).join('')}
                             </tbody>
                         </table>
                         ` : ''}
                         ${validIcd.length ? `
-                        <p style="font-weight:bold;margin-top:1rem;">ICD-10 Symptomskalen</p>
+                        <p style="font-weight:bold;margin-top:1rem;">${tt('ICD-10 Symptomskalen','Échelles symptomatiques CIM-10','ICD-10 symptom scales')}</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${thScale}</th><th>${thScore}</th><th>${thPR}</th><th>${thClassif}</th></tr></thead>
                             <tbody>
                                 ${validIcd.map(([k,x])=>`<tr><td>${x.n}</td><td><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td>${cText(x.v)}</td></tr>`).join('')}
                             </tbody>
                         </table>
                         ` : ''}
                         ${validAdhd.length ? `
-                        <p style="font-weight:bold;margin-top:1rem;">Conners 3 Indices</p>
+                        <p style="font-weight:bold;margin-top:1rem;">${tt('Conners 3 Indices','Indices Conners 3','Conners 3 indices')}</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>T-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${thScale}</th><th>${thScore}</th><th>${thPR}</th><th>${thClassif}</th></tr></thead>
                             <tbody>
                                 ${validAdhd.map(([k,x])=>`<tr style="font-weight:700;"><td>${x.n}</td><td><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td>${cText(x.v)}</td></tr>`).join('')}
                             </tbody>
@@ -6601,84 +6627,197 @@
                         ` : ''}
                         ${kiVal !== null && kiVal > 0 ? `
                         <div class="gutachten-warning" style="margin-top:1rem;">
-                            <strong>Kritische Items (KI):</strong> ${kiVal} von 7 kritischen Items zur schweren Störung des Sozialverhaltens wurden mit ≥1 bewertet (Items 14, 20, 26, 31, 58, 65, 87). ${kiVal >= 2 ? 'Dies weist auf ernsthafte Verhaltensauffälligkeiten hin und sollte klinisch abgeklärt werden.' : 'Eine weitere Exploration wird empfohlen.'}
+                            <strong>${tt('Kritische Items (KI):','Items critiques (KI) :','Critical items (KI):')}</strong> ${tt(
+                                `${kiVal} von 7 kritischen Items zur schweren Störung des Sozialverhaltens wurden mit ≥1 bewertet (Items 14, 20, 26, 31, 58, 65, 87). ${kiVal >= 2 ? 'Dies weist auf ernsthafte Verhaltensauffälligkeiten hin und sollte klinisch abgeklärt werden.' : 'Eine weitere Exploration wird empfohlen.'}`,
+                                `${kiVal} items critiques sur 7 relatifs au trouble grave des conduites ont été cotés ≥ 1 (items 14, 20, 26, 31, 58, 65, 87). ${kiVal >= 2 ? 'Cela indique des troubles du comportement sérieux qui devraient faire l\'objet d\'un bilan clinique.' : 'Une exploration complémentaire est recommandée.'}`,
+                                `${kiVal} of 7 critical items for severe Conduct Disorder were scored ≥ 1 (items 14, 20, 26, 31, 58, 65, 87). ${kiVal >= 2 ? 'This indicates serious behavioural difficulties and should be clinically assessed.' : 'Further exploration is recommended.'}`
+                            )}
                         </div>
                         ` : ''}
                         <div style="margin-top:1rem;font-size:0.9em;color:#4a5568;">
-                            <p><strong>Erläuterungen:</strong> T-Werte haben einen Mittelwert von 50 und eine Standardabweichung von 10. T-Werte ≥65 gelten als erhöht (auffällig), ≥70 als stark erhöht (deutlich auffällig). Der Prozentrang gibt an, wie viel Prozent der Gleichaltrigen niedrigere Werte erzielen.</p>
+                            <p><strong>${tt('Erläuterungen:','Explications :','Explanations:')}</strong> ${tt(
+                                'T-Werte haben einen Mittelwert von 50 und eine Standardabweichung von 10. T-Werte ≥65 gelten als erhöht (auffällig), ≥70 als stark erhöht (deutlich auffällig). Der Prozentrang gibt an, wie viel Prozent der Gleichaltrigen niedrigere Werte erzielen.',
+                                'Les scores T ont une moyenne de 50 et un écart-type de 10. T ≥65 = élevé (notable), ≥70 = fortement élevé (très notable). Le rang centile indique le pourcentage de pairs ayant un score inférieur.',
+                                'T-scores have mean 50 and SD 10. T ≥65 = elevated (notable), ≥70 = severely elevated (very notable). The percentile rank indicates the proportion of peers scoring lower.'
+                            )}</p>
                         </div>
-                    </div>
+                    </div>`;
+                    })()}
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Interpretation</h4>
+                        <h4 class="gutachten-section-title">${tt('3. Interpretation','3. Interprétation','3. Interpretation')}</h4>
                         <div class="gutachten-text">
-                            ${scales.adhd.v ? `<p><strong>C3-AI (ADHS-Index):</strong> Der Conners 3 ADHS-Index von T=${scales.adhd.v} deutet auf eine ${adhdProb}e Wahrscheinlichkeit für das Vorliegen einer ADHS hin.</p>` : ''}
-                            ${scales.gi.v && c.gi !== 'normal' ? `<p><strong>C3-GI (Global Index):</strong> Der Conners 3 Global Index von T=${scales.gi.v} weist auf eine allgemein erhöhte Psychopathologie / Verhaltensauffälligkeiten hin.</p>` : ''}
-                            ${scales.in.v && c.in !== 'normal' ? `<p><strong>UA (Unaufmerksamkeit):</strong> Der erhöhte Wert (T=${scales.in.v}) weist auf bedeutsame Schwierigkeiten bei der Aufrechterhaltung der Aufmerksamkeit hin.</p>` : ''}
-                            ${scales.hi.v && c.hi !== 'normal' ? `<p><strong>HI (Hyperaktivität/Impulsivität):</strong> Der erhöhte Wert (T=${scales.hi.v}) deutet auf übermäßige motorische Aktivität und/oder impulsives Verhalten hin.</p>` : ''}
-                            ${scales.ef.v && c.ef !== 'normal' ? `<p><strong>EF (Exekutive Funktionen):</strong> Der erhöhte Wert (T=${scales.ef.v}) weist auf Schwierigkeiten bei Planung, Organisation und Selbstregulation hin.</p>` : ''}
-                            ${scales.lpef.v && c.lpef !== 'normal' ? `<p><strong>LP/EF (Lernprobleme/Exekutive Funktionen):</strong> Der erhöhte Wert (T=${scales.lpef.v}) weist auf Lern- und exekutive Schwierigkeiten hin (kombinierte Skala des Lehrerbogens).</p>` : ''}
-                            ${scales.lp.v && c.lp !== 'normal' ? `<p><strong>LP (Lernprobleme):</strong> Der erhöhte Wert (T=${scales.lp.v}) weist auf schulische Lernschwierigkeiten hin.</p>` : ''}
-                            ${scales.pr.v && c.pr !== 'normal' ? `<p><strong>BG (Beziehungen zu Gleichaltrigen):</strong> Der erhöhte Wert (T=${scales.pr.v}) weist auf Schwierigkeiten im Umgang mit Gleichaltrigen hin.</p>` : ''}
-                            ${scales.fb.v && c.fb !== 'normal' ? `<p><strong>FB (Familienbeziehungen):</strong> Der erhöhte Wert (T=${scales.fb.v}) weist auf Belastungen in den familiären Beziehungen hin (aus Selbstsicht).</p>` : ''}
-                            ${scales.ag.v && c.ag !== 'normal' ? `<p><strong>AT (Aggressivität/Trotz):</strong> Der erhöhte Wert (T=${scales.ag.v}) weist auf erhöhte aggressive und/oder oppositionelle Verhaltensweisen hin.</p>` : ''}
-                            ${anxVal !== null && anxVal >= 65 ? `<p><strong>SI-Ä (Ängstlichkeit):</strong> Der erhöhte Wert (T=${anxVal}) weist auf relevante Angstsymptome hin, die im Kontext einer ADHS-Abklärung differentialdiagnostisch berücksichtigt werden sollten.</p>` : ''}
-                            ${depVal !== null && depVal >= 65 ? `<p><strong>SI-D (Depression):</strong> Der erhöhte Wert (T=${depVal}) deutet auf depressive Symptome hin, die komorbid oder differentialdiagnostisch relevant sein können.</p>` : ''}
-                            ${anxItems !== null && !isSelf ? `<p><strong>SI-Ä (Ängstlichkeit) – qualitativ:</strong> ${anxItems} Items wurden mit ≥ 1 bewertet${anxItemsElev ? '. Auffällig viele Items deuten auf relevante Angstsymptomatik hin – vertiefte Exploration empfohlen.' : '. Keine kritische Häufung.'}</p>` : ''}
-                            ${depItems !== null && !isSelf ? `<p><strong>SI-D (Depression) – qualitativ:</strong> ${depItems} Items wurden mit ≥ 1 bewertet${depItemsElev ? '. Auffällig viele Items deuten auf relevante depressive Symptomatik hin – vertiefte Exploration empfohlen.' : '. Keine kritische Häufung.'}</p>` : ''}
-                            ${valid.every(([k])=>c[k]==='normal') && !(anxVal >= 65) && !(depVal >= 65) ? `<p>Das Ergebnisprofil liegt im unauffälligen Bereich. Es ergeben sich keine Hinweise auf eine ADHS oder damit assoziierte Probleme.</p>` : ''}
-                            ${(c.adhd === 'clinical' || c.icd_as === 'clinical' || c.icd_hksv === 'clinical' || (c.in === 'clinical' && c.hi === 'clinical')) ? '<div class="gutachten-warning"><strong>Klinische Relevanz:</strong> Die Befunde sprechen für eine hohe Wahrscheinlichkeit einer ADHS. Eine umfassende multimodale Diagnostik wird dringend empfohlen.</div>' : ''}
+                            ${scales.adhd.v ? `<p><strong>${tt('C3-AI (ADHS-Index):','C3-AI (Indice TDAH) :','C3-AI (ADHD Index):')}</strong> ${tt(
+                                `Der Conners 3 ADHS-Index von T=${scales.adhd.v} deutet auf eine ${adhdProb}e Wahrscheinlichkeit für das Vorliegen einer ADHS hin.`,
+                                `L'indice TDAH Conners 3 (T=${scales.adhd.v}) suggère une probabilité ${adhdProb} de TDAH.`,
+                                `The Conners 3 ADHD Index (T=${scales.adhd.v}) suggests a ${adhdProb} probability of ADHD.`
+                            )}</p>` : ''}
+                            ${scales.gi.v && c.gi !== 'normal' ? `<p><strong>${tt('C3-GI (Global Index):','C3-GI (Indice global) :','C3-GI (Global Index):')}</strong> ${tt(
+                                `Der Conners 3 Global Index von T=${scales.gi.v} weist auf eine allgemein erhöhte Psychopathologie / Verhaltensauffälligkeiten hin.`,
+                                `L'indice global Conners 3 (T=${scales.gi.v}) indique une psychopathologie / des troubles du comportement globalement élevés.`,
+                                `The Conners 3 Global Index (T=${scales.gi.v}) indicates generally elevated psychopathology / behavioural difficulties.`
+                            )}</p>` : ''}
+                            ${scales.in.v && c.in !== 'normal' ? `<p><strong>${tt('UA (Unaufmerksamkeit):','IN (Inattention) :','IN (Inattention):')}</strong> ${tt(
+                                `Der erhöhte Wert (T=${scales.in.v}) weist auf bedeutsame Schwierigkeiten bei der Aufrechterhaltung der Aufmerksamkeit hin.`,
+                                `Le score élevé (T=${scales.in.v}) indique des difficultés significatives à maintenir l'attention.`,
+                                `The elevated score (T=${scales.in.v}) indicates significant difficulties maintaining attention.`
+                            )}</p>` : ''}
+                            ${scales.hi.v && c.hi !== 'normal' ? `<p><strong>${tt('HI (Hyperaktivität/Impulsivität):','HI (Hyperactivité/Impulsivité) :','HI (Hyperactivity/Impulsivity):')}</strong> ${tt(
+                                `Der erhöhte Wert (T=${scales.hi.v}) deutet auf übermäßige motorische Aktivität und/oder impulsives Verhalten hin.`,
+                                `Le score élevé (T=${scales.hi.v}) suggère une activité motrice excessive et/ou un comportement impulsif.`,
+                                `The elevated score (T=${scales.hi.v}) suggests excessive motor activity and/or impulsive behaviour.`
+                            )}</p>` : ''}
+                            ${scales.ef.v && c.ef !== 'normal' ? `<p><strong>${tt('EF (Exekutive Funktionen):','FE (Fonctions exécutives) :','EF (Executive Functions):')}</strong> ${tt(
+                                `Der erhöhte Wert (T=${scales.ef.v}) weist auf Schwierigkeiten bei Planung, Organisation und Selbstregulation hin.`,
+                                `Le score élevé (T=${scales.ef.v}) indique des difficultés de planification, d'organisation et d'autorégulation.`,
+                                `The elevated score (T=${scales.ef.v}) indicates difficulties with planning, organisation and self-regulation.`
+                            )}</p>` : ''}
+                            ${scales.lpef.v && c.lpef !== 'normal' ? `<p><strong>${tt('LP/EF (Lernprobleme/Exekutive Funktionen):','PA/FE (Problèmes d\'apprentissage / fonctions exécutives) :','LP/EF (Learning Problems / Executive Functions):')}</strong> ${tt(
+                                `Der erhöhte Wert (T=${scales.lpef.v}) weist auf Lern- und exekutive Schwierigkeiten hin (kombinierte Skala des Lehrerbogens).`,
+                                `Le score élevé (T=${scales.lpef.v}) indique des difficultés d'apprentissage et exécutives (échelle combinée du questionnaire enseignant·e).`,
+                                `The elevated score (T=${scales.lpef.v}) indicates learning and executive difficulties (combined scale of the teacher form).`
+                            )}</p>` : ''}
+                            ${scales.lp.v && c.lp !== 'normal' ? `<p><strong>${tt('LP (Lernprobleme):','PA (Problèmes d\'apprentissage) :','LP (Learning Problems):')}</strong> ${tt(
+                                `Der erhöhte Wert (T=${scales.lp.v}) weist auf schulische Lernschwierigkeiten hin.`,
+                                `Le score élevé (T=${scales.lp.v}) indique des difficultés scolaires d'apprentissage.`,
+                                `The elevated score (T=${scales.lp.v}) indicates academic learning difficulties.`
+                            )}</p>` : ''}
+                            ${scales.pr.v && c.pr !== 'normal' ? `<p><strong>${tt('BG (Beziehungen zu Gleichaltrigen):','RP (Relations avec les pairs) :','PR (Peer Relations):')}</strong> ${tt(
+                                `Der erhöhte Wert (T=${scales.pr.v}) weist auf Schwierigkeiten im Umgang mit Gleichaltrigen hin.`,
+                                `Le score élevé (T=${scales.pr.v}) indique des difficultés dans les relations avec les pairs.`,
+                                `The elevated score (T=${scales.pr.v}) indicates difficulties in peer relationships.`
+                            )}</p>` : ''}
+                            ${scales.fb.v && c.fb !== 'normal' ? `<p><strong>${tt('FB (Familienbeziehungen):','RF (Relations familiales) :','FR (Family Relations):')}</strong> ${tt(
+                                `Der erhöhte Wert (T=${scales.fb.v}) weist auf Belastungen in den familiären Beziehungen hin (aus Selbstsicht).`,
+                                `Le score élevé (T=${scales.fb.v}) indique des tensions dans les relations familiales (auto-évaluation).`,
+                                `The elevated score (T=${scales.fb.v}) indicates strain in family relationships (self-report).`
+                            )}</p>` : ''}
+                            ${scales.ag.v && c.ag !== 'normal' ? `<p><strong>${tt('AT (Aggressivität/Trotz):','AG (Agressivité/Opposition) :','AG (Aggression/Defiance):')}</strong> ${tt(
+                                `Der erhöhte Wert (T=${scales.ag.v}) weist auf erhöhte aggressive und/oder oppositionelle Verhaltensweisen hin.`,
+                                `Le score élevé (T=${scales.ag.v}) indique des comportements agressifs et/ou oppositionnels accrus.`,
+                                `The elevated score (T=${scales.ag.v}) indicates elevated aggressive and/or oppositional behaviour.`
+                            )}</p>` : ''}
+                            ${anxVal !== null && anxVal >= 65 ? `<p><strong>${tt('SI-Ä (Ängstlichkeit):','SI-A (Anxiété) :','SI-A (Anxiety):')}</strong> ${tt(
+                                `Der erhöhte Wert (T=${anxVal}) weist auf relevante Angstsymptome hin, die im Kontext einer ADHS-Abklärung differentialdiagnostisch berücksichtigt werden sollten.`,
+                                `Le score élevé (T=${anxVal}) indique une symptomatologie anxieuse pertinente, à considérer en différentiel dans le cadre d'un bilan TDAH.`,
+                                `The elevated score (T=${anxVal}) indicates relevant anxiety symptoms, to be considered differentially within an ADHD assessment.`
+                            )}</p>` : ''}
+                            ${depVal !== null && depVal >= 65 ? `<p><strong>${tt('SI-D (Depression):','SI-D (Dépression) :','SI-D (Depression):')}</strong> ${tt(
+                                `Der erhöhte Wert (T=${depVal}) deutet auf depressive Symptome hin, die komorbid oder differentialdiagnostisch relevant sein können.`,
+                                `Le score élevé (T=${depVal}) suggère des symptômes dépressifs pouvant être comorbides ou pertinents au plan différentiel.`,
+                                `The elevated score (T=${depVal}) suggests depressive symptoms that may be comorbid or differentially relevant.`
+                            )}</p>` : ''}
+                            ${anxItems !== null && !isSelf ? `<p><strong>${tt('SI-Ä (Ängstlichkeit) – qualitativ:','SI-A (Anxiété) – qualitatif :','SI-A (Anxiety) – qualitative:')}</strong> ${tt(
+                                `${anxItems} Items wurden mit ≥ 1 bewertet${anxItemsElev ? '. Auffällig viele Items deuten auf relevante Angstsymptomatik hin – vertiefte Exploration empfohlen.' : '. Keine kritische Häufung.'}`,
+                                `${anxItems} items ont été cotés ≥ 1${anxItemsElev ? '. Un grand nombre d\'items suggère une symptomatologie anxieuse pertinente – exploration approfondie recommandée.' : '. Aucune accumulation critique.'}`,
+                                `${anxItems} items were scored ≥ 1${anxItemsElev ? '. A notable number of items suggests relevant anxiety symptoms – in-depth exploration recommended.' : '. No critical clustering.'}`
+                            )}</p>` : ''}
+                            ${depItems !== null && !isSelf ? `<p><strong>${tt('SI-D (Depression) – qualitativ:','SI-D (Dépression) – qualitatif :','SI-D (Depression) – qualitative:')}</strong> ${tt(
+                                `${depItems} Items wurden mit ≥ 1 bewertet${depItemsElev ? '. Auffällig viele Items deuten auf relevante depressive Symptomatik hin – vertiefte Exploration empfohlen.' : '. Keine kritische Häufung.'}`,
+                                `${depItems} items ont été cotés ≥ 1${depItemsElev ? '. Un grand nombre d\'items suggère une symptomatologie dépressive pertinente – exploration approfondie recommandée.' : '. Aucune accumulation critique.'}`,
+                                `${depItems} items were scored ≥ 1${depItemsElev ? '. A notable number of items suggests relevant depressive symptoms – in-depth exploration recommended.' : '. No critical clustering.'}`
+                            )}</p>` : ''}
+                            ${valid.every(([k])=>c[k]==='normal') && !(anxVal >= 65) && !(depVal >= 65) ? `<p>${tt(
+                                'Das Ergebnisprofil liegt im unauffälligen Bereich. Es ergeben sich keine Hinweise auf eine ADHS oder damit assoziierte Probleme.',
+                                'Le profil de résultats se situe dans la plage normale. Aucune indication de TDAH ou de problèmes associés.',
+                                'The result profile falls within the normal range. There are no indications of ADHD or associated problems.'
+                            )}</p>` : ''}
+                            ${(c.adhd === 'clinical' || c.icd_as === 'clinical' || c.icd_hksv === 'clinical' || (c.in === 'clinical' && c.hi === 'clinical')) ? `<div class="gutachten-warning"><strong>${tt('Klinische Relevanz:','Pertinence clinique :','Clinical relevance:')}</strong> ${tt(
+                                'Die Befunde sprechen für eine hohe Wahrscheinlichkeit einer ADHS. Eine umfassende multimodale Diagnostik wird dringend empfohlen.',
+                                'Les résultats indiquent une forte probabilité de TDAH. Un bilan multimodal complet est vivement recommandé.',
+                                'The findings suggest a high probability of ADHD. A comprehensive multimodal assessment is strongly recommended.'
+                            )}</div>` : ''}
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Diagnostische Einordnung (ICD-10)</h4>
+                        <h4 class="gutachten-section-title">${tt('4. Diagnostische Einordnung (ICD-10)','4. Classification diagnostique (CIM-10)','4. Diagnostic classification (ICD-10)')}</h4>
                         <div class="gutachten-text">
                             ${c.icd_hksv === 'clinical' ? `
-                            <p>Die ICD-10-orientierten Skalen sind vereinbar mit einer <strong>Hyperkinetischen Störung des Sozialverhaltens</strong>:</p>
-                            <span class="icd-code">F90.1</span> Hyperkinetische Störung des Sozialverhaltens` :
+                            <p>${tt(
+                                'Die ICD-10-orientierten Skalen sind vereinbar mit einer <strong>Hyperkinetischen Störung des Sozialverhaltens</strong>:',
+                                'Les échelles orientées CIM-10 sont compatibles avec un <strong>trouble hyperkinétique des conduites</strong> :',
+                                'The ICD-10-oriented scales are consistent with <strong>Hyperkinetic Conduct Disorder</strong>:'
+                            )}</p>
+                            <span class="icd-code">F90.1</span> ${tt('Hyperkinetische Störung des Sozialverhaltens','Trouble hyperkinétique des conduites','Hyperkinetic Conduct Disorder')}` :
                             c.icd_as === 'clinical' ? `
-                            <p>Die ICD-10-orientierten Skalen sind vereinbar mit einer <strong>Einfachen Aktivitäts- und Aufmerksamkeitsstörung</strong>:</p>
-                            <span class="icd-code">F90.0</span> Einfache Aktivitäts- und Aufmerksamkeitsstörung` :
+                            <p>${tt(
+                                'Die ICD-10-orientierten Skalen sind vereinbar mit einer <strong>Einfachen Aktivitäts- und Aufmerksamkeitsstörung</strong>:',
+                                'Les échelles orientées CIM-10 sont compatibles avec un <strong>trouble simple de l\'activité et de l\'attention</strong> :',
+                                'The ICD-10-oriented scales are consistent with a <strong>Simple Activity and Attention Disorder</strong>:'
+                            )}</p>
+                            <span class="icd-code">F90.0</span> ${tt('Einfache Aktivitäts- und Aufmerksamkeitsstörung','Trouble simple de l\'activité et de l\'attention','Simple Activity and Attention Disorder')}` :
                             (c.adhd === 'clinical' || c.in === 'clinical' || c.hi === 'clinical') ? `
-                            <p>Die Ergebnisse sind vereinbar mit dem Vorliegen einer ADHS:</p>
-                            <span class="icd-code">F90.0</span> Einfache Aktivitäts- und Aufmerksamkeitsstörung<br>
-                            <span class="icd-code">F90.1</span> Hyperkinetische Störung des Sozialverhaltens` :
-                            `<p>Es ergeben sich keine eindeutigen Hinweise auf eine ADHS.</p>`}
-                            ${(c.icd_sv === 'clinical' || c.dsm_cd === 'clinical' || c.ag === 'clinical') ? `<br><span class="icd-code">F91.x</span> Störung des Sozialverhaltens` : ''}
-                            ${c.dsm_odd === 'clinical' ? `<br><span class="icd-code">F91.3</span> Störung mit oppositionellem Trotzverhalten` : ''}
-                            ${kiVal !== null && kiVal >= 2 ? `<br><span class="icd-code">F91.1/F91.2</span> Störung des Sozialverhaltens (erwägen – erhöhte Anzahl kritischer Items)` : ''}
+                            <p>${tt(
+                                'Die Ergebnisse sind vereinbar mit dem Vorliegen einer ADHS:',
+                                'Les résultats sont compatibles avec la présence d\'un TDAH :',
+                                'The results are consistent with the presence of ADHD:'
+                            )}</p>
+                            <span class="icd-code">F90.0</span> ${tt('Einfache Aktivitäts- und Aufmerksamkeitsstörung','Trouble simple de l\'activité et de l\'attention','Simple Activity and Attention Disorder')}<br>
+                            <span class="icd-code">F90.1</span> ${tt('Hyperkinetische Störung des Sozialverhaltens','Trouble hyperkinétique des conduites','Hyperkinetic Conduct Disorder')}` :
+                            `<p>${tt('Es ergeben sich keine eindeutigen Hinweise auf eine ADHS.','Aucune indication claire d\'un TDAH.','There are no clear indications of ADHD.')}</p>`}
+                            ${(c.icd_sv === 'clinical' || c.dsm_cd === 'clinical' || c.ag === 'clinical') ? `<br><span class="icd-code">F91.x</span> ${tt('Störung des Sozialverhaltens','Trouble des conduites','Conduct Disorder')}` : ''}
+                            ${c.dsm_odd === 'clinical' ? `<br><span class="icd-code">F91.3</span> ${tt('Störung mit oppositionellem Trotzverhalten','Trouble oppositionnel avec provocation','Oppositional Defiant Disorder')}` : ''}
+                            ${kiVal !== null && kiVal >= 2 ? `<br><span class="icd-code">F91.1/F91.2</span> ${tt('Störung des Sozialverhaltens (erwägen – erhöhte Anzahl kritischer Items)','Trouble des conduites (à envisager – nombre élevé d\'items critiques)','Conduct Disorder (consider – elevated number of critical items)')}` : ''}
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">5. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">${tt('5. Empfehlungen','5. Recommandations','5. Recommendations')}</h4>
                         <div class="gutachten-text">
                             <ul class="gutachten-list">
                                 ${(c.adhd === 'clinical' || c.in === 'clinical' || c.hi === 'clinical') ? `
-                                    <li>Multimodale ADHS-Diagnostik (inkl. Anamnese, Verhaltensbeobachtung, neuropsychologische Tests)</li>
-                                    <li>Einbezug weiterer Informanten (Eltern, Lehrer, Selbsturteil)</li>
-                                    <li>Kinder- und jugendpsychiatrische Vorstellung</li>
-                                    <li>Bei Diagnosebestätigung: Psychoedukation, ggf. Medikation, Verhaltenstherapie</li>
+                                    <li>${tt('Multimodale ADHS-Diagnostik (inkl. Anamnese, Verhaltensbeobachtung, neuropsychologische Tests)','Bilan TDAH multimodal (anamnèse, observation comportementale, tests neuropsychologiques inclus)','Multimodal ADHD assessment (incl. anamnesis, behavioural observation, neuropsychological tests)')}</li>
+                                    <li>${tt('Einbezug weiterer Informanten (Eltern, Lehrer, Selbsturteil)','Inclusion d\'autres informants (parents, enseignant·e·s, auto-évaluation)','Inclusion of further informants (parents, teachers, self-report)')}</li>
+                                    <li>${tt('Kinder- und jugendpsychiatrische Vorstellung','Présentation pédopsychiatrique','Child & adolescent psychiatric review')}</li>
+                                    <li>${tt('Bei Diagnosebestätigung: Psychoedukation, ggf. Medikation, Verhaltenstherapie','En cas de confirmation diagnostique : psychoéducation, médication le cas échéant, thérapie comportementale','If diagnosis is confirmed: psychoeducation, medication if appropriate, behaviour therapy')}</li>
                                 ` : `
-                                    <li>Keine spezifische ADHS-Intervention erforderlich</li>
-                                    <li>Bei Persistenz von Schwierigkeiten erneute Diagnostik</li>
+                                    <li>${tt('Keine spezifische ADHS-Intervention erforderlich','Aucune intervention TDAH spécifique requise','No specific ADHD intervention required')}</li>
+                                    <li>${tt('Bei Persistenz von Schwierigkeiten erneute Diagnostik','En cas de persistance des difficultés, nouveau bilan','If difficulties persist, repeat assessment')}</li>
                                 `}
                             </ul>
                         </div>
                     </div>
 
                     ${elternZusammenfassung(
-                        'Conners-3 (ADHS-Fragebogen)',
+                        tt('Conners-3 (ADHS-Fragebogen)','Conners-3 (questionnaire TDAH)','Conners-3 (ADHD questionnaire)'),
                         valid.every(([k])=>c[k]==='normal')
-                            ? `Die Ergebnisse zeigen keine Hinweise auf ADHS oder damit verbundene Schwierigkeiten. ${pat.name} liegt in allen Bereichen im normalen Bereich. Aufmerksamkeit, Aktivitätsniveau und Impulskontrolle entsprechen dem Durchschnitt Gleichaltriger.`
+                            ? tt(
+                                `Die Ergebnisse zeigen keine Hinweise auf ADHS oder damit verbundene Schwierigkeiten. ${pat.name} liegt in allen Bereichen im normalen Bereich. Aufmerksamkeit, Aktivitätsniveau und Impulskontrolle entsprechen dem Durchschnitt Gleichaltriger.`,
+                                `Les résultats ne montrent aucune indication de TDAH ni de difficultés associées. ${pat.name} se situe dans la plage normale dans tous les domaines. Attention, niveau d'activité et contrôle des impulsions correspondent à la moyenne des pairs.`,
+                                `The results show no indications of ADHD or associated difficulties. ${pat.name} falls within the normal range in all domains. Attention, activity level and impulse control match the peer average.`
+                            )
                             : (c.adhd === 'clinical' || (c.in === 'clinical' && c.hi === 'clinical'))
-                                ? `Die Ergebnisse zeigen deutlich erhöhte Werte für Aufmerksamkeit und/oder Aktivität. ADHS ist eine der häufigsten Entwicklungsstörungen bei Kindern - etwa 5% sind betroffen. Die gute Nachricht: ADHS ist gut behandelbar. Mit der richtigen Unterstützung können betroffene Kinder sehr erfolgreich sein.`
+                                ? tt(
+                                    'Die Ergebnisse zeigen deutlich erhöhte Werte für Aufmerksamkeit und/oder Aktivität. ADHS ist eine der häufigsten Entwicklungsstörungen bei Kindern - etwa 5% sind betroffen. Die gute Nachricht: ADHS ist gut behandelbar. Mit der richtigen Unterstützung können betroffene Kinder sehr erfolgreich sein.',
+                                    'Les résultats montrent des scores nettement élevés pour l\'attention et/ou l\'activité. Le TDAH est l\'un des troubles développementaux les plus fréquents chez l\'enfant – environ 5% des enfants sont concernés. La bonne nouvelle : le TDAH se traite bien. Avec un soutien adapté, les enfants concernés peuvent très bien réussir.',
+                                    'The results show clearly elevated scores for attention and/or activity. ADHD is one of the most common developmental disorders in children – about 5% are affected. The good news: ADHD is treatable. With the right support, affected children can do very well.'
+                                )
                                 : c.in === 'clinical'
-                                    ? `${pat.name} zeigt erhöhte Werte für Unaufmerksamkeit. Das bedeutet, dass es schwerer fällt, die Konzentration über längere Zeit aufrechtzuerhalten. Dies muss nicht unbedingt ADHS bedeuten - eine genaue Diagnostik ist wichtig.`
+                                    ? tt(
+                                        `${pat.name} zeigt erhöhte Werte für Unaufmerksamkeit. Das bedeutet, dass es schwerer fällt, die Konzentration über längere Zeit aufrechtzuerhalten. Dies muss nicht unbedingt ADHS bedeuten - eine genaue Diagnostik ist wichtig.`,
+                                        `${pat.name} présente des scores élevés d'inattention. Cela signifie qu'il est plus difficile de maintenir la concentration sur la durée. Cela ne signifie pas nécessairement un TDAH – un bilan précis est important.`,
+                                        `${pat.name} shows elevated scores for inattention. This means maintaining concentration over time is harder. This does not necessarily mean ADHD – a precise assessment is important.`
+                                    )
                                     : c.hi === 'clinical'
-                                        ? `${pat.name} zeigt erhöhte Werte für Aktivität und Impulsivität. Das Kind ist möglicherweise motorisch unruhiger und handelt schneller, als es nachdenkt. Eine vertiefte Diagnostik kann helfen, die Ursachen zu verstehen.`
-                                        : `Es zeigen sich erhöhte Werte in einzelnen Bereichen, die auf leichte Schwierigkeiten hindeuten. Eine Beobachtung der weiteren Entwicklung wird empfohlen.`,
+                                        ? tt(
+                                            `${pat.name} zeigt erhöhte Werte für Aktivität und Impulsivität. Das Kind ist möglicherweise motorisch unruhiger und handelt schneller, als es nachdenkt. Eine vertiefte Diagnostik kann helfen, die Ursachen zu verstehen.`,
+                                            `${pat.name} présente des scores élevés pour l'activité et l'impulsivité. L'enfant est possiblement plus agité sur le plan moteur et agit plus vite qu'il ne réfléchit. Un bilan approfondi peut aider à comprendre les causes.`,
+                                            `${pat.name} shows elevated scores for activity and impulsivity. The child may be motorically more restless and acts faster than they think. An in-depth assessment can help understand the causes.`
+                                        )
+                                        : tt(
+                                            'Es zeigen sich erhöhte Werte in einzelnen Bereichen, die auf leichte Schwierigkeiten hindeuten. Eine Beobachtung der weiteren Entwicklung wird empfohlen.',
+                                            'Des scores élevés apparaissent dans certains domaines, suggérant de légères difficultés. Un suivi de l\'évolution est recommandé.',
+                                            'Elevated scores appear in individual domains, suggesting mild difficulties. Monitoring of further development is recommended.'
+                                        ),
                         valid.every(([k])=>c[k]==='normal')
-                            ? ['Keine spezielle Maßnahme erforderlich', 'Bei Veränderungen erneut testen']
-                            : ['Eine umfassende ADHS-Diagnostik wird empfohlen', 'ADHS ist kein Erziehungsfehler - es ist eine neurologische Besonderheit', 'Mit professioneller Hilfe können Kinder lernen, ihre Stärken zu nutzen', 'Informieren Sie sich über ADHS (z.B. bei ADHS Deutschland e.V.)']
+                            ? [
+                                tt('Keine spezielle Maßnahme erforderlich','Aucune mesure particulière requise','No special measure required'),
+                                tt('Bei Veränderungen erneut testen','Retester en cas de changements','Re-test if changes occur')
+                              ]
+                            : [
+                                tt('Eine umfassende ADHS-Diagnostik wird empfohlen','Un bilan TDAH complet est recommandé','A comprehensive ADHD assessment is recommended'),
+                                tt('ADHS ist kein Erziehungsfehler - es ist eine neurologische Besonderheit','Le TDAH n\'est pas une faute éducative – c\'est une particularité neurologique','ADHD is not a parenting failure – it is a neurological particularity'),
+                                tt('Mit professioneller Hilfe können Kinder lernen, ihre Stärken zu nutzen','Avec une aide professionnelle, les enfants peuvent apprendre à exploiter leurs forces','With professional help, children can learn to use their strengths'),
+                                tt('Informieren Sie sich über ADHS (z.B. bei ADHS Deutschland e.V.)','Informez-vous sur le TDAH (p. ex. associations TDAH)','Inform yourself about ADHD (e.g. ADHD support associations)')
+                              ]
                     )}
 
                     ${gutachtenFooter()}
@@ -6686,11 +6825,11 @@
             `;
 
             document.getElementById('conners-results').innerHTML = `
-                <div class="results-header"><h3 class="results-title">Ergebnis Conners-3</h3></div>
+                <div class="results-header"><h3 class="results-title">${tt('Ergebnis Conners-3','Résultat Conners-3','Conners-3 result')}</h3></div>
                 ${summary(valid.slice(0,6).map(([k,x])=>({l:x.n.split(' – ')[0],v:'T '+x.v,c:c[k],s:cText(x.v)})))}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
-                    <button class="btn btn-primary" onclick="exportTestToWord('conners')">📝 Als Word exportieren (.doc)</button>
+                    <button class="btn btn-primary" onclick="exportTestToWord('conners')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
                 </div>
             `;
             showLocalizedResults('conners-results');
