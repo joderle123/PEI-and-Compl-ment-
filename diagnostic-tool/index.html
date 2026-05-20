@@ -5374,31 +5374,63 @@
 
             // Interpretation
             let interp = '';
-            const clinSyn = validSyn.filter(([k])=>cSyn[k]==='clinical').map(([k])=>CBCL_SYN[k].n);
-            const bordSyn = validSyn.filter(([k])=>cSyn[k]==='borderline').map(([k])=>CBCL_SYN[k].n);
+            const clinSyn = validSyn.filter(([k])=>cSyn[k]==='clinical').map(([k])=>cbclSynName(k));
+            const bordSyn = validSyn.filter(([k])=>cSyn[k]==='borderline').map(([k])=>cbclSynName(k));
 
             if(bb.tot !== null) {
                 if(cBB.tot === 'normal') {
-                    interp = `Der Gesamtproblemwert (${valLabel}=${bb.tot}) liegt im unauffälligen Bereich. ${pat.name} zeigt aus Sicht des Beurteilers keine bedeutsamen Verhaltensauffälligkeiten.`;
+                    interp = tt(
+                        `Der Gesamtproblemwert (${valLabel}=${bb.tot}) liegt im unauffälligen Bereich. ${pat.name} zeigt aus Sicht des Beurteilers keine bedeutsamen Verhaltensauffälligkeiten.`,
+                        `Le score total des problèmes (${valLabel}=${bb.tot}) se situe dans la plage normale. Du point de vue de l'évaluateur·trice, ${pat.name} ne présente pas de troubles du comportement notables.`,
+                        `The Total Problems Score (${valLabel}=${bb.tot}) falls within the normal range. From the rater's perspective, ${pat.name} shows no meaningful behavioural difficulties.`
+                    );
                 } else if(cBB.tot === 'borderline') {
-                    interp = `Der Gesamtproblemwert (${valLabel}=${bb.tot}) liegt im grenzwertigen Bereich und sollte im Verlauf beobachtet werden.`;
+                    interp = tt(
+                        `Der Gesamtproblemwert (${valLabel}=${bb.tot}) liegt im grenzwertigen Bereich und sollte im Verlauf beobachtet werden.`,
+                        `Le score total des problèmes (${valLabel}=${bb.tot}) se situe dans la plage limite et devrait être suivi dans le temps.`,
+                        `The Total Problems Score (${valLabel}=${bb.tot}) falls within the borderline range and should be monitored over time.`
+                    );
                 } else {
-                    interp = `Der Gesamtproblemwert (${valLabel}=${bb.tot}) liegt im klinisch auffälligen Bereich und weist auf eine erhöhte psychische Belastung hin.`;
+                    interp = tt(
+                        `Der Gesamtproblemwert (${valLabel}=${bb.tot}) liegt im klinisch auffälligen Bereich und weist auf eine erhöhte psychische Belastung hin.`,
+                        `Le score total des problèmes (${valLabel}=${bb.tot}) se situe dans la plage cliniquement significative et indique une charge psychique accrue.`,
+                        `The Total Problems Score (${valLabel}=${bb.tot}) falls within the clinically significant range and indicates elevated psychological burden.`
+                    );
                 }
             }
 
             if(bb.int !== null && bb.ext !== null) {
                 if(cBB.int === 'clinical' && cBB.ext !== 'clinical') {
-                    interp += ` Das Profil zeigt vorwiegend internalisierende Probleme (${valLabel}=${bb.int}), d.h. nach innen gerichtete Symptome wie Ängste, depressive Symptome oder Rückzugsverhalten.`;
+                    interp += ' ' + tt(
+                        `Das Profil zeigt vorwiegend internalisierende Probleme (${valLabel}=${bb.int}), d.h. nach innen gerichtete Symptome wie Ängste, depressive Symptome oder Rückzugsverhalten.`,
+                        `Le profil montre principalement des problèmes internalisés (${valLabel}=${bb.int}), c'est-à-dire des symptômes dirigés vers l'intérieur tels que l'anxiété, des symptômes dépressifs ou un comportement de retrait.`,
+                        `The profile shows predominantly internalising problems (${valLabel}=${bb.int}), i.e. inward-directed symptoms such as anxiety, depressive symptoms or withdrawal.`
+                    );
                 } else if(cBB.ext === 'clinical' && cBB.int !== 'clinical') {
-                    interp += ` Das Profil zeigt vorwiegend externalisierende Probleme (${valLabel}=${bb.ext}), d.h. nach außen gerichtete Symptome wie aggressives oder regelverletzendes Verhalten.`;
+                    interp += ' ' + tt(
+                        `Das Profil zeigt vorwiegend externalisierende Probleme (${valLabel}=${bb.ext}), d.h. nach außen gerichtete Symptome wie aggressives oder regelverletzendes Verhalten.`,
+                        `Le profil montre principalement des problèmes externalisés (${valLabel}=${bb.ext}), c'est-à-dire des symptômes dirigés vers l'extérieur tels qu'un comportement agressif ou transgressif.`,
+                        `The profile shows predominantly externalising problems (${valLabel}=${bb.ext}), i.e. outward-directed symptoms such as aggressive or rule-breaking behaviour.`
+                    );
                 } else if(cBB.int === 'clinical' && cBB.ext === 'clinical') {
-                    interp += ` Das Profil zeigt sowohl internalisierende (${valLabel}=${bb.int}) als auch externalisierende Probleme (${valLabel}=${bb.ext}), was auf eine komplexe Symptomatik hindeutet.`;
+                    interp += ' ' + tt(
+                        `Das Profil zeigt sowohl internalisierende (${valLabel}=${bb.int}) als auch externalisierende Probleme (${valLabel}=${bb.ext}), was auf eine komplexe Symptomatik hindeutet.`,
+                        `Le profil montre à la fois des problèmes internalisés (${valLabel}=${bb.int}) et externalisés (${valLabel}=${bb.ext}), ce qui suggère une symptomatologie complexe.`,
+                        `The profile shows both internalising (${valLabel}=${bb.int}) and externalising problems (${valLabel}=${bb.ext}), suggesting a complex symptomatology.`
+                    );
                 }
             }
 
-            if(clinSyn.length) interp += ` Klinisch auffällige Syndromskalen: ${clinSyn.join(', ')}.`;
-            if(bordSyn.length) interp += ` Grenzwertige Syndromskalen: ${bordSyn.join(', ')}.`;
+            if(clinSyn.length) interp += ' ' + tt(
+                `Klinisch auffällige Syndromskalen: ${clinSyn.join(', ')}.`,
+                `Échelles syndromiques cliniquement significatives : ${clinSyn.join(', ')}.`,
+                `Clinically significant syndrome scales: ${clinSyn.join(', ')}.`
+            );
+            if(bordSyn.length) interp += ' ' + tt(
+                `Grenzwertige Syndromskalen: ${bordSyn.join(', ')}.`,
+                `Échelles syndromiques limites : ${bordSyn.join(', ')}.`,
+                `Borderline syndrome scales: ${bordSyn.join(', ')}.`
+            );
 
             // ICD-Codes sammeln
             let icdCodes = new Set();
