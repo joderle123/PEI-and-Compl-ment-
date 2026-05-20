@@ -8157,12 +8157,17 @@
             sit: {n:'Situationen', desc:'Konkretes Denken und Handlungsplanung'},
             zei: {n:'Zeichenmuster', desc:'Visuomotorik und Raumvorstellung'}
         };
+        function sonrSubName(k) {
+            const fr = {mos:'Mosaïques',kat:'Catégories',puz:'Puzzles',ana:'Analogies',sit:'Situations',zei:'Patterns de dessin'};
+            const en = {mos:'Mosaics',kat:'Categories',puz:'Puzzles',ana:'Analogies',sit:'Situations',zei:'Drawing Patterns'};
+            return tt(SONR_SUBTESTS[k].n, fr[k], en[k]);
+        }
 
         function wpClass(wp) {
-            if(wp>=14) return {l:'Überdurchschnittlich',c:'high'};
-            if(wp>=8) return {l:'Durchschnittlich',c:'normal'};
-            if(wp>=5) return {l:'Unterdurchschnittlich',c:'borderline'};
-            return {l:'Weit unterdurchschnittlich',c:'clinical'};
+            if(wp>=14) return {l:tt('Überdurchschnittlich','Supérieur','Above average'),c:'high'};
+            if(wp>=8)  return {l:tt('Durchschnittlich','Moyen','Average'),c:'normal'};
+            if(wp>=5)  return {l:tt('Unterdurchschnittlich','Inférieur','Below average'),c:'borderline'};
+            return {l:tt('Weit unterdurchschnittlich','Très inférieur','Very low'),c:'clinical'};
         }
 
         function evaluateSONR(e) {
@@ -8174,10 +8179,8 @@
             const subtests = {mos:v('sonr-mos'),kat:v('sonr-kat'),puz:v('sonr-puz'),ana:v('sonr-ana'),sit:v('sonr-sit'),zei:v('sonr-zei')};
             const validSub = Object.entries(subtests).filter(([k,x])=>x!==null);
 
-            if(iqVal === null && !validSub.length) return alert('Bitte mindestens Gesamt-IQ oder Untertests eingeben');
+            if(iqVal === null && !validSub.length) return alert(tt('Bitte mindestens Gesamt-IQ oder Untertests eingeben','Veuillez saisir au moins le QI Total ou des subtests','Please enter at least the overall IQ or subtests'));
 
-            // IQ nur klassifizieren, wenn er wirklich eingegeben wurde.
-            // Wertpunkte → IQ-Umrechnung ist normabhängig und nicht rechnerisch abzubilden.
             const iq = iqVal;
             const c = iq !== null ? iqClass(iq) : null;
 
@@ -8187,69 +8190,93 @@
 
             const gutachten = `
                 <div class="gutachten">
-                    ${gutachtenHeader('SON-R', 'Snijders-Oomen Non-verbaler Intelligenztest', pat)}
+                    ${gutachtenHeader('SON-R', tt('Snijders-Oomen Non-verbaler Intelligenztest','Test d\'intelligence non verbal Snijders-Oomen','Snijders-Oomen Non-verbal Intelligence Test'), pat)}
 
                     <div class="gutachten-meta" style="margin-top:0;">
-                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">Testsprache:</span> <span class="gutachten-meta-value">${testLang}</span></div>
-                        ${instLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Instruktionssprache:</span> <span class="gutachten-meta-value">${instLang}</span></div>` : ''}
-                        ${motherLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">Muttersprache:</span> <span class="gutachten-meta-value">${motherLang}</span></div>` : ''}
+                        <div class="gutachten-meta-item"><span class="gutachten-meta-label">${tt('Testsprache:','Langue du test :','Test language:')}</span> <span class="gutachten-meta-value">${testLang}</span></div>
+                        ${instLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">${tt('Instruktionssprache:','Langue d\'instruction :','Instruction language:')}</span> <span class="gutachten-meta-value">${instLang}</span></div>` : ''}
+                        ${motherLang ? `<div class="gutachten-meta-item"><span class="gutachten-meta-label">${tt('Muttersprache:','Langue maternelle :','Mother tongue:')}</span> <span class="gutachten-meta-value">${motherLang}</span></div>` : ''}
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">1. Testbeschreibung</h4>
+                        <h4 class="gutachten-section-title">${tt('1. Testbeschreibung','1. Description du test','1. Test description')}</h4>
                         <div class="gutachten-text">
-                            <p>Der SON-R (Snijders-Oomen Non-verbaler Intelligenztest; Tellegen et al.) ist ein sprachfreier Intelligenztest für Kinder und Jugendliche. Das Verfahren eignet sich besonders für die Diagnostik bei Kindern mit Hörbeeinträchtigungen, Sprachentwicklungsstörungen oder mehrsprachigem Hintergrund, da die Instruktionen ohne gesprochene Sprache vermittelt werden können.</p>
-                            <p>Der SON-R umfasst sechs Untertests, die zwei Skalen zugeordnet werden: Handlungsskala (Mosaike, Puzzles, Zeichenmuster) und Denkskala (Kategorien, Analogien, Situationen). Die Ergebnisse werden als IQ-Werte (M=100, SD=15) angegeben.</p>
+                            <p>${tt(
+                                'Der SON-R (Snijders-Oomen Non-verbaler Intelligenztest; Tellegen et al.) ist ein sprachfreier Intelligenztest für Kinder und Jugendliche. Das Verfahren eignet sich besonders für die Diagnostik bei Kindern mit Hörbeeinträchtigungen, Sprachentwicklungsstörungen oder mehrsprachigem Hintergrund, da die Instruktionen ohne gesprochene Sprache vermittelt werden können.',
+                                'Le SON-R (test d\'intelligence non verbal Snijders-Oomen ; Tellegen et al.) est un test d\'intelligence non verbal pour enfants et adolescents. Il convient particulièrement à l\'évaluation d\'enfants avec déficience auditive, troubles du langage ou bilinguisme, les consignes pouvant être transmises sans langage parlé.',
+                                'The SON-R (Snijders-Oomen Non-verbal Intelligence Test; Tellegen et al.) is a language-free intelligence test for children and adolescents. It is particularly suitable for assessing children with hearing impairment, language disorders or multilingual background, as instructions can be conveyed without spoken language.'
+                            )}</p>
+                            <p>${tt(
+                                'Der SON-R umfasst sechs Untertests, die zwei Skalen zugeordnet werden: Handlungsskala (Mosaike, Puzzles, Zeichenmuster) und Denkskala (Kategorien, Analogien, Situationen). Die Ergebnisse werden als IQ-Werte (M=100, SD=15) angegeben.',
+                                'Le SON-R comprend six subtests répartis en deux échelles : échelle de Performance (Mosaïques, Puzzles, Patterns de dessin) et échelle de Raisonnement (Catégories, Analogies, Situations). Les résultats sont rapportés en scores QI (M=100, ET=15).',
+                                'The SON-R comprises six subtests in two scales: Performance scale (Mosaics, Puzzles, Drawing Patterns) and Reasoning scale (Categories, Analogies, Situations). Results are reported as IQ scores (M=100, SD=15).'
+                            )}</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">2. Testergebnisse</h4>
+                        <h4 class="gutachten-section-title">${tt('2. Testergebnisse','2. Résultats','2. Test results')}</h4>
                         ${iqVal ? `
                         <table class="gutachten-table">
-                            <thead><tr><th>Skala</th><th>IQ-Wert</th><th>Prozentrang</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${tt('Skala','Échelle','Scale')}</th><th>${tt('IQ-Wert','Score QI','IQ score')}</th><th>${tt('Prozentrang','Rang centile','Percentile rank')}</th><th>${tt('Klassifikation','Classification','Classification')}</th></tr></thead>
                             <tbody>
-                                <tr style="font-weight:700;"><td>SON-IQ (Gesamtwert)</td><td><strong>${iqVal}</strong></td><td>${prVal !== null ? prVal : (c ? c.pr : '-')}</td><td>${c ? c.l : '-'}</td></tr>
+                                <tr style="font-weight:700;"><td>${tt('SON-IQ (Gesamtwert)','SON-IQ (score total)','SON-IQ (overall score)')}</td><td><strong>${iqVal}</strong></td><td>${prVal !== null ? prVal : (c ? c.pr : '-')}</td><td>${c ? c.l : '-'}</td></tr>
                             </tbody>
                         </table>
                         ` : ''}
                         ${validSub.length ? `
-                        <p style="font-weight:bold;margin-top:1rem;">Untertests (Wertpunkte, M=10, SD=3):</p>
+                        <p style="font-weight:bold;margin-top:1rem;">${tt('Untertests (Wertpunkte, M=10, SD=3):','Subtests (notes standard, M=10, ET=3) :','Subtests (scaled scores, M=10, SD=3):')}</p>
                         <table class="gutachten-table">
-                            <thead><tr><th>Untertest</th><th>Wertpunkt</th><th>Klassifikation</th></tr></thead>
+                            <thead><tr><th>${tt('Untertest','Subtest','Subtest')}</th><th>${tt('Wertpunkt','Note standard','Scaled score')}</th><th>${tt('Klassifikation','Classification','Classification')}</th></tr></thead>
                             <tbody>
-                                ${validSub.map(([k,x])=>`<tr><td>${SONR_SUBTESTS[k].n}</td><td><strong>${x}</strong></td><td>${wpClass(x).l}</td></tr>`).join('')}
+                                ${validSub.map(([k,x])=>`<tr><td>${sonrSubName(k)}</td><td><strong>${x}</strong></td><td>${wpClass(x).l}</td></tr>`).join('')}
                             </tbody>
                         </table>
                         ` : ''}
                         <div style="margin-top:1rem;font-size:0.9em;color:#4a5568;">
-                            <p><strong>Erläuterungen:</strong> Die IQ-Werte haben einen Mittelwert von 100 und eine Standardabweichung von 15. Wertpunkte der Untertests haben einen Mittelwert von 10 und eine Standardabweichung von 3. Der Durchschnittsbereich umfasst IQ-Werte von 85–114 bzw. Wertpunkte von 8–12.</p>
+                            <p><strong>${tt('Erläuterungen:','Explications :','Explanations:')}</strong> ${tt(
+                                'Die IQ-Werte haben einen Mittelwert von 100 und eine Standardabweichung von 15. Wertpunkte der Untertests haben einen Mittelwert von 10 und eine Standardabweichung von 3. Der Durchschnittsbereich umfasst IQ-Werte von 85–114 bzw. Wertpunkte von 8–12.',
+                                'Les scores QI ont une moyenne de 100 et un écart-type de 15. Les notes standard des subtests ont une moyenne de 10 et un écart-type de 3. La plage moyenne couvre les QI de 85–114 et les notes standard de 8–12.',
+                                'IQ scores have mean 100 and SD 15. Subtest scaled scores have mean 10 and SD 3. The average range covers IQ 85–114 and scaled scores 8–12.'
+                            )}</p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">3. Interpretation</h4>
+                        <h4 class="gutachten-section-title">${tt('3. Interpretation','3. Interprétation','3. Interpretation')}</h4>
                         <div class="gutachten-text">
-                            ${iqVal !== null && c ? `<p>Die Untersuchung der nonverbalen kognitiven Leistungsfähigkeit mittels SON-R ergibt einen <strong>SON-IQ von ${iqVal}</strong> (PR: ${prVal !== null ? prVal : c.pr}). Dieser Wert liegt im <strong>${c.l.toLowerCase()}en Bereich</strong>.</p>` : ''}
-                            ${iqVal === null && validSub.length ? `<p>Der Gesamt-IQ wurde nicht eingegeben; die Einzelbefunde beruhen auf den eingegebenen Untertest-Wertpunkten. Für einen Gesamtwert bitte den SON-IQ aus dem Manual ergänzen.</p>` : ''}
-                            ${iqVal >= 130 ? `<p>${pat.name} verfügt über <strong>weit überdurchschnittliche nonverbale kognitive Fähigkeiten</strong>.</p>` : ''}
-                            ${iqVal >= 115 && iqVal < 130 ? `<p>${pat.name} verfügt über <strong>überdurchschnittliche nonverbale kognitive Fähigkeiten</strong>, die gute Voraussetzungen für visuell-räumliches Denken und Problemlösen darstellen.</p>` : ''}
-                            ${iqVal >= 85 && iqVal < 115 ? `<p>${pat.name} verfügt über <strong>durchschnittliche nonverbale kognitive Fähigkeiten</strong>. Die sprachfreien intellektuellen Voraussetzungen entsprechen dem Erwartungswert für ${pronomen.sein} Altersgruppe.</p>` : ''}
-                            ${iqVal < 85 && iqVal >= 70 ? `<p>${pat.name} zeigt <strong>unterdurchschnittliche nonverbale kognitive Fähigkeiten</strong>. Gezielte Förderung wird empfohlen.</p>` : ''}
-                            ${iqVal < 70 ? `<p>${pat.name} zeigt <strong>deutlich unterdurchschnittliche nonverbale kognitive Fähigkeiten</strong>. Eine umfassende Entwicklungsdiagnostik wird empfohlen.</p>` : ''}
-                            <p><em>Da der SON-R ein sprachfreier Test ist, bildet er kognitive Fähigkeiten unabhängig von Sprachkompetenzen ab. ${motherLang && motherLang !== 'Deutsch' ? `Dies ist besonders relevant, da die Muttersprache von ${pat.name} (${motherLang}) von der Testsprache abweicht.` : ''}</em></p>
+                            ${iqVal !== null && c ? `<p>${tt(
+                                `Die Untersuchung der nonverbalen kognitiven Leistungsfähigkeit mittels SON-R ergibt einen <strong>SON-IQ von ${iqVal}</strong> (PR: ${prVal !== null ? prVal : c.pr}). Dieser Wert liegt im <strong>${c.l.toLowerCase()}en Bereich</strong>.`,
+                                `L'évaluation des capacités cognitives non verbales par le SON-R donne un <strong>SON-IQ de ${iqVal}</strong> (RC : ${prVal !== null ? prVal : c.pr}). Cette valeur se situe dans la plage <strong>${c.l.toLowerCase()}</strong>.`,
+                                `The assessment of nonverbal cognitive ability via SON-R yields a <strong>SON-IQ of ${iqVal}</strong> (PR: ${prVal !== null ? prVal : c.pr}). This value falls in the <strong>${c.l.toLowerCase()}</strong> range.`
+                            )}</p>` : ''}
+                            ${iqVal === null && validSub.length ? `<p>${tt(
+                                'Der Gesamt-IQ wurde nicht eingegeben; die Einzelbefunde beruhen auf den eingegebenen Untertest-Wertpunkten. Für einen Gesamtwert bitte den SON-IQ aus dem Manual ergänzen.',
+                                'Le QI Total n\'a pas été saisi ; les résultats individuels reposent sur les notes standard saisies. Pour un score global, ajouter le SON-IQ tiré du manuel.',
+                                'The overall IQ was not entered; individual findings rely on the entered subtest scaled scores. For an overall score, add the SON-IQ from the manual.'
+                            )}</p>` : ''}
+                            ${iqVal >= 130 ? `<p>${tt(`${pat.name} verfügt über <strong>weit überdurchschnittliche nonverbale kognitive Fähigkeiten</strong>.`,`${pat.name} dispose de <strong>capacités cognitives non verbales très supérieures</strong>.`,`${pat.name} has <strong>very superior nonverbal cognitive abilities</strong>.`)}</p>` : ''}
+                            ${iqVal >= 115 && iqVal < 130 ? `<p>${tt(`${pat.name} verfügt über <strong>überdurchschnittliche nonverbale kognitive Fähigkeiten</strong>, die gute Voraussetzungen für visuell-räumliches Denken und Problemlösen darstellen.`,`${pat.name} dispose de <strong>capacités cognitives non verbales supérieures</strong>, constituant de bonnes bases pour la pensée visuo-spatiale et la résolution de problèmes.`,`${pat.name} has <strong>above-average nonverbal cognitive abilities</strong>, providing good foundations for visual-spatial thinking and problem-solving.`)}</p>` : ''}
+                            ${iqVal >= 85 && iqVal < 115 ? `<p>${tt(`${pat.name} verfügt über <strong>durchschnittliche nonverbale kognitive Fähigkeiten</strong>. Die sprachfreien intellektuellen Voraussetzungen entsprechen dem Erwartungswert für ${pronomen.sein} Altersgruppe.`,`${pat.name} dispose de <strong>capacités cognitives non verbales moyennes</strong>. Les prérequis intellectuels non verbaux correspondent à la valeur attendue pour ${pat.sex === 'w' ? 'son' : 'son'} groupe d'âge.`,`${pat.name} has <strong>average nonverbal cognitive abilities</strong>. The language-free intellectual prerequisites match the expected value for ${pat.sex === 'w' ? 'her' : pat.sex === 'm' ? 'his' : 'their'} age group.`)}</p>` : ''}
+                            ${iqVal < 85 && iqVal >= 70 ? `<p>${tt(`${pat.name} zeigt <strong>unterdurchschnittliche nonverbale kognitive Fähigkeiten</strong>. Gezielte Förderung wird empfohlen.`,`${pat.name} montre des <strong>capacités cognitives non verbales inférieures</strong>. Un soutien ciblé est recommandé.`,`${pat.name} shows <strong>below-average nonverbal cognitive abilities</strong>. Targeted support is recommended.`)}</p>` : ''}
+                            ${iqVal < 70 ? `<p>${tt(`${pat.name} zeigt <strong>deutlich unterdurchschnittliche nonverbale kognitive Fähigkeiten</strong>. Eine umfassende Entwicklungsdiagnostik wird empfohlen.`,`${pat.name} montre des <strong>capacités cognitives non verbales nettement inférieures</strong>. Un bilan développemental complet est recommandé.`,`${pat.name} shows <strong>clearly below-average nonverbal cognitive abilities</strong>. A comprehensive developmental assessment is recommended.`)}</p>` : ''}
+                            <p><em>${tt(
+                                `Da der SON-R ein sprachfreier Test ist, bildet er kognitive Fähigkeiten unabhängig von Sprachkompetenzen ab. ${motherLang && motherLang !== 'Deutsch' ? `Dies ist besonders relevant, da die Muttersprache von ${pat.name} (${motherLang}) von der Testsprache abweicht.` : ''}`,
+                                `Le SON-R étant un test non verbal, il évalue les capacités cognitives indépendamment des compétences langagières. ${motherLang && motherLang !== 'Deutsch' ? `Ceci est particulièrement pertinent car la langue maternelle de ${pat.name} (${motherLang}) diffère de la langue du test.` : ''}`,
+                                `As the SON-R is a language-free test, it captures cognitive abilities independent of language. ${motherLang && motherLang !== 'Deutsch' ? `This is particularly relevant since ${pat.name}'s mother tongue (${motherLang}) differs from the test language.` : ''}`
+                            )}</em></p>
                         </div>
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">4. Empfehlungen</h4>
+                        <h4 class="gutachten-section-title">${tt('4. Empfehlungen','4. Recommandations','4. Recommendations')}</h4>
                         <div class="gutachten-text">
                             <ul class="gutachten-list">
-                                ${iqVal >= 130 ? '<li>Begabungsförderung und intellektuelle Herausforderungen</li>' : ''}
-                                ${iqVal < 85 ? '<li>Gezielte Förderung im visuell-räumlichen Bereich</li>' : ''}
-                                ${iqVal < 70 ? '<li>Prüfung eines sonderpädagogischen Förderbedarfs</li>' : ''}
-                                <li>Bei Diskrepanz zu sprachgebundenen Testverfahren: Abklärung sprachlicher Kompetenzen</li>
-                                <li>Vergleich mit sprachgebundenen IQ-Tests (z.B. WISC-V) für ein vollständiges Begabungsprofil</li>
+                                ${iqVal >= 130 ? `<li>${tt('Begabungsförderung und intellektuelle Herausforderungen','Soutien aux enfants à haut potentiel et défis intellectuels','Gifted support and intellectual challenges')}</li>` : ''}
+                                ${iqVal < 85 ? `<li>${tt('Gezielte Förderung im visuell-räumlichen Bereich','Soutien ciblé dans le domaine visuo-spatial','Targeted support in the visual-spatial domain')}</li>` : ''}
+                                ${iqVal < 70 ? `<li>${tt('Prüfung eines sonderpädagogischen Förderbedarfs','Examen de besoins éducatifs particuliers','Review of special educational needs')}</li>` : ''}
+                                <li>${tt('Bei Diskrepanz zu sprachgebundenen Testverfahren: Abklärung sprachlicher Kompetenzen','En cas de discordance avec des tests verbaux : bilan des compétences langagières','If discrepant from language-based tests: assessment of language competencies')}</li>
+                                <li>${tt('Vergleich mit sprachgebundenen IQ-Tests (z.B. WISC-V) für ein vollständiges Begabungsprofil','Comparaison avec des tests QI verbaux (p. ex. WISC-V) pour un profil complet','Comparison with language-based IQ tests (e.g. WISC-V) for a complete ability profile')}</li>
                             </ul>
                         </div>
                     </div>
@@ -8262,14 +8289,14 @@
                 ? [{l:'SON-IQ', v: iqVal, c: c.c, s: c.l}]
                 : validSub.slice(0, 4).map(([k,x]) => {
                     const wp = wpClass(x);
-                    return {l: SONR_SUBTESTS[k].n, v: 'WP '+x, c: wp.c, s: wp.l};
+                    return {l: sonrSubName(k), v: 'WP '+x, c: wp.c, s: wp.l};
                 });
             document.getElementById('sonr-results').innerHTML = `
-                <div class="results-header"><h3 class="results-title">Ergebnis SON-R</h3></div>
+                <div class="results-header"><h3 class="results-title">${tt('Ergebnis SON-R','Résultat SON-R','SON-R result')}</h3></div>
                 ${summary(summaryItems)}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
-                    <button class="btn btn-primary" onclick="exportTestToWord('sonr')">📝 Als Word exportieren (.doc)</button>
+                    <button class="btn btn-primary" onclick="exportTestToWord('sonr')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
                 </div>
             `;
             showLocalizedResults('sonr-results');
