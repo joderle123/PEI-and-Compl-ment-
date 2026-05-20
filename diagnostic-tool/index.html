@@ -5350,10 +5350,24 @@
             const syn = raters[primary].syn;
             const cBB = raters[primary].cBB;
             const cSyn = raters[primary].cSyn;
-            const respText = CBCL_RATERS[primary].full;
+            const respText = cbclRaterFull(primary);
 
-            const synLabels = {anx:'Ängstlich',wit:'Rückzug',som:'Somatisch',soc:'Sozial',tho:'Denken',att:'Aufmerks.',rul:'Regeln',agg:'Aggressiv'};
-            const bbLabels = {int:'Internalisierend',ext:'Externalisierend',tot:'Gesamtproblemwert'};
+            // Short chart labels (kept compact – the long names go in tables)
+            const synLabels = {
+                anx: tt('Ängstlich','Anxieux','Anxious'),
+                wit: tt('Rückzug','Retrait','Withdrawn'),
+                som: tt('Somatisch','Somatique','Somatic'),
+                soc: tt('Sozial','Social','Social'),
+                tho: tt('Denken','Pensée','Thought'),
+                att: tt('Aufmerks.','Attention','Attention'),
+                rul: tt('Regeln','Règles','Rules'),
+                agg: tt('Aggressiv','Agressif','Aggressive')
+            };
+            const bbLabels = {
+                int: tt('Internalisierend','Internalisé','Internalising'),
+                ext: tt('Externalisierend','Externalisé','Externalising'),
+                tot: tt('Gesamtproblemwert','Score total des problèmes','Total Problems Score')
+            };
 
             const validSyn = Object.entries(syn).filter(([k,x])=>x!==null);
             const validBB = Object.entries(bb).filter(([k,x])=>x!==null);
