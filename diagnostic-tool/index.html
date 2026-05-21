@@ -7019,6 +7019,15 @@
                 {parent:'évaluation parentale',teacher:'évaluation enseignant·e',self:'auto-évaluation'}[resp],
                 {parent:'parent rating',teacher:'teacher rating',self:'self-report'}[resp]
             );
+            // Variant used after a preposition ("Aus dem …" / "Dans l'…" / "From the …")
+            // — needs leading article in DE/FR; EN form has neither.
+            const respTextIn = tt(
+                {parent:'dem Elternurteil',teacher:'dem Lehrerurteil',self:'dem Selbsturteil'}[resp],
+                {parent:'l\'évaluation parentale',teacher:'l\'évaluation enseignant·e',self:'l\'auto-évaluation'}[resp],
+                {parent:'the parent rating',teacher:'the teacher rating',self:'the self-report'}[resp]
+            );
+            // Localized yes/no for the II validity-scale criteria values (form values are ja/nein)
+            const yesNo = v => v === 'ja' ? tt('Ja','Oui','Yes') : v === 'nein' ? tt('Nein','Non','No') : '–';
 
             const iiA = document.getElementById('con-ii-a')?.value || '';
             const iiB = document.getElementById('con-ii-b')?.value || '';
@@ -7096,9 +7105,9 @@
                 <div class="gutachten-warning">
                     <strong>${tt('Hinweis – Screener Ängstlichkeit/Depression (qualitativ)','Note – Dépistage anxiété/dépression (qualitatif)','Note – Anxiety/depression screener (qualitative)')}</strong><br>
                     ${tt(
-                        `Aus ${respText} wurden ${anxItemsElev ? `<strong>${anxItems} Ängstlichkeits-Items</strong>` : ''}${anxItemsElev && depItemsElev ? ' und ' : ''}${depItemsElev ? `<strong>${depItems} Depressions-Items</strong>` : ''} mit ≥ 1 bewertet. Da Conners-3 für Eltern-/Lehrerbogen keine eigenen T-Norms für SI-Ä / SI-D bereitstellt, ist diese Auswertung qualitativ. <strong>Vertiefte Exploration depressiver/ängstlicher Symptomatik im Selbsturteil bzw. mit störungsspezifischen Verfahren (DIKJ, SCAS, CDI) wird empfohlen.</strong>`,
-                        `Dans ${respText}, ${anxItemsElev ? `<strong>${anxItems} items d'anxiété</strong>` : ''}${anxItemsElev && depItemsElev ? ' et ' : ''}${depItemsElev ? `<strong>${depItems} items de dépression</strong>` : ''} ont été cotés ≥ 1. Comme Conners-3 ne fournit pas de normes T propres pour SI-A / SI-D dans les questionnaires parent/enseignant·e, cette analyse reste qualitative. <strong>Une exploration approfondie de la symptomatologie dépressive/anxieuse via l'auto-évaluation ou via des procédures spécifiques (DIKJ, SCAS, CDI) est recommandée.</strong>`,
-                        `From the ${respText}, ${anxItemsElev ? `<strong>${anxItems} anxiety items</strong>` : ''}${anxItemsElev && depItemsElev ? ' and ' : ''}${depItemsElev ? `<strong>${depItems} depression items</strong>` : ''} were scored ≥ 1. Conners-3 does not provide separate T-norms for SI-A / SI-D in the parent/teacher forms, so this analysis is qualitative. <strong>In-depth exploration of depressive/anxious symptoms via self-report or disorder-specific procedures (DIKJ, SCAS, CDI) is recommended.</strong>`
+                        `Aus ${respTextIn} wurden ${anxItemsElev ? `<strong>${anxItems} Ängstlichkeits-Items</strong>` : ''}${anxItemsElev && depItemsElev ? ' und ' : ''}${depItemsElev ? `<strong>${depItems} Depressions-Items</strong>` : ''} mit ≥ 1 bewertet. Da Conners-3 für Eltern-/Lehrerbogen keine eigenen T-Norms für SI-Ä / SI-D bereitstellt, ist diese Auswertung qualitativ. <strong>Vertiefte Exploration depressiver/ängstlicher Symptomatik im Selbsturteil bzw. mit störungsspezifischen Verfahren (DIKJ, SCAS, CDI) wird empfohlen.</strong>`,
+                        `Dans ${respTextIn}, ${anxItemsElev ? `<strong>${anxItems} items d'anxiété</strong>` : ''}${anxItemsElev && depItemsElev ? ' et ' : ''}${depItemsElev ? `<strong>${depItems} items de dépression</strong>` : ''} ont été cotés ≥ 1. Comme Conners-3 ne fournit pas de normes T propres pour SI-A / SI-D dans les questionnaires parent/enseignant·e, cette analyse reste qualitative. <strong>Une exploration approfondie de la symptomatologie dépressive/anxieuse via l'auto-évaluation ou via des procédures spécifiques (DIKJ, SCAS, CDI) est recommandée.</strong>`,
+                        `From ${respTextIn}, ${anxItemsElev ? `<strong>${anxItems} anxiety items</strong>` : ''}${anxItemsElev && depItemsElev ? ' and ' : ''}${depItemsElev ? `<strong>${depItems} depression items</strong>` : ''} were scored ≥ 1. Conners-3 does not provide separate T-norms for SI-A / SI-D in the parent/teacher forms, so this analysis is qualitative. <strong>In-depth exploration of depressive/anxious symptoms via self-report or disorder-specific procedures (DIKJ, SCAS, CDI) is recommended.</strong>`
                     )}
                 </div>` : '';
             const kiSafetyHtml = kiSevere ? `
@@ -7185,7 +7194,7 @@
                         <table class="gutachten-table" style="margin-bottom:0.75rem;">
                             <thead><tr><th>${thScale}</th><th>${tt('Wert','Valeur','Value')}</th><th>${tt('Interpretation','Interprétation','Interpretation')}</th></tr></thead>
                             <tbody>
-                                ${iiA || iiB ? `<tr><td>${tt('II – Inkonsistenz-Index','II – Indice d\'inconsistance','II – Inconsistency Index')}</td><td>A: ${iiA || '–'} · B: ${iiB || '–'}</td><td class="${iiInconsistent ? 'clinical' : (iiConsistent ? 'normal' : '')}">${iiInconsistent ? tt('Möglicherweise inkonsistent','Possiblement inconsistant','Possibly inconsistent') : (iiConsistent ? tt('Weitgehend konsistent','Globalement consistant','Largely consistent') : tt('Nicht vollständig erfasst','Pas entièrement renseigné','Not fully recorded'))}</td></tr>` : ''}
+                                ${iiA || iiB ? `<tr><td>${tt('II – Inkonsistenz-Index','II – Indice d\'inconsistance','II – Inconsistency Index')}</td><td>A: ${yesNo(iiA)} · B: ${yesNo(iiB)}</td><td class="${iiInconsistent ? 'clinical' : (iiConsistent ? 'normal' : '')}">${iiInconsistent ? tt('Möglicherweise inkonsistent','Possiblement inconsistant','Possibly inconsistent') : (iiConsistent ? tt('Weitgehend konsistent','Globalement consistant','Largely consistent') : tt('Nicht vollständig erfasst','Pas entièrement renseigné','Not fully recorded'))}</td></tr>` : ''}
                                 ${peVal !== null ? `<tr><td>${tt('PE – Positiver Eindruck','PE – Impression positive','PE – Positive Impression')}</td><td>${peVal}</td><td class="${peVal >= 2 ? 'clinical' : 'normal'}">${peVal >= 2 ? tt('Möglicherweise positiv beantwortet','Réponses possiblement positivement biaisées','Possibly answered in positive direction') : tt('Weder pos. noch neg. auffällig','Ni positivement ni négativement biaisé','Neither positive nor negative bias')}</td></tr>` : ''}
                                 ${neVal !== null ? `<tr><td>${tt('NE – Negativer Eindruck','NE – Impression négative','NE – Negative Impression')}</td><td>${neVal}</td><td class="${neVal >= 2 ? 'clinical' : 'normal'}">${neVal >= 2 ? tt('Möglicherweise negativ beantwortet','Réponses possiblement négativement biaisées','Possibly answered in negative direction') : tt('Weder pos. noch neg. auffällig','Ni positivement ni négativement biaisé','Neither positive nor negative bias')}</td></tr>` : ''}
                             </tbody>
