@@ -2278,6 +2278,15 @@
                     if(orig) el.innerHTML = localize(orig);
                 }
             });
+            // Multi-rater status bars (Conners/DISYPS/Vineland) — refresh chip labels + button captions
+            ['conners','disyps','vineland'].forEach(testKey => {
+                if(document.getElementById(`${testKey}-rater-status`)) renderMultiRaterStatus(testKey);
+                // Re-render any visible cross-informant comparison so it picks up the new language
+                const cmp = document.getElementById(`${testKey}-compare`);
+                if(cmp && cmp.innerHTML.trim()) {
+                    try { renderRaterComparison(testKey); } catch(e) {}
+                }
+            });
         }
         (function initReportLang(){
             try {
@@ -3183,6 +3192,14 @@
 
         const RATER_LABEL = {parent:'Eltern', teacher:'Lehrer', self:'Selbst'};
         const RATER_COLOR = {parent:'#6366f1', teacher:'#10b981', self:'#f59e0b'};
+        // Localized rater label for the multi-rater status bar (post-hoc Conners/DISYPS/Vineland comparison)
+        function raterLabelI18n(k) {
+            return tt(
+                {parent:'Eltern',  teacher:'Lehrer',         self:'Selbst'}[k],
+                {parent:'Parents', teacher:'Enseignant·e',   self:'Auto'}[k],
+                {parent:'Parent',  teacher:'Teacher',        self:'Self'}[k]
+            );
+        }
 
         function getSavedRaters(testKey) {
             const data = RATERS_DATA[testKey] || {};
@@ -3205,13 +3222,13 @@
             const all = Object.keys(RATERS_DATA[testKey]);
             host.innerHTML = `
                 <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
-                    <strong style="font-size:0.85rem;">Gespeicherte Beurteiler:</strong>
+                    <strong style="font-size:0.85rem;">${tt('Gespeicherte Beurteiler:','Évaluateurs·trices enregistré·e·s :','Saved raters:')}</strong>
                     ${all.map(k => {
                         const isSaved = saved.find(([sk]) => sk === k);
-                        return `<span style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.25rem 0.6rem;border-radius:14px;font-size:0.78rem;border:1px solid ${isSaved ? RATER_COLOR[k] : 'var(--border)'};${isSaved ? `background:${RATER_COLOR[k]};color:#fff;` : 'color:var(--text-muted);'}">${isSaved ? '✓ ' : ''}${RATER_LABEL[k]}</span>`;
+                        return `<span style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.25rem 0.6rem;border-radius:14px;font-size:0.78rem;border:1px solid ${isSaved ? RATER_COLOR[k] : 'var(--border)'};${isSaved ? `background:${RATER_COLOR[k]};color:#fff;` : 'color:var(--text-muted);'}">${isSaved ? '✓ ' : ''}${raterLabelI18n(k)}</span>`;
                     }).join('')}
-                    ${saved.length >= 2 ? `<button type="button" class="btn btn-primary" style="padding:0.4rem 0.85rem;font-size:0.82rem;" onclick="renderRaterComparison('${testKey}')">📊 Vergleich anzeigen (${saved.length})</button>` : ''}
-                    ${saved.length > 0 ? `<button type="button" class="btn btn-secondary" style="padding:0.4rem 0.85rem;font-size:0.82rem;" onclick="clearRaters('${testKey}')">Speicher zurücksetzen</button>` : ''}
+                    ${saved.length >= 2 ? `<button type="button" class="btn btn-primary" style="padding:0.4rem 0.85rem;font-size:0.82rem;" onclick="renderRaterComparison('${testKey}')">${tt('📊 Vergleich anzeigen','📊 Afficher la comparaison','📊 Show comparison')} (${saved.length})</button>` : ''}
+                    ${saved.length > 0 ? `<button type="button" class="btn btn-secondary" style="padding:0.4rem 0.85rem;font-size:0.82rem;" onclick="clearRaters('${testKey}')">${tt('Speicher zurücksetzen','Réinitialiser','Reset store')}</button>` : ''}
                 </div>
             `;
         }
@@ -3240,6 +3257,13 @@
             const diffThreshold = saved[0][1].diffThreshold ?? 10;
             const unitName = saved[0][1].unitName || 'T-Punkte';
 
+            const flagDiscrepant = tt('Diskrepant','Discordant','Discrepant');
+            const flagDifferent  = tt('Unterschiedlich','Différent','Different');
+            const flagAgree      = tt('Übereinstimmend','Concordant','Agreeing');
+            const unitNameI18n   = (unitName === 'Stanine-Punkte')         ? tt('Stanine-Punkte','points stanine','stanine points')
+                                 : (unitName === 'Standardwert-Punkte')    ? tt('Standardwert-Punkte','points de score standard','standard-score points')
+                                 : tt('T-Punkte','points T','T-points');
+
             const rows = allScaleKeys.map(sk => {
                 const cells = saved.map(([rk, data]) => {
                     const entry = data.values[sk];
@@ -3250,7 +3274,6 @@
                 });
                 const filled = cells.filter(c => c.raw !== null);
                 if(filled.length < 2) {
-                    // nur ein Wert, kein Vergleich – aber trotzdem zeigen
                     return null;
                 }
                 const vals = filled.map(c => c.raw);
@@ -3259,9 +3282,9 @@
                 const hasClinAndNormal = cls.includes('clinical') && cls.includes('normal');
                 const flag = hasClinAndNormal ? 'strong' : (spread >= diffThreshold ? 'moderate' : 'agree');
                 const flagBadge = {
-                    strong:   '<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#fee2e2;color:#991b1b;font-weight:600;">Diskrepant</span>',
-                    moderate: '<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#fef3c7;color:#92400e;font-weight:600;">Unterschiedlich</span>',
-                    agree:    '<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#d1fae5;color:#065f46;font-weight:600;">Übereinstimmend</span>'
+                    strong:   `<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#fee2e2;color:#991b1b;font-weight:600;">${flagDiscrepant}</span>`,
+                    moderate: `<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#fef3c7;color:#92400e;font-weight:600;">${flagDifferent}</span>`,
+                    agree:    `<span style="display:inline-block;padding:0.1rem 0.5rem;border-radius:3px;font-size:0.75rem;background:#d1fae5;color:#065f46;font-weight:600;">${flagAgree}</span>`
                 }[flag];
                 const cellHtml = saved.map(([rk], i) => {
                     const cell = cells[i];
@@ -3272,22 +3295,34 @@
             }).filter(x => x);
 
             if(rows.length === 0) {
-                host.innerHTML = `<div class="gutachten-warning">Keine gemeinsamen Skalen mit Werten in mehreren Beurteilungen gefunden.</div>`;
+                host.innerHTML = `<div class="gutachten-warning">${tt(
+                    'Keine gemeinsamen Skalen mit Werten in mehreren Beurteilungen gefunden.',
+                    'Aucune échelle commune avec des valeurs dans plusieurs évaluations.',
+                    'No common scales with values across multiple ratings found.'
+                )}</div>`;
                 return;
             }
 
             host.innerHTML = `
                 <div class="gutachten" style="margin-top:1.5rem;">
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">Cross-Informant-Vergleich</h4>
-                        <p>Werte gegenübergestellt. Markierungen: <strong>Diskrepant</strong> (mind. ein Beurteiler klinisch, ein anderer normal), <strong>Unterschiedlich</strong> (Differenz ≥ ${diffThreshold} ${unitName}), <strong>Übereinstimmend</strong>.</p>
+                        <h4 class="gutachten-section-title">${tt('Cross-Informant-Vergleich','Comparaison entre évaluateurs·trices','Cross-informant comparison')}</h4>
+                        <p>${tt(
+                            `Werte gegenübergestellt. Markierungen: <strong>${flagDiscrepant}</strong> (mind. ein Beurteiler klinisch, ein anderer normal), <strong>${flagDifferent}</strong> (Differenz ≥ ${diffThreshold} ${unitNameI18n}), <strong>${flagAgree}</strong>.`,
+                            `Valeurs comparées. Marquages : <strong>${flagDiscrepant}</strong> (au moins un·e évaluateur·trice en plage clinique, un·e autre en plage normale), <strong>${flagDifferent}</strong> (différence ≥ ${diffThreshold} ${unitNameI18n}), <strong>${flagAgree}</strong>.`,
+                            `Values compared side-by-side. Flags: <strong>${flagDiscrepant}</strong> (at least one rater clinical, another normal), <strong>${flagDifferent}</strong> (difference ≥ ${diffThreshold} ${unitNameI18n}), <strong>${flagAgree}</strong>.`
+                        )}</p>
                         <table class="gutachten-table" style="margin-top:0.75rem;">
                             <thead>
-                                <tr><th>Skala</th>${saved.map(([rk]) => `<th style="text-align:center;color:${RATER_COLOR[rk]};">${RATER_LABEL[rk]}</th>`).join('')}<th style="text-align:center;">Δ</th><th style="text-align:center;">Übereinstimmung</th></tr>
+                                <tr><th>${tt('Skala','Échelle','Scale')}</th>${saved.map(([rk]) => `<th style="text-align:center;color:${RATER_COLOR[rk]};">${raterLabelI18n(rk)}</th>`).join('')}<th style="text-align:center;">Δ</th><th style="text-align:center;">${tt('Übereinstimmung','Concordance','Agreement')}</th></tr>
                             </thead>
                             <tbody>${rows.join('')}</tbody>
                         </table>
-                        <p style="margin-top:1rem;font-size:0.9em;color:#4a5568;"><strong>Hinweis:</strong> Diskrepanzen zwischen Informanten sind häufig und inhaltlich bedeutsam – sie können auf situationsspezifisches Verhalten hindeuten (z.B. nur in der Schule / nur zuhause / nur aus Selbstsicht). Starke Diskrepanzen sollten exploriert werden.</p>
+                        <p style="margin-top:1rem;font-size:0.9em;color:#4a5568;"><strong>${tt('Hinweis:','Note :','Note:')}</strong> ${tt(
+                            'Diskrepanzen zwischen Informanten sind häufig und inhaltlich bedeutsam – sie können auf situationsspezifisches Verhalten hindeuten (z.B. nur in der Schule / nur zuhause / nur aus Selbstsicht). Starke Diskrepanzen sollten exploriert werden.',
+                            'Les écarts entre informants sont fréquents et porteurs de sens – ils peuvent indiquer un comportement spécifique à la situation (p. ex. uniquement à l\'école / à la maison / dans la perception de soi). Les écarts importants devraient être explorés.',
+                            'Discrepancies between informants are common and meaningful – they may indicate situation-specific behaviour (e.g. only at school / only at home / only in self-perception). Strong discrepancies should be explored.'
+                        )}</p>
                     </div>
                 </div>
             `;
