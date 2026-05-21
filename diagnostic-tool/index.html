@@ -5553,14 +5553,14 @@
                 if(raters[r].crit.i18 !== null && raters[r].crit.i18 >= 1) {
                     criticalItems.push({
                         rater: cbclRaterShort(r), item: 18,
-                        label: tt('Selbstverletzung (absichtlich)','Automutilation (intentionnelle)','Self-harm (intentional)'),
+                        label: tt('absichtliche Selbstverletzung','automutilation intentionnelle','intentional self-harm'),
                         score: raters[r].crit.i18
                     });
                 }
                 if(raters[r].crit.i91 !== null && raters[r].crit.i91 >= 1) {
                     criticalItems.push({
                         rater: cbclRaterShort(r), item: 91,
-                        label: tt('Gedanken, sich das Leben zu nehmen','Pensées suicidaires','Thoughts of ending one\'s own life'),
+                        label: tt('Suizidgedanken','pensées suicidaires','suicidal thoughts'),
                         score: raters[r].crit.i91
                     });
                 }
@@ -5699,7 +5699,27 @@
 
             // Empfehlungen
             const li = txt => `<li>${txt}</li>`;
-            let empf = '<ul class="gutachten-list">';
+            let empf = '';
+            if(criticalItems.length) {
+                empf += `<div class="gutachten-danger" style="margin-bottom:0.75rem;"><strong>${tt('Vorrangig wegen Sicherheits-Hinweis:','Prioritaire en raison de l\'avertissement de sécurité :','Priority due to safety alert:')}</strong> ${tt(
+                    'Sicherheitsrelevante Einzelitems wurden mit ≥ 1 bewertet (siehe oben). Die folgenden Empfehlungen treten zurück hinter die <strong>unverzüglich</strong> umzusetzenden Sicherheits-Maßnahmen (strukturiertes Suizidrisiko-/Selbstverletzungs-Assessment, ggf. stationäre Vorstellung).',
+                    'Des items pertinents pour la sécurité ont été cotés ≥ 1 (voir ci-dessus). Les recommandations suivantes passent au second plan derrière les mesures de sécurité à mettre en œuvre <strong>sans délai</strong> (évaluation structurée du risque suicidaire / d\'automutilation, présentation en urgence le cas échéant).',
+                    'Safety-relevant items were scored ≥ 1 (see above). The recommendations below take second place to the safety measures that must be implemented <strong>without delay</strong> (structured suicide-risk / self-harm assessment, urgent referral where appropriate).'
+                )}</div>`;
+            }
+            empf += '<ul class="gutachten-list">';
+            if(criticalItems.length) {
+                empf += li(`<strong>${tt('Sofort:','Immédiatement :','Immediately:')}</strong> ${tt(
+                    'Strukturiertes Suizidrisiko-/Selbstverletzungs-Assessment (z.B. C-SSRS), umgehende kinder- und jugendpsychiatrische Vorstellung, Sicherheitsplan',
+                    'Évaluation structurée du risque suicidaire / d\'automutilation (p. ex. C-SSRS), présentation pédopsychiatrique immédiate, plan de sécurité',
+                    'Structured suicide-risk / self-harm assessment (e.g. C-SSRS), urgent child & adolescent psychiatric review, safety plan'
+                )}`);
+                if(anyCritAcute) empf += li(tt(
+                    'Bei akuter Gefährdung: stationäre Einweisung prüfen',
+                    'En cas de risque aigu : envisager une hospitalisation',
+                    'For acute risk: consider inpatient admission'
+                ));
+            }
             if(cBB.tot === 'clinical' || clinSyn.length > 0) {
                 empf += li(tt(
                     'Klinisch-psychologische/kinder- und jugendpsychiatrische Diagnostik empfohlen',
@@ -5913,6 +5933,30 @@
                         </div>
                     </div>` : ''}
 
+                    ${(() => {
+                        // Multi-rater "other ratings show clinical scales" notice — surfaces
+                        // clinical findings from non-primary raters that the primary-only
+                        // interp paragraph would otherwise hide.
+                        let otherClinNote = '';
+                        if(raterKeys.length >= 2) {
+                            const otherClin = [];
+                            raterKeys.filter(r => r !== primary).forEach(r => {
+                                const d = raters[r];
+                                const totClin = d.cBB.tot === 'clinical';
+                                const synClin = Object.entries(d.cSyn || {}).filter(([k,c])=>c==='clinical').map(([k])=>cbclSynName(k));
+                                if(totClin || synClin.length) {
+                                    otherClin.push(`<strong>${cbclRaterShort(r)}</strong>${totClin ? ` – ${tt('Gesamtproblemwert klinisch','score total clinique','Total Problems Score clinical')}` : ''}${synClin.length ? ` (${synClin.join(', ')})` : ''}`);
+                                }
+                            });
+                            if(otherClin.length) {
+                                otherClinNote = `<div class="gutachten-warning"><strong>${tt('Hinweis – andere Beurteiler:','Note – autres évaluateurs·trices :','Note – other raters:')}</strong> ${tt(
+                                    'Die obige Interpretation bezieht sich nur auf den primären Beurteiler. Aus anderen Beurteilungen zeigen sich ebenfalls klinisch auffällige Skalen — siehe Abschnitt 3 (Cross-Informant-Vergleich) für die Gegenüberstellung.',
+                                    'L\'interprétation ci-dessus porte uniquement sur l\'évaluateur·trice primaire. D\'autres évaluations montrent également des échelles cliniquement significatives — voir la section 3 (comparaison entre évaluateurs·trices).',
+                                    'The interpretation above refers only to the primary rater. Other ratings also show clinically significant scales — see section 3 (cross-informant comparison) for the side-by-side view.'
+                                )}<br>${otherClin.join('<br>')}</div>`;
+                            }
+                        }
+                        return `
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">${raterKeys.length >= 2 ? '5' : '4'}. ${tt('Interpretation','Interprétation','Interpretation')}${raterKeys.length >= 2 ? ` (${cbclRaterShort(primary)})` : ''}</h4>
                         <div class="gutachten-text">
@@ -5922,8 +5966,10 @@
                                 'Les échelles syndromiques élevées signalent des domaines problématiques spécifiques nécessitant un bilan complémentaire.',
                                 'The elevated syndrome scales point to specific problem areas requiring further assessment.'
                             )}</div>` : ''}
+                            ${otherClinNote}
                         </div>
-                    </div>
+                    </div>`;
+                    })()}
 
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">${raterKeys.length >= 2 ? '6' : '5'}. ${tt('Differenzialdiagnostische Überlegungen','Considérations différentielles','Differential-diagnostic considerations')}</h4>
@@ -7394,13 +7440,25 @@
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">${tt('5. Empfehlungen','5. Recommandations','5. Recommendations')}</h4>
                         <div class="gutachten-text">
+                            ${(needsMoodSafety || kiSevere) ? `<div class="gutachten-danger" style="margin-bottom:0.75rem;"><strong>${tt('Vorrangig wegen Sicherheits-Hinweis(en):','Prioritaire en raison de l\'(des) avertissement(s) de sécurité :','Priority due to safety alert(s):')}</strong> ${tt(
+                                'Die folgenden Empfehlungen treten zurück hinter die oben markierten Sicherheits-Maßnahmen (akute Selbst-/Fremdgefährdung, schwere Sozialverhaltensauffälligkeiten). Diese sind <strong>unverzüglich</strong> umzusetzen.',
+                                'Les recommandations ci-dessous passent au second plan derrière les mesures de sécurité signalées ci-dessus (risque aigu pour soi ou pour autrui, troubles graves des conduites). Celles-ci doivent être mises en œuvre <strong>sans délai</strong>.',
+                                'The recommendations below take second place to the safety measures flagged above (acute risk to self/others, severe conduct disorder). These must be implemented <strong>without delay</strong>.'
+                            )}</div>` : ''}
                             <ul class="gutachten-list">
+                                ${needsMoodSafety ? `
+                                    <li><strong>${tt('Sofort:','Immédiatement :','Immediately:')}</strong> ${tt('Strukturiertes Suizidrisiko-Assessment (z.B. C-SSRS, SIQ-JR) und kinder- und jugendpsychiatrische Vorstellung','Évaluation structurée du risque suicidaire (p. ex. C-SSRS, SIQ-JR) et présentation pédopsychiatrique','Structured suicide-risk assessment (e.g. C-SSRS, SIQ-JR) and child & adolescent psychiatric review')}</li>
+                                    <li>${tt('Sicherheitsplan erstellen; störungsspezifische Depressions-/Angstdiagnostik (DIKJ, SCAS, BDI-II)','Établir un plan de sécurité ; bilan spécifique dépression/anxiété (DIKJ, SCAS, BDI-II)','Establish a safety plan; disorder-specific depression/anxiety assessment (DIKJ, SCAS, BDI-II)')}</li>
+                                ` : ''}
+                                ${kiSevere ? `
+                                    <li><strong>${tt('Sofort:','Immédiatement :','Immediately:')}</strong> ${tt('Klinische Abklärung von Fremdgefährdung und Kindeswohl, ggf. Einbezug von Jugendhilfe / ASD','Bilan clinique du risque pour autrui et du bien-être de l\'enfant ; le cas échéant, implication de la protection de l\'enfance / services sociaux','Clinical assessment of risk to others and child welfare; involve youth welfare / social services where appropriate')}</li>
+                                ` : ''}
                                 ${(c.adhd === 'clinical' || c.in === 'clinical' || c.hi === 'clinical') ? `
                                     <li>${tt('Multimodale ADHS-Diagnostik (inkl. Anamnese, Verhaltensbeobachtung, neuropsychologische Tests)','Bilan TDAH multimodal (anamnèse, observation comportementale, tests neuropsychologiques inclus)','Multimodal ADHD assessment (incl. anamnesis, behavioural observation, neuropsychological tests)')}</li>
                                     <li>${tt('Einbezug weiterer Informanten (Eltern, Lehrer, Selbsturteil)','Inclusion d\'autres informants (parents, enseignant·e·s, auto-évaluation)','Inclusion of further informants (parents, teachers, self-report)')}</li>
                                     <li>${tt('Kinder- und jugendpsychiatrische Vorstellung','Présentation pédopsychiatrique','Child & adolescent psychiatric review')}</li>
                                     <li>${tt('Bei Diagnosebestätigung: Psychoedukation, ggf. Medikation, Verhaltenstherapie','En cas de confirmation diagnostique : psychoéducation, médication le cas échéant, thérapie comportementale','If diagnosis is confirmed: psychoeducation, medication if appropriate, behaviour therapy')}</li>
-                                ` : `
+                                ` : (needsMoodSafety || kiSevere) ? '' : `
                                     <li>${tt('Keine spezifische ADHS-Intervention erforderlich','Aucune intervention TDAH spécifique requise','No specific ADHD intervention required')}</li>
                                     <li>${tt('Bei Persistenz von Schwierigkeiten erneute Diagnostik','En cas de persistance des difficultés, nouveau bilan','If difficulties persist, repeat assessment')}</li>
                                 `}
