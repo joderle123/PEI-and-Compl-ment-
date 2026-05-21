@@ -8322,7 +8322,7 @@
                         <div class="gutachten-text">
                             ${iqVal !== null && c ? `<p>${tt(
                                 `Die Untersuchung der nonverbalen kognitiven Leistungsfähigkeit mittels SON-R ergibt einen <strong>SON-IQ von ${iqVal}</strong> (PR: ${prVal !== null ? prVal : c.pr}). Dieser Wert liegt im <strong>${c.l.toLowerCase()}en Bereich</strong>.`,
-                                `L'évaluation des capacités cognitives non verbales par le SON-R donne un <strong>SON-IQ de ${iqVal}</strong> (RC : ${prVal !== null ? prVal : c.pr}). Cette valeur se situe dans la plage <strong>${c.l.toLowerCase()}</strong>.`,
+                                `L'évaluation des capacités cognitives non verbales par le SON-R donne un <strong>SON-IQ de ${iqVal}</strong> (RC : ${prVal !== null ? prVal : c.pr}). Ce résultat correspond à la classification <strong>${c.l}</strong>.`,
                                 `The assessment of nonverbal cognitive ability via SON-R yields a <strong>SON-IQ of ${iqVal}</strong> (PR: ${prVal !== null ? prVal : c.pr}). This value falls in the <strong>${c.l.toLowerCase()}</strong> range.`
                             )}</p>` : ''}
                             ${iqVal === null && validSub.length ? `<p>${tt(
@@ -8494,7 +8494,7 @@
                         <div class="gutachten-text">
                             ${mainIQ ? `<p>${tt(
                                 `Die Untersuchung mittels K-ABC II ergibt einen <strong>${idx.fki.v ? 'Fluid-Kristallinen Index (FKI)' : 'Nonverbalen Index (NVI)'} von ${mainIQ}</strong> (PR: ${mainC.pr}). Dieser Wert liegt im <strong>${mainC.l.toLowerCase()}en Bereich</strong>.`,
-                                `L'évaluation par la K-ABC II donne un <strong>${idx.fki.v ? 'Indice Fluide-Cristallisé (FKI)' : 'Indice Non Verbal (NVI)'} de ${mainIQ}</strong> (RC : ${mainC.pr}). Cette valeur se situe dans la plage <strong>${mainC.l.toLowerCase()}</strong>.`,
+                                `L'évaluation par la K-ABC II donne un <strong>${idx.fki.v ? 'Indice Fluide-Cristallisé (FKI)' : 'Indice Non Verbal (NVI)'} de ${mainIQ}</strong> (RC : ${mainC.pr}). Ce résultat correspond à la classification <strong>${mainC.l}</strong>.`,
                                 `Assessment via K-ABC II yields a <strong>${idx.fki.v ? 'Fluid-Crystallized Index (FCI)' : 'Nonverbal Index (NVI)'} of ${mainIQ}</strong> (PR: ${mainC.pr}). This value falls in the <strong>${mainC.l.toLowerCase()}</strong> range.`
                             )}</p>` : ''}
                             ${mainIQ >= 115 ? `<p>${tt(`${pat.name} verfügt über <strong>überdurchschnittliche kognitive Fähigkeiten</strong>.`,`${pat.name} dispose de <strong>capacités cognitives supérieures</strong>.`,`${pat.name} has <strong>above-average cognitive abilities</strong>.`)}</p>` : ''}
@@ -8526,10 +8526,31 @@
                         <h4 class="gutachten-section-title">${tt('4. Empfehlungen','4. Recommandations','4. Recommendations')}</h4>
                         <div class="gutachten-text">
                             <ul class="gutachten-list">
+                                ${(() => {
+                                    const lowIdx     = indices.filter(([k,x])=>x.v < 85).map(([k])=>kabcName(k));
+                                    const veryLowIdx = indices.filter(([k,x])=>x.v < 70).map(([k])=>kabcName(k));
+                                    const highIdx    = indices.filter(([k,x])=>x.v >= 130).map(([k])=>kabcName(k));
+                                    return `
                                 ${mainIQ >= 130 ? `<li>${tt('Begabungsförderung und Enrichment-Maßnahmen','Soutien aux enfants à haut potentiel et mesures d\'enrichissement','Gifted support and enrichment measures')}</li>` : ''}
                                 ${mainIQ < 85 ? `<li>${tt('Gezielte Förderung in den identifizierten Schwächebereichen','Soutien ciblé dans les domaines de faiblesse identifiés','Targeted support in identified weak areas')}</li>` : ''}
                                 ${mainIQ < 70 ? `<li>${tt('Prüfung eines sonderpädagogischen Förderbedarfs','Examen de besoins éducatifs particuliers','Review of special educational needs')}</li><li>${tt('Umfassende Entwicklungsdiagnostik','Bilan développemental complet','Comprehensive developmental assessment')}</li>` : ''}
-                                <li>${tt('Integration der Ergebnisse mit weiteren diagnostischen Befunden','Intégration avec d\'autres résultats diagnostiques','Integration of results with other diagnostic findings')}</li>
+                                ${mainIQ >= 85 && lowIdx.length ? `<li>${tt(
+                                    `Trotz durchschnittlichem Gesamtindex zeigen sich klinisch relevante Schwächen in einzelnen Indexskalen (${lowIdx.join(', ')}); gezielte Förderung in diesen Bereichen wird empfohlen.`,
+                                    `Malgré un indice global moyen, des faiblesses cliniquement pertinentes apparaissent sur certaines échelles d'indices (${lowIdx.join(', ')}); un soutien ciblé dans ces domaines est recommandé.`,
+                                    `Despite an average overall index, clinically relevant weaknesses appear on individual index scales (${lowIdx.join(', ')}); targeted support in these areas is recommended.`
+                                )}</li>` : ''}
+                                ${mainIQ >= 70 && veryLowIdx.length ? `<li>${tt(
+                                    `Sehr niedrige Werte in einzelnen Indexskalen (${veryLowIdx.join(', ')}, < 70) sind klinisch bedeutsam und sollten neuropsychologisch vertieft abgeklärt werden.`,
+                                    `Des scores très bas sur certaines échelles d'indices (${veryLowIdx.join(', ')}, < 70) sont cliniquement significatifs et devraient faire l'objet d'un bilan neuropsychologique approfondi.`,
+                                    `Very low scores on individual index scales (${veryLowIdx.join(', ')}, < 70) are clinically significant and should be assessed in depth neuropsychologically.`
+                                )}</li>` : ''}
+                                ${mainIQ < 130 && highIdx.length ? `<li>${tt(
+                                    `Besonders hohe Werte in einzelnen Indexskalen (${highIdx.join(', ')}, ≥ 130) sollten als Ressource in der Förderplanung berücksichtigt werden.`,
+                                    `Des scores particulièrement élevés sur certaines échelles d'indices (${highIdx.join(', ')}, ≥ 130) devraient être pris en compte comme ressource dans la planification du soutien.`,
+                                    `Particularly high scores on individual index scales (${highIdx.join(', ')}, ≥ 130) should be leveraged as a resource in support planning.`
+                                )}</li>` : ''}
+                                <li>${tt('Integration der Ergebnisse mit weiteren diagnostischen Befunden','Intégration avec d\'autres résultats diagnostiques','Integration of results with other diagnostic findings')}</li>`;
+                                })()}
                             </ul>
                         </div>
                     </div>
