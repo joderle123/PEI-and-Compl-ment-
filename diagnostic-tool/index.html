@@ -3233,16 +3233,51 @@
             `;
         }
 
+        // Group spec per test for cross-informant comparison (matches the
+        // section structure of the printed Word reports).
+        function raterComparisonGroups(testKey) {
+            if(testKey === 'conners') {
+                return [
+                    {label: tt('Conners-Inhaltsskalen','Échelles de contenu Conners','Conners content scales'),
+                     keys: ['in','hi','lp','lpef','ef','ag','pr','fb']},
+                    {label: tt('DSM-5 Symptomskalen','Échelles symptomatiques DSM-5','DSM-5 symptom scales'),
+                     keys: ['dsm_in','dsm_hi','dsm_k','dsm_cd','dsm_odd']},
+                    {label: tt('ICD-10 Symptomskalen','Échelles symptomatiques CIM-10','ICD-10 symptom scales'),
+                     keys: ['icd_as','icd_sv','icd_hksv']},
+                    {label: tt('Conners 3 Indices','Indices Conners 3','Conners 3 indices'),
+                     keys: ['adhd','gi']},
+                    {label: tt('Screener-Items (SI)','Items de dépistage (SI)','Screener items (SI)'),
+                     keys: ['si_anx','si_anx_items','si_dep','si_dep_items']}
+                ];
+            }
+            if(testKey === 'disyps') {
+                return [
+                    {label: tt('ADHS-Kernskalen','Échelles principales TDAH','ADHD core scales'),
+                     keys: ['ina','hyp','imp','adhs']},
+                    {label: tt('Störung des Sozialverhaltens (SSV)','Trouble des conduites (TC)','Conduct Disorder (CD)'),
+                     keys: ['opp','agg','ssv']}
+                ];
+            }
+            if(testKey === 'vineland') {
+                return [
+                    {label: tt('Adaptive Behavior Composite (ABC)','Adaptive Behavior Composite (ABC)','Adaptive Behavior Composite (ABC)'),
+                     keys: ['abc']},
+                    {label: tt('Domänen','Domaines','Domains'),
+                     keys: ['com','dls','soc','mot']}
+                ];
+            }
+            return null;
+        }
+
         // Cross-Informant-Vergleichstabelle (generisch, basiert auf scaleSpec pro Test)
         // testKey: 'conners' | 'disyps' | 'vineland'
-        // Jeder gespeicherte Beurteiler-Eintrag erwartet: { scaleType, values: {scaleKey: {v, c, label}} }
         function renderRaterComparison(testKey) {
             const saved = getSavedRaters(testKey);
             if(saved.length < 2) return;
             const host = document.getElementById(`${testKey}-compare`);
             if(!host) return;
 
-            // Alle Skalen-Keys + Labels aus allen gespeicherten Datensätzen sammeln (Reihenfolge des ersten Datensatzes)
+            // Alle Skalen-Keys + Labels aus allen gespeicherten Datensätzen sammeln
             const allScaleKeys = [];
             const labelMap = {};
             saved.forEach(([rk, data]) => {
@@ -3256,6 +3291,8 @@
             const valueLabel = saved[0][1].valueLabel || 'T';
             const diffThreshold = saved[0][1].diffThreshold ?? 10;
             const unitName = saved[0][1].unitName || 'T-Punkte';
+            const storedTestKey = saved[0][1].testKey || testKey;
+            const groups = raterComparisonGroups(storedTestKey);
 
             const flagDiscrepant = tt('Diskrepant','Discordant','Discrepant');
             const flagDifferent  = tt('Unterschiedlich','Différent','Different');
@@ -3264,7 +3301,8 @@
                                  : (unitName === 'Standardwert-Punkte')    ? tt('Standardwert-Punkte','points de score standard','standard-score points')
                                  : tt('T-Punkte','points T','T-points');
 
-            const rows = allScaleKeys.map(sk => {
+            // Build one comparison row (returns null if fewer than 2 raters have a value for that key)
+            const buildRow = (sk) => {
                 const cells = saved.map(([rk, data]) => {
                     const entry = data.values[sk];
                     if(!entry || entry.v === null || entry.v === undefined) {
@@ -3273,9 +3311,7 @@
                     return {raw: entry.v, c: entry.c};
                 });
                 const filled = cells.filter(c => c.raw !== null);
-                if(filled.length < 2) {
-                    return null;
-                }
+                if(filled.length < 2) return null;
                 const vals = filled.map(c => c.raw);
                 const spread = Math.max(...vals) - Math.min(...vals);
                 const cls = filled.map(c => c.c);
@@ -3292,9 +3328,29 @@
                     return `<td class="${cell.c||''}" style="text-align:center;">${valueLabel}=${cell.raw}</td>`;
                 }).join('');
                 return `<tr><td>${labelMap[sk]}</td>${cellHtml}<td style="text-align:center;">${spread}</td><td style="text-align:center;">${flagBadge}</td></tr>`;
-            }).filter(x => x);
+            };
 
-            if(rows.length === 0) {
+            // Group-aware row assembly. Falls back to flat list when no group spec exists.
+            let rows = '';
+            const groupHeaderSpan = saved.length + 3; // Skala + N rater cols + Δ + Übereinstimmung
+            if(groups) {
+                const seen = new Set();
+                groups.forEach(g => {
+                    const groupRows = g.keys.map(k => { seen.add(k); return buildRow(k); }).filter(x => x);
+                    if(groupRows.length) {
+                        rows += `<tr style="background:var(--bg-input);"><td colspan="${groupHeaderSpan}" style="font-weight:600;">${g.label}</td></tr>${groupRows.join('')}`;
+                    }
+                });
+                // Catch-all for keys outside the spec
+                const extras = allScaleKeys.filter(k => !seen.has(k)).map(buildRow).filter(x => x);
+                if(extras.length) {
+                    rows += `<tr style="background:var(--bg-input);"><td colspan="${groupHeaderSpan}" style="font-weight:600;">${tt('Weitere Skalen','Autres échelles','Other scales')}</td></tr>${extras.join('')}`;
+                }
+            } else {
+                rows = allScaleKeys.map(buildRow).filter(x => x).join('');
+            }
+
+            if(!rows) {
                 host.innerHTML = `<div class="gutachten-warning">${tt(
                     'Keine gemeinsamen Skalen mit Werten in mehreren Beurteilungen gefunden.',
                     'Aucune échelle commune avec des valeurs dans plusieurs évaluations.',
@@ -3316,7 +3372,7 @@
                             <thead>
                                 <tr><th>${tt('Skala','Échelle','Scale')}</th>${saved.map(([rk]) => `<th style="text-align:center;color:${RATER_COLOR[rk]};">${raterLabelI18n(rk)}</th>`).join('')}<th style="text-align:center;">Δ</th><th style="text-align:center;">${tt('Übereinstimmung','Concordance','Agreement')}</th></tr>
                             </thead>
-                            <tbody>${rows.join('')}</tbody>
+                            <tbody>${rows}</tbody>
                         </table>
                         <p style="margin-top:1rem;font-size:0.9em;color:#4a5568;"><strong>${tt('Hinweis:','Note :','Note:')}</strong> ${tt(
                             'Diskrepanzen zwischen Informanten sind häufig und inhaltlich bedeutsam – sie können auf situationsspezifisches Verhalten hindeuten (z.B. nur in der Schule / nur zuhause / nur aus Selbstsicht). Starke Diskrepanzen sollten exploriert werden.',
@@ -6363,7 +6419,7 @@
             valid.forEach(([k,x]) => {
                 raterValues[k] = {v:x, c:c[k], label:DISYPS_SCALES[k].n};
             });
-            RATERS_DATA.disyps[raterKey] = {values: raterValues, valueLabel:'Stanine', diffThreshold:2, unitName:'Stanine-Punkte'};
+            RATERS_DATA.disyps[raterKey] = {values: raterValues, valueLabel:'Stanine', diffThreshold:2, unitName:'Stanine-Punkte', testKey:'disyps'};
             renderMultiRaterStatus('disyps');
         }
 
@@ -7566,11 +7622,11 @@
                 if(x.v !== null) raterValues[k] = {v:x.v, c:c[k], label:x.n};
             });
             // Auch SI-Items für Eltern/Lehrer als qualitative Skala mitnehmen
-            if(!isSelf && anxItems !== null) raterValues['si_anx_items'] = {v:anxItems, c:(anxItems>=2?'clinical':'normal'), label:'SI-Ä Items (≥1)'};
-            if(!isSelf && depItems !== null) raterValues['si_dep_items'] = {v:depItems, c:(depItems>=2?'clinical':'normal'), label:'SI-D Items (≥1)'};
-            if(isSelf && anxVal !== null) raterValues['si_anx'] = {v:anxVal, c:(anxVal>=65?'clinical':anxVal>=60?'borderline':'normal'), label:'SI-Ä (T)'};
-            if(isSelf && depVal !== null) raterValues['si_dep'] = {v:depVal, c:(depVal>=65?'clinical':depVal>=60?'borderline':'normal'), label:'SI-D (T)'};
-            RATERS_DATA.conners[resp] = {values: raterValues, valueLabel:'T', diffThreshold:10, unitName:'T-Punkte'};
+            if(!isSelf && anxItems !== null) raterValues['si_anx_items'] = {v:anxItems, c:(anxItems>=2?'clinical':'normal'), label:tt('SI-Ä Items (≥1)','SI-A items (≥1)','SI-A items (≥1)')};
+            if(!isSelf && depItems !== null) raterValues['si_dep_items'] = {v:depItems, c:(depItems>=2?'clinical':'normal'), label:tt('SI-D Items (≥1)','SI-D items (≥1)','SI-D items (≥1)')};
+            if(isSelf && anxVal !== null) raterValues['si_anx'] = {v:anxVal, c:(anxVal>=65?'clinical':anxVal>=60?'borderline':'normal'), label:tt('SI-Ä (T)','SI-A (T)','SI-A (T)')};
+            if(isSelf && depVal !== null) raterValues['si_dep'] = {v:depVal, c:(depVal>=65?'clinical':depVal>=60?'borderline':'normal'), label:tt('SI-D (T)','SI-D (T)','SI-D (T)')};
+            RATERS_DATA.conners[resp] = {values: raterValues, valueLabel:'T', diffThreshold:10, unitName:'T-Punkte', testKey:'conners'};
             renderMultiRaterStatus('conners');
         }
 
@@ -8254,7 +8310,7 @@
             validDomains.forEach(([k,d]) => {
                 raterValues[k] = {v:d.v, c:domainClasses[k].c, label:d.n};
             });
-            RATERS_DATA.vineland[vineResp] = {values: raterValues, valueLabel:'SW', diffThreshold:15, unitName:'Standardwert-Punkte'};
+            RATERS_DATA.vineland[vineResp] = {values: raterValues, valueLabel:'SW', diffThreshold:15, unitName:'Standardwert-Punkte', testKey:'vineland'};
             renderMultiRaterStatus('vineland');
         }
 
