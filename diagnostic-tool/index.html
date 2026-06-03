@@ -849,6 +849,9 @@
         .gutachten-table .normal { color: var(--success); }
         .gutachten-table .borderline { color: var(--warning); }
         .gutachten-table .clinical { color: var(--danger); }
+        /* Conners-3 4-tier interpretation colours (matches official MHS bands) */
+        .gutachten-table .highavg { color: #ca8a04; }   /* T 60–64 high average – gelb */
+        .gutachten-table .elevated { color: #ea580c; }  /* T 65–69 elevated – orange */
 
         .gutachten-highlight {
             background: rgba(99, 102, 241, 0.1);
@@ -3306,9 +3309,9 @@
                 const cells = saved.map(([rk, data]) => {
                     const entry = data.values[sk];
                     if(!entry || entry.v === null || entry.v === undefined) {
-                        return {raw:null, c:null};
+                        return {raw:null, c:null, col:null};
                     }
-                    return {raw: entry.v, c: entry.c};
+                    return {raw: entry.v, c: entry.c, col: entry.col || entry.c};
                 });
                 const filled = cells.filter(c => c.raw !== null);
                 if(filled.length < 2) return null;
@@ -3325,7 +3328,7 @@
                 const cellHtml = saved.map(([rk], i) => {
                     const cell = cells[i];
                     if(cell.raw === null) return '<td style="text-align:center;color:#9ca3af;">–</td>';
-                    return `<td class="${cell.c||''}" style="text-align:center;">${valueLabel}=${cell.raw}</td>`;
+                    return `<td class="${cell.col||cell.c||''}" style="text-align:center;">${valueLabel}=${cell.raw}</td>`;
                 }).join('');
                 return `<tr><td>${labelMap[sk]}</td>${cellHtml}<td style="text-align:center;">${spread}</td><td style="text-align:center;">${flagBadge}</td></tr>`;
             };
@@ -7273,10 +7276,18 @@
             const valid = [...validConners, ...validDsm, ...validIcd, ...validAdhd];
             if(!valid.length) return alert(tt('Bitte mindestens einen Wert eingeben','Veuillez saisir au moins une valeur','Please enter at least one value'));
 
+            // c[k]: 3-tier logic class (normal / borderline / clinical) — kept for
+            // recommendations, ICD classification and cross-informant discrepancy logic
+            // (clinical = T≥65 = "elevated or above", as per Conners-3 clinical cut-off).
             const c = {};
             valid.forEach(([k,x]) => {
-                c[k] = x.v < 60 ? 'normal' : x.v < 65 ? 'borderline' : x.v < 70 ? 'clinical' : 'clinical';
+                c[k] = x.v < 60 ? 'normal' : x.v < 65 ? 'borderline' : 'clinical';
             });
+
+            // connersCol(v): 4-tier colour class matching the official Conners-3 bands
+            // (Average / High Average / Elevated / Very Elevated) so the cell colour
+            // lines up with the cText label below.
+            const connersCol = v => v < 60 ? 'normal' : v < 65 ? 'highavg' : v < 70 ? 'elevated' : 'clinical';
 
             const tToPR = t => tToPRExact(t);
 
@@ -7363,7 +7374,7 @@
                         <table class="gutachten-table">
                             <thead><tr><th>${thScale}</th><th>${thScore}</th><th>${thPR}</th><th>${thClassif}</th></tr></thead>
                             <tbody>
-                                ${validConners.map(([k,x])=>`<tr><td>${x.n}</td><td><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td>${cText(x.v)}</td></tr>`).join('')}
+                                ${validConners.map(([k,x])=>`<tr><td>${x.n}</td><td class="${connersCol(x.v)}"><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td class="${connersCol(x.v)}">${cText(x.v)}</td></tr>`).join('')}
                             </tbody>
                         </table>
                         ` : ''}
@@ -7372,7 +7383,7 @@
                         <table class="gutachten-table">
                             <thead><tr><th>${thScale}</th><th>${thScore}</th><th>${thPR}</th><th>${thClassif}</th></tr></thead>
                             <tbody>
-                                ${validDsm.map(([k,x])=>`<tr><td>${x.n}</td><td><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td>${cText(x.v)}</td></tr>`).join('')}
+                                ${validDsm.map(([k,x])=>`<tr><td>${x.n}</td><td class="${connersCol(x.v)}"><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td class="${connersCol(x.v)}">${cText(x.v)}</td></tr>`).join('')}
                             </tbody>
                         </table>
                         ` : ''}
@@ -7381,7 +7392,7 @@
                         <table class="gutachten-table">
                             <thead><tr><th>${thScale}</th><th>${thScore}</th><th>${thPR}</th><th>${thClassif}</th></tr></thead>
                             <tbody>
-                                ${validIcd.map(([k,x])=>`<tr><td>${x.n}</td><td><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td>${cText(x.v)}</td></tr>`).join('')}
+                                ${validIcd.map(([k,x])=>`<tr><td>${x.n}</td><td class="${connersCol(x.v)}"><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td class="${connersCol(x.v)}">${cText(x.v)}</td></tr>`).join('')}
                             </tbody>
                         </table>
                         ` : ''}
@@ -7390,7 +7401,7 @@
                         <table class="gutachten-table">
                             <thead><tr><th>${thScale}</th><th>${thScore}</th><th>${thPR}</th><th>${thClassif}</th></tr></thead>
                             <tbody>
-                                ${validAdhd.map(([k,x])=>`<tr style="font-weight:700;"><td>${x.n}</td><td><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td>${cText(x.v)}</td></tr>`).join('')}
+                                ${validAdhd.map(([k,x])=>`<tr style="font-weight:700;"><td>${x.n}</td><td class="${connersCol(x.v)}"><strong>${x.v}</strong></td><td>${tToPR(x.v)}</td><td class="${connersCol(x.v)}">${cText(x.v)}</td></tr>`).join('')}
                             </tbody>
                         </table>
                         ` : ''}
@@ -7616,16 +7627,17 @@
             showLocalizedResults('conners-results');
             R.conners = {scales,c,gutachten}; updateReport();
 
-            // Multi-Rater-Speicher: alle T-Wert-Skalen zusammenführen
+            // Multi-Rater-Speicher: alle T-Wert-Skalen zusammenführen.
+            // c = 3-tier logic class (discrepancy detection), col = 4-tier colour class.
             const raterValues = {};
             Object.entries(scales).forEach(([k,x]) => {
-                if(x.v !== null) raterValues[k] = {v:x.v, c:c[k], label:x.n};
+                if(x.v !== null) raterValues[k] = {v:x.v, c:c[k], col:connersCol(x.v), label:x.n};
             });
             // Auch SI-Items für Eltern/Lehrer als qualitative Skala mitnehmen
             if(!isSelf && anxItems !== null) raterValues['si_anx_items'] = {v:anxItems, c:(anxItems>=2?'clinical':'normal'), label:tt('SI-Ä Items (≥1)','SI-A items (≥1)','SI-A items (≥1)')};
             if(!isSelf && depItems !== null) raterValues['si_dep_items'] = {v:depItems, c:(depItems>=2?'clinical':'normal'), label:tt('SI-D Items (≥1)','SI-D items (≥1)','SI-D items (≥1)')};
-            if(isSelf && anxVal !== null) raterValues['si_anx'] = {v:anxVal, c:(anxVal>=65?'clinical':anxVal>=60?'borderline':'normal'), label:tt('SI-Ä (T)','SI-A (T)','SI-A (T)')};
-            if(isSelf && depVal !== null) raterValues['si_dep'] = {v:depVal, c:(depVal>=65?'clinical':depVal>=60?'borderline':'normal'), label:tt('SI-D (T)','SI-D (T)','SI-D (T)')};
+            if(isSelf && anxVal !== null) raterValues['si_anx'] = {v:anxVal, c:(anxVal>=65?'clinical':anxVal>=60?'borderline':'normal'), col:connersCol(anxVal), label:tt('SI-Ä (T)','SI-A (T)','SI-A (T)')};
+            if(isSelf && depVal !== null) raterValues['si_dep'] = {v:depVal, c:(depVal>=65?'clinical':depVal>=60?'borderline':'normal'), col:connersCol(depVal), label:tt('SI-D (T)','SI-D (T)','SI-D (T)')};
             RATERS_DATA.conners[resp] = {values: raterValues, valueLabel:'T', diffThreshold:10, unitName:'T-Punkte', testKey:'conners'};
             renderMultiRaterStatus('conners');
         }
@@ -8823,6 +8835,8 @@
                         .normal { color: #276749; }
                         .borderline { color: #c05621; }
                         .clinical { color: #c53030; }
+                        .highavg { color: #a16207; }
+                        .elevated { color: #c2410c; }
                         .vhigh { color: #2b6cb0; }
                         .high { color: #3182ce; }
                         .bar-chart, .chart-container { display: none; }
@@ -9003,6 +9017,8 @@
                         .normal { color: #276749; }
                         .borderline { color: #c05621; }
                         .clinical { color: #c53030; }
+                        .highavg { color: #a16207; }
+                        .elevated { color: #c2410c; }
                         .vhigh { color: #2b6cb0; }
                         .high { color: #3182ce; }
                         .bar-chart, .chart-container { display: none; }
