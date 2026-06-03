@@ -3289,22 +3289,22 @@
             saved.forEach(([rk, data]) => Object.entries(data.values).forEach(([k,e]) => { if(!labelOf[k]) labelOf[k] = e.label; }));
             // Fallback-Labels falls eine Skala nur in einem Rater (oder gar nicht) vorkommt
             const fallback = {
-                in:tt('Unaufmerksamkeit (UA)','Inattention (UA)','Inattention (UA)'),
+                in:tt('Unaufmerksamkeit (UA)','Inattention (IN)','Inattention (IN)'),
                 hi:tt('Hyperaktivität / Impulsivität (HI)','Hyperactivité / Impulsivité (HI)','Hyperactivity / Impulsivity (HI)'),
-                lp:tt('Lernprobleme (LP)','Problèmes d\'apprentissage (LP)','Learning Problems (LP)'),
-                lpef:tt('Lernprobleme / Exekutive Funktionen (LP/EF)','Problèmes d\'apprentissage / fonctions exécutives (LP/EF)','Learning Problems / Executive Functions (LP/EF)'),
-                ef:tt('Exekutive Funktionen (EF)','Fonctions exécutives (EF)','Executive Functions (EF)'),
-                ag:tt('Aggressivität / Trotz (AT)','Agressivité / Opposition (AT)','Aggression / Defiance (AT)'),
-                pr:tt('Beziehungen zu Gleichaltrigen (BG)','Relations avec les pairs (BG)','Peer Relations (BG)'),
-                fb:tt('Familienbeziehungen (FB)','Relations familiales (FB)','Family Relations (FB)'),
-                dsm_in:tt('ADHS Unaufmerksam (DSM-UA)','TDAH Inattention (DSM-UA)','ADHD Inattentive (DSM-UA)'),
+                lp:tt('Lernprobleme (LP)','Problèmes d\'apprentissage (PA)','Learning Problems (LP)'),
+                lpef:tt('Lernprobleme / Exekutive Funktionen (LP/EF)','Problèmes d\'apprentissage / fonctions exécutives (PA/FE)','Learning Problems / Executive Functions (LP/EF)'),
+                ef:tt('Exekutive Funktionen (EF)','Fonctions exécutives (FE)','Executive Functions (EF)'),
+                ag:tt('Aggressivität / Trotz (AT)','Agressivité / Opposition (AG)','Aggression / Defiance (AG)'),
+                pr:tt('Beziehungen zu Gleichaltrigen (BG)','Relations avec les pairs (RP)','Peer Relations (PR)'),
+                fb:tt('Familienbeziehungen (FB)','Relations familiales (RF)','Family Relations (FR)'),
+                dsm_in:tt('ADHS Unaufmerksam (DSM-UA)','TDAH Inattention (DSM-IN)','ADHD Inattentive (DSM-IN)'),
                 dsm_hi:tt('ADHS Hyperaktiv-Impulsiv (DSM-HI)','TDAH Hyperactif-Impulsif (DSM-HI)','ADHD Hyperactive-Impulsive (DSM-HI)'),
-                dsm_k:tt('Kombiniert (DSM-K : DSM-UA + DSM-HI)','Type combiné (DSM-K : DSM-UA + DSM-HI)','Combined (DSM-K: DSM-UA + DSM-HI)'),
-                dsm_cd:tt('Störung des Sozialverhaltens (DSM-SV)','Trouble des conduites (DSM-SV)','Conduct Disorder (DSM-SV)'),
-                dsm_odd:tt('Oppositionelles Trotzverhalten (DSM-OT)','Trouble oppositionnel avec provocation (DSM-OT)','Oppositional Defiant Disorder (DSM-OT)'),
-                icd_as:tt('Einfache Aktivitäts- und Aufmerksamkeitsstörung F90.0 (ICD-AS)','Trouble simple de l\'activité et de l\'attention F90.0 (ICD-AS)','Simple Activity and Attention Disorder F90.0 (ICD-AS)'),
-                icd_sv:tt('Störung des Sozialverhaltens (ICD-SV)','Trouble des conduites (ICD-SV)','Conduct Disorder (ICD-SV)'),
-                icd_hksv:tt('Hyperkinetische Störung des Sozialverhaltens F90.1 (ICD-HKSV)','Trouble hyperkinétique des conduites F90.1 (ICD-HKSV)','Hyperkinetic Conduct Disorder F90.1 (ICD-HKSV)'),
+                dsm_k:tt('Kombiniert (DSM-K : DSM-UA + DSM-HI)','Type combiné (DSM-C : DSM-IN + DSM-HI)','Combined (DSM-C: DSM-IN + DSM-HI)'),
+                dsm_cd:tt('Störung des Sozialverhaltens (DSM-SV)','Trouble des conduites (DSM-TC)','Conduct Disorder (DSM-CD)'),
+                dsm_odd:tt('Oppositionelles Trotzverhalten (DSM-OT)','Trouble oppositionnel avec provocation (DSM-TOP)','Oppositional Defiant Disorder (DSM-ODD)'),
+                icd_as:tt('Einfache Aktivitäts- und Aufmerksamkeitsstörung F90.0 (ICD-AS)','Trouble simple de l\'activité et de l\'attention F90.0 (CIM-AS)','Simple Activity and Attention Disorder F90.0 (ICD-AS)'),
+                icd_sv:tt('Störung des Sozialverhaltens (ICD-SV)','Trouble des conduites (CIM-TC)','Conduct Disorder (ICD-CD)'),
+                icd_hksv:tt('Hyperkinetische Störung des Sozialverhaltens F90.1 (ICD-HKSV)','Trouble hyperkinétique des conduites F90.1 (CIM-HCT)','Hyperkinetic Conduct Disorder F90.1 (ICD-HCD)'),
                 adhd:tt('Conners 3 ADHS-Index (C3-AI)','Indice TDAH Conners 3 (C3-AI)','Conners 3 ADHD Index (C3-AI)'),
                 gi:tt('Conners 3 Global Index (C3-GI)','Indice global Conners 3 (C3-GI)','Conners 3 Global Index (C3-GI)'),
                 si_anx:tt('Ängstlichkeit (SI-Ä, T-Wert)','Anxiété (SI-A, score T)','Anxiety (SI-A, T-score)'),
@@ -7295,14 +7295,14 @@
             const neVal = v('con-ne');
 
             const connersScales = {
-                in:   {v:v('con-in'),   n:tt('Unaufmerksamkeit (UA)','Inattention (UA)','Inattention (UA)')},
+                in:   {v:v('con-in'),   n:tt('Unaufmerksamkeit (UA)','Inattention (IN)','Inattention (IN)')},
                 hi:   {v:v('con-hi'),   n:tt('Hyperaktivität / Impulsivität (HI)','Hyperactivité / Impulsivité (HI)','Hyperactivity / Impulsivity (HI)')},
-                lp:   {v:v('con-lp'),   n:tt('Lernprobleme (LP)','Problèmes d\'apprentissage (LP)','Learning Problems (LP)')},
-                lpef: {v:v('con-lpef'), n:tt('Lernprobleme / Exekutive Funktionen (LP/EF)','Problèmes d\'apprentissage / fonctions exécutives (LP/EF)','Learning Problems / Executive Functions (LP/EF)')},
-                ef:   {v:v('con-ef'),   n:tt('Exekutive Funktionen (EF)','Fonctions exécutives (EF)','Executive Functions (EF)')},
-                ag:   {v:v('con-ag'),   n:tt('Aggressivität / Trotz (AT)','Agressivité / Opposition (AT)','Aggression / Defiance (AT)')},
-                pr:   {v:v('con-pr'),   n:tt('Beziehungen zu Gleichaltrigen (BG)','Relations avec les pairs (BG)','Peer Relations (BG)')},
-                fb:   {v:v('con-fb'),   n:tt('Familienbeziehungen (FB)','Relations familiales (FB)','Family Relations (FB)')}
+                lp:   {v:v('con-lp'),   n:tt('Lernprobleme (LP)','Problèmes d\'apprentissage (PA)','Learning Problems (LP)')},
+                lpef: {v:v('con-lpef'), n:tt('Lernprobleme / Exekutive Funktionen (LP/EF)','Problèmes d\'apprentissage / fonctions exécutives (PA/FE)','Learning Problems / Executive Functions (LP/EF)')},
+                ef:   {v:v('con-ef'),   n:tt('Exekutive Funktionen (EF)','Fonctions exécutives (FE)','Executive Functions (EF)')},
+                ag:   {v:v('con-ag'),   n:tt('Aggressivität / Trotz (AT)','Agressivité / Opposition (AG)','Aggression / Defiance (AG)')},
+                pr:   {v:v('con-pr'),   n:tt('Beziehungen zu Gleichaltrigen (BG)','Relations avec les pairs (RP)','Peer Relations (PR)')},
+                fb:   {v:v('con-fb'),   n:tt('Familienbeziehungen (FB)','Relations familiales (RF)','Family Relations (FR)')}
             };
 
             const anxVal = v('con-anx');
@@ -7311,17 +7311,17 @@
             const depItems = v('con-dep-items');
 
             const dsmScales = {
-                dsm_in:  {v:v('con-dsm-in'),  n:tt('ADHS Unaufmerksam (DSM-UA)','TDAH Inattention (DSM-UA)','ADHD Inattentive (DSM-UA)')},
+                dsm_in:  {v:v('con-dsm-in'),  n:tt('ADHS Unaufmerksam (DSM-UA)','TDAH Inattention (DSM-IN)','ADHD Inattentive (DSM-IN)')},
                 dsm_hi:  {v:v('con-dsm-hi'),  n:tt('ADHS Hyperaktiv-Impulsiv (DSM-HI)','TDAH Hyperactif-Impulsif (DSM-HI)','ADHD Hyperactive-Impulsive (DSM-HI)')},
-                dsm_k:   {v:v('con-dsm-k'),   n:tt('Kombiniert (DSM-K : DSM-UA + DSM-HI)','Type combiné (DSM-K : DSM-UA + DSM-HI)','Combined (DSM-K: DSM-UA + DSM-HI)')},
-                dsm_cd:  {v:v('con-dsm-cd'),  n:tt('Störung des Sozialverhaltens (DSM-SV)','Trouble des conduites (DSM-SV)','Conduct Disorder (DSM-SV)')},
-                dsm_odd: {v:v('con-dsm-odd'), n:tt('Oppositionelles Trotzverhalten (DSM-OT)','Trouble oppositionnel avec provocation (DSM-OT)','Oppositional Defiant Disorder (DSM-OT)')}
+                dsm_k:   {v:v('con-dsm-k'),   n:tt('Kombiniert (DSM-K : DSM-UA + DSM-HI)','Type combiné (DSM-C : DSM-IN + DSM-HI)','Combined (DSM-C: DSM-IN + DSM-HI)')},
+                dsm_cd:  {v:v('con-dsm-cd'),  n:tt('Störung des Sozialverhaltens (DSM-SV)','Trouble des conduites (DSM-TC)','Conduct Disorder (DSM-CD)')},
+                dsm_odd: {v:v('con-dsm-odd'), n:tt('Oppositionelles Trotzverhalten (DSM-OT)','Trouble oppositionnel avec provocation (DSM-TOP)','Oppositional Defiant Disorder (DSM-ODD)')}
             };
 
             const icdScales = {
-                icd_as:   {v:v('con-icd-as'),   n:tt('Einfache Aktivitäts- und Aufmerksamkeitsstörung F90.0 (ICD-AS)','Trouble simple de l\'activité et de l\'attention F90.0 (ICD-AS)','Simple Activity and Attention Disorder F90.0 (ICD-AS)')},
-                icd_sv:   {v:v('con-icd-sv'),   n:tt('Störung des Sozialverhaltens (ICD-SV)','Trouble des conduites (ICD-SV)','Conduct Disorder (ICD-SV)')},
-                icd_hksv: {v:v('con-icd-hksv'), n:tt('Hyperkinetische Störung des Sozialverhaltens F90.1 (ICD-HKSV)','Trouble hyperkinétique des conduites F90.1 (ICD-HKSV)','Hyperkinetic Conduct Disorder F90.1 (ICD-HKSV)')}
+                icd_as:   {v:v('con-icd-as'),   n:tt('Einfache Aktivitäts- und Aufmerksamkeitsstörung F90.0 (ICD-AS)','Trouble simple de l\'activité et de l\'attention F90.0 (CIM-AS)','Simple Activity and Attention Disorder F90.0 (ICD-AS)')},
+                icd_sv:   {v:v('con-icd-sv'),   n:tt('Störung des Sozialverhaltens (ICD-SV)','Trouble des conduites (CIM-TC)','Conduct Disorder (ICD-CD)')},
+                icd_hksv: {v:v('con-icd-hksv'), n:tt('Hyperkinetische Störung des Sozialverhaltens F90.1 (ICD-HKSV)','Trouble hyperkinétique des conduites F90.1 (CIM-HCT)','Hyperkinetic Conduct Disorder F90.1 (ICD-HCD)')}
             };
 
             const indices = {
