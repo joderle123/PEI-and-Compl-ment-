@@ -852,6 +852,11 @@
         /* Conners-3 4-tier interpretation colours (matches official MHS bands) */
         .gutachten-table .highavg { color: #ca8a04; }   /* T 60–64 high average – gelb */
         .gutachten-table .elevated { color: #ea580c; }  /* T 65–69 elevated – orange */
+        /* Conners combined-multi-rater table: cell-background variant (Foto 2 style) */
+        .gutachten-table td.cnr-bg-n  { background:#d1fae5; color:#065f46; }
+        .gutachten-table td.cnr-bg-h  { background:#fef3c7; color:#854d0e; }
+        .gutachten-table td.cnr-bg-e  { background:#fed7aa; color:#9a3412; }
+        .gutachten-table td.cnr-bg-c  { background:#fecaca; color:#991b1b; }
 
         .gutachten-highlight {
             background: rgba(99, 102, 241, 0.1);
@@ -3272,6 +3277,113 @@
             return null;
         }
 
+        // Conners-spezifische Multi-Rater-Tabelle nach dem Layout des
+        // klinischen Word-Berichts (Foto 2): eine kombinierte Tabelle mit
+        // Skala-Spalte + einer Wert-Spalte pro Beurteiler, Gruppen-Header
+        // zwischen Skalen-Kategorien, "Valeurs T" Sub-Header, "/" für
+        // fehlende Werte, 4-stufige Farbcodierung als Zell-Hintergrund.
+        function renderConnersCombinedTable(saved, host) {
+            const colBg = v => v == null ? '' : v < 60 ? 'cnr-bg-n' : v < 65 ? 'cnr-bg-h' : v < 70 ? 'cnr-bg-e' : 'cnr-bg-c';
+            // Skalen-Label aus den gespeicherten Datensätzen (erstes Vorkommen gewinnt)
+            const labelOf = {};
+            saved.forEach(([rk, data]) => Object.entries(data.values).forEach(([k,e]) => { if(!labelOf[k]) labelOf[k] = e.label; }));
+            // Fallback-Labels falls eine Skala nur in einem Rater (oder gar nicht) vorkommt
+            const fallback = {
+                in:tt('Unaufmerksamkeit (UA)','Inattention (UA)','Inattention (UA)'),
+                hi:tt('Hyperaktivität / Impulsivität (HI)','Hyperactivité / Impulsivité (HI)','Hyperactivity / Impulsivity (HI)'),
+                lp:tt('Lernprobleme (LP)','Problèmes d\'apprentissage (LP)','Learning Problems (LP)'),
+                lpef:tt('Lernprobleme / Exekutive Funktionen (LP/EF)','Problèmes d\'apprentissage / fonctions exécutives (LP/EF)','Learning Problems / Executive Functions (LP/EF)'),
+                ef:tt('Exekutive Funktionen (EF)','Fonctions exécutives (EF)','Executive Functions (EF)'),
+                ag:tt('Aggressivität / Trotz (AT)','Agressivité / Opposition (AT)','Aggression / Defiance (AT)'),
+                pr:tt('Beziehungen zu Gleichaltrigen (BG)','Relations avec les pairs (BG)','Peer Relations (BG)'),
+                fb:tt('Familienbeziehungen (FB)','Relations familiales (FB)','Family Relations (FB)'),
+                dsm_in:tt('ADHS Unaufmerksam (DSM-UA)','TDAH Inattention (DSM-UA)','ADHD Inattentive (DSM-UA)'),
+                dsm_hi:tt('ADHS Hyperaktiv-Impulsiv (DSM-HI)','TDAH Hyperactif-Impulsif (DSM-HI)','ADHD Hyperactive-Impulsive (DSM-HI)'),
+                dsm_k:tt('Kombiniert (DSM-K : DSM-UA + DSM-HI)','Type combiné (DSM-K : DSM-UA + DSM-HI)','Combined (DSM-K: DSM-UA + DSM-HI)'),
+                dsm_cd:tt('Störung des Sozialverhaltens (DSM-SV)','Trouble des conduites (DSM-SV)','Conduct Disorder (DSM-SV)'),
+                dsm_odd:tt('Oppositionelles Trotzverhalten (DSM-OT)','Trouble oppositionnel avec provocation (DSM-OT)','Oppositional Defiant Disorder (DSM-OT)'),
+                icd_as:tt('Einfache Aktivitäts- und Aufmerksamkeitsstörung F90.0 (ICD-AS)','Trouble simple de l\'activité et de l\'attention F90.0 (ICD-AS)','Simple Activity and Attention Disorder F90.0 (ICD-AS)'),
+                icd_sv:tt('Störung des Sozialverhaltens (ICD-SV)','Trouble des conduites (ICD-SV)','Conduct Disorder (ICD-SV)'),
+                icd_hksv:tt('Hyperkinetische Störung des Sozialverhaltens F90.1 (ICD-HKSV)','Trouble hyperkinétique des conduites F90.1 (ICD-HKSV)','Hyperkinetic Conduct Disorder F90.1 (ICD-HKSV)'),
+                adhd:tt('Conners 3 ADHS-Index (C3-AI)','Indice TDAH Conners 3 (C3-AI)','Conners 3 ADHD Index (C3-AI)'),
+                gi:tt('Conners 3 Global Index (C3-GI)','Indice global Conners 3 (C3-GI)','Conners 3 Global Index (C3-GI)'),
+                si_anx:tt('Ängstlichkeit (SI-Ä, T-Wert)','Anxiété (SI-A, score T)','Anxiety (SI-A, T-score)'),
+                si_dep:tt('Depression (SI-D, T-Wert)','Dépression (SI-D, score T)','Depression (SI-D, T-score)'),
+                si_anx_items:tt('Ängstlichkeit (Anzahl auffällige Items)','Anxiété (nombre d\'items)','Anxiety (item count)'),
+                si_dep_items:tt('Depression (Anzahl auffällige Items)','Dépression (nombre d\'items)','Depression (item count)')
+            };
+            const label = k => labelOf[k] || fallback[k] || k;
+
+            // Wert einer Skala pro Rater holen
+            const cellFor = (sk, rk) => {
+                const data = saved.find(([k]) => k === rk)?.[1];
+                const e = data?.values?.[sk];
+                return e ? {v:e.v, col: e.col || ''} : {v:null, col:''};
+            };
+
+            // Eine Datenzeile bauen. mode='t' (Valeurs T, farbcodiert) oder 'sum' (Somme, ungefärbt)
+            const dataRow = (sk, mode) => {
+                const cells = saved.map(([rk]) => {
+                    const {v:val, col} = cellFor(sk, rk);
+                    if(val === null || val === undefined) return `<td style="text-align:center;color:#9ca3af;">/</td>`;
+                    const cls = mode === 't' ? (col ? `cnr-bg-${col === 'normal' ? 'n' : col === 'highavg' ? 'h' : col === 'elevated' ? 'e' : 'c'}` : '') : '';
+                    return `<td class="${cls}" style="text-align:center;font-weight:600;">${val}</td>`;
+                }).join('');
+                return `<tr><td>${label(sk)}</td>${cells}</tr>`;
+            };
+
+            const groups = [
+                {hdr:null,                                                                               keys:['in','hi','lpef','lp','ef','ag','pr','fb'], mode:'t'},
+                {hdr:tt('Symptomskalen nach DSM-5','Échelles des symptômes selon le DSM-5','Symptom scales per DSM-5'),  keys:['dsm_in','dsm_hi','dsm_k','dsm_cd','dsm_odd'],     mode:'t'},
+                {hdr:tt('Symptomskalen nach ICD-10','Échelles des symptômes selon la ICD-10','Symptom scales per ICD-10'),keys:['icd_as','icd_sv','icd_hksv'],                    mode:'t'},
+                {hdr:tt('Conners 3 Indices','Indices Conners 3','Conners 3 indices'),                                    keys:['adhd','gi'],                                     mode:'t'},
+                {hdr:tt('Screener-Items (SI)','Items de dépistage (SI)','Screener items (SI)'),                          keys:['si_anx','si_anx_items','si_dep','si_dep_items'], mode:'sum'}
+            ];
+
+            const ncols = saved.length;
+            const fullColspan = ncols + 1;
+            // Header + Sub-header (Valeurs T)
+            const subT = tt('T-Wert','Valeurs T','T-score');
+            const subSum = tt('Summe','Somme','Sum');
+            let body = '';
+            let curSub = subT;
+            groups.forEach(g => {
+                // Sub-header umschalten wenn nötig
+                if(g.mode === 'sum' && curSub !== subSum) {
+                    body += `<tr style="background:#f3f4f6;"><td></td>${saved.map(()=>`<td style="text-align:center;font-style:italic;color:#4b5563;">${subSum}</td>`).join('')}</tr>`;
+                    curSub = subSum;
+                }
+                if(g.hdr) body += `<tr style="background:#dbeafe;"><td colspan="${fullColspan}" style="font-weight:700;color:#1e40af;">${g.hdr}</td></tr>`;
+                // Nur Skalen die in mindestens einem Rater vorkommen
+                g.keys.forEach(sk => {
+                    if(saved.some(([,d]) => d.values?.[sk] && d.values[sk].v != null)) body += dataRow(sk, g.mode);
+                });
+            });
+
+            const intro = tt(
+                'Zusammengefasste Übersicht aller eingegebenen Conners-3 Beurteilungen. Farbkodierung der T-Werte entspricht den offiziellen 4 Conners-3-Bändern: grün ≤ 59 = durchschnittlich, gelb 60–64 = leicht erhöht, orange 65–69 = erhöht, rot ≥ 70 = stark erhöht. „/" = nicht erhoben.',
+                'Vue d\'ensemble de toutes les évaluations Conners-3 saisies. Le codage couleur des scores T correspond aux 4 bandes officielles Conners-3 : vert ≤ 59 = moyen, jaune 60–64 = légèrement élevé, orange 65–69 = élevé, rouge ≥ 70 = fortement élevé. « / » = non renseigné.',
+                'Combined overview of all Conners-3 ratings entered. T-score colour coding follows the 4 official Conners-3 bands: green ≤ 59 = average, yellow 60–64 = high average, orange 65–69 = elevated, red ≥ 70 = very elevated. "/" = not collected.'
+            );
+
+            host.innerHTML = `
+                <div class="gutachten" style="margin-top:1.5rem;">
+                    <div class="gutachten-section">
+                        <h4 class="gutachten-section-title">${tt('Conners-3 – Kombinierte Mehrfach-Beurteilung','Conners-3 – Évaluation combinée multi-évaluateurs','Conners-3 – Combined multi-rater evaluation')}</h4>
+                        <p style="font-size:0.9rem;color:#4b5563;margin-bottom:0.75rem;">${intro}</p>
+                        <table class="gutachten-table" style="margin-top:0.75rem;">
+                            <thead>
+                                <tr><th>${tt('Skala','Échelle','Scale')}</th>${saved.map(([rk]) => `<th style="text-align:center;color:${RATER_COLOR[rk]};">${raterLabelI18n(rk)}</th>`).join('')}</tr>
+                                <tr style="background:#f3f4f6;"><td></td>${saved.map(()=>`<td style="text-align:center;font-style:italic;color:#4b5563;">${subT}</td>`).join('')}</tr>
+                            </thead>
+                            <tbody>${body}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            host.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+
         // Cross-Informant-Vergleichstabelle (generisch, basiert auf scaleSpec pro Test)
         // testKey: 'conners' | 'disyps' | 'vineland'
         function renderRaterComparison(testKey) {
@@ -3279,6 +3391,12 @@
             if(saved.length < 2) return;
             const host = document.getElementById(`${testKey}-compare`);
             if(!host) return;
+
+            // Conners: dedizierter Foto-2-Layout-Renderer (kombinierte 3-Spalten-Tabelle)
+            if(testKey === 'conners') {
+                renderConnersCombinedTable(saved, host);
+                return;
+            }
 
             // Alle Skalen-Keys + Labels aus allen gespeicherten Datensätzen sammeln
             const allScaleKeys = [];
@@ -7177,14 +7295,14 @@
             const neVal = v('con-ne');
 
             const connersScales = {
-                in:   {v:v('con-in'),   n:tt('UA – Unaufmerksamkeit','IN – Inattention','IN – Inattention')},
-                hi:   {v:v('con-hi'),   n:tt('HI – Hyperaktivität/Impulsivität','HI – Hyperactivité/Impulsivité','HI – Hyperactivity/Impulsivity')},
-                lp:   {v:v('con-lp'),   n:tt('LP – Lernprobleme','PA – Problèmes d\'apprentissage','LP – Learning Problems')},
-                lpef: {v:v('con-lpef'), n:tt('LP/EF – Lernprobleme/Exekutive Funktionen','PA/FE – Problèmes d\'apprentissage / fonctions exécutives','LP/EF – Learning Problems / Executive Functions')},
-                ef:   {v:v('con-ef'),   n:tt('EF – Exekutive Funktionen','FE – Fonctions exécutives','EF – Executive Functions')},
-                ag:   {v:v('con-ag'),   n:tt('AT – Aggressivität/Trotz','AG – Agressivité/Opposition','AG – Aggression/Defiance')},
-                pr:   {v:v('con-pr'),   n:tt('BG – Beziehungen zu Gleichaltrigen','RP – Relations avec les pairs','PR – Peer Relations')},
-                fb:   {v:v('con-fb'),   n:tt('FB – Familienbeziehungen','RF – Relations familiales','FR – Family Relations')}
+                in:   {v:v('con-in'),   n:tt('Unaufmerksamkeit (UA)','Inattention (UA)','Inattention (UA)')},
+                hi:   {v:v('con-hi'),   n:tt('Hyperaktivität / Impulsivität (HI)','Hyperactivité / Impulsivité (HI)','Hyperactivity / Impulsivity (HI)')},
+                lp:   {v:v('con-lp'),   n:tt('Lernprobleme (LP)','Problèmes d\'apprentissage (LP)','Learning Problems (LP)')},
+                lpef: {v:v('con-lpef'), n:tt('Lernprobleme / Exekutive Funktionen (LP/EF)','Problèmes d\'apprentissage / fonctions exécutives (LP/EF)','Learning Problems / Executive Functions (LP/EF)')},
+                ef:   {v:v('con-ef'),   n:tt('Exekutive Funktionen (EF)','Fonctions exécutives (EF)','Executive Functions (EF)')},
+                ag:   {v:v('con-ag'),   n:tt('Aggressivität / Trotz (AT)','Agressivité / Opposition (AT)','Aggression / Defiance (AT)')},
+                pr:   {v:v('con-pr'),   n:tt('Beziehungen zu Gleichaltrigen (BG)','Relations avec les pairs (BG)','Peer Relations (BG)')},
+                fb:   {v:v('con-fb'),   n:tt('Familienbeziehungen (FB)','Relations familiales (FB)','Family Relations (FB)')}
             };
 
             const anxVal = v('con-anx');
@@ -7193,22 +7311,22 @@
             const depItems = v('con-dep-items');
 
             const dsmScales = {
-                dsm_in:  {v:v('con-dsm-in'),  n:tt('DSM-UA – ADHS Unaufmerksam','DSM-IN – TDAH Inattention','DSM-IN – ADHD Inattentive')},
-                dsm_hi:  {v:v('con-dsm-hi'),  n:tt('DSM-HI – ADHS Hyperaktiv-Impulsiv','DSM-HI – TDAH Hyperactif-Impulsif','DSM-HI – ADHD Hyperactive-Impulsive')},
-                dsm_k:   {v:v('con-dsm-k'),   n:tt('DSM-K – Kombiniert (UA+HI)','DSM-C – Combiné (IN+HI)','DSM-C – Combined (IN+HI)')},
-                dsm_cd:  {v:v('con-dsm-cd'),  n:tt('DSM-SV – Störung des Sozialverhaltens','DSM-TC – Trouble des conduites','DSM-CD – Conduct Disorder')},
-                dsm_odd: {v:v('con-dsm-odd'), n:tt('DSM-OT – Oppositionelles Trotzverhalten','DSM-TOP – Trouble oppositionnel avec provocation','DSM-ODD – Oppositional Defiant Disorder')}
+                dsm_in:  {v:v('con-dsm-in'),  n:tt('ADHS Unaufmerksam (DSM-UA)','TDAH Inattention (DSM-UA)','ADHD Inattentive (DSM-UA)')},
+                dsm_hi:  {v:v('con-dsm-hi'),  n:tt('ADHS Hyperaktiv-Impulsiv (DSM-HI)','TDAH Hyperactif-Impulsif (DSM-HI)','ADHD Hyperactive-Impulsive (DSM-HI)')},
+                dsm_k:   {v:v('con-dsm-k'),   n:tt('Kombiniert (DSM-K : DSM-UA + DSM-HI)','Type combiné (DSM-K : DSM-UA + DSM-HI)','Combined (DSM-K: DSM-UA + DSM-HI)')},
+                dsm_cd:  {v:v('con-dsm-cd'),  n:tt('Störung des Sozialverhaltens (DSM-SV)','Trouble des conduites (DSM-SV)','Conduct Disorder (DSM-SV)')},
+                dsm_odd: {v:v('con-dsm-odd'), n:tt('Oppositionelles Trotzverhalten (DSM-OT)','Trouble oppositionnel avec provocation (DSM-OT)','Oppositional Defiant Disorder (DSM-OT)')}
             };
 
             const icdScales = {
-                icd_as:   {v:v('con-icd-as'),   n:tt('ICD-AS – Einfache Aktivitäts-/Aufmerksamkeitsstörung (F90.0)','CIM-AS – Trouble simple de l\'activité et de l\'attention (F90.0)','ICD-AS – Simple Activity/Attention Disorder (F90.0)')},
-                icd_sv:   {v:v('con-icd-sv'),   n:tt('ICD-SV – Störung des Sozialverhaltens','CIM-TC – Trouble des conduites','ICD-CD – Conduct Disorder')},
-                icd_hksv: {v:v('con-icd-hksv'), n:tt('ICD-HKSV – Hyperkin. Störung Sozialverhalten (F90.1)','CIM-HCT – Trouble hyperkinétique des conduites (F90.1)','ICD-HCD – Hyperkinetic Conduct Disorder (F90.1)')}
+                icd_as:   {v:v('con-icd-as'),   n:tt('Einfache Aktivitäts- und Aufmerksamkeitsstörung F90.0 (ICD-AS)','Trouble simple de l\'activité et de l\'attention F90.0 (ICD-AS)','Simple Activity and Attention Disorder F90.0 (ICD-AS)')},
+                icd_sv:   {v:v('con-icd-sv'),   n:tt('Störung des Sozialverhaltens (ICD-SV)','Trouble des conduites (ICD-SV)','Conduct Disorder (ICD-SV)')},
+                icd_hksv: {v:v('con-icd-hksv'), n:tt('Hyperkinetische Störung des Sozialverhaltens F90.1 (ICD-HKSV)','Trouble hyperkinétique des conduites F90.1 (ICD-HKSV)','Hyperkinetic Conduct Disorder F90.1 (ICD-HKSV)')}
             };
 
             const indices = {
-                adhd: {v:v('con-adhd'), n:tt('C3-AI – Conners 3 ADHS-Index','C3-AI – Indice TDAH Conners 3','C3-AI – Conners 3 ADHD Index')},
-                gi:   {v:v('con-gi'),   n:tt('C3-GI – Conners 3 Global Index','C3-GI – Indice global Conners 3','C3-GI – Conners 3 Global Index')}
+                adhd: {v:v('con-adhd'), n:tt('Conners 3 ADHS-Index (C3-AI)','Indice TDAH Conners 3 (C3-AI)','Conners 3 ADHD Index (C3-AI)')},
+                gi:   {v:v('con-gi'),   n:tt('Conners 3 Global Index (C3-GI)','Indice global Conners 3 (C3-GI)','Conners 3 Global Index (C3-GI)')}
             };
 
             // Kritische Items (Rohwert-Anzahl)
@@ -7618,7 +7736,7 @@
 
             document.getElementById('conners-results').innerHTML = `
                 <div class="results-header"><h3 class="results-title">${tt('Ergebnis Conners-3','Résultat Conners-3','Conners-3 result')}</h3></div>
-                ${summary(valid.slice(0,6).map(([k,x])=>({l:x.n.split(' – ')[0],v:'T '+x.v,c:c[k],s:cText(x.v)})))}
+                ${summary(valid.slice(0,6).map(([k,x])=>{const m=x.n.match(/\(([^)]+)\)\s*$/);return {l:m?m[1]:x.n,v:'T '+x.v,c:connersCol(x.v),s:cText(x.v)};}))}
                 ${gutachten}
                 <div class="export-btn-container" style="margin-top:1.5rem;text-align:center;padding-top:1rem;border-top:1px solid var(--border);">
                     <button class="btn btn-primary" onclick="exportTestToWord('conners')">${tt('📝 Als Word exportieren (.doc)','📝 Exporter en Word (.doc)','📝 Export as Word (.doc)')}</button>
@@ -8839,6 +8957,10 @@
                         .elevated { color: #c2410c; }
                         .vhigh { color: #2b6cb0; }
                         .high { color: #3182ce; }
+                        td.cnr-bg-n  { background:#d1fae5 !important; color:#065f46; }
+                        td.cnr-bg-h  { background:#fef3c7 !important; color:#854d0e; }
+                        td.cnr-bg-e  { background:#fed7aa !important; color:#9a3412; }
+                        td.cnr-bg-c  { background:#fecaca !important; color:#991b1b; }
                         .bar-chart, .chart-container { display: none; }
                         .summary-grid, .summary-card { display: none; }
                         .word-chart { margin: 16pt 0; page-break-inside: avoid; }
@@ -9021,6 +9143,10 @@
                         .elevated { color: #c2410c; }
                         .vhigh { color: #2b6cb0; }
                         .high { color: #3182ce; }
+                        td.cnr-bg-n  { background:#d1fae5 !important; color:#065f46; }
+                        td.cnr-bg-h  { background:#fef3c7 !important; color:#854d0e; }
+                        td.cnr-bg-e  { background:#fed7aa !important; color:#9a3412; }
+                        td.cnr-bg-c  { background:#fecaca !important; color:#991b1b; }
                         .bar-chart, .chart-container { display: none; }
                         .summary-grid, .summary-card { display: none; }
                         .word-chart { margin: 16pt 0; page-break-inside: avoid; }
