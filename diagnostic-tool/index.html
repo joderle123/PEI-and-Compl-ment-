@@ -2370,8 +2370,8 @@
             {de: /(\d+)\. Grafische Darstellung\b/g,                       fr: '$1. Représentation graphique',                       en: '$1. Graphical representation'},
             {de: /(\d+)\. Interpretation der Ergebnisse\b/g,               fr: '$1. Interprétation des résultats',                   en: '$1. Interpretation of results'},
             {de: /(\d+)\. Interpretation\b/g,                              fr: '$1. Interprétation',                                 en: '$1. Interpretation'},
-            {de: /(\d+)\. Diagnostische Einordnung nach ICD-10\/ICD-11\b/g, fr: '$1. Classification diagnostique selon CIM-10/CIM-11', en: '$1. Diagnostic classification per ICD-10/ICD-11'},
-            {de: /(\d+)\. Diagnostische Einordnung \(ICD-10\)\b/g,         fr: '$1. Classification diagnostique (CIM-10)',           en: '$1. Diagnostic classification (ICD-10)'},
+            {de: /(\d+)\. Diagnostische Einordnung nach ICD-10\/ICD-11\b/g, fr: '$1. Classification diagnostique selon ICD-10/ICD-11', en: '$1. Diagnostic classification per ICD-10/ICD-11'},
+            {de: /(\d+)\. Diagnostische Einordnung \(ICD-10\)\b/g,         fr: '$1. Classification diagnostique (ICD-10)',           en: '$1. Diagnostic classification (ICD-10)'},
             {de: /(\d+)\. Diagnostische Einordnung\b/g,                    fr: '$1. Classification diagnostique',                    en: '$1. Diagnostic classification'},
             {de: /(\d+)\. Differenzialdiagnostische Überlegungen\b/g,      fr: '$1. Considérations différentielles',                 en: '$1. Differential considerations'},
             {de: /(\d+)\. Empfehlungen\b/g,                                fr: '$1. Recommandations',                                en: '$1. Recommendations'},
@@ -2609,7 +2609,7 @@
              en: 'SAFETY WARNING – Severe conduct disturbance'},
             {de: /Validitätsskalen/g, fr: 'Échelles de validité', en: 'Validity scales'},
             {de: /DSM-5 Symptomskalen/g, fr: 'Échelles de symptômes DSM-5', en: 'DSM-5 symptom scales'},
-            {de: /ICD-10 Symptomskalen/g, fr: 'Échelles de symptômes CIM-10', en: 'ICD-10 symptom scales'},
+            {de: /ICD-10 Symptomskalen/g, fr: 'Échelles de symptômes ICD-10', en: 'ICD-10 symptom scales'},
             {de: /Conners 3 Inhaltsskalen/g, fr: 'Échelles de contenu Conners 3', en: 'Conners 3 content scales'},
             {de: /Conners 3 Indices/g, fr: 'Indices Conners 3', en: 'Conners 3 indices'},
         ]);
@@ -2617,7 +2617,7 @@
         // ─── Footer / Disclaimer komplett ────────────────────────────────────────
         addLocalizeRules([
             {de: /<strong>Keine Diagnosestellung:<\/strong> Dieser Bericht ersetzt keine umfassende klinische Diagnostik durch eine\/n approbierte\/n Psychologische\/n Psychotherapeut\/in oder Facharzt\/Fachärztin für Kinder- und Jugendpsychiatrie\. Die genannten ICD-Codes dienen der differenzialdiagnostischen Orientierung und stellen keine Diagnosen dar\./g,
-             fr: '<strong>Pas de diagnostic posé :</strong> ce rapport ne remplace pas un bilan clinique complet réalisé par un·e psychothérapeute agréé·e ou un·e médecin spécialiste en pédopsychiatrie. Les codes CIM mentionnés servent à l\'orientation différentielle et ne constituent pas des diagnostics.',
+             fr: '<strong>Pas de diagnostic posé :</strong> ce rapport ne remplace pas un bilan clinique complet réalisé par un·e psychothérapeute agréé·e ou un·e médecin spécialiste en pédopsychiatrie. Les codes ICD mentionnés servent à l\'orientation différentielle et ne constituent pas des diagnostics.',
              en: '<strong>No diagnosis:</strong> this report does not replace a comprehensive clinical assessment by a licensed psychotherapist or a child & adolescent psychiatrist. The cited ICD codes serve differential-diagnostic orientation only and do not constitute diagnoses.'},
             {de: /<strong>Datenschutz:<\/strong> Dieser Bericht enthält sensible personenbezogene Gesundheitsdaten und ist vertraulich zu behandeln\. Die Weitergabe an Dritte bedarf der ausdrücklichen Einwilligung der Sorgeberechtigten\./g,
              fr: '<strong>Protection des données :</strong> ce rapport contient des données personnelles de santé sensibles et doit être traité de manière confidentielle. Toute transmission à des tiers nécessite le consentement explicite des titulaires de l\'autorité parentale.',
@@ -2686,13 +2686,13 @@
              en: 'Based on the current profile, the following diagnostic considerations arise. It must be emphasised that the SDQ, as a screening instrument, cannot establish diagnoses but only points to possible disorders to be clarified through a comprehensive clinical assessment.'},
             // ICD-10 paragraphs SDQ
             {de: /<strong>Emotionale Störungen:<\/strong> Der erhöhte Wert auf der Skala Emotionale Probleme ist vereinbar mit dem Vorliegen einer emotionalen Störung des Kindesalters \(ICD-10: F93\.x\), einer Angststörung \(F40\.x, F41\.x\) oder einer depressiven Episode \(F32\.x\)\. Eine vertiefte Angst- und Depressionsdiagnostik wird empfohlen\./g,
-             fr: '<strong>Troubles émotionnels :</strong> la valeur élevée à l\'échelle Problèmes émotionnels est compatible avec un trouble émotionnel de l\'enfance (CIM-10 : F93.x), un trouble anxieux (F40.x, F41.x) ou un épisode dépressif (F32.x). Un bilan approfondi d\'anxiété et de dépression est recommandé.',
+             fr: '<strong>Troubles émotionnels :</strong> la valeur élevée à l\'échelle Problèmes émotionnels est compatible avec un trouble émotionnel de l\'enfance (ICD-10 : F93.x), un trouble anxieux (F40.x, F41.x) ou un épisode dépressif (F32.x). Un bilan approfondi d\'anxiété et de dépression est recommandé.',
              en: '<strong>Emotional disorders:</strong> the elevated score on the Emotional Problems scale is consistent with a childhood emotional disorder (ICD-10: F93.x), an anxiety disorder (F40.x, F41.x) or a depressive episode (F32.x). In-depth anxiety and depression assessment is recommended.'},
             {de: /<strong>Störungen des Sozialverhaltens:<\/strong> Der erhöhte Wert auf der Skala Verhaltensprobleme ist vereinbar mit dem Vorliegen einer Störung des Sozialverhaltens \(ICD-10: F91\.x\) oder einer Störung mit oppositionellem Trotzverhalten \(F91\.3\)\. Die Symptomatik sollte hinsichtlich Beginn, Dauer und situativer Generalisiertheit weiter exploriert werden\./g,
-             fr: '<strong>Troubles des conduites :</strong> la valeur élevée à l\'échelle Problèmes de conduite est compatible avec un trouble des conduites (CIM-10 : F91.x) ou un trouble oppositionnel avec provocation (F91.3). La symptomatologie doit être explorée davantage en termes de début, de durée et de généralisation situationnelle.',
+             fr: '<strong>Troubles des conduites :</strong> la valeur élevée à l\'échelle Problèmes de conduite est compatible avec un trouble des conduites (ICD-10 : F91.x) ou un trouble oppositionnel avec provocation (F91.3). La symptomatologie doit être explorée davantage en termes de début, de durée et de généralisation situationnelle.',
              en: '<strong>Conduct disorders:</strong> the elevated score on the Conduct Problems scale is consistent with a conduct disorder (ICD-10: F91.x) or an oppositional defiant disorder (F91.3). Symptomatology should be further explored regarding onset, duration and situational generalisation.'},
             {de: /<strong>Hyperkinetische Störungen:<\/strong> Der erhöhte Wert auf der Skala Hyperaktivität\/Unaufmerksamkeit deutet auf das Vorliegen einer Hyperkinetischen Störung \(ICD-10: F90\.x\) bzw\. einer Aufmerksamkeitsdefizit-\/Hyperaktivitätsstörung \(ADHS\) hin\. Eine störungsspezifische ADHS-Diagnostik mittels DISYPS-III, Conners-3 und neuropsychologischer Verfahren ist indiziert\./g,
-             fr: '<strong>Troubles hyperkinétiques :</strong> la valeur élevée à l\'échelle Hyperactivité/Inattention suggère un trouble hyperkinétique (CIM-10 : F90.x) ou un trouble du déficit de l\'attention/hyperactivité (TDAH). Un bilan TDAH spécifique au moyen du DISYPS-III, du Conners-3 et de procédures neuropsychologiques est indiqué.',
+             fr: '<strong>Troubles hyperkinétiques :</strong> la valeur élevée à l\'échelle Hyperactivité/Inattention suggère un trouble hyperkinétique (ICD-10 : F90.x) ou un trouble du déficit de l\'attention/hyperactivité (TDAH). Un bilan TDAH spécifique au moyen du DISYPS-III, du Conners-3 et de procédures neuropsychologiques est indiqué.',
              en: '<strong>Hyperkinetic disorders:</strong> the elevated score on the Hyperactivity/Inattention scale suggests a hyperkinetic disorder (ICD-10: F90.x) or attention-deficit/hyperactivity disorder (ADHD). Disorder-specific ADHD assessment with DISYPS-III, Conners-3 and neuropsychological methods is indicated.'},
             {de: /<strong>Soziale Funktionsstörungen:<\/strong> Der erhöhte Wert auf der Skala Probleme mit Gleichaltrigen kann auf verschiedene Störungsbilder hinweisen: Soziale Phobie \(F40\.1\), Bindungsstörungen \(F94\.x\), oder Autismus-Spektrum-Störungen \(F84\.x\)\. Eine differenzierte Abklärung sozialer Kompetenzen und möglicher Entwicklungsstörungen wird empfohlen\./g,
              fr: '<strong>Troubles du fonctionnement social :</strong> la valeur élevée à l\'échelle Problèmes avec les pairs peut évoquer divers tableaux : phobie sociale (F40.1), troubles de l\'attachement (F94.x) ou troubles du spectre autistique (F84.x). Un bilan différencié des compétences sociales et de troubles du développement éventuels est recommandé.',
@@ -2949,7 +2949,7 @@
              fr: 'Toute suspicion de dépression doit s\'accompagner d\'une exploration des idées suicidaires. Une consultation pédopsychiatrique/psychothérapeutique est vivement recommandée.',
              en: 'Any suspected depression must always be accompanied by an exploration of suicidal ideation. A child & adolescent psychiatric/psychotherapeutic consultation is strongly recommended.'},
             {de: /Die Ergebnisse sind vereinbar mit dem Vorliegen einer depressiven Episode nach ICD-10\/ICD-11:/g,
-             fr: 'Les résultats sont compatibles avec un épisode dépressif selon la CIM-10/CIM-11 :',
+             fr: 'Les résultats sont compatibles avec un épisode dépressif selon l'ICD-10/ICD-11 :',
              en: 'The results are consistent with a depressive episode per ICD-10/ICD-11:'},
             {de: />Leichte depressive Episode</g, fr: '>Épisode dépressif léger<', en: '>Mild depressive episode<'},
             {de: />Mittelgradige depressive Episode</g, fr: '>Épisode dépressif modéré<', en: '>Moderate depressive episode<'},
@@ -3250,7 +3250,7 @@
                      keys: ['in','hi','lp','lpef','ef','ag','pr','fb']},
                     {label: tt('DSM-5 Symptomskalen','Échelles symptomatiques DSM-5','DSM-5 symptom scales'),
                      keys: ['dsm_in','dsm_hi','dsm_k','dsm_cd','dsm_odd']},
-                    {label: tt('ICD-10 Symptomskalen','Échelles symptomatiques CIM-10','ICD-10 symptom scales'),
+                    {label: tt('ICD-10 Symptomskalen','Échelles symptomatiques ICD-10','ICD-10 symptom scales'),
                      keys: ['icd_as','icd_sv','icd_hksv']},
                     {label: tt('Conners 3 Indices','Indices Conners 3','Conners 3 indices'),
                      keys: ['adhd','gi']},
@@ -3535,7 +3535,7 @@
             const groups = [
                 {hdr:null,                                                                               keys:['in','hi','lpef','lp','ef','ag','pr','fb'], mode:'t'},
                 {hdr:tt('Symptomskalen nach DSM-5','Échelles des symptômes selon le DSM-5','Symptom scales per DSM-5'),  keys:['dsm_in','dsm_hi','dsm_k','dsm_cd','dsm_odd'],     mode:'t'},
-                {hdr:tt('Symptomskalen nach ICD-10','Échelles des symptômes selon la ICD-10','Symptom scales per ICD-10'),keys:['icd_as','icd_sv','icd_hksv'],                    mode:'t'},
+                {hdr:tt('Symptomskalen nach ICD-10','Échelles des symptômes selon l'ICD-10','Symptom scales per ICD-10'),keys:['icd_as','icd_sv','icd_hksv'],                    mode:'t'},
                 {hdr:tt('Conners 3 Indices','Indices Conners 3','Conners 3 indices'),                                    keys:['adhd','gi'],                                     mode:'t'},
                 {hdr:tt('Screener-Items (SI)','Items de dépistage (SI)','Screener items (SI)'),                          keys:['si_anx','si_anx_items','si_dep','si_dep_items'], mode:'sum'}
             ];
@@ -3934,7 +3934,7 @@
                         )}</p>
                         <p><strong>${tt('Keine Diagnosestellung:', 'Pas de diagnostic posé :', 'No diagnosis made:')}</strong> ${tt(
                             'Dieser Bericht ersetzt keine umfassende klinische Diagnostik durch eine/n approbierte/n Psychologische/n Psychotherapeut/in oder Facharzt/Fachärztin für Kinder- und Jugendpsychiatrie. Die genannten ICD-Codes dienen der differenzialdiagnostischen Orientierung und stellen keine Diagnosen dar.',
-                            'Ce rapport ne remplace pas un bilan clinique complet réalisé par un·e psychothérapeute agréé·e ou un·e médecin spécialiste en pédopsychiatrie. Les codes CIM mentionnés servent à l\'orientation différentielle et ne constituent pas des diagnostics.',
+                            'Ce rapport ne remplace pas un bilan clinique complet réalisé par un·e psychothérapeute agréé·e ou un·e médecin spécialiste en pédopsychiatrie. Les codes ICD mentionnés servent à l\'orientation différentielle et ne constituent pas des diagnostics.',
                             'This report does not replace a comprehensive clinical assessment by a licensed psychotherapist or a child & adolescent psychiatrist. The cited ICD codes serve differential-diagnostic orientation only and do not constitute diagnoses.'
                         )}</p>
                         <p><strong>${tt('Datenschutz:', 'Protection des données :', 'Data protection:')}</strong> ${tt(
@@ -5139,7 +5139,7 @@
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">${tt(
                             '6. Diagnostische Einordnung nach ICD-10/ICD-11',
-                            '6. Classification diagnostique selon CIM-10/CIM-11',
+                            '6. Classification diagnostique selon ICD-10/ICD-11',
                             '6. Diagnostic classification per ICD-10/ICD-11'
                         )}</h4>
                         <div class="gutachten-text">
@@ -5150,17 +5150,17 @@
                             )}</p>
                             ${c.em === 'clinical' ? `<div class="gutachten-highlight"><strong>${tt('Emotionale Störungen:', 'Troubles émotionnels :', 'Emotional disorders:')}</strong> ${tt(
                                 'Der erhöhte Wert auf der Skala Emotionale Probleme ist vereinbar mit dem Vorliegen einer emotionalen Störung des Kindesalters (ICD-10: F93.x), einer Angststörung (F40.x, F41.x) oder einer depressiven Episode (F32.x). Eine vertiefte Angst- und Depressionsdiagnostik wird empfohlen.',
-                                'La valeur élevée à l\'échelle Problèmes émotionnels est compatible avec un trouble émotionnel de l\'enfance (CIM-10 : F93.x), un trouble anxieux (F40.x, F41.x) ou un épisode dépressif (F32.x). Un bilan approfondi d\'anxiété et de dépression est recommandé.',
+                                'La valeur élevée à l\'échelle Problèmes émotionnels est compatible avec un trouble émotionnel de l\'enfance (ICD-10 : F93.x), un trouble anxieux (F40.x, F41.x) ou un épisode dépressif (F32.x). Un bilan approfondi d\'anxiété et de dépression est recommandé.',
                                 'The elevated score on the Emotional Problems scale is consistent with a childhood emotional disorder (ICD-10: F93.x), an anxiety disorder (F40.x, F41.x) or a depressive episode (F32.x). In-depth anxiety and depression assessment is recommended.'
                             )}<br><span class="icd-code">F93.x</span> <span class="icd-code">F40.x</span> <span class="icd-code">F41.x</span> <span class="icd-code">F32.x</span></div>` : ''}
                             ${c.co === 'clinical' ? `<div class="gutachten-highlight"><strong>${tt('Störungen des Sozialverhaltens:', 'Troubles des conduites :', 'Conduct disorders:')}</strong> ${tt(
                                 'Der erhöhte Wert auf der Skala Verhaltensprobleme ist vereinbar mit dem Vorliegen einer Störung des Sozialverhaltens (ICD-10: F91.x) oder einer Störung mit oppositionellem Trotzverhalten (F91.3). Die Symptomatik sollte hinsichtlich Beginn, Dauer und situativer Generalisiertheit weiter exploriert werden.',
-                                'La valeur élevée à l\'échelle Problèmes de conduite est compatible avec un trouble des conduites (CIM-10 : F91.x) ou un trouble oppositionnel avec provocation (F91.3). La symptomatologie doit être explorée davantage en termes de début, de durée et de généralisation situationnelle.',
+                                'La valeur élevée à l\'échelle Problèmes de conduite est compatible avec un trouble des conduites (ICD-10 : F91.x) ou un trouble oppositionnel avec provocation (F91.3). La symptomatologie doit être explorée davantage en termes de début, de durée et de généralisation situationnelle.',
                                 'The elevated score on the Conduct Problems scale is consistent with a conduct disorder (ICD-10: F91.x) or an oppositional defiant disorder (F91.3). Symptomatology should be further explored regarding onset, duration and situational generalisation.'
                             )}<br><span class="icd-code">F91.x</span> <span class="icd-code">F91.3</span></div>` : ''}
                             ${c.hy === 'clinical' ? `<div class="gutachten-highlight"><strong>${tt('Hyperkinetische Störungen:', 'Troubles hyperkinétiques :', 'Hyperkinetic disorders:')}</strong> ${tt(
                                 'Der erhöhte Wert auf der Skala Hyperaktivität/Unaufmerksamkeit ist vereinbar mit dem Vorliegen einer Aufmerksamkeitsdefizit-/Hyperaktivitätsstörung (ICD-10: F90.x). Eine multimodale ADHS-Diagnostik unter Einbezug verschiedener Informationsquellen und Settings wird dringend empfohlen.',
-                                'La valeur élevée à l\'échelle Hyperactivité/Inattention est compatible avec un trouble du déficit de l\'attention/hyperactivité (CIM-10 : F90.x). Un bilan TDAH multimodal incluant différentes sources d\'information et différents contextes est vivement recommandé.',
+                                'La valeur élevée à l\'échelle Hyperactivité/Inattention est compatible avec un trouble du déficit de l\'attention/hyperactivité (ICD-10 : F90.x). Un bilan TDAH multimodal incluant différentes sources d\'information et différents contextes est vivement recommandé.',
                                 'The elevated score on the Hyperactivity/Inattention scale is consistent with attention-deficit/hyperactivity disorder (ICD-10: F90.x). A multimodal ADHD assessment including various information sources and settings is strongly recommended.'
                             )}<br><span class="icd-code">F90.0</span> <span class="icd-code">F90.1</span></div>` : ''}
                             ${c.pe === 'clinical' ? `<div class="gutachten-highlight"><strong>${tt('Soziale Funktionsstörungen:', 'Troubles du fonctionnement social :', 'Social functional impairments:')}</strong> ${tt(
@@ -5638,7 +5638,7 @@
                                 )}</p>` : ''}
                                 ${fsiq < 70 ? `<p>${tt(
                                     `${pat.name} zeigt <strong>deutlich unterdurchschnittliche kognitive Fähigkeiten</strong> (IQ < 70). Dieser Befund ist vereinbar mit dem Vorliegen einer Intelligenzminderung nach ICD-10/ICD-11. Für die Diagnosestellung ist zusätzlich zur intellektuellen Beeinträchtigung eine Einschränkung der adaptiven Fähigkeiten erforderlich. Eine umfassende Entwicklungsdiagnostik sowie die Prüfung eines sonderpädagogischen Förderbedarfs werden dringend empfohlen.`,
-                                    `${pat.name} montre des <strong>capacités cognitives nettement inférieures</strong> (QI < 70). Ce résultat est compatible avec la présence d'une déficience intellectuelle selon la CIM-10/CIM-11. Le diagnostic nécessite, outre la déficience intellectuelle, une limitation des capacités adaptatives. Un bilan développemental complet ainsi qu'une évaluation des besoins éducatifs spécifiques sont vivement recommandés.`,
+                                    `${pat.name} montre des <strong>capacités cognitives nettement inférieures</strong> (QI < 70). Ce résultat est compatible avec la présence d'une déficience intellectuelle selon l'ICD-10/ICD-11. Le diagnostic nécessite, outre la déficience intellectuelle, une limitation des capacités adaptatives. Un bilan développemental complet ainsi qu'une évaluation des besoins éducatifs spécifiques sont vivement recommandés.`,
                                     `${pat.name} shows <strong>clearly below-average cognitive abilities</strong> (IQ < 70). This finding is consistent with the presence of intellectual disability per ICD-10/ICD-11. Diagnosis requires, in addition to intellectual impairment, a limitation of adaptive abilities. A comprehensive developmental assessment and special-educational-needs review are strongly recommended.`
                                 )}</p>` : ''}
                                 ${diff >= 23 ? `<p><strong>${tt('Wichtiger Hinweis zur Profilstreuung:','Note importante sur la dispersion du profil :','Important note on profile spread:')}</strong> ${tt(
@@ -5679,12 +5679,12 @@
                     </div>
 
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">${tt('6. Diagnostische Einordnung nach ICD-10/ICD-11','6. Classification diagnostique selon CIM-10/CIM-11','6. Diagnostic classification per ICD-10/ICD-11')}</h4>
+                        <h4 class="gutachten-section-title">${tt('6. Diagnostische Einordnung nach ICD-10/ICD-11','6. Classification diagnostique selon ICD-10/ICD-11','6. Diagnostic classification per ICD-10/ICD-11')}</h4>
                         <div class="gutachten-text">
                             ${fsiq && fsiq < 70 ? `
                                 <p>${tt(
                                     'Die Ergebnisse der Intelligenzdiagnostik sind vereinbar mit dem Vorliegen einer <strong>Intelligenzminderung</strong> nach ICD-10 (F70-F79) bzw. ICD-11 (Disorders of intellectual development). Der Schweregrad richtet sich nach dem IQ-Wert:',
-                                    'Les résultats du bilan intellectuel sont compatibles avec une <strong>déficience intellectuelle</strong> selon CIM-10 (F70-F79) ou CIM-11 (Disorders of intellectual development). La sévérité dépend du QI :',
+                                    'Les résultats du bilan intellectuel sont compatibles avec une <strong>déficience intellectuelle</strong> selon ICD-10 (F70-F79) ou ICD-11 (Disorders of intellectual development). La sévérité dépend du QI :',
                                     'The intellectual assessment results are consistent with an <strong>intellectual disability</strong> per ICD-10 (F70-F79) or ICD-11 (Disorders of intellectual development). Severity depends on the IQ:'
                                 )}</p>
                                 <ul class="gutachten-list">
@@ -5703,7 +5703,7 @@
                             ${fsiq && fsiq >= 70 && fsiq < 85 ? `
                                 <p>${tt(
                                     'Die intellektuelle Leistungsfähigkeit liegt im <strong>Grenzbereich</strong> (IQ 70-84), der früher als "Lernbehinderung" bezeichnet wurde. Dieser Bereich entspricht keiner Intelligenzminderung im klinischen Sinne (ICD-10: F7x), kann jedoch mit Lernschwierigkeiten einhergehen und erfordert häufig individuelle Fördermaßnahmen.',
-                                    'Le fonctionnement intellectuel se situe dans la <strong>plage limite</strong> (QI 70-84), anciennement appelée « difficultés d\'apprentissage ». Cette plage ne correspond pas à une déficience intellectuelle au sens clinique (CIM-10 : F7x), mais peut s\'accompagner de difficultés d\'apprentissage et nécessite souvent un soutien individualisé.',
+                                    'Le fonctionnement intellectuel se situe dans la <strong>plage limite</strong> (QI 70-84), anciennement appelée « difficultés d\'apprentissage ». Cette plage ne correspond pas à une déficience intellectuelle au sens clinique (ICD-10 : F7x), mais peut s\'accompagner de difficultés d\'apprentissage et nécessite souvent un soutien individualisé.',
                                     'Intellectual functioning falls within the <strong>borderline range</strong> (IQ 70-84), formerly termed "learning difficulty". This range does not correspond to clinical intellectual disability (ICD-10: F7x), but may involve learning difficulties and often requires individualised support.'
                                 )}</p>
                                 <span class="icd-code">Z55</span> ${tt('Probleme in Zusammenhang mit der Erziehung und Alphabetisierung','Problèmes liés à l\'éducation et l\'alphabétisation','Problems related to education and literacy')}
@@ -6401,7 +6401,7 @@
                             <ul class="gutachten-list">
                                 ${validSyn.filter(([k])=>cSyn[k]==='clinical').map(([k])=>`<li><strong>${cbclSynName(k)}:</strong> ${CBCL_SYN[k].icd}</li>`).join('') || `<li>${tt('Bei unauffälligem Profil keine spezifischen Hinweise','Profil normal – pas d\'indication spécifique','Normal profile – no specific indications')}</li>`}
                             </ul>
-                            ${icdCodes.size ? `<p style="margin-top:1rem;"><strong>${tt('Relevante ICD-10 Codes:','Codes CIM-10 pertinents :','Relevant ICD-10 codes:')}</strong></p>${Array.from(icdCodes).map(c=>`<span class="icd-code">${c}</span>`).join('')}` : ''}
+                            ${icdCodes.size ? `<p style="margin-top:1rem;"><strong>${tt('Relevante ICD-10 Codes:','Codes ICD-10 pertinents :','Relevant ICD-10 codes:')}</strong></p>${Array.from(icdCodes).map(c=>`<span class="icd-code">${c}</span>`).join('')}` : ''}
                         </div>
                     </div>
 
@@ -6617,7 +6617,7 @@
 
             const gutachten = `
                 <div class="gutachten">
-                    ${gutachtenHeader('DISYPS-III', tt('Diagnostik-System für psychische Störungen nach ICD-10/11 und DSM-5','Système diagnostique des troubles psychiques selon CIM-10/11 et DSM-5','Diagnostic system for mental disorders per ICD-10/11 and DSM-5'), pat)}
+                    ${gutachtenHeader('DISYPS-III', tt('Diagnostik-System für psychische Störungen nach ICD-10/11 und DSM-5','Système diagnostique des troubles psychiques selon ICD-10/11 et DSM-5','Diagnostic system for mental disorders per ICD-10/11 and DSM-5'), pat)}
 
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">${tt('1. Testbeschreibung','1. Description du test','1. Test description')}</h4>
@@ -6675,7 +6675,7 @@
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">${tt('5. Diagnostische Einordnung','5. Classification diagnostique','5. Diagnostic classification')}</h4>
                         <div class="gutachten-text">
-                            <p><strong>${tt('Relevante ICD-10 Diagnosen:','Diagnostics CIM-10 pertinents :','Relevant ICD-10 diagnoses:')}</strong></p>
+                            <p><strong>${tt('Relevante ICD-10 Diagnosen:','Diagnostics ICD-10 pertinents :','Relevant ICD-10 diagnoses:')}</strong></p>
                             ${adhs_clin ? `<span class="icd-code">F90.0</span> ${tt('Einfache Aktivitäts- und Aufmerksamkeitsstörung','Trouble simple de l\'activité et de l\'attention','Simple Activity and Attention Disorder')}<br>` : ''}
                             ${adhs_clin && ssv_clin ? `<span class="icd-code">F90.1</span> ${tt('Hyperkinetische Störung des Sozialverhaltens','Trouble hyperkinétique des conduites','Hyperkinetic Conduct Disorder')}<br>` : ''}
                             ${c.opp === 'clinical' ? `<span class="icd-code">F91.3</span> ${tt('Störung des Sozialverhaltens mit oppositionellem, aufsässigem Verhalten','Trouble oppositionnel avec provocation','Oppositional Defiant Disorder')}<br>` : ''}
@@ -6911,7 +6911,7 @@
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">${tt('5. Diagnostische Einordnung','5. Classification diagnostique','5. Diagnostic classification')}</h4>
                         <div class="gutachten-text">
-                            <p><strong>${tt('Relevante ICD-10 Diagnosen:','Diagnostics CIM-10 pertinents :','Relevant ICD-10 diagnoses:')}</strong></p>
+                            <p><strong>${tt('Relevante ICD-10 Diagnosen:','Diagnostics ICD-10 pertinents :','Relevant ICD-10 diagnoses:')}</strong></p>
                             ${pa_clin ? `<span class="icd-code">F40.2</span> ${tt('Spezifische Phobien (Prüfungsangst)','Phobies spécifiques (anxiété de performance)','Specific phobias (test anxiety)')}<br><span class="icd-code">F93.0</span> ${tt('Emotionale Störung mit Trennungsangst','Trouble émotionnel avec anxiété de séparation','Emotional disorder with separation anxiety')}<br>` : ''}
                             ${ma_clin ? `<span class="icd-code">F41.1</span> ${tt('Generalisierte Angststörung','Trouble d\'anxiété généralisée','Generalised anxiety disorder')}<br><span class="icd-code">F93.8</span> ${tt('Sonstige emotionale Störungen des Kindesalters','Autres troubles émotionnels de l\'enfance','Other emotional disorders of childhood')}<br>` : ''}
                             ${!pa_clin && !ma_clin ? `<span class="icd-code">Z03.2</span> ${tt('Beobachtung – nicht bestätigt','Observation – non confirmé','Observation – not confirmed')}` : ''}
@@ -7388,7 +7388,7 @@
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">${tt('4. Diagnostische Einordnung','4. Classification diagnostique','4. Diagnostic classification')}</h4>
                         <div class="gutachten-text">
-                            ${c === 'clinical' ? `<p>${tt('Die Ergebnisse sind vereinbar mit dem Vorliegen einer depressiven Episode nach ICD-10/ICD-11:','Les résultats sont compatibles avec un épisode dépressif selon la CIM-10/CIM-11 :','The results are consistent with a depressive episode per ICD-10/ICD-11:')}</p>
+                            ${c === 'clinical' ? `<p>${tt('Die Ergebnisse sind vereinbar mit dem Vorliegen einer depressiven Episode nach ICD-10/ICD-11:','Les résultats sont compatibles avec un épisode dépressif selon l'ICD-10/ICD-11 :','The results are consistent with a depressive episode per ICD-10/ICD-11:')}</p>
                             <span class="icd-code">F32.0</span> ${tt('Leichte depressive Episode','Épisode dépressif léger','Mild depressive episode')}<br>
                             <span class="icd-code">F32.1</span> ${tt('Mittelgradige depressive Episode','Épisode dépressif moyen','Moderate depressive episode')}<br>
                             <span class="icd-code">F32.2</span> ${tt('Schwere depressive Episode','Épisode dépressif sévère','Severe depressive episode')}` :
@@ -7713,7 +7713,7 @@
                         </table>
                         ` : ''}
                         ${validIcd.length ? `
-                        <p style="font-weight:bold;margin-top:1rem;">${tt('ICD-10 Symptomskalen','Échelles symptomatiques CIM-10','ICD-10 symptom scales')}</p>
+                        <p style="font-weight:bold;margin-top:1rem;">${tt('ICD-10 Symptomskalen','Échelles symptomatiques ICD-10','ICD-10 symptom scales')}</p>
                         <table class="gutachten-table">
                             <thead><tr><th>${thScale}</th><th>${thScore}</th><th>${thPR}</th><th>${thClassif}</th></tr></thead>
                             <tbody>
@@ -7834,19 +7834,19 @@
                         </div>
                     </div>
                     <div class="gutachten-section">
-                        <h4 class="gutachten-section-title">${tt('4. Diagnostische Einordnung (ICD-10)','4. Classification diagnostique (CIM-10)','4. Diagnostic classification (ICD-10)')}</h4>
+                        <h4 class="gutachten-section-title">${tt('4. Diagnostische Einordnung (ICD-10)','4. Classification diagnostique (ICD-10)','4. Diagnostic classification (ICD-10)')}</h4>
                         <div class="gutachten-text">
                             ${c.icd_hksv === 'clinical' ? `
                             <p>${tt(
                                 'Die ICD-10-orientierten Skalen sind vereinbar mit einer <strong>Hyperkinetischen Störung des Sozialverhaltens</strong>:',
-                                'Les échelles orientées CIM-10 sont compatibles avec un <strong>trouble hyperkinétique des conduites</strong> :',
+                                'Les échelles orientées ICD-10 sont compatibles avec un <strong>trouble hyperkinétique des conduites</strong> :',
                                 'The ICD-10-oriented scales are consistent with <strong>Hyperkinetic Conduct Disorder</strong>:'
                             )}</p>
                             <span class="icd-code">F90.1</span> ${tt('Hyperkinetische Störung des Sozialverhaltens','Trouble hyperkinétique des conduites','Hyperkinetic Conduct Disorder')}` :
                             c.icd_as === 'clinical' ? `
                             <p>${tt(
                                 'Die ICD-10-orientierten Skalen sind vereinbar mit einer <strong>Einfachen Aktivitäts- und Aufmerksamkeitsstörung</strong>:',
-                                'Les échelles orientées CIM-10 sont compatibles avec un <strong>trouble simple de l\'activité et de l\'attention</strong> :',
+                                'Les échelles orientées ICD-10 sont compatibles avec un <strong>trouble simple de l\'activité et de l\'attention</strong> :',
                                 'The ICD-10-oriented scales are consistent with a <strong>Simple Activity and Attention Disorder</strong>:'
                             )}</p>
                             <span class="icd-code">F90.0</span> ${tt('Einfache Aktivitäts- und Aufmerksamkeitsstörung','Trouble simple de l\'activité et de l\'attention','Simple Activity and Attention Disorder')}` :
@@ -8524,10 +8524,10 @@
                             ${abcVal && abcVal < 70 ? `
                                 <p>${tt(
                                     'Die Ergebnisse zeigen eine signifikante Beeinträchtigung adaptiver Funktionen, die für die Diagnose einer intellektuellen Beeinträchtigung relevant ist. Nach ICD-11/DSM-5 ist neben unterdurchschnittlicher Intelligenz auch eine Beeinträchtigung adaptiver Fähigkeiten erforderlich.',
-                                    'Les résultats montrent une altération significative des fonctions adaptatives, pertinente pour le diagnostic de déficience intellectuelle. Selon CIM-11/DSM-5, une intelligence inférieure à la moyenne et une altération des capacités adaptatives sont toutes deux requises.',
+                                    'Les résultats montrent une altération significative des fonctions adaptatives, pertinente pour le diagnostic de déficience intellectuelle. Selon ICD-11/DSM-5, une intelligence inférieure à la moyenne et une altération des capacités adaptatives sont toutes deux requises.',
                                     'The results show a significant impairment of adaptive functions, relevant for the diagnosis of intellectual disability. Per ICD-11/DSM-5, both below-average intelligence and impairment of adaptive abilities are required.'
                                 )}</p>
-                                <span class="icd-code">6A00</span> ${tt('Störungen der Intelligenzentwicklung (ICD-11)','Troubles du développement intellectuel (CIM-11)','Disorders of intellectual development (ICD-11)')}
+                                <span class="icd-code">6A00</span> ${tt('Störungen der Intelligenzentwicklung (ICD-11)','Troubles du développement intellectuel (ICD-11)','Disorders of intellectual development (ICD-11)')}
                                 <p style="margin-top:1rem;">${tt('Der Schweregrad richtet sich primär nach dem adaptiven Funktionsniveau:','La sévérité dépend principalement du niveau de fonctionnement adaptatif :','Severity is primarily based on adaptive functioning level:')}</p>
                                 <ul class="gutachten-list">
                                     ${abcVal >= 55 && abcVal < 70 ? `<li><strong>${tt('Leichte Beeinträchtigung:','Légère :','Mild:')}</strong> ${tt('Unterstützung in einzelnen Bereichen erforderlich','Soutien requis dans certains domaines','Support required in some areas')}</li>` : ''}
