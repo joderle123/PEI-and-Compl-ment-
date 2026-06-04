@@ -2949,7 +2949,7 @@
              fr: 'Toute suspicion de dépression doit s\'accompagner d\'une exploration des idées suicidaires. Une consultation pédopsychiatrique/psychothérapeutique est vivement recommandée.',
              en: 'Any suspected depression must always be accompanied by an exploration of suicidal ideation. A child & adolescent psychiatric/psychotherapeutic consultation is strongly recommended.'},
             {de: /Die Ergebnisse sind vereinbar mit dem Vorliegen einer depressiven Episode nach ICD-10\/ICD-11:/g,
-             fr: 'Les résultats sont compatibles avec un épisode dépressif selon l'ICD-10/ICD-11 :',
+             fr: 'Les résultats sont compatibles avec un épisode dépressif selon l\'ICD-10/ICD-11 :',
              en: 'The results are consistent with a depressive episode per ICD-10/ICD-11:'},
             {de: />Leichte depressive Episode</g, fr: '>Épisode dépressif léger<', en: '>Mild depressive episode<'},
             {de: />Mittelgradige depressive Episode</g, fr: '>Épisode dépressif modéré<', en: '>Moderate depressive episode<'},
@@ -3535,7 +3535,7 @@
             const groups = [
                 {hdr:null,                                                                               keys:['in','hi','lpef','lp','ef','ag','pr','fb'], mode:'t'},
                 {hdr:tt('Symptomskalen nach DSM-5','Échelles des symptômes selon le DSM-5','Symptom scales per DSM-5'),  keys:['dsm_in','dsm_hi','dsm_k','dsm_cd','dsm_odd'],     mode:'t'},
-                {hdr:tt('Symptomskalen nach ICD-10','Échelles des symptômes selon l'ICD-10','Symptom scales per ICD-10'),keys:['icd_as','icd_sv','icd_hksv'],                    mode:'t'},
+                {hdr:tt('Symptomskalen nach ICD-10','Échelles des symptômes selon l\'ICD-10','Symptom scales per ICD-10'),keys:['icd_as','icd_sv','icd_hksv'],                    mode:'t'},
                 {hdr:tt('Conners 3 Indices','Indices Conners 3','Conners 3 indices'),                                    keys:['adhd','gi'],                                     mode:'t'},
                 {hdr:tt('Screener-Items (SI)','Items de dépistage (SI)','Screener items (SI)'),                          keys:['si_anx','si_anx_items','si_dep','si_dep_items'], mode:'sum'}
             ];
@@ -7388,7 +7388,7 @@
                     <div class="gutachten-section">
                         <h4 class="gutachten-section-title">${tt('4. Diagnostische Einordnung','4. Classification diagnostique','4. Diagnostic classification')}</h4>
                         <div class="gutachten-text">
-                            ${c === 'clinical' ? `<p>${tt('Die Ergebnisse sind vereinbar mit dem Vorliegen einer depressiven Episode nach ICD-10/ICD-11:','Les résultats sont compatibles avec un épisode dépressif selon l'ICD-10/ICD-11 :','The results are consistent with a depressive episode per ICD-10/ICD-11:')}</p>
+                            ${c === 'clinical' ? `<p>${tt('Die Ergebnisse sind vereinbar mit dem Vorliegen einer depressiven Episode nach ICD-10/ICD-11:','Les résultats sont compatibles avec un épisode dépressif selon l\'ICD-10/ICD-11 :','The results are consistent with a depressive episode per ICD-10/ICD-11:')}</p>
                             <span class="icd-code">F32.0</span> ${tt('Leichte depressive Episode','Épisode dépressif léger','Mild depressive episode')}<br>
                             <span class="icd-code">F32.1</span> ${tt('Mittelgradige depressive Episode','Épisode dépressif moyen','Moderate depressive episode')}<br>
                             <span class="icd-code">F32.2</span> ${tt('Schwere depressive Episode','Épisode dépressif sévère','Severe depressive episode')}` :
