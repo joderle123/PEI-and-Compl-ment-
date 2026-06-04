@@ -1909,7 +1909,7 @@
                         <div class="form-section-title">Conners 3 Indices (T-Werte)</div>
                         <div class="form-grid">
                             <div class="form-group"><label><strong>C3-AI – Conners 3 ADHS-Index</strong></label><input type="number" id="con-adhd" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Wahrscheinlichkeit ADHS</span></div>
-                            <div class="form-group"><label><strong>C3-GI – Conners 3 Global Index</strong></label><input type="number" id="con-gi" min="30" max="90" placeholder="T-Wert"><span class="form-hint">Allgemeine Psychopathologie</span></div>
+                            <div class="form-group" data-beurteiler="parent teacher"><label><strong>C3-GI – Conners 3 Global Index</strong></label><input type="number" id="con-gi" min="30" max="90" placeholder="T-Wert"><span class="form-hint">nur Eltern · Lehrer</span></div>
                         </div>
                     </div>
                     <div class="form-section">
@@ -3277,6 +3277,206 @@
             return null;
         }
 
+        // Erzeugt einen narrativen Qualitative-Analyse-Text für Conners-3
+        // basierend auf den gespeicherten Multi-Rater-Daten. Identifiziert
+        // erhöhte Skalen (T ≥ 65), konkordante Befunde zwischen Beurteilern,
+        // den am stärksten belasteten Rater, abweichende Selbstwahrnehmung
+        // und Screener-Item-Befunde. Gibt HTML mit Absätzen zurück.
+        function connersQualitativeNarrative(saved) {
+            if(!saved || saved.length === 0) return '';
+            const tof = (rk, sk) => { const e = saved.find(([k])=>k===rk)?.[1]?.values?.[sk]; const v = e?.v; return (typeof v === 'number' && !isNaN(v)) ? v : null; };
+            const labelOf = (rk, sk) => saved.find(([k])=>k===rk)?.[1]?.values?.[sk]?.label || '';
+            const nameStem = lbl => { const m = (lbl||'').match(/^(.+?)\s*\(/); return m ? m[1] : lbl; };
+
+            // Rater-Bezeichnungen pro Sprache
+            const RN_SUBJ = { parent:tt('die Eltern','les parents','the parents'),
+                              teacher:tt('die Lehrkräfte','les enseignants','the teachers'),
+                              self:tt('die Selbsteinschätzung','l\'autoévaluation','the self-rating') };
+            const RN_OF   = { parent:tt('der Eltern','des parents','of the parents'),
+                              teacher:tt('der Lehrkräfte','des enseignants','of the teachers'),
+                              self:tt('der Selbsteinschätzung','de l\'autoévaluation','of the self-rating') };
+            const RN_SHORT= { parent:tt('Eltern','parents','parents'),
+                              teacher:tt('Lehrkräfte','enseignants','teachers'),
+                              self:tt('Selbsteinschätzung','autoévaluation','self-rating') };
+
+            // Klinische Domänen (Skalengruppen für narrative Zusammenfassung)
+            const D = {
+                attention:{scales:['in','dsm_in'],          label:tt('Aufmerksamkeit','l\'attention','attention')},
+                hi:       {scales:['hi','dsm_hi'],          label:tt('Hyperaktivität und Impulsivität','l\'hyperactivité et de l\'impulsivité','hyperactivity and impulsivity')},
+                ef:       {scales:['ef','lpef'],            label:tt('der exekutiven Funktionen','des fonctions exécutives','executive functions')},
+                lp:       {scales:['lp','lpef'],            label:tt('Lernens','des apprentissages','learning')},
+                pr:       {scales:['pr'],                   label:tt('Beziehungen zu Gleichaltrigen','des relations avec les pairs','peer relations')},
+                fb:       {scales:['fb'],                   label:tt('Familienbeziehungen','des relations familiales','family relations')},
+                oppCond:  {scales:['ag','dsm_odd','dsm_cd','icd_sv','icd_hksv'], label:tt('oppositionellen und aggressiven Verhaltensweisen','des comportements oppositionnels et agressifs','oppositional and aggressive behaviour')},
+                adhdComb: {scales:['dsm_k','icd_as','adhd'],label:tt('kombinierten ADHS-Profils','du profil TDAH combiné','combined ADHD profile')}
+            };
+
+            // Hilfsfunktionen
+            const maxAcrossRaters = (scaleList) => {
+                let max = null;
+                saved.forEach(([rk]) => scaleList.forEach(sk => { const v = tof(rk,sk); if(v !== null && (max === null || v > max)) max = v; }));
+                return max;
+            };
+            const contentScales = ['in','hi','lp','lpef','ef','ag','pr','fb','dsm_in','dsm_hi','dsm_k','dsm_cd','dsm_odd','icd_as','icd_sv','icd_hksv','adhd','gi'];
+            const raterSeverity = rk => { let s = 0; contentScales.forEach(sk => { const v = tof(rk,sk); if(v && v >= 60) s += (v - 60); }); return s; };
+            const elevatedScalesForRater = rk => {
+                const order = ['in','hi','lpef','lp','ef','ag','pr','fb','dsm_in','dsm_hi','dsm_k','dsm_cd','dsm_odd','icd_as','icd_sv','icd_hksv','adhd','gi'];
+                const out = [];
+                order.forEach(sk => { const v = tof(rk,sk); if(v !== null && v >= 65) out.push({sk, v, label:labelOf(rk,sk)}); });
+                return out.sort((a,b) => b.v - a.v);
+            };
+            const fmtScores = sk => saved.map(([rk]) => { const v = tof(rk,sk); return v !== null ? `${RN_SHORT[rk]} : T = ${v}` : null; }).filter(Boolean).join(' ; ');
+            const fmtList = items => { if(items.length <= 1) return items[0] || ''; return items.slice(0,-1).join(', ') + tt(' und ', ' et ', ' and ') + items[items.length-1]; };
+
+            // Identifiziere klinisch erhöhte Domänen
+            const elevatedDomKeys = Object.entries(D).filter(([k,d]) => { const m = maxAcrossRaters(d.scales); return m !== null && m >= 65; }).map(([k]) => k);
+            const elevatedDomainLabels = elevatedDomKeys.map(k => D[k].label);
+            const joinedDomains = fmtList(elevatedDomainLabels);
+
+            // Konkordante Erhöhungen: alle Rater haben T ≥ 60 UND Spannweite ≤ 12
+            const concordantElevated = [];
+            contentScales.forEach(sk => {
+                const vals = saved.map(([rk]) => tof(rk, sk)).filter(v => v !== null);
+                if(vals.length === saved.length && vals.length >= 2) {
+                    const mn = Math.min(...vals), mx = Math.max(...vals);
+                    if(mn >= 60 && (mx - mn) <= 12) {
+                        const lbl = saved.map(([rk]) => labelOf(rk, sk)).find(Boolean) || '';
+                        concordantElevated.push({sk, label:lbl, max:mx});
+                    }
+                }
+            });
+            concordantElevated.sort((a,b) => b.max - a.max);
+
+            // Rater nach Gesamt-Schweregrad sortieren
+            const sortedRaters = saved.map(([rk]) => rk).sort((a,b) => raterSeverity(b) - raterSeverity(a));
+            const mostSevere = sortedRaters[0];
+
+            const paragraphs = [];
+
+            // Para 1: Eröffnung
+            if(elevatedDomainLabels.length === 0) {
+                paragraphs.push(tt(
+                    `Die Ergebnisse des Conners 3 zeigen keine klinisch auffälligen Erhöhungen in den untersuchten Skalen.`,
+                    `Les résultats du Conners 3 ne mettent pas en évidence d'élévations cliniquement significatives dans les échelles évaluées.`,
+                    `The Conners 3 results show no clinically significant elevations across the evaluated scales.`
+                ));
+            } else if(saved.length >= 2 && concordantElevated.length > 0) {
+                const top = concordantElevated[0];
+                const topName = nameStem(top.label).toLowerCase();
+                paragraphs.push(tt(
+                    `Die Ergebnisse des Conners 3 weisen auf bedeutsame und relativ konkordante Schwierigkeiten zwischen den verschiedenen Beurteilern hin, insbesondere in den Bereichen ${joinedDomains}. Die Beurteilungen aller Informanten zeigen erhöhte bis stark erhöhte Werte hinsichtlich der Symptome im Bereich ${topName} (${fmtScores(top.sk)}).`,
+                    `Les résultats du Conners 3 mettent en évidence des difficultés importantes et relativement concordantes entre les différents informateurs, particulièrement dans les domaines de ${joinedDomains}. Les évaluations de l'ensemble des informateurs montrent des scores élevés à très élevés concernant les symptômes ${topName ? 'de '+topName : ''} (${fmtScores(top.sk)}).`,
+                    `The Conners 3 results highlight significant and relatively concordant difficulties across informants, particularly in the domains of ${joinedDomains}. All informants show elevated to very elevated scores regarding ${topName} symptoms (${fmtScores(top.sk)}).`
+                ));
+            } else {
+                paragraphs.push(tt(
+                    `Die Ergebnisse des Conners 3 weisen auf bedeutsame Schwierigkeiten hin, insbesondere in den Bereichen ${joinedDomains}.`,
+                    `Les résultats du Conners 3 mettent en évidence des difficultés importantes, particulièrement dans les domaines de ${joinedDomains}.`,
+                    `The Conners 3 results highlight significant difficulties, particularly in the domains of ${joinedDomains}.`
+                ));
+            }
+
+            // Para 2: Der am stärksten belastete Rater (nur wenn ≥2 Rater)
+            if(saved.length >= 2 && mostSevere) {
+                const elev = elevatedScalesForRater(mostSevere).slice(0, 5);
+                if(elev.length >= 2) {
+                    const tList = elev.map(s => `${nameStem(s.label).toLowerCase()} (T = ${s.v})`).join(', ');
+                    const ctx = mostSevere === 'teacher' ? tt('im schulischen Kontext','dans le contexte scolaire','in the school context')
+                              : mostSevere === 'parent'  ? tt('im familiären Kontext','dans le contexte familial','in the family context')
+                              :                            tt('aus eigener Perspektive','dans sa perception personnelle','in self-perception');
+                    paragraphs.push(tt(
+                        `Die Beurteilungen ${RN_OF[mostSevere]} erscheinen insgesamt am ausgeprägtesten. Es werden deutliche Schwierigkeiten in folgenden Bereichen berichtet: ${tList}. Die hohen Werte unterstreichen die Bedeutung der beobachteten Schwierigkeiten ${ctx}.`,
+                        `Les résultats ${RN_OF[mostSevere]} apparaissent globalement comme les plus préoccupants. Des difficultés marquées sont rapportées au niveau de ${tList}. Les scores élevés soulignent l'importance des difficultés observées ${ctx}.`,
+                        `The ratings ${RN_OF[mostSevere]} appear overall the most concerning. Marked difficulties are reported in ${tList}. The elevated scores underline the significance of the observed difficulties ${ctx}.`
+                    ));
+                }
+            }
+
+            // Para 3: Selbsteinschätzung (wenn vorhanden und nicht bereits als am schwersten behandelt)
+            if(saved.some(([rk]) => rk === 'self') && mostSevere !== 'self') {
+                const selfElev = elevatedScalesForRater('self').slice(0, 3);
+                if(selfElev.length > 0) {
+                    const tList = selfElev.map(s => `${nameStem(s.label).toLowerCase()} (T = ${s.v})`).join(', ');
+                    paragraphs.push(tt(
+                        `Die Selbsteinschätzung weist ebenfalls auf eine persönliche Wahrnehmung von Aufmerksamkeits- und Verhaltensschwierigkeiten hin, wobei diese im Allgemeinen weniger ausgeprägt erscheinen als in den Beurteilungen der Erwachsenen. Erhöhte Werte zeigen sich insbesondere in folgenden Bereichen: ${tList}.`,
+                        `L'autoévaluation met également en évidence une perception personnelle des difficultés attentionnelles et comportementales, bien que celles-ci apparaissent généralement moins sévères que dans les évaluations des adultes. Des scores élevés sont rapportés notamment au niveau de : ${tList}.`,
+                        `The self-rating also reflects a personal awareness of attentional and behavioural difficulties, though these generally appear less severe than in adult ratings. Elevated scores are notably observed in: ${tList}.`
+                    ));
+                } else {
+                    paragraphs.push(tt(
+                        `In der Selbsteinschätzung werden die Schwierigkeiten insgesamt deutlich weniger ausgeprägt wahrgenommen als in den Beurteilungen der Erwachsenen, ohne klinisch auffällige Erhöhungen.`,
+                        `Dans l'autoévaluation, les difficultés apparaissent globalement perçues de manière nettement moins sévère que dans les évaluations des adultes, sans atteindre de seuils cliniquement préoccupants.`,
+                        `In the self-rating, difficulties are perceived markedly less severely than in adult ratings, with no clinically significant elevations.`
+                    ));
+                }
+            }
+
+            // Para 4: Eltern (wenn nicht bereits als am schwersten behandelt)
+            if(saved.some(([rk]) => rk === 'parent') && mostSevere !== 'parent') {
+                const parElev = elevatedScalesForRater('parent').slice(0, 4);
+                if(parElev.length > 0) {
+                    const tList = parElev.map(s => `${nameStem(s.label).toLowerCase()} (T = ${s.v})`).join(', ');
+                    paragraphs.push(tt(
+                        `Die elterliche Einschätzung zeigt ebenfalls erhöhte Werte in folgenden Bereichen: ${tList}. Die Befunde erscheinen jedoch teilweise moderater hinsichtlich oppositioneller, aggressiver oder beziehungsbezogener Verhaltensweisen.`,
+                        `L'évaluation parentale montre également des scores élevés au niveau de : ${tList}. Les résultats parentaux apparaissent toutefois plus modérés concernant les comportements oppositionnels, agressifs ou relationnels.`,
+                        `The parental rating also shows elevated scores in: ${tList}. Parental results appear, however, more moderate regarding oppositional, aggressive, or relational behaviours.`
+                    ));
+                }
+            }
+
+            // Para 5: Synthese
+            if(elevatedDomainLabels.length > 0) {
+                const ctxNote = mostSevere === 'teacher'
+                    ? tt(', besonders ausgeprägt im schulischen Kontext',', particulièrement marquées dans le contexte scolaire',', particularly marked in the school context')
+                    : '';
+                paragraphs.push(tt(
+                    `Insgesamt weisen die Conners 3 Ergebnisse auf bedeutsame Schwierigkeiten in den Bereichen ${joinedDomains} hin${ctxNote}. Die Befunde unterstreichen einen relevanten Einfluss dieser Schwierigkeiten auf das schulische Funktionieren, das Lernen sowie die alltäglichen sozialen Interaktionen.`,
+                    `Dans l'ensemble, les résultats du Conners 3 mettent en évidence des difficultés importantes au niveau ${joinedDomains}${ctxNote}. Les résultats soulignent également un impact important de ces difficultés sur le fonctionnement scolaire, les apprentissages ainsi que les interactions sociales au quotidien.`,
+                    `Overall, the Conners 3 results highlight significant difficulties in ${joinedDomains}${ctxNote}. The findings also underline a notable impact of these difficulties on school functioning, learning, and daily social interactions.`
+                ));
+            }
+
+            // Para 6: Screener-Items
+            const siAnx     = saved.map(([rk]) => ({rk, v:tof(rk,'si_anx')})).filter(x => x.v !== null);
+            const siDep     = saved.map(([rk]) => ({rk, v:tof(rk,'si_dep')})).filter(x => x.v !== null);
+            const siAnxIt   = saved.map(([rk]) => ({rk, v:tof(rk,'si_anx_items')})).filter(x => x.v !== null);
+            const siDepIt   = saved.map(([rk]) => ({rk, v:tof(rk,'si_dep_items')})).filter(x => x.v !== null);
+            const anxClin   = siAnx.some(x => x.v >= 65) || siAnxIt.some(x => x.v >= 3);
+            const depClin   = siDep.some(x => x.v >= 65) || siDepIt.some(x => x.v >= 3);
+            const anxSome   = siAnx.some(x => x.v >= 60) || siAnxIt.some(x => x.v >= 1);
+            const depSome   = siDep.some(x => x.v >= 60) || siDepIt.some(x => x.v >= 1);
+
+            if(!anxClin && !depClin && !anxSome && !depSome) {
+                paragraphs.push(tt(
+                    `Bezüglich der ergänzenden Screener-Items weisen die Ergebnisse keine klinisch bedeutsamen Hinweise auf depressive Symptome oder schwere Verhaltensstörungen auf.`,
+                    `Concernant les items de dépistage complémentaires, les résultats ne mettent pas en évidence d'indices cliniquement significatifs concernant des symptômes dépressifs ou des troubles graves du comportement social.`,
+                    `Regarding the supplementary screener items, the results show no clinically significant indicators of depressive symptoms or severe behavioural disturbances.`
+                ));
+            } else if(!anxClin && !depClin) {
+                const notes = [];
+                if(anxSome) notes.push(tt('Ängstlichkeit','l\'anxiété','anxiety'));
+                if(depSome) notes.push(tt('depressiven Symptomen','des symptômes dépressifs','depressive symptoms'));
+                const joined = notes.join(tt(' und ',' et ',' and '));
+                paragraphs.push(tt(
+                    `Bezüglich der ergänzenden Screener-Items zeigen sich keine klinisch bedeutsamen Erhöhungen für schwere Verhaltensstörungen. Einzelne Hinweise auf ${joined} treten in den Beurteilungen vereinzelt auf, erreichen jedoch keinen klinisch bedenklichen Schwellenwert.`,
+                    `Concernant les items de dépistage complémentaires, les résultats ne mettent pas en évidence d'indices cliniquement significatifs concernant des troubles graves du comportement social. Quelques éléments liés à ${joined} apparaissent ponctuellement dans les évaluations, sans toutefois atteindre un seuil cliniquement préoccupant.`,
+                    `Regarding the supplementary screener items, no clinically significant indicators of severe behavioural disturbances emerge. Some elements related to ${joined} appear occasionally in the ratings, without reaching a clinically concerning threshold.`
+                ));
+            } else {
+                const notes = [];
+                if(anxClin) notes.push(tt('erhöhte Ängstlichkeit','une anxiété élevée','elevated anxiety'));
+                if(depClin) notes.push(tt('depressive Symptome','des symptômes dépressifs','depressive symptoms'));
+                const joined = notes.join(tt(' und ',' et ',' and '));
+                paragraphs.push(tt(
+                    `Bezüglich der ergänzenden Screener-Items zeigen sich klinisch bedeutsame Hinweise auf ${joined}, die eine vertiefte Abklärung nahelegen.`,
+                    `Concernant les items de dépistage complémentaires, les résultats mettent en évidence des indices cliniquement significatifs concernant ${joined}, justifiant une évaluation approfondie.`,
+                    `Regarding the supplementary screener items, the results show clinically significant indicators of ${joined}, warranting further targeted evaluation.`
+                ));
+            }
+
+            return paragraphs.map(p => `<p style="margin-bottom:0.75rem;">${p}</p>`).join('');
+        }
+
         // Conners-spezifische Multi-Rater-Tabelle nach dem Layout des
         // klinischen Word-Berichts (Foto 2): eine kombinierte Tabelle mit
         // Skala-Spalte + einer Wert-Spalte pro Beurteiler, Gruppen-Header
@@ -3366,6 +3566,9 @@
                 'Combined overview of all Conners-3 ratings entered. T-score colour coding follows the 4 official Conners-3 bands: green ≤ 59 = average, yellow 60–64 = high average, orange 65–69 = elevated, red ≥ 70 = very elevated. "/" = not collected.'
             );
 
+            const narrative = connersQualitativeNarrative(saved);
+            const narrativeTitle = tt('Qualitative Analyse Conners 3','Analyse qualitative du Conners 3','Conners 3 qualitative analysis');
+
             host.innerHTML = `
                 <div class="gutachten" style="margin-top:1.5rem;">
                     <div class="gutachten-section">
@@ -3379,6 +3582,10 @@
                             <tbody>${body}</tbody>
                         </table>
                     </div>
+                    ${narrative ? `<div class="gutachten-section" style="margin-top:1.25rem;">
+                        <h4 class="gutachten-section-title">${narrativeTitle} :</h4>
+                        ${narrative}
+                    </div>` : ''}
                 </div>
             `;
             host.scrollIntoView({behavior:'smooth', block:'start'});
