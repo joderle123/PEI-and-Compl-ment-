@@ -1879,12 +1879,12 @@
                     </div>
                     <div class="form-section">
                         <div class="form-section-title">Screener Ängstlichkeit (SI-Ä) und Depression (SI-D)</div>
-                        <p class="form-hint" style="margin-bottom:0.6rem;">Selbsturteil: T-Werte aus Manual ablesen (eigene Skala). Eltern-/Lehrerurteil: Anzahl der mit ≥ 1 bewerteten kritischen Items eintragen (qualitative Inspektion gemäß Manual; keine eigenen T-Norms).</p>
+                        <p class="form-hint" style="margin-bottom:0.6rem;">Anzahl kritischer Items eintragen (Manual: qualitative Inspektion, keine T-Werte – gilt für alle Beurteilerformen).</p>
                         <div class="form-grid">
-                            <div class="form-group" data-beurteiler="self"><label>SI-Ä – Ängstlichkeit (T-Wert)</label><input type="number" id="con-anx" min="30" max="90" placeholder="T-Wert"><span class="form-hint">nur Selbsturteil</span></div>
-                            <div class="form-group" data-beurteiler="self"><label>SI-D – Depression (T-Wert)</label><input type="number" id="con-dep" min="30" max="90" placeholder="T-Wert"><span class="form-hint">nur Selbsturteil</span></div>
-                            <div class="form-group" data-beurteiler="parent teacher"><label>SI-Ä – Anzahl auffällige Items (≥ 1)</label><input type="number" id="con-anx-items" min="0" max="20" placeholder="0-20"><span class="form-hint">Eltern · Lehrer · qualitativ</span></div>
-                            <div class="form-group" data-beurteiler="parent teacher"><label>SI-D – Anzahl auffällige Items (≥ 1)</label><input type="number" id="con-dep-items" min="0" max="20" placeholder="0-20"><span class="form-hint">Eltern · Lehrer · qualitativ</span></div>
+                            <div class="form-group" data-beurteiler="parent teacher self"><label>SI-Ä – Ängstlichkeit (Anzahl auffällige Items ≥ 1)</label><input type="number" id="con-anx-items" min="0" max="20" placeholder="0-20"><span class="form-hint">Eltern · Lehrer · Selbst (qualitativ, keine T-Werte)</span></div>
+                            <div class="form-group" data-beurteiler="parent teacher self"><label>SI-D – Depression (Anzahl auffällige Items ≥ 1)</label><input type="number" id="con-dep-items" min="0" max="20" placeholder="0-20"><span class="form-hint">Eltern · Lehrer · Selbst (qualitativ, keine T-Werte)</span></div>
+                            <input type="hidden" id="con-anx" value="">
+                            <input type="hidden" id="con-dep" value="">
                         </div>
                     </div>
                     <div class="form-section">
