@@ -1405,6 +1405,10 @@
                     </select>
                 </div>
             </div>
+            <div id="autosave-bar" style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center;">
+                <span id="autosave-status" style="font-size:0.82rem;color:var(--text-muted);">💾 Auto-Speichern aktiv – Eingaben bleiben lokal in diesem Browser erhalten (keine Übertragung).</span>
+                <button type="button" class="btn btn-secondary" style="padding:0.3rem 0.7rem;font-size:0.78rem;" onclick="clearStoredData()">🗑 Gespeicherte Eingaben löschen</button>
+            </div>
         </div>
 
         <!-- SDQ -->
@@ -3224,6 +3228,7 @@
 
         // Status-Bar oben im Formular: zeigt gespeicherte Beurteiler + Aktionen
         function renderMultiRaterStatus(testKey) {
+            scheduleAutosave(); // RATERS_DATA-Änderungen laufen alle hier durch
             const host = document.getElementById(`${testKey}-rater-status`);
             if(!host) return;
             const saved = getSavedRaters(testKey);
@@ -3741,6 +3746,93 @@
             try { saved = localStorage.getItem('cdse-theme') || 'light'; } catch(e) {}
             applyTheme(saved);
         })();
+
+        // ---------- Auto-Speichern aller Eingaben (nur lokal im Browser) ----------
+        // Sichert Formularfelder, Patientendaten und den Multi-Rater-Speicher
+        // debounced nach jeder Eingabe; stellt beim Laden den letzten Stand wieder her.
+        const AUTOSAVE_KEY = 'cdse-autosave-v1';
+        let autosaveTimer = null;
+
+        function collectFormState() {
+            const fields = {}, radios = {}, checks = {};
+            document.querySelectorAll('main input, main select, main textarea').forEach(el => {
+                if(el.type === 'radio') { if(el.name && el.checked) radios[el.name] = el.value; return; }
+                if(el.type === 'checkbox') { if(el.id) checks[el.id] = el.checked; return; }
+                if(!el.id || el.id === 'report-lang') return; // Berichtssprache hat eigene Persistenz
+                if(el.value !== '') fields[el.id] = el.value;
+            });
+            return {v:1, ts:Date.now(), fields, radios, checks, raters:RATERS_DATA};
+        }
+
+        function setAutosaveStatus(txt) {
+            const el = document.getElementById('autosave-status');
+            if(el) el.textContent = txt;
+        }
+
+        function writeAutosave() {
+            try {
+                localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(collectFormState()));
+                const hm = new Date().toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'});
+                setAutosaveStatus(`💾 Automatisch gespeichert um ${hm} Uhr (lokal in diesem Browser, keine Übertragung).`);
+            } catch(e) { /* Speicher blockiert/voll – ohne Auto-Speichern weiterarbeiten */ }
+        }
+
+        function scheduleAutosave() {
+            clearTimeout(autosaveTimer);
+            autosaveTimer = setTimeout(writeAutosave, 500);
+        }
+
+        function restoreFormState() {
+            let data = null;
+            try { data = JSON.parse(localStorage.getItem(AUTOSAVE_KEY) || 'null'); } catch(e) {}
+            if(!data || data.v !== 1) return false;
+            Object.entries(data.fields || {}).forEach(([id, val]) => {
+                const el = document.getElementById(id);
+                if(el) el.value = val;
+            });
+            Object.entries(data.radios || {}).forEach(([name, val]) => {
+                const el = document.querySelector(`input[type="radio"][name="${CSS.escape(name)}"][value="${CSS.escape(val)}"]`);
+                if(el) el.checked = true;
+            });
+            Object.entries(data.checks || {}).forEach(([id, val]) => {
+                const el = document.getElementById(id);
+                if(el && el.type === 'checkbox') el.checked = !!val;
+            });
+            Object.entries(data.raters || {}).forEach(([testKey, perRater]) => {
+                if(!RATERS_DATA[testKey] || !perRater) return;
+                Object.entries(perRater).forEach(([rk, v]) => { if(v) RATERS_DATA[testKey][rk] = v; });
+            });
+            return true;
+        }
+
+        function clearStoredData() {
+            if(!confirm('Alle gespeicherten Eingaben (Patientendaten, Testwerte, Beurteiler-Speicher) löschen?')) return;
+            try { localStorage.removeItem(AUTOSAVE_KEY); } catch(e) {}
+            document.querySelectorAll('main form').forEach(f => f.reset());
+            // Patientendaten + Berichtoptionen liegen außerhalb der Formulare
+            document.querySelectorAll('.patient-info input, .patient-info select').forEach(el => {
+                if(el.id === 'report-lang') return;
+                if(el.type === 'checkbox') el.checked = el.defaultChecked;
+                else el.value = el.tagName === 'SELECT' ? el.querySelector('option[selected]')?.value ?? el.options[0]?.value ?? '' : '';
+            });
+            ['conners','disyps','vineland'].forEach(k => clearRaters(k));
+            document.querySelectorAll('main .results').forEach(r => { r.classList.remove('show'); r.innerHTML = ''; });
+            Object.keys(R).forEach(k => delete R[k]);
+            updateConnersFields();
+            updateConnersCalc();
+            setAutosaveStatus('💾 Gespeicherte Eingaben gelöscht. Auto-Speichern bleibt aktiv.');
+        }
+
+        document.addEventListener('input', scheduleAutosave);
+        document.addEventListener('change', scheduleAutosave);
+        document.addEventListener('DOMContentLoaded', () => {
+            if(restoreFormState()) {
+                updateConnersFields();
+                updateConnersCalc();
+                ['conners','disyps','vineland'].forEach(k => renderMultiRaterStatus(k));
+                setAutosaveStatus('💾 Eingaben aus der letzten Sitzung wiederhergestellt (lokal in diesem Browser).');
+            }
+        });
 
         // Conners-3: Rechen-Helfer (Rohwert-Korrektur + Skalen-Summen)
         function updateConnersCalc() {
