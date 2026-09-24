@@ -158,12 +158,23 @@ var R = (function () {
           kinder.push(para('', { after: 60 }));
           break;
         case 'tabelle':
-          kinder.push(new d.Table({ width: { size: 100, type: d.WidthType.PERCENTAGE },
-            rows: [new d.TableRow({ tableHeader: true, children: b.kopf.map(function (k) {
-              return new d.TableCell({ borders: raender, shading: { type: d.ShadingType.CLEAR, color: 'auto', fill: 'EEF0F6' }, children: [para(k, { bold: true, size: 19, after: 0, align: d.AlignmentType.LEFT })] });
+          /* Breiten nach Inhalt: lange Namen/Einstufungen bekommen mehr Platz, Zahlenspalten weniger.
+             Satzspiegel A4: 11906 − 1247 − 1134 = 9525 Twips; feste Breiten, damit Word und LibreOffice gleich aussehen */
+          var laengen = b.kopf.map(function (k, i) {
+            var m = String(k).length * 0.9;
+            b.zeilen.forEach(function (z) { m = Math.max(m, String(z[i] == null ? '' : z[i]).length); });
+            return Math.pow(Math.min(Math.max(m, 5), 42), 0.85);
+          });
+          var summe = laengen.reduce(function (x, y) { return x + y; }, 0);
+          var twips = laengen.map(function (l) { return Math.floor(9525 * l / summe); });
+          var breite = function (i) { return { size: twips[i], type: d.WidthType.DXA }; };
+          var ausrichtung = function (i) { return (b.zahlSpalten || []).indexOf(i) >= 0 ? d.AlignmentType.RIGHT : d.AlignmentType.LEFT; };
+          kinder.push(new d.Table({ width: { size: 9525, type: d.WidthType.DXA }, columnWidths: twips, layout: d.TableLayoutType.FIXED,
+            rows: [new d.TableRow({ tableHeader: true, children: b.kopf.map(function (k, i) {
+              return new d.TableCell({ width: breite(i), borders: raender, shading: { type: d.ShadingType.CLEAR, color: 'auto', fill: 'EEF0F6' }, children: [para(k, { bold: true, size: 19, after: 0, align: ausrichtung(i) })] });
             }) })].concat(b.zeilen.map(function (z) {
               return new d.TableRow({ cantSplit: true, children: z.map(function (c, i) {
-                return new d.TableCell({ borders: raender, children: [para(c, { size: 19, after: 0, align: (b.zahlSpalten || []).indexOf(i) >= 0 ? d.AlignmentType.RIGHT : d.AlignmentType.LEFT })] });
+                return new d.TableCell({ width: breite(i), borders: raender, children: [para(c, { size: 19, after: 0, align: ausrichtung(i) })] });
               }) });
             })) }));
           if (b.anmerkung) { kinder.push(para(b.anmerkung, { size: 17, color: '555555', before: 60 })); }

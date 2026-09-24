@@ -23,7 +23,7 @@ var APP = (function () {
       if (s.gruppe) { h += '<div class="gruppe">' + B.esc(s.gruppe) + '</div>'; }
       if (s.id !== 'ueber') { nr++; }
       var fertig = s.test ? testFertig(s.test) : (s.id === 'fall' ? !!(FALL.kind.vorname && FALL.kind.geburtsdatum) : (s.id === 'verfahren' ? R.aktiveTests(FALL).length > 0 : false));
-      var warn = s.test && s.test.warnung ? s.test.warnung(FALL.tests[s.test.id], FALL) : '';
+      var warn = s.test && s.test.warnung ? s.test.warnung(FALL.tests[s.test.id], FALL) : (s.id === 'einordnung' && sicherheitsAngaben().length ? 'Sicherheit' : '');
       h += '<button type="button" class="schritt' + (s.id === aktSchritt ? ' an' : '') + (fertig ? ' fertig' : '') + '" data-schritt="' + B.esc(s.id) + '"' + (s.id === aktSchritt ? ' aria-current="step"' : '') + '>' +
         '<span class="nr">' + (s.id === 'ueber' ? '?' : (fertig ? '✓' : nr)) + '</span><span class="txt">' + B.esc(s.name) + '</span>' + (warn ? '<svg class="ic warn" aria-label="Hinweis"><use href="#i-warn"/></svg>' : '') + '</button>';
     });
@@ -34,6 +34,12 @@ var APP = (function () {
     var name = (String(k.vorname || '') + ' ' + String(k.nachname || '')).trim();
     B.$('kopf-fall').innerHTML = name ? '<b>' + B.esc(name) + '</b>' + (a ? '<span class="chip">' + B.esc(B.alterText(a, 'de')) + '</span>' : '') : '<span class="leise">Neuer Fall</span>';
     Array.prototype.forEach.call(document.querySelectorAll('#sprache-wahl button'), function (b) { b.classList.toggle('an', b.getAttribute('data-sprache') === lang()); b.setAttribute('aria-pressed', String(b.getAttribute('data-sprache') === lang())); });
+  }
+  /* markierte kritische Items aller Verfahren (Oberflächensprache) */
+  function sicherheitsAngaben() {
+    var sich = [];
+    R.aktiveTests(FALL).forEach(function (t) { if (t.sicherheit) { try { sich = sich.concat(t.sicherheit('de', FALL.tests[t.id], R.kontext(FALL, 'de')) || []); } catch (e) { console.error(e); } } });
+    return sich;
   }
   function seitenkopf(ov, titel, text) { return '<header class="seitenkopf"><p class="overline">' + B.esc(ov) + '</p><h1>' + B.esc(titel) + '</h1>' + (text ? '<p>' + text + '</p>' : '') + '</header>'; }
   function weiterKnoepfe() {
@@ -87,10 +93,10 @@ var APP = (function () {
     h += E.karte('<h2>Verhaltensbeobachtung</h2>' + E.textfeld('bericht.beobachtung', 'Allgemeine Beobachtung während der Untersuchung', { zeilen: 6, platzhalter: 'Kontaktaufnahme, Motivation, Konzentration, Sprache, Arbeitstempo, Besonderheiten …' }));
     h += E.karte('<h2>Zusammenfassung</h2><p class="klein">Das Tool setzt die wichtigsten Ergebnisse als Liste an den Anfang der Zusammenfassung. Hier ergänzen Sie die Einordnung.</p>' + E.textfeld('bericht.zusammenfassung', 'Einordnung und Zusammenhang', { zeilen: 7 }));
     h += E.karte('<h2>Empfehlungen und weiteres Vorgehen</h2>' + E.textfeld('bericht.empfehlungen', 'Empfehlungen', { zeilen: 6, platzhalter: 'z. B. Fördermaßnahmen, Gespräche, weitere Abklärungen, aménagements raisonnables …' }));
-    var sich = [];
-    R.aktiveTests(FALL).forEach(function (t) { if (t.sicherheit) { sich = sich.concat(t.sicherheit('de', FALL.tests[t.id], R.kontext(FALL, 'de')) || []); } });
+    var sich = sicherheitsAngaben();
     if (sich.length) {
-      h += E.karte('<h2>Hinweis zur Sicherheit</h2>' + E.hinweis('In den eingegebenen Fragebögen sind Antworten markiert, die auf Selbstgefährdung hindeuten können. Bitte zeitnah mit dem Kind und – wenn möglich – mit den Eltern besprechen und das Vorgehen nach dem internen Ablauf des CDSE festhalten.', 'gefahr') +
+      h += E.karte('<h2>Hinweis zur Sicherheit</h2>' + E.hinweis('In den eingegebenen Fragebögen sind Antworten markiert, die auf Selbstgefährdung hindeuten können. Bitte zeitnah mit dem Kind und – wenn möglich – mit den Eltern besprechen und das Vorgehen nach dem internen Ablauf des CDSE festhalten.' +
+        '<br><small>Im Notfall: <b>112</b>. Anonyme Hilfe für Kinder und Jugendliche: <b>Kanner-Jugendtelefon 116 111</b>. Telefonische Hilfe in Krisen: <b>SOS Détresse 45 45 45</b>.</small>', 'gefahr') +
         '<ul>' + sich.map(function (s) { return '<li>' + B.esc(s) + '</li>'; }).join('') + '</ul>' +
         E.textfeld('bericht.sicherheitVorgehen', 'Was wurde getan bzw. vereinbart? (erscheint im Bericht)', { zeilen: 3 }), 'sicherheit-karte');
     }
@@ -113,7 +119,7 @@ var APP = (function () {
       '<li>Jede Beurteilerin und jeder Beurteiler hat eine eigene Spalte – Werte werden nie übertragen.</li></ul>');
     var liste = [];
     KAT.alle().forEach(function (t) { (t.pruefen || []).forEach(function (p) { liste.push('<li><b>' + B.esc(t.kurz) + ':</b> ' + B.esc(p) + '</li>'); }); });
-    ['wechsler-7', 'sw-10', 'stanine-problem'].forEach(function (id) { var b = KAT.band(id); if (b && b.pruefen) { liste.push('<li><b>Einstufung ' + B.esc(id) + ':</b> ' + B.esc(b.pruefen) + '</li>'); } });
+    KAT.bandIds().forEach(function (id) { var b = KAT.band(id); if (b && b.pruefen) { liste.push('<li><b>Einstufung ' + B.esc(id) + ':</b> ' + B.esc(b.pruefen) + '</li>'); } });
     h += E.karte('<h2>Noch am Manual zu prüfen</h2><p class="klein">Diese Bezeichnungen und Grenzen stammen aus der Fachliteratur, sind aber noch nicht am Protokollbogen des CDSE bestätigt.</p><ul class="klein">' + liste.join('') + '</ul>');
     h += E.karte('<h2>Fall sichern oder laden</h2><p class="klein">Der Fall wird automatisch in diesem Browser gespeichert (im CDSE Hub verschlüsselt in Ihrem Tresor). Zum Mitnehmen auf einen anderen PC können Sie ihn als Datei sichern.</p>' +
       '<div class="knopfreihe"><button class="btn" type="button" data-aktion="fall-datei">Fall als Datei sichern</button><label class="btn">Fall aus Datei laden<input type="file" accept=".json,application/json" data-aktion="fall-laden" hidden></label></div>');

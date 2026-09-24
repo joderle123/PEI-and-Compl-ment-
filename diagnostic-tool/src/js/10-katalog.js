@@ -9,10 +9,11 @@
    ===================================================================== */
 var KAT = (function () {
   var tests = {}, reihenfolge = [];
+  /* Reihenfolge = Reihenfolge der Verfahren im Bericht (Leistung vor Fragebögen) */
   var GRUPPEN = [
-    { id: 'verhalten', name: 'Verhalten und Emotionen (Fragebögen)' },
     { id: 'intelligenz', name: 'Intelligenz und kognitive Fähigkeiten' },
     { id: 'aufmerksamkeit', name: 'Aufmerksamkeit und Konzentration' },
+    { id: 'verhalten', name: 'Verhalten (Fragebögen)' },
     { id: 'emotion', name: 'Emotionen, Angst und Stimmung' },
     { id: 'adaptiv', name: 'Alltagsfertigkeiten (adaptives Verhalten)' }
   ];
@@ -22,7 +23,14 @@ var KAT = (function () {
     if (reihenfolge.indexOf(def.id) < 0) { reihenfolge.push(def.id); }
   }
   function test(id) { return tests[id] || null; }
-  function alle() { return reihenfolge.map(function (id) { return tests[id]; }); }
+  /* alle Verfahren: nach Gruppe (Reihenfolge oben), innerhalb der Gruppe nach Anmeldung */
+  function alle() {
+    var g = GRUPPEN.map(function (x) { return x.id; });
+    return reihenfolge.map(function (id) { return tests[id]; }).sort(function (a, b) {
+      var ga = g.indexOf(a.gruppe), gb = g.indexOf(b.gruppe);
+      return (ga < 0 ? 99 : ga) - (gb < 0 ? 99 : gb) || reihenfolge.indexOf(a.id) - reihenfolge.indexOf(b.id);
+    });
+  }
 
   /* ---------------- Bänder ----------------
      art: 'problem'   hoher Wert = ungünstig (rang 0 unauffällig … 3 sehr hoch)
@@ -95,6 +103,7 @@ var KAT = (function () {
       { bis: Infinity, rang: 2, name: L('weit überdurchschnittlich', 'très supérieur à la moyenne', 'well above average') }] }
   };
   function band(id) { return BAENDER[id] || null; }
+  function bandIds() { return Object.keys(BAENDER); }
   function bandDefinieren(id, def) { BAENDER[id] = def; }
   /* Einstufung eines Werts: {rang, name, klasse} oder null */
   function einstufen(bandId, wert) {
@@ -128,6 +137,6 @@ var KAT = (function () {
     st.push({ bis: Infinity, rang: 0, name: namen[0] });
     return { art: 'ressource', stufen: st };
   }
-  return { registrieren: registrieren, test: test, alle: alle, GRUPPEN: GRUPPEN, band: band, bandDefinieren: bandDefinieren,
+  return { registrieren: registrieren, test: test, alle: alle, GRUPPEN: GRUPPEN, band: band, bandIds: bandIds, bandDefinieren: bandDefinieren,
     einstufen: einstufen, klasse: klasse, problemBand: problemBand, ressourceBand: ressourceBand, L: L };
 })();
