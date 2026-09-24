@@ -63,7 +63,7 @@ button{font:inherit;}
 .knopfreihe .rechts{margin-left:auto;}
 
 /* Rahmen: Schritte | Inhalt | Vorschau */
-.rahmen{display:grid;grid-template-columns:232px minmax(0,1fr) minmax(320px,440px);gap:22px;max-width:1560px;margin:0 auto;padding:20px 20px 60px;align-items:start;}
+.rahmen{display:grid;grid-template-columns:232px minmax(0,1fr) minmax(300px,400px);gap:22px;max-width:1560px;margin:0 auto;padding:20px 20px 60px;align-items:start;}
 .rahmen.ohne-vorschau{grid-template-columns:232px minmax(0,1fr);}
 .rahmen.ohne-vorschau .vorschau{display:none;}
 .schritte{position:sticky;top:calc(var(--kopf-h) + 20px);display:flex;flex-direction:column;gap:2px;}
@@ -125,8 +125,10 @@ button{font:inherit;}
 .wraster .skala b{display:block;font-weight:620;}
 .wraster .skala small{display:block;color:var(--muted);font-size:12px;}
 .wraster .zelle{display:flex;align-items:center;gap:8px;}
-.wraster .eingabe{width:78px;text-align:right;font-variant-numeric:tabular-nums;padding:6px 8px;}
+.wraster .eingabe{width:68px;text-align:right;font-variant-numeric:tabular-nums;padding:6px 8px;}
 .wraster .eingabe.breit{width:110px;}
+.wraster td.einstufung{min-width:96px;}
+.wraster td.einstufung .chip{white-space:normal;line-height:1.25;border-radius:8px;padding:3px 8px;}
 .wraster tr.trenner td{background:var(--surface-2);font-size:12px;font-weight:650;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
 .tabelle-scroll{overflow-x:auto;margin:0 -4px;padding:0 4px;}
 

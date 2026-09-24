@@ -87,7 +87,7 @@
       '<div style="margin-top:12px">' + E.haken('tests.wisc.nichtErstsprache', 'Die Testsprache ist nicht die Erstsprache des Kindes', 'Dann weist der Bericht darauf hin, dass sprachgebundene Ergebnisse vorsichtig zu deuten sind.', true) + '</div>' +
       spracheHinweis(d, fall || FALL));
     h += E.karte('<h2>Indexwerte</h2><p class="klein">Aus dem Protokollbogen bzw. dem Auswertungsprogramm übernehmen: Indexwert, Prozentrang und Konfidenzintervall. Leere Felder erscheinen im Bericht nicht.</p>' +
-      E.raster({ basis: 'tests.wisc.idx', kopfSkala: 'Index', spalten: [
+      E.raster({ basis: 'tests.wisc.idx', kopfSkala: 'Index', chipAmEnde: true, spalten: [
         { id: 'wert', label: 'Indexwert', min: 40, max: 160, ganz: true },
         { id: 'pr', label: 'PR', min: 0.1, max: 99.9, ganz: false, ohneChip: true },
         { id: 'kiVon', label: 'KI von', min: 40, max: 160, ganz: true, ohneChip: true },
