@@ -65,10 +65,11 @@ var E = (function () {
   /* Werte-Raster: Zeilen = Skalen, Spalten = Beurteiler (jede Spalte hat eigene Werte – nichts wird übertragen)
      spec: { basis: 'tests.sdq.werte', spalten:[{id,label}], zeilen:[{id,name,hinweis,min,max,ganz,trenner}], einstufen(zeileId, spaltenId, zahl) → Einstufung|null } */
   /* spec.chipAmEnde: Einstufung nicht neben dem Feld, sondern in einer eigenen letzten Spalte
-     (für breite Raster mit mehreren Zahlenspalten, z. B. Indexwert · PR · KI) */
+     (für breite Raster mit mehreren Zahlenspalten, z. B. Indexwert · PR · KI)
+     spec.gestapelt: Einstufung immer UNTER dem Feld (für mehrere Beurteiler-Spalten mit je eigener Einstufung) */
   function raster(spec) {
     var chipSpalte = spec.chipAmEnde ? spec.spalten.filter(function (s) { return !s.ohneChip; })[0] : null;
-    var h = '<div class="tabelle-scroll"><table class="wraster"><thead><tr><th>' + B.esc(spec.kopfSkala || 'Skala') + '</th>' +
+    var h = '<div class="tabelle-scroll"><table class="wraster' + (spec.gestapelt ? ' gestapelt' : '') + '"><thead><tr><th>' + B.esc(spec.kopfSkala || 'Skala') + '</th>' +
       spec.spalten.map(function (s) { return '<th>' + B.esc(s.label) + '</th>'; }).join('') + (chipSpalte ? '<th>Einstufung</th>' : '') + '</tr></thead><tbody>';
     function grenzen(s, z) { return { min: s.min != null ? s.min : z.min, max: s.max != null ? s.max : z.max, ganz: s.ganz != null ? s.ganz : z.ganz }; }
     function chipHtml(s, z, pfad) {

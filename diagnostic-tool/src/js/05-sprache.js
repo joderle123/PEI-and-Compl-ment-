@@ -61,7 +61,7 @@ var INFORMANTEN = {
   eltern: { de: 'Eltern', deUrteil: 'Elternurteil', deIm: 'im Elternurteil', fr: 'parents', frPar: 'selon les parents', frForme: 'version parents', en: 'parents', enBy: 'according to the parents', enForm: 'parent form' },
   mutter: { de: 'Mutter', deUrteil: 'Urteil der Mutter', deIm: 'im Urteil der Mutter', fr: 'mère', frPar: 'selon la mère', frForme: 'version parents (mère)', en: 'mother', enBy: 'according to the mother', enForm: 'parent form (mother)' },
   vater: { de: 'Vater', deUrteil: 'Urteil des Vaters', deIm: 'im Urteil des Vaters', fr: 'père', frPar: 'selon le père', frForme: 'version parents (père)', en: 'father', enBy: 'according to the father', enForm: 'parent form (father)' },
-  lehrer: { de: 'Lehrkraft', deUrteil: 'Lehrerurteil', deIm: 'im Urteil der Lehrkraft', fr: 'enseignant·e', frPar: 'selon l’enseignant·e', frForme: 'version enseignant·e', en: 'teacher', enBy: 'according to the teacher', enForm: 'teacher form' },
+  lehrer: { de: 'Lehrkraft', deUrteil: 'Lehrerurteil', deIm: 'im Lehrerurteil', fr: 'enseignant·e', frPar: 'selon l’enseignant·e', frForme: 'version enseignant·e', en: 'teacher', enBy: 'according to the teacher', enForm: 'teacher form' },
   selbst: { de: 'Selbsturteil', deUrteil: 'Selbsturteil', deIm: 'im Selbsturteil', fr: 'autoévaluation', frPar: 'dans l’autoévaluation', frForme: 'autoquestionnaire', en: 'self-report', enBy: 'in the self-report', enForm: 'self-report form' },
   fachperson: { de: 'Fachperson', deUrteil: 'Urteil der Fachperson', deIm: 'im Urteil der Fachperson', fr: 'professionnel·le', frPar: 'selon le/la professionnel·le', frForme: 'évaluation clinique', en: 'clinician', enBy: 'according to the clinician', enForm: 'clinician rating' }
 };
