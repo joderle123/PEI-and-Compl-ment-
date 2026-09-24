@@ -62,6 +62,9 @@ function ausAlterVersion(alt) {
   if (fe['pat-sex']) { f.kind.geschlecht = ({ m: 'm', w: 'w', f: 'w', d: 'd', male: 'm', female: 'w', diverse: 'd' })[String(fe['pat-sex']).toLowerCase()] || ''; }
   if (fe['pat-date']) { f.bericht.datumVon = fe['pat-date']; }
   if (fe['pat-examiner']) { f.bericht.verfasser = fe['pat-examiner']; }
+  /* Muttersprache stand früher bei einzelnen Tests – als Familiensprache übernehmen */
+  var mutter = ['wisc-motherlang', 'sonr-motherlang', 'kabc-motherlang'].map(function (k) { return String(fe[k] || '').trim(); }).filter(Boolean).join(', ');
+  if (mutter && !f.kind.familiensprachen.length) { var zm = sprachenZerlegen(mutter); f.kind.familiensprachen = zm.codes; f.kind.familiensprachenAndere = zm.rest.join(', '); }
   var lang = null; try { lang = localStorage.getItem('cdse-report-lang'); } catch (e) { lang = null; }
   if (lang === 'fr' || lang === 'en' || lang === 'de') { f.bericht.sprache = lang; }
   KAT.alle().forEach(function (t) {
@@ -74,10 +77,12 @@ function ausAlterVersion(alt) {
   f.uebernommen = new Date().toISOString();
   return f;
 }
-var speicherTimer = null;
+var speicherTimer = null, speicherOffen = false;
 function fallSpeichern(sofort) {
   clearTimeout(speicherTimer);
+  speicherOffen = !sofort;
   function tun() {
+    speicherOffen = false;
     try {
       FALL.geaendert = new Date().toISOString();
       localStorage.setItem(SPEICHER_SCHLUESSEL, JSON.stringify(FALL));
@@ -87,6 +92,14 @@ function fallSpeichern(sofort) {
   }
   if (sofort) { tun(); } else { speicherTimer = setTimeout(tun, 400); }
 }
+/* Wird die Seite geschlossen oder neu geladen, bevor die verzögerte Speicherung lief: sofort speichern.
+   Aber nur, wenn der Fall noch im Speicher steht – hat der Hub beim Abmelden den Speicher geleert,
+   darf das Tool die Daten NICHT wieder auf den PC schreiben. */
+window.addEventListener('pagehide', function () {
+  var noch = false;
+  try { noch = localStorage.getItem(SPEICHER_SCHLUESSEL) !== null; } catch (e) { noch = false; }
+  if (speicherOffen && FALL && noch) { fallSpeichern(true); }
+});
 function statusSetzen(t) { var el = B.$('kopf-status'); if (el) { el.textContent = t; } }
 /* Fall als Datei sichern / aus Datei laden (z. B. für einen anderen PC) */
 function fallAlsDatei() {

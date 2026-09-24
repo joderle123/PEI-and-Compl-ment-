@@ -95,7 +95,7 @@ var APP = (function () {
     h += E.karte('<h2>Empfehlungen und weiteres Vorgehen</h2>' + E.textfeld('bericht.empfehlungen', 'Empfehlungen', { zeilen: 6, platzhalter: 'z. B. Fördermaßnahmen, Gespräche, weitere Abklärungen, aménagements raisonnables …' }));
     var sich = sicherheitsAngaben();
     if (sich.length) {
-      h += E.karte('<h2>Hinweis zur Sicherheit</h2>' + E.hinweis('In den eingegebenen Fragebögen sind Antworten markiert, die auf Selbstgefährdung hindeuten können. Bitte zeitnah mit dem Kind und – wenn möglich – mit den Eltern besprechen und das Vorgehen nach dem internen Ablauf des CDSE festhalten.' +
+      h += E.karte('<h2>Hinweis zur Sicherheit</h2>' + E.hinweis('In den eingegebenen Fragebögen sind Antworten markiert, die auf Selbstgefährdung oder schwerwiegende Verhaltensprobleme hindeuten können. Bitte zeitnah mit dem Kind und – wenn möglich – mit den Eltern besprechen und das Vorgehen nach dem internen Ablauf des CDSE festhalten.' +
         '<br><small>Im Notfall: <b>112</b>. Anonyme Hilfe für Kinder und Jugendliche: <b>Kanner-Jugendtelefon 116 111</b>. Telefonische Hilfe in Krisen: <b>SOS Détresse 45 45 45</b>.</small>', 'gefahr') +
         '<ul>' + sich.map(function (s) { return '<li>' + B.esc(s) + '</li>'; }).join('') + '</ul>' +
         E.textfeld('bericht.sicherheitVorgehen', 'Was wurde getan bzw. vereinbart? (erscheint im Bericht)', { zeilen: 3 }), 'sicherheit-karte');

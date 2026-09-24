@@ -10,7 +10,9 @@ var R = (function () {
     var k = fall.kind || {}, vn = String(k.vorname || '').trim();
     var alter = B.alter(k.geburtsdatum, (fall.bericht || {}).datumBis || (fall.bericht || {}).datumVon || B.heute());
     var allg = alter && alter.j >= 12 ? SPRACHE[lang].jugendAllg : SPRACHE[lang].kindAllg;
-    return { lang: lang, name: vn || allg, vorname: vn, vollname: (vn + ' ' + String(k.nachname || '').trim()).trim(), g: k.geschlecht || '', alter: alter, fall: fall };
+    /* Dativ für „mit …“, „von …“: ohne Vornamen sonst „mit das Kind“ */
+    var dativ = lang === 'de' ? (alter && alter.j >= 12 ? 'dem/der Jugendlichen' : 'dem Kind') : allg;
+    return { lang: lang, name: vn || allg, nameDativ: vn || dativ, vorname: vn, vollname: (vn + ' ' + String(k.nachname || '').trim()).trim(), g: k.geschlecht || '', alter: alter, fall: fall };
   }
   function aktiveTests(fall) {
     return KAT.alle().filter(function (t) { return fall.tests && fall.tests[t.id] && fall.tests[t.id].aktiv; });
@@ -161,9 +163,9 @@ var R = (function () {
           /* Breiten nach Inhalt: lange Namen/Einstufungen bekommen mehr Platz, Zahlenspalten weniger.
              Satzspiegel A4: 11906 − 1247 − 1134 = 9525 Twips; feste Breiten, damit Word und LibreOffice gleich aussehen */
           var laengen = b.kopf.map(function (k, i) {
-            var m = String(k).length * 0.9;
+            var m = String(k).length * 1.15;   /* fett gesetzter Kopf braucht mehr Platz */
             b.zeilen.forEach(function (z) { m = Math.max(m, String(z[i] == null ? '' : z[i]).length); });
-            return Math.pow(Math.min(Math.max(m, 5), 42), 0.85);
+            return Math.pow(Math.min(Math.max(m, 6), 42), 0.85);
           });
           var summe = laengen.reduce(function (x, y) { return x + y; }, 0);
           var twips = laengen.map(function (l) { return Math.floor(9525 * l / summe); });
