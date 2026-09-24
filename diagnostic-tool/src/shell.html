@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Befundbericht · CDSE</title>
+<meta name="description" content="Testergebnisse eingeben und einen fertigen Befundbericht auf Deutsch, Französisch oder Englisch erstellen.">
+<style>
+/*@@CSS@@*/
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-fall" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></symbol>
+  <symbol id="i-liste" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m3.5 6 1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17"/></symbol>
+  <symbol id="i-test" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/><path d="M7.5 15h9"/></symbol>
+  <symbol id="i-stift" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></symbol>
+  <symbol id="i-bericht" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></symbol>
+  <symbol id="i-word" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></symbol>
+  <symbol id="i-druck" viewBox="0 0 24 24"><path d="M7 9V4h10v5"/><rect x="4" y="9" width="16" height="8" rx="2"/><path d="M7 14h10v6H7z"/></symbol>
+  <symbol id="i-neu" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-links" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="i-rechts" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17.2v.2"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-auge" viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-schild" viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.6 3.1 8 7.5 9.5 4.4-1.5 7.5-4.9 7.5-9.5V6z"/></symbol>
+</svg>
+
+<header class="kopf" id="kopf">
+  <div class="kopf-app">
+    <span class="kopf-logo" aria-hidden="true"><svg class="ic"><use href="#i-test"/></svg></span>
+    <span><b>Befundbericht</b><small>Testauswertung · CDSE</small></span>
+  </div>
+  <div class="kopf-fall" id="kopf-fall"></div>
+  <div class="kopf-rechts">
+    <span class="kopf-status" id="kopf-status" aria-live="polite"></span>
+    <div class="segment" role="group" aria-label="Sprache des Berichts" id="sprache-wahl">
+      <button type="button" data-sprache="de">DE</button><button type="button" data-sprache="fr">FR</button><button type="button" data-sprache="en">EN</button>
+    </div>
+    <button class="btn" type="button" id="knopf-neu" title="Neuen Fall beginnen"><svg class="ic"><use href="#i-neu"/></svg><span>Neuer Fall</span></button>
+  </div>
+</header>
+
+<div class="rahmen">
+  <nav class="schritte" id="schritte" aria-label="Schritte"></nav>
+  <main class="inhalt" id="inhalt" tabindex="-1"></main>
+  <aside class="vorschau" id="vorschau" aria-label="Vorschau des Berichts">
+    <div class="vorschau-kopf"><span><svg class="ic"><use href="#i-auge"/></svg>So steht es im Bericht</span></div>
+    <div class="vorschau-inhalt" id="vorschau-inhalt"></div>
+  </aside>
+</div>
+
+<div id="toast" class="toast" role="status" hidden></div>
+<!--@@SKRIPTE@@-->
+</body>
+</html>
