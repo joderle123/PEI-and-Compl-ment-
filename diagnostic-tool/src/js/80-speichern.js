@@ -107,14 +107,24 @@ function fallAlsDatei() {
   var blob = new Blob([JSON.stringify(FALL, null, 1)], { type: 'application/json' });
   saveAs(blob, B.heute().replace(/-/g, '') + '_' + String(k.nachname || 'Fall').replace(/[^A-Za-z0-9ÄÖÜäöüß-]+/g, '-') + (k.vorname ? '_' + String(k.vorname).replace(/[^A-Za-z0-9ÄÖÜäöüß-]+/g, '-') : '') + '_Befund.json');
 }
-function fallAusDatei(datei, fertig) {
+/* Hat der offene Fall schon Eingaben? Dann wird vor dem Ersetzen nachgefragt. */
+function fallHatDaten(f) {
+  var k = (f && f.kind) || {}, b = (f && f.bericht) || {}, t = (f && f.tests) || {};
+  return ['vorname', 'nachname', 'geburtsdatum'].some(function (x) { return String(k[x] || '').trim(); }) ||
+    ['verfasser', 'anlass', 'beobachtung', 'zusammenfassung', 'empfehlungen', 'sicherheitVorgehen'].some(function (x) { return String(b[x] || '').trim(); }) ||
+    Object.keys(t).some(function (id) { return t[id] && t[id].aktiv; });
+}
+/* fragen(neuerFall): erst nach dem Lesen der Datei – false = abgebrochen, der offene Fall bleibt */
+function fallAusDatei(datei, fertig, fragen) {
   var r = new FileReader();
+  var keinFall = 'Das ist keine Fall-Datei dieses Tools. Bitte eine mit „Fall als Datei sichern“ gespeicherte Datei wählen.';
   r.onload = function () {
-    try {
-      var f = JSON.parse(r.result);
-      if (!f || f.v !== 2 || !f.tests) { throw new Error('Das ist keine Fall-Datei dieses Tools.'); }
-      FALL = fallErgaenzen(f); fallSpeichern(true); fertig(null);
-    } catch (e) { fertig(e); }
+    var f = null;
+    try { f = JSON.parse(r.result); } catch (e) { f = null; }   /* kein JSON: verständliche Meldung statt „Unexpected token …“ */
+    if (!f || f.v !== 2 || !f.tests) { fertig(new Error(keinFall)); return; }
+    if (fragen && !fragen(f)) { fertig(null, true); return; }
+    try { FALL = fallErgaenzen(f); fallSpeichern(true); fertig(null); } catch (e) { fertig(e); }
   };
+  r.onerror = function () { fertig(new Error('Die Datei ließ sich nicht lesen.')); };
   r.readAsText(datei);
 }

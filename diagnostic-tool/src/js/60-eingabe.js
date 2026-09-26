@@ -65,12 +65,13 @@ var E = (function () {
   /* Werte-Raster: Zeilen = Skalen, Spalten = Beurteiler (jede Spalte hat eigene Werte – nichts wird übertragen)
      spec: { basis: 'tests.sdq.werte', spalten:[{id,label}], zeilen:[{id,name,hinweis,min,max,ganz,trenner}], einstufen(zeileId, spaltenId, zahl) → Einstufung|null } */
   /* spec.chipAmEnde: Einstufung nicht neben dem Feld, sondern in einer eigenen letzten Spalte
-     (für breite Raster mit mehreren Zahlenspalten, z. B. Indexwert · PR · KI)
+     (für breite Raster mit mehreren Zahlenspalten, z. B. Indexwert · PR · KI). Passt die Tabelle nicht in die
+     Karte, setzt APP die Klasse „eng“: dann steht die Einstufung (zweites Exemplar, „unter-wert“) unter dem Wert.
      spec.gestapelt: Einstufung immer UNTER dem Feld (für mehrere Beurteiler-Spalten mit je eigener Einstufung) */
   function raster(spec) {
     var chipSpalte = spec.chipAmEnde ? spec.spalten.filter(function (s) { return !s.ohneChip; })[0] : null;
-    var h = '<div class="tabelle-scroll"><table class="wraster' + (spec.gestapelt ? ' gestapelt' : '') + '"><thead><tr><th>' + B.esc(spec.kopfSkala || 'Skala') + '</th>' +
-      spec.spalten.map(function (s) { return '<th>' + B.esc(s.label) + '</th>'; }).join('') + (chipSpalte ? '<th>Einstufung</th>' : '') + '</tr></thead><tbody>';
+    var h = '<div class="tabelle-scroll"><table class="wraster' + (spec.gestapelt ? ' gestapelt' : '') + (chipSpalte ? ' chip-ende' : '') + '"><thead><tr><th>' + B.esc(spec.kopfSkala || 'Skala') + '</th>' +
+      spec.spalten.map(function (s) { return '<th>' + B.esc(s.label) + '</th>'; }).join('') + (chipSpalte ? '<th class="einstufung">Einstufung</th>' : '') + '</tr></thead><tbody>';
     function grenzen(s, z) { return { min: s.min != null ? s.min : z.min, max: s.max != null ? s.max : z.max, ganz: s.ganz != null ? s.ganz : z.ganz }; }
     function chipHtml(s, z, pfad) {
       var g = grenzen(s, z), v = wert(pfad), n = B.num(v);
@@ -87,9 +88,9 @@ var E = (function () {
         var pfad = spec.basis + '.' + s.id + '.' + z.id, v = wert(pfad), n = B.num(v);
         h += '<td><div class="zelle"><input class="eingabe' + (z.breit ? ' breit' : '') + (v !== '' && (n == null || !inBereich(n, g)) ? ' fehler' : '') + '" data-pfad="' + B.esc(pfad) + '" value="' + B.esc(v) + '" inputmode="decimal" autocomplete="off" aria-label="' + B.esc(z.name + ' – ' + s.label) + '"' +
           (g.min != null ? ' data-min="' + g.min + '"' : '') + (g.max != null ? ' data-max="' + g.max + '"' : '') + (g.ganz ? ' data-ganz="1"' : '') + ' data-raster="1">' +
-          (s.ohneChip || chipSpalte ? '' : chipHtml(s, z, pfad)) + '</div></td>';
+          (s === chipSpalte ? '<span class="unter-wert">' + chipHtml(s, z, pfad) + '</span>' : (s.ohneChip || chipSpalte ? '' : chipHtml(s, z, pfad))) + '</div></td>';
       });
-      if (chipSpalte) { h += (z.nurSpalten && z.nurSpalten.indexOf(chipSpalte.id) < 0) ? '<td></td>' : '<td class="einstufung">' + chipHtml(chipSpalte, z, spec.basis + '.' + chipSpalte.id + '.' + z.id) + '</td>'; }
+      if (chipSpalte) { h += (z.nurSpalten && z.nurSpalten.indexOf(chipSpalte.id) < 0) ? '<td class="einstufung"></td>' : '<td class="einstufung">' + chipHtml(chipSpalte, z, spec.basis + '.' + chipSpalte.id + '.' + z.id) + '</td>'; }
       h += '</tr>';
     });
     return h + '</tbody></table></div>';

@@ -546,8 +546,14 @@
     var h = [];
     function wer(ids) { return beurteilerMit(ausw, infs, ids, function (r) { return r >= 2; }); }
     function klammer(liste) { return ' (CBCL/TRF/YSR' + (lang === 'fr' ? ' ; ' : '; ') + B.liste(liste.map(function (i) { return infName(i, lang); }), lang) + ')'; }
-    var ids = ['auf', 'dadh'], w = wer(ids), sj;
-    if (w.length) {
+    var ids = ['auf', 'dadh'], w = wer(ids), sj, schon = TX.vertiefungImFall(ctx.fall);
+    /* Conners 3 / DISYPS-III schon im Fall: auf deren Ergebnisse verweisen statt sie zu empfehlen */
+    if (w.length && schon.length) {
+      sj = subjekt(lang, ausw, infs, ids);
+      h.push(lang === 'fr' ? sj.s + klammer(w) + (sj.pl ? ' sont à interpréter' : ' est à interpréter') + ' conjointement avec les résultats ' + B.liste(schon.map(function (n) { return 'du ' + n; }), lang) + ' (voir ci-dessus), l’anamnèse et l’observation dans plusieurs contextes.'
+        : (lang === 'en' ? sj.s + klammer(w) + ' should be interpreted together with the ' + B.liste(schon, lang) + ' results (see above), the developmental history and observation in several settings.'
+          : sj.s + klammer(w) + (sj.pl ? ' sollten' : ' sollte') + ' gemeinsam mit den Ergebnissen aus ' + B.liste(schon, lang) + ' (siehe oben), der Entwicklungsgeschichte und Beobachtungen in mehreren Lebensbereichen eingeordnet werden.'));
+    } else if (w.length) {
       sj = subjekt(lang, ausw, infs, ids);
       h.push(lang === 'fr' ? sj.s + klammer(w) + (sj.pl ? ' justifient' : ' justifie') + ' un approfondissement à l’aide d’un instrument plus détaillé (p. ex. Conners 3 ou DISYPS-III), complété par l’anamnèse et l’observation dans plusieurs contextes.'
         : (lang === 'en' ? sj.s + klammer(w) + ' should be explored further with a more detailed instrument (e.g. Conners 3 or DISYPS-III), together with the developmental history and observation in several settings.'

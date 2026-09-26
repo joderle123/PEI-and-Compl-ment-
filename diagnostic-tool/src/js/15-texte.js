@@ -169,6 +169,12 @@ var TX = (function () {
     }
     return satz(s, lang) + zusatz;
   }
+  /* Ausführlichere Verfahren zu Aufmerksamkeit/Hyperaktivität, die im Fall schon gewählt sind: SDQ und CBCL
+     empfehlen sonst „z. B. Conners 3 oder DISYPS-III“, obwohl eines davon im selben Bericht steht */
+  function vertiefungImFall(fall) {
+    var t = (fall || {}).tests || {};
+    return [['conners', 'Conners 3'], ['disyps', 'DISYPS-III']].filter(function (x) { return t[x[0]] && t[x[0]].aktiv; }).map(function (x) { return x[1]; });
+  }
   return { einheit: einheit, q: q, satz: satz, wertKlammer: wertKlammer, gruppieren: gruppieren, fragebogenAbsatz: fragebogenAbsatz,
-    vergleichAbsatz: vergleichAbsatz, gesamtSatz: gesamtSatz, indexSaetze: indexSaetze, streuungSatz: streuungSatz, BEREICH: BEREICH };
+    vergleichAbsatz: vergleichAbsatz, gesamtSatz: gesamtSatz, indexSaetze: indexSaetze, streuungSatz: streuungSatz, vertiefungImFall: vertiefungImFall, BEREICH: BEREICH };
 })();

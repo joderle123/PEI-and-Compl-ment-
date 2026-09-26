@@ -5,6 +5,8 @@
            sicherheit, unterschrift
    ===================================================================== */
 var R = (function () {
+  /* Hinweis zur Sicherheit ohne Eintrag „Was wurde getan bzw. vereinbart?“ */
+  var PLATZHALTER_VORGEHEN = { de: '[Vorgehen ergänzen]', fr: '[démarches à compléter]', en: '[steps to be added]' };
   /* Kontext für Texte: Name, Geschlecht, Alter … */
   function kontext(fall, lang) {
     var k = fall.kind || {}, vn = String(k.vorname || '').trim();
@@ -72,10 +74,9 @@ var R = (function () {
     if (sich.length) {
       bl.push({ t: 'h2', text: S.h.sicherheit });
       sich.forEach(function (s) { bl.push({ t: 'sicherheit', text: s }); });
+      /* Feld leer: nichts erfinden, sondern sichtbarer Platzhalter (die Seite „Bericht“ weist darauf hin) */
       var sv = String(br.sicherheitVorgehen || '').trim();
-      bl.push({ t: 'p', text: sv || (lang === 'fr' ? 'Ces réponses ont été abordées avec l’enfant et, le cas échéant, avec les parents ; les démarches convenues sont documentées dans le dossier.'
-        : (lang === 'en' ? 'These answers were followed up with the child and, where appropriate, with the parents; the agreed steps are documented in the file.'
-          : 'Diese Angaben wurden mit dem Kind und gegebenenfalls mit den Eltern besprochen; das vereinbarte Vorgehen ist im Dossier festgehalten.')), frei: !!sv });
+      bl.push({ t: 'p', text: sv || PLATZHALTER_VORGEHEN[lang], frei: !!sv });
     }
     /* Zusammenfassung */
     var punkte = [];
@@ -216,5 +217,5 @@ var R = (function () {
     var nach = String(k.nachname || 'Bericht').toUpperCase().replace(/[^A-ZÄÖÜ0-9-]+/g, '-'), vor = String(k.vorname || '').replace(/[^A-Za-zÄÖÜäöüßéèàçëïîôâû0-9-]+/g, '-');
     return heute + '_' + nach + (vor ? '_' + vor : '') + '_CDSE_' + ({ de: 'Befundbericht', fr: 'Rapport_evaluation', en: 'Assessment_report' }[lang] || 'Befundbericht') + '.docx';
   }
-  return { kontext: kontext, aktiveTests: aktiveTests, testBloecke: testBloecke, bloecke: bloecke, html: html, docxBlob: docxBlob, dateiname: dateiname };
+  return { kontext: kontext, aktiveTests: aktiveTests, testBloecke: testBloecke, bloecke: bloecke, html: html, docxBlob: docxBlob, dateiname: dateiname, platzhalterVorgehen: PLATZHALTER_VORGEHEN };
 })();

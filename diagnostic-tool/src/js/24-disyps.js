@@ -454,7 +454,9 @@
   }
   /* „DISYPS-III – … – III (Döpfner & Görtz-Dorten, 2017): FBB-ADHS (Eltern und Lehrkraft); SBB-ADHS, 20.09.2026“ */
   function verfahrenZeile(lang, d) {
-    var infs = aktiveInf(d), mods = aktiveMod(d), teile = [];
+    /* nur Beurteiler mit Werten (wie im Ergebnisteil); ohne Werte die gewählten */
+    var ausw = auswerten(d), mitWerten = aktiveInf(d).filter(function (i) { return hatWerte(ausw, i); });
+    var infs = mitWerten.length ? mitWerten : aktiveInf(d), mods = aktiveMod(d), teile = [];
     var fbb = infs.filter(function (i) { return i !== 'selbst'; });
     if (mods.length && fbb.length) { teile.push(B.liste(mods.map(function (m) { return 'FBB-' + modulVon(m).kurz; }), lang) + ' (' + B.liste(fbb.map(function (i) { return B.t(KURZ[infKey(d, i)], lang); }), lang) + ')'); }
     if (mods.length && infs.indexOf('selbst') >= 0) { teile.push(B.liste(mods.map(function (m) { return 'SBB-' + modulVon(m).kurz; }), lang)); }

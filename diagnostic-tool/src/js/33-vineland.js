@@ -507,7 +507,9 @@
   function verfahrenZeile(lang, d) {
     var fs = fassungId(d), zusatz = fs === 'andere' ? String(d.normenText || '').trim() : B.t(FASSUNGEN[fs].zeile, lang);
     var formen = [];
-    aktiveInf(d).forEach(function (r) { var f = formVon(d, r); if (f && formen.indexOf(B.t(f.name, lang)) < 0) { formen.push(B.t(f.name, lang)); } });
+    /* nur Beurteiler mit Werten (wie im Ergebnisteil); ohne Werte die gewählten */
+    var ausw = auswerten(d), mitWerten = aktiveInf(d).filter(function (r) { return ausw.je[r] && ausw.je[r].hat; });
+    (mitWerten.length ? mitWerten : aktiveInf(d)).forEach(function (r) { var f = formVon(d, r); if (f && formen.indexOf(B.t(f.name, lang)) < 0) { formen.push(B.t(f.name, lang)); } });
     return B.t(TITEL, lang) + ' (' + AUTOREN + (zusatz ? '; ' + zusatz : '') + ')' + (formen.length ? ': ' + B.liste(formen, lang) : '') + (d.datum ? ', ' + B.datum(d.datum, lang) : '');
   }
   function zusammenfassung(lang, ctx, d, ausw) {

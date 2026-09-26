@@ -144,13 +144,25 @@ button{font:inherit;}
 .wraster tr:last-child td{border-bottom:0;}
 .wraster .skala b{display:block;font-weight:620;}
 .wraster .skala small{display:block;color:var(--muted);font-size:12px;}
-.wraster .zelle{display:flex;align-items:center;gap:8px;}
+.wraster .zelle{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}   /* wenig Platz: Einstufung rutscht unter das Feld statt aus der Karte */
 .wraster .eingabe{width:68px;text-align:right;font-variant-numeric:tabular-nums;padding:6px 8px;}
 .wraster .eingabe.breit{width:110px;}
 .wraster td.einstufung{min-width:96px;}
 .wraster.gestapelt .zelle{flex-direction:column;align-items:flex-start;gap:4px;}
 .wraster.gestapelt .chip{font-size:11.5px;padding:1px 8px;}
 .wraster td.einstufung .chip{white-space:normal;line-height:1.25;border-radius:8px;padding:3px 8px;}
+/* Einstufung am Zeilenende passt nicht in die Karte (Klasse „eng“ von APP.rasterEinpassen, z. B. im Hub):
+   Einstufung unter dem Wert, Felder etwas schmaler – so bleibt sie sichtbar */
+.wraster .unter-wert{display:none;}
+.wraster.chip-ende.eng .einstufung{display:none;}
+.wraster.chip-ende.eng .unter-wert{display:block;}
+.wraster.chip-ende.eng .zelle{flex-direction:column;align-items:flex-start;gap:4px;}
+.wraster.chip-ende.eng .unter-wert .chip{white-space:normal;line-height:1.25;border-radius:8px;font-size:11.5px;padding:1px 7px;}
+.wraster.chip-ende.eng .unter-wert .chip:empty{display:none;}
+.wraster.chip-ende.eng th,.wraster.chip-ende.eng td{padding-left:5px;padding-right:5px;}
+.wraster.chip-ende.eng td{vertical-align:top;}   /* Felder einer Zeile bleiben auf einer Höhe */
+.wraster.chip-ende.eng td.skala{padding-top:13px;}
+.wraster.chip-ende.eng .eingabe{width:58px;}
 .wraster tr.trenner td{background:var(--surface-2);font-size:12px;font-weight:650;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
 .tabelle-scroll{overflow-x:auto;margin:0 -4px;padding:0 4px;}
 
@@ -211,10 +223,16 @@ button{font:inherit;}
 /* Toast */
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;box-shadow:var(--shadow-3);z-index:100;}
 
-/* Mobil */
-@media (max-width:1280px){.rahmen{grid-template-columns:210px minmax(0,1fr);}.vorschau{display:none;}.rahmen .vorschau.offen{display:flex;position:fixed;inset:calc(var(--kopf-h) + 10px) 12px 12px auto;width:min(460px,calc(100vw - 24px));max-height:none;z-index:60;box-shadow:var(--shadow-3);}}
+/* Knopf „Vorschau“ im Kopf: nur zwischen 861 und 1280 px, wo die Vorschau keine eigene Spalte hat */
+#knopf-vorschau{display:none;}
+#knopf-vorschau.an{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-strong);}
+
+/* Mobil (auch .ohne-vorschau: „Bericht“ und „Über das Tool“ haben sonst eine festere Regel) */
+@media (max-width:1280px){.rahmen,.rahmen.ohne-vorschau{grid-template-columns:210px minmax(0,1fr);}.vorschau{display:none;}.rahmen .vorschau.offen{display:flex;position:fixed;inset:calc(var(--kopf-h) + 10px) 12px 12px auto;width:min(460px,calc(100vw - 24px));max-height:none;z-index:60;box-shadow:var(--shadow-3);}#knopf-vorschau:not([hidden]){display:inline-flex;}}
+@media (max-width:1000px){#knopf-neu span,#knopf-vorschau span{display:none;}}   /* nur Symbol (Name steht im title), damit Name und Alter Platz haben */
 @media (max-width:860px){
-  .rahmen{grid-template-columns:minmax(0,1fr);padding:12px 12px 60px;}
+  .rahmen,.rahmen.ohne-vorschau{grid-template-columns:minmax(0,1fr);padding:12px 12px 60px;}
+  #knopf-vorschau:not([hidden]),.rahmen .vorschau.offen{display:none;}
   .schritte{position:static;flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px;}
   .schritte .gruppe{display:none;}
   .schritt{flex:0 0 auto;width:auto;}
@@ -224,8 +242,17 @@ button{font:inherit;}
   .raster.zwei{grid-template-columns:minmax(0,1fr);}
   .bericht-blatt{padding:20px 16px;}
 }
+/* Handy: Name und Alter in einer eigenen Zeile unter App-Name und Knöpfen (sonst nur wenige Pixel breit) */
+@media (max-width:600px){
+  :root{--kopf-h:86px;}
+  .kopf{flex-wrap:wrap;row-gap:4px;padding:8px 12px;}
+  .kopf-app{flex:1 1 0;}   /* App-Name wird notfalls gekürzt, die Knöpfe bleiben in der ersten Zeile */
+  .kopf-app > span:last-child{min-width:0;overflow:hidden;}
+  .kopf-app b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .kopf-fall{order:3;flex:1 0 100%;}
+}
 @media print{
-  .kopf,.schritte,.vorschau,.knopfreihe,.nicht-drucken{display:none!important;}
+  .kopf,.schritte,.vorschau,.knopfreihe,.nicht-drucken,.seitenkopf,.toast{display:none!important;}
   body{background:#fff;}
   .rahmen{display:block;padding:0;}
   .bericht-blatt{border:0;box-shadow:none;padding:0;max-width:none;}
@@ -261,6 +288,7 @@ button{font:inherit;}
   <div class="kopf-fall" id="kopf-fall"></div>
   <div class="kopf-rechts">
     <span class="kopf-status" id="kopf-status" aria-live="polite"></span>
+    <button class="btn" type="button" id="knopf-vorschau" aria-controls="vorschau" aria-expanded="false" title="Vorschau des Berichts ein- oder ausblenden"><svg class="ic"><use href="#i-auge"/></svg><span>Vorschau</span></button>
     <div class="segment" role="group" aria-label="Sprache des Berichts" id="sprache-wahl">
       <button type="button" data-sprache="de">DE</button><button type="button" data-sprache="fr">FR</button><button type="button" data-sprache="en">EN</button>
     </div>
@@ -20947,8 +20975,14 @@ var TX = (function () {
     }
     return satz(s, lang) + zusatz;
   }
+  /* Ausführlichere Verfahren zu Aufmerksamkeit/Hyperaktivität, die im Fall schon gewählt sind: SDQ und CBCL
+     empfehlen sonst „z. B. Conners 3 oder DISYPS-III“, obwohl eines davon im selben Bericht steht */
+  function vertiefungImFall(fall) {
+    var t = (fall || {}).tests || {};
+    return [['conners', 'Conners 3'], ['disyps', 'DISYPS-III']].filter(function (x) { return t[x[0]] && t[x[0]].aktiv; }).map(function (x) { return x[1]; });
+  }
   return { einheit: einheit, q: q, satz: satz, wertKlammer: wertKlammer, gruppieren: gruppieren, fragebogenAbsatz: fragebogenAbsatz,
-    vergleichAbsatz: vergleichAbsatz, gesamtSatz: gesamtSatz, indexSaetze: indexSaetze, streuungSatz: streuungSatz, BEREICH: BEREICH };
+    vergleichAbsatz: vergleichAbsatz, gesamtSatz: gesamtSatz, indexSaetze: indexSaetze, streuungSatz: streuungSatz, vertiefungImFall: vertiefungImFall, BEREICH: BEREICH };
 })();
 
 // ==== 20-sdq.js ====
@@ -21140,7 +21174,9 @@ var TX = (function () {
   var KUERZEL = L('SDQ-Deu', 'SDQ-Fra', 'SDQ');
   /* „Fragebogen zu Stärken und Schwächen (SDQ-Deu; Goodman, 1997): Elternfragebogen (P4-17) und …, 20.09.2026“ */
   function verfahrenZeile(lang, d) {
-    var infs = d.informanten || [];
+    /* nur Fragebögen mit Werten (wie im Ergebnisteil); ohne Werte die gewählten */
+    var ausw = auswerten(d), mitWerten = (d.informanten || []).filter(function (i) { return ausw.je[i] && ausw.je[i].zeilen.some(function (z) { return z.wert != null; }); });
+    var infs = mitWerten.length ? mitWerten : (d.informanten || []);
     return B.t(TITEL_OHNE, lang) + ' (' + B.t(KUERZEL, lang) + '; Goodman, 1997)' + (infs.length ? ': ' + formenText(infs, lang) : '') + (d.datum ? ', ' + B.datum(d.datum, lang) : '');
   }
   function bericht(lang, ctx, d, ausw) {
@@ -21245,8 +21281,12 @@ var TX = (function () {
   function hinweise(lang, ctx, d, ausw) {
     var infs = (d.informanten || []).filter(function (i) { return ausw.je[i]; });
     function mehrfach(id) { return infs.filter(function (i) { var z = ausw.je[i].zeilen.filter(function (x) { return x.id === id; })[0]; return z && z.band && z.band.rang >= 2; }).length; }
-    var h = [];
-    if (mehrfach('hy') >= 1) { h.push(lang === 'fr' ? 'Les scores élevés à l’échelle Hyperactivité/inattention (SDQ) justifient un approfondissement à l’aide d’un instrument plus détaillé (p. ex. Conners 3 ou DISYPS-III), complété par l’anamnèse et l’observation dans plusieurs contextes.'
+    var h = [], schon = TX.vertiefungImFall(ctx.fall);
+    /* Conners 3 / DISYPS-III schon im Fall: auf deren Ergebnisse verweisen statt sie zu empfehlen */
+    if (mehrfach('hy') >= 1 && schon.length) { h.push(lang === 'fr' ? 'Les scores élevés à l’échelle Hyperactivité/inattention (SDQ) sont à interpréter conjointement avec les résultats ' + B.liste(schon.map(function (n) { return 'du ' + n; }), lang) + ' (voir ci-dessus), l’anamnèse et l’observation dans plusieurs contextes.'
+      : (lang === 'en' ? 'The raised Hyperactivity/inattention scores (SDQ) should be interpreted together with the ' + B.liste(schon, lang) + ' results (see above), the developmental history and observation in several settings.'
+        : 'Die erhöhten Werte für Hyperaktivität (SDQ) sollten gemeinsam mit den Ergebnissen aus ' + B.liste(schon, lang) + ' (siehe oben), der Entwicklungsgeschichte und Beobachtungen in mehreren Lebensbereichen eingeordnet werden.')); }
+    else if (mehrfach('hy') >= 1) { h.push(lang === 'fr' ? 'Les scores élevés à l’échelle Hyperactivité/inattention (SDQ) justifient un approfondissement à l’aide d’un instrument plus détaillé (p. ex. Conners 3 ou DISYPS-III), complété par l’anamnèse et l’observation dans plusieurs contextes.'
       : (lang === 'en' ? 'The raised Hyperactivity/inattention scores (SDQ) should be explored further with a more detailed instrument (e.g. Conners 3 or DISYPS-III), together with the developmental history and observation in several settings.'
         : 'Die erhöhten Werte für Hyperaktivität (SDQ) sollten mit einem ausführlicheren Verfahren (z. B. Conners 3 oder DISYPS-III) sowie über Entwicklungsgeschichte und Beobachtung in mehreren Lebensbereichen vertieft werden.')); }
     if (mehrfach('em') >= 1) { h.push(lang === 'fr' ? 'Les symptômes émotionnels relevés (SDQ) méritent d’être approfondis lors d’un entretien et, si nécessaire, à l’aide d’un questionnaire spécifique (p. ex. anxiété, humeur).'
@@ -22072,8 +22112,14 @@ var TX = (function () {
     var h = [];
     function wer(ids) { return beurteilerMit(ausw, infs, ids, function (r) { return r >= 2; }); }
     function klammer(liste) { return ' (CBCL/TRF/YSR' + (lang === 'fr' ? ' ; ' : '; ') + B.liste(liste.map(function (i) { return infName(i, lang); }), lang) + ')'; }
-    var ids = ['auf', 'dadh'], w = wer(ids), sj;
-    if (w.length) {
+    var ids = ['auf', 'dadh'], w = wer(ids), sj, schon = TX.vertiefungImFall(ctx.fall);
+    /* Conners 3 / DISYPS-III schon im Fall: auf deren Ergebnisse verweisen statt sie zu empfehlen */
+    if (w.length && schon.length) {
+      sj = subjekt(lang, ausw, infs, ids);
+      h.push(lang === 'fr' ? sj.s + klammer(w) + (sj.pl ? ' sont à interpréter' : ' est à interpréter') + ' conjointement avec les résultats ' + B.liste(schon.map(function (n) { return 'du ' + n; }), lang) + ' (voir ci-dessus), l’anamnèse et l’observation dans plusieurs contextes.'
+        : (lang === 'en' ? sj.s + klammer(w) + ' should be interpreted together with the ' + B.liste(schon, lang) + ' results (see above), the developmental history and observation in several settings.'
+          : sj.s + klammer(w) + (sj.pl ? ' sollten' : ' sollte') + ' gemeinsam mit den Ergebnissen aus ' + B.liste(schon, lang) + ' (siehe oben), der Entwicklungsgeschichte und Beobachtungen in mehreren Lebensbereichen eingeordnet werden.'));
+    } else if (w.length) {
       sj = subjekt(lang, ausw, infs, ids);
       h.push(lang === 'fr' ? sj.s + klammer(w) + (sj.pl ? ' justifient' : ' justifie') + ' un approfondissement à l’aide d’un instrument plus détaillé (p. ex. Conners 3 ou DISYPS-III), complété par l’anamnèse et l’observation dans plusieurs contextes.'
         : (lang === 'en' ? sj.s + klammer(w) + ' should be explored further with a more detailed instrument (e.g. Conners 3 or DISYPS-III), together with the developmental history and observation in several settings.'
@@ -22685,7 +22731,9 @@ var TX = (function () {
 
   /* ---------------- Bericht ---------------- */
   function verfahrenZeile(lang, d) {
-    var infs = aktive(d);
+    /* nur Bögen mit Werten (wie im Ergebnisteil); ohne Werte die gewählten */
+    var ausw = auswerten(d), mitDaten = aktive(d).filter(function (i) { return hatDaten(ausw.je[i]); });
+    var infs = mitDaten.length ? mitDaten : aktive(d);
     var formen = B.liste(infs.map(function (i) { return bogen(lang, i, formVon(d, i), false); }), lang);
     var titel = lang === 'fr' ? 'Conners 3rd Edition (Conners 3), version allemande (Lidzba, Christiansen & Drechsler, 2013)'
       : (lang === 'en' ? 'Conners 3rd Edition (Conners 3), German edition (Lidzba, Christiansen & Drechsler, 2013)'
@@ -23468,7 +23516,9 @@ var TX = (function () {
   }
   /* „DISYPS-III – … – III (Döpfner & Görtz-Dorten, 2017): FBB-ADHS (Eltern und Lehrkraft); SBB-ADHS, 20.09.2026“ */
   function verfahrenZeile(lang, d) {
-    var infs = aktiveInf(d), mods = aktiveMod(d), teile = [];
+    /* nur Beurteiler mit Werten (wie im Ergebnisteil); ohne Werte die gewählten */
+    var ausw = auswerten(d), mitWerten = aktiveInf(d).filter(function (i) { return hatWerte(ausw, i); });
+    var infs = mitWerten.length ? mitWerten : aktiveInf(d), mods = aktiveMod(d), teile = [];
     var fbb = infs.filter(function (i) { return i !== 'selbst'; });
     if (mods.length && fbb.length) { teile.push(B.liste(mods.map(function (m) { return 'FBB-' + modulVon(m).kurz; }), lang) + ' (' + B.liste(fbb.map(function (i) { return B.t(KURZ[infKey(d, i)], lang); }), lang) + ')'); }
     if (mods.length && infs.indexOf('selbst') >= 0) { teile.push(B.liste(mods.map(function (m) { return 'SBB-' + modulVon(m).kurz; }), lang)); }
@@ -26292,7 +26342,9 @@ var TX = (function () {
   function verfahrenZeile(lang, d) {
     var fs = fassungId(d), zusatz = fs === 'andere' ? String(d.normenText || '').trim() : B.t(FASSUNGEN[fs].zeile, lang);
     var formen = [];
-    aktiveInf(d).forEach(function (r) { var f = formVon(d, r); if (f && formen.indexOf(B.t(f.name, lang)) < 0) { formen.push(B.t(f.name, lang)); } });
+    /* nur Beurteiler mit Werten (wie im Ergebnisteil); ohne Werte die gewählten */
+    var ausw = auswerten(d), mitWerten = aktiveInf(d).filter(function (r) { return ausw.je[r] && ausw.je[r].hat; });
+    (mitWerten.length ? mitWerten : aktiveInf(d)).forEach(function (r) { var f = formVon(d, r); if (f && formen.indexOf(B.t(f.name, lang)) < 0) { formen.push(B.t(f.name, lang)); } });
     return B.t(TITEL, lang) + ' (' + AUTOREN + (zusatz ? '; ' + zusatz : '') + ')' + (formen.length ? ': ' + B.liste(formen, lang) : '') + (d.datum ? ', ' + B.datum(d.datum, lang) : '');
   }
   function zusammenfassung(lang, ctx, d, ausw) {
@@ -26527,12 +26579,13 @@ var E = (function () {
   /* Werte-Raster: Zeilen = Skalen, Spalten = Beurteiler (jede Spalte hat eigene Werte – nichts wird übertragen)
      spec: { basis: 'tests.sdq.werte', spalten:[{id,label}], zeilen:[{id,name,hinweis,min,max,ganz,trenner}], einstufen(zeileId, spaltenId, zahl) → Einstufung|null } */
   /* spec.chipAmEnde: Einstufung nicht neben dem Feld, sondern in einer eigenen letzten Spalte
-     (für breite Raster mit mehreren Zahlenspalten, z. B. Indexwert · PR · KI)
+     (für breite Raster mit mehreren Zahlenspalten, z. B. Indexwert · PR · KI). Passt die Tabelle nicht in die
+     Karte, setzt APP die Klasse „eng“: dann steht die Einstufung (zweites Exemplar, „unter-wert“) unter dem Wert.
      spec.gestapelt: Einstufung immer UNTER dem Feld (für mehrere Beurteiler-Spalten mit je eigener Einstufung) */
   function raster(spec) {
     var chipSpalte = spec.chipAmEnde ? spec.spalten.filter(function (s) { return !s.ohneChip; })[0] : null;
-    var h = '<div class="tabelle-scroll"><table class="wraster' + (spec.gestapelt ? ' gestapelt' : '') + '"><thead><tr><th>' + B.esc(spec.kopfSkala || 'Skala') + '</th>' +
-      spec.spalten.map(function (s) { return '<th>' + B.esc(s.label) + '</th>'; }).join('') + (chipSpalte ? '<th>Einstufung</th>' : '') + '</tr></thead><tbody>';
+    var h = '<div class="tabelle-scroll"><table class="wraster' + (spec.gestapelt ? ' gestapelt' : '') + (chipSpalte ? ' chip-ende' : '') + '"><thead><tr><th>' + B.esc(spec.kopfSkala || 'Skala') + '</th>' +
+      spec.spalten.map(function (s) { return '<th>' + B.esc(s.label) + '</th>'; }).join('') + (chipSpalte ? '<th class="einstufung">Einstufung</th>' : '') + '</tr></thead><tbody>';
     function grenzen(s, z) { return { min: s.min != null ? s.min : z.min, max: s.max != null ? s.max : z.max, ganz: s.ganz != null ? s.ganz : z.ganz }; }
     function chipHtml(s, z, pfad) {
       var g = grenzen(s, z), v = wert(pfad), n = B.num(v);
@@ -26549,9 +26602,9 @@ var E = (function () {
         var pfad = spec.basis + '.' + s.id + '.' + z.id, v = wert(pfad), n = B.num(v);
         h += '<td><div class="zelle"><input class="eingabe' + (z.breit ? ' breit' : '') + (v !== '' && (n == null || !inBereich(n, g)) ? ' fehler' : '') + '" data-pfad="' + B.esc(pfad) + '" value="' + B.esc(v) + '" inputmode="decimal" autocomplete="off" aria-label="' + B.esc(z.name + ' – ' + s.label) + '"' +
           (g.min != null ? ' data-min="' + g.min + '"' : '') + (g.max != null ? ' data-max="' + g.max + '"' : '') + (g.ganz ? ' data-ganz="1"' : '') + ' data-raster="1">' +
-          (s.ohneChip || chipSpalte ? '' : chipHtml(s, z, pfad)) + '</div></td>';
+          (s === chipSpalte ? '<span class="unter-wert">' + chipHtml(s, z, pfad) + '</span>' : (s.ohneChip || chipSpalte ? '' : chipHtml(s, z, pfad))) + '</div></td>';
       });
-      if (chipSpalte) { h += (z.nurSpalten && z.nurSpalten.indexOf(chipSpalte.id) < 0) ? '<td></td>' : '<td class="einstufung">' + chipHtml(chipSpalte, z, spec.basis + '.' + chipSpalte.id + '.' + z.id) + '</td>'; }
+      if (chipSpalte) { h += (z.nurSpalten && z.nurSpalten.indexOf(chipSpalte.id) < 0) ? '<td class="einstufung"></td>' : '<td class="einstufung">' + chipHtml(chipSpalte, z, spec.basis + '.' + chipSpalte.id + '.' + z.id) + '</td>'; }
       h += '</tr>';
     });
     return h + '</tbody></table></div>';
@@ -26585,6 +26638,8 @@ var E = (function () {
            sicherheit, unterschrift
    ===================================================================== */
 var R = (function () {
+  /* Hinweis zur Sicherheit ohne Eintrag „Was wurde getan bzw. vereinbart?“ */
+  var PLATZHALTER_VORGEHEN = { de: '[Vorgehen ergänzen]', fr: '[démarches à compléter]', en: '[steps to be added]' };
   /* Kontext für Texte: Name, Geschlecht, Alter … */
   function kontext(fall, lang) {
     var k = fall.kind || {}, vn = String(k.vorname || '').trim();
@@ -26652,10 +26707,9 @@ var R = (function () {
     if (sich.length) {
       bl.push({ t: 'h2', text: S.h.sicherheit });
       sich.forEach(function (s) { bl.push({ t: 'sicherheit', text: s }); });
+      /* Feld leer: nichts erfinden, sondern sichtbarer Platzhalter (die Seite „Bericht“ weist darauf hin) */
       var sv = String(br.sicherheitVorgehen || '').trim();
-      bl.push({ t: 'p', text: sv || (lang === 'fr' ? 'Ces réponses ont été abordées avec l’enfant et, le cas échéant, avec les parents ; les démarches convenues sont documentées dans le dossier.'
-        : (lang === 'en' ? 'These answers were followed up with the child and, where appropriate, with the parents; the agreed steps are documented in the file.'
-          : 'Diese Angaben wurden mit dem Kind und gegebenenfalls mit den Eltern besprochen; das vereinbarte Vorgehen ist im Dossier festgehalten.')), frei: !!sv });
+      bl.push({ t: 'p', text: sv || PLATZHALTER_VORGEHEN[lang], frei: !!sv });
     }
     /* Zusammenfassung */
     var punkte = [];
@@ -26796,7 +26850,7 @@ var R = (function () {
     var nach = String(k.nachname || 'Bericht').toUpperCase().replace(/[^A-ZÄÖÜ0-9-]+/g, '-'), vor = String(k.vorname || '').replace(/[^A-Za-zÄÖÜäöüßéèàçëïîôâû0-9-]+/g, '-');
     return heute + '_' + nach + (vor ? '_' + vor : '') + '_CDSE_' + ({ de: 'Befundbericht', fr: 'Rapport_evaluation', en: 'Assessment_report' }[lang] || 'Befundbericht') + '.docx';
   }
-  return { kontext: kontext, aktiveTests: aktiveTests, testBloecke: testBloecke, bloecke: bloecke, html: html, docxBlob: docxBlob, dateiname: dateiname };
+  return { kontext: kontext, aktiveTests: aktiveTests, testBloecke: testBloecke, bloecke: bloecke, html: html, docxBlob: docxBlob, dateiname: dateiname, platzhalterVorgehen: PLATZHALTER_VORGEHEN };
 })();
 
 // ==== 80-speichern.js ====
@@ -26909,15 +26963,25 @@ function fallAlsDatei() {
   var blob = new Blob([JSON.stringify(FALL, null, 1)], { type: 'application/json' });
   saveAs(blob, B.heute().replace(/-/g, '') + '_' + String(k.nachname || 'Fall').replace(/[^A-Za-z0-9ÄÖÜäöüß-]+/g, '-') + (k.vorname ? '_' + String(k.vorname).replace(/[^A-Za-z0-9ÄÖÜäöüß-]+/g, '-') : '') + '_Befund.json');
 }
-function fallAusDatei(datei, fertig) {
+/* Hat der offene Fall schon Eingaben? Dann wird vor dem Ersetzen nachgefragt. */
+function fallHatDaten(f) {
+  var k = (f && f.kind) || {}, b = (f && f.bericht) || {}, t = (f && f.tests) || {};
+  return ['vorname', 'nachname', 'geburtsdatum'].some(function (x) { return String(k[x] || '').trim(); }) ||
+    ['verfasser', 'anlass', 'beobachtung', 'zusammenfassung', 'empfehlungen', 'sicherheitVorgehen'].some(function (x) { return String(b[x] || '').trim(); }) ||
+    Object.keys(t).some(function (id) { return t[id] && t[id].aktiv; });
+}
+/* fragen(neuerFall): erst nach dem Lesen der Datei – false = abgebrochen, der offene Fall bleibt */
+function fallAusDatei(datei, fertig, fragen) {
   var r = new FileReader();
+  var keinFall = 'Das ist keine Fall-Datei dieses Tools. Bitte eine mit „Fall als Datei sichern“ gespeicherte Datei wählen.';
   r.onload = function () {
-    try {
-      var f = JSON.parse(r.result);
-      if (!f || f.v !== 2 || !f.tests) { throw new Error('Das ist keine Fall-Datei dieses Tools.'); }
-      FALL = fallErgaenzen(f); fallSpeichern(true); fertig(null);
-    } catch (e) { fertig(e); }
+    var f = null;
+    try { f = JSON.parse(r.result); } catch (e) { f = null; }   /* kein JSON: verständliche Meldung statt „Unexpected token …“ */
+    if (!f || f.v !== 2 || !f.tests) { fertig(new Error(keinFall)); return; }
+    if (fragen && !fragen(f)) { fertig(null, true); return; }
+    try { FALL = fallErgaenzen(f); fallSpeichern(true); fertig(null); } catch (e) { fertig(e); }
   };
+  r.onerror = function () { fertig(new Error('Die Datei ließ sich nicht lesen.')); };
   r.readAsText(datei);
 }
 
@@ -27029,6 +27093,11 @@ var APP = (function () {
   function seiteBericht() {
     var bl = R.bloecke(FALL, lang());
     var h = seitenkopf('Fertig', 'Bericht', 'So sieht der Bericht aus. Word-Datei herunterladen, dort bei Bedarf überarbeiten und unterschreiben.');
+    /* Hinweis zur Sicherheit ohne Eintrag zum Vorgehen: im Bericht steht nur ein Platzhalter */
+    if (sicherheitsAngaben().length && !String(FALL.bericht.sicherheitVorgehen || '').trim()) {
+      h += '<div class="nicht-drucken">' + E.hinweis('<b>Vorgehen zur Sicherheit fehlt.</b> Im Bericht steht deshalb „' + B.esc(R.platzhalterVorgehen[lang()]) + '“. Bitte unter „Beobachtung und Einordnung“ eintragen, was getan bzw. vereinbart wurde.' +
+        '<div class="knopfreihe" style="margin-top:8px"><button class="btn" type="button" data-schritt="einordnung"><svg class="ic"><use href="#i-stift"/></svg>Vorgehen eintragen</button></div>', 'gefahr') + '</div>';
+    }
     h += '<div class="knopfreihe nicht-drucken" style="margin:0 0 16px"><button class="btn primary" type="button" data-aktion="word"><svg class="ic"><use href="#i-word"/></svg>Word-Datei herunterladen</button>' +
       '<button class="btn" type="button" data-aktion="drucken"><svg class="ic"><use href="#i-druck"/></svg>Drucken / PDF</button>' +
       '<span class="rechts leise">Sprache des Berichts oben rechts: DE · FR · EN</span></div>';
@@ -27045,8 +27114,10 @@ var APP = (function () {
     KAT.alle().forEach(function (t) { (t.pruefen || []).forEach(function (p) { liste.push('<li><b>' + B.esc(t.kurz) + ':</b> ' + B.esc(p) + '</li>'); }); });
     KAT.bandIds().forEach(function (id) { var b = KAT.band(id); if (b && b.pruefen) { liste.push('<li><b>Einstufung ' + B.esc(id) + ':</b> ' + B.esc(b.pruefen) + '</li>'); } });
     h += E.karte('<h2>Noch am Manual zu prüfen</h2><p class="klein">Diese Bezeichnungen und Grenzen stammen aus der Fachliteratur, sind aber noch nicht am Protokollbogen des CDSE bestätigt.</p><ul class="klein">' + liste.join('') + '</ul>');
-    h += E.karte('<h2>Fall sichern oder laden</h2><p class="klein">Der Fall wird automatisch in diesem Browser gespeichert (im CDSE Hub verschlüsselt in Ihrem Tresor). Zum Mitnehmen auf einen anderen PC können Sie ihn als Datei sichern.</p>' +
-      '<div class="knopfreihe"><button class="btn" type="button" data-aktion="fall-datei">Fall als Datei sichern</button><label class="btn">Fall aus Datei laden<input type="file" accept=".json,application/json" data-aktion="fall-laden" hidden></label></div>');
+    h += E.karte('<h2>Fall sichern oder laden</h2><p class="klein">Der Fall wird automatisch in diesem Browser gespeichert (im Hub verschlüsselt in Ihrem Tresor). Zum Mitnehmen auf einen anderen PC können Sie ihn als Datei sichern.</p>' +
+      '<div class="knopfreihe"><button class="btn" type="button" data-aktion="fall-datei">Fall als Datei sichern</button>' +
+      /* echter Knopf (mit Tab erreichbar); er öffnet die versteckte Dateiauswahl */
+      '<button class="btn" type="button" data-aktion="fall-waehlen">Fall aus Datei laden</button><input type="file" accept=".json,application/json" data-aktion="fall-laden" hidden></div>');
     return h;
   }
 
@@ -27062,10 +27133,30 @@ var APP = (function () {
     else if (/^test:/.test(id) && KAT.test(id.slice(5)) && FALL.tests[id.slice(5)].aktiv) { html = seiteTest(KAT.test(id.slice(5))); }
     else { return zeigen('verfahren'); }
     inhalt.innerHTML = html;
-    rahmen.classList.toggle('ohne-vorschau', id === 'bericht' || id === 'ueber');
+    var ohneVorschau = id === 'bericht' || id === 'ueber';
+    rahmen.classList.toggle('ohne-vorschau', ohneVorschau);
+    /* Knopf „Vorschau“ (mittlere Breiten) nur auf Seiten mit Vorschau */
+    B.$('knopf-vorschau').hidden = ohneVorschau;
+    if (ohneVorschau) { vorschauOffen(false); }
     navZeichnen(); kopfZeichnen(); vorschauZeichnen();
+    rasterEinpassen();
     if (!ohneScroll) { window.scrollTo(0, 0); }
     fallSpeichern();
+  }
+  /* Vorschau als Fenster über dem Inhalt: zwischen 861 und 1280 px hat sie keine eigene Spalte */
+  function vorschauOffen(an) {
+    var k = B.$('knopf-vorschau');
+    B.$('vorschau').classList.toggle('offen', an);
+    k.classList.toggle('an', an); k.setAttribute('aria-expanded', String(an));
+  }
+  /* Werte-Raster mit Einstufung am Zeilenende (z. B. WISC-V): passt die Tabelle nicht in die Karte
+     (schmales Fenster, Vorschau daneben, im Hub), steht die Einstufung unter dem Wert statt abgeschnitten */
+  function rasterEinpassen() {
+    Array.prototype.forEach.call(document.querySelectorAll('#inhalt .wraster.chip-ende'), function (t) {
+      var sc = t.parentNode;
+      t.classList.remove('eng');
+      if (sc.scrollWidth > sc.clientWidth + 1) { t.classList.add('eng'); }
+    });
   }
   function vorschauZeichnen() {
     var el = B.$('vorschau-inhalt'); if (!el) { return; }
@@ -27111,12 +27202,16 @@ var APP = (function () {
     var z = { min: el.hasAttribute('data-min') ? +el.getAttribute('data-min') : null, max: el.hasAttribute('data-max') ? +el.getAttribute('data-max') : null, ganz: el.getAttribute('data-ganz') === '1' };
     var ok = v === '' || (n != null && E.inBereich(n, z));
     el.classList.toggle('fehler', !ok);
-    var chip = document.querySelector('[data-chip="' + (window.CSS && CSS.escape ? CSS.escape(el.getAttribute('data-pfad')) : el.getAttribute('data-pfad')) + '"]');
-    if (chip) {
+    /* Einstufung am Zeilenende gibt es zweimal (Spalte und unter dem Wert, siehe rasterEinpassen) */
+    var chips = document.querySelectorAll('[data-chip="' + (window.CSS && CSS.escape ? CSS.escape(el.getAttribute('data-pfad')) : el.getAttribute('data-pfad')) + '"]');
+    if (chips.length) {
       var e = null;
       if (ok && n != null && /^test:/.test(aktSchritt)) { var t = KAT.test(aktSchritt.slice(5)); if (t && t.chip) { e = t.chip(el.getAttribute('data-pfad'), n, FALL.tests[t.id]); } }
-      chip.className = 'chip ' + (e ? e.klasse : 'leer');
-      chip.textContent = e ? B.t(e.name, 'de') : (v === '' ? '' : (n == null ? 'ungültig' : 'außerhalb ' + (z.min != null ? z.min : '') + '–' + (z.max != null ? z.max : '')));
+      Array.prototype.forEach.call(chips, function (chip) {
+        chip.className = 'chip ' + (e ? e.klasse : 'leer');
+        chip.textContent = e ? B.t(e.name, 'de') : (v === '' ? '' : (n == null ? 'ungültig' : 'außerhalb ' + (z.min != null ? z.min : '') + '–' + (z.max != null ? z.max : '')));
+      });
+      if (el.closest('.chip-ende')) { rasterEinpassen(); }
     }
   }
   function klick(ev) {
@@ -27129,9 +27224,11 @@ var APP = (function () {
       var ak = a.getAttribute('data-aktion');
       if (ak === 'word') { wordHerunterladen(a); }
       else if (ak === 'drucken') { window.print(); }
-      else if (ak === 'fall-datei') { fallAlsDatei(); }
+      else if (ak === 'fall-datei') { fallAlsDatei(); toast('Fall als Datei gesichert'); }
+      else if (ak === 'fall-waehlen') { var wahl = document.querySelector('input[data-aktion="fall-laden"]'); if (wahl) { wahl.click(); } }
       return;
     }
+    if (ev.target.closest('#knopf-vorschau')) { vorschauOffen(!B.$('vorschau').classList.contains('offen')); return; }
     if (ev.target.closest('#knopf-neu')) {
       if (window.confirm('Einen neuen Fall beginnen? Der aktuelle Fall wird aus diesem Browser entfernt. (Tipp: vorher unter „Über das Tool“ als Datei sichern.)')) {
         FALL = neuerFall(); fallSpeichern(true); zeigen('fall');
@@ -27153,13 +27250,25 @@ var APP = (function () {
     document.addEventListener('input', eingabe);
     document.addEventListener('change', function (ev) {
       if (ev.target && ev.target.getAttribute && ev.target.getAttribute('data-aktion') === 'fall-laden') {
-        var dat = ev.target.files && ev.target.files[0]; if (!dat) { return; }
-        fallAusDatei(dat, function (e) { if (e) { toast(e.message); } else { toast('Fall geladen'); zeigen('fall'); } });
+        var feld = ev.target, dat = feld.files && feld.files[0]; if (!dat) { return; }
+        /* wie „Neuer Fall“: erst fragen, wenn der offene Fall Eingaben hat */
+        var name = function (f) { var k = (f && f.kind) || {}; return (String(k.vorname || '') + ' ' + String(k.nachname || '')).trim() || 'ohne Namen'; };
+        var fragen = function (neu) {
+          return !fallHatDaten(FALL) || window.confirm('Den offenen Fall „' + name(FALL) + '“ durch den Fall „' + name(neu) + '“ aus der Datei ersetzen? Der offene Fall wird aus diesem Browser entfernt. (Tipp: vorher mit „Fall als Datei sichern“ sichern.)');
+        };
+        fallAusDatei(dat, function (e, abgebrochen) {
+          feld.value = '';   /* dieselbe Datei lässt sich danach erneut wählen */
+          if (e) { toast(e.message); } else if (!abgebrochen) { toast('Fall geladen'); zeigen('fall'); }
+        }, fragen);
         return;
       }
       eingabe(ev);
     });
     document.addEventListener('click', klick);
+    document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && B.$('vorschau').classList.contains('offen')) { vorschauOffen(false); } });
+    var rasterTimer = null;
+    window.addEventListener('resize', function () { clearTimeout(rasterTimer); rasterTimer = setTimeout(rasterEinpassen, 150); });
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(rasterEinpassen); }
     zeigen(FALL.ui.schritt || 'fall');
     if (zustand === 'uebernommen') { toast('Die Eingaben aus der früheren Version wurden übernommen.'); }
   }

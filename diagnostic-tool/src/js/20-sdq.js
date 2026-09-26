@@ -186,7 +186,9 @@
   var KUERZEL = L('SDQ-Deu', 'SDQ-Fra', 'SDQ');
   /* „Fragebogen zu Stärken und Schwächen (SDQ-Deu; Goodman, 1997): Elternfragebogen (P4-17) und …, 20.09.2026“ */
   function verfahrenZeile(lang, d) {
-    var infs = d.informanten || [];
+    /* nur Fragebögen mit Werten (wie im Ergebnisteil); ohne Werte die gewählten */
+    var ausw = auswerten(d), mitWerten = (d.informanten || []).filter(function (i) { return ausw.je[i] && ausw.je[i].zeilen.some(function (z) { return z.wert != null; }); });
+    var infs = mitWerten.length ? mitWerten : (d.informanten || []);
     return B.t(TITEL_OHNE, lang) + ' (' + B.t(KUERZEL, lang) + '; Goodman, 1997)' + (infs.length ? ': ' + formenText(infs, lang) : '') + (d.datum ? ', ' + B.datum(d.datum, lang) : '');
   }
   function bericht(lang, ctx, d, ausw) {
@@ -291,8 +293,12 @@
   function hinweise(lang, ctx, d, ausw) {
     var infs = (d.informanten || []).filter(function (i) { return ausw.je[i]; });
     function mehrfach(id) { return infs.filter(function (i) { var z = ausw.je[i].zeilen.filter(function (x) { return x.id === id; })[0]; return z && z.band && z.band.rang >= 2; }).length; }
-    var h = [];
-    if (mehrfach('hy') >= 1) { h.push(lang === 'fr' ? 'Les scores élevés à l’échelle Hyperactivité/inattention (SDQ) justifient un approfondissement à l’aide d’un instrument plus détaillé (p. ex. Conners 3 ou DISYPS-III), complété par l’anamnèse et l’observation dans plusieurs contextes.'
+    var h = [], schon = TX.vertiefungImFall(ctx.fall);
+    /* Conners 3 / DISYPS-III schon im Fall: auf deren Ergebnisse verweisen statt sie zu empfehlen */
+    if (mehrfach('hy') >= 1 && schon.length) { h.push(lang === 'fr' ? 'Les scores élevés à l’échelle Hyperactivité/inattention (SDQ) sont à interpréter conjointement avec les résultats ' + B.liste(schon.map(function (n) { return 'du ' + n; }), lang) + ' (voir ci-dessus), l’anamnèse et l’observation dans plusieurs contextes.'
+      : (lang === 'en' ? 'The raised Hyperactivity/inattention scores (SDQ) should be interpreted together with the ' + B.liste(schon, lang) + ' results (see above), the developmental history and observation in several settings.'
+        : 'Die erhöhten Werte für Hyperaktivität (SDQ) sollten gemeinsam mit den Ergebnissen aus ' + B.liste(schon, lang) + ' (siehe oben), der Entwicklungsgeschichte und Beobachtungen in mehreren Lebensbereichen eingeordnet werden.')); }
+    else if (mehrfach('hy') >= 1) { h.push(lang === 'fr' ? 'Les scores élevés à l’échelle Hyperactivité/inattention (SDQ) justifient un approfondissement à l’aide d’un instrument plus détaillé (p. ex. Conners 3 ou DISYPS-III), complété par l’anamnèse et l’observation dans plusieurs contextes.'
       : (lang === 'en' ? 'The raised Hyperactivity/inattention scores (SDQ) should be explored further with a more detailed instrument (e.g. Conners 3 or DISYPS-III), together with the developmental history and observation in several settings.'
         : 'Die erhöhten Werte für Hyperaktivität (SDQ) sollten mit einem ausführlicheren Verfahren (z. B. Conners 3 oder DISYPS-III) sowie über Entwicklungsgeschichte und Beobachtung in mehreren Lebensbereichen vertieft werden.')); }
     if (mehrfach('em') >= 1) { h.push(lang === 'fr' ? 'Les symptômes émotionnels relevés (SDQ) méritent d’être approfondis lors d’un entretien et, si nécessaire, à l’aide d’un questionnaire spécifique (p. ex. anxiété, humeur).'

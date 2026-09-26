@@ -124,13 +124,25 @@ button{font:inherit;}
 .wraster tr:last-child td{border-bottom:0;}
 .wraster .skala b{display:block;font-weight:620;}
 .wraster .skala small{display:block;color:var(--muted);font-size:12px;}
-.wraster .zelle{display:flex;align-items:center;gap:8px;}
+.wraster .zelle{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}   /* wenig Platz: Einstufung rutscht unter das Feld statt aus der Karte */
 .wraster .eingabe{width:68px;text-align:right;font-variant-numeric:tabular-nums;padding:6px 8px;}
 .wraster .eingabe.breit{width:110px;}
 .wraster td.einstufung{min-width:96px;}
 .wraster.gestapelt .zelle{flex-direction:column;align-items:flex-start;gap:4px;}
 .wraster.gestapelt .chip{font-size:11.5px;padding:1px 8px;}
 .wraster td.einstufung .chip{white-space:normal;line-height:1.25;border-radius:8px;padding:3px 8px;}
+/* Einstufung am Zeilenende passt nicht in die Karte (Klasse „eng“ von APP.rasterEinpassen, z. B. im Hub):
+   Einstufung unter dem Wert, Felder etwas schmaler – so bleibt sie sichtbar */
+.wraster .unter-wert{display:none;}
+.wraster.chip-ende.eng .einstufung{display:none;}
+.wraster.chip-ende.eng .unter-wert{display:block;}
+.wraster.chip-ende.eng .zelle{flex-direction:column;align-items:flex-start;gap:4px;}
+.wraster.chip-ende.eng .unter-wert .chip{white-space:normal;line-height:1.25;border-radius:8px;font-size:11.5px;padding:1px 7px;}
+.wraster.chip-ende.eng .unter-wert .chip:empty{display:none;}
+.wraster.chip-ende.eng th,.wraster.chip-ende.eng td{padding-left:5px;padding-right:5px;}
+.wraster.chip-ende.eng td{vertical-align:top;}   /* Felder einer Zeile bleiben auf einer Höhe */
+.wraster.chip-ende.eng td.skala{padding-top:13px;}
+.wraster.chip-ende.eng .eingabe{width:58px;}
 .wraster tr.trenner td{background:var(--surface-2);font-size:12px;font-weight:650;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
 .tabelle-scroll{overflow-x:auto;margin:0 -4px;padding:0 4px;}
 
@@ -191,10 +203,16 @@ button{font:inherit;}
 /* Toast */
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;box-shadow:var(--shadow-3);z-index:100;}
 
-/* Mobil */
-@media (max-width:1280px){.rahmen{grid-template-columns:210px minmax(0,1fr);}.vorschau{display:none;}.rahmen .vorschau.offen{display:flex;position:fixed;inset:calc(var(--kopf-h) + 10px) 12px 12px auto;width:min(460px,calc(100vw - 24px));max-height:none;z-index:60;box-shadow:var(--shadow-3);}}
+/* Knopf „Vorschau“ im Kopf: nur zwischen 861 und 1280 px, wo die Vorschau keine eigene Spalte hat */
+#knopf-vorschau{display:none;}
+#knopf-vorschau.an{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-strong);}
+
+/* Mobil (auch .ohne-vorschau: „Bericht“ und „Über das Tool“ haben sonst eine festere Regel) */
+@media (max-width:1280px){.rahmen,.rahmen.ohne-vorschau{grid-template-columns:210px minmax(0,1fr);}.vorschau{display:none;}.rahmen .vorschau.offen{display:flex;position:fixed;inset:calc(var(--kopf-h) + 10px) 12px 12px auto;width:min(460px,calc(100vw - 24px));max-height:none;z-index:60;box-shadow:var(--shadow-3);}#knopf-vorschau:not([hidden]){display:inline-flex;}}
+@media (max-width:1000px){#knopf-neu span,#knopf-vorschau span{display:none;}}   /* nur Symbol (Name steht im title), damit Name und Alter Platz haben */
 @media (max-width:860px){
-  .rahmen{grid-template-columns:minmax(0,1fr);padding:12px 12px 60px;}
+  .rahmen,.rahmen.ohne-vorschau{grid-template-columns:minmax(0,1fr);padding:12px 12px 60px;}
+  #knopf-vorschau:not([hidden]),.rahmen .vorschau.offen{display:none;}
   .schritte{position:static;flex-direction:row;overflow-x:auto;gap:4px;padding-bottom:4px;}
   .schritte .gruppe{display:none;}
   .schritt{flex:0 0 auto;width:auto;}
@@ -204,8 +222,17 @@ button{font:inherit;}
   .raster.zwei{grid-template-columns:minmax(0,1fr);}
   .bericht-blatt{padding:20px 16px;}
 }
+/* Handy: Name und Alter in einer eigenen Zeile unter App-Name und Knöpfen (sonst nur wenige Pixel breit) */
+@media (max-width:600px){
+  :root{--kopf-h:86px;}
+  .kopf{flex-wrap:wrap;row-gap:4px;padding:8px 12px;}
+  .kopf-app{flex:1 1 0;}   /* App-Name wird notfalls gekürzt, die Knöpfe bleiben in der ersten Zeile */
+  .kopf-app > span:last-child{min-width:0;overflow:hidden;}
+  .kopf-app b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .kopf-fall{order:3;flex:1 0 100%;}
+}
 @media print{
-  .kopf,.schritte,.vorschau,.knopfreihe,.nicht-drucken{display:none!important;}
+  .kopf,.schritte,.vorschau,.knopfreihe,.nicht-drucken,.seitenkopf,.toast{display:none!important;}
   body{background:#fff;}
   .rahmen{display:block;padding:0;}
   .bericht-blatt{border:0;box-shadow:none;padding:0;max-width:none;}

@@ -105,6 +105,11 @@ var APP = (function () {
   function seiteBericht() {
     var bl = R.bloecke(FALL, lang());
     var h = seitenkopf('Fertig', 'Bericht', 'So sieht der Bericht aus. Word-Datei herunterladen, dort bei Bedarf überarbeiten und unterschreiben.');
+    /* Hinweis zur Sicherheit ohne Eintrag zum Vorgehen: im Bericht steht nur ein Platzhalter */
+    if (sicherheitsAngaben().length && !String(FALL.bericht.sicherheitVorgehen || '').trim()) {
+      h += '<div class="nicht-drucken">' + E.hinweis('<b>Vorgehen zur Sicherheit fehlt.</b> Im Bericht steht deshalb „' + B.esc(R.platzhalterVorgehen[lang()]) + '“. Bitte unter „Beobachtung und Einordnung“ eintragen, was getan bzw. vereinbart wurde.' +
+        '<div class="knopfreihe" style="margin-top:8px"><button class="btn" type="button" data-schritt="einordnung"><svg class="ic"><use href="#i-stift"/></svg>Vorgehen eintragen</button></div>', 'gefahr') + '</div>';
+    }
     h += '<div class="knopfreihe nicht-drucken" style="margin:0 0 16px"><button class="btn primary" type="button" data-aktion="word"><svg class="ic"><use href="#i-word"/></svg>Word-Datei herunterladen</button>' +
       '<button class="btn" type="button" data-aktion="drucken"><svg class="ic"><use href="#i-druck"/></svg>Drucken / PDF</button>' +
       '<span class="rechts leise">Sprache des Berichts oben rechts: DE · FR · EN</span></div>';
@@ -121,8 +126,10 @@ var APP = (function () {
     KAT.alle().forEach(function (t) { (t.pruefen || []).forEach(function (p) { liste.push('<li><b>' + B.esc(t.kurz) + ':</b> ' + B.esc(p) + '</li>'); }); });
     KAT.bandIds().forEach(function (id) { var b = KAT.band(id); if (b && b.pruefen) { liste.push('<li><b>Einstufung ' + B.esc(id) + ':</b> ' + B.esc(b.pruefen) + '</li>'); } });
     h += E.karte('<h2>Noch am Manual zu prüfen</h2><p class="klein">Diese Bezeichnungen und Grenzen stammen aus der Fachliteratur, sind aber noch nicht am Protokollbogen des CDSE bestätigt.</p><ul class="klein">' + liste.join('') + '</ul>');
-    h += E.karte('<h2>Fall sichern oder laden</h2><p class="klein">Der Fall wird automatisch in diesem Browser gespeichert (im CDSE Hub verschlüsselt in Ihrem Tresor). Zum Mitnehmen auf einen anderen PC können Sie ihn als Datei sichern.</p>' +
-      '<div class="knopfreihe"><button class="btn" type="button" data-aktion="fall-datei">Fall als Datei sichern</button><label class="btn">Fall aus Datei laden<input type="file" accept=".json,application/json" data-aktion="fall-laden" hidden></label></div>');
+    h += E.karte('<h2>Fall sichern oder laden</h2><p class="klein">Der Fall wird automatisch in diesem Browser gespeichert (im Hub verschlüsselt in Ihrem Tresor). Zum Mitnehmen auf einen anderen PC können Sie ihn als Datei sichern.</p>' +
+      '<div class="knopfreihe"><button class="btn" type="button" data-aktion="fall-datei">Fall als Datei sichern</button>' +
+      /* echter Knopf (mit Tab erreichbar); er öffnet die versteckte Dateiauswahl */
+      '<button class="btn" type="button" data-aktion="fall-waehlen">Fall aus Datei laden</button><input type="file" accept=".json,application/json" data-aktion="fall-laden" hidden></div>');
     return h;
   }
 
@@ -138,10 +145,30 @@ var APP = (function () {
     else if (/^test:/.test(id) && KAT.test(id.slice(5)) && FALL.tests[id.slice(5)].aktiv) { html = seiteTest(KAT.test(id.slice(5))); }
     else { return zeigen('verfahren'); }
     inhalt.innerHTML = html;
-    rahmen.classList.toggle('ohne-vorschau', id === 'bericht' || id === 'ueber');
+    var ohneVorschau = id === 'bericht' || id === 'ueber';
+    rahmen.classList.toggle('ohne-vorschau', ohneVorschau);
+    /* Knopf „Vorschau“ (mittlere Breiten) nur auf Seiten mit Vorschau */
+    B.$('knopf-vorschau').hidden = ohneVorschau;
+    if (ohneVorschau) { vorschauOffen(false); }
     navZeichnen(); kopfZeichnen(); vorschauZeichnen();
+    rasterEinpassen();
     if (!ohneScroll) { window.scrollTo(0, 0); }
     fallSpeichern();
+  }
+  /* Vorschau als Fenster über dem Inhalt: zwischen 861 und 1280 px hat sie keine eigene Spalte */
+  function vorschauOffen(an) {
+    var k = B.$('knopf-vorschau');
+    B.$('vorschau').classList.toggle('offen', an);
+    k.classList.toggle('an', an); k.setAttribute('aria-expanded', String(an));
+  }
+  /* Werte-Raster mit Einstufung am Zeilenende (z. B. WISC-V): passt die Tabelle nicht in die Karte
+     (schmales Fenster, Vorschau daneben, im Hub), steht die Einstufung unter dem Wert statt abgeschnitten */
+  function rasterEinpassen() {
+    Array.prototype.forEach.call(document.querySelectorAll('#inhalt .wraster.chip-ende'), function (t) {
+      var sc = t.parentNode;
+      t.classList.remove('eng');
+      if (sc.scrollWidth > sc.clientWidth + 1) { t.classList.add('eng'); }
+    });
   }
   function vorschauZeichnen() {
     var el = B.$('vorschau-inhalt'); if (!el) { return; }
@@ -187,12 +214,16 @@ var APP = (function () {
     var z = { min: el.hasAttribute('data-min') ? +el.getAttribute('data-min') : null, max: el.hasAttribute('data-max') ? +el.getAttribute('data-max') : null, ganz: el.getAttribute('data-ganz') === '1' };
     var ok = v === '' || (n != null && E.inBereich(n, z));
     el.classList.toggle('fehler', !ok);
-    var chip = document.querySelector('[data-chip="' + (window.CSS && CSS.escape ? CSS.escape(el.getAttribute('data-pfad')) : el.getAttribute('data-pfad')) + '"]');
-    if (chip) {
+    /* Einstufung am Zeilenende gibt es zweimal (Spalte und unter dem Wert, siehe rasterEinpassen) */
+    var chips = document.querySelectorAll('[data-chip="' + (window.CSS && CSS.escape ? CSS.escape(el.getAttribute('data-pfad')) : el.getAttribute('data-pfad')) + '"]');
+    if (chips.length) {
       var e = null;
       if (ok && n != null && /^test:/.test(aktSchritt)) { var t = KAT.test(aktSchritt.slice(5)); if (t && t.chip) { e = t.chip(el.getAttribute('data-pfad'), n, FALL.tests[t.id]); } }
-      chip.className = 'chip ' + (e ? e.klasse : 'leer');
-      chip.textContent = e ? B.t(e.name, 'de') : (v === '' ? '' : (n == null ? 'ungültig' : 'außerhalb ' + (z.min != null ? z.min : '') + '–' + (z.max != null ? z.max : '')));
+      Array.prototype.forEach.call(chips, function (chip) {
+        chip.className = 'chip ' + (e ? e.klasse : 'leer');
+        chip.textContent = e ? B.t(e.name, 'de') : (v === '' ? '' : (n == null ? 'ungültig' : 'außerhalb ' + (z.min != null ? z.min : '') + '–' + (z.max != null ? z.max : '')));
+      });
+      if (el.closest('.chip-ende')) { rasterEinpassen(); }
     }
   }
   function klick(ev) {
@@ -205,9 +236,11 @@ var APP = (function () {
       var ak = a.getAttribute('data-aktion');
       if (ak === 'word') { wordHerunterladen(a); }
       else if (ak === 'drucken') { window.print(); }
-      else if (ak === 'fall-datei') { fallAlsDatei(); }
+      else if (ak === 'fall-datei') { fallAlsDatei(); toast('Fall als Datei gesichert'); }
+      else if (ak === 'fall-waehlen') { var wahl = document.querySelector('input[data-aktion="fall-laden"]'); if (wahl) { wahl.click(); } }
       return;
     }
+    if (ev.target.closest('#knopf-vorschau')) { vorschauOffen(!B.$('vorschau').classList.contains('offen')); return; }
     if (ev.target.closest('#knopf-neu')) {
       if (window.confirm('Einen neuen Fall beginnen? Der aktuelle Fall wird aus diesem Browser entfernt. (Tipp: vorher unter „Über das Tool“ als Datei sichern.)')) {
         FALL = neuerFall(); fallSpeichern(true); zeigen('fall');
@@ -229,13 +262,25 @@ var APP = (function () {
     document.addEventListener('input', eingabe);
     document.addEventListener('change', function (ev) {
       if (ev.target && ev.target.getAttribute && ev.target.getAttribute('data-aktion') === 'fall-laden') {
-        var dat = ev.target.files && ev.target.files[0]; if (!dat) { return; }
-        fallAusDatei(dat, function (e) { if (e) { toast(e.message); } else { toast('Fall geladen'); zeigen('fall'); } });
+        var feld = ev.target, dat = feld.files && feld.files[0]; if (!dat) { return; }
+        /* wie „Neuer Fall“: erst fragen, wenn der offene Fall Eingaben hat */
+        var name = function (f) { var k = (f && f.kind) || {}; return (String(k.vorname || '') + ' ' + String(k.nachname || '')).trim() || 'ohne Namen'; };
+        var fragen = function (neu) {
+          return !fallHatDaten(FALL) || window.confirm('Den offenen Fall „' + name(FALL) + '“ durch den Fall „' + name(neu) + '“ aus der Datei ersetzen? Der offene Fall wird aus diesem Browser entfernt. (Tipp: vorher mit „Fall als Datei sichern“ sichern.)');
+        };
+        fallAusDatei(dat, function (e, abgebrochen) {
+          feld.value = '';   /* dieselbe Datei lässt sich danach erneut wählen */
+          if (e) { toast(e.message); } else if (!abgebrochen) { toast('Fall geladen'); zeigen('fall'); }
+        }, fragen);
         return;
       }
       eingabe(ev);
     });
     document.addEventListener('click', klick);
+    document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && B.$('vorschau').classList.contains('offen')) { vorschauOffen(false); } });
+    var rasterTimer = null;
+    window.addEventListener('resize', function () { clearTimeout(rasterTimer); rasterTimer = setTimeout(rasterEinpassen, 150); });
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(rasterEinpassen); }
     zeigen(FALL.ui.schritt || 'fall');
     if (zustand === 'uebernommen') { toast('Die Eingaben aus der früheren Version wurden übernommen.'); }
   }

@@ -482,7 +482,9 @@
 
   /* ---------------- Bericht ---------------- */
   function verfahrenZeile(lang, d) {
-    var infs = aktive(d);
+    /* nur Bögen mit Werten (wie im Ergebnisteil); ohne Werte die gewählten */
+    var ausw = auswerten(d), mitDaten = aktive(d).filter(function (i) { return hatDaten(ausw.je[i]); });
+    var infs = mitDaten.length ? mitDaten : aktive(d);
     var formen = B.liste(infs.map(function (i) { return bogen(lang, i, formVon(d, i), false); }), lang);
     var titel = lang === 'fr' ? 'Conners 3rd Edition (Conners 3), version allemande (Lidzba, Christiansen & Drechsler, 2013)'
       : (lang === 'en' ? 'Conners 3rd Edition (Conners 3), German edition (Lidzba, Christiansen & Drechsler, 2013)'
